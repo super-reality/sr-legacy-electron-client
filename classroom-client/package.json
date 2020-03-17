@@ -4,6 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,6 +13,13 @@
   "author": "Game Gen <info@gamegen.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^8.1.0"
+    "electron": "^8.1.0",
+    "electron-builder": "^22.4.1"
+  },
+  "build": {
+    "appId": "com.gamegen.classroom",
+    "mac": {
+      "category": "public.app-category.education"
+    }
   }
 }
