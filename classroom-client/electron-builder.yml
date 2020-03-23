@@ -1,0 +1,9 @@
+appId: "com.gamegen.classroom-client"
+productName: "Game Gen Classroom"
+copyright: "Copyright © 2020 Game Gen. All rights reserved."
+mac:
+  category: "public.app-category.education"
+files:
+    - "build/**/*"
+    - "node_modules/**/*"
+    - "src/main.js"
