@@ -1,5 +1,5 @@
-import { combineReducers } from "redux";
-import { UPDATE_MESSAGE } from "./actions";
+import { combineReducers } from "redux"
+import { UPDATE_MESSAGE } from "./actions"
 
 function message(state = "Hello, React!", action) {
     switch(action.type) {
@@ -12,4 +12,4 @@ function message(state = "Hello, React!", action) {
 
 const app = combineReducers({ message });
 
-export default app;
+export default app
