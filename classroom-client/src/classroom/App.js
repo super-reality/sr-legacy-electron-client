@@ -1,26 +1,17 @@
 import React from "react"
-import {HashRouter as Router, Switch, Route, NavLink} from "react-router-dom"
+import {HashRouter as Router, Switch, Route} from "react-router-dom"
 import { connect } from "react-redux"
-import { updateMessage } from "./actions"
 import styles from "./App.scss"
+import ServerClientTest from "./ServerClientTest";
 
 class App extends React.Component {
     render() {
         return (
             <Router>
                 <div>
-                    <nav>
-                        <NavLink exact to="/" className={styles.link} activeClassName={styles.active}>Home</NavLink>
-                        &nbsp;
-                        <NavLink exact to="/test" className={styles.link} activeClassName={styles.active}>Test</NavLink>
-                    </nav>
                     <Switch>
-                        <Route path="/test">
-                            <h1>Test Page</h1>
-                        </Route>
                         <Route path="/">
-                            <h1>{this.props.message}</h1>
-                            <button onClick={event => this.props.updateMessage("Goodbye, React!")}>Update Message</button>
+                            <ServerClientTest />
                         </Route>
                     </Switch>
                 </div>
@@ -29,7 +20,7 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ message: state.message });
-const mapDispatchToProps = { updateMessage };
+const mapStateToProps = state => ({});
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
