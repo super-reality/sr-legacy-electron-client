@@ -4,6 +4,8 @@ export const initializeUsersSocket = socket => dispatch => socket.once("initiali
 
 export const USER_CONNECTED = "USER_CONNECTED";
 export const connectUser = user => ({ type: USER_CONNECTED, user });
+export const userConnectedSocket = socket => dispatch => socket.on("userConnected", user => dispatch(connectUser(user)));
 
 export const USER_DISCONNECTED = "USER_DISCONNECTED";
 export const disconnectUser = user => ({ type: USER_DISCONNECTED, user });
+export const userDisconnectedSocket = socket => dispatch => socket.on("userDisconnected", user => dispatch(disconnectUser(user)));

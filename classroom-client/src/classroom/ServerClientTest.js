@@ -2,7 +2,7 @@ import React from "react"
 import { connect } from "react-redux"
 import io from "socket.io-client"
 import styles from "./ServerClientTest.scss"
-import {initializeUsersSocket, connectUser, disconnectUser} from "./actions";
+import {initializeUsersSocket, userConnectedSocket, userDisconnectedSocket} from "./actions";
 
 class ServerClientTest extends React.Component {
 
@@ -10,9 +10,9 @@ class ServerClientTest extends React.Component {
         super(props);
         const { dispatch } = this.props;
         this.socket = io.connect("ws://localhost:3000");
-        dispatch(initializeUsersSocket(this.socket));
-        this.socket.on("userConnected", user => dispatch(connectUser(user)));
-        this.socket.on("userDisconnected", user => dispatch(disconnectUser(user)));
+        this.props.initializeUsersSocket(this.socket);
+        this.props.userConnectedSocket(this.socket);
+        this.props.userDisconnectedSocket(this.socket);
     }
 
     render() {
@@ -31,4 +31,7 @@ class ServerClientTest extends React.Component {
 
 }
 
-export default connect(state => ({ users: state.users }))(ServerClientTest)
+const mapStateToProps = state => ({ users: state.users });
+const mapDispatchToProps = { initializeUsersSocket, userConnectedSocket, userDisconnectedSocket };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ServerClientTest)
