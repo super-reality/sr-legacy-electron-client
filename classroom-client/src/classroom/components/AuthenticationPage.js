@@ -1,74 +1,58 @@
-import React from "react"
+import React, { useState, useRef } from "react"
 import { connect } from "react-redux"
 import { Redirect } from "react-router-dom"
 import { authenticateCredentials } from "../actions";
 import styles from "./AuthenticationPage.scss"
 
-class AuthenticationPage extends React.Component {
+const AuthenticationPage = props => {
 
-    constructor(props) {
-        super(props);
+    const [showValidation, setShowValidation] = useState(false);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
-        this.state = {
-            showValidation: false,
-            username: "",
-            password: ""
-        };
+    const usernameFieldRef = useRef(null);
+    const passwordFieldRef = useRef(null);
 
-        this.usernameFieldRef = React.createRef();
-        this.passwordFieldRef = React.createRef();
+    const focusField = fieldRef => event => fieldRef.current.focus();
 
-        this.onUsernameFieldChange = this.onUsernameFieldChange.bind(this);
-        this.onPasswordFieldChange = this.onPasswordFieldChange.bind(this);
-        this.onFormSubmit = this.onFormSubmit.bind(this);
-    }
+    const onUsernameFieldChange = event => {
+        setShowValidation(true);
+        setUsername(event.target.value);
+    };
 
-    render() {
-        return this.props.isAuthenticated ? <Redirect to="/classes" /> : (
-            <div>
-                <h1>Game Gen Classroom</h1>
-                <form onSubmit={this.onFormSubmit}>
-                    <fieldset>
-                        <legend>Sign in</legend>
-                        <div>
-                            <label onClick={this.focusField(this.usernameFieldRef)}>Username</label>
-                            <input ref={this.usernameFieldRef} type="text" placeholder="Username" value={this.state.username} onChange={this.onUsernameFieldChange} />
-                        </div>
-                        <div>
-                            <label onClick={this.focusField(this.passwordFieldRef)}>Password</label>
-                            <input ref={this.passwordFieldRef} type="password" placeholder="Password" value={this.state.password} onChange={this.onPasswordFieldChange} />
-                        </div>
-                        <div>
-                            <input type="submit" value="Sign in" />
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        );
-    }
+    const onPasswordFieldChange = event => {
+        setShowValidation(true);
+        setPassword(event.target.value);
+    };
 
-    focusField(fieldRef) {
-        return event => fieldRef.current.focus();
-    }
-
-    onUsernameFieldChange(event) {
-        this.setState({ showValidation: true, username: event.target.value });
-    }
-
-    onPasswordFieldChange(event) {
-        this.setState({ showValidation: true, password: event.target.value });
-    }
-
-    onFormSubmit(event) {
+    const onFormSubmit = event => {
         event.preventDefault();
-        const { authenticateCredentials } = this.props;
-        this.setState(
-            previousState => ({ username: previousState.username.trim() }),
-            () => authenticateCredentials({ username: this.state.username, password: this.state.password })
-        );
-    }
+        props.authenticateCredentials({ username, password });
+    };
 
-}
+    return props.isAuthenticated ? <Redirect to="/classes" /> : (
+        <div>
+            <h1>Game Gen Classroom</h1>
+            <form onSubmit={onFormSubmit}>
+                <fieldset>
+                    <legend>Sign in</legend>
+                    <div>
+                        <label onClick={focusField(usernameFieldRef)}>Username</label>
+                        <input ref={usernameFieldRef} type="text" placeholder="Username" value={username} onChange={onUsernameFieldChange} />
+                    </div>
+                    <div>
+                        <label onClick={focusField(passwordFieldRef)}>Password</label>
+                        <input ref={passwordFieldRef} type="password" placeholder="Password" value={password} onChange={onPasswordFieldChange} />
+                    </div>
+                    <div>
+                        <input type="submit" value="Sign in" />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    );
+
+};
 
 const mapStateToProps = state => ({ isAuthenticated: !!state.auth });
 const mapDispatchToProps = { authenticateCredentials };
