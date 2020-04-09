@@ -4,6 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "docker:build": "docker build .",
+    "docker:down": "docker-compose down",
+    "docker:up": "docker-compose up -d",
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
