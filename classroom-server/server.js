@@ -3,58 +3,47 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
-const io = require("socket.io")(server);
-const { makeData, makeSession } = require("./mock");
+
+const mongoose = require("mongoose");
+mongoose.Promise = Promise;
+const database = mongoose.connection;
+const User = require("./models/user");
+
+const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
+app.use("/auth", require("./routes/auth"));
 
-let data = makeData();
-
-app.post("/auth", (request, response) => {
-    let credentials = request.body;
-    let user = data.users.find(u => u.username === credentials.username && u.password === credentials.password);
-    if(user) {
-        if(data.sessions.find(s => s.userId === user.id)) {
-            data.sessions = data.sessions.filter(s => s.userId !== user.id);
-        }
-        let session = makeSession(user);
-        data.sessions.push(session);
-        response.send({success: true, payload: {token: session.token}});
-    }
-    else {
-        response.send({success: false, error: {message: "Invalid username or password."}});
-    }
+database.once("open", () => {
+    console.log("database connected");
+    User
+        .findOne({root: true})
+        .then(user => {
+            const username = process.env.ROOT_USERNAME;
+            const passwordSalt = hashDigest(Date.now().toString());
+            const passwordHash = hashSaltDigest(process.env.ROOT_PASSWORD, passwordSalt);
+            if(user) {
+                console.log("updating root user");
+                user.username = username;
+                user.passwordSalt = passwordSalt;
+                user.passwordHash = passwordHash;
+                return user.save();
+            }
+            else {
+                console.log("creating root user");
+                const newRootUser = new User({root: true, username, passwordSalt, passwordHash});
+                return newRootUser.save();
+            }
+        })
+        .then(user => {
+            const port = process.env.PORT;
+            server.listen(port, () => console.log(`listening on port ${port}`));
+        })
+        .catch(error => {
+            console.error(`couldn't configure root user`);
+        });
 });
 
-app.get("/classes", (request, response) => {
-    let { token } = request.query;
-    let session = data.sessions.find(s => s.token === token);
-    if(session) {
-        let classes = data.userClasses.filter(userClass => userClass.userId === session.userId).map(userClass => data.classes.find(c => c.id === userClass.classId));
-        response.send({success: true, payload: classes});
-    }
-    else {
-        response.send({success: false, error: {message: "Invalid authentication token."}});
-    }
-});
+database.on("error", () => console.error("database connection error"));
 
-io.on("connection", socket => {
-    sockets.push(socket);
-
-    socket.emit("initializeUsers", users);
-
-    users.push(socket.id);
-    sockets.forEach(s => s.emit("userConnected", socket.id));
-
-    console.log(`user connected: ${socket.id}`);
-
-    socket.on("disconnect", () => {
-        users = users.filter(user => user !== socket.id);
-        sockets = sockets.filter(s => s !== socket);
-        sockets.forEach(s => s.emit("userDisconnected", socket.id));
-        console.log(`user disconnected: ${socket.id}`);
-    });
-
-});
-
-server.listen(process.env.PORT, () => console.log(`listening on port ${process.env.PORT}`));
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true});

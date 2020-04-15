@@ -7,6 +7,7 @@
     "docker:build": "docker build .",
     "docker:down": "docker-compose down",
     "docker:up": "docker-compose up -d",
+    "serve": "nodemon server.js",
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +17,12 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "socket.io": "^2.3.0",
-    "uuid": "^7.0.3"
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.9",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
   }
 }

@@ -1,29 +1,54 @@
 import React from "react"
-import { Switch, Route, Redirect } from "react-router-dom"
-import { connect } from "react-redux"
-import AuthenticationPage from "./components/AuthenticationPage";
-import ClassesPage from "./components/ClassesPage";
+import {Switch, Route, NavLink} from "react-router-dom"
+import {connect} from "react-redux"
+import Auth from "./views/auth/Auth";
+import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
 
-const App = props => (
-    <Switch>
-        <Route path="/classes/:classId">
-            <h1>Specific Class</h1>
-            <p>This is a route stub.</p>
-        </Route>
-        <Route path="/classes">
-            <ClassesPage />
-        </Route>
-        <Route path="/auth">
-            <AuthenticationPage />
-        </Route>
-        <Route path="/">
-            <Redirect to="/auth" />
-        </Route>
-    </Switch>
-);
+const App = props => {
 
-const mapStateToProps = state => ({});
-const mapDispatchToProps = {};
+    const onSignOutClick = event => props.signOut();
+
+    return (
+        <div>
+            <h1><NavLink to="/">Classroom</NavLink></h1>
+            <nav>
+                {
+                    props.isAuthenticated
+                        ? (
+                            <ul className={styles.nav}>
+                                <li><NavLink to="/classes" activeClassName={styles.active}>classes</NavLink></li>
+                                <li><NavLink to="/users" activeClassName={styles.active}>users</NavLink></li>
+                                <li><NavLink to="/auth" activeClassName={styles.active} onClick={onSignOutClick}>sign out</NavLink></li>
+                            </ul>
+                        )
+                        : (
+                            <ul className={styles.nav}>
+                                <li><NavLink to="/auth" activeClassName={styles.active}>sign in</NavLink></li>
+                            </ul>
+                        )
+                }
+            </nav>
+            <Switch>
+                <Route path="/classes">
+                    <p>classes</p>
+                </Route>
+                <Route path="/users">
+                    <p>users</p>
+                </Route>
+                <Route path="/auth">
+                    <Auth />
+                </Route>
+                <Route path="/">
+                    <p>home</p>
+                </Route>
+            </Switch>
+        </div>
+    );
+
+};
+
+const mapStateToProps = state => ({isAuthenticated: state.auth.isValid});
+const mapDispatchToProps = {signOut: authInvalidated};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
