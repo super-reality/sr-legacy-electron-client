@@ -13,6 +13,7 @@ const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
 app.use("/auth", require("./routes/auth"));
+app.use("/users", require("./routes/users"));
 
 database.once("open", () => {
     console.log("database connected");

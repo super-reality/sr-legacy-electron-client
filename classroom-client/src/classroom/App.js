@@ -4,6 +4,7 @@ import {connect} from "react-redux"
 import Auth from "./views/auth/Auth";
 import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
+import Users from "./views/users/Users";
 
 const App = props => {
 
@@ -34,7 +35,7 @@ const App = props => {
                     <p>classes</p>
                 </Route>
                 <Route path="/users">
-                    <p>users</p>
+                    <Users />
                 </Route>
                 <Route path="/auth">
                     <Auth />
