@@ -32,18 +32,20 @@ export const usersIndexInvalidated = () => {
     };
 };
 
-export const hydrate = (authToken) => dispatch => {
+export const hydrate = () => (dispatch, getState) => {
     dispatch(usersIndexPending());
     const requestTimeout = setTimeout(() => dispatch(usersIndexFailed([{message: "Request Timed Out"}])), 3000);
-    axios
-        .get("http://localhost:3000/users", {headers: {Authorization: `Bearer ${authToken}`}, timeout: 3000})
+    return axios
+        .get("http://localhost:3000/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
         .then(response => {
             clearTimeout(requestTimeout);
             const {users} = response.data;
             dispatch(usersIndexSuccessful(users));
+            return Promise.resolve(users);
         })
         .catch(error => {
             clearTimeout(requestTimeout);
             dispatch(usersIndexFailed([{message: error.response.statusText}]));
+            return Promise.reject(error);
         });
 };

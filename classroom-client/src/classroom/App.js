@@ -8,7 +8,11 @@ import Users from "./views/users/Users";
 
 const App = props => {
 
-    const onSignOutClick = event => props.signOut();
+    const onSignOutClick = event => {
+        event.preventDefault();
+        props.signOut()
+        history.push("/auth");
+    };
 
     return (
         <div>

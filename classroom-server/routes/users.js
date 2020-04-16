@@ -19,6 +19,7 @@ router.get("/", (request, response) => {
                 User
                     .find()
                     .select("_id root username")
+                    .map(users => users.map(user => ({id: user._id, root: user.root, username: user.username})))
                     .then(users => {
                         response.send({users});
                     })

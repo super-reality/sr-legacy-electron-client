@@ -35,15 +35,17 @@ export const authInvalidated = () => {
 export const authenticate = (username, password) => dispatch => {
     dispatch(authPending());
     const requestTimeout = setTimeout(() => dispatch(authFailed([{message: "Request Timed Out"}])), 3000);
-    axios
+    return axios
         .post("http://localhost:3000/auth/new", {username, password}, {timeout: 3000})
         .then(response => {
             clearTimeout(requestTimeout);
             const {token} = response.data;
             dispatch(authSuccessful(token));
+            return Promise.resolve();
         })
         .catch(error => {
             clearTimeout(requestTimeout);
             dispatch(authFailed([{message: error.response.statusText}]));
+            return Promise.reject(error);
         });
 };
