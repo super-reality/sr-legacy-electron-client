@@ -1,6 +1,7 @@
 import React from "react"
 import {Switch, Route, NavLink} from "react-router-dom"
 import {connect} from "react-redux"
+import ProtectedRoute from "./components/ProtectedRoute";
 import Auth from "./views/auth/Auth";
 import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
@@ -35,12 +36,12 @@ const App = props => {
                 }
             </nav>
             <Switch>
-                <Route path="/classes">
+                <ProtectedRoute path="/classes" authPath="/auth">
                     <p>classes</p>
-                </Route>
-                <Route path="/users">
+                </ProtectedRoute>
+                <ProtectedRoute path="/users" authPath="/auth">
                     <Users />
-                </Route>
+                </ProtectedRoute>
                 <Route path="/auth">
                     <Auth />
                 </Route>

@@ -1,11 +1,12 @@
 import React, {useRef} from "react"
-import {useHistory} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import {connect} from "react-redux"
 import {authenticate} from "../../actions/auth";
 import styles from "./Auth.scss"
 
 const Auth = props => {
 
+    const location = useLocation();
     const history = useHistory();
 
     const usernameField = useRef(null);
@@ -17,8 +18,8 @@ const Auth = props => {
         event.preventDefault();
         props
             .authenticate(usernameField.current.value, passwordField.current.value)
-            .then(() => history.push("/"))
-            .catch(error => console.error(error.response));
+            .then(() => history.replace(location.state ? location.state.redirect : "/"))
+            .catch(() => undefined);
     };
 
     return (

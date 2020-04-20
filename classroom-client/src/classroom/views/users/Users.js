@@ -1,31 +1,17 @@
 import React, {Fragment, useEffect} from "react"
-import {Link, Route, Switch, useHistory, useRouteMatch} from "react-router-dom";
+import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
 import {connect} from "react-redux"
-import {authInvalidated} from "../../actions/auth";
 import {hydrate} from "../../actions/users";
 import styles from "./Users.scss"
 
 const Users = props => {
 
-    const history = useHistory();
-
     const {path, url} = useRouteMatch();
 
     useEffect(() => {
-        if(props.isAuthenticated) {
-            props
-                .hydrate()
-                .then(users => console.log(users))
-                .catch(error => {
-                    if(error.response.status === 401) {
-                        props.signOut();
-                        history.push("/auth");
-                    }
-                });
-        }
-        else {
-            history.push("/auth");
-        }
+        props
+            .hydrate()
+            .catch(error => undefined);
     }, []);
 
     return (
@@ -93,7 +79,7 @@ const Users = props => {
 
 };
 
-const mapStateToProps = state => ({isAuthenticated: state.auth.isValid, users: state.users});
-const mapDispatchToProps = {hydrate, signOut: authInvalidated};
+const mapStateToProps = state => ({users: state.users});
+const mapDispatchToProps = {hydrate};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

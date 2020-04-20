@@ -1,4 +1,5 @@
 import axios from "axios"
+import {authInvalidated} from "./auth";
 
 export const USERS_INDEX_PENDING = "USERS_INDEX_PENDING";
 export const usersIndexPending = () => {
@@ -46,6 +47,9 @@ export const hydrate = () => (dispatch, getState) => {
         .catch(error => {
             clearTimeout(requestTimeout);
             dispatch(usersIndexFailed([{message: error.response.statusText}]));
+            if(error.response.status === 401) {
+                dispatch(authInvalidated());
+            }
             return Promise.reject(error);
         });
 };
