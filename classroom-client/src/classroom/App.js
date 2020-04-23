@@ -6,6 +6,7 @@ import Auth from "./views/auth/Auth";
 import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
 import Users from "./views/users/Users";
+import {dismissAlert} from "./actions/alerts";
 
 const App = props => {
 
@@ -35,6 +36,17 @@ const App = props => {
                         )
                 }
             </nav>
+            {
+                props.alerts.length > 0
+                ? (
+                    <ul>
+                        {props.alerts.map(alert => (
+                            <li key={alert.id} onClick={e => props.dismissAlert(alert.id)}>{alert.status}: {alert.message}</li>
+                        ))}
+                    </ul>
+                )
+                : null
+            }
             <Switch>
                 <ProtectedRoute path="/classes" authPath="/auth">
                     <p>classes</p>
@@ -54,7 +66,7 @@ const App = props => {
 
 };
 
-const mapStateToProps = state => ({isAuthenticated: state.auth.isValid});
-const mapDispatchToProps = {signOut: authInvalidated};
+const mapStateToProps = state => ({alerts: state.alerts, isAuthenticated: state.auth.isValid});
+const mapDispatchToProps = {dismissAlert, signOut: authInvalidated};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

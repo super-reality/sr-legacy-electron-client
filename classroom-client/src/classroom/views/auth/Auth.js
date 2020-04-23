@@ -2,6 +2,7 @@ import React, {useRef} from "react"
 import {useHistory, useLocation} from "react-router-dom";
 import {connect} from "react-redux"
 import {authenticate} from "../../actions/auth";
+import {ALERT_STATUS_ERROR, ALERT_STATUS_SUCCESS, receiveAlert} from "../../actions/alerts";
 import styles from "./Auth.scss"
 
 const Auth = props => {
@@ -19,7 +20,7 @@ const Auth = props => {
         props
             .authenticate(usernameField.current.value, passwordField.current.value)
             .then(() => history.replace(location.state ? location.state.redirect : "/"))
-            .catch(() => undefined);
+            .catch(error => props.receiveAlert(ALERT_STATUS_ERROR, error.message));
     };
 
     return (
@@ -36,17 +37,6 @@ const Auth = props => {
                 </div>
                 <div>
                     <input type="submit" value={props.isFetching ? "signing in..." : "sign in"} disabled={props.isFetching} />
-                    {
-                        props.errors.length > 0
-                            ? (
-                                <ul>
-                                    {props.errors.map((error, index) => (
-                                        <li key={index}>{error.message}</li>
-                                    ))}
-                                </ul>
-                            )
-                            : null
-                    }
                 </div>
             </fieldset>
         </form>
@@ -54,7 +44,7 @@ const Auth = props => {
 
 };
 
-const mapStateToProps = state => ({isFetching: state.auth.isFetching, isAuthenticated: state.auth.isValid, errors: state.auth.errors});
-const mapDispatchToProps = {authenticate};
+const mapStateToProps = state => ({isFetching: state.auth.isFetching, isAuthenticated: state.auth.isValid});
+const mapDispatchToProps = {authenticate, receiveAlert};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

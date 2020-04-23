@@ -2,51 +2,28 @@ import axios from "axios"
 import {authInvalidated} from "./auth";
 
 export const USERS_INDEX_PENDING = "USERS_INDEX_PENDING";
-export const usersIndexPending = () => {
-    return {
-        type: USERS_INDEX_PENDING,
-        payload: {}
-    };
-};
+export const usersIndexPending = () => ({type: USERS_INDEX_PENDING});
 
 export const USERS_INDEX_SUCCESSFUL = "USERS_INDEX_SUCCESSFUL";
-export const usersIndexSuccessful = (users) => {
-    return {
-        type: USERS_INDEX_SUCCESSFUL,
-        payload: {users}
-    };
-};
+export const usersIndexSuccessful = (users) => ({type: USERS_INDEX_SUCCESSFUL, payload: {users}});
 
 export const USERS_INDEX_FAILED = "USERS_INDEX_FAILED";
-export const usersIndexFailed = errors => {
-    return {
-        type: USERS_INDEX_FAILED,
-        payload: {errors}
-    };
-};
+export const usersIndexFailed = () => ({type: USERS_INDEX_FAILED});
 
 export const USERS_INDEX_INVALIDATED = "USERS_INDEX_INVALIDATED";
-export const usersIndexInvalidated = () => {
-    return {
-        type: USERS_INDEX_INVALIDATED,
-        payload: {}
-    };
-};
+export const usersIndexInvalidated = () => ({type: USERS_INDEX_INVALIDATED});
 
 export const hydrate = () => (dispatch, getState) => {
     dispatch(usersIndexPending());
-    const requestTimeout = setTimeout(() => dispatch(usersIndexFailed([{message: "Request Timed Out"}])), 3000);
     return axios
         .get("http://localhost:3000/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
         .then(response => {
-            clearTimeout(requestTimeout);
             const {users} = response.data;
             dispatch(usersIndexSuccessful(users));
             return Promise.resolve(users);
         })
         .catch(error => {
-            clearTimeout(requestTimeout);
-            dispatch(usersIndexFailed([{message: error.response.statusText}]));
+            dispatch(usersIndexFailed());
             if(error.response.status === 401) {
                 dispatch(authInvalidated());
             }

@@ -3,6 +3,7 @@ import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
 import {connect} from "react-redux"
 import {hydrate} from "../../actions/users";
 import styles from "./Users.scss"
+import {ALERT_STATUS_ERROR, receiveAlert} from "../../actions/alerts";
 
 const Users = props => {
 
@@ -11,22 +12,11 @@ const Users = props => {
     useEffect(() => {
         props
             .hydrate()
-            .catch(error => undefined);
+            .catch(error => props.receiveAlert(ALERT_STATUS_ERROR, error.message));
     }, []);
 
     return (
         <div>
-            {
-                props.users.errors.length > 0
-                    ? (
-                        <ul>
-                            {props.users.errors.map((error, index) => (
-                                <li key={index}>{error.message}</li>
-                            ))}
-                        </ul>
-                    )
-                    : null
-            }
             <Switch>
                 <Route path={`${path}/`}>
                     {
@@ -80,6 +70,6 @@ const Users = props => {
 };
 
 const mapStateToProps = state => ({users: state.users});
-const mapDispatchToProps = {hydrate};
+const mapDispatchToProps = {hydrate, receiveAlert};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

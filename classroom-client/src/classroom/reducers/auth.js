@@ -3,7 +3,6 @@ import {AUTH_FAILED, AUTH_INVALIDATED, AUTH_PENDING, AUTH_SUCCESSFUL} from "../a
 const initialState = {
     isValid: false,
     isFetching: false,
-    errors: [],
     updatedAt: Date.now(),
     token: null
 };
@@ -16,9 +15,7 @@ export default (state = initialState, action) => {
                 ...state,
                 isFetching: true,
                 isValid: false,
-                errors: [],
-                updatedAt,
-                token: null
+                updatedAt
             }
         case AUTH_SUCCESSFUL:
             const {token} = action.payload;
@@ -26,28 +23,22 @@ export default (state = initialState, action) => {
                 ...state,
                 isFetching: false,
                 isValid: true,
-                errors: [],
                 updatedAt,
                 token
             };
         case AUTH_FAILED:
-            const {errors} = action.payload;
             return {
                 ...state,
                 isFetching: false,
                 isValid: false,
-                errors,
-                updatedAt,
-                token: null
+                updatedAt
             };
         case AUTH_INVALIDATED:
             return {
                 ...state,
                 isFetching: false,
                 isValid: false,
-                errors: [],
-                updatedAt,
-                token: null
+                updatedAt
             };
         default:
             return state;
