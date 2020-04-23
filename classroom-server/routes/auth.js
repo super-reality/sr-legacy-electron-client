@@ -33,20 +33,4 @@ router.post("/new", (request, response) => {
         });
 });
 
-router.post("/verify", (request, response) => {
-    try {
-        const {authorization} = request.headers;
-        const rawToken = /Bearer (.*)/.exec(authorization)[1];
-        const issuer = process.env.JWT_ISSUER;
-        const audience = process.env.JWT_AUDIENCE;
-        const maxAge = process.env.JWT_EXPIRATION;
-        jwt.verify(rawToken, process.env.JWT_SECRET, {issuer, audience, maxAge}, (error, result) => {
-            response.sendStatus(error ? 401 : 200);
-        });
-    }
-    catch(exception) {
-        response.sendStatus(400);
-    }
-});
-
 module.exports = router;
