@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
                 ...state,
                 isFetching: true,
                 isValid: false,
-                updatedAt,
+                updatedAt
             }
         case USERS_INDEX_SUCCESSFUL:
             const {users} = action.payload;
@@ -31,14 +31,14 @@ export default (state = initialState, action) => {
                 ...state,
                 isFetching: false,
                 isValid: false,
-                updatedAt,
+                updatedAt
             };
         case USERS_INDEX_INVALIDATED:
             return {
                 ...state,
                 isFetching: false,
                 isValid: false,
-                updatedAt,
+                updatedAt
             };
         default:
             return state;

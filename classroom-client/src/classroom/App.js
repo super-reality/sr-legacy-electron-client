@@ -2,11 +2,11 @@ import React from "react"
 import {Switch, Route, NavLink} from "react-router-dom"
 import {connect} from "react-redux"
 import ProtectedRoute from "./components/ProtectedRoute";
+import Admin from "./views/admin/Admin";
 import Auth from "./views/auth/Auth";
+import {dismissAlert} from "./actions/alerts";
 import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
-import Users from "./views/users/Users";
-import {dismissAlert} from "./actions/alerts";
 
 const App = props => {
 
@@ -18,14 +18,13 @@ const App = props => {
 
     return (
         <div>
-            <h1><NavLink to="/">Classroom</NavLink></h1>
             <nav>
                 {
                     props.isAuthenticated
                         ? (
                             <ul className={styles.nav}>
-                                <li><NavLink to="/classes" activeClassName={styles.active}>classes</NavLink></li>
-                                <li><NavLink to="/users" activeClassName={styles.active}>users</NavLink></li>
+                                <li><NavLink exact to="/" activeClassName={styles.active}>classroom</NavLink></li>
+                                <li><NavLink to="/admin" activeClassName={styles.active}>admin</NavLink></li>
                                 <li><NavLink to="/auth" activeClassName={styles.active} onClick={onSignOutClick}>sign out</NavLink></li>
                             </ul>
                         )
@@ -36,31 +35,30 @@ const App = props => {
                         )
                 }
             </nav>
-            {
-                props.alerts.length > 0
-                ? (
-                    <ul>
-                        {props.alerts.map(alert => (
-                            <li key={alert.id} onClick={e => props.dismissAlert(alert.id)}>{alert.status}: {alert.message}</li>
-                        ))}
-                    </ul>
-                )
-                : null
-            }
             <Switch>
-                <ProtectedRoute path="/classes" authPath="/auth">
-                    <p>classes</p>
-                </ProtectedRoute>
-                <ProtectedRoute path="/users" authPath="/auth">
-                    <Users />
+                <ProtectedRoute path="/admin" authPath="/auth">
+                    <Admin />
                 </ProtectedRoute>
                 <Route path="/auth">
                     <Auth />
                 </Route>
                 <Route path="/">
-                    <p>home</p>
+                    <p>classroom</p>
                 </Route>
             </Switch>
+            {
+                props.alerts.length > 0
+                    ? (
+                        <div>
+                            <ul>
+                                {props.alerts.map(alert => (
+                                    <li key={alert.id} onClick={e => props.dismissAlert(alert.id)}>{alert.status}: {alert.message}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )
+                    : null
+            }
         </div>
     );
 
