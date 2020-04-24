@@ -13,6 +13,7 @@ const authenticateUser = token => new Promise((resolve, reject) => {
         jwtVerify(token, process.env.JWT_SECRET, {issuer, audience, maxAge})
             .then(result => result.sub)
             .then(userId => User.findById(userId))
+            .then(user => user ? Promise.resolve(user) : Promise.reject())
             .then(user => resolve(user))
             .catch(error => reject(error));
     }

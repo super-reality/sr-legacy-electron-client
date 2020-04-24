@@ -1,5 +1,5 @@
 import React from "react"
-import {Switch, Route, NavLink} from "react-router-dom"
+import {Switch, Route, NavLink, useHistory} from "react-router-dom"
 import {connect} from "react-redux"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./views/admin/Admin";
@@ -9,6 +9,8 @@ import {authInvalidated} from "./actions/auth";
 import styles from "./App.scss"
 
 const App = props => {
+
+    const history = useHistory();
 
     const onSignOutClick = event => {
         event.preventDefault();
@@ -36,12 +38,8 @@ const App = props => {
                 }
             </nav>
             <Switch>
-                <ProtectedRoute path="/admin" authPath="/auth">
-                    <Admin />
-                </ProtectedRoute>
-                <Route path="/auth">
-                    <Auth />
-                </Route>
+                <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />
+                <Route path="/auth" component={Auth} />
                 <Route path="/">
                     <p>classroom</p>
                 </Route>

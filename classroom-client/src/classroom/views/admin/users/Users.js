@@ -1,67 +1,37 @@
-import React, {Fragment, useEffect} from "react"
-import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
+import React, {Fragment} from "react"
+import {NavLink, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux"
-import {ALERT_STATUS_ERROR, receiveAlert} from "../../../actions/alerts";
-import {hydrate} from "../../../actions/users";
+import IndexUsers from "./IndexUsers";
 import styles from "./Users.scss"
+import EditUser from "./EditUser";
+import NewUser from "./NewUser";
+import ShowUser from "./ShowUser";
 
 const Users = props => {
 
-    const {path, url} = useRouteMatch();
-
-    useEffect(() => {
-        props
-            .hydrate()
-            .catch(error => props.receiveAlert(ALERT_STATUS_ERROR, error.message));
-    }, []);
+    const {path, url} = props.match;
 
     return (
-        <Switch>
-            <Route path={`${path}/`}>
-                {
-                    !props.isFetching
-                        ? props.users.users.length > 0
-                            ? (
-                                <table className={styles.index}>
-                                    <thead>
-                                        <tr>
-                                            <th>username</th>
-                                            <th>actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {
-                                        props.users.users.map(user => (
-                                            <tr key={user.id}>
-                                                <td>
-                                                    <Link to={`${url}/${user.id}`}>{user.username}</Link>
-                                                    &nbsp;
-                                                    {user.root ? <em>(root)</em> : null}
-                                                </td>
-                                                <td>
-                                                    <Fragment>
-                                                        <Link to={`${url}/${user.id}/edit`}>✏</Link>
-                                                        <Link to={`${url}/${user.id}`}>❌</Link>
-                                                    </Fragment>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    }
-                                    </tbody>
-                                </table>
-                            )
-                            : (
-                                <p>no users</p>
-                            )
-                        : <p>fetching users&#8230;</p>
-                }
-            </Route>
-        </Switch>
+        <Fragment>
+            <nav>
+                <ul className={styles.nav}>
+                    <li>users:</li>
+                    <li><NavLink exact to={url} activeClassName={styles.active}>index</NavLink></li>
+                    <li><NavLink to={`${url}/new`} activeClassName={styles.active}>new</NavLink></li>
+                </ul>
+            </nav>
+            <Switch>
+                <Route path={`${path}/new`} component={NewUser} />
+                <Route path={`${path}/:userId/edit`} component={EditUser} />
+                <Route path={`${path}/:userId`} component={ShowUser} />
+                <Route path={`${path}/`} component={IndexUsers} />
+            </Switch>
+        </Fragment>
     );
 
 };
 
-const mapStateToProps = state => ({users: state.users});
-const mapDispatchToProps = {hydrate, receiveAlert};
+const mapStateToProps = state => ({});
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users);

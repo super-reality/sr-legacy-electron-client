@@ -9,28 +9,23 @@ router.post("/new", (request, response) => {
     const {username, password} = request.body;
     User
         .findOne({username})
+        .then(user => user ? user : Promise.reject({status: 401}))
+        .then(user => user.username === username ? user : Promise.reject({status: 401}))
+        .then(user => user.passwordHash === hashSaltDigest(password, user.passwordSalt) ? user : Promise.reject({status: 401}))
         .then(user => {
-            if(user && user.username === username && user.passwordHash === hashSaltDigest(password, user.passwordSalt)) {
-                const token = jwt.sign(
-                    {},
-                    process.env.JWT_SECRET,
-                    {
-                        subject: user.id.toString(),
-                        issuer: process.env.JWT_ISSUER,
-                        audience: process.env.JWT_AUDIENCE,
-                        expiresIn: process.env.JWT_EXPIRATION
-                    }
-                );
-                response.send({token});
-            }
-            else {
-                response.sendStatus(401);
-            }
+            const token = jwt.sign(
+                {},
+                process.env.JWT_SECRET,
+                {
+                    subject: user.id,
+                    issuer: process.env.JWT_ISSUER,
+                    audience: process.env.JWT_AUDIENCE,
+                    expiresIn: process.env.JWT_EXPIRATION
+                }
+            );
+            response.send({token});
         })
-        .catch(error => {
-            console.error(error);
-            response.sendStatus(500);
-        });
+        .catch(error => response.sendStatus(error.status ? error.status : 500));
 });
 
 module.exports = router;

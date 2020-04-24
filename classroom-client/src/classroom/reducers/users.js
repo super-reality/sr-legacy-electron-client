@@ -1,8 +1,13 @@
-import {USERS_INDEX_FAILED, USERS_INDEX_INVALIDATED, USERS_INDEX_PENDING, USERS_INDEX_SUCCESSFUL} from "../actions/users";
+import {
+    USERS_REQUEST_FAILED,
+    USERS_REQUEST_PENDING,
+    USERS_RESOURCE_HYDRATED,
+    USERS_ITEM_CREATED,
+    USERS_ITEM_READ, USERS_ITEM_UPDATED, USERS_ITEM_DESTROYED
+} from "../actions/users";
 
 const initialState = {
-    isValid: false,
-    isFetching: false,
+    isPending: false,
     updatedAt: Date.now(),
     users: []
 };
@@ -10,35 +15,52 @@ const initialState = {
 export default (state = initialState, action) => {
     const updatedAt = Date.now();
     switch(action.type) {
-        case USERS_INDEX_PENDING:
+        case USERS_REQUEST_PENDING:
             return {
                 ...state,
-                isFetching: true,
-                isValid: false,
+                isPending: true,
                 updatedAt
             }
-        case USERS_INDEX_SUCCESSFUL:
-            const {users} = action.payload;
+        case USERS_REQUEST_FAILED:
             return {
                 ...state,
-                isFetching: false,
-                isValid: true,
+                isPending: false,
+                updatedAt
+            };
+        case USERS_RESOURCE_HYDRATED:
+            return {
+                ...state,
+                isPending: false,
                 updatedAt,
-                users
+                users: action.payload.users
             };
-        case USERS_INDEX_FAILED:
+        case USERS_ITEM_CREATED:
             return {
                 ...state,
-                isFetching: false,
-                isValid: false,
-                updatedAt
+                isPending: false,
+                updatedAt,
+                users: [...state.users, action.payload.user]
             };
-        case USERS_INDEX_INVALIDATED:
+        case USERS_ITEM_READ:
             return {
                 ...state,
-                isFetching: false,
-                isValid: false,
-                updatedAt
+                isPending: false,
+                updatedAt,
+                users: [...state.users.filter(user => user.id !== action.payload.user.id), action.payload.user]
+            };
+        case USERS_ITEM_UPDATED:
+            return {
+                ...state,
+                isPending: false,
+                updatedAt,
+                users: [...state.users.filter(user => user.id !== action.payload.user.id), action.payload.user]
+            };
+        case USERS_ITEM_DESTROYED:
+            return {
+                ...state,
+                isPending: false,
+                updatedAt,
+                users: state.users.filter(user => user.id !== action.payload.user.id)
             };
         default:
             return state;

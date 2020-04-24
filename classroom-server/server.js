@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
+const auth = require("./middleware/auth");
 
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
@@ -13,7 +14,7 @@ const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
 app.use("/api/v1/auth", require("./routes/api/v1/auth"));
-app.use("/api/v1/users", require("./routes/api/v1/users"));
+app.use("/api/v1/users", auth(), require("./routes/api/v1/users"));
 
 database.once("open", () => {
     console.log("database connected");
@@ -47,4 +48,4 @@ database.once("open", () => {
 
 database.on("error", () => console.error("database connection error"));
 
-mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
