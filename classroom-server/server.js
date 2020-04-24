@@ -12,8 +12,8 @@ const User = require("./models/user");
 const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
-app.use("/auth", require("./routes/auth"));
-app.use("/users", require("./routes/users"));
+app.use("/api/v1/auth", require("./routes/api/v1/auth"));
+app.use("/api/v1/users", require("./routes/api/v1/users"));
 
 database.once("open", () => {
     console.log("database connected");

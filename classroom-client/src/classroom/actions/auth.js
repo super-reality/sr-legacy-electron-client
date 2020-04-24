@@ -15,7 +15,7 @@ export const authInvalidated = () => ({type: AUTH_INVALIDATED});
 export const authenticate = (username, password) => dispatch => {
     dispatch(authPending());
     return axios
-        .post("http://localhost:3000/auth/new", {username, password}, {timeout: 3000})
+        .post("http://localhost:3000/api/v1/auth/new", {username, password}, {timeout: 3000})
         .then(response => {
             const {token} = response.data;
             dispatch(authSuccessful(token));

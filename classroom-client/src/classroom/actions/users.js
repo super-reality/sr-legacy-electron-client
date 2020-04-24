@@ -16,7 +16,7 @@ export const usersIndexInvalidated = () => ({type: USERS_INDEX_INVALIDATED});
 export const hydrate = () => (dispatch, getState) => {
     dispatch(usersIndexPending());
     return axios
-        .get("http://localhost:3000/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+        .get("http://localhost:3000/api/v1/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
         .then(response => {
             const {users} = response.data;
             dispatch(usersIndexSuccessful(users));
