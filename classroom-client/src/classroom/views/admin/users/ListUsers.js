@@ -4,9 +4,9 @@ import {connect} from "react-redux";
 import classNames from "classnames";
 import {ALERT_STATUS_ERROR, ALERT_STATUS_SUCCESS, receiveAlert} from "../../../actions/alerts";
 import {destroyUser, hydrateUsers} from "../../../actions/users";
-import styles from "./IndexUsers.scss";
+import styles from "./ListUsers.scss";
 
-const IndexUsers = props => {
+const ListUsers = props => {
 
     const {url} = props.match;
 
@@ -66,4 +66,4 @@ const IndexUsers = props => {
 const mapStateToProps = state => ({isPending: state.users.isPending, users: state.users.users});
 const mapDispatchToProps = {destroyUser, hydrateUsers, receiveAlert};
 
-export default connect(mapStateToProps, mapDispatchToProps)(IndexUsers);
+export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);

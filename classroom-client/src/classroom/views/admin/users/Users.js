@@ -1,7 +1,7 @@
 import React, {Fragment} from "react"
 import {NavLink, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux"
-import IndexUsers from "./IndexUsers";
+import ListUsers from "./ListUsers";
 import styles from "./Users.scss"
 import EditUser from "./EditUser";
 import NewUser from "./NewUser";
@@ -24,7 +24,7 @@ const Users = props => {
                 <Route path={`${path}/new`} component={NewUser} />
                 <Route path={`${path}/:userId/edit`} component={EditUser} />
                 <Route path={`${path}/:userId`} component={ShowUser} />
-                <Route path={`${path}/`} component={IndexUsers} />
+                <Route path={`${path}/`} component={ListUsers} />
             </Switch>
         </Fragment>
     );
