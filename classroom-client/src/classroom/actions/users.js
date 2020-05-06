@@ -79,7 +79,7 @@ export const readUser = userId => (dispatch, getState) => {
 export const updateUser = (userId, data) => (dispatch, getState) => {
     dispatch(usersRequestPending());
     return axios
-        .put(`http://localhost:3000/api/v1/users/${userId}`, data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+        .patch(`http://localhost:3000/api/v1/users/${userId}`, data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
         .then(response => {
             const {user} = response.data;
             dispatch(usersItemUpdated(user));

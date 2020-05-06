@@ -44,7 +44,7 @@ router.route("/:userId")
             .then(user => response.send({user}))
             .catch(error => response.sendStatus(error.status ? error.status : 500));
     })
-    .put((request, response) => {
+    .patch((request, response) => {
         const {userId} = request.params;
         User
             .findById(userId)
