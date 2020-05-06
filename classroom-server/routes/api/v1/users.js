@@ -77,10 +77,7 @@ router.route("/:userId")
             .then(user => user.save())
             .then(user => ({id: user.id, root: user.root, username: user.username}))
             .then(user => response.send({user}))
-            .catch(error => {
-                console.error(error);
-                response.sendStatus(error.status ? error.status : 500)
-            });
+            .catch(error => response.sendStatus(error.status ? error.status : 500));
     })
     .delete((request, response) => {
         const {userId} = request.params;
@@ -89,7 +86,6 @@ router.route("/:userId")
             .then(user => user ? user : Promise.reject({status: 404}))
             .then(user => !user.root ? user : Promise.reject({status: 403}))
             .then(user => user.remove())
-            .then(user => user.save())
             .then(user => ({id: user.id, root: user.root, username: user.username}))
             .then(user => response.send({user}))
             .catch(error => response.sendStatus(error.status ? error.status : 500));
