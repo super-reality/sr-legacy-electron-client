@@ -14,6 +14,7 @@ const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
 app.use("/api/v1/auth", require("./routes/api/v1/auth"));
+app.use("/api/v1/classrooms", auth(), require("./routes/api/v1/classrooms"));
 app.use("/api/v1/users", auth(), require("./routes/api/v1/users"));
 
 database.once("open", () => {

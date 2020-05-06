@@ -2,6 +2,7 @@ import React, {Fragment} from "react";
 import {NavLink, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux";
 import styles from "./Admin.scss";
+import Classrooms from "./classrooms/Classrooms";
 import Users from "./users/Users";
 
 const Admin = props => {
@@ -14,10 +15,12 @@ const Admin = props => {
                 <ul className={styles.nav}>
                     <li>admin:</li>
                     <li><NavLink exact to={url} activeClassName={styles.active}>dashboard</NavLink></li>
+                    <li><NavLink to={`${url}/classrooms`} activeClassName={styles.active}>classrooms</NavLink></li>
                     <li><NavLink to={`${url}/users`} activeClassName={styles.active}>users</NavLink></li>
                 </ul>
             </nav>
             <Switch>
+                <Route path={`${path}/classrooms`} component={Classrooms} />
                 <Route path={`${path}/users`} component={Users} />
                 <Route path={`${path}/`}>
                     <p>dashboard</p>
