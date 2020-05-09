@@ -1,11 +1,11 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {Switch, Route, NavLink, useHistory} from "react-router-dom"
 import {connect} from "react-redux"
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./views/admin/Admin";
 import Auth from "./views/auth/Auth";
-import {dismissAlert} from "./actions/alerts";
-import {authInvalidated} from "./actions/auth";
+import {ALERT_STATUS_ERROR, dismissAlert, receiveAlert} from "./actions/alerts";
+import {authenticateFromLocalStorage, signOut} from "./actions/auth";
 import styles from "./App.scss"
 
 const App = props => {
@@ -17,6 +17,12 @@ const App = props => {
         props.signOut()
         history.push("/auth");
     };
+
+    useEffect(() => {
+        props
+            .authenticateFromLocalStorage()
+            .catch(error => error ? props.receiveAlert(ALERT_STATUS_ERROR, error.message) : undefined);
+    }, []);
 
     return (
         <div>
@@ -63,6 +69,6 @@ const App = props => {
 };
 
 const mapStateToProps = state => ({alerts: state.alerts, isAuthenticated: state.auth.isValid});
-const mapDispatchToProps = {dismissAlert, signOut: authInvalidated};
+const mapDispatchToProps = {authenticateFromLocalStorage, dismissAlert, receiveAlert, signOut};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

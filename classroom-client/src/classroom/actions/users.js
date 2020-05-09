@@ -1,5 +1,5 @@
 import axios from "axios"
-import {authInvalidated} from "./auth";
+import {signOut} from "./auth";
 
 export const USERS_REQUEST_PENDING = "USERS_REQUEST_PENDING";
 export const usersRequestPending = () => ({type: USERS_REQUEST_PENDING});
@@ -34,7 +34,7 @@ export const hydrateUsers = () => (dispatch, getState) => {
         .catch(error => {
             dispatch(usersRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -52,7 +52,7 @@ export const createUser = data => (dispatch, getState) => {
         .catch(error => {
             dispatch(usersRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -70,7 +70,7 @@ export const readUser = userId => (dispatch, getState) => {
         .catch(error => {
             dispatch(usersRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -88,7 +88,7 @@ export const updateUser = (userId, data) => (dispatch, getState) => {
         .catch(error => {
             dispatch(usersRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -106,7 +106,7 @@ export const destroyUser = userId => (dispatch, getState) => {
         .catch(error => {
             dispatch(usersRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });

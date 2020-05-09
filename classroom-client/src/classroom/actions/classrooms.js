@@ -1,5 +1,5 @@
 import axios from "axios"
-import {authInvalidated} from "./auth";
+import {signOut} from "./auth";
 
 export const CLASSROOMS_REQUEST_PENDING = "CLASSROOMS_REQUEST_PENDING";
 export const classroomsRequestPending = () => ({type: CLASSROOMS_REQUEST_PENDING});
@@ -34,7 +34,7 @@ export const hydrateClassrooms = () => (dispatch, getState) => {
         .catch(error => {
             dispatch(classroomsRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -52,7 +52,7 @@ export const createClassroom = data => (dispatch, getState) => {
         .catch(error => {
             dispatch(classroomsRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -70,7 +70,7 @@ export const readClassroom = classroomId => (dispatch, getState) => {
         .catch(error => {
             dispatch(classroomsRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -88,7 +88,7 @@ export const updateClassroom = (classroomId, data) => (dispatch, getState) => {
         .catch(error => {
             dispatch(classroomsRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });
@@ -106,7 +106,7 @@ export const destroyClassroom = classroomId => (dispatch, getState) => {
         .catch(error => {
             dispatch(classroomsRequestFailed());
             if(error.response.status === 401) {
-                dispatch(authInvalidated());
+                dispatch(signOut());
             }
             return Promise.reject(error);
         });

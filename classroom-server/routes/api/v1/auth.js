@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const auth = require("../../../middleware/auth");
 const User = require("../../../models/user");
 const {hashSaltDigest} = require("../../../utilities/hashing");
 
@@ -26,6 +27,10 @@ router.post("/new", (request, response) => {
             response.send({token});
         })
         .catch(error => response.sendStatus(error.status ? error.status : 500));
+});
+
+router.post("/verify", auth(), (request, response) => {
+    response.sendStatus(200);
 });
 
 module.exports = router;

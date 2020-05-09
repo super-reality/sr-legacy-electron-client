@@ -39,6 +39,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
+    "localforage": "^1.7.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",

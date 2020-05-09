@@ -1,4 +1,4 @@
-import React, {useRef} from "react"
+import React, {useEffect, useRef} from "react"
 import {connect} from "react-redux"
 import {authenticate} from "../../actions/auth";
 import {ALERT_STATUS_ERROR, receiveAlert} from "../../actions/alerts";
@@ -11,13 +11,21 @@ const Auth = props => {
 
     const focusField = fieldRef => event => fieldRef.current.focus();
 
+    const redirect = () => props.history.replace(props.location.state ? props.location.state.redirect : "/");
+
     const onFormSubmit = event => {
         event.preventDefault();
         props
             .authenticate(usernameField.current.value, passwordField.current.value)
-            .then(() => props.history.replace(props.location.state ? props.location.state.redirect : "/"))
+            .then(() => redirect())
             .catch(error => props.receiveAlert(ALERT_STATUS_ERROR, error.message));
     };
+
+    useEffect(() => {
+        if(props.isAuthenticated) {
+            redirect();
+        }
+    });
 
     return (
         <form onSubmit={onFormSubmit}>
