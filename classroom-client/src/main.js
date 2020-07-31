@@ -18,7 +18,10 @@ function createWindow() {
         slashes: false,
         pathname: path.resolve(__dirname, "..", "build", "index.html")
     }));
-    browserWindow.once("ready-to-show", () => browserWindow.show());
+    browserWindow.once("ready-to-show", () => {
+        browserWindow.show();
+        browserWindow.webContents.openDevTools();
+    });
 }
 
 app.whenReady().then(createWindow);
