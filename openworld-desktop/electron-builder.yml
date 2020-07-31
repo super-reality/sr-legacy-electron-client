@@ -1,5 +1,5 @@
-appId: "com.gamegen.classroom-client"
-productName: "Game Gen Classroom"
+appId: "com.gamegen.openworld-desktop"
+productName: "Open World Desktop"
 copyright: "Copyright © 2020 Game Gen. All rights reserved."
 mac:
   category: "public.app-category.education"
