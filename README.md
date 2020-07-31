@@ -12,6 +12,19 @@
 
 4. `npm run serve`
 
+#### Environment variables
+
+Stored in `/openworld-server/.env`, will not be committed.
+
+- `ROOT_USERNAME`: bootstrapping username, **disable account after admin made**
+- `ROOT_PASSWORD`: bootstrapping password, **disable account after admin made**
+- `PORT`: server listening port
+- `MONGO_URL`: mongodb url, probably `mongodb://localhost:27017` in docker
+- `JWT_ISSUER`: issuer of the jwt
+- `JWT_AUDIENCE`: intended audience for the jwt
+- `JWT_EXPIRATION`: expiration date for the jwt
+- `JWT_SECRET`: secret for jwt hashing
+
 ### Desktop dev setup (requires server to be running)
 
 1. `cd openworld-desktop`
