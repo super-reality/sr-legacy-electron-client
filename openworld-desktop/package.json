@@ -25,6 +25,7 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.1",
+    "css-loader": "^4.2.0",
     "electron": "^9.1.2",
     "electron-builder": "^22.4.1",
     "electron-is-dev": "^1.1.0",
@@ -34,11 +35,13 @@
     "postcss-modules": "^1.5.0",
     "redux-devtools": "^3.5.0",
     "rimraf": "^3.0.2",
+    "style-loader": "^1.2.1",
     "wait-on": "^4.0.1"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "latest",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "localforage": "^1.7.3",

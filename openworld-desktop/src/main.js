@@ -4,10 +4,10 @@ const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
     let browserWindow = new BrowserWindow({
-        width: 1024,
-        height: 768,
-        minWidth: 1024,
-        minHeight: 768,
+        width: 424,
+        height: 668,
+        minWidth: 424,
+        minHeight: 668,
         show: false,
         webPreferences: {
             nodeIntegration: true
@@ -20,8 +20,9 @@ function createWindow() {
     }));
     browserWindow.once("ready-to-show", () => {
         browserWindow.show();
-        browserWindow.webContents.openDevTools();
+        // browserWindow.webContents.openDevTools();
     });
+    browserWindow.setMenu(null);
 }
 
 app.whenReady().then(createWindow);
