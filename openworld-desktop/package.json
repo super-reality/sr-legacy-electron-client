@@ -37,6 +37,8 @@
     "wait-on": "^4.0.1"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "localforage": "^1.7.3",
