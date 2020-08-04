@@ -2,7 +2,7 @@ import React, {useEffect, useRef} from "react"
 import {connect} from "react-redux"
 import {authenticate} from "../../actions/auth";
 import {ALERT_STATUS_ERROR, receiveAlert} from "../../actions/alerts";
-import styles from "./Auth.scss"
+import styles from "./Auth.module.scss"
 
 const Auth = props => {
 
