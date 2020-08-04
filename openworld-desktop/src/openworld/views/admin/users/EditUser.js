@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {ALERT_STATUS_ERROR, ALERT_STATUS_SUCCESS, receiveAlert} from "../../../actions/alerts";
 import {destroyUser, readUser, updateUser} from "../../../actions/users";
-import styles from "./EditUser.scss";
+import styles from "./EditUser.module.scss";
 
 const EditUser = props => {
 

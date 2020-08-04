@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import classNames from "classnames";
 import {ALERT_STATUS_ERROR, ALERT_STATUS_SUCCESS, receiveAlert} from "../../../actions/alerts";
 import {destroyUser, hydrateUsers} from "../../../actions/users";
-import styles from "./ListUsers.scss";
+import styles from "./ListUsers.module.scss";
 
 const ListUsers = props => {
 

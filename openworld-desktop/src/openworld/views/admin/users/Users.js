@@ -2,7 +2,7 @@ import React, {Fragment} from "react"
 import {NavLink, Route, Switch} from "react-router-dom";
 import {connect} from "react-redux"
 import ListUsers from "./ListUsers";
-import styles from "./Users.scss"
+import styles from "./Users.module.scss"
 import EditUser from "./EditUser";
 import NewUser from "./NewUser";
 import ShowUser from "./ShowUser";

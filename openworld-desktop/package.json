@@ -12,9 +12,9 @@
     "electron:dist": "electron-builder",
     "electron:start": "wait-on build/index.html && electron src/main.js",
     "install:wsl": "npm install && npm uninstall electron && export npm_config_platform=win32 && npm install --save-dev electron && unset npm_config_platform",
-    "parcel:build": "parcel build src/classroom/index.html --target electron --out-dir build --public-url ./",
+    "parcel:build": "parcel build src/openworld/index.html --target electron --out-dir build --public-url ./",
     "parcel:clean": "rimraf build",
-    "parcel:start": "parcel src/classroom/index.html --no-hmr --target electron --out-dir build --public-url ./",
+    "parcel:start": "parcel src/openworld/index.html --no-hmr --target electron --out-dir build --public-url ./",
     "start": "run-p parcel:start electron:start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

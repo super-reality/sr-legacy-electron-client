@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import {connect} from "react-redux";
 import {ALERT_STATUS_ERROR, receiveAlert} from "../../../actions/alerts";
 import {createUser} from "../../../actions/users";
-import styles from "./NewUser.scss";
+import styles from "./NewUser.module.scss";
 
 const NewUser = props => {
 
