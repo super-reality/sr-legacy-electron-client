@@ -20,7 +20,7 @@ export const authenticate = (username, password) => dispatch => {
         .then(response => {
             const {token} = response.data;
             return localForage
-                .setItem("com.gamegen.classroom.auth.token", token)
+                .setItem("com.gamegen.openworld.auth.token", token)
                 .then(value => Promise.resolve(value))
                 .catch(error => Promise.reject(error));
         })
@@ -37,7 +37,7 @@ export const authenticate = (username, password) => dispatch => {
 export const authenticateFromLocalStorage = () => dispatch => {
     dispatch(authPending());
     return localForage
-        .getItem("com.gamegen.classroom.auth.token")
+        .getItem("com.gamegen.openworld.auth.token")
         .then(token => {
             if(token) {
                 return axios
@@ -60,5 +60,5 @@ export const authenticateFromLocalStorage = () => dispatch => {
 
 export const signOut = () => dispatch => {
     dispatch(authInvalidated());
-    return localForage.removeItem("com.gamegen.classroom.auth.token")
+    return localForage.removeItem("com.gamegen.openworld.auth.token")
 }

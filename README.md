@@ -22,8 +22,21 @@ Stored in `/openworld-server/.env`, will not be committed.
 - `MONGO_URL`: mongodb url, probably `mongodb://localhost:27017` in docker
 - `JWT_ISSUER`: issuer of the jwt
 - `JWT_AUDIENCE`: intended audience for the jwt
-- `JWT_EXPIRATION`: expiration date for the jwt
+- `JWT_EXPIRATION`: expiration offset for the jwt
 - `JWT_SECRET`: secret for jwt hashing
+
+Example .env file (FOR DEVELOPMENT ONLY)
+
+```
+ROOT_USERNAME=root
+ROOT_PASSWORD=password
+PORT=8000
+MONGO_URL=mongodb://localhost:27017
+JWT_ISSUER=com.gamegen.openworld-server
+JWT_AUDIENCE=openworld-server
+JWT_EXPIRATION=7d
+JWT_SECRET=dont-use-this-secret-in-production
+```
 
 ### Desktop dev setup (requires server to be running)
 
