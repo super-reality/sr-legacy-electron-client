@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
-import styles from "./ShowUser.scss";
+import styles from "./ShowUser.module.scss";
 import {destroyUser, readUser} from "../../../actions/users";
 import {ALERT_STATUS_ERROR, ALERT_STATUS_SUCCESS, receiveAlert} from "../../../actions/alerts";
 import {Link} from "react-router-dom";
