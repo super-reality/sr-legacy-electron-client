@@ -1,6 +1,6 @@
-const path = require("path");
-const url = require("url");
-const { app, BrowserWindow } = require("electron");
+import path from "path";
+import url from "url";
+import { app, BrowserWindow } from "electron";
 
 function createWindow() {
     let browserWindow = new BrowserWindow({
@@ -16,7 +16,7 @@ function createWindow() {
     browserWindow.loadURL(url.format({
         protocol: "file",
         slashes: false,
-        pathname: path.resolve(__dirname, "..", "build", "index.html")
+        pathname: path.resolve(__dirname, "renderer", "index.html")
     }));
     browserWindow.once("ready-to-show", () => {
         browserWindow.show();
