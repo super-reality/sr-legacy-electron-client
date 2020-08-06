@@ -1,0 +1,48 @@
+{
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "rules": {
+    "allowEmptyCatch": 0,
+    "no-cond-assign": 0,
+    "no-console": "off",
+    "no-redeclare": "warn",
+    "no-duplicate-imports": "warn",
+    "no-undef": "error",
+    "no-global-assign": "warn",
+    "no-empty": "warn",
+    "complexity": ["warn", 40],
+    "max-statements": ["warn", 100],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import",
+    "react-hooks",
+    "@typescript-eslint"
+  ]
+}
