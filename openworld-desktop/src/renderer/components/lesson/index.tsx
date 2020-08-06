@@ -9,8 +9,7 @@ interface LessonProps {
   data: LessonData;
 }
 
-export default function Lesson(props: LessonProps): JSX.Element {
-  const { } = props;
+export default function Lesson(_props: LessonProps): JSX.Element {
 
   return (
     <div className="lesson-container">
