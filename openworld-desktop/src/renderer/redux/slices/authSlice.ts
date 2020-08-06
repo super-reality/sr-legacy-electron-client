@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
-  isValid: false,
+  isValid: true,
   isPending: false,
   updatedAt: Date.now(),
   token: null as string | null,

@@ -4,15 +4,15 @@ import { app, BrowserWindow } from "electron";
 
 function createWindow() {
   const browserWindow = new BrowserWindow({
+    backgroundColor: "#000",
     width: 1024,
     height: 768,
-    minWidth: 1024,
-    minHeight: 768,
     show: false,
     webPreferences: {
       nodeIntegration: true,
     },
   });
+
   browserWindow.loadURL(
     url.format({
       protocol: "file",
@@ -20,8 +20,10 @@ function createWindow() {
       pathname: path.resolve(__dirname, "renderer", "index.html"),
     })
   );
+
   browserWindow.once("ready-to-show", () => {
     browserWindow.show();
+    browserWindow.removeMenu();
     browserWindow.webContents.openDevTools();
   });
 }

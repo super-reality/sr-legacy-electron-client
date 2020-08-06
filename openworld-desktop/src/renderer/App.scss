@@ -1,23 +1,20 @@
-
-$--fontsize1:44;
-$--fontsize2:34;
-$--fontsize3:24;
-$--fontsize4:14;
-$--fontsize5:12;
-$--fontsize6:10;
-$--fonttabcolor:white;
-$--fonttabactivecolor:lightblue;
-$--backgroundcolor:#242526;
-$--backgroundcolorsub1:#3a3b3c;
-$--backgroundcolorsub2:#9c9c9c;
-$--tabtextcolor:#76787b;
-$--tabitemtextcolor:#d9dae0;
+:root {
+  --color-background: #242526;
+  --color-background-hover: #464647;
+  --color-text: #A8ABAF;
+  --color-separator:#A8ABAF;
+}
 
 :global {
   body {
-    background-color: #fff;
+    margin: 0px;
+    background-color: var(--color-background);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
+}
+
+a:focus, a:hover, a:visited, a:link, a:active {
+  text-decoration: none;
 }
 
 .nav {
@@ -33,4 +30,10 @@ $--tabitemtextcolor:#d9dae0;
 
 .active {
   font-weight: bold;
+}
+
+.mainWrapper {
+  color: var(--color-text);
+  width: 100%;
+  height: 100%;
 }
