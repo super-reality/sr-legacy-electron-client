@@ -5,7 +5,7 @@
     // Target latest version of ECMAScript.
     "checkJs": false,
     "noEmit": true,
-    "target": "es2020",
+    "target": "es2018",
     // Search under node_modules for non-relative imports.
     "moduleResolution": "node",
     // Process & infer types from .js files.
@@ -20,7 +20,7 @@
     "noImplicitAny": false,
     "types": ["react", "jest"],
     "jsx": "react",
-    "lib": ["dom", "es2020.string"]
+    "lib": ["dom", "ES2020.String"]
   },
   "exclude": [
     "node_modules",

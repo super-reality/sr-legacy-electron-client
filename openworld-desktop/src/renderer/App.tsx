@@ -1,40 +1,61 @@
-import React, { useEffect } from "react";
+import React, { useCallback } from "react";
 import { Switch, Route, NavLink, useHistory } from "react-router-dom";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./views/admin/Admin";
 import Auth from "./views/auth/Auth";
-import {
-  ALERT_STATUS_ERROR,
-  dismissAlert,
-  receiveAlert,
-} from "./actions/alerts";
-import { authenticateFromLocalStorage, signOut } from "./actions/auth";
 import styles from "./App.scss";
+import { AppState } from "./redux/stores/renderer";
+import { reduxAction } from "./redux/reduxAction";
+import localForage from "localforage";
+import Axios from "axios";
 
-const App = (props) => {
+export default function App(): JSX.Element {
+  const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  const dispatch = useDispatch();
   const history = useHistory();
+
+  const _authenticateFromLocalStorage = useCallback(() => {
+    reduxAction(dispatch, { type: "AUTH_PENDING", arg: false });
+    return localForage
+      .getItem<string>("com.gamegen.classroom.auth.token")
+      .then((token) => {
+        if (token) {
+          return Axios.post("http://localhost:3000/api/v1/auth/verify", null, {
+            headers: { Authorization: `Bearer ${token}` },
+            timeout: 3000,
+          })
+            .then((_response) => Promise.resolve(token))
+            .catch((error) => Promise.reject(error));
+        } else {
+          return Promise.reject();
+        }
+      })
+      .then((token) => {
+        reduxAction(dispatch, { type: "AUTH_SUCCESSFUL", arg: token });
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        reduxAction(dispatch, { type: "AUTH_FAILED", arg: false });
+        return Promise.reject(error);
+      });
+  }, [dispatch]);
+
+  const signOut = useCallback(() => {
+    reduxAction(dispatch, { type: "AUTH_INVALIDATED", arg: false });
+    return localForage.removeItem("com.gamegen.classroom.auth.token");
+  }, [dispatch]);
 
   const onSignOutClick = (event) => {
     event.preventDefault();
-    props.signOut();
+    signOut();
     history.push("/auth");
   };
-
-  useEffect(() => {
-    props
-      .authenticateFromLocalStorage()
-      .catch((error) =>
-        error
-          ? props.receiveAlert(ALERT_STATUS_ERROR, error.message)
-          : undefined
-      );
-  }, []);
 
   return (
     <div>
       <nav>
-        {props.isAuthenticated ? (
+        {isAuthenticated ? (
           <ul className={styles.nav}>
             <li>
               <NavLink exact to="/" activeClassName={styles.active}>
@@ -73,30 +94,6 @@ const App = (props) => {
           <p>classroom</p>
         </Route>
       </Switch>
-      {props.alerts.length > 0 ? (
-        <div>
-          <ul>
-            {props.alerts.map((alert) => (
-              <li key={alert.id} onClick={(e) => props.dismissAlert(alert.id)}>
-                {alert.status}: {alert.message}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
     </div>
   );
-};
-
-const mapStateToProps = (state) => ({
-  alerts: state.alerts,
-  isAuthenticated: state.auth.isValid,
-});
-const mapDispatchToProps = {
-  authenticateFromLocalStorage,
-  dismissAlert,
-  receiveAlert,
-  signOut,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+}

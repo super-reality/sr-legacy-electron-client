@@ -59,6 +59,11 @@ let common_config = {
         }
       },
       {
+        test: /\.(js|jsx|ts|tsx)$/,
+        loader: "babel-loader",
+        exclude: /(node_modules)/,
+      },
+      {
         test: /\.(woff2|ttf|woff|eot)$/,
         loader: "file-loader",
       },

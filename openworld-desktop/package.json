@@ -26,9 +26,14 @@
   "author": "Game Gen <info@gamegen.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/preset-react": "^7.9.1",
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-do-expressions": "^7.10.4",
+    "@babel/plugin-transform-destructuring": "^7.10.4",
+    "@babel/plugin-transform-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
     "@svgr/webpack": "^5.4.0",
     "@teamsupercell/typings-for-css-modules-loader": "^2.2.1",
     "@types/electron": "^1.6.10",
@@ -40,6 +45,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
+    "babel-loader": "^8.1.0",
     "css-loader": "^4.2.0",
     "electron": "^9.1.2",
     "electron-builder": "^22.4.1",
@@ -69,6 +75,7 @@
     "webpack-merge": "^5.1.1"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "electron-devtools-installer": "^3.1.1",
