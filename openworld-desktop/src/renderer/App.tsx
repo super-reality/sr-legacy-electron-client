@@ -55,7 +55,7 @@ export default function App(): JSX.Element {
   */
 
   return (
-    <div>
+    <>
       <TopNav />
       {
       /*
@@ -95,11 +95,13 @@ export default function App(): JSX.Element {
         </nav>
         */
       }
-      <Switch>
-        <Route path="/auth" component={Auth} />
-        <Route path="/teach" component={Teach} />
-      </Switch>
-    </div>
+      <div className="content">
+        <Switch>
+          <Route path="/auth" component={Auth} />
+          <Route path="/teach" component={Teach} />
+        </Switch>
+      </div>
+    </>
   );
 }
 // <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />

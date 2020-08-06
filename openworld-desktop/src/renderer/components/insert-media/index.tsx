@@ -1,4 +1,6 @@
 import React, { CSSProperties } from "react";
+import { ReactComponent as Add } from "../../../assets/svg/add.svg";
+
 import "./index.scss";
 
 interface InsertMediaProps {
@@ -11,7 +13,7 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
 
   return (
     <div className="insert-media-container" style={{...style}} onClick={callback}>
-      <div className="insert-media-icon" />
+      <Add style={{margin: "auto"}} fill="var(--color-text)" width="30px" height="30px" />
     </div>
   );
 }

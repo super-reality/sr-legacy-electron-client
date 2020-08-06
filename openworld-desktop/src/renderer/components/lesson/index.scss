@@ -1,3 +1,9 @@
+.inner-container {
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 16px;
+}
+
 .lesson-container {
   border-radius: 8px;
   background-color: var(--color-section);
@@ -25,4 +31,11 @@
 .lesson-subtitle {
   font-size: 12px;
   margin: 2px 0;
+}
+
+.container-with-desc {
+  font-size: 14px;
+  line-height: 24px;
+  text-align: left;
+  width: -webkit-fill-available;
 }

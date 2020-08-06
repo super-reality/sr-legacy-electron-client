@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from "react";
-import "./index.scss";
-import Flex from "../../flex";
+import "../lesson/index.scss";
+import Flex from "../flex";
 
 export default function PlaceAuthoring(): JSX.Element {
   const [title, setTitle] = useState("");
@@ -19,7 +19,7 @@ export default function PlaceAuthoring(): JSX.Element {
   return (
     <div className="inner-container">
       <Flex>
-        <div>
+        <div className="container-with-desc">
           <div>Collection</div>
           <input
             placeholder="Title"
@@ -30,7 +30,7 @@ export default function PlaceAuthoring(): JSX.Element {
         </div>
       </Flex>
       <Flex>
-        <div>
+        <div className="container-with-desc">
           <div>Subject</div>
           <input
             placeholder="Title"
@@ -41,7 +41,7 @@ export default function PlaceAuthoring(): JSX.Element {
         </div>
       </Flex>
       <Flex>
-        <div>
+        <div className="container-with-desc">
           <div>Parent Lesson (optional)</div>
           <input
             placeholder="Title"

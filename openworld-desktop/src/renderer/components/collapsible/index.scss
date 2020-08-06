@@ -1,5 +1,6 @@
 .collapsible-box {
   cursor: pointer;
+  display: flex;
   height: 24px;
   margin: 12px 0;
   padding: 0 12px;
@@ -14,7 +15,17 @@
   }
 }
 
+.icon-collapse {
+  -webkit-transition: all .2s ease-in-out;
+  transform: rotate(-90deg);
+
+  &.open {
+    transform: rotate(0deg);
+  }
+}
+
 .collapsible-content {
+  -webkit-transition: all .2s ease-in-out;
   height: 0px;
   overflow: hidden;
 

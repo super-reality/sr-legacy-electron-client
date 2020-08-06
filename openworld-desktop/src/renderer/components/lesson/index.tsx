@@ -1,9 +1,9 @@
 import React from 'react';
 import "./index.scss";
 import { LessonData } from '../../../types/teach';
-import DescAuthoring from "./desc-authoring";
+import DescAuthoring from "../authoring-desc";
 import Collapsible from '../collapsible';
-import PlaceAuthoring from './place-authoring';
+import PlaceAuthoring from '../authoring-place';
 
 interface LessonProps {
   data: LessonData;
