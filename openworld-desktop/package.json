@@ -10,7 +10,7 @@
     "electron:build": "electron-builder --dir",
     "electron:clean": "rimraf dist",
     "electron:dist": "electron-builder",
-    "electron:start": "wait-on build/index.html && electron src/main.js",
+    "electron:start": "electron .",
     "install:wsl": "npm install && npm uninstall electron && export npm_config_platform=win32 && npm install --save-dev electron && unset npm_config_platform",
     "parcel:build": "parcel build src/classroom/index.html --target electron --out-dir build --public-url ./",
     "parcel:clean": "rimraf build",
@@ -18,9 +18,9 @@
     "start": "run-p parcel:start electron:start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack:clean": "rimraf lib",
-    "webpack:all": "webpack --config webpack.dev.js",
-    "webpack:main": "webpack --config webpack.dev.main.js",
-    "webpack:renderer": "webpack --/webpack/config webpack.dev.renderer.js"
+    "webpack:all": "webpack --config webpack/webpack.dev.js && npm run electron:start",
+    "webpack:main": "webpack --config webpack/webpack.dev.main.js && npm run electron:start",
+    "webpack:renderer": "webpack --config webpack/webpack.dev.renderer.js && npm run electron:start"
   },
   "keywords": [],
   "author": "Game Gen <info@gamegen.com>",
