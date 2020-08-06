@@ -37,9 +37,15 @@
     ]
   },
   "parser": "babel-eslint",
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint",
+    "prettier/react"
+  ],
   "plugins": [
     "react",
+    "jest",
     "jsx-a11y",
     "import",
     "react-hooks",
