@@ -24,8 +24,9 @@ export const usersItemDestroyed = user => ({type: USERS_ITEM_DESTROYED, payload:
 
 export const hydrateUsers = () => (dispatch, getState) => {
     dispatch(usersRequestPending());
-    return axios
-        .get("http://localhost:3000/api/v1/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    // return axios
+    //     .get("http://localhost:3000/api/v1/users", {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    return new Promise((resolve, reject) => resolve(getState().users))
         .then(response => {
             const {users} = response.data;
             dispatch(usersResourceHydrated(users));
@@ -42,8 +43,9 @@ export const hydrateUsers = () => (dispatch, getState) => {
 
 export const createUser = data => (dispatch, getState) => {
     dispatch(usersRequestPending());
-    return axios
-        .post("http://localhost:3000/api/v1/users", data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    // return axios
+    //     .post("http://localhost:3000/api/v1/users", data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    return new Promise((resolve, reject) => resolve({data}))
         .then(response => {
             const {user} = response.data;
             dispatch(usersItemCreated(user));
@@ -60,8 +62,9 @@ export const createUser = data => (dispatch, getState) => {
 
 export const readUser = userId => (dispatch, getState) => {
     dispatch(usersRequestPending());
-    return axios
-        .get(`http://localhost:3000/api/v1/users/${userId}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    // return axios
+    //     .get(`http://localhost:3000/api/v1/users/${userId}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    return new Promise((resolve, reject) => resolve({data}))
         .then(response => {
             const {user} = response.data;
             dispatch(usersItemRead(user));
@@ -78,8 +81,9 @@ export const readUser = userId => (dispatch, getState) => {
 
 export const updateUser = (userId, data) => (dispatch, getState) => {
     dispatch(usersRequestPending());
-    return axios
-        .patch(`http://localhost:3000/api/v1/users/${userId}`, data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    // return axios
+    //     .patch(`http://localhost:3000/api/v1/users/${userId}`, data, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    return new Promise((resolve, reject) => resolve({data}))
         .then(response => {
             const {user} = response.data;
             dispatch(usersItemUpdated(user));
@@ -96,8 +100,9 @@ export const updateUser = (userId, data) => (dispatch, getState) => {
 
 export const destroyUser = userId => (dispatch, getState) => {
     dispatch(usersRequestPending());
-    return axios
-        .delete(`http://localhost:3000/api/v1/users/${userId}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    // return axios
+    //     .delete(`http://localhost:3000/api/v1/users/${userId}`, {headers: {Authorization: `Bearer ${getState().auth.token}`}, timeout: 3000})
+    return new Promise((resolve, reject) => resolve({data}))
         .then(response => {
             const {user} = response.data;
             dispatch(usersItemDestroyed(user));
