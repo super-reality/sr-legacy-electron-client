@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import "../lesson/index.scss";
+import "../create-lesson/index.scss";
 import Flex from "../flex";
 
 export default function PlaceAuthoring(): JSX.Element {

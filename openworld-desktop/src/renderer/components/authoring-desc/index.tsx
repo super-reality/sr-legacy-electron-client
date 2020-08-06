@@ -1,6 +1,6 @@
 import React, {useCallback, useState} from "react";
 import "./index.scss";
-import "../lesson/index.scss";
+import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
 
