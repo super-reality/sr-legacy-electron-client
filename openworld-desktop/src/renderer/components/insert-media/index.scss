@@ -1,0 +1,15 @@
+.insert-media-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+}
+
+.insert-media-container {
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: var(--color-section);
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+}

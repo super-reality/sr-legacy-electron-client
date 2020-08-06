@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, globalShortcut, BrowserWindow } = require("electron");
 
 const path = require("path");
 const url = require("url");
@@ -25,6 +25,7 @@ function createWindow() {
   );
 
   mainWindow.removeMenu();
+  globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
 
   mainWindow.on("closed", () => {
     mainWindow = null;

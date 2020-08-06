@@ -1,0 +1,14 @@
+.top-input-container {
+  height: 48px;
+  display: flex;
+  margin: 0 16px;
+}
+
+.top-input {
+  background: var(--color-background);
+  border: 1px solid var(--color-separator);
+  border-radius: 24px;
+  height: 24px;
+  width: -webkit-fill-available;
+  margin: auto;
+}

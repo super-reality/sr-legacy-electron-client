@@ -1,0 +1,24 @@
+.collapsible-box {
+  cursor: pointer;
+  height: 24px;
+  margin: 12px 0;
+  padding: 0 12px;
+  color: var(--color-text-dark);
+  line-height: 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  background-color: var(--color-section-separator);
+
+  &:hover {
+    background-color: #CDCDCD;
+  }
+}
+
+.collapsible-content {
+  height: 0px;
+  overflow: hidden;
+
+  &.expanded {
+    height: auto !important;
+  }
+}

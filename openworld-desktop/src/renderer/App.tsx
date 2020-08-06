@@ -1,28 +1,21 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   Switch,
   Route,
-  NavLink,
-  useHistory,
   useLocation,
 } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-//import ProtectedRoute from "./components/ProtectedRoute";
 import Auth from "./views/auth/Auth";
-import { AppState } from "./redux/stores/renderer";
-import { reduxAction } from "./redux/reduxAction";
-import localForage from "localforage";
-import Axios from "axios";
 import TopNav from "./components/top-nav";
 import "./App.scss";
+import Teach from "./views/teach";
 
 export default function App(): JSX.Element {
-  const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
-  const dispatch = useDispatch();
-  const history = useHistory();
+  //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  //const dispatch = useDispatch();
   const location = useLocation();
   console.log(location);
 
+  /*
   const _authenticateFromLocalStorage = useCallback(() => {
     reduxAction(dispatch, { type: "AUTH_PENDING", arg: false });
     return localForage
@@ -59,10 +52,14 @@ export default function App(): JSX.Element {
     signOut();
     history.push("/auth");
   };
+  */
 
   return (
     <div>
       <TopNav />
+      {
+      /*
+      // Keeping it for reference
       <nav>
         {isAuthenticated ? (
           <ul className={"nav"}>
@@ -95,9 +92,12 @@ export default function App(): JSX.Element {
             </li>
           </ul>
         )}
-      </nav>
+        </nav>
+        */
+      }
       <Switch>
         <Route path="/auth" component={Auth} />
+        <Route path="/teach" component={Teach} />
       </Switch>
     </div>
   );

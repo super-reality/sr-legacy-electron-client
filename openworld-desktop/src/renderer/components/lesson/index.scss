@@ -1,0 +1,28 @@
+.lesson-container {
+  border-radius: 8px;
+  background-color: var(--color-section);
+  padding: 16px;
+  margin: 16px;
+}
+
+.lesson-title-container {
+  display: flex;
+}
+
+.lesson-icon {
+  width: 32px;
+  height: 32px;
+  margin: auto 16px auto 0;
+  border-radius: 16px;
+  background-color: white;
+}
+
+.lesson-title {
+  font-size: 18px;
+  margin: 2px 0;
+}
+
+.lesson-subtitle {
+  font-size: 12px;
+  margin: 2px 0;
+}
