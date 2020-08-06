@@ -1,5 +1,10 @@
+
 import ReplyIcon from '@material-ui/icons/Reply';
 import React from 'react';
+import './componentstyles.scss'
+
 export default function RedoIcon(){
-  return <ReplyIcon style={{ color: "white"}}></ReplyIcon>
+  return <div>
+    <ReplyIcon></ReplyIcon>
+  </div>
 }
