@@ -1,22 +1,31 @@
 import React from "react";
 import css from "./index.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+
+interface TopNavItemProps {
+  title: string;
+  route: string;
+}
+
+function TopNavItem(props: TopNavItemProps): JSX.Element {
+  const location = useLocation();
+  const isActive = location.pathname == props.route;
+  return (
+    <NavLink exact to={props.route}>
+      <div className={`${css.item} ${isActive && css.selected}`}>
+        {props.title}
+      </div>
+    </NavLink>
+  );
+}
 
 export default function TopNav(): JSX.Element {
   return (
     <div className={css.container}>
-      <NavLink style={{ textDecoration: "none" }} exact to="/home">
-        <div className={css.item}>Home</div>
-      </NavLink>
-      <NavLink style={{ textDecoration: "none" }} exact to="/learn">
-        <div className={css.item}>Learn</div>
-      </NavLink>
-      <NavLink style={{ textDecoration: "none" }} exact to="/teach">
-        <div className={css.item}>Teach</div>
-      </NavLink>
-      <NavLink style={{ textDecoration: "none" }} exact to="/xr">
-        <div className={css.item}>XR</div>
-      </NavLink>
+      <TopNavItem route="/home" title="Home" />
+      <TopNavItem route="/learn" title="Learn" />
+      <TopNavItem route="/teach" title="teach" />
+      <TopNavItem route="/xr" title="XR" />
     </div>
   );
 }

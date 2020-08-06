@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { Switch, Route, NavLink, useHistory } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  NavLink,
+  useHistory,
+  useLocation,
+} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./views/admin/Admin";
@@ -15,6 +21,8 @@ export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
+  console.log(location);
 
   const _authenticateFromLocalStorage = useCallback(() => {
     reduxAction(dispatch, { type: "AUTH_PENDING", arg: false });
@@ -92,9 +100,6 @@ export default function App(): JSX.Element {
       <Switch>
         <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />
         <Route path="/auth" component={Auth} />
-        <Route path="/">
-          <p>classroom</p>
-        </Route>
       </Switch>
     </div>
   );
