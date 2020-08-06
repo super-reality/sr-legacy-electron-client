@@ -4,11 +4,12 @@ import { useSelector, useDispatch } from "react-redux";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Admin from "./views/admin/Admin";
 import Auth from "./views/auth/Auth";
-import styles from "./App.scss";
 import { AppState } from "./redux/stores/renderer";
 import { reduxAction } from "./redux/reduxAction";
 import localForage from "localforage";
 import Axios from "axios";
+import TopNav from "./components/top-nav";
+import css from "./App.scss";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -53,24 +54,25 @@ export default function App(): JSX.Element {
   };
 
   return (
-    <div>
+    <div className={css.mainWrapper}>
+      <TopNav />
       <nav>
         {isAuthenticated ? (
-          <ul className={styles.nav}>
+          <ul className={css.nav}>
             <li>
-              <NavLink exact to="/" activeClassName={styles.active}>
+              <NavLink exact to="/" activeClassName={css.active}>
                 classroom
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin" activeClassName={styles.active}>
+              <NavLink to="/admin" activeClassName={css.active}>
                 admin
               </NavLink>
             </li>
             <li>
               <NavLink
                 to="/auth"
-                activeClassName={styles.active}
+                activeClassName={css.active}
                 onClick={onSignOutClick}
               >
                 sign out
@@ -78,9 +80,9 @@ export default function App(): JSX.Element {
             </li>
           </ul>
         ) : (
-          <ul className={styles.nav}>
+          <ul className={css.nav}>
             <li>
-              <NavLink to="/auth" activeClassName={styles.active}>
+              <NavLink to="/auth" activeClassName={css.active}>
                 sign in
               </NavLink>
             </li>

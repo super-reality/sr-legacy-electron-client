@@ -3,6 +3,7 @@
 declare namespace AppScssNamespace {
   export interface IAppScss {
     active: string;
+    mainWrapper: string;
     nav: string;
   }
 }
