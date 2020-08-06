@@ -14,7 +14,7 @@ import { reduxAction } from "./redux/reduxAction";
 import localForage from "localforage";
 import Axios from "axios";
 import TopNav from "./components/top-nav";
-import css from "./App.scss";
+import "./App.scss";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -61,25 +61,25 @@ export default function App(): JSX.Element {
   };
 
   return (
-    <div className={css.mainWrapper}>
+    <div>
       <TopNav />
       <nav>
         {isAuthenticated ? (
-          <ul className={css.nav}>
+          <ul className={"nav"}>
             <li>
-              <NavLink exact to="/" activeClassName={css.active}>
+              <NavLink exact to="/" activeClassName={"active"}>
                 classroom
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin" activeClassName={css.active}>
+              <NavLink to="/admin" activeClassName={"active"}>
                 admin
               </NavLink>
             </li>
             <li>
               <NavLink
                 to="/auth"
-                activeClassName={css.active}
+                activeClassName={"active"}
                 onClick={onSignOutClick}
               >
                 sign out
@@ -87,9 +87,9 @@ export default function App(): JSX.Element {
             </li>
           </ul>
         ) : (
-          <ul className={css.nav}>
+          <ul className={"nav"}>
             <li>
-              <NavLink to="/auth" activeClassName={css.active}>
+              <NavLink to="/auth" activeClassName={"active"}>
                 sign in
               </NavLink>
             </li>

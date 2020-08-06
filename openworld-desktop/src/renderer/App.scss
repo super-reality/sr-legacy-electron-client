@@ -5,38 +5,21 @@
   --color-separator:#A8ABAF;
 }
 
-:global {
-  body {
-    display: flex;
-    overflow: hidden;
-    width: -webkit-fill-available;
-    height: -webkit-fill-available;
-    margin: 0px;
-    background-color: var(--color-background);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  }
+body {
+  display: flex;
+  overflow: hidden;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  margin: 0px;
+  background-color: var(--color-background);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 a:focus, a:hover, a:visited, a:link, a:active {
   text-decoration: none;
 }
 
-.nav {
-  display: flex;
-  list-style: none;
-  margin: 0 -0.75em 1.5em;
-  padding: 0;
-}
-
-.nav li {
-  margin: 0 0.75em;
-}
-
-.active {
-  font-weight: bold;
-}
-
-.mainWrapper {
+#root {
   color: var(--color-text);
   width: 100%;
   height: 100%;
