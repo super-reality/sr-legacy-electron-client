@@ -1,10 +1,9 @@
 /* eslint-env jest */
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from '../renderer/App';
+import React from "react";
+import renderer from "react-test-renderer";
+import Teach from "../renderer/views/teach";
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("renders app", () => {
+  const tree = renderer.create(<Teach></Teach>).toJSON();
+  expect(tree).toMatchSnapshot();
 });

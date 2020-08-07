@@ -33,7 +33,6 @@
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-start": "node src/start-react",
-    
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
     "build": "npm run react-build && npm run electron-build"
@@ -81,6 +80,8 @@
     ]
   },
   "devDependencies": {
+    "@types/jest": "^26.0.9",
+    "@types/react-test-renderer": "^16.9.3",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
     "electron-builder": "^22.8.0",
@@ -92,6 +93,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.5",
-    "prettier": "^2.0.5"
+    "prettier": "^2.0.5",
+    "react-test-renderer": "^16.13.1"
   }
 }
