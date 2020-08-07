@@ -36,6 +36,9 @@
       }
     ]
   },
+  "settings": {
+    "import/core-modules": [ "electron" ]
+  },
   "parser": "babel-eslint",
   "extends": [
     "airbnb",

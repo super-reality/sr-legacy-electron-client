@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-unresolved
 const { app, globalShortcut, BrowserWindow } = require("electron");
 
 const path = require("path");
@@ -9,7 +9,7 @@ let mainWindow;
 function createWindow() {
   mainWindow = new BrowserWindow({
     backgroundColor: "#242526",
-    width: 600,
+    width: 350,
     height: 800,
     webPreferences: {
       nodeIntegration: true,
