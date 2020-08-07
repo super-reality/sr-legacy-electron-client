@@ -46,6 +46,10 @@ const stepSchema = new Schema({
     stepUrl: { type: String },
     // user options
     options: { type: JSON },
+    // user id that created this step
+    createdBy: { type: String },
+    // created date
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Step = new model("Step", stepSchema);

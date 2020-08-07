@@ -35,7 +35,15 @@ const collectionSchema = new Schema({
     // collection url
     collectionUrl: { type: String },
     // user options
-    options: { type: JSON },
+    options: { type: JSON },    
+    // if remixed
+    isRemixed: { type: Boolean },
+    // original collection id where remixed from
+    remixedFrom: { type: String },
+    // user id that created this collection
+    createdBy: { type: String },
+    // created date
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Collection = new model("Collection", collectionSchema);

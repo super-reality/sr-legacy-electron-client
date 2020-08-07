@@ -48,7 +48,15 @@ const lessonSchema = new Schema({
     // if remixed
     isRemixed: { type: Boolean },
     // original lesson id where remixed from
-    remixedFrom: { type: String }
+    remixedFrom: { type: String },
+    // user id that created this lesson
+    createdBy: { type: String },
+    // created date
+    createdAt: { type: Date, default: Date.now },
+    // user id that created this lesson
+    createdBy: { type: String },
+    // created date
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Lesson = new model("Lesson", lessonSchema);

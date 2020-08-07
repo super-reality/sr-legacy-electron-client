@@ -40,7 +40,11 @@ const subjectSchema = new Schema({
     // if remixed
     isRemixed: { type: Boolean },
     // original Subject id where remixed from
-    remixedFrom: { type: String }
+    remixedFrom: { type: String },
+    // user id that created this subject
+    createdBy: { type: String },
+    // created date
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Subject = new model("Subject", subjectSchema);
