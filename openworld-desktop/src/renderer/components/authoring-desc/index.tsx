@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import "./index.scss";
+import "../containers.scss";
 import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
@@ -20,7 +21,7 @@ export default function DescAuthoring(): JSX.Element {
   );
 
   return (
-    <div className="inner-container desc-authoring-grid">
+    <div className="inner desc-authoring-grid">
       <Flex style={{gridArea: "icon"}}>
         <div className="container-with-desc">
           <div>Icon</div>

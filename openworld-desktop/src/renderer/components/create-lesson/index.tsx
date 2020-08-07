@@ -1,5 +1,7 @@
 import React from 'react';
 import "./index.scss";
+import "../containers.scss";
+import "../lesson.scss";
 import { ILessonData } from '../../../types/teach';
 import DescAuthoring from "../authoring-desc";
 import Collapsible from '../collapsible';
@@ -15,7 +17,7 @@ export default function CreateLesson(props: LessonProps): JSX.Element {
   const { data } = props;
 
   return (
-    <div className="lesson-container">
+    <div className="mid">
       <div className="lesson-title-container">
         <div className={"lesson-icon"}>{}</div>
         <div >

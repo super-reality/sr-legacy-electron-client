@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import "./index.scss";
+import "../containers.scss";
 import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
@@ -36,7 +37,7 @@ export default function StepAuthoring(): JSX.Element {
   );
 
   return (
-    <div className="inner-container step-authoring-grid">
+    <div className="inner step-authoring-grid">
       <Flex style={{gridArea: "step"}}>
         <div className="container-with-desc">
           <div>Step</div>
@@ -104,7 +105,7 @@ export default function StepAuthoring(): JSX.Element {
       </Flex>
       <Flex style={{gridArea: "text"}}>
         <textarea
-          style={{maxWidth: "calc(100vw - 130px)"}}
+          style={{maxWidth: "calc(100vw - 85px)"}}
           placeholder=""
           value={title}
           onChange={handleAreaChange}

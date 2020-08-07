@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from "react";
 import "../create-lesson/index.scss";
+import "../containers.scss";
 import Flex from "../flex";
 
 export default function PlaceAuthoring(): JSX.Element {
@@ -17,7 +18,7 @@ export default function PlaceAuthoring(): JSX.Element {
   );
 
   return (
-    <div className="inner-container">
+    <div className="inner">
       <Flex>
         <div className="container-with-desc">
           <div>Collection</div>

@@ -21,11 +21,11 @@ export default function StepsView(props: StepsViewProps): JSX.Element {
   return (
     <div>
       <Flex>
-        <div style={{width: "50%"}}>
+        <div>
           <InnerSearch />
         </div>
         <ReactSelect
-          style={{width: "-webkit-fill-available"}}
+          style={{width: "-webkit-fill-available", marginLeft: "8px"}}
           className="dark"
           options={sortOptions}
           current={sort}
