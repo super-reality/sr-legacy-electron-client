@@ -39,3 +39,12 @@
   text-align: left;
   width: -webkit-fill-available;
 }
+
+.select-div-container {
+  display: flex;
+
+  .select-div-title {
+    line-height: 48px;
+    margin-right: 16px;
+  }
+}

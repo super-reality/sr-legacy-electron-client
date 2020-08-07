@@ -3,6 +3,17 @@ import "./index.scss";
 import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
+import Select from "../select";
+
+const stepOptions = [
+  {value: "chocolate", label: "Chocolate"},
+  {value: "strawberry", label: "Strawberry"},
+  {value: "vanilla", label: "Vanilla"},
+];
+
+const options = [
+  "One", "Two", "Three"
+];
 
 export default function StepAuthoring(): JSX.Element {
   const insertIcon = useCallback(() => {}, []);
@@ -36,17 +47,6 @@ export default function StepAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>Step</div>
           <input
-            placeholder="Step name"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
-          />
-        </div>
-      </Flex>
-      <Flex style={{gridArea: "event"}}>
-        <div className="container-with-desc">
-          <div>Event</div>
-          <input
             placeholder="Event name"
             value={title}
             onChange={handleChange}
@@ -54,7 +54,23 @@ export default function StepAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <div style={{gridArea: "images", justifyContent: "space-between", flexWrap: "wrap"}}>
+      <Flex style={{gridArea: "event"}}>
+        <div className="container-with-desc select-div-container">
+          <div className="select-div-title">Event</div>
+          <Select
+            options={options}
+            current={options[1]}
+            callback={(s) => { let _a = s; }}
+          />
+        </div>
+      </Flex>
+      <div
+        style={{
+          gridArea: "images",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+        }}
+      >
         <div className="step-insert-images">
           <InsertMedia
             style={{width: "100%", height: "125px", gridArea: "a"}}
@@ -83,13 +99,12 @@ export default function StepAuthoring(): JSX.Element {
         </div>
       </div>
       <Flex style={{gridArea: "action"}}>
-        <div className="container-with-desc">
-          <div>Action</div>
-          <input
-            placeholder="Action name"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
+        <div className="container-with-desc select-div-container">
+          <div className="select-div-title">Action</div>
+          <Select
+            options={options}
+            current={options[1]}
+            callback={(s) => { let _a = s; }}
           />
         </div>
       </Flex>
@@ -101,6 +116,16 @@ export default function StepAuthoring(): JSX.Element {
           onChange={handleAreaChange}
           onKeyDown={handleAreaChange}
         />
+      </Flex>
+      <Flex style={{gridArea: "next"}}>
+        <div className="container-with-desc select-div-container">
+          <div className="select-div-title">Next</div>
+          <Select
+            options={options}
+            current={options[1]}
+            callback={(s) => { let _a = s; }}
+          />
+        </div>
       </Flex>
     </div>
   );
