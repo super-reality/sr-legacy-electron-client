@@ -3,17 +3,18 @@
     background: none;
     border: none;
     height: 32px;
-    width: inherit;
+    width: -webkit-fill-available;
     margin: 0;
-    padding: 0 8px;
+    padding: 0 0 0 16px;
   }
 
   background: var(--color-section-inner);
-  border: 1px solid var( --color-background);
+  border: 1px solid var(--color-background);
   border-radius: 16px;
   width: -webkit-fill-available;
-  color: var( --color-text);
-  padding: 0 8px;
+  margin: auto;
+  color: var(--color-text);
+  padding: 0 8px 0 0;
   height: 32px;
   display: flex;
 }

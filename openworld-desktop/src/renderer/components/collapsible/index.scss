@@ -30,6 +30,7 @@
   overflow: hidden;
 
   &.expanded {
+    overflow: inherit;
     height: auto !important;
   }
 }

@@ -65,3 +65,22 @@ a:focus, a:hover, a:visited, a:link, a:active {
   overflow: auto;
   height: calc(100vh - 45px);
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background: #1b1c1d;
+  margin-right: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #383a3c;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f5152;
+}
