@@ -40,34 +40,36 @@ export default function ReactSelect<K>({
     [callback]
   );
 
-  const buttonClassNames = `button-reset select-button ${
+  const buttonClassNames = `select-button ${className} ${
     optionsOpen ? "active" : ""
   }`;
 
   return (
     <div className={`select-container ${className}`} style={style}>
-      <div
+      <button
         key={currentOption + "-key"}
         className={buttonClassNames}
         onClick={onClickSelect}
       >
         {formatterFunc(currentOption)}
-      </div>
+      </button>
       {optionsOpen && (
-        <div className={"select-options-container"}>
+        <div className={`select-options-container ${className}`}>
           {options.map((option) => {
-            return typeof option == "string" && option.startsWith("%%") ? (
-              <div className={"select-title"} key={option}>
+            return typeof option === "string" && option.startsWith("%%") ? (
+              <div className={`select-title ${className}`} key={option}>
                 {option.replace("%%", "")}
               </div>
             ) : (
-              <div
-                className={`button-reset select-option ${option == currentOption ? "disabled" : ""}`}
-                key={option + "-key"}
+              <button
+                className={`select-option ${className} ${option === currentOption ? "disabled" : ""}`}
+                key={option + "--option-key"}
+                value={option + ""}
+                disabled={option === currentOption}
                 onClick={onClickOption}
               >
                 {formatterFunc(option)}
-              </div>
+              </button>
             );
           })}
         </div>

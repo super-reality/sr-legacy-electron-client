@@ -5,12 +5,6 @@ import InsertMedia from "../insert-media";
 import Flex from "../flex";
 import Select from "../select";
 
-const stepOptions = [
-  {value: "chocolate", label: "Chocolate"},
-  {value: "strawberry", label: "Strawberry"},
-  {value: "vanilla", label: "Vanilla"},
-];
-
 const options = [
   "One", "Two", "Three"
 ];
@@ -60,7 +54,7 @@ export default function StepAuthoring(): JSX.Element {
           <Select
             options={options}
             current={options[1]}
-            callback={(s) => { let _a = s; }}
+            callback={(s) => { return s; }}
           />
         </div>
       </Flex>
@@ -104,7 +98,7 @@ export default function StepAuthoring(): JSX.Element {
           <Select
             options={options}
             current={options[1]}
-            callback={(s) => { let _a = s; }}
+            callback={(s) => { return s; }}
           />
         </div>
       </Flex>
@@ -123,7 +117,7 @@ export default function StepAuthoring(): JSX.Element {
           <Select
             options={options}
             current={options[1]}
-            callback={(s) => { let _a = s; }}
+            callback={(s) => { return s; }}
           />
         </div>
       </Flex>
