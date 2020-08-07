@@ -1,0 +1,11 @@
+.desc-authoring-grid {
+  display: grid;
+  grid-template-columns: 36px auto;
+  gap: 4px;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "icon title"
+    "purpose purpose"
+    "tags tags"
+    "media media";
+}
