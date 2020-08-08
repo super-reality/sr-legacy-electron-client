@@ -1,19 +1,26 @@
-import React from "react";
-import {
-  Switch,
-  Route,
-  useLocation,
-} from "react-router-dom";
+import React, {useCallback} from "react";
+import {Switch, Route} from "react-router-dom";
 import Auth from "./views/auth/Auth";
 import TopNav from "./components/top-nav";
 import "./App.scss";
 import Teach from "./views/teach";
+import TopSearch from "./components/top-search";
+import {useDispatch} from "react-redux";
+import {reduxAction} from "./redux/reduxAction";
 
 export default function App(): JSX.Element {
   //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   //const dispatch = useDispatch();
-  const location = useLocation();
-  console.log(location);
+  //const location = useLocation();
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const dispatch = useDispatch();
+
+  const handleScroll = useCallback((): void => {
+    if (scrollRef.current) {
+      const {scrollTop} = scrollRef.current;
+      reduxAction(dispatch, {type: "SET_YSCROLL", arg: scrollTop});
+    }
+  }, [scrollRef, dispatch]);
 
   /*
   const _authenticateFromLocalStorage = useCallback(() => {
@@ -57,8 +64,8 @@ export default function App(): JSX.Element {
   return (
     <>
       <TopNav />
-      {
-      /*
+      <TopSearch />
+      {/*
       // Keeping it for reference
       <nav>
         {isAuthenticated ? (
@@ -93,9 +100,9 @@ export default function App(): JSX.Element {
           </ul>
         )}
         </nav>
-        */
-      }
-      <div className="content">
+        */}
+      <div onScroll={handleScroll} ref={scrollRef} className="content">
+        <div style={{height: "52px"}} />
         <Switch>
           <Route path="/auth" component={Auth} />
           <Route path="/teach" component={Teach} />

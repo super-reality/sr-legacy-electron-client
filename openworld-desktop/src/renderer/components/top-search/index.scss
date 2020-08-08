@@ -1,3 +1,13 @@
+.top-controls {
+  height: 52px;
+  width: inherit;
+  display: flex;
+  position: absolute;
+  z-index: 5;
+  border-bottom: 1px solid var(--color-separator);
+  background-color: var(--color-background);
+}
+
 .top-input-container {
   input {
     background: none;
@@ -17,7 +27,7 @@
   padding: 0 8px;
   height: 32px;
   display: flex;
-  margin: 16px;
+  margin: 10px;
 }
 
 .top-input {

@@ -4,7 +4,7 @@ const initialState = {
   isValid: true,
   isPending: false,
   updatedAt: Date.now(),
-  token: null as string | null,
+  token: "",
 };
 
 type AuthState = typeof initialState;
@@ -15,7 +15,7 @@ const hoverSlice = createSlice({
   reducers: {
     setAuthPending: (
       state: AuthState,
-      _action: PayloadAction<unknown>
+      action: PayloadAction<null>
     ): void => {
       state.isPending = true;
     },
@@ -27,14 +27,14 @@ const hoverSlice = createSlice({
     },
     setAuthFailed: (
       state: AuthState,
-      _action: PayloadAction<unknown>
+      action: PayloadAction<null>
     ): void => {
       state.isValid = false;
       state.isPending = false;
     },
     setAuthInvalidated: (
       state: AuthState,
-      _action: PayloadAction<unknown>
+      action: PayloadAction<null>
     ): void => {
       state.isValid = false;
       state.isPending = false;

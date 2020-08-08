@@ -1,6 +1,5 @@
 import React from 'react';
 import "./index.scss";
-import TopSearch from '../../components/top-search';
 import { ILessonData } from '../../../types/teach';
 import CreateLesson from '../../components/create-lesson';
 
@@ -35,7 +34,6 @@ const data: ILessonData = {
 export default function Teach(): JSX.Element {
   return (
     <>
-      <TopSearch />
       <CreateLesson data={data} />
     </>
   );

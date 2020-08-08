@@ -57,6 +57,8 @@ a:focus, a:hover, a:visited, a:link, a:active {
 
 #root {
   color: var(--color-text);
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
 }

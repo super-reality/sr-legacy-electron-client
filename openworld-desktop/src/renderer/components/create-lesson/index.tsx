@@ -24,16 +24,16 @@ export default function CreateLesson(props: LessonProps): JSX.Element {
           <div className="lesson-title">Insert Lesson</div>
         </div>
       </div>
-      <Collapsible title="Place">
+      <Collapsible expanded={true} title="Place">
         <PlaceAuthoring />
       </Collapsible>
-      <Collapsible title="Lesson Description">
+      <Collapsible expanded={true} title="Lesson Description">
         <DescAuthoring />
       </Collapsible>
-      <Collapsible title="Step Authoring">
+      <Collapsible expanded={true} title="Step Authoring">
         <StepAuthoring />
       </Collapsible>
-      <Collapsible title="Previous Steps">
+      <Collapsible expanded={true} title="Previous Steps">
         <StepsView steps={data.steps} />
       </Collapsible>
     </div>
