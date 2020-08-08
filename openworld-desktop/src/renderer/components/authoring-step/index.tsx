@@ -105,7 +105,7 @@ export default function StepAuthoring(): JSX.Element {
       </Flex>
       <Flex style={{gridArea: "text"}}>
         <textarea
-          style={{maxWidth: "calc(100vw - 85px)"}}
+          style={{resize: "vertical", minHeight: "64px"}}
           placeholder=""
           value={title}
           onChange={handleAreaChange}
