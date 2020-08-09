@@ -3,6 +3,7 @@ import {Switch, Route} from "react-router-dom"
 import {connect} from "react-redux"
 import {dismissAlert, receiveAlert} from "./actions/alerts";
 import {authenticateFromLocalStorage, signOut} from "./actions/auth";
+import styles from "./App.module.scss"
 import MainTabs from "./components/TabContainer"
 const App = props => {
     return (

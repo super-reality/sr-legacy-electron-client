@@ -3,11 +3,11 @@ const url = require("url");
 const { app, BrowserWindow } = require("electron");
 
 function createWindow() {
-    let width = 450;
-    let height = 850;
     let browserWindow = new BrowserWindow({
-        minWidth: width,
-        minHeight: height,
+        width: 424,
+        height: 668,
+        minWidth: 424,
+        minHeight: 668,
         show: false,
         webPreferences: {
             nodeIntegration: true
@@ -20,7 +20,7 @@ function createWindow() {
     }));
     browserWindow.once("ready-to-show", () => {
         browserWindow.show();
-        browserWindow.webContents.openDevTools();
+        // browserWindow.webContents.openDevTools();
     });
     browserWindow.setMenu(null);
 }
