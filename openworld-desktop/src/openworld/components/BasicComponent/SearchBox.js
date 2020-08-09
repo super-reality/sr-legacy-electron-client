@@ -49,11 +49,11 @@ export function DropdownComboBox() {
       <Autocomplete
         id="combo-box-demo"
         options={lessons}
-        classes={classes}
         getOptionLabel={(option) => option.title}
         renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" />}
         popupIcon={<ArrowDropDownIcon></ArrowDropDownIcon>}
       />
+      {/* <h1>acer</h1> */}
     </div>
   );
 }
