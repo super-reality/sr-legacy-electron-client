@@ -41,7 +41,7 @@ export default function Collapsible(
         </div>
       </div>
       <animated.div style={expand} className={`collapsible-content`}>
-        <div ref={ref}>
+        <div style={{ paddingBottom: "1px" }} ref={ref}>
           {props.children}
         </div>
       </animated.div>
