@@ -1,54 +1,102 @@
 {
   "name": "openworld-desktop",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/main.js",
-  "scripts": {
-    "build": "run-s clean parcel:build electron:build",
-    "clean": "run-p parcel:clean electron:clean",
-    "dist": "run-s clean parcel:build electron:dist",
-    "electron:build": "electron-builder --dir",
-    "electron:clean": "rimraf dist",
-    "electron:dist": "electron-builder",
-    "electron:start": "wait-on build/index.html && electron src/main.js",
-    "install:wsl": "npm install && npm uninstall electron && export npm_config_platform=win32 && npm install --save-dev electron && unset npm_config_platform",
-    "parcel:build": "parcel build src/openworld/index.html --target electron --out-dir build --public-url ./",
-    "parcel:clean": "rimraf build",
-    "parcel:start": "parcel src/openworld/index.html --no-hmr --target electron --out-dir build --public-url ./",
-    "start": "run-p parcel:start electron:start",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "Game Gen <info@gamegen.com>",
-  "license": "UNLICENSED",
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/preset-react": "^7.9.1",
-    "electron": "^9.1.2",
-    "electron-builder": "^22.4.1",
-    "electron-is-dev": "^1.1.0",
-    "node-sass": "^4.13.1",
-    "npm-run-all": "^4.1.5",
-    "parcel-bundler": "^1.12.4",
-    "postcss-modules": "^1.5.0",
-    "redux-devtools": "^3.5.0",
-    "rimraf": "^3.0.2",
-    "wait-on": "^4.0.1"
-  },
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "./",
+  "main": "public/electron.js",
   "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
+    "@reduxjs/toolkit": "^1.4.0",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
     "axios": "^0.19.2",
-    "classnames": "^2.2.6",
-    "localforage": "^1.7.3",
+    "concurrently": "^5.3.0",
+    "cross-env": "^7.0.2",
+    "electron-is-dev": "^1.2.0",
+    "localforage": "^1.9.0",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.0",
-    "react-router-dom": "^5.1.2",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "socket.io-client": "^2.3.0",
-    "uuid": "^7.0.3"
+    "react-redux": "^7.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-spring": "^9.0.0-rc.3",
+    "react-use": "^15.3.3",
+    "typescript": "^3.9.7",
+    "wait-on": "^5.1.0"
+  },
+  "scripts": {
+    "start": "nf start -p 3000",
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom && eslint src",
+    "eject": "react-scripts eject",
+    "electron": "electron .",
+    "electron-start": "node src/start-react",
+    "electron-build": "electron-builder",
+    "release": "npm run react-build && electron-builder --publish=always",
+    "build": "npm run react-build && npm run electron-build"
+  },
+  "build": {
+    "appId": "com.openworld.desktop",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "!**/__tests__/**",
+      "!**/__mocks__/**"
+    ],
+    "win": {
+      "target": "NSIS",
+      "icon": "public/favicon.ico",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "mac": {
+      "target": "pkg",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility;",
+      "icon": "public/logo512.png",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "directories": {
+      "buildResources": "public"
+    }
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.9",
+    "@types/react-test-renderer": "^16.9.3",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "electron": "^9.1.2",
+    "electron-builder": "^22.8.0",
+    "electron-packager": "^15.0.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.5",
+    "prettier": "^2.0.5",
+    "react-test-renderer": "^16.13.1"
   }
 }

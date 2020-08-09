@@ -1,0 +1,40 @@
+.top-controls {
+  height: 52px;
+  width: inherit;
+  display: flex;
+  position: absolute;
+  z-index: 5;
+  border-bottom: 1px solid var(--color-separator);
+  background-color: var(--color-background);
+}
+
+.top-input-container {
+  input {
+    background: none;
+    border: none;
+    height: 32px;
+    width: inherit;
+    margin: 0;
+    padding: 0 8px;
+  }
+
+  background: var(--color-section);
+  border: 1px solid var(--color-background);
+  border-radius: 16px;
+  width: -webkit-fill-available;
+  margin: auto;
+  color: var(--color-text);
+  padding: 0 8px;
+  height: 32px;
+  display: flex;
+  margin: 10px;
+}
+
+.top-input {
+  background: var(--color-background);
+  border: 1px solid var(--color-separator);
+  border-radius: 24px;
+  height: 24px;
+  width: -webkit-fill-available;
+  margin: auto;
+}

@@ -1,0 +1,21 @@
+.lesson-title-container {
+  display: flex;
+}
+
+.lesson-icon {
+  width: 32px;
+  height: 32px;
+  margin: auto 8px auto 2px;
+  border-radius: 16px;
+  background-color: white;
+}
+
+.lesson-title {
+  font-size: 18px;
+  margin: 2px 0;
+}
+
+.lesson-subtitle {
+  font-size: 12px;
+  margin: 2px 0;
+}
