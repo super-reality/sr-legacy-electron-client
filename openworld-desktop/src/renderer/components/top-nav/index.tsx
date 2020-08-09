@@ -1,5 +1,5 @@
 import React from "react";
-import css from "./index.scss";
+import "./index.scss";
 import { NavLink, useLocation } from "react-router-dom";
 
 interface TopNavItemProps {
@@ -9,10 +9,10 @@ interface TopNavItemProps {
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
   const location = useLocation();
-  const isActive = location.pathname == props.route;
+  const isActive = location.pathname === props.route;
   return (
     <NavLink exact to={props.route}>
-      <div className={`${css.item} ${isActive && css.selected}`}>
+      <div className={`topnav-item ${isActive && "selected"}`}>
         {props.title}
       </div>
     </NavLink>
@@ -21,7 +21,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
 
 export default function TopNav(): JSX.Element {
   return (
-    <div className={css.container}>
+    <div className={"topnav-container"}>
       <TopNavItem route="/home" title="Home" />
       <TopNavItem route="/learn" title="Learn" />
       <TopNavItem route="/teach" title="teach" />

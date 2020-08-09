@@ -1,76 +1,57 @@
 {
-    "env": {
-        "browser": true,
-        "node": true,
-        "es6": true
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:react/recommended",
-        "plugin:prettier/recommended",
-        "prettier/@typescript-eslint",
-        "prettier/react"
+    "sourceType": "module"
+  },
+  "rules": {
+    "allowEmptyCatch": 0,
+    "no-cond-assign": 0,
+    "no-console": "off",
+    "no-redeclare": "warn",
+    "no-duplicate-imports": "warn",
+    "no-undef": "error",
+    "no-global-assign": "warn",
+    "no-empty": "warn",
+    "complexity": ["warn", 40],
+    "max-statements": ["warn", 100],
+    "prettier/prettier": [
+      "warn",
+      {
+        "endOfLine": "auto"
+      }
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 11,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "react",
-        "react-hooks",
-        "@typescript-eslint"
-    ],
-    "ignorePatterns": ["**/*.js"],
-    "rules": {
-        "allowEmptyCatch": 0,
-        "no-cond-assign": 0,
-        "no-console": "off",
-        "no-redeclare": "warn",
-        "no-duplicate-imports": "warn",
-        "no-undef": "error",
-        "no-global-assign": "warn",
-        "no-empty": "warn",
-        "complexity": [
-            "warn",
-            40
-        ],
-        "max-statements": [
-            "warn",
-            100
-        ],
-        "prettier/prettier": [
-            "warn",
-            {
-                "endOfLine": "auto"
-            }
-        ],
-        "@typescript-eslint/no-unused-vars": [
-            "error",
-            {
-                "varsIgnorePattern": "^_",
-                "argsIgnorePattern": "^_"
-            }
-        ],
-        "@typescript-eslint/interface-name-prefix": 0,
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-empty-function": [
-            "error",
-            {
-                "allow": [
-                    "arrowFunctions"
-                ]
-            }
-        ],
-        "require-atomic-updates": "warn",
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
-    }
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
+  "settings": {
+    "import/core-modules": [ "electron" ]
+  },
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint",
+    "prettier/react"
+  ],
+  "plugins": [
+    "react",
+    "jest",
+    "jsx-a11y",
+    "import",
+    "react-hooks",
+    "@typescript-eslint"
+  ]
 }

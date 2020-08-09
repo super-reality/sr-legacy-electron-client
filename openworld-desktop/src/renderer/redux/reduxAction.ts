@@ -16,5 +16,6 @@ export function reduxAction<K extends ActionKeys>(
   dispatch: Dispatch<AnyAction>,
   action: DispatchParameter<K>
 ): void {
+  // @ts-ignore: Unreachable code error
   dispatch(actions[action.type](action.arg));
 }

@@ -1,29 +1,28 @@
-import React, { useCallback } from "react";
-import {
-  Switch,
-  Route,
-  NavLink,
-  useHistory,
-  useLocation,
-} from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Admin from "./views/admin/Admin";
+import React, {useCallback} from "react";
+import {Switch, Route} from "react-router-dom";
 import Auth from "./views/auth/Auth";
-import { AppState } from "./redux/stores/renderer";
-import { reduxAction } from "./redux/reduxAction";
-import localForage from "localforage";
-import Axios from "axios";
 import TopNav from "./components/top-nav";
-import css from "./App.scss";
+import "./App.scss";
+import Teach from "./views/teach";
+import TopSearch from "./components/top-search";
+import {useDispatch} from "react-redux";
+import {reduxAction} from "./redux/reduxAction";
 
 export default function App(): JSX.Element {
-  const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  //const dispatch = useDispatch();
+  //const location = useLocation();
+  const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
-  const history = useHistory();
-  const location = useLocation();
-  console.log(location);
 
+  const handleScroll = useCallback((): void => {
+    if (scrollRef.current) {
+      const {scrollTop} = scrollRef.current;
+      reduxAction(dispatch, {type: "SET_YSCROLL", arg: scrollTop});
+    }
+  }, [scrollRef, dispatch]);
+
+  /*
   const _authenticateFromLocalStorage = useCallback(() => {
     reduxAction(dispatch, { type: "AUTH_PENDING", arg: false });
     return localForage
@@ -55,32 +54,36 @@ export default function App(): JSX.Element {
     return localForage.removeItem("com.gamegen.classroom.auth.token");
   }, [dispatch]);
 
-  const onSignOutClick = (event) => {
+  const onSignOutClick = (event: any) => {
     event.preventDefault();
     signOut();
     history.push("/auth");
   };
+  */
 
   return (
-    <div className={css.mainWrapper}>
+    <>
       <TopNav />
+      <TopSearch />
+      {/*
+      // Keeping it for reference
       <nav>
         {isAuthenticated ? (
-          <ul className={css.nav}>
+          <ul className={"nav"}>
             <li>
-              <NavLink exact to="/" activeClassName={css.active}>
+              <NavLink exact to="/" activeClassName={"active"}>
                 classroom
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin" activeClassName={css.active}>
+              <NavLink to="/admin" activeClassName={"active"}>
                 admin
               </NavLink>
             </li>
             <li>
               <NavLink
                 to="/auth"
-                activeClassName={css.active}
+                activeClassName={"active"}
                 onClick={onSignOutClick}
               >
                 sign out
@@ -88,19 +91,24 @@ export default function App(): JSX.Element {
             </li>
           </ul>
         ) : (
-          <ul className={css.nav}>
+          <ul className={"nav"}>
             <li>
-              <NavLink to="/auth" activeClassName={css.active}>
+              <NavLink to="/auth" activeClassName={"active"}>
                 sign in
               </NavLink>
             </li>
           </ul>
         )}
-      </nav>
-      <Switch>
-        <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />
-        <Route path="/auth" component={Auth} />
-      </Switch>
-    </div>
+        </nav>
+        */}
+      <div onScroll={handleScroll} ref={scrollRef} className="content">
+        <div style={{height: "52px"}} />
+        <Switch>
+          <Route path="/auth" component={Auth} />
+          <Route path="/teach" component={Teach} />
+        </Switch>
+      </div>
+    </>
   );
 }
+// <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />

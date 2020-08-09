@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29" height="29" version="1.1" viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg">
+ <style/>
+ <defs>
+  <clipPath id="clipPath888">
+   <path d="m14.37 24.739a2.13 2.13 0 0 0 2.124-2.124h-4.252a2.123 2.123 0 0 0 2.128 2.124zm6.372-6.372v-5.31c0-3.26-1.742-5.99-4.779-6.712v-0.722a1.593 1.593 0 0 0-3.186 0v0.722c-3.048 0.722-4.779 3.441-4.779 6.712v5.31l-2.128 2.124v1.062h16.992v-1.062z" display="none"/>
+   <path class="powerclip" d="m-5-5h39v39h-39zm19.37 29.739a2.13 2.13 0 0 0 2.124-2.124h-4.252a2.123 2.123 0 0 0 2.128 2.124zm6.372-6.372v-5.31c0-3.26-1.742-5.99-4.779-6.712v-0.722a1.593 1.593 0 0 0-3.186 0v0.722c-3.048 0.722-4.779 3.441-4.779 6.712v5.31l-2.128 2.124v1.062h16.992v-1.062z"/>
+  </clipPath>
+ </defs>
+ <g id="Back_Arrow" transform="translate(-3640.4 3668)" data-name="Back Arrow">
+  <g id="Ring" transform="translate(-21.56 91.954)">
+   <path transform="translate(3662,-3760)" d="M 29,14.5 A 14.5,14.5 0 0 1 14.5,29 14.5,14.5 0 0 1 0,14.5 14.5,14.5 0 0 1 14.5,0 14.5,14.5 0 0 1 29,14.5" clip-path="url(#clipPath888)" data-name="Ellipse 140"/>
+  </g>
+ </g>
+</svg>

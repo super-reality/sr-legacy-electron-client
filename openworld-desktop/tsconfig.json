@@ -1,34 +1,25 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "module": "CommonJS",
-    // Target latest version of ECMAScript.
-    "checkJs": false,
-    "noEmit": true,
-    "target": "es2018",
-    // Search under node_modules for non-relative imports.
-    "moduleResolution": "node",
-    // Process & infer types from .js files.
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
-    // Enable strictest settings like strictNullChecks & noImplicitAny.
-    "strict": true,
-    // Disallow features that require cross-file information for emit.
-    "isolatedModules": true,
-    // Import non-ES modules as default imports.
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "sourceMap": true,
-    "noImplicitAny": false,
-    "types": ["react", "jest"],
-    "jsx": "react",
-    "lib": ["dom", "ES2020.String"]
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react"
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "lib",
-    "webpack"
-  ],
   "include": [
-    "src"
+    "src", "public/start.js"
   ]
 }

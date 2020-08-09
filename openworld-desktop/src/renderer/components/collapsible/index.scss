@@ -1,0 +1,38 @@
+.collapsible-box {
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  margin: 12px 0;
+  padding: 0 12px;
+  color: var(--color-text-dark);
+  line-height: 24px;
+  font-size: 14px;
+  border-radius: 8px;
+  background-color: var(--color-section-separator);
+
+  &:hover {
+    background-color: #CDCDCD;
+  }
+}
+
+.icon-collapse {
+  -webkit-transition: all .2s ease-in-out;
+  transform: rotate(-90deg);
+
+  &.open {
+    transform: rotate(0deg);
+  }
+}
+
+.collapsible-content {
+  /*
+  -webkit-transition: all .2s ease-in-out;
+  height: 0px;
+  */
+  overflow: hidden;
+
+  &.expanded {
+    overflow: inherit;
+    height: auto !important;
+  }
+}

@@ -1,0 +1,841 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders app 1`] = `
+Array [
+  <div
+    className="top-input-container"
+  >
+    <input
+      className="top-input"
+    />
+    <svg
+      fill="var(--color-text)"
+      height="20px"
+      style={
+        Object {
+          "margin": "auto 8px",
+        }
+      }
+      width="20px"
+    >
+      search.svg
+    </svg>
+  </div>,
+  <div
+    className="mid"
+  >
+    <div
+      className="lesson-title-container"
+    >
+      <div
+        className="lesson-icon"
+      />
+      <div>
+        <div
+          className="lesson-title"
+        >
+          Insert Lesson
+        </div>
+      </div>
+    </div>
+    <div
+      className="collapsible-box"
+      onClick={[Function]}
+    >
+      <div
+        className="icon-collapse open"
+      >
+        <svg
+          fill="var(--color-background)"
+          height="8px"
+          width="12.4px"
+        >
+          drop.svg
+        </svg>
+      </div>
+      <div
+        style={
+          Object {
+            "marginLeft": "8px",
+          }
+        }
+      >
+        Place
+      </div>
+    </div>
+    <div
+      className="collapsible-content expanded"
+    >
+      <div
+        className="inner"
+      >
+        <div
+          style={
+            Object {
+              "display": "flex",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Collection
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Subject
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Parent Lesson (optional)
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="collapsible-box"
+      onClick={[Function]}
+    >
+      <div
+        className="icon-collapse open"
+      >
+        <svg
+          fill="var(--color-background)"
+          height="8px"
+          width="12.4px"
+        >
+          drop.svg
+        </svg>
+      </div>
+      <div
+        style={
+          Object {
+            "marginLeft": "8px",
+          }
+        }
+      >
+        Lesson Description
+      </div>
+    </div>
+    <div
+      className="collapsible-content expanded"
+    >
+      <div
+        className="inner desc-authoring-grid"
+      >
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "icon",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Icon
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "height": "32px",
+                  "width": "32px",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "title",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Lesson Title
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "purpose",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Purpose
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "tags",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Lesson Tags
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Title"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "media",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Example Media
+            </div>
+            <div
+              style={
+                Object {
+                  "display": "flex",
+                  "justifyContent": "space-between",
+                }
+              }
+            >
+              <div
+                className="insert-media-container"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "height": "125px",
+                    "width": "30%",
+                  }
+                }
+              >
+                <svg
+                  fill="var(--color-text)"
+                  height="30px"
+                  style={
+                    Object {
+                      "margin": "auto",
+                    }
+                  }
+                  width="30px"
+                >
+                  add.svg
+                </svg>
+              </div>
+              <div
+                className="insert-media-container"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "height": "125px",
+                    "width": "30%",
+                  }
+                }
+              >
+                <svg
+                  fill="var(--color-text)"
+                  height="30px"
+                  style={
+                    Object {
+                      "margin": "auto",
+                    }
+                  }
+                  width="30px"
+                >
+                  add.svg
+                </svg>
+              </div>
+              <div
+                className="insert-media-container"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "height": "125px",
+                    "width": "30%",
+                  }
+                }
+              >
+                <svg
+                  fill="var(--color-text)"
+                  height="30px"
+                  style={
+                    Object {
+                      "margin": "auto",
+                    }
+                  }
+                  width="30px"
+                >
+                  add.svg
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="collapsible-box"
+      onClick={[Function]}
+    >
+      <div
+        className="icon-collapse open"
+      >
+        <svg
+          fill="var(--color-background)"
+          height="8px"
+          width="12.4px"
+        >
+          drop.svg
+        </svg>
+      </div>
+      <div
+        style={
+          Object {
+            "marginLeft": "8px",
+          }
+        }
+      >
+        Step Authoring
+      </div>
+    </div>
+    <div
+      className="collapsible-content expanded"
+    >
+      <div
+        className="inner step-authoring-grid"
+      >
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "step",
+            }
+          }
+        >
+          <div
+            className="container-with-desc"
+          >
+            <div>
+              Step
+            </div>
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Event name"
+              value=""
+            />
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "event",
+            }
+          }
+        >
+          <div
+            className="container-with-desc select-div-container"
+          >
+            <div
+              className="select-div-title"
+            >
+              Event
+            </div>
+            <div
+              className="select-container undefined"
+            >
+              <button
+                className="select-button undefined "
+                onClick={[Function]}
+              >
+                Two
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "flexWrap": "wrap",
+              "gridArea": "images",
+              "justifyContent": "space-between",
+            }
+          }
+        >
+          <div
+            className="step-insert-images"
+          >
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "a",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "b",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "c",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "d",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "e",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+            <div
+              className="insert-media-container"
+              onClick={[Function]}
+              style={
+                Object {
+                  "gridArea": "f",
+                  "height": "125px",
+                  "width": "100%",
+                }
+              }
+            >
+              <svg
+                fill="var(--color-text)"
+                height="30px"
+                style={
+                  Object {
+                    "margin": "auto",
+                  }
+                }
+                width="30px"
+              >
+                add.svg
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "action",
+            }
+          }
+        >
+          <div
+            className="container-with-desc select-div-container"
+          >
+            <div
+              className="select-div-title"
+            >
+              Action
+            </div>
+            <div
+              className="select-container undefined"
+            >
+              <button
+                className="select-button undefined "
+                onClick={[Function]}
+              >
+                Two
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "text",
+            }
+          }
+        >
+          <textarea
+            onChange={[Function]}
+            onKeyDown={[Function]}
+            placeholder=""
+            style={
+              Object {
+                "maxWidth": "calc(100vw - 85px)",
+              }
+            }
+            value=""
+          />
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "gridArea": "next",
+            }
+          }
+        >
+          <div
+            className="container-with-desc select-div-container"
+          >
+            <div
+              className="select-div-title"
+            >
+              Next
+            </div>
+            <div
+              className="select-container undefined"
+            >
+              <button
+                className="select-button undefined "
+                onClick={[Function]}
+              >
+                Two
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="collapsible-box"
+      onClick={[Function]}
+    >
+      <div
+        className="icon-collapse open"
+      >
+        <svg
+          fill="var(--color-background)"
+          height="8px"
+          width="12.4px"
+        >
+          drop.svg
+        </svg>
+      </div>
+      <div
+        style={
+          Object {
+            "marginLeft": "8px",
+          }
+        }
+      >
+        Previous Steps
+      </div>
+    </div>
+    <div
+      className="collapsible-content expanded"
+    >
+      <div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+            }
+          }
+        >
+          <div>
+            <div
+              className="inner-search-container"
+            >
+              <input
+                className="inner-input"
+              />
+              <div
+                style={
+                  Object {
+                    "height": "20px",
+                    "margin": "auto",
+                    "width": "20px",
+                  }
+                }
+              >
+                <svg
+                  fill="var(--color-text)"
+                  height="20px"
+                  width="20px"
+                >
+                  search.svg
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            className="select-container dark"
+            style={
+              Object {
+                "marginLeft": "8px",
+                "width": "-webkit-fill-available",
+              }
+            }
+          >
+            <button
+              className="select-button dark "
+              onClick={[Function]}
+            >
+              Name
+            </button>
+          </div>
+        </div>
+        <div
+          className="steps-container"
+        >
+          <div
+            className="step-container"
+          >
+            <div
+              className="step-icon"
+            />
+            <div
+              className="step-title"
+            >
+              Awesomeness
+            </div>
+            <div
+              className="step-rating"
+            >
+              99
+            </div>
+          </div>
+          <div
+            className="step-container"
+          >
+            <div
+              className="step-icon"
+            />
+            <div
+              className="step-title"
+            >
+              Juice
+            </div>
+            <div
+              className="step-rating"
+            >
+              45
+            </div>
+          </div>
+          <div
+            className="step-container"
+          >
+            <div
+              className="step-icon"
+            />
+            <div
+              className="step-title"
+            >
+              Draw bolts
+            </div>
+            <div
+              className="step-rating"
+            >
+              42
+            </div>
+          </div>
+          <div
+            className="step-container"
+          >
+            <div
+              className="step-icon"
+            />
+            <div
+              className="step-title"
+            >
+              Hit something
+            </div>
+            <div
+              className="step-rating"
+            >
+              37
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>,
+]
+`;
