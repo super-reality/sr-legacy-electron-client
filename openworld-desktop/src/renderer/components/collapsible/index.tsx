@@ -18,7 +18,9 @@ export default function Collapsible(
   props: PropsWithChildren<CollapsibleProps>
 ): JSX.Element {
   const [expanded, setExpanded] = useState(props.expanded ? true : false);
-  const [overflow, setOverflow] = useState<"inherit" | "hidden">(props.expanded ? "inherit" : "hidden");
+  const [overflow, setOverflow] = useState<"inherit" | "hidden">(
+    props.expanded ? "inherit" : "hidden"
+  );
 
   const updateOverflow = useCallback(() => {
     setOverflow(expanded ? "inherit" : "hidden");
@@ -58,7 +60,7 @@ export default function Collapsible(
         style={{...expand, overflow}}
         className={`collapsible-content`}
       >
-        <div ref={ref}>
+        <div style={{display: "flex", flexDirection: "column"}} ref={ref}>
           {props.children}
         </div>
       </animated.div>
