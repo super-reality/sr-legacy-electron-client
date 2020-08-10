@@ -7,6 +7,7 @@ export const actions = {
   AUTH_FAILED: AuthSlice.setAuthFailed,
   AUTH_INVALIDATED: AuthSlice.setAuthInvalidated,
   SET_YSCROLL: renderSlice.setYScroll,
+  SET_TOP_SELECT: renderSlice.setTopSelect,
 };
 
 export type ActionKeys = keyof typeof actions;

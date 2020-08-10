@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
 import "./index.scss";
 import {ReactComponent as SearchIcon} from "../../../assets/svg/search.svg";
 import {ReactComponent as BackIcon} from "../../../assets/svg/back.svg";
 import {ReactComponent as AlertIcon} from "../../../assets/svg/alert.svg";
 import Select from "../select";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {AppState} from "../../redux/stores/renderer";
 import {useSpring, animated} from "react-spring";
 import {useLocation} from "react-router-dom";
 import Flex from "../flex";
+import {reduxAction} from "../../redux/reduxAction";
 
 const selectOptionsByTab: Record<string, string[]> = {
   "/find": [
@@ -34,11 +35,20 @@ const selectOptionsByTab: Record<string, string[]> = {
 };
 
 export default function TopSearch(): JSX.Element {
+  const dispatch = useDispatch();
   const location = useLocation();
   const currentOptions = selectOptionsByTab[location.pathname];
   const showSelect = currentOptions ? true : false;
-  const [currentSelected, setCurrentSelected] = useState(
-    showSelect ? currentOptions[0] : ""
+  const topStates = useSelector(
+    (state: AppState) => state.render.topSelectStates
+  );
+  const currentSelected = useMemo(
+    () =>
+      topStates[location.pathname] ||
+      (selectOptionsByTab[location.pathname]
+        ? selectOptionsByTab[location.pathname][0]
+        : ""),
+    [topStates, location]
   );
 
   const offset = 45;
@@ -57,13 +67,18 @@ export default function TopSearch(): JSX.Element {
 
   const spring = useSpring({top: `${yPos}px`});
 
-  useEffect(() => {
-    setCurrentSelected(showSelect ? currentOptions[0] : "");
-    // eslint-disable-next-line
-  }, [location]);
+  const setCurrentSelected = useCallback((selected: string) => {
+    reduxAction(dispatch, {
+      type: "SET_TOP_SELECT",
+      arg: {selected: selected, path: location.pathname},
+    });
+  }, [dispatch, location]);
 
   return (
-    <animated.div style={spring} className={`top-controls ${!showSelect ? "no-select" : ""}`}>
+    <animated.div
+      style={spring}
+      className={`top-controls ${!showSelect ? "no-select" : ""}`}
+    >
       <BackIcon
         style={{margin: "auto"}}
         width="42px"
@@ -72,12 +87,8 @@ export default function TopSearch(): JSX.Element {
       <Flex>
         <div className="top-input-container">
           <input className="top-input" />
-            <div className={"top-inpu-icon"}>
-            <SearchIcon
-              width="20px"
-              height="20px"
-              fill="var(--color-text)"
-            />
+          <div className={"top-inpu-icon"}>
+            <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
           </div>
         </div>
       </Flex>
