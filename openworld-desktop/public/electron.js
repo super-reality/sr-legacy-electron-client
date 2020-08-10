@@ -3,6 +3,7 @@ const { app, globalShortcut, BrowserWindow } = require("electron");
 const path = require("path");
 const url = require("url");
 const mainIpcInitialize = require("./ipcHandlers");
+const installDevTools = require("./devtools");
 
 let mainWindow;
 
@@ -33,6 +34,9 @@ function createWindow() {
   });
 
   mainIpcInitialize();
+  if (!app.isPackaged) {
+    installDevTools();
+  }
 }
 
 app.on("ready", createWindow);
