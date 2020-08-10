@@ -1,0 +1,44 @@
+.item-container {
+  background-color: var(--color-section-inner);
+  height: 32px;
+  border-radius: 24px;
+  margin: 8px auto;
+  padding: 4px;
+  display: flex;
+
+  .item-icon {
+    width: 32px;
+    height: 32px;
+    margin: auto 8px auto 2px;
+    border-radius: 16px;
+    background-color: white;
+  }
+
+  .item-titles {
+    font-size: 14px;
+    line-height: 16px;
+
+    .item-title {
+    }
+
+    .item-sub {
+      opacity: 0.6;
+    }  
+  }
+
+
+  .item-social {
+    align-self: center;
+    margin-left: auto;
+    margin-right: 8px;
+
+    .item-rating {
+    }
+  
+    .item-share {
+    }
+  
+    .item-completed {
+    }
+  }
+}

@@ -4,9 +4,11 @@ import Auth from "./views/auth/Auth";
 import TopNav from "./components/top-nav";
 import "./App.scss";
 import Teach from "./views/teach";
+import Learn from "./views/learn";
 import TopSearch from "./components/top-search";
 import {useDispatch} from "react-redux";
 import {reduxAction} from "./redux/reduxAction";
+import Test from "./views/test";
 
 export default function App(): JSX.Element {
   //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -104,8 +106,10 @@ export default function App(): JSX.Element {
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <div style={{height: "52px"}} />
         <Switch>
+          <Route path="/test" component={Test} />
           <Route path="/auth" component={Auth} />
           <Route path="/teach" component={Teach} />
+          <Route path="/learn" component={Learn} />
         </Switch>
       </div>
     </>
