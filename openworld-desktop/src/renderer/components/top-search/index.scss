@@ -1,11 +1,16 @@
 .top-controls {
   height: 52px;
   width: inherit;
-  display: flex;
+  display: grid;
+  grid-template-columns: 42px calc(50% - 42px) calc(50% - 42px) 42px;
   position: absolute;
   z-index: 5;
   border-bottom: 1px solid var(--color-separator);
   background-color: var(--color-background);
+}
+
+.no-select {
+  grid-template-columns: 42px calc(100% - 84px) 42px;
 }
 
 .top-input-container {
@@ -13,9 +18,15 @@
     background: none;
     border: none;
     height: 32px;
-    width: inherit;
+    width: 100%;
     margin: 0;
     padding: 0 8px;
+  }
+
+  .top-inpu-icon {
+    width: 20px;
+    height: 20px;
+    margin: auto 0;
   }
 
   background: var(--color-section);
@@ -27,7 +38,7 @@
   padding: 0 8px;
   height: 32px;
   display: flex;
-  margin: 10px;
+  margin: auto 8px;
 }
 
 .top-input {
