@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-unresolved
 const { app, globalShortcut, BrowserWindow } = require("electron");
-
 const path = require("path");
 const url = require("url");
+const mainIpcInitialize = require("./ipcHandlers");
 
 let mainWindow;
 
@@ -31,6 +31,8 @@ function createWindow() {
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
+
+  mainIpcInitialize();
 }
 
 app.on("ready", createWindow);

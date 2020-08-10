@@ -22,6 +22,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
 export default function TopNav(): JSX.Element {
   return (
     <div className={"topnav-container"}>
+      <TopNavItem route="/test" title="Test" />
       <TopNavItem route="/find" title="Find" />
       <TopNavItem route="/learn" title="Learn" />
       <TopNavItem route="/teach" title="Teach" />
