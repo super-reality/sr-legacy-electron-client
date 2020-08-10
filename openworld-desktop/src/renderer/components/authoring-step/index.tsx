@@ -66,29 +66,17 @@ export default function StepAuthoring(): JSX.Element {
           flexWrap: "wrap",
         }}
       >
-        <div className="step-insert-images">
+        <div className="insert-images-div">
           <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "a"}}
+            style={{width: "100%", height: "125px"}}
             callback={insertIcon}
           />
           <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "b"}}
+            style={{width: "100%", height: "125px"}}
             callback={insertIcon}
           />
           <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "c"}}
-            callback={insertIcon}
-          />
-          <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "d"}}
-            callback={insertIcon}
-          />
-          <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "e"}}
-            callback={insertIcon}
-          />
-          <InsertMedia
-            style={{width: "100%", height: "125px", gridArea: "f"}}
+            style={{width: "100%", height: "125px"}}
             callback={insertIcon}
           />
         </div>
