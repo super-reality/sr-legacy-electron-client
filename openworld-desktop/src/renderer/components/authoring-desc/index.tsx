@@ -117,20 +117,20 @@ export default function DescAuthoring(): JSX.Element {
       <Flex style={{gridArea: "media"}}>
         <div className="container-with-desc">
           <div>Example Media</div>
-          <Flex style={{justifyContent: "space-between"}}>
+          <div className="insert-images-div">
             <InsertMedia
-              style={{width: "30%", height: "125px"}}
+              style={{width: "100%", height: "125px"}}
               callback={insertIcon}
             />
             <InsertMedia
-              style={{width: "30%", height: "125px"}}
+              style={{width: "100%", height: "125px"}}
               callback={insertIcon}
             />
             <InsertMedia
-              style={{width: "30%", height: "125px"}}
+              style={{width: "100%", height: "125px"}}
               callback={insertIcon}
             />
-          </Flex>
+          </div>
         </div>
       </Flex>
     </div>
