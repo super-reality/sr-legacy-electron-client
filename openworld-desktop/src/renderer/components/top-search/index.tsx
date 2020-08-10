@@ -59,6 +59,7 @@ export default function TopSearch(): JSX.Element {
 
   useEffect(() => {
     setCurrentSelected(showSelect ? currentOptions[0] : "");
+    // eslint-disable-next-line
   }, [location]);
 
   return (
