@@ -1,70 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders app 1`] = `
-Array [
+<div
+  className="mid"
+>
   <div
-    className="top-input-container"
+    className="lesson-title-container"
   >
-    <input
-      className="top-input"
+    <div
+      className="lesson-icon"
     />
-    <svg
-      fill="var(--color-text)"
-      height="20px"
+    <div>
+      <div
+        className="lesson-title"
+      >
+        Insert Lesson
+      </div>
+    </div>
+  </div>
+  <div
+    className="collapsible-box"
+    onClick={[Function]}
+  >
+    <div
+      className="icon-collapse open"
+    >
+      <svg
+        fill="var(--color-background)"
+        height="8px"
+        width="12.4px"
+      >
+        drop.svg
+      </svg>
+    </div>
+    <div
       style={
         Object {
-          "margin": "auto 8px",
+          "marginLeft": "8px",
         }
       }
-      width="20px"
     >
-      search.svg
-    </svg>
-  </div>,
+      Place
+    </div>
+  </div>
   <div
-    className="mid"
+    className="collapsible-content"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "inherit",
+      }
+    }
   >
     <div
-      className="lesson-title-container"
-    >
-      <div
-        className="lesson-icon"
-      />
-      <div>
-        <div
-          className="lesson-title"
-        >
-          Insert Lesson
-        </div>
-      </div>
-    </div>
-    <div
-      className="collapsible-box"
-      onClick={[Function]}
-    >
-      <div
-        className="icon-collapse open"
-      >
-        <svg
-          fill="var(--color-background)"
-          height="8px"
-          width="12.4px"
-        >
-          drop.svg
-        </svg>
-      </div>
-      <div
-        style={
-          Object {
-            "marginLeft": "8px",
-          }
+      style={
+        Object {
+          "display": "flex",
+          "flexDirection": "column",
         }
-      >
-        Place
-      </div>
-    </div>
-    <div
-      className="collapsible-content expanded"
+      }
     >
       <div
         className="inner"
@@ -134,33 +128,48 @@ Array [
         </div>
       </div>
     </div>
+  </div>
+  <div
+    className="collapsible-box"
+    onClick={[Function]}
+  >
     <div
-      className="collapsible-box"
-      onClick={[Function]}
+      className="icon-collapse open"
     >
-      <div
-        className="icon-collapse open"
+      <svg
+        fill="var(--color-background)"
+        height="8px"
+        width="12.4px"
       >
-        <svg
-          fill="var(--color-background)"
-          height="8px"
-          width="12.4px"
-        >
-          drop.svg
-        </svg>
-      </div>
-      <div
-        style={
-          Object {
-            "marginLeft": "8px",
-          }
-        }
-      >
-        Lesson Description
-      </div>
+        drop.svg
+      </svg>
     </div>
     <div
-      className="collapsible-content expanded"
+      style={
+        Object {
+          "marginLeft": "8px",
+        }
+      }
+    >
+      Lesson Description
+    </div>
+  </div>
+  <div
+    className="collapsible-content"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "inherit",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "display": "flex",
+          "flexDirection": "column",
+        }
+      }
     >
       <div
         className="inner desc-authoring-grid"
@@ -285,12 +294,7 @@ Array [
               Example Media
             </div>
             <div
-              style={
-                Object {
-                  "display": "flex",
-                  "justifyContent": "space-between",
-                }
-              }
+              className="insert-images-div"
             >
               <div
                 className="insert-media-container"
@@ -298,7 +302,7 @@ Array [
                 style={
                   Object {
                     "height": "125px",
-                    "width": "30%",
+                    "width": "100%",
                   }
                 }
               >
@@ -321,7 +325,7 @@ Array [
                 style={
                   Object {
                     "height": "125px",
-                    "width": "30%",
+                    "width": "100%",
                   }
                 }
               >
@@ -344,7 +348,7 @@ Array [
                 style={
                   Object {
                     "height": "125px",
-                    "width": "30%",
+                    "width": "100%",
                   }
                 }
               >
@@ -366,33 +370,48 @@ Array [
         </div>
       </div>
     </div>
+  </div>
+  <div
+    className="collapsible-box"
+    onClick={[Function]}
+  >
     <div
-      className="collapsible-box"
-      onClick={[Function]}
+      className="icon-collapse open"
     >
-      <div
-        className="icon-collapse open"
+      <svg
+        fill="var(--color-background)"
+        height="8px"
+        width="12.4px"
       >
-        <svg
-          fill="var(--color-background)"
-          height="8px"
-          width="12.4px"
-        >
-          drop.svg
-        </svg>
-      </div>
-      <div
-        style={
-          Object {
-            "marginLeft": "8px",
-          }
-        }
-      >
-        Step Authoring
-      </div>
+        drop.svg
+      </svg>
     </div>
     <div
-      className="collapsible-content expanded"
+      style={
+        Object {
+          "marginLeft": "8px",
+        }
+      }
+    >
+      Step Authoring
+    </div>
+  </div>
+  <div
+    className="collapsible-content"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "inherit",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "display": "flex",
+          "flexDirection": "column",
+        }
+      }
     >
       <div
         className="inner step-authoring-grid"
@@ -457,14 +476,13 @@ Array [
           }
         >
           <div
-            className="step-insert-images"
+            className="insert-images-div"
           >
             <div
               className="insert-media-container"
               onClick={[Function]}
               style={
                 Object {
-                  "gridArea": "a",
                   "height": "125px",
                   "width": "100%",
                 }
@@ -488,7 +506,6 @@ Array [
               onClick={[Function]}
               style={
                 Object {
-                  "gridArea": "b",
                   "height": "125px",
                   "width": "100%",
                 }
@@ -512,79 +529,6 @@ Array [
               onClick={[Function]}
               style={
                 Object {
-                  "gridArea": "c",
-                  "height": "125px",
-                  "width": "100%",
-                }
-              }
-            >
-              <svg
-                fill="var(--color-text)"
-                height="30px"
-                style={
-                  Object {
-                    "margin": "auto",
-                  }
-                }
-                width="30px"
-              >
-                add.svg
-              </svg>
-            </div>
-            <div
-              className="insert-media-container"
-              onClick={[Function]}
-              style={
-                Object {
-                  "gridArea": "d",
-                  "height": "125px",
-                  "width": "100%",
-                }
-              }
-            >
-              <svg
-                fill="var(--color-text)"
-                height="30px"
-                style={
-                  Object {
-                    "margin": "auto",
-                  }
-                }
-                width="30px"
-              >
-                add.svg
-              </svg>
-            </div>
-            <div
-              className="insert-media-container"
-              onClick={[Function]}
-              style={
-                Object {
-                  "gridArea": "e",
-                  "height": "125px",
-                  "width": "100%",
-                }
-              }
-            >
-              <svg
-                fill="var(--color-text)"
-                height="30px"
-                style={
-                  Object {
-                    "margin": "auto",
-                  }
-                }
-                width="30px"
-              >
-                add.svg
-              </svg>
-            </div>
-            <div
-              className="insert-media-container"
-              onClick={[Function]}
-              style={
-                Object {
-                  "gridArea": "f",
                   "height": "125px",
                   "width": "100%",
                 }
@@ -647,7 +591,8 @@ Array [
             placeholder=""
             style={
               Object {
-                "maxWidth": "calc(100vw - 85px)",
+                "minHeight": "64px",
+                "resize": "vertical",
               }
             }
             value=""
@@ -683,33 +628,48 @@ Array [
         </div>
       </div>
     </div>
+  </div>
+  <div
+    className="collapsible-box"
+    onClick={[Function]}
+  >
     <div
-      className="collapsible-box"
-      onClick={[Function]}
+      className="icon-collapse open"
     >
-      <div
-        className="icon-collapse open"
+      <svg
+        fill="var(--color-background)"
+        height="8px"
+        width="12.4px"
       >
-        <svg
-          fill="var(--color-background)"
-          height="8px"
-          width="12.4px"
-        >
-          drop.svg
-        </svg>
-      </div>
-      <div
-        style={
-          Object {
-            "marginLeft": "8px",
-          }
-        }
-      >
-        Previous Steps
-      </div>
+        drop.svg
+      </svg>
     </div>
     <div
-      className="collapsible-content expanded"
+      style={
+        Object {
+          "marginLeft": "8px",
+        }
+      }
+    >
+      Previous Steps
+    </div>
+  </div>
+  <div
+    className="collapsible-content"
+    style={
+      Object {
+        "height": "0px",
+        "overflow": "inherit",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "display": "flex",
+          "flexDirection": "column",
+        }
+      }
     >
       <div>
         <div
@@ -836,6 +796,6 @@ Array [
         </div>
       </div>
     </div>
-  </div>,
-]
+  </div>
+</div>
 `;

@@ -13,7 +13,7 @@ export default function Test(): JSX.Element {
           width: "200px",
           height: "32px",
         }}
-        onClick={() => ipcSend("popup", "Hello!")}
+        onClick={() => ipcSend({method: "popup", arg: "This is a test."})}
       >
         Click me!
       </div>
