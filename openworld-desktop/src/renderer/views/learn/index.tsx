@@ -5,6 +5,7 @@ import LessonActive from "../../components/lesson-active";
 import {useSelector} from "react-redux";
 import {AppState} from "../../redux/stores/renderer";
 import {Category} from "../../../types/collections";
+import { mockLessonData } from "../../../__mocks__/mocks";
 
 export default function Learn(): JSX.Element {
   const topSelectStates = useSelector(
@@ -21,11 +22,11 @@ export default function Learn(): JSX.Element {
           <div className="lesson-subtitle">Rodney Dude</div>
         </div>
       </div>
-      {current == Category.Lesson ? (
+      {current == Category.Lesson || current == Category.All ? (
         <Collapsible expanded={true} title="Active Lessons">
-          <LessonActive />
-          <LessonActive />
-          <LessonActive />
+          <LessonActive data={mockLessonData} />
+          <LessonActive data={mockLessonData} />
+          <LessonActive data={mockLessonData} />
         </Collapsible>
       ) : (
         <></>

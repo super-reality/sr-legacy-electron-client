@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import "./index.scss";
 import "../create-lesson/index.scss";
 import Flex from "../flex";
-import {IStep} from "../../../types/teach";
+import {IStep} from "../../../types/api";
 import InnerSearch from "../inner-search";
 import Step from "../step";
 import ReactSelect from "../select";

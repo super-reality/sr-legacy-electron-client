@@ -2,7 +2,7 @@ import React from 'react';
 import "./index.scss";
 import "../containers.scss";
 import "../lesson.scss";
-import { ILessonData } from '../../../types/teach';
+import { ILessonData } from '../../../types/api';
 import DescAuthoring from "../authoring-desc";
 import Collapsible from '../collapsible';
 import PlaceAuthoring from '../authoring-place';

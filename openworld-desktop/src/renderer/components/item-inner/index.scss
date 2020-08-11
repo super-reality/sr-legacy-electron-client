@@ -11,7 +11,9 @@
     height: 32px;
     margin: auto 8px auto 2px;
     border-radius: 16px;
-    background-color: white;
+    background-color: var(--color-section);
+    background-size: cover;
+    background-position: center;
   }
 
   .item-titles {

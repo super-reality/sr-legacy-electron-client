@@ -14,7 +14,7 @@ const topNavButtons: string[][] = [
   ["/find", "Find"],
   ["/learn", "Learn"],
   ["/teach", "Teach"],
-  ["/connect", "Connect"],
+  ["/profile", "100"],
 ];
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
