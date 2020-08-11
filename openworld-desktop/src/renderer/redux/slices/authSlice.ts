@@ -5,6 +5,8 @@ const initialState = {
   isPending: false,
   updatedAt: Date.now(),
   token: "",
+  name: "Rodney Dudey",
+  avatarUrl: "https://qph.fs.quoracdn.net/main-qimg-87001d2ce810c2f48c97032cbc905939.webp"
 };
 
 type AuthState = typeof initialState;
