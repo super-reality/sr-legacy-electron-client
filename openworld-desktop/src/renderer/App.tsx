@@ -1,14 +1,15 @@
 import React, {useCallback} from "react";
 import {Switch, Route} from "react-router-dom";
-import Auth from "./views/auth/Auth";
 import TopNav from "./components/top-nav";
 import "./App.scss";
-import Teach from "./views/teach";
+import Auth from "./views/auth/Auth";
+import Test from "./views/test";
+import Find from "./views/find";
 import Learn from "./views/learn";
+import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
 import {useDispatch} from "react-redux";
 import {reduxAction} from "./redux/reduxAction";
-import Test from "./views/test";
 
 export default function App(): JSX.Element {
   //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -108,8 +109,9 @@ export default function App(): JSX.Element {
         <Switch>
           <Route path="/test" component={Test} />
           <Route path="/auth" component={Auth} />
-          <Route path="/teach" component={Teach} />
+          <Route path="/find" component={Find} />
           <Route path="/learn" component={Learn} />
+          <Route path="/teach" component={Teach} />
         </Switch>
       </div>
     </>
