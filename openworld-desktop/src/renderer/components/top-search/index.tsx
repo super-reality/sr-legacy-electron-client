@@ -41,9 +41,11 @@ export default function TopSearch(): JSX.Element {
   // Select
   const currentOptions = selectOptionsByTab[location.pathname];
   const showSelect = currentOptions ? true : false;
+
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
   );
+
   const currentSelected = useMemo(
     () =>
       topSelectStates[location.pathname] ||
@@ -64,6 +66,7 @@ export default function TopSearch(): JSX.Element {
   const topInputStates = useSelector(
     (state: AppState) => state.render.topInputStates
   );
+
   const currentInputValue = useMemo(
     () =>
       topInputStates[location.pathname] || "",
