@@ -88,7 +88,7 @@ export default function TopSearch(): JSX.Element {
   );
 
   // Hide/show animation
-  const offset = 42;
+  const offset = 40;
   const { yScroll, yScrollDelta } = useSelector(
     (state: AppState) => state.render
   );
@@ -98,7 +98,7 @@ export default function TopSearch(): JSX.Element {
     if (yScrollDelta > 0) {
       setYPos(offset);
     } else if (yPos + offset < yScroll) {
-      setYPos(-yScroll + offset);
+      setYPos(Math.max(-12, -yScroll + offset ));
     }
   }, [yPos, yScrollDelta, yScroll]);
 
