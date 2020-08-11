@@ -51,7 +51,7 @@ export default function TopSearch(): JSX.Element {
     [topStates, location]
   );
 
-  const offset = 45;
+  const offset = 42;
   const {yScroll, yScrollDelta} = useSelector(
     (state: AppState) => state.render
   );
