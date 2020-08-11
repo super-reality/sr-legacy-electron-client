@@ -64,7 +64,7 @@ export default function TopNav(): JSX.Element {
       <div onWheel={handleScroll}>
         <div style={{ left: `${xScroll}px` }} className={"topnav-navs-container"}>
           {topNavButtons.map((b) => (
-            <TopNavItem route={b[0]} title={b[1]} />
+            <TopNavItem key={b[0]} route={b[0]} title={b[1]} />
           ))}
         </div>
         <div

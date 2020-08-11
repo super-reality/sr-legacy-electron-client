@@ -2,12 +2,13 @@
 <svg width="29" height="29" version="1.1" viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg">
  <style/>
  <defs>
-  <clipPath id="clipPath838">
+  <clipPath id="clipPathChecked">
    <path d="m11.123 18.6-4.574-4.574-1.557 1.547 6.131 6.133 13.159-13.164-1.544-1.546z" display="none" />
    <path class="powerclip" d="m-5-5h39v39h-39zm16.123 23.6-4.574-4.574-1.557 1.547 6.131 6.133 13.159-13.164-1.544-1.546z"/>
   </clipPath>
  </defs>
  <g id="InActive_Check" transform="translate(-3693,3760)" data-name="InActive Check">
-  <path transform="translate(3693,-3760)" d="M 14.5,0 A 14.5,14.5 0 1 1 0,14.5 14.5,14.5 0 0 1 14.5,0 Z" clip-path="url(#clipPath838)" data-name="Path 2165"/>
+  <path transform="translate(3693,-3760)" d="M 14.5,0 A 14.5,14.5 0 1 1 0,14.5 14.5,14.5 0 0 1 14.5,0 Z" clip-path="url(#clipPathChecked)" data-name="Path 2165"/>
  </g>
 </svg>
+
