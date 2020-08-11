@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-const { app, globalShortcut, BrowserWindow } = require("electron");
+const { app, globalShortcut, BrowserWindow, remote } = require("electron");
 const path = require("path");
 const url = require("url");
 const mainIpcInitialize = require("./ipcHandlers");
@@ -11,6 +11,7 @@ function createWindow() {
     backgroundColor: "#242526",
     width: 350,
     height: 800,
+    alwaysOnTop: true,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -24,6 +25,7 @@ function createWindow() {
         slashes: true,
       })
   );
+  mainWindow.webContents.openDevTools();
 
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());

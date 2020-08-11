@@ -1,15 +1,65 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
+const remote = window.require('electron').remote
+const path = require("path");
+const url = require("url");
+const snipWindow = new remote.BrowserWindow({
+  width: true ? 100 : 100,
+  height: true ? 100 : 100,
+  frame: false,
+  transparent: false,
+  opacity:0.5,
+  alwaysOnTop: true, 
+  resizabel:true,
+  movable:true,
+  draggable:true,
+  backgroundColor: "#00FFFFFF",
+  webPreferences: {
+    nodeIntegration: true
+  }
+});
+
+
+var translucent = false
+remote.globalShortcut.register('Control+D', () => {
+  if(translucent == true){
+    snipWindow.setIgnoreMouseEvents(true)
+  }
+  else{
+    snipWindow.setIgnoreMouseEvents(false)
+  }
+  translucent = !translucent;
+})
+remote.globalShortcut.register('Control+S', () => {
+  
+})
+
 
 export default function DescAuthoring(): JSX.Element {
-  const insertIcon = useCallback(() => {}, []);
+  let isShow = true
+  snipWindow.loadURL(url.format({
+    pathname: path.join(__dirname,"..","public", "dialog.html"),
+    protocol: "file:",
+    slashes: true,
+  }))
+  const insertIcon = useCallback(() => {
+    if (isShow == true) {
+      isShow = false
+      snipWindow.show();
+    }
+    else {
+      isShow = true
+      snipWindow.hide();
+    }
+  }, []);
   const [title, setTitle] = useState("");
 
   const handleChange = useCallback(
+
     (
       e:
         | React.ChangeEvent<HTMLInputElement>
