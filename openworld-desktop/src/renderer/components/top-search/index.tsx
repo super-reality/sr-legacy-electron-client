@@ -10,28 +10,29 @@ import { useSpring, animated } from "react-spring";
 import { useLocation } from "react-router-dom";
 import Flex from "../flex";
 import { reduxAction } from "../../redux/reduxAction";
+import { Category } from "../../../types/collections";
 
-const selectOptionsByTab: Record<string, string[]> = {
-  "/find": [
-    "All",
-    "Subjects",
-    "Organization",
-    "Collection",
-    "Teachers",
-    "Student",
-    "Wanted",
-    "Teacher Bot",
-  ],
-  "/learn": [
-    "All My Stuff",
-    "My Lessons",
-    "My Subjects",
-    "My Organizations",
-    "My Collections",
-    "My Teachers",
-    "My Classmates",
-    "My Teacher Bot",
-  ],
+const selectOptionsByTab: Record<string, Record<string, Category>> = {
+  "/find": {
+    All: Category.All,
+    Subjects: Category.Subject,
+    Organization: Category.Organization,
+    Collection: Category.Collection,
+    Teachers: Category.Teacher,
+    Student: Category.Student,
+    Wanted: Category.Want,
+    "Teacher Bot": Category.TeacherBot,
+  },
+  "/learn": {
+    "All My Stuff": Category.All,
+    "My Lessons": Category.Lesson,
+    "My Subjects": Category.Subject,
+    "My Organizations": Category.Organization,
+    "My Collections": Category.Collection,
+    "My Teachers": Category.Teacher,
+    "My Classmates": Category.Student,
+    "My Teacher Bot": Category.TeacherBot,
+  },
 };
 
 export default function TopSearch(): JSX.Element {
@@ -50,17 +51,20 @@ export default function TopSearch(): JSX.Element {
     () =>
       topSelectStates[location.pathname] ||
       (selectOptionsByTab[location.pathname]
-        ? selectOptionsByTab[location.pathname][0]
-        : ""),
+        ? Object.values(selectOptionsByTab[location.pathname])[0]
+        : Category.All),
     [topSelectStates, location]
   );
 
-  const setCurrentSelected = useCallback((selected: string) => {
-    reduxAction(dispatch, {
-      type: "SET_TOP_SELECT",
-      arg: { selected: selected, path: location.pathname },
-    });
-  }, [dispatch, location]);
+  const setCurrentSelected = useCallback(
+    (selected: Category) => {
+      reduxAction(dispatch, {
+        type: "SET_TOP_SELECT",
+        arg: { selected: selected, path: location.pathname },
+      });
+    },
+    [dispatch, location]
+  );
 
   // Input
   const topInputStates = useSelector(
@@ -68,18 +72,20 @@ export default function TopSearch(): JSX.Element {
   );
 
   const currentInputValue = useMemo(
-    () =>
-      topInputStates[location.pathname] || "",
+    () => topInputStates[location.pathname] || "",
     [topInputStates, location]
   );
 
-  const onInputchange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const str = event.currentTarget.value;
-    reduxAction(dispatch, {
-      type: "SET_TOP_INPUT",
-      arg: { str: str, path: location.pathname },
-    });
-  }, [dispatch, location]);
+  const onInputchange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const str = event.currentTarget.value;
+      reduxAction(dispatch, {
+        type: "SET_TOP_INPUT",
+        arg: { str: str, path: location.pathname },
+      });
+    },
+    [dispatch, location]
+  );
 
   // Hide/show animation
   const offset = 42;
@@ -110,18 +116,27 @@ export default function TopSearch(): JSX.Element {
       />
       <Flex>
         <div className="top-input-container">
-          <input className="top-input" onChange={onInputchange} value={currentInputValue} />
+          <input
+            className="top-input"
+            onChange={onInputchange}
+            value={currentInputValue}
+          />
           <div className={"top-inpu-icon"}>
             <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
           </div>
         </div>
       </Flex>
       {currentOptions ? (
-        <Select
+        <Select<Category>
           style={{ width: "auto" }}
           current={currentSelected}
           callback={setCurrentSelected}
-          options={currentOptions}
+          optionFormatter={(arg: Category | string) =>
+            Object.keys(currentOptions).filter(
+              (c) => currentOptions[c] == arg
+            )[0] || ""
+          }
+          options={Object.values(currentOptions)}
         />
       ) : (
           <></>

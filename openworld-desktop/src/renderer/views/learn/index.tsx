@@ -1,9 +1,17 @@
-import React from 'react';
+import React from "react";
 import "./index.scss";
 import Collapsible from "../../components/collapsible";
-import LessonActive from '../../components/lesson-active';
+import LessonActive from "../../components/lesson-active";
+import {useSelector} from "react-redux";
+import {AppState} from "../../redux/stores/renderer";
+import {Category} from "../../../types/collections";
 
 export default function Learn(): JSX.Element {
+  const topSelectStates = useSelector(
+    (state: AppState) => state.render.topSelectStates
+  );
+  const current = topSelectStates["/learn"] || Category.All;
+
   return (
     <div className="mid">
       <div className="lesson-title-container">
@@ -13,15 +21,15 @@ export default function Learn(): JSX.Element {
           <div className="lesson-subtitle">Rodney Dude</div>
         </div>
       </div>
-      <Collapsible expanded={true} title="Active Lessons">
-        <LessonActive />
-        <LessonActive />
-        <LessonActive />
-      </Collapsible>
-      <Collapsible expanded={true} title="Active Subjects">
-      </Collapsible>
-      <Collapsible expanded={true} title="Active Collections">
-      </Collapsible>
+      {current == Category.Lesson ? (
+        <Collapsible expanded={true} title="Active Lessons">
+          <LessonActive />
+          <LessonActive />
+          <LessonActive />
+        </Collapsible>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
