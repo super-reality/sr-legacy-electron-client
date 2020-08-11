@@ -16,7 +16,6 @@ const sortOptions = ["Name", "Hghest Rated", "Duration"];
 export default function StepsView(props: StepsViewProps): JSX.Element {
   const {steps} = props;
   const [sort, setSort] = useState(sortOptions[0]);
-  console.log(sort);
 
   return (
     <div>
