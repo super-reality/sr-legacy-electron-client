@@ -1,0 +1,20 @@
+.popup-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #00000085;
+  display: flex;
+  z-index: 4;
+
+  .popup-box {
+    border-radius: 4px;
+    min-width: 100px;
+    min-height: 100px;
+    margin: auto;
+    background-color: var(--color-section);
+    max-width: calc(100% - 16px);
+    max-height: calc(100% - 64px);
+  }
+}
