@@ -1,10 +1,10 @@
 const {Schema, model} = require("mongoose");
-const { Int32, JSON } = require("mongodb");
+const ObjectId = Schema.Types.ObjectId
 
 /* *** define step schema *** */
 const stepSchema = new Schema({
     // parent lesson id
-    lesson: { type: String }, 
+    lessonId: { type: ObjectId }, 
     // if child of step, then step id, else if, 0
     parentStep: { type: String }, 
     // step icon url that generated from CV capture automatically
@@ -29,7 +29,7 @@ const stepSchema = new Schema({
     },
     // step number
     sNumber: { 
-        type: Int32, 
+        type: Number, 
         required: true 
     },
     // next step type
@@ -45,9 +45,9 @@ const stepSchema = new Schema({
     // step url
     stepUrl: { type: String },
     // user options
-    options: { type: JSON },
+    options: { type: Array },
     // user id that created this step
-    createdBy: { type: String },
+    createdBy: { type: ObjectId },
     // created date
     createdAt: { type: Date, default: Date.now }
 });

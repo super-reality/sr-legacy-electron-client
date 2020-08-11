@@ -1,10 +1,10 @@
-const {Schema, model} = require("mongoose");
-const { Int32, JSON, Double } = require("mongodb");
+const { Schema, model } = require("mongoose");
+const ObjectId = Schema.Types.ObjectId
 
 /* *** define subject schema *** */
 const subjectSchema = new Schema({
     // parent collection id
-    collection: { type: String }, 
+    collectionId: { type: ObjectId }, 
     // subject icon url
     icon: { type: String },
     // subject name
@@ -26,9 +26,9 @@ const subjectSchema = new Schema({
     // medias urls
     medias: { type: Array },
     // number of shares
-    numberOfShares: { type: Int32 },
+    numberOfShares: { type: Number },
     // number of activations
-    numberOfActivations: { type: Int32 },
+    numberOfActivations: { type: Number },
     // number of completions
     numberOfCompletions: { type: String },
     // average user engagement
@@ -36,13 +36,13 @@ const subjectSchema = new Schema({
     // subject url
     subjectUrl: { type: String },
     // user options
-    options: { type: JSON },
+    options: { type: Array },
     // if remixed
     isRemixed: { type: Boolean },
     // original Subject id where remixed from
     remixedFrom: { type: String },
     // user id that created this subject
-    createdBy: { type: String },
+    createdBy: { type: ObjectId },
     // created date
     createdAt: { type: Date, default: Date.now }
 });
