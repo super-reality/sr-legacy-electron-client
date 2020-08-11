@@ -12,12 +12,9 @@
     "next";
 }
 
-.step-insert-images {
+.insert-images-div {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 4px;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "a b c"
-    "d e f";
+  grid-template-rows: auto;
 }

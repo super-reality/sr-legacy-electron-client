@@ -2,7 +2,7 @@
   background-color: var(--color-section-inner);
   height: 32px;
   border-radius: 24px;
-  margin: 8px auto;
+  margin: 4px 0px;
   padding: 4px;
   display: flex;
 
@@ -25,20 +25,23 @@
       opacity: 0.6;
     }  
   }
-
-
+  
   .item-social {
     align-self: center;
     margin-left: auto;
-    margin-right: 8px;
-
+    display: flex;
+    align-items: center;
+  
     .item-rating {
+      margin-right: 4px;
     }
   
     .item-share {
+      margin-right: 4px;
     }
   
-    .item-completed {
+    .item-checked {
+      margin-right: 4px;
     }
   }
 }
