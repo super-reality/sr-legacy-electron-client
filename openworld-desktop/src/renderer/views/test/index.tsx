@@ -9,8 +9,8 @@ export default function Test(): JSX.Element {
 
   return (
     <div className="mid">
-      <Popup width="600px" height="300px">
-        Popup test!
+      <Popup width="400px" height="300px">
+        <div style={{margin: "auto"}}>Popup test!</div>
       </Popup>
       <div
         style={{
