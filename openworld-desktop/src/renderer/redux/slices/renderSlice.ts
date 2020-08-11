@@ -1,9 +1,10 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   yScroll: 0,
   yScrollDelta: 0,
   topSelectStates: {} as Record<string, string>,
+  topInputStates: {} as Record<string, string>,
 };
 
 type RenderState = typeof initialState;
@@ -18,16 +19,25 @@ const renderSlice = createSlice({
     },
     setTopSelect: (
       state: RenderState,
-      action: PayloadAction<{selected: string; path: string}>
+      action: PayloadAction<{ selected: string; path: string }>
     ): void => {
       state.topSelectStates = {
         ...state.topSelectStates,
         [action.payload.path]: action.payload.selected,
       };
     },
+    setTopInput: (
+      state: RenderState,
+      action: PayloadAction<{ str: string; path: string }>
+    ): void => {
+      state.topInputStates = {
+        ...state.topInputStates,
+        [action.payload.path]: action.payload.str,
+      };
+    },
   },
 });
 
-export const {setYScroll, setTopSelect} = renderSlice.actions;
+export const { setYScroll, setTopSelect, setTopInput } = renderSlice.actions;
 
 export default renderSlice;

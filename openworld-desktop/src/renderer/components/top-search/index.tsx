@@ -1,15 +1,15 @@
-import React, {useState, useEffect, useCallback, useMemo} from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
-import {ReactComponent as SearchIcon} from "../../../assets/svg/search.svg";
-import {ReactComponent as BackIcon} from "../../../assets/svg/back.svg";
-import {ReactComponent as AlertIcon} from "../../../assets/svg/alert.svg";
+import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
+import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
+import { ReactComponent as AlertIcon } from "../../../assets/svg/alert.svg";
 import Select from "../select";
-import {useSelector, useDispatch} from "react-redux";
-import {AppState} from "../../redux/stores/renderer";
-import {useSpring, animated} from "react-spring";
-import {useLocation} from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { AppState } from "../../redux/stores/renderer";
+import { useSpring, animated } from "react-spring";
+import { useLocation } from "react-router-dom";
 import Flex from "../flex";
-import {reduxAction} from "../../redux/reduxAction";
+import { reduxAction } from "../../redux/reduxAction";
 
 const selectOptionsByTab: Record<string, string[]> = {
   "/find": [
@@ -37,22 +37,50 @@ const selectOptionsByTab: Record<string, string[]> = {
 export default function TopSearch(): JSX.Element {
   const dispatch = useDispatch();
   const location = useLocation();
+
+  // Select
   const currentOptions = selectOptionsByTab[location.pathname];
   const showSelect = currentOptions ? true : false;
-  const topStates = useSelector(
+  const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
   );
   const currentSelected = useMemo(
     () =>
-      topStates[location.pathname] ||
+      topSelectStates[location.pathname] ||
       (selectOptionsByTab[location.pathname]
         ? selectOptionsByTab[location.pathname][0]
         : ""),
-    [topStates, location]
+    [topSelectStates, location]
   );
 
+  const setCurrentSelected = useCallback((selected: string) => {
+    reduxAction(dispatch, {
+      type: "SET_TOP_SELECT",
+      arg: { selected: selected, path: location.pathname },
+    });
+  }, [dispatch, location]);
+
+  // Input
+  const topInputStates = useSelector(
+    (state: AppState) => state.render.topInputStates
+  );
+  const currentInputValue = useMemo(
+    () =>
+      topInputStates[location.pathname] || "",
+    [topInputStates, location]
+  );
+
+  const onInputchange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const str = event.currentTarget.value;
+    reduxAction(dispatch, {
+      type: "SET_TOP_INPUT",
+      arg: { str: str, path: location.pathname },
+    });
+  }, [dispatch, location]);
+
+  // Hide/show animation
   const offset = 42;
-  const {yScroll, yScrollDelta} = useSelector(
+  const { yScroll, yScrollDelta } = useSelector(
     (state: AppState) => state.render
   );
   const [yPos, setYPos] = useState(offset);
@@ -65,14 +93,7 @@ export default function TopSearch(): JSX.Element {
     }
   }, [yPos, yScrollDelta, yScroll]);
 
-  const spring = useSpring({top: `${yPos}px`});
-
-  const setCurrentSelected = useCallback((selected: string) => {
-    reduxAction(dispatch, {
-      type: "SET_TOP_SELECT",
-      arg: {selected: selected, path: location.pathname},
-    });
-  }, [dispatch, location]);
+  const spring = useSpring({ top: `${yPos}px` });
 
   return (
     <animated.div
@@ -80,13 +101,13 @@ export default function TopSearch(): JSX.Element {
       className={`top-controls ${!showSelect ? "no-select" : ""}`}
     >
       <BackIcon
-        style={{margin: "auto"}}
+        style={{ margin: "auto" }}
         width="42px"
         fill="var(--color-section)"
       />
       <Flex>
         <div className="top-input-container">
-          <input className="top-input" />
+          <input className="top-input" onChange={onInputchange} value={currentInputValue} />
           <div className={"top-inpu-icon"}>
             <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
           </div>
@@ -94,16 +115,16 @@ export default function TopSearch(): JSX.Element {
       </Flex>
       {currentOptions ? (
         <Select
-          style={{width: "auto"}}
+          style={{ width: "auto" }}
           current={currentSelected}
           callback={setCurrentSelected}
           options={currentOptions}
         />
       ) : (
-        <></>
-      )}
+          <></>
+        )}
       <AlertIcon
-        style={{margin: "auto"}}
+        style={{ margin: "auto" }}
         width="42px"
         fill="var(--color-section)"
       />

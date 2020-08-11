@@ -8,6 +8,7 @@ export const actions = {
   AUTH_INVALIDATED: AuthSlice.setAuthInvalidated,
   SET_YSCROLL: renderSlice.setYScroll,
   SET_TOP_SELECT: renderSlice.setTopSelect,
+  SET_TOP_INPUT: renderSlice.setTopInput,
 };
 
 export type ActionKeys = keyof typeof actions;
