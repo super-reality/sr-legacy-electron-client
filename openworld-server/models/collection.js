@@ -1,5 +1,5 @@
-const {Schema, model} = require("mongoose");
-const { Int32, JSON, Double } = require("mongodb");
+const { Schema, model } = require("mongoose");
+const ObjectId = Schema.Types.ObjectId
 
 /* *** define collection schema *** */
 const collectionSchema = new Schema({
@@ -23,25 +23,25 @@ const collectionSchema = new Schema({
     // medias urls
     medias: { type: Array },
     // number of shares
-    numberOfShares: { type: Int32 },
+    numberOfShares: { type: Number },
     // number of activations
-    numberOfActivations: { type: Int32 },
+    numberOfActivations: { type: Number },
     // total number of subjects
-    numberOfSubjects: { type: Int32 },
+    numberOfSubjects: { type: Number },
     // total number of lessons
-    numberOfLessons: { type: Int32 },
+    numberOfLessons: { type: Number },
     // average user engagement
     avgUserEngage: { type: String },
     // collection url
     collectionUrl: { type: String },
     // user options
-    options: { type: JSON },    
+    options: { type: Array },    
     // if remixed
     isRemixed: { type: Boolean },
     // original collection id where remixed from
     remixedFrom: { type: String },
     // user id that created this collection
-    createdBy: { type: String },
+    createdBy: { type: ObjectId },
     // created date
     createdAt: { type: Date, default: Date.now }
 });

@@ -1,10 +1,10 @@
 const { Schema, model } = require("mongoose");
-const { Int32, JSON, Double } = require("mongodb");
+const ObjectId = Schema.Types.ObjectId
 
 /* *** define lesson schema *** */
 const lessonSchema = new Schema({
     // parent subject id
-    subject: { type: String }, 
+    subjectId: { type: ObjectId }, 
     // lesson icon url
     icon: { type: String },
     // lesson name
@@ -27,16 +27,16 @@ const lessonSchema = new Schema({
     medias: { type: Array },
     // total steps
     totalSteps: { 
-        type: Int32
+        type: Number
     },
     // lesson Rating
-    rating: { type: Double },
+    rating: { type: Number },
     // total rating count. this is used for new rating
-    ratingCount: { type: Int32 },
+    ratingCount: { type: Number },
     // number of shares
-    numberOfShares: { type: Int32 },
+    numberOfShares: { type: Number },
     // number of activations
-    numberOfActivations: { type: Int32 },
+    numberOfActivations: { type: Number },
     // number of completions
     numberOfCompletions: { type: String },
     // average user engagement
@@ -44,17 +44,13 @@ const lessonSchema = new Schema({
     // lesson url
     lessonUrl: { type: String },
     // user options
-    options: { type: JSON },
+    options: { type: Array },
     // if remixed
     isRemixed: { type: Boolean },
     // original lesson id where remixed from
     remixedFrom: { type: String },
     // user id that created this lesson
-    createdBy: { type: String },
-    // created date
-    createdAt: { type: Date, default: Date.now },
-    // user id that created this lesson
-    createdBy: { type: String },
+    createdBy: { type: ObjectId },
     // created date
     createdAt: { type: Date, default: Date.now }
 });
