@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-unresolved
-const { app, globalShortcut, BrowserWindow } = require("electron");
+const { app, globalShortcut, BrowserWindow, protocol } = require("electron");
 const path = require("path");
 const url = require("url");
 const mainIpcInitialize = require("./ipcHandlers");
@@ -13,6 +13,7 @@ function createWindow() {
     width: 350,
     height: 800,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
     },
   });
@@ -38,6 +39,13 @@ function createWindow() {
     installDevTools();
   }
 }
+
+app.whenReady().then(() => {
+  protocol.registerFileProtocol("file", (request, callback) => {
+    const pathname = decodeURI(request.url.replace("file:///", ""));
+    callback(pathname);
+  });
+});
 
 app.on("ready", createWindow);
 
