@@ -2,7 +2,6 @@ import React from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../lesson.scss";
-import { ILessonData } from "../../../types/api";
 import DescAuthoring from "../authoring-desc";
 import Collapsible from "../collapsible";
 import PlaceAuthoring from "../authoring-place";
@@ -15,12 +14,7 @@ export default function CreateLesson(): JSX.Element {
 
   return (
     <div className="mid">
-      <div className="lesson-title-container">
-        <div className="lesson-icon">{}</div>
-        <div>
-          <div className="lesson-title">Insert Lesson</div>
-        </div>
-      </div>
+      <div className="container-title">Create Lesson</div>
       <Collapsible expanded title="Place">
         <PlaceAuthoring />
       </Collapsible>
