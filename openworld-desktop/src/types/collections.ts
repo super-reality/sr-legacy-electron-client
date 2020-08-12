@@ -6,8 +6,10 @@ enum Category {
   Organization,
   Student,
   Teacher,
-  Want,
-  TeacherBot,
+  Project,
+  Task,
+  Resource,
+  Portfolio,
 }
 
 export default Category;

@@ -9,14 +9,6 @@ interface TopNavItemProps {
   route: string;
 }
 
-const topNavButtons: string[][] = [
-  ["/test", "Test"],
-  ["/find", "Find"],
-  ["/learn", "Learn"],
-  ["/teach", "Teach"],
-  ["/profile", "100"],
-];
-
 function TopNavItem(props: TopNavItemProps): JSX.Element {
   const { route, title } = props;
   const location = useLocation();
@@ -34,6 +26,14 @@ export default function TopNav(): JSX.Element {
   const location = useLocation();
   const [xScroll, setXScroll] = useState(0);
   const [ref, { width }] = useMeasure<HTMLDivElement>();
+
+  const topNavButtons: string[][] = [
+    // ["/test", "Test"],
+    ["/discover", "Discover"],
+    ["/learn", "Learn"],
+    ["/teach", "Teach"],
+    ["/me", "100"],
+  ];
 
   const diff = topNavButtons.length * navItemSize - width;
 

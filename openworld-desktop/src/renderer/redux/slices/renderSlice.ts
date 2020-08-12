@@ -5,7 +5,7 @@ import Category from "../../../types/collections";
 const initialState = {
   yScroll: 0,
   yScrollDelta: 0,
-  topSelectStates: {} as Record<string, Category>,
+  topSelectStates: {} as Record<string, Category | string>,
   topInputStates: {} as Record<string, string>,
 };
 
@@ -21,7 +21,7 @@ const renderSlice = createSlice({
     },
     setTopSelect: (
       state: RenderState,
-      action: PayloadAction<{ selected: Category; path: string }>
+      action: PayloadAction<{ selected: Category | string; path: string }>
     ): void => {
       state.topSelectStates = {
         ...state.topSelectStates,

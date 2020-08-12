@@ -12,26 +12,48 @@ import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
 
-const selectOptionsByTab: Record<string, Record<string, Category>> = {
-  "/find": {
-    All: Category.All,
+const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
+  "/discover": {
+    "Discover All": Category.All,
+    Lessons: Category.Lesson,
     Subjects: Category.Subject,
-    Organization: Category.Organization,
-    Collection: Category.Collection,
+    Collections: Category.Collection,
+    Organizations: Category.Organization,
     Teachers: Category.Teacher,
-    Student: Category.Student,
-    Wanted: Category.Want,
-    "Teacher Bot": Category.TeacherBot,
+    Students: Category.Student,
+    Projects: Category.Project,
+    Tasks: Category.Task,
+    Resources: Category.Resource,
+    Portfolios: Category.Portfolio,
   },
   "/learn": {
-    "All My Stuff": Category.All,
+    "All Interests": Category.All,
+    "Active Lessons": Category.Lesson,
+    "Active Subjects": Category.Subject,
+    "Active Collections": Category.Collection,
+    "Active Organizations": Category.Organization,
+    "Active Resources": Category.Resource,
+    "Active Tasks": Category.Task,
+    "My Teachers": Category.Teacher,
+  },
+  "/teach": {
+    "All Duties": Category.All,
     "My Lessons": Category.Lesson,
     "My Subjects": Category.Subject,
-    "My Organizations": Category.Organization,
     "My Collections": Category.Collection,
-    "My Teachers": Category.Teacher,
-    "My Classmates": Category.Student,
-    "My Teacher Bot": Category.TeacherBot,
+    "My Organizations": Category.Organization,
+    "My Projects": Category.Resource,
+    "My Resources": Category.Resource,
+    "My Tasks": Category.Task,
+    "My Students": Category.Student,
+  },
+  "/me": {
+    "My Profile": "profile",
+    "My Score": "score",
+    "My Portfolio": "portfolio",
+    "My Account": "account",
+    "My Events": "events",
+    "My Info": "info",
   },
 };
 
@@ -57,7 +79,7 @@ export default function TopSearch(): JSX.Element {
   );
 
   const setCurrentSelected = useCallback(
-    (selected: Category) => {
+    (selected: Category | string) => {
       reduxAction(dispatch, {
         type: "SET_TOP_SELECT",
         arg: { selected, path: location.pathname },
@@ -127,7 +149,7 @@ export default function TopSearch(): JSX.Element {
         </div>
       </Flex>
       {currentOptions ? (
-        <Select<Category>
+        <Select<Category | string>
           style={{ width: "auto" }}
           current={currentSelected}
           callback={setCurrentSelected}

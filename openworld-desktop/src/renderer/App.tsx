@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import TopNav from "./components/top-nav";
 import "./App.scss";
 import Test from "./views/test";
-import Find from "./views/find";
+import Discover from "./views/discover";
 import Learn from "./views/learn";
 import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
@@ -107,7 +107,7 @@ export default function App(): JSX.Element {
         <div style={{ height: "52px" }} />
         <Switch>
           <Route path="/test" component={Test} />
-          <Route path="/find" component={Find} />
+          <Route path="/discover" component={Discover} />
           <Route path="/learn" component={Learn} />
           <Route path="/teach" component={Teach} />
         </Switch>
