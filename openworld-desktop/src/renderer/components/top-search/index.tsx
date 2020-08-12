@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useSpring, animated } from "react-spring";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as CreateIcon } from "../../../assets/svg/create.svg";
@@ -62,6 +62,7 @@ const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
 export default function TopSearch(): JSX.Element {
   const dispatch = useDispatch();
   const location = useLocation();
+  const history = useHistory();
 
   // Select
   const currentOptions = selectOptionsByTab[location.pathname];
@@ -128,9 +129,6 @@ export default function TopSearch(): JSX.Element {
 
   const spring = useSpring({ top: `${yPos}px` });
 
-  // Back button
-  const goBack = useCallback(() => {}, []);
-
   // Create button
   const [CreatePopup, openCreate] = usePopupCreate();
 
@@ -142,7 +140,7 @@ export default function TopSearch(): JSX.Element {
         className={`top-controls ${!showSelect ? "no-select" : ""}`}
       >
         <ButtonRound
-          onClick={goBack}
+          onClick={history.goBack}
           svg={BackIcon}
           style={{ margin: "auto" }}
           height="32px"
