@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import "./index.scss";
-import usePopup from "../../hooks";
+import usePopup from "../../hooks/usePopup";
 
 export default function Test(): JSX.Element {
   const closePopup = useCallback(() => console.log("popup closed"), []);
