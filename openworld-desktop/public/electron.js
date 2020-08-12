@@ -15,6 +15,7 @@ function createWindow() {
     alwaysOnTop: true,
     webPreferences: {
       nodeIntegration: true,
+      webSecurity: false
     },
   });
 

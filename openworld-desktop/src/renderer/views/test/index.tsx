@@ -1,6 +1,6 @@
 import React from "react";
 import "./index.scss";
-import {ipcSend} from "../../../utils/ipcSend";
+import {ipcSend} from "../../../utils/util";
 
 export default function Test(): JSX.Element {
   return (
