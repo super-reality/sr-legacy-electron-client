@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="29" height="29" version="1.1" viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg">
+<svg width="4.2333mm" height="3.6527mm" version="1.1" viewBox="0 0 4.2333 3.6527" xmlns="http://www.w3.org/2000/svg">
  <style/>
- <defs>
-  <clipPath id="clipPath838">
-   <path d="m13 11v-4l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" display="none"/>
-   <path class="powerclip" d="m-5-5h39v39h-39zm18 16v-4l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/>
-  </clipPath>
- </defs>
- <g id="Back_Arrow" transform="translate(-3618,3760)" data-name="Back Arrow">
-  <path transform="translate(3618,-3760)" d="M 29,14.5 A 14.5,14.5 0 0 1 14.5,29 14.5,14.5 0 0 1 0,14.5 14.5,14.5 0 0 1 14.5,0 14.5,14.5 0 0 1 29,14.5" clip-path="url(#clipPath838)" data-name="Ellipse 141"/>
+ <g transform="translate(-82.857 -189.18)">
+  <path d="m84.506 190.15v-0.96972l-1.6498 1.7132 1.6498 1.6809v-0.96975c1.1517 0 1.9922 0.38791 2.5836 1.2284-0.24901-1.2284-0.96495-2.4244-2.5836-2.683z"/>
  </g>
 </svg>

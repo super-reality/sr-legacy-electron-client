@@ -5,12 +5,13 @@ import { useSpring, animated } from "react-spring";
 import { useLocation } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
-import { ReactComponent as AlertIcon } from "../../../assets/svg/alert.svg";
+import { ReactComponent as CreateIcon } from "../../../assets/svg/create.svg";
 import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
+import ButtonRound from "../button-round";
 
 const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
   "/discover": {
@@ -131,10 +132,11 @@ export default function TopSearch(): JSX.Element {
       style={spring}
       className={`top-controls ${!showSelect ? "no-select" : ""}`}
     >
-      <BackIcon
+      <ButtonRound
+        svg={BackIcon}
         style={{ margin: "auto" }}
-        width="42px"
-        fill="var(--color-section)"
+        height="32px"
+        width="32px"
       />
       <Flex>
         <div className="top-input-container">
@@ -163,10 +165,11 @@ export default function TopSearch(): JSX.Element {
       ) : (
         <></>
       )}
-      <AlertIcon
+      <ButtonRound
+        svg={CreateIcon}
         style={{ margin: "auto" }}
-        width="42px"
-        fill="var(--color-section)"
+        height="32px"
+        width="32px"
       />
     </animated.div>
   );

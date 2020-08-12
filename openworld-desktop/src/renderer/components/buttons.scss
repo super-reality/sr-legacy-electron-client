@@ -17,3 +17,22 @@
   background-size: cover;
   background-position: center;
 }
+
+.button-round {
+  cursor: pointer;
+  background-color: var(--color-section);
+  border-radius: 16px;
+  display: flex;
+
+  .svg-icon {
+    margin: auto;
+    fill: var(--color-background);
+  }
+
+  &:hover {
+    background-color: var(--color-section-hover);
+  }
+  &:active {
+    opacity: 0.5;
+  }
+}
