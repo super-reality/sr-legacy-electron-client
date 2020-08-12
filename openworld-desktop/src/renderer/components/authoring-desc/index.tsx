@@ -69,7 +69,7 @@ export default function DescAuthoring(): JSX.Element {
           <div>Example Media</div>
           <div className="insert-images-div">
             <InsertMedia
-              imgUrl="https://sites.google.com/site/lukepickerings3dwork/_/rsrc/1392205456929/home/mesh-construction/box-modelling/Box%20Modelling.jpg"
+              imgUrl="C:/key-art-new.jpg"
               style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
