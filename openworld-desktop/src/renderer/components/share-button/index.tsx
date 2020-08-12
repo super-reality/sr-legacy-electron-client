@@ -15,7 +15,10 @@ export default function ShareButton(props: Shareprops): JSX.Element {
     <div
       className="icon-button"
       style={{ ...style, display: "flex", width: "26px", height: "26px" }}
-      onClick={callback}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (callback) callback();
+      }}
     >
       <ShareIcon fill="var(--color-text)" style={{ margin: "auto" }} />
     </div>

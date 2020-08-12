@@ -17,7 +17,10 @@ export default function CheckButton(props: Shareprops): JSX.Element {
     <div
       className="icon-button"
       style={{ ...style, display: "flex", width: "20px", height: "20px" }}
-      onClick={callback}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (callback) callback();
+      }}
     >
       {checked ? (
         <CheckIcon
