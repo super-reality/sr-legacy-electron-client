@@ -8,13 +8,10 @@ import Collapsible from "../collapsible";
 import PlaceAuthoring from "../authoring-place";
 import StepAuthoring from "../authoring-step";
 import StepsView from "../steps-view";
+import { mockLessonData } from "../../../__mocks__/mocks";
 
-interface LessonProps {
-  data: ILessonData;
-}
-
-export default function CreateLesson(props: LessonProps): JSX.Element {
-  const { data } = props;
+export default function CreateLesson(): JSX.Element {
+  const data = mockLessonData;
 
   return (
     <div className="mid">

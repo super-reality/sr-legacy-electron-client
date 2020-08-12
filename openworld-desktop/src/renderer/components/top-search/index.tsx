@@ -12,6 +12,7 @@ import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
 import ButtonRound from "../button-round";
+import usePopupCreate from "../../hooks/usePopupCreate";
 
 const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
   "/discover": {
@@ -127,50 +128,61 @@ export default function TopSearch(): JSX.Element {
 
   const spring = useSpring({ top: `${yPos}px` });
 
+  // Back button
+  const goBack = useCallback(() => {}, []);
+
+  // Create button
+  const [CreatePopup, openCreate] = usePopupCreate();
+
   return (
-    <animated.div
-      style={spring}
-      className={`top-controls ${!showSelect ? "no-select" : ""}`}
-    >
-      <ButtonRound
-        svg={BackIcon}
-        style={{ margin: "auto" }}
-        height="32px"
-        width="32px"
-      />
-      <Flex>
-        <div className="top-input-container">
-          <input
-            className="top-input"
-            onChange={onInputchange}
-            value={currentInputValue}
-          />
-          <div className="top-inpu-icon">
-            <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
-          </div>
-        </div>
-      </Flex>
-      {currentOptions ? (
-        <Select<Category | string>
-          style={{ width: "auto" }}
-          current={currentSelected}
-          callback={setCurrentSelected}
-          optionFormatter={(arg: Category | string) =>
-            Object.keys(currentOptions).filter(
-              (c) => currentOptions[c] == arg
-            )[0] || ""
-          }
-          options={Object.values(currentOptions)}
+    <>
+      <CreatePopup />
+      <animated.div
+        style={spring}
+        className={`top-controls ${!showSelect ? "no-select" : ""}`}
+      >
+        <ButtonRound
+          onClick={goBack}
+          svg={BackIcon}
+          style={{ margin: "auto" }}
+          height="32px"
+          width="32px"
         />
-      ) : (
-        <></>
-      )}
-      <ButtonRound
-        svg={CreateIcon}
-        style={{ margin: "auto" }}
-        height="32px"
-        width="32px"
-      />
-    </animated.div>
+        <Flex>
+          <div className="top-input-container">
+            <input
+              className="top-input"
+              onChange={onInputchange}
+              value={currentInputValue}
+            />
+            <div className="top-inpu-icon">
+              <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
+            </div>
+          </div>
+        </Flex>
+        {currentOptions ? (
+          <Select<Category | string>
+            style={{ width: "auto" }}
+            current={currentSelected}
+            callback={setCurrentSelected}
+            optionFormatter={(arg: Category | string) =>
+              Object.keys(currentOptions).filter(
+                (c) => currentOptions[c] == arg
+              )[0] || ""
+            }
+            options={Object.values(currentOptions)}
+          />
+        ) : (
+          <></>
+        )}
+        <ButtonRound
+          onClick={openCreate}
+          svg={CreateIcon}
+          style={{ margin: "auto" }}
+          height="32px"
+          width="32px"
+        />
+      </animated.div>
+    </>
   );
 }

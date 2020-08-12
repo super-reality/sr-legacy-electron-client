@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.scss";
+import "../../components/containers.scss";
 import { useSelector } from "react-redux";
 import Collapsible from "../../components/collapsible";
 import { AppState } from "../../redux/stores/renderer";

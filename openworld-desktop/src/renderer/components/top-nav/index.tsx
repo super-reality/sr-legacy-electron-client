@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
@@ -25,6 +25,7 @@ const navItemSize = 64;
 export default function TopNav(): JSX.Element {
   const location = useLocation();
   const [xScroll, setXScroll] = useState(0);
+  const [lastKnown, setLastKnown] = useState("");
   const [ref, { width }] = useMeasure<HTMLDivElement>();
 
   const topNavButtons: string[][] = [
@@ -35,11 +36,20 @@ export default function TopNav(): JSX.Element {
     ["/me", "100"],
   ];
 
+  useEffect(() => {
+    if (
+      lastKnown !== location.pathname &&
+      topNavButtons.filter((arr) => arr[0] == location.pathname).length > 0
+    ) {
+      setLastKnown(location.pathname);
+    }
+  }, [lastKnown, location]);
+
   const diff = topNavButtons.length * navItemSize - width;
 
   let from = "0px";
   topNavButtons.forEach((b, index) => {
-    const isActive = location.pathname === b[0];
+    const isActive = lastKnown === b[0];
     if (isActive) {
       from = `${index * navItemSize}px`;
     }

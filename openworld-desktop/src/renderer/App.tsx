@@ -9,6 +9,7 @@ import Learn from "./views/learn";
 import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
+import CreateLesson from "./components/create-lesson";
 
 export default function App(): JSX.Element {
   // const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -106,6 +107,7 @@ export default function App(): JSX.Element {
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <div style={{ height: "52px" }} />
         <Switch>
+          <Route path="/create/lesson" component={CreateLesson} />
           <Route path="/test" component={Test} />
           <Route path="/discover" component={Discover} />
           <Route path="/learn" component={Learn} />

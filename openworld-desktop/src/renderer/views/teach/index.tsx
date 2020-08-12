@@ -1,12 +1,7 @@
 import React from "react";
 import "./index.scss";
-import CreateLesson from "../../components/create-lesson";
-import { mockLessonData } from "../../../__mocks__/mocks";
+import "../../components/containers.scss";
 
 export default function Teach(): JSX.Element {
-  return (
-    <>
-      <CreateLesson data={mockLessonData} />
-    </>
-  );
+  return <div className="mid" />;
 }

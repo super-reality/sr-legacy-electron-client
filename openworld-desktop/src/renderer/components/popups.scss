@@ -36,3 +36,16 @@
     }
   }
 }
+
+.popup-title {
+  margin: auto auto 16px auto;
+  font-size: 18px;
+}
+
+.popup-regular-title {
+  padding: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 18px;
+  border-bottom: 1px solid var(--color-separator);
+}
