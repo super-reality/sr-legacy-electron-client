@@ -11,6 +11,8 @@
   display: flex;
   border-radius: 8px;
   background-color: var(--color-section);
+  background-position: center;
+  background-size: cover;
 
   &:hover {
     background-color: var(--color-background-hover);

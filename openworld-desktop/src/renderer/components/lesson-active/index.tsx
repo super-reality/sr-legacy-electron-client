@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import "./index.scss";
-import {ItemInner, Icon, Title, Social} from "../item-inner";
+import "../popups.scss";
+import { ItemInner, Icon, Title, Social } from "../item-inner";
+import { ILessonData } from "../../../types/api";
+import usePopupModal from "../../hooks/usePopupModal";
 
-export default function LessonActive() {
+interface LessonActiveProps {
+  data: ILessonData;
+}
+
+export default function LessonActive(props: LessonActiveProps) {
+  const { data } = props;
+
+  const clickYes = useCallback(() => {
+    console.log("You clicked yes!");
+  }, []);
+
+  const [PopupModal, open] = usePopupModal("Add to your lessons?", clickYes);
+
   return (
     <ItemInner>
-      <Icon />
-      <Title title="Make a Sword" sub="Jhonny C" />
-      <Social rating={4.7} share="http://someshareurl.com/1a3s2d" checked={true} />
+      <PopupModal />
+      <Icon url={data.avatarUrl} />
+      <Title title={data.name} sub={data.creator} />
+      <Social
+        rating={data.rating}
+        share="http://someurl.com"
+        checked
+        checkButtonCallback={open}
+      />
     </ItemInner>
   );
 }

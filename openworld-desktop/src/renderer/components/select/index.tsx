@@ -35,7 +35,7 @@ export default function ReactSelect<K>({
     (event) => {
       setCurrentOption(event.currentTarget.value);
       setOptionsOpen(false);
-      callback && callback(event.currentTarget.value);
+      if (callback) callback(event.currentTarget.value);
     },
     [callback]
   );
@@ -47,7 +47,8 @@ export default function ReactSelect<K>({
   return (
     <div className={`select-container ${className}`} style={style}>
       <button
-        key={currentOption + "-key"}
+        type="button"
+        key={`${currentOption}-key`}
         className={buttonClassNames}
         onClick={onClickSelect}
       >
@@ -62,9 +63,12 @@ export default function ReactSelect<K>({
               </div>
             ) : (
               <button
-                className={`select-option ${className} ${option === currentOption ? "disabled" : ""}`}
-                key={option + "--option-key"}
-                value={option + ""}
+                type="button"
+                className={`select-option ${className} ${
+                  option === currentOption ? "disabled" : ""
+                }`}
+                key={`${option}--option-key`}
+                value={`${option}`}
                 disabled={option === currentOption}
                 onClick={onClickOption}
               >

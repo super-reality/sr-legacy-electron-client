@@ -12,7 +12,7 @@ type DispatchParameter<K extends ActionKeys> = {
  * @param type Action type
  * @param arg argument / object
  */
-export function reduxAction<K extends ActionKeys>(
+export default function reduxAction<K extends ActionKeys>(
   dispatch: Dispatch<AnyAction>,
   action: DispatchParameter<K>
 ): void {

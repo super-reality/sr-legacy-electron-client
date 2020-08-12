@@ -12,7 +12,7 @@ interface IpcMsgPopup extends IpcMsg {
 
 interface IpcMsgTest extends IpcMsg {
   method: "test";
-  arg: {foo: number};
+  arg: { foo: number };
 }
 
 export type IpcArgument = IpcMsgPopup | IpcMsgTest;

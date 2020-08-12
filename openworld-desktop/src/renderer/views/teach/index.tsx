@@ -1,40 +1,7 @@
-import React from 'react';
+import React from "react";
 import "./index.scss";
-import { ILessonData } from '../../../types/teach';
-import CreateLesson from '../../components/create-lesson';
-
-const data: ILessonData = {
-  name: "Box Modelling",
-  app: "Blender",
-  description: {},
-  steps: [
-    {
-      id: "12",
-      title: "Awesomeness",
-      rating: 99
-    },
-    {
-      id: "01",
-      title: "Juice",
-      rating: 45
-    },
-    {
-      id: "78",
-      title: "Draw bolts",
-      rating: 42
-    },
-    {
-      id: "56",
-      title: "Hit something",
-      rating: 37
-    },
-  ]
-};
+import "../../components/containers.scss";
 
 export default function Teach(): JSX.Element {
-  return (
-    <>
-      <CreateLesson data={data} />
-    </>
-  );
+  return <div className="mid" />;
 }

@@ -5,10 +5,10 @@ import { AppState } from "../../redux/stores/renderer";
 export default function Auth(): JSX.Element {
   const usernameField = useRef<null | HTMLInputElement>(null);
   const passwordField = useRef<null | HTMLInputElement>(null);
-  //const dispatch = useDispatch();
-  //const history = useHistory();
-  //const location = useLocation();
-  //const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  // const dispatch = useDispatch();
+  // const history = useHistory();
+  // const location = useLocation();
+  // const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
 
   const focusField = useCallback(
