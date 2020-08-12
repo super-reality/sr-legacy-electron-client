@@ -5,24 +5,27 @@ import "./index.scss";
 
 interface InsertMediaProps {
   callback: () => void;
+  imgUrl?: string;
   style?: CSSProperties;
 }
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
-  const { callback, style } = props;
+  const { callback, imgUrl, style } = props;
 
   return (
     <div
       className="insert-media-container"
-      style={{ ...style }}
+      style={{ ...style, backgroundImage: `url(${imgUrl})` }}
       onClick={callback}
     >
-      <Add
-        style={{ margin: "auto" }}
-        fill="var(--color-text)"
-        width="30px"
-        height="30px"
-      />
+      {imgUrl ? undefined : (
+        <Add
+          style={{ margin: "auto" }}
+          fill="var(--color-text)"
+          width="30px"
+          height="30px"
+        />
+      )}
     </div>
   );
 }
