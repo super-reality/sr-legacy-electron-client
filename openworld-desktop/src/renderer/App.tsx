@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Switch, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TopNav from "./components/top-nav";
 import "./App.scss";
 import Test from "./views/test";
@@ -10,9 +10,12 @@ import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
 import CreateLesson from "./components/create-lesson";
+import { AppState } from "./redux/stores/renderer";
+import Splash from "./views/splash";
+import Flex from "./components/flex";
 
 export default function App(): JSX.Element {
-  // const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   // const dispatch = useDispatch();
   // const location = useLocation();
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
@@ -64,46 +67,10 @@ export default function App(): JSX.Element {
   };
   */
 
-  return (
+  return isAuthenticated ? (
     <>
       <TopNav />
       <TopSearch />
-      {/*
-      // Keeping it for reference
-      <nav>
-        {isAuthenticated ? (
-          <ul className={"nav"}>
-            <li>
-              <NavLink exact to="/" activeClassName={"active"}>
-                classroom
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/admin" activeClassName={"active"}>
-                admin
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/auth"
-                activeClassName={"active"}
-                onClick={onSignOutClick}
-              >
-                sign out
-              </NavLink>
-            </li>
-          </ul>
-        ) : (
-          <ul className={"nav"}>
-            <li>
-              <NavLink to="/auth" activeClassName={"active"}>
-                sign in
-              </NavLink>
-            </li>
-          </ul>
-        )}
-        </nav>
-        */}
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <div style={{ height: "52px" }} />
         <Switch>
@@ -115,6 +82,10 @@ export default function App(): JSX.Element {
         </Switch>
       </div>
     </>
+  ) : (
+    <Switch>
+      <Route path="/" component={Splash} />
+    </Switch>
   );
 }
 // <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />

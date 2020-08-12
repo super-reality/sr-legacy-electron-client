@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
-  isValid: true,
+  isValid: false,
   isPending: false,
   updatedAt: Date.now(),
   token: "",
@@ -24,6 +24,7 @@ const hoverSlice = createSlice({
       state: AuthState,
       action: PayloadAction<AuthState["token"]>
     ): void => {
+      state.isValid = true;
       state.token = action.payload;
     },
     setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {

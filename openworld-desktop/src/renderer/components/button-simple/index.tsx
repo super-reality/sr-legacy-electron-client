@@ -13,11 +13,12 @@ export default function ButtonSimple(
   props: PropsWithChildren<ButtonSimpleProps>
 ): JSX.Element {
   const { children, style, margin, height, width, onClick } = props;
+
   return (
     <div
       onClick={onClick}
       className="button-simple"
-      style={{ ...style, margin, width, height }}
+      style={{ margin, width, height, ...style }}
     >
       {children}
     </div>
