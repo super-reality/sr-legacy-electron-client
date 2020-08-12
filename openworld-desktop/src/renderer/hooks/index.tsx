@@ -20,8 +20,8 @@ type PopupProps = PropsWithChildren<{
  */
 export default function usePopup(
   open: boolean,
-  onClose: () => void
-): [(props: PopupProps) => JSX.Element, () => void] {
+  onClose?: () => void
+): [(props: PopupProps) => JSX.Element, () => void, () => void] {
   const [state, setState] = useState({
     display: open,
     open,
@@ -29,7 +29,7 @@ export default function usePopup(
 
   const update = useCallback(() => {
     if (!state.open) {
-      onClose();
+      if (onClose) onClose();
       setState({ ...state, display: false });
     }
   }, [onClose, state]);
@@ -81,5 +81,5 @@ export default function usePopup(
     );
   };
 
-  return [Component, doOpen];
+  return [Component, doOpen, beginClose];
 }

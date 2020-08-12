@@ -56,10 +56,18 @@ interface SocialProps {
   rating?: number;
   share?: string;
   checked?: boolean;
+  checkButtonCallback?: () => void;
 }
 
 export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
-  const { rating, checked, share, style, children } = props;
+  const {
+    rating,
+    checked,
+    share,
+    style,
+    checkButtonCallback,
+    children,
+  } = props;
   return (
     <div className="item-social" style={{ ...style }}>
       {rating ? <div className="item-rating">{rating}</div> : <></>}
@@ -72,7 +80,7 @@ export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
       )}
       {checked !== undefined ? (
         <div className="item-checked">
-          <CheckButton checked={checked} />
+          <CheckButton checked={checked} callback={checkButtonCallback} />
         </div>
       ) : (
         <></>
