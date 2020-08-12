@@ -730,6 +730,11 @@ exports[`renders app 1`] = `
           >
             <div
               className="step-icon"
+              style={
+                Object {
+                  "backgroundImage": "url(https://image.shutterstock.com/image-vector/cartoon-game-sword-vector-illustration-260nw-431439559.jpg)",
+                }
+              }
             />
             <div
               className="step-title"
@@ -747,6 +752,11 @@ exports[`renders app 1`] = `
           >
             <div
               className="step-icon"
+              style={
+                Object {
+                  "backgroundImage": "url(https://lexiscleankitchen.com/wp-content/uploads/2018/12/Kick-That-Cold-Juice1.jpg)",
+                }
+              }
             />
             <div
               className="step-title"
@@ -764,6 +774,11 @@ exports[`renders app 1`] = `
           >
             <div
               className="step-icon"
+              style={
+                Object {
+                  "backgroundImage": "url(https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-7E002_QIzTSzYBIXoArw4qKChtf2vEIStg&usqp=CAU)",
+                }
+              }
             />
             <div
               className="step-title"
@@ -781,6 +796,11 @@ exports[`renders app 1`] = `
           >
             <div
               className="step-icon"
+              style={
+                Object {
+                  "backgroundImage": "url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDADslFYupS-oEjgKOxTMxQPNDG6F8pTHTReZ_5XPcUYa3ezpJ&s)",
+                }
+              }
             />
             <div
               className="step-title"

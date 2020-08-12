@@ -18,13 +18,12 @@ const topNavButtons: string[][] = [
 ];
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
+  const { route, title } = props;
   const location = useLocation();
-  const isActive = location.pathname === props.route;
+  const isActive = location.pathname === route;
   return (
-    <NavLink exact to={props.route}>
-      <div className={`topnav-item ${isActive && "selected"}`}>
-        {props.title}
-      </div>
+    <NavLink exact to={route}>
+      <div className={`topnav-item ${isActive && "selected"}`}>{title}</div>
     </NavLink>
   );
 }
@@ -36,7 +35,7 @@ export default function TopNav(): JSX.Element {
   const [xScroll, setXScroll] = useState(0);
   const [ref, { width }] = useMeasure<HTMLDivElement>();
 
-  const diff = (topNavButtons.length * navItemSize) - width;
+  const diff = topNavButtons.length * navItemSize - width;
 
   let from = "0px";
   topNavButtons.forEach((b, index) => {
@@ -50,28 +49,32 @@ export default function TopNav(): JSX.Element {
     setXScroll(0);
   }
 
-  const handleScroll = useCallback((event: React.WheelEvent<HTMLDivElement>) => {
-    let newScroll = Math.min(0, xScroll + (event.deltaY / 5));
-    newScroll = Math.max(diff * -1, newScroll);
-    setXScroll(newScroll);
-    // eslint-disable-next-line
+  const handleScroll = useCallback(
+    (event: React.WheelEvent<HTMLDivElement>) => {
+      let newScroll = Math.min(0, xScroll + event.deltaY / 5);
+      newScroll = Math.max(diff * -1, newScroll);
+      setXScroll(newScroll);
+      // eslint-disable-next-line
   }, [xScroll]);
 
   const props = useSpring({ marginLeft: from });
 
   return (
-    <div ref={ref} className={"topnav-container"}>
+    <div ref={ref} className="topnav-container">
       <div onWheel={handleScroll}>
-        <div style={{ left: `${xScroll}px` }} className={"topnav-navs-container"}>
+        <div style={{ left: `${xScroll}px` }} className="topnav-navs-container">
           {topNavButtons.map((b) => (
             <TopNavItem key={b[0]} route={b[0]} title={b[1]} />
           ))}
         </div>
         <div
-          className={"topnav-indicator-container"}
-          style={{ left: `${xScroll}px`, width: `${topNavButtons.length * navItemSize}px` }}
+          className="topnav-indicator-container"
+          style={{
+            left: `${xScroll}px`,
+            width: `${topNavButtons.length * navItemSize}px`,
+          }}
         >
-          <animated.div className={"topnav-indicator"} style={props} />
+          <animated.div className="topnav-indicator" style={props} />
         </div>
       </div>
     </div>

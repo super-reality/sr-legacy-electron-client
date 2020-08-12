@@ -1,4 +1,4 @@
-export enum Category {
+enum Category {
   All,
   Lesson,
   Subject,
@@ -9,3 +9,5 @@ export enum Category {
   Want,
   TeacherBot,
 }
+
+export default Category;

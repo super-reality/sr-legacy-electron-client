@@ -10,9 +10,10 @@ interface InnerItemProps {
 export function ItemInner(
   props: PropsWithChildren<InnerItemProps>
 ): JSX.Element {
+  const { style, children } = props;
   return (
-    <div className="item-container" style={{ ...props.style }}>
-      {props.children}
+    <div className="item-container" style={{ ...style }}>
+      {children}
     </div>
   );
 }
@@ -23,12 +24,13 @@ interface IconProps {
 }
 
 export function Icon(props: PropsWithChildren<IconProps>): JSX.Element {
+  const { url, style, children } = props;
   return (
     <div
       className="item-icon"
-      style={{ ...props.style, backgroundImage: `url(${props.url})` }}
+      style={{ ...style, backgroundImage: `url(${url})` }}
     >
-      {props.children}
+      {children}
     </div>
   );
 }
@@ -40,10 +42,11 @@ interface TitleProps {
 }
 
 export function Title(props: PropsWithChildren<TitleProps>): JSX.Element {
+  const { title, sub, style, children } = props;
   return (
-    <div className="item-titles" style={{ ...props.style }}>
-      <div className="item-title">{props.title}</div>
-      {props.sub ? <div className="item-sub">{props.sub}</div> : <></>}
+    <div className="item-titles" style={{ ...style }}>
+      <div className="item-title">{title}</div>
+      {sub ? <div className="item-sub">{sub}</div> : <></>}
     </div>
   );
 }
@@ -56,23 +59,24 @@ interface SocialProps {
 }
 
 export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
+  const { rating, checked, share, style, children } = props;
   return (
-    <div className="item-social" style={{ ...props.style }}>
-      {props.rating ? <div className="item-rating">{props.rating}</div> : <></>}
-      {props.share ? (
+    <div className="item-social" style={{ ...style }}>
+      {rating ? <div className="item-rating">{rating}</div> : <></>}
+      {share ? (
         <div className="item-share">
           <ShareButton />
         </div>
       ) : (
-          <></>
-        )}
-      {props.checked !== undefined ? (
+        <></>
+      )}
+      {checked !== undefined ? (
         <div className="item-checked">
-          <CheckButton checked={props.checked} />
+          <CheckButton checked={checked} />
         </div>
       ) : (
-          <></>
-        )}
+        <></>
+      )}
     </div>
   );
 }

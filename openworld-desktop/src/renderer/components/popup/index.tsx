@@ -5,7 +5,7 @@ import React, {
   CSSProperties,
 } from "react";
 import "./index.scss";
-import {animated, useSpring} from "react-spring";
+import { animated, useSpring } from "react-spring";
 
 type PopupProps = PropsWithChildren<{
   width: string;
@@ -24,25 +24,25 @@ export default function usePopup(
 ): [(props: PopupProps) => JSX.Element, () => void] {
   const [state, setState] = useState({
     display: open,
-    open: open,
+    open,
   });
 
   const update = useCallback(() => {
     if (!state.open) {
       onClose();
-      setState({...state, display: false});
+      setState({ ...state, display: false });
     }
   }, [onClose, state]);
 
   const doOpen = useCallback(() => {
-    setState({open: true, display: true});
+    setState({ open: true, display: true });
   }, []);
 
   const beginClose = useCallback(() => {
-    setState({open: false, display: true});
+    setState({ open: false, display: true });
   }, []);
 
-  const springConfig = {mass: 3, tension: 1000, friction: 100};
+  const springConfig = { mass: 3, tension: 1000, friction: 100 };
   const alphaSpring = useSpring({
     opacity: state.open ? 1 : 0,
     config: springConfig,
@@ -53,27 +53,33 @@ export default function usePopup(
     config: springConfig,
   }) as any;
 
-  const Component = (props: PopupProps) =>
-    state.display ? (
-      <animated.div style={alphaSpring} className="popup-container" onClick={beginClose}>
+  const Component = (props: PopupProps) => {
+    const { children, style, width, height } = props;
+    return state.display ? (
+      <animated.div
+        style={alphaSpring}
+        className="popup-container"
+        onClick={beginClose}
+      >
         <animated.div
           className="popup-box"
           style={{
             ...scaleSpring,
-            ...props.style,
-            width: props.width,
-            height: props.height,
+            ...style,
+            width,
+            height,
           }}
           onClick={(e): void => {
             e.stopPropagation();
           }}
         >
-          {props.children}
+          {children}
         </animated.div>
       </animated.div>
     ) : (
       <></>
     );
+  };
 
   return [Component, doOpen];
 }

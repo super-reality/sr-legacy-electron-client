@@ -1,13 +1,10 @@
-import React, { CSSProperties, PropsWithChildren} from "react";
+import React, { CSSProperties, PropsWithChildren } from "react";
 
 interface FlexProps {
   style?: CSSProperties;
 }
 
 export default function Flex(props: PropsWithChildren<FlexProps>): JSX.Element {
-  return (
-    <div style={{...props.style, display: "flex"}} >
-      {props.children}
-    </div>
-  );
+  const { style, children } = props;
+  return <div style={{ ...style, display: "flex" }}>{children}</div>;
 }

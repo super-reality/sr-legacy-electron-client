@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
@@ -22,16 +22,16 @@ export default function DescAuthoring(): JSX.Element {
 
   return (
     <div className="inner desc-authoring-grid">
-      <Flex style={{gridArea: "icon"}}>
+      <Flex style={{ gridArea: "icon" }}>
         <div className="container-with-desc">
           <div>Icon</div>
           <InsertMedia
-            style={{width: "32px", height: "32px"}}
+            style={{ width: "32px", height: "32px" }}
             callback={insertIcon}
           />
         </div>
       </Flex>
-      <Flex style={{gridArea: "title"}}>
+      <Flex style={{ gridArea: "title" }}>
         <div className="container-with-desc">
           <div>Lesson Title</div>
           <input
@@ -42,7 +42,7 @@ export default function DescAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <Flex style={{gridArea: "purpose"}}>
+      <Flex style={{ gridArea: "purpose" }}>
         <div className="container-with-desc">
           <div>Purpose</div>
           <input
@@ -53,7 +53,7 @@ export default function DescAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <Flex style={{gridArea: "tags"}}>
+      <Flex style={{ gridArea: "tags" }}>
         <div className="container-with-desc">
           <div>Lesson Tags</div>
           <input
@@ -64,20 +64,20 @@ export default function DescAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <Flex style={{gridArea: "media"}}>
+      <Flex style={{ gridArea: "media" }}>
         <div className="container-with-desc">
           <div>Example Media</div>
           <div className="insert-images-div">
             <InsertMedia
-              style={{width: "100%", height: "125px"}}
+              style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
             <InsertMedia
-              style={{width: "100%", height: "125px"}}
+              style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
             <InsertMedia
-              style={{width: "100%", height: "125px"}}
+              style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
           </div>

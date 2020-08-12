@@ -8,11 +8,14 @@ interface StepProps {
 }
 
 export default function Step(props: StepProps): JSX.Element {
-  const {data} = props;
+  const { data } = props;
 
   return (
     <div className="step-container">
-      <div className="step-icon" style={{backgroundImage: `url(${data.avatarUrl})`}} />
+      <div
+        className="step-icon"
+        style={{ backgroundImage: `url(${data.avatarUrl})` }}
+      />
       <div className="step-title">{data.name}</div>
       <div className="step-rating">{data.rating}</div>
     </div>

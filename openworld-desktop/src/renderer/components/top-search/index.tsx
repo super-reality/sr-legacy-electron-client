@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
+import { useSelector, useDispatch } from "react-redux";
+import { useSpring, animated } from "react-spring";
+import { useLocation } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as AlertIcon } from "../../../assets/svg/alert.svg";
 import Select from "../select";
-import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../redux/stores/renderer";
-import { useSpring, animated } from "react-spring";
-import { useLocation } from "react-router-dom";
 import Flex from "../flex";
-import { reduxAction } from "../../redux/reduxAction";
-import { Category } from "../../../types/collections";
+import reduxAction from "../../redux/reduxAction";
+import Category from "../../../types/collections";
 
 const selectOptionsByTab: Record<string, Record<string, Category>> = {
   "/find": {
@@ -41,7 +41,7 @@ export default function TopSearch(): JSX.Element {
 
   // Select
   const currentOptions = selectOptionsByTab[location.pathname];
-  const showSelect = currentOptions ? true : false;
+  const showSelect = !!currentOptions;
 
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
@@ -60,7 +60,7 @@ export default function TopSearch(): JSX.Element {
     (selected: Category) => {
       reduxAction(dispatch, {
         type: "SET_TOP_SELECT",
-        arg: { selected: selected, path: location.pathname },
+        arg: { selected, path: location.pathname },
       });
     },
     [dispatch, location]
@@ -81,7 +81,7 @@ export default function TopSearch(): JSX.Element {
       const str = event.currentTarget.value;
       reduxAction(dispatch, {
         type: "SET_TOP_INPUT",
-        arg: { str: str, path: location.pathname },
+        arg: { str, path: location.pathname },
       });
     },
     [dispatch, location]
@@ -98,7 +98,7 @@ export default function TopSearch(): JSX.Element {
     if (yScrollDelta > 0) {
       setYPos(offset);
     } else if (yPos + offset < yScroll) {
-      setYPos(Math.max(-12, -yScroll + offset ));
+      setYPos(Math.max(-12, -yScroll + offset));
     }
   }, [yPos, yScrollDelta, yScroll]);
 
@@ -121,7 +121,7 @@ export default function TopSearch(): JSX.Element {
             onChange={onInputchange}
             value={currentInputValue}
           />
-          <div className={"top-inpu-icon"}>
+          <div className="top-inpu-icon">
             <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
           </div>
         </div>
@@ -139,8 +139,8 @@ export default function TopSearch(): JSX.Element {
           options={Object.values(currentOptions)}
         />
       ) : (
-          <></>
-        )}
+        <></>
+      )}
       <AlertIcon
         style={{ margin: "auto" }}
         width="42px"

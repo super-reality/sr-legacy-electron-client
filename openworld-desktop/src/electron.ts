@@ -1,4 +1,4 @@
-//import {} from "electron";
+// import {} from "electron";
 const electron = window.require("electron");
 
 export default electron;

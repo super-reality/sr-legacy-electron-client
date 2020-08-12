@@ -9,11 +9,20 @@ interface InsertMediaProps {
 }
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
-  const {callback, style} = props;
+  const { callback, style } = props;
 
   return (
-    <div className="insert-media-container" style={{...style}} onClick={callback}>
-      <Add style={{margin: "auto"}} fill="var(--color-text)" width="30px" height="30px" />
+    <div
+      className="insert-media-container"
+      style={{ ...style }}
+      onClick={callback}
+    >
+      <Add
+        style={{ margin: "auto" }}
+        fill="var(--color-text)"
+        width="30px"
+        height="30px"
+      />
     </div>
   );
 }

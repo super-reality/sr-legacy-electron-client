@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -6,7 +7,8 @@ const initialState = {
   updatedAt: Date.now(),
   token: "",
   name: "Rodney Dudey",
-  avatarUrl: "https://qph.fs.quoracdn.net/main-qimg-87001d2ce810c2f48c97032cbc905939.webp"
+  avatarUrl:
+    "https://qph.fs.quoracdn.net/main-qimg-87001d2ce810c2f48c97032cbc905939.webp",
 };
 
 type AuthState = typeof initialState;
@@ -15,10 +17,7 @@ const hoverSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthPending: (
-      state: AuthState,
-      action: PayloadAction<null>
-    ): void => {
+    setAuthPending: (state: AuthState, action: PayloadAction<null>): void => {
       state.isPending = true;
     },
     setAuthSucessful: (
@@ -27,10 +26,7 @@ const hoverSlice = createSlice({
     ): void => {
       state.token = action.payload;
     },
-    setAuthFailed: (
-      state: AuthState,
-      action: PayloadAction<null>
-    ): void => {
+    setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {
       state.isValid = false;
       state.isPending = false;
     },

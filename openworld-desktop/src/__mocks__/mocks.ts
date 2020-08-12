@@ -1,4 +1,15 @@
-import { ILessonData } from "../types/api";
+import { ILessonData, IStep } from "../types/api";
+
+export const mockStep: IStep = {
+  id: "12",
+  name: "Awesomeness",
+  creator: "Jhonny C.",
+  rating: 99,
+  media: [],
+  avatarUrl:
+    "https://image.shutterstock.com/image-vector/cartoon-game-sword-vector-illustration-260nw-431439559.jpg",
+  checkState: false,
+};
 
 export const mockLessonData: ILessonData = {
   id: "35",
@@ -6,7 +17,8 @@ export const mockLessonData: ILessonData = {
   creator: "Jhonny C.",
   purpose: "",
   media: [],
-  avatarUrl: "https://sites.google.com/site/lukepickerings3dwork/_/rsrc/1392205456929/home/mesh-construction/box-modelling/Box%20Modelling.jpg",
+  avatarUrl:
+    "https://sites.google.com/site/lukepickerings3dwork/_/rsrc/1392205456929/home/mesh-construction/box-modelling/Box%20Modelling.jpg",
   rating: 4.9,
   checkState: false,
   subjectName: "Blender",
@@ -17,7 +29,8 @@ export const mockLessonData: ILessonData = {
       creator: "Jhonny C.",
       rating: 99,
       media: [],
-      avatarUrl: "https://image.shutterstock.com/image-vector/cartoon-game-sword-vector-illustration-260nw-431439559.jpg",
+      avatarUrl:
+        "https://image.shutterstock.com/image-vector/cartoon-game-sword-vector-illustration-260nw-431439559.jpg",
       checkState: false,
     },
     {
@@ -26,7 +39,8 @@ export const mockLessonData: ILessonData = {
       creator: "Jhonny C.",
       rating: 45,
       media: [],
-      avatarUrl: "https://lexiscleankitchen.com/wp-content/uploads/2018/12/Kick-That-Cold-Juice1.jpg",
+      avatarUrl:
+        "https://lexiscleankitchen.com/wp-content/uploads/2018/12/Kick-That-Cold-Juice1.jpg",
       checkState: false,
     },
     {
@@ -35,7 +49,8 @@ export const mockLessonData: ILessonData = {
       creator: "Jhonny C.",
       rating: 42,
       media: [],
-      avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-7E002_QIzTSzYBIXoArw4qKChtf2vEIStg&usqp=CAU",
+      avatarUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-7E002_QIzTSzYBIXoArw4qKChtf2vEIStg&usqp=CAU",
       checkState: false,
     },
     {
@@ -44,8 +59,9 @@ export const mockLessonData: ILessonData = {
       creator: "Jhonny C.",
       rating: 37,
       media: [],
-      avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDADslFYupS-oEjgKOxTMxQPNDG6F8pTHTReZ_5XPcUYa3ezpJ&s",
+      avatarUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDADslFYupS-oEjgKOxTMxQPNDG6F8pTHTReZ_5XPcUYa3ezpJ&s",
       checkState: false,
     },
-  ]
-}
+  ],
+};

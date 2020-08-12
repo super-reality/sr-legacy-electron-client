@@ -1,9 +1,9 @@
 import React from "react";
 import "./index.scss";
+import { useSelector } from "react-redux";
 import Collapsible from "../../components/collapsible";
-import {useSelector} from "react-redux";
-import {AppState} from "../../redux/stores/renderer";
-import {Category} from "../../../types/collections";
+import { AppState } from "../../redux/stores/renderer";
+import Category from "../../../types/collections";
 
 export default function Find(): JSX.Element {
   const topSelectStates = useSelector(
@@ -14,37 +14,37 @@ export default function Find(): JSX.Element {
   return (
     <div className="mid">
       {current == Category.Subject || current == Category.All ? (
-        <Collapsible expanded={true} title="Subjects"></Collapsible>
+        <Collapsible expanded title="Subjects" />
       ) : (
         <></>
       )}
       {current == Category.Organization || current == Category.All ? (
-        <Collapsible expanded={true} title="Organizations"></Collapsible>
+        <Collapsible expanded title="Organizations" />
       ) : (
         <></>
       )}
       {current == Category.Collection || current == Category.All ? (
-        <Collapsible expanded={true} title="Collections"></Collapsible>
+        <Collapsible expanded title="Collections" />
       ) : (
         <></>
       )}
       {current == Category.Teacher || current == Category.All ? (
-        <Collapsible expanded={true} title="Teachers"></Collapsible>
+        <Collapsible expanded title="Teachers" />
       ) : (
         <></>
       )}
       {current == Category.Student || current == Category.All ? (
-        <Collapsible expanded={true} title="Students"></Collapsible>
+        <Collapsible expanded title="Students" />
       ) : (
         <></>
       )}
       {current == Category.Want || current == Category.All ? (
-        <Collapsible expanded={true} title="Wants"></Collapsible>
+        <Collapsible expanded title="Wants" />
       ) : (
         <></>
       )}
       {current == Category.TeacherBot || current == Category.All ? (
-        <Collapsible expanded={true} title="Teacher Bots"></Collapsible>
+        <Collapsible expanded title="Teacher Bots" />
       ) : (
         <></>
       )}

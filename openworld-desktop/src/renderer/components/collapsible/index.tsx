@@ -5,9 +5,9 @@ import React, {
   useEffect,
 } from "react";
 import "./index.scss";
-import {ReactComponent as DropArrow} from "../../../assets/svg/drop.svg";
-import {animated, useSpring} from "react-spring";
-import {useMeasure} from "react-use";
+import { animated, useSpring } from "react-spring";
+import { useMeasure } from "react-use";
+import { ReactComponent as DropArrow } from "../../../assets/svg/drop.svg";
 
 interface CollapsibleProps {
   title: string;
@@ -17,27 +17,29 @@ interface CollapsibleProps {
 export default function Collapsible(
   props: PropsWithChildren<CollapsibleProps>
 ): JSX.Element {
-  const [expanded, setExpanded] = useState(props.expanded ? true : false);
+  const { expanded, title, children } = props;
+
+  const [open, setOpen] = useState(!!expanded);
   const [overflow, setOverflow] = useState<"inherit" | "hidden">(
-    props.expanded ? "inherit" : "hidden"
+    expanded ? "inherit" : "hidden"
   );
 
   const updateOverflow = useCallback(() => {
-    setOverflow(expanded ? "inherit" : "hidden");
-  }, [expanded]);
+    setOverflow(open ? "inherit" : "hidden");
+  }, [open]);
 
-  const toggleExpanded = useCallback(() => {
-    if (expanded) setOverflow("hidden");
-    setExpanded(!expanded);
-  }, [expanded]);
+  const toggleopen = useCallback(() => {
+    if (open) setOverflow("hidden");
+    setOpen(!open);
+  }, [open]);
 
   const [contentHeight, setContentHeight] = useState(0);
-  const [ref, {height}] = useMeasure<HTMLDivElement>();
+  const [ref, { height }] = useMeasure<HTMLDivElement>();
 
   const expand = useSpring({
-    from: {height: props.expanded ? `${contentHeight}px` : "0px"},
+    from: { height: expanded ? `${contentHeight}px` : "0px" },
     onRest: updateOverflow,
-    height: expanded ? `${contentHeight}px` : "0px",
+    height: open ? `${contentHeight}px` : "0px",
   });
 
   useEffect(() => {
@@ -46,22 +48,22 @@ export default function Collapsible(
 
   return (
     <>
-      <div className="collapsible-box" onClick={toggleExpanded}>
-        <div className={`icon-collapse ${expanded ? "open" : ""}`}>
+      <div className="collapsible-box" onClick={toggleopen}>
+        <div className={`icon-collapse ${open ? "open" : ""}`}>
           <DropArrow
             width="12.4px"
             height="8px"
             fill="var(--color-background)"
           />
         </div>
-        <div style={{marginLeft: "8px"}}>{props.title}</div>
+        <div style={{ marginLeft: "8px" }}>{title}</div>
       </div>
       <animated.div
-        style={{...expand, overflow}}
-        className={`collapsible-content`}
+        style={{ ...expand, overflow }}
+        className="collapsible-content"
       >
-        <div style={{display: "flex", flexDirection: "column"}} ref={ref}>
-          {props.children}
+        <div style={{ display: "flex", flexDirection: "column" }} ref={ref}>
+          {children}
         </div>
       </animated.div>
     </>
