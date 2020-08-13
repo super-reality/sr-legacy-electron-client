@@ -28,6 +28,7 @@
     "react-spring": "^9.0.0-rc.3",
     "react-use": "^15.3.3",
     "request": "^2.88.2",
+    "reactn": "^2.2.7",
     "redux": "^4.0.5",
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
