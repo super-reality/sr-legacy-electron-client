@@ -11,7 +11,6 @@ import { jsonRpcRemote } from '../../../utils/util'
 
 const electron = window.require('electron')
 const { remote } = electron
-const { screen } = remote
 const path = require("path");
 
 const url = require("url");
@@ -51,25 +50,6 @@ function initAnchorDlg() {
       snipWindow.setIgnoreMouseEvents(false)
     }
   })
-  remote.globalShortcut.register('Control+S', () => {
-    if (snipWindow != null) {
-      snipWindow.hide()
-      const pos = snipWindow.getPosition()
-      const size = snipWindow.getSize()
-      if(size[0]<=0 || size[1] <= 0){
-        return;
-      }
-      
-      jsonRpcRemote("snipImage", { "posx": pos[0], "posy": pos[1], "width": size[0], "height": size[1], "path": "" }).then(res => {
-        let rescopy:any = res;
-        const ImagePathCopy = rescopy.result.imgPath
-        setGlobal({imgUrl : ImagePathCopy})
-      }).catch(err => {
-        console.log("error ocurrec checkmehere")
-        console.log(err)
-      })
-    }
-  })
   snipWindow.hide()
 
   snipWindow.loadURL(url.format({
@@ -80,6 +60,26 @@ function initAnchorDlg() {
   return snipWindow;
 }
 
+remote.globalShortcut.register('Control+S', () => {
+  if (snipWindow != null) {
+    snipWindow.hide()
+    const pos = snipWindow.getPosition()
+    const size = snipWindow.getSize()
+    // if(size[0]<=0 || size[1] <= 0){
+    //   return;
+    // }
+    
+    jsonRpcRemote("snipImage", { "posx": pos[0], "posy": pos[1], "width": size[0], "height": size[1], "path": "" }).then(res => {
+      let rescopy:any = res;
+      const ImagePathCopy = rescopy.result.imgPath
+      console.log(ImagePathCopy)
+      setGlobal({imgUrl : ImagePathCopy})
+    }).catch(err => {
+      console.log("error ocurrec checkmehere")
+      console.log(err)
+    })
+  }
+})
 initAnchorDlg()
 // end sample code
 export default function DescAuthoring(): JSX.Element {
@@ -178,12 +178,10 @@ export default function DescAuthoring(): JSX.Element {
               callback={insertIcon}
             />
             <InsertMedia
-              imgUrl={imgUrl}
               style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
             <InsertMedia
-              imgUrl={imgUrl}
               style={{ width: "100%", height: "125px" }}
               callback={insertIcon}
             />
