@@ -1,16 +1,12 @@
-import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import "./index.scss";
+import { useHistory } from "react-router-dom";
 import ButtonSimple from "../../components/button-simple";
-import reduxAction from "../../redux/reduxAction";
 import topTitle from "../../../assets/images/teacherbot.png";
 import splashImage from "../../../assets/images/splash.png";
 
 export default function Splash(): JSX.Element {
-  const dispatch = useDispatch();
-  const login = useCallback(() => {
-    reduxAction(dispatch, { type: "AUTH_SUCCESSFUL", arg: "" });
-  }, []);
+  const history = useHistory();
 
   return (
     <div className="splash-container">
@@ -27,7 +23,7 @@ export default function Splash(): JSX.Element {
           height: "40px",
           width: "-webkit-fill-available",
         }}
-        onClick={login}
+        onClick={() => history.push("/auth")}
       >
         Login
       </ButtonSimple>

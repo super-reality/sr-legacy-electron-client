@@ -55,3 +55,22 @@
     background-color: var(--color-section-inner);
   }
 }
+
+.button-login {
+  width: -webkit-fill-available;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6fb6ff;
+  border-radius: 500px;
+  padding: 8px;
+
+  &:hover {
+    background-color: #b7dbff;
+  }
+  &:active {
+    background-color: #668eb7;
+  }
+}
