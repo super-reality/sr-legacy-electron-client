@@ -3,14 +3,46 @@
 <head>
   <style>
     body {
-      /* border-style: dashed;
-      border-color: greenyellow; */
-      /* margin:0px */
+      margin: 3px;
+      outline: 3px dashed white;
+      display: flex;
+      flex-direction: column;
+      -webkit-app-region: drag;
+      background-color: #00000020;
+      overflow: hidden;
+    }
+
+    @media only screen and (max-width : 100px) {
+      .textDiv{
+        display:none;
+      }
+    }
+  
+    @media only screen and (max-height : 100px) {
+      .textDiv{
+        display:none;
+      }
+    }
+
+    .textDiv {
+      color: #CCC;
+      font-family: sans-serif;
+      font-size: 15px;
+      text-align: center;
+      margin: auto;
     }
   </style>
 </head>
 
-<body style="-webkit-app-region: drag">
+<body>
+  <div class="textDiv">
+    <p>
+      Press Ctrl + S to save this crop
+    </p>
+    <p>
+      Press Ctrl + D to click trough
+    </p>
+  </div>
 </body>
 
 </html>

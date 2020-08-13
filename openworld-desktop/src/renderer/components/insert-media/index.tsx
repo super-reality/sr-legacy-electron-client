@@ -14,12 +14,11 @@ function createSniper(): Promise<string> {
     width: 200,
     height: 200,
     frame: false,
-    transparent: false,
-    opacity: 0.5,
+    transparent: true,
+    opacity: 1,
     alwaysOnTop: true,
     resizable: true,
     movable: true,
-    backgroundColor: "#00FFFFFF",
     webPreferences: {
       nodeIntegration: true,
     },
@@ -31,6 +30,8 @@ function createSniper(): Promise<string> {
     snipWindow.destroy();
   });
   let translucent = false;
+
+  // snipWindow.webContents.openDevTools();
 
   remote.globalShortcut.register("Control+D", () => {
     translucent = !translucent;
