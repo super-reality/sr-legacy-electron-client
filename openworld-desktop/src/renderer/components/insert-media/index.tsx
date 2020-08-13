@@ -55,6 +55,7 @@ function createSniper(): Promise<string> {
         const pos = snipWindow.getPosition();
         const size = snipWindow.getSize();
         console.log(pos, size);
+        snipWindow.close();
 
         jsonRpcRemote("snipImage", {
           posx: pos[0],
@@ -68,13 +69,11 @@ function createSniper(): Promise<string> {
             const ImagePathCopy = rescopy.result.imgPath;
             console.log(ImagePathCopy);
             resolve(ImagePathCopy);
-            snipWindow.close();
           })
           .catch((err) => {
             console.log("error ocurred checkmehere");
             reject(err);
             console.log(err);
-            snipWindow.close();
           });
       } else {
         reject();
