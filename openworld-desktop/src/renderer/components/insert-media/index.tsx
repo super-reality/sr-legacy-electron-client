@@ -10,48 +10,46 @@ function createSniper(): Promise<string> {
   console.log("createSniper");
   const { remote } = electron;
 
-  function initAnchorDlg() {
-    const snipWindow = new remote.BrowserWindow({
-      width: 200,
-      height: 200,
-      frame: false,
-      transparent: false,
-      opacity: 0.5,
-      alwaysOnTop: true,
-      resizable: true,
-      movable: true,
-      backgroundColor: "#00FFFFFF",
-      webPreferences: {
-        nodeIntegration: true,
-      },
-    });
+  const snipWindow = new remote.BrowserWindow({
+    width: 200,
+    height: 200,
+    frame: false,
+    transparent: false,
+    opacity: 0.5,
+    alwaysOnTop: true,
+    resizable: true,
+    movable: true,
+    backgroundColor: "#00FFFFFF",
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  });
 
-    snipWindow.on("closed", () => {
-      snipWindow.destroy();
-    });
-    let translucent = false;
+  snipWindow.on("closed", () => {
+    remote.globalShortcut.unregister("Control+S");
+    remote.globalShortcut.unregister("Control+D");
+    snipWindow.destroy();
+  });
+  let translucent = false;
 
-    remote.globalShortcut.register("Control+D", () => {
-      translucent = !translucent;
-      if (translucent == true) {
-        snipWindow.setIgnoreMouseEvents(true);
-      } else {
-        snipWindow.setIgnoreMouseEvents(false);
-      }
-    });
+  remote.globalShortcut.register("Control+D", () => {
+    translucent = !translucent;
+    if (translucent == true) {
+      snipWindow.setIgnoreMouseEvents(true);
+    } else {
+      snipWindow.setIgnoreMouseEvents(false);
+    }
+  });
 
-    snipWindow.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "..", "public", "dialog.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-    );
-    return snipWindow;
-  }
+  snipWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "..", "public", "dialog.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
 
   return new Promise<string>((resolve, reject) => {
-    const snipWindow = initAnchorDlg();
     remote.globalShortcut.register("Control+S", () => {
       if (snipWindow != null) {
         const pos = snipWindow.getPosition();
