@@ -1,4 +1,11 @@
-import React, { useCallback, useState, addCallback, setGlobal, getGlobal, useEffect } from "reactn";
+import React, {
+  useCallback,
+  useState,
+  addCallback,
+  setGlobal,
+  getGlobal,
+  useEffect,
+} from "reactn";
 import { useSet } from "react-use";
 import "./index.scss";
 import "../containers.scss";
@@ -6,11 +13,11 @@ import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
 
-// this sample code 
-import { jsonRpcRemote } from '../../../utils/util'
+// this sample code
+import jsonRpcRemote from "../../../utils/jsonRpcSend";
 
-const electron = window.require('electron')
-const { remote } = electron
+const electron = window.require("electron");
+const { remote } = electron;
 const path = require("path");
 
 const url = require("url");
@@ -19,8 +26,8 @@ let snipWindow: any = null;
 
 function initAnchorDlg() {
   snipWindow = new remote.BrowserWindow({
-    width: true ? 200 : 200,
-    height: true ? 200 : 200,
+    width: 200,
+    height: 200,
     frame: false,
     transparent: false,
     opacity: 0.5,
@@ -30,82 +37,89 @@ function initAnchorDlg() {
     draggable: true,
     backgroundColor: "#00FFFFFF",
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
-  snipWindow.on('closed', () => {
+  snipWindow.on("closed", () => {
     snipWindow = null;
   });
-  snipWindow.on('show', () => console.log('checkmehere show event'))
+  snipWindow.on("show", () => console.log("checkmehere show event"));
 
-  let translucent = false
+  let translucent = false;
 
-  remote.globalShortcut.register('Control+D', () => {
+  remote.globalShortcut.register("Control+D", () => {
     translucent = !translucent;
     if (translucent == true) {
-      snipWindow.setIgnoreMouseEvents(true)
+      snipWindow.setIgnoreMouseEvents(true);
+    } else {
+      snipWindow.setIgnoreMouseEvents(false);
     }
-    else {
-      snipWindow.setIgnoreMouseEvents(false)
-    }
-  })
-  snipWindow.hide()
+  });
+  snipWindow.hide();
 
-  snipWindow.loadURL(url.format({
-    pathname: path.join(__dirname, "..", "public", "dialog.html"),
-    protocol: "file:",
-    slashes: true,
-  }))
+  snipWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "..", "public", "dialog.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
   return snipWindow;
 }
 
-remote.globalShortcut.register('Control+S', () => {
+remote.globalShortcut.register("Control+S", () => {
   if (snipWindow != null) {
-    snipWindow.hide()
-    const pos = snipWindow.getPosition()
-    const size = snipWindow.getSize()
+    snipWindow.hide();
+    const pos = snipWindow.getPosition();
+    const size = snipWindow.getSize();
     // if(size[0]<=0 || size[1] <= 0){
     //   return;
     // }
-    
-    jsonRpcRemote("snipImage", { "posx": pos[0], "posy": pos[1], "width": size[0], "height": size[1], "path": "" }).then(res => {
-      let rescopy:any = res;
-      const ImagePathCopy = rescopy.result.imgPath
-      console.log(ImagePathCopy)
-      setGlobal({imgUrl : ImagePathCopy})
-    }).catch(err => {
-      console.log("error ocurrec checkmehere")
-      console.log(err)
+
+    jsonRpcRemote("snipImage", {
+      posx: pos[0],
+      posy: pos[1],
+      width: size[0],
+      height: size[1],
+      path: "",
     })
+      .then((res) => {
+        const rescopy: any = res;
+        const ImagePathCopy = rescopy.result.imgPath;
+        console.log(ImagePathCopy);
+        setGlobal({ imgUrl: ImagePathCopy });
+      })
+      .catch((err) => {
+        console.log("error ocurrec checkmehere");
+        console.log(err);
+      });
   }
-})
-initAnchorDlg()
+});
+initAnchorDlg();
 // end sample code
 export default function DescAuthoring(): JSX.Element {
-
-  // this sample code 
-  const [imgUrl,setimgUrl] = useState("")
+  // this sample code
+  const [imgUrl, setimgUrl] = useState("");
 
   useEffect(() => {
-    addCallback(global => {
-      let result:any = global
-      setimgUrl(result.imgUrl)
-    })
+    addCallback((global) => {
+      const result: any = global;
+      setimgUrl(result.imgUrl);
+    });
   });
 
-  let isShow = true
+  let isShow = true;
   const insertIcon = useCallback(() => {
     if (snipWindow == null) {
       snipWindow = initAnchorDlg();
-      isShow = true
+      isShow = true;
     }
     if (isShow == true) {
-      isShow = false
+      isShow = false;
       snipWindow.show();
-    }
-    else {
-      isShow = true
+    } else {
+      isShow = true;
       snipWindow.hide();
     }
   }, []);

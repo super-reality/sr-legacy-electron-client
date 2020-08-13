@@ -20,7 +20,6 @@
     "no-undef": "error",
     "no-global-assign": "warn",
     "no-empty": "warn",
-    "enforceForRenamedProperties":"object",
     "object-shorthand": 0,
     "complexity": [
       "warn",

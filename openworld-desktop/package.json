@@ -38,7 +38,7 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "test:eslint": "eslint src/** --ext tsx",
+    "test:eslint": "eslint src/* --ext tsx",
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-start": "node src/start-react",
