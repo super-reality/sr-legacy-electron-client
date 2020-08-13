@@ -16,6 +16,7 @@
     "cross-env": "^7.0.2",
     "electron-devtools-installer": "^3.1.1",
     "electron-is-dev": "^1.2.0",
+    "howler": "^2.2.0",
     "json-rpc3": "^0.2.1",
     "localforage": "^1.9.0",
     "node-fetch": "^2.6.0",
@@ -27,9 +28,9 @@
     "react-scripts": "3.4.1",
     "react-spring": "^9.0.0-rc.3",
     "react-use": "^15.3.3",
-    "request": "^2.88.2",
     "reactn": "^2.2.7",
     "redux": "^4.0.5",
+    "request": "^2.88.2",
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
   },
@@ -89,6 +90,7 @@
     ]
   },
   "devDependencies": {
+    "@types/howler": "^2.2.1",
     "@types/jest": "^26.0.9",
     "@types/react-test-renderer": "^16.9.3",
     "@types/webpack-env": "^1.15.2",

@@ -3,6 +3,7 @@ import "./index.scss";
 import { NavLink, useLocation } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { useMeasure } from "react-use";
+import playSound from "../../../utils/playSound";
 
 interface TopNavItemProps {
   title: string;
@@ -72,7 +73,13 @@ export default function TopNav(): JSX.Element {
   return (
     <div ref={ref} className="topnav-container">
       <div onWheel={handleScroll}>
-        <div style={{ left: `${xScroll}px` }} className="topnav-navs-container">
+        <div
+          style={{ left: `${xScroll}px` }}
+          className="topnav-navs-container"
+          onClick={() => {
+            playSound("./sounds/top-menu.wav");
+          }}
+        >
           {topNavButtons.map((b) => (
             <TopNavItem key={b[0]} route={b[0]} title={b[1]} />
           ))}

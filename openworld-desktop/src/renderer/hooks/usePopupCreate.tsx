@@ -78,7 +78,7 @@ export default function usePopupCreate(): [() => JSX.Element, () => void] {
           />
         </Collapsible>
         <Collapsible expanded title="Productivity">
-        <ButtonCreate
+          <ButtonCreate
             title="Organization"
             sub="Group users inside of these"
             onClick={clickLesson}

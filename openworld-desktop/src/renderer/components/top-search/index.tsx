@@ -13,6 +13,7 @@ import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
 import ButtonRound from "../button-round";
 import usePopupCreate from "../../hooks/usePopupCreate";
+import playSound from "../../../utils/playSound";
 
 const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
   "/discover": {
@@ -129,6 +130,11 @@ export default function TopSearch(): JSX.Element {
 
   const spring = useSpring({ top: `${yPos}px` });
 
+  const backClick = useCallback(() => {
+    playSound("./sounds/back-button.wav");
+    history.goBack();
+  }, []);
+
   // Create button
   const [CreatePopup, openCreate] = usePopupCreate();
 
@@ -140,7 +146,7 @@ export default function TopSearch(): JSX.Element {
         className={`top-controls ${!showSelect ? "no-select" : ""}`}
       >
         <ButtonRound
-          onClick={history.goBack}
+          onClick={backClick}
           svg={BackIcon}
           style={{ margin: "auto" }}
           height="32px"
