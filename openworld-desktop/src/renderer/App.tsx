@@ -12,7 +12,6 @@ import reduxAction from "./redux/reduxAction";
 import CreateLesson from "./components/create-lesson";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
-import Flex from "./components/flex";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);

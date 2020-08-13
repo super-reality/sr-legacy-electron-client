@@ -1,10 +1,100 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useCallback } from "react";
+import path from "path";
+import url from "url";
 import { ReactComponent as Add } from "../../../assets/svg/add.svg";
-
+import electron from "../../../electron";
+import jsonRpcRemote from "../../../utils/jsonRpcSend";
 import "./index.scss";
 
+function createSniper(): Promise<string> {
+  console.log("createSniper");
+  const { remote } = electron;
+
+  function initAnchorDlg() {
+    const snipWindow = new remote.BrowserWindow({
+      width: 200,
+      height: 200,
+      frame: false,
+      transparent: false,
+      opacity: 0.5,
+      alwaysOnTop: true,
+      resizable: true,
+      movable: true,
+      backgroundColor: "#00FFFFFF",
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+
+    snipWindow.on("closed", () => {
+      snipWindow.destroy();
+    });
+    let translucent = false;
+
+    remote.globalShortcut.register("Control+D", () => {
+      translucent = !translucent;
+      if (translucent == true) {
+        snipWindow.setIgnoreMouseEvents(true);
+      } else {
+        snipWindow.setIgnoreMouseEvents(false);
+      }
+    });
+
+    snipWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "..", "public", "dialog.html"),
+        protocol: "file:",
+        slashes: true,
+      })
+    );
+    return snipWindow;
+  }
+
+  return new Promise<string>((resolve, reject) => {
+    const snipWindow = initAnchorDlg();
+    remote.globalShortcut.register("Control+S", () => {
+      if (snipWindow != null) {
+        const pos = snipWindow.getPosition();
+        const size = snipWindow.getSize();
+        console.log(pos, size);
+
+        jsonRpcRemote("snipImage", {
+          posx: pos[0],
+          posy: pos[1],
+          width: size[0],
+          height: size[1],
+          path: "",
+        })
+          .then((res) => {
+            const rescopy: any = res;
+            const ImagePathCopy = rescopy.result.imgPath;
+            console.log(ImagePathCopy);
+            resolve(ImagePathCopy);
+            snipWindow.close();
+          })
+          .catch((err) => {
+            console.log("error ocurred checkmehere");
+            reject(err);
+            console.log(err);
+            snipWindow.close();
+          });
+      } else {
+        reject();
+      }
+    });
+  });
+}
+
+function useMediaInsert(onFinish: (url: string) => void): () => void {
+  const open = useCallback(() => {
+    createSniper().then(onFinish);
+  }, []);
+
+  return open;
+}
+
 interface InsertMediaProps {
-  callback: () => void;
+  callback: (url: string) => void;
   imgUrl?: string;
   style?: CSSProperties;
 }
@@ -12,11 +102,13 @@ interface InsertMediaProps {
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
   const { callback, imgUrl, style } = props;
 
+  const openSnipTool = useMediaInsert(callback);
+
   return (
     <div
       className="insert-media-container"
       style={{ ...style, backgroundImage: `url(${imgUrl})` }}
-      onClick={callback}
+      onClick={openSnipTool}
     >
       {imgUrl ? undefined : (
         <Add
