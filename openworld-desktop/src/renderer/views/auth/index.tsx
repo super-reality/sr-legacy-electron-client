@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import "./index.scss";
@@ -28,6 +28,9 @@ export default function Auth(): JSX.Element {
   const registerEmailField = useRef<HTMLInputElement | null>(null);
   const registerPasswordField = useRef<HTMLInputElement | null>(null);
   const registerCodeField = useRef<HTMLInputElement | null>(null);
+
+  const defaultUser = window.localStorage.getItem("username");
+  // const defaultToken = window.localStorage.getItem("token");
 
   const handleLoginSubmit = useCallback(() => {
     const payload = {
@@ -67,6 +70,8 @@ export default function Auth(): JSX.Element {
                 <label>Username</label>
                 <input
                   ref={usernameField}
+                  key="singin-username"
+                  defaultValue={defaultUser || ""}
                   type="text"
                   placeholder="username"
                   disabled={isPending}
@@ -76,6 +81,7 @@ export default function Auth(): JSX.Element {
                 <label>Password</label>
                 <input
                   ref={passwordField}
+                  key="singin-password"
                   type="password"
                   placeholder="password"
                   disabled={isPending}
@@ -100,6 +106,7 @@ export default function Auth(): JSX.Element {
                 <label>First Name</label>
                 <input
                   ref={registerFirstnameFiled}
+                  key="signup-firstname"
                   type="text"
                   placeholder="first name"
                   disabled={isPending}
@@ -109,6 +116,7 @@ export default function Auth(): JSX.Element {
                 <label>Last Name</label>
                 <input
                   ref={registerLastnameField}
+                  key="signup-lastname"
                   type="text"
                   placeholder="last name"
                   disabled={isPending}
@@ -118,6 +126,7 @@ export default function Auth(): JSX.Element {
                 <label>Email</label>
                 <input
                   ref={registerEmailField}
+                  key="signup-email"
                   type="email"
                   placeholder="email@adress.com"
                   disabled={isPending}
@@ -127,6 +136,7 @@ export default function Auth(): JSX.Element {
                 <label>Password</label>
                 <input
                   ref={registerPasswordField}
+                  key="signup-password"
                   type="password"
                   placeholder=""
                   disabled={isPending}
@@ -136,6 +146,7 @@ export default function Auth(): JSX.Element {
                 <label>Input Code</label>
                 <input
                   ref={registerCodeField}
+                  key="signup-code"
                   type="text"
                   placeholder="invite code"
                   disabled={isPending}
