@@ -3,13 +3,42 @@
 <head>
   <style>
     body {
-      margin: 3px;
-      outline: 3px dashed white;
+      margin: 2px;
+      /*outline: 2px dashed #0084ff;*/
       display: flex;
       flex-direction: column;
       -webkit-app-region: drag;
       background-color: #00000020;
+      background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%230084ff' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
       overflow: hidden;
+    }
+
+    .handle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #0083ff;
+      z-index: 10;
+    }
+
+    .tr {
+      top: 0px;
+      right: 0px;
+    }
+
+    .tl {
+      top: 0px;
+      left: 0px;
+    }
+
+    .br {
+      bottom: 0px;
+      right: 0px;
+    }
+
+    .bl {
+      bottom: 0px;
+      left: 0px;
     }
 
     @media only screen and (max-width : 100px) {
@@ -25,7 +54,7 @@
     }
 
     .textDiv {
-      color: #CCC;
+      color: #fff;
       font-family: sans-serif;
       font-size: 15px;
       text-align: center;
@@ -35,6 +64,10 @@
 </head>
 
 <body>
+  <div class="handle tr"></div>
+  <div class="handle tl"></div>
+  <div class="handle br"></div>
+  <div class="handle bl"></div>
   <div class="textDiv">
     <p>
       Press Ctrl + S to save this crop
