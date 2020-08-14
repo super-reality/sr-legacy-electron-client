@@ -3,7 +3,7 @@
 const collectionModel = require('../models/collection');
 const subjectModel = require('../models/subject');
 const lessonModel = require('../models/lesson');
-const stepModel = require('../models/step');
+const stepModel = require('../models/task');
 
 const constant = require('../config/constant')
 
