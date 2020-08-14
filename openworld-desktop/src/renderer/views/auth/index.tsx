@@ -1,15 +1,17 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useSelector } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
-import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
+import { API_URL } from "../../constants";
+import handleAuthLogin from "../../api/handleAuthLogin";
+import handleAuthSingup from "../../api/handleAuthSignup";
 
 export default function Auth(): JSX.Element {
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
-  const dispatch = useDispatch();
 
   const togglePage = useCallback(() => {
     setPage(page == "login" ? "register" : "login");
@@ -24,8 +26,26 @@ export default function Auth(): JSX.Element {
   const registerCodeField = useRef<HTMLInputElement | null>(null);
 
   const handleLoginSubmit = useCallback(() => {
-    // Dummy , this should call the api
-    reduxAction(dispatch, { type: "AUTH_SUCCESSFUL", arg: "" });
+    const payload = {
+      username: usernameField.current?.value,
+      password: passwordField.current?.value,
+    };
+
+    axios.post(`${API_URL}auth/login`, payload).then((res) => handleAuthLogin);
+  }, []);
+
+  const handleSingupSubmit = useCallback(() => {
+    const payload = {
+      username: registerEmailField.current?.value,
+      firstname: registerFirstnameFiled.current?.value,
+      lastname: registerLastnameField.current?.value,
+      invitecode: registerCodeField.current?.value,
+      password: registerPasswordField.current?.value,
+    };
+
+    axios
+      .post(`${API_URL}auth/signup`, payload)
+      .then((res) => handleAuthSingup);
   }, []);
 
   return (
@@ -65,7 +85,7 @@ export default function Auth(): JSX.Element {
             </fieldset>
           </form>
         ) : (
-          <form onSubmit={handleLoginSubmit}>
+          <form onSubmit={handleSingupSubmit}>
             <fieldset>
               <legend>Sign up</legend>
               <div className="input-container">
