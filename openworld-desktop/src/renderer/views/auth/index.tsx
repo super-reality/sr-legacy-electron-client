@@ -6,9 +6,12 @@ import "../../components/buttons.scss";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
 import { API_URL } from "../../constants";
-import handleAuthLogin from "../../api/handleAuthLogin";
+import handleAuthLogin from "../../api/handleAuthSignin";
 import handleAuthSingup from "../../api/handleAuthSignup";
 import handleAuthError from "../../api/handleAuthError";
+import { ApiError } from "../../api/types";
+import SignUp from "../../api/types/auth/signup";
+import SignIn from "../../api/types/auth/signin";
 
 export default function Auth(): JSX.Element {
   const { isPending } = useSelector((state: AppState) => state.auth);
@@ -33,8 +36,8 @@ export default function Auth(): JSX.Element {
     };
 
     axios
-      .post(`${API_URL}auth/login`, payload)
-      .then((res) => handleAuthLogin)
+      .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload)
+      .then((res) => handleAuthLogin(res))
       .catch(handleAuthError);
   }, []);
 
@@ -48,8 +51,8 @@ export default function Auth(): JSX.Element {
     };
 
     axios
-      .post(`${API_URL}auth/signup`, payload)
-      .then((res) => handleAuthSingup)
+      .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
+      .then((res) => handleAuthSingup(res))
       .catch(handleAuthError);
   }, []);
 
