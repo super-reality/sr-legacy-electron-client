@@ -59,10 +59,10 @@ function createSniper(): Promise<string> {
         snipWindow.close();
 
         jsonRpcRemote("snipImage", {
-          posx: pos[0],
-          posy: pos[1],
-          width: size[0],
-          height: size[1],
+          posx: pos[0] + 3,
+          posy: pos[1] + 3,
+          width: size[0] - 6,
+          height: size[1] - 6,
           path: "",
         })
           .then((res) => {
