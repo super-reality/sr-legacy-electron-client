@@ -20,7 +20,9 @@ router.get('/', function (req, res) {
 
 // auth routes
 router.group("/auth", (router) => {
-    router.post("/new", authController.new)
+    router.post("/signin", authController.signin)
+    router.post("/signup", authController.signup)
+    
     router.post("/verify", auth(), authController.verify)
 })
 

@@ -14,7 +14,16 @@ const userSchema = new Schema({
     username: {
         type: String,
         index: true
-    }
+    },
+    firstname: { type: String },
+    lastname: { type: String },
+    // description
+    description: { type: String },
+    budget: { type: Number },
+    escrow: { type: Number },
+    // visibility: either of Public/Team/Private
+    visibility: { type: String },
+    role: { type: String }
 });
 
 userSchema.methods.setPassword = function(password) {

@@ -12,6 +12,12 @@ module.exports = Object.freeze({
         Resource : 9,
         TeacherBot : 10,
     },
+    ERR_CODE: {
+        success: 0,
+        user_name_wrong: 101,
+        user_password_wrong: 102,
+        user_already_exist: 103,
+    },
 
     Admin: 1,
     Client: 2,
