@@ -13,9 +13,11 @@ import reduxAction from "./redux/reduxAction";
 import CreateLesson from "./components/create-lesson";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
+import Loading from "./components/loading";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  const isPending = useSelector((state: AppState) => state.auth.isPending);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
@@ -25,45 +27,6 @@ export default function App(): JSX.Element {
       reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
     }
   }, [scrollRef, dispatch]);
-
-  /*
-  const _authenticateFromLocalStorage = useCallback(() => {
-    reduxAction(dispatch, { type: "AUTH_PENDING", arg: false });
-    return localForage
-      .getItem<string>("com.gamegen.classroom.auth.token")
-      .then((token) => {
-        if (token) {
-          return Axios.post("http://localhost:3000/api/v1/auth/verify", null, {
-            headers: { Authorization: `Bearer ${token}` },
-            timeout: 3000,
-          })
-            .then((_response) => Promise.resolve(token))
-            .catch((error) => Promise.reject(error));
-        } else {
-          return Promise.reject();
-        }
-      })
-      .then((token) => {
-        reduxAction(dispatch, { type: "AUTH_SUCCESSFUL", arg: token });
-        return Promise.resolve();
-      })
-      .catch((error) => {
-        reduxAction(dispatch, { type: "AUTH_FAILED", arg: false });
-        return Promise.reject(error);
-      });
-  }, [dispatch]);
-
-  const signOut = useCallback(() => {
-    reduxAction(dispatch, { type: "AUTH_INVALIDATED", arg: false });
-    return localForage.removeItem("com.gamegen.classroom.auth.token");
-  }, [dispatch]);
-
-  const onSignOutClick = (event: any) => {
-    event.preventDefault();
-    signOut();
-    history.push("/auth");
-  };
-  */
 
   return isAuthenticated ? (
     <>
@@ -81,10 +44,13 @@ export default function App(): JSX.Element {
       </div>
     </>
   ) : (
-    <Switch>
-      <Route exact path="/" component={Splash} />
-      <Route exact path="/auth" component={Auth} />
-    </Switch>
+    <>
+      {isPending ? <Loading /> : <></>}
+      <Switch>
+        <Route exact path="/" component={Splash} />
+        <Route exact path="/auth" component={Auth} />
+      </Switch>
+    </>
   );
 }
 // <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />

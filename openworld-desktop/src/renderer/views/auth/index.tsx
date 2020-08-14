@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
 import { AppState } from "../../redux/stores/renderer";
@@ -12,8 +12,10 @@ import handleAuthError from "../../api/handleAuthError";
 import { ApiError } from "../../api/types";
 import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
+import reduxAction from "../../redux/reduxAction";
 
 export default function Auth(): JSX.Element {
+  const dispatch = useDispatch();
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
 
@@ -33,6 +35,7 @@ export default function Auth(): JSX.Element {
   // const defaultToken = window.localStorage.getItem("token");
 
   const handleLoginSubmit = useCallback(() => {
+    reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
     const payload = {
       username: usernameField.current?.value,
       password: passwordField.current?.value,
@@ -45,6 +48,7 @@ export default function Auth(): JSX.Element {
   }, []);
 
   const handleSingupSubmit = useCallback(() => {
+    reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
     const payload = {
       username: registerEmailField.current?.value,
       firstname: registerFirstnameFiled.current?.value,
