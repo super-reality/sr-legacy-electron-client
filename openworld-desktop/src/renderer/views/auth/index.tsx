@@ -8,6 +8,7 @@ import ButtonSimple from "../../components/button-simple";
 import { API_URL } from "../../constants";
 import handleAuthLogin from "../../api/handleAuthLogin";
 import handleAuthSingup from "../../api/handleAuthSignup";
+import handleAuthError from "../../api/handleAuthError";
 
 export default function Auth(): JSX.Element {
   const { isPending } = useSelector((state: AppState) => state.auth);
@@ -31,7 +32,10 @@ export default function Auth(): JSX.Element {
       password: passwordField.current?.value,
     };
 
-    axios.post(`${API_URL}auth/login`, payload).then((res) => handleAuthLogin);
+    axios
+      .post(`${API_URL}auth/login`, payload)
+      .then((res) => handleAuthLogin)
+      .catch(handleAuthError);
   }, []);
 
   const handleSingupSubmit = useCallback(() => {
@@ -45,7 +49,8 @@ export default function Auth(): JSX.Element {
 
     axios
       .post(`${API_URL}auth/signup`, payload)
-      .then((res) => handleAuthSingup);
+      .then((res) => handleAuthSingup)
+      .catch(handleAuthError);
   }, []);
 
   return (
