@@ -10,6 +10,9 @@ enum Category {
   Task,
   Resource,
   Portfolio,
+  Help,
+  User,
+  Event,
 }
 
 export default Category;

@@ -8,17 +8,15 @@ import LessonActive from "../../components/lesson-active";
 import { AppState } from "../../redux/stores/renderer";
 import Category from "../../../types/collections";
 import { mockLessonData } from "../../../__mocks__/mocks";
-import SelectHeader from "../../components/select-header";
 
 export default function Learn(): JSX.Element {
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
   );
-  const current = topSelectStates["/learn"] || Category.All;
+  const current = topSelectStates.Learn;
 
   return (
     <div className="mid">
-      <SelectHeader />
       {current == Category.Lesson || current == Category.All ? (
         <Collapsible expanded title="Active Lessons">
           <LessonActive data={mockLessonData} />

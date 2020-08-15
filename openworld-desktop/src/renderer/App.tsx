@@ -13,6 +13,7 @@ import CreateLesson from "./components/create-lesson";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Profile from "./views/profile";
+import Create from "./views/create";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -70,12 +71,12 @@ export default function App(): JSX.Element {
       <TopSearch />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <Switch>
-          <Route path="/create/lesson" component={CreateLesson} />
           <Route exact path="/test" component={Test} />
           <Route exact path="/discover" component={Discover} />
           <Route exact path="/learn" component={Learn} />
           <Route exact path="/teach" component={Teach} />
-          <Route exact path="/me" component={Profile} />
+          <Route exact path="/create" component={Create} />
+          <Route exact path="/profile" component={Profile} />
         </Switch>
       </div>
     </>

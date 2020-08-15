@@ -23,3 +23,26 @@
     top: 47px;
   }
 }
+
+.dropdown-container {
+  position: absolute;
+  width: 200px;
+  background-color: var(--color-section);
+  padding: 8px;
+  margin-top: 80px;
+  border-radius: 5px;
+  left: calc(50% - 100px);
+  z-index: 15;
+
+  .option {
+    height: 24px;
+    line-height: 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 4px;
+
+    &:hover {
+      background-color: var(--color-section-hover);
+    }
+  }
+}

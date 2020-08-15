@@ -1,45 +1,46 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { useSpring, animated } from "react-spring";
 import { useLocation, useHistory, NavLink } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as CreateIcon } from "../../../assets/svg/create.svg";
-import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
-import Category from "../../../types/collections";
 import ButtonRound from "../button-round";
-import usePopupCreate from "../../hooks/usePopupCreate";
 import playSound from "../../../utils/playSound";
 import ButtonSimple from "../button-simple";
+import { tabNames } from "../../redux/slices/renderSlice";
+import useSelectHeader from "../../hooks/useSelectHeader";
+import Category from "../../../types/collections";
 
 interface TopNavItemProps {
-  title: string;
+  title: tabNames;
   route: string;
+  onClick: () => void;
 }
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
-  const { route, title } = props;
+  const { route, title, onClick } = props;
   const location = useLocation();
   const isActive = location.pathname === route;
+
   return (
-    <NavLink exact to={route} style={{ width: "calc(25% - 4px)" }}>
+    <>
       <ButtonSimple
-        onClick={() => {
-          playSound("./sounds/top-menu.wav");
-        }}
+        onClick={onClick}
+        width="calc(25% - 20px)"
         height="16px"
         style={{
           color: isActive ? "var(--color-text-active)" : "",
+          backgroundColor: isActive ? "var(--color-background)" : "",
           lineHeight: "16px",
         }}
       >
         {title}
       </ButtonSimple>
-    </NavLink>
+    </>
   );
 }
 
@@ -48,12 +49,12 @@ export default function TopSearch(): JSX.Element {
   const location = useLocation();
   const history = useHistory();
 
-  const topNavButtons: string[][] = [
+  const topNavButtons: Array<[string, tabNames]> = [
     // ["/test", "Test"],
     ["/discover", "Discover"],
     ["/learn", "Learn"],
     ["/teach", "Teach"],
-    ["/me", "100"],
+    ["/create", "Create"],
   ];
 
   // Input
@@ -82,11 +83,31 @@ export default function TopSearch(): JSX.Element {
     history.goBack();
   }, []);
 
-  // Create button
-  const [CreatePopup, openCreate] = usePopupCreate();
+  const openProfile = () => {
+    history.push("/profile");
+  };
+
+  // Dropdowns
+  const [openDropdown, setOpenDropdown] = useState<tabNames | null>(null);
+
+  const onSelect = useCallback(
+    (selected: string | Category, route: string) => {
+      if (openDropdown) {
+        history.push(route);
+        reduxAction(dispatch, {
+          type: "SET_TOP_SELECT",
+          arg: { selected, path: openDropdown },
+        });
+        setOpenDropdown(null);
+      }
+    },
+    [openDropdown]
+  );
+
+  const [SelectDropdown] = useSelectHeader(openDropdown, onSelect);
+
   return (
     <div className="top-search-container">
-      <CreatePopup />
       <div className="top">
         <ButtonRound
           onClick={backClick}
@@ -107,7 +128,7 @@ export default function TopSearch(): JSX.Element {
           </div>
         </Flex>
         <ButtonRound
-          onClick={openCreate}
+          onClick={openProfile}
           svg={CreateIcon}
           height="24px"
           width="24px"
@@ -115,9 +136,18 @@ export default function TopSearch(): JSX.Element {
       </div>
       <div className="bottom">
         {topNavButtons.map((b) => (
-          <TopNavItem key={b[0]} route={b[0]} title={b[1]} />
+          <TopNavItem
+            onClick={() => {
+              setOpenDropdown(openDropdown !== b[1] ? b[1] : null);
+              playSound("./sounds/top-menu.wav");
+            }}
+            key={b[0]}
+            route={openDropdown == b[1] ? location.pathname : b[0]}
+            title={b[1]}
+          />
         ))}
       </div>
+      {openDropdown ? <SelectDropdown /> : <></>}
     </div>
   );
 }

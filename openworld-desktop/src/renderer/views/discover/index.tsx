@@ -5,17 +5,15 @@ import { useSelector } from "react-redux";
 import Collapsible from "../../components/collapsible";
 import { AppState } from "../../redux/stores/renderer";
 import Category from "../../../types/collections";
-import SelectHeader from "../../components/select-header";
 
 export default function Discover(): JSX.Element {
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
   );
-  const current = (topSelectStates["/discover"] as Category) || Category.All;
+  const current = topSelectStates.Discover as Category;
 
   return (
     <div className="mid">
-      <SelectHeader />
       {current == Category.Lesson || current == Category.All ? (
         <Collapsible expanded title="Lessons" />
       ) : (
