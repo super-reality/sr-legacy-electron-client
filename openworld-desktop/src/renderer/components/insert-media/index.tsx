@@ -41,7 +41,7 @@ function createSniper(): Promise<string> {
   });
   let translucent = false;
 
-  snipWindow.webContents.openDevTools();
+  // snipWindow.webContents.openDevTools();
 
   remote.globalShortcut.register("Control+D", () => {
     translucent = !translucent;
