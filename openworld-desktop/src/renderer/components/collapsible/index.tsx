@@ -50,11 +50,7 @@ export default function Collapsible(
     <>
       <div className="collapsible-box" onClick={toggleopen}>
         <div className={`icon-collapse ${open ? "open" : ""}`}>
-          <DropArrow
-            width="12.4px"
-            height="8px"
-            fill="var(--color-background)"
-          />
+          <DropArrow width="12.4px" height="8px" fill="var(--color-icon)" />
         </div>
         <div style={{ marginLeft: "8px" }}>{title}</div>
       </div>

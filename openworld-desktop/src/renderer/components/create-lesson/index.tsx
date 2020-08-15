@@ -13,20 +13,22 @@ export default function CreateLesson(): JSX.Element {
   const data = mockLessonData;
 
   return (
-    <div className="mid">
+    <>
       <div className="container-title">Create Lesson</div>
-      <Collapsible expanded title="Place">
-        <PlaceAuthoring />
-      </Collapsible>
-      <Collapsible expanded title="Lesson Description">
-        <DescAuthoring />
-      </Collapsible>
-      <Collapsible expanded title="Step Authoring">
-        <StepAuthoring />
-      </Collapsible>
-      <Collapsible expanded title="Previous Steps">
-        <StepsView steps={data.steps} />
-      </Collapsible>
-    </div>
+      <div className="mid">
+        <Collapsible expanded title="Place">
+          <PlaceAuthoring />
+        </Collapsible>
+        <Collapsible expanded title="Lesson Description">
+          <DescAuthoring />
+        </Collapsible>
+        <Collapsible expanded title="Step Authoring">
+          <StepAuthoring />
+        </Collapsible>
+        <Collapsible expanded title="Previous Steps">
+          <StepsView steps={data.steps} />
+        </Collapsible>
+      </div>
+    </>
   );
 }
