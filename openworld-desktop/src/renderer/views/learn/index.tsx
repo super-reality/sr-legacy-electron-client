@@ -16,9 +16,9 @@ export default function Learn(): JSX.Element {
   const current = topSelectStates.Learn;
 
   return (
-    <div className="mid">
+    <>
       {current == Category.Lesson || current == Category.All ? (
-        <Collapsible expanded title="Active Lessons">
+        <Collapsible outer expanded title="Active Lessons">
           <LessonActive data={mockLessonData} />
           <LessonActive data={mockLessonData} />
           <LessonActive data={mockLessonData} />
@@ -26,6 +26,6 @@ export default function Learn(): JSX.Element {
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 }

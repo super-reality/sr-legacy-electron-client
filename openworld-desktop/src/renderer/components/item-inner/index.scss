@@ -17,16 +17,22 @@
   display: grid;
   gap: 8px;
   grid-template-columns: 32px auto auto;
-  grid-template-rows: 32px auto;
-  grid-template-areas:
-    "icon title score"
-    "text text text";
-  
-  .controls {
+  grid-template-rows: 32px;
+  grid-template-areas: "icon title score";
+
+  &.text {
+    grid-template-rows: 32px auto;
+    grid-template-areas:
+      "icon title score"
+      "text text text";
+  }
+
+  &.controls {
+    grid-template-rows: 32px auto auto;
     grid-template-areas:
       "icon title score"
       "text text text"
-      "control control control"
+      "control control control";
   }
 
   .item-titles {
@@ -36,7 +42,7 @@
     justify-content: center;
     display: flex;
     flex-direction: column;
-  
+
     .item-title {
     }
 
@@ -50,6 +56,7 @@
   }
 
   .item-social {
+    grid-area: control;
     align-self: center;
     margin-left: auto;
     display: flex;

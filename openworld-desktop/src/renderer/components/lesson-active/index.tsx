@@ -23,12 +23,7 @@ export default function LessonActive(props: LessonActiveProps) {
       <PopupModal />
       <Icon url={data.avatarUrl} />
       <Title title={data.name} sub={data.creator} />
-      <Social
-        rating={data.rating}
-        share="http://someurl.com"
-        checked
-        checkButtonCallback={open}
-      />
+      <Social area="score" checked checkButtonCallback={open} />
     </ItemInner>
   );
 }
