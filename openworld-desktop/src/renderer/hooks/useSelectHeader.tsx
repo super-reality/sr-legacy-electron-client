@@ -56,6 +56,10 @@ const selectOptionsByTab: Record<
     "Create Event": Category.Event,
     "Create Subject": Category.Subject,
   },
+  Profile: {
+    Me: "me",
+    "My Lessons": "my lessons",
+  },
 };
 
 export default function useSelectHeader(
@@ -69,6 +73,7 @@ export default function useSelectHeader(
     Learn: "/learn",
     Teach: "/teach",
     Create: "/create",
+    Profile: "/profile",
   };
 
   if (title) {

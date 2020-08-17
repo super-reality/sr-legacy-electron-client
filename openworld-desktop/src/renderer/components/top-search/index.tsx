@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, CSSProperties } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useHistory } from "react-router-dom";
@@ -16,31 +16,26 @@ import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
 
 interface TopNavItemProps {
+  style?: CSSProperties;
   title: tabNames;
-  route: string;
   onClick: () => void;
 }
 
 function TopNavItem(props: TopNavItemProps): JSX.Element {
-  const { route, title, onClick } = props;
-  const location = useLocation();
-  const isActive = location.pathname === route;
+  const { title, onClick, style } = props;
 
   return (
-    <>
-      <ButtonSimple
-        onClick={onClick}
-        width="calc(25% - 20px)"
-        height="16px"
-        style={{
-          color: isActive ? "var(--color-text-active)" : "",
-          backgroundColor: isActive ? "var(--color-background)" : "",
-          lineHeight: "16px",
-        }}
-      >
-        {title}
-      </ButtonSimple>
-    </>
+    <ButtonSimple
+      onClick={onClick}
+      width="calc(25% - 20px)"
+      height="16px"
+      style={{
+        lineHeight: "16px",
+        ...style,
+      }}
+    >
+      {title}
+    </ButtonSimple>
   );
 }
 
@@ -122,13 +117,25 @@ export default function TopSearch(): JSX.Element {
               onChange={onInputchange}
               value={currentInputValue}
             />
-            <div className="top-inpu-icon">
+            <div className="top-input-icon">
               <SearchIcon width="16px" height="16px" fill="var(--color-icon)" />
             </div>
           </div>
         </Flex>
         <ButtonRound
-          onClick={openProfile}
+          onClick={() => {
+            setOpenDropdown(openDropdown !== "Profile" ? "Profile" : null);
+            playSound("./sounds/top-menu.wav");
+          }}
+          style={{
+            backgroundColor:
+              openDropdown == "Profile" || location.pathname == "/profile"
+                ? "var(--color-background)"
+                : "",
+          }}
+          iconFill={
+            location.pathname == "/profile" ? "var(--color-text-active)" : ""
+          }
           svg={ProfileIcon}
           height="24px"
           width="24px"
@@ -142,7 +149,14 @@ export default function TopSearch(): JSX.Element {
               playSound("./sounds/top-menu.wav");
             }}
             key={b[0]}
-            route={openDropdown == b[1] ? location.pathname : b[0]}
+            style={{
+              backgroundColor:
+                openDropdown == b[1] || location.pathname == b[0]
+                  ? "var(--color-background)"
+                  : "",
+              color:
+                location.pathname == b[0] ? "var(--color-text-active)" : "",
+            }}
             title={b[1]}
           />
         ))}
