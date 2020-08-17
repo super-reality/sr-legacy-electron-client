@@ -22,19 +22,23 @@ export default function MediAuthoring(): JSX.Element {
     <Flex style={{ gridArea: "media" }}>
       <div className="container-with-desc">
         <div>Add Media</div>
-        <div className="insert-images-div">
+        <Flex style={{ flexDirection: "column" }}>
           {[...imageUrls, undefined].map((url, i) => (
             <InsertMedia
               // eslint-disable-next-line react/no-array-index-key
               key={`insert-media-${datekey}-${i}`}
               imgUrl={url}
-              style={{ width: "100%", height: "auto" }}
+              style={{
+                marginBottom: "8px",
+                width: "100%",
+                height: url ? "200px" : "auto",
+              }}
               callback={(str) => {
                 insertUrl(str, i);
               }}
             />
           ))}
-        </div>
+        </Flex>
       </div>
     </Flex>
   );
