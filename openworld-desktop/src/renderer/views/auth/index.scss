@@ -1,0 +1,29 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  width: -webkit-fill-available;
+  max-width: 400px;
+  max-height: 100%;
+  margin: auto;
+  font-size: 18px;
+
+  fieldset {
+    background-color: var(--color-section);
+    border: 1px solid rgba(0, 0, 0, 0.52);
+    border-radius: 8px;
+    padding-block-end: 8px;
+    padding-block-start: 16px;
+    padding-inline-start: 16px;
+    padding-inline-end: 16px;
+    padding-bottom: 16px;
+  }
+
+  .input-container {
+    margin: 8px 0;
+
+    label {
+      margin-bottom: 8px;
+      display: block;
+    }
+  }
+}

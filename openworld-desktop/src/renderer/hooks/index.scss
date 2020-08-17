@@ -17,6 +17,9 @@
     margin: auto;
     background-color: var(--color-section);
     max-width: calc(100% - 16px);
-    max-height: calc(100% - 64px);
+    max-height: calc(100% - 128px);
+    overflow: auto;
+    position: relative;
+    top: 47px;
   }
 }

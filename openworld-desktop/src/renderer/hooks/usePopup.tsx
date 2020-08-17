@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import "./index.scss";
 import { animated, useSpring } from "react-spring";
+import playSound from "../../utils/playSound";
 
 type PopupProps = PropsWithChildren<{
   width: string;
@@ -35,6 +36,7 @@ export default function usePopup(
   }, [onClose, state]);
 
   const doOpen = useCallback(() => {
+    playSound("./sounds/popup.wav");
     setState({ open: true, display: true });
   }, []);
 

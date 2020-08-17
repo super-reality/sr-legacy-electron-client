@@ -84,8 +84,10 @@ a:focus, a:hover, a:visited, a:link, a:active {
 ::-webkit-scrollbar-thumb {
   background: #383a3c;
   border-radius: 8px;
-}
+  border-left: 1px solid #88999e59;
+  border-right: 1px solid #000000b0;
 
-::-webkit-scrollbar-thumb:hover {
-  background: #4f5152;
+  &:hover {
+    background: #4f5152;
+  }
 }

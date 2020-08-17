@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TopNav from "./components/top-nav";
 import "./App.scss";
 import Test from "./views/test";
+import Auth from "./views/auth";
 import Discover from "./views/discover";
 import Learn from "./views/learn";
 import Teach from "./views/teach";
@@ -12,12 +13,9 @@ import reduxAction from "./redux/reduxAction";
 import CreateLesson from "./components/create-lesson";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
-import Flex from "./components/flex";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
-  // const dispatch = useDispatch();
-  // const location = useLocation();
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
@@ -75,16 +73,17 @@ export default function App(): JSX.Element {
         <div style={{ height: "52px" }} />
         <Switch>
           <Route path="/create/lesson" component={CreateLesson} />
-          <Route path="/test" component={Test} />
-          <Route path="/discover" component={Discover} />
-          <Route path="/learn" component={Learn} />
-          <Route path="/teach" component={Teach} />
+          <Route exact path="/test" component={Test} />
+          <Route exact path="/discover" component={Discover} />
+          <Route exact path="/learn" component={Learn} />
+          <Route exact path="/teach" component={Teach} />
         </Switch>
       </div>
     </>
   ) : (
     <Switch>
-      <Route path="/" component={Splash} />
+      <Route exact path="/" component={Splash} />
+      <Route exact path="/auth" component={Auth} />
     </Switch>
   );
 }

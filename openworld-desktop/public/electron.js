@@ -12,6 +12,7 @@ function createWindow() {
     backgroundColor: "#242526",
     width: 350,
     height: 800,
+    alwaysOnTop: true,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -26,7 +27,7 @@ function createWindow() {
         slashes: true,
       })
   );
-
+  // mainWindow.webContents.openDevTools()
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
 
