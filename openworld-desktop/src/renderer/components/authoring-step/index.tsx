@@ -26,7 +26,13 @@ export default function StepAuthoring(): JSX.Element {
   const [CVNextStep, setCVNextStep] = useState(CVNextStepOptions[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageUrl, setCVImageUrl] = useState("");
+  const [CVImageUrls, setCVImageUrls] = useState<string[]>([]);
+
+  const insertCVImage = (image: string, index: number) => {
+    const arr = [...CVImageUrls];
+    arr.splice(index, 1, image);
+    setCVImageUrls(arr);
+  };
 
   const handleStepnameChange = useCallback((e: InputChangeEv): void => {
     setStepname(e.currentTarget.value);
@@ -35,6 +41,8 @@ export default function StepAuthoring(): JSX.Element {
   const handleDescriptionChange = useCallback((e: AreaChangeEv): void => {
     setDescription(e.currentTarget.value);
   }, []);
+
+  const datekey = new Date().getTime();
 
   return (
     <div className="step-authoring-grid">
@@ -47,12 +55,34 @@ export default function StepAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>CV Target</div>
-          <InsertMedia
+          <Flex style={{ flexDirection: "column" }}>
+            {[...CVImageUrls, undefined].map((url, i) => (
+              <InsertMedia
+                snip
+                // eslint-disable-next-line react/no-array-index-key
+                key={`insert-media-${datekey}-${i}`}
+                imgUrl={url}
+                style={{
+                  marginBottom: "8px",
+                  width: "100%",
+                  height: url ? "200px" : "auto",
+                }}
+                callback={(str) => {
+                  insertCVImage(str, i);
+                }}
+              />
+            ))}
+          </Flex>
+          {/* <InsertMedia
             snip
             imgUrl={CVImageUrl}
-            style={{ width: "100%", height: "auto" }}
+            style={{
+              width: "100%",
+              minHeight: "32px",
+              height: CVImageUrl ? "200px" : "auto",
+            }}
             callback={setCVImageUrl}
-          />
+          /> */}
         </div>
       </Flex>
 

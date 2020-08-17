@@ -10,9 +10,7 @@ export default function MediAuthoring(): JSX.Element {
 
   const insertUrl = (image: string, index: number) => {
     const arr = [...imageUrls];
-    console.log(arr, imageUrls);
     arr.splice(index, 1, image);
-    console.log(arr);
     setImageUrls(arr);
   };
 
