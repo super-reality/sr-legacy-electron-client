@@ -6,111 +6,117 @@ import InsertMedia from "../insert-media";
 import Flex from "../flex";
 import Select from "../select";
 
-const options = ["One", "Two", "Three"];
+const CVFnOptions = ["on", "if", "after"]; // ??
+
+const CVTriggerOptions = ["On CV Target Found", "On CV .."]; // ??
+
+const CVActionOptions = ["Read Text", "Do something else"];
+
+const CVNextStepOptions = [
+  "After Text finished reading",
+  "After click",
+  "After stuff",
+];
+
+// Should be imported
+type InputChangeEv =
+  | React.ChangeEvent<HTMLInputElement>
+  | React.KeyboardEvent<HTMLInputElement>;
+
+type AreaChangeEv =
+  | React.ChangeEvent<HTMLTextAreaElement>
+  | React.KeyboardEvent<HTMLTextAreaElement>;
 
 export default function StepAuthoring(): JSX.Element {
-  const insertIcon = useCallback(() => {}, []);
-  const [title, setTitle] = useState("");
+  const [CVFn, setCVFn] = useState(CVFnOptions[0]);
+  const [CVTrigger, setCVTrigger] = useState(CVTriggerOptions[0]);
+  const [CVAction, setCVAction] = useState(CVActionOptions[0]);
+  const [CVNextStep, setCVNextStep] = useState(CVNextStepOptions[0]);
+  const [stepname, setStepname] = useState("");
+  const [description, setDescription] = useState("");
+  const [CVImageUrl, setCVImageUrl] = useState("");
 
-  const handleChange = useCallback(
-    (
-      e:
-        | React.ChangeEvent<HTMLInputElement>
-        | React.KeyboardEvent<HTMLInputElement>
-    ): void => {
-      setTitle(e.currentTarget.value);
-    },
-    []
-  );
+  const handleStepnameChange = useCallback((e: InputChangeEv): void => {
+    setStepname(e.currentTarget.value);
+  }, []);
 
-  const handleAreaChange = useCallback(
-    (
-      e:
-        | React.ChangeEvent<HTMLTextAreaElement>
-        | React.KeyboardEvent<HTMLTextAreaElement>
-    ): void => {
-      setTitle(e.currentTarget.value);
-    },
-    []
-  );
+  const handleDescriptionChange = useCallback((e: AreaChangeEv): void => {
+    setDescription(e.currentTarget.value);
+  }, []);
 
   return (
-    <div className="inner step-authoring-grid">
+    <div className="step-authoring-grid">
+      <Flex>
+        <div className="container-with-desc">
+          <div>CV Function</div>
+          <Select current={CVFn} options={CVFnOptions} callback={setCVFn} />
+        </div>
+      </Flex>
+      <Flex>
+        <div className="container-with-desc">
+          <div>CV Target</div>
+          <InsertMedia
+            imgUrl={CVImageUrl}
+            style={{ width: "100%", height: "auto" }}
+            callback={setCVImageUrl}
+          />
+        </div>
+      </Flex>
+
       <Flex style={{ gridArea: "step" }}>
         <div className="container-with-desc">
-          <div>Step</div>
+          <div>Step Name</div>
           <input
-            placeholder="Event name"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
+            placeholder="Step name"
+            value={stepname}
+            onChange={handleStepnameChange}
+            onKeyDown={handleStepnameChange}
           />
         </div>
       </Flex>
-      <Flex style={{ gridArea: "event" }}>
-        <div className="container-with-desc select-div-container">
-          <div className="select-div-title">Event</div>
+
+      <Flex>
+        <div className="container-with-desc">
+          <div>Trigger</div>
           <Select
-            options={options}
-            current={options[1]}
-            callback={(s) => {
-              return s;
-            }}
+            current={CVTrigger}
+            options={CVTriggerOptions}
+            callback={setCVTrigger}
           />
         </div>
       </Flex>
-      <div
-        style={{
-          gridArea: "images",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-        }}
-      >
-        <div className="insert-images-div">
-          <InsertMedia
-            style={{ width: "100%", height: "125px" }}
-            callback={insertIcon}
-          />
-          <InsertMedia
-            style={{ width: "100%", height: "125px" }}
-            callback={insertIcon}
-          />
-          <InsertMedia
-            style={{ width: "100%", height: "125px" }}
-            callback={insertIcon}
-          />
-        </div>
-      </div>
-      <Flex style={{ gridArea: "action" }}>
-        <div className="container-with-desc select-div-container">
-          <div className="select-div-title">Action</div>
+
+      <Flex>
+        <div className="container-with-desc">
+          <div>Action</div>
           <Select
-            options={options}
-            current={options[1]}
-            callback={(s) => {
-              return s;
-            }}
+            current={CVAction}
+            options={CVActionOptions}
+            callback={setCVAction}
           />
         </div>
       </Flex>
+
       <Flex style={{ gridArea: "text" }}>
-        <textarea
-          style={{ resize: "vertical", minHeight: "64px" }}
-          placeholder=""
-          value={title}
-          onChange={handleAreaChange}
-          onKeyDown={handleAreaChange}
-        />
+        <div className="container-with-desc">
+          <div>Step Description</div>
+          <textarea
+            style={{ resize: "vertical", minHeight: "64px" }}
+            placeholder=""
+            value={description}
+            onChange={handleDescriptionChange}
+            onKeyDown={handleDescriptionChange}
+          />
+        </div>
       </Flex>
-      <Flex style={{ gridArea: "next" }}>
-        <div className="container-with-desc select-div-container">
-          <div className="select-div-title">Next</div>
+
+      <Flex>
+        <div className="container-with-desc">
+          <div>Next Step</div>
           <Select
-            options={options}
-            current={options[1]}
-            callback={(s) => {
-              return s;
-            }}
+            current={CVNextStep}
+            options={CVNextStepOptions}
+            callback={setCVNextStep}
           />
         </div>
       </Flex>

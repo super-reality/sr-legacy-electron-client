@@ -51,6 +51,19 @@ export function Title(props: PropsWithChildren<TitleProps>): JSX.Element {
   );
 }
 
+interface TextProps {
+  style?: CSSProperties;
+}
+
+export function Text(props: PropsWithChildren<TextProps>): JSX.Element {
+  const { style, children } = props;
+  return (
+    <div className="item-text" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 interface SocialProps {
   style?: CSSProperties;
   rating?: number;

@@ -114,8 +114,8 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
         <Add
           style={{ margin: "auto" }}
           fill="var(--color-text)"
-          width="30px"
-          height="30px"
+          width="16px"
+          height="16px"
         />
       )}
     </div>

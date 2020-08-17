@@ -3,6 +3,7 @@
   --color-section: #2F3136;
 
   --color-button: #36393F;
+  --color-button-hover: #47494d;
   --color-text: #BBBBBB;
   --color-text-active: #AAA;
   --color-icon: #A8ABAF;
@@ -41,10 +42,10 @@ button {
 }
 
 input, textarea {
-  background: var(--color-section);
+  background: var(--color-background);
   border: 1px solid var(--color-background);
-  border-radius: 8px;
-  height: 32px;
+  border-radius: 4px;
+  height: 24px;
   width: -webkit-fill-available;
   margin: auto;
   color: var(--color-text);

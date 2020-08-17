@@ -15,6 +15,19 @@
   }
 }
 
+.collapsible-box-outer {
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 12px;
+  color: var(--color-text);
+  font-size: 14px;
+
+  &:hover {
+  }
+}
+
 .icon-collapse {
   -webkit-transition: all .2s ease-in-out;
   transform: rotate(-90deg);
@@ -25,10 +38,6 @@
 }
 
 .collapsible-content {
-  /*
-  -webkit-transition: all .2s ease-in-out;
-  height: 0px;
-  */
   overflow: hidden;
 
   &.expanded {
@@ -36,3 +45,4 @@
     height: auto !important;
   }
 }
+

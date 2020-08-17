@@ -2,8 +2,9 @@ import React, { useCallback, useState } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import Flex from "../flex";
+import InsertMedia from "../insert-media";
 
-export default function PlaceAuthoring(): JSX.Element {
+export default function InfoAuthoring(): JSX.Element {
   const [title, setTitle] = useState("");
 
   const handleChange = useCallback(
@@ -17,11 +18,33 @@ export default function PlaceAuthoring(): JSX.Element {
     []
   );
 
+  const handleAreaChange = useCallback(
+    (
+      e:
+        | React.ChangeEvent<HTMLTextAreaElement>
+        | React.KeyboardEvent<HTMLTextAreaElement>
+    ): void => {
+      setTitle(e.currentTarget.value);
+    },
+    []
+  );
+
+  const setIconUrl = useCallback(() => {}, []);
+
   return (
-    <div className="inner">
+    <>
+      <Flex style={{ gridArea: "icon" }}>
+        <div className="container-with-desc">
+          <div>Icon</div>
+          <InsertMedia
+            style={{ width: "32px", height: "32px" }}
+            callback={setIconUrl}
+          />
+        </div>
+      </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Collection</div>
+          <div>TItle</div>
           <input
             placeholder="Title"
             value={title}
@@ -32,18 +55,30 @@ export default function PlaceAuthoring(): JSX.Element {
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Subject</div>
+          <div>Short Description</div>
           <input
             placeholder="Title"
             value={title}
             onChange={handleChange}
             onKeyDown={handleChange}
+          />
+        </div>
+      </Flex>
+      <Flex style={{ gridArea: "text" }}>
+        <div className="container-with-desc">
+          <div>Description</div>
+          <textarea
+            style={{ resize: "vertical", minHeight: "64px" }}
+            placeholder=""
+            value={title}
+            onChange={handleAreaChange}
+            onKeyDown={handleAreaChange}
           />
         </div>
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Parent Lesson (optional)</div>
+          <div>Tags</div>
           <input
             placeholder="Title"
             value={title}
@@ -52,6 +87,6 @@ export default function PlaceAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-    </div>
+    </>
   );
 }

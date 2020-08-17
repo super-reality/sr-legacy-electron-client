@@ -1,7 +1,7 @@
 .item-icon {
+  grid-area: icon;
   width: 32px;
   height: 32px;
-  margin: auto 8px auto 2px;
   border-radius: 16px;
   background-color: var(--color-section);
   background-size: cover;
@@ -9,38 +9,60 @@
 }
 
 .item-container {
-  background-color: var(--color-section-inner);
-  height: 32px;
-  border-radius: 24px;
-  margin: 4px 0px;
-  padding: 4px;
-  display: flex;
+  background-color: var(--color-section);
+  min-height: 32px;
+  border-radius: 5px;
+  margin: 5px 10px;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 32px auto auto;
+  grid-template-rows: 32px auto;
+  grid-template-areas:
+    "icon title score"
+    "text text text";
+  
+  .controls {
+    grid-template-areas:
+      "icon title score"
+      "text text text"
+      "control control control"
+  }
+
   .item-titles {
+    grid-area: title;
     font-size: 14px;
     line-height: 16px;
-
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  
     .item-title {
     }
 
     .item-sub {
       opacity: 0.6;
-    }  
+    }
   }
-  
+
+  .item-text {
+    grid-area: text;
+  }
+
   .item-social {
     align-self: center;
     margin-left: auto;
     display: flex;
     align-items: center;
-  
+
     .item-rating {
       margin-right: 4px;
     }
-  
+
     .item-share {
       margin-right: 4px;
     }
-  
+
     .item-checked {
       margin-right: 4px;
     }
