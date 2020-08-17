@@ -5,6 +5,7 @@ import "../create-lesson/index.scss";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
 import Select from "../select";
+import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 
 const CVFnOptions = ["on", "if", "after"]; // ??
 
@@ -17,15 +18,6 @@ const CVNextStepOptions = [
   "After click",
   "After stuff",
 ];
-
-// Should be imported
-type InputChangeEv =
-  | React.ChangeEvent<HTMLInputElement>
-  | React.KeyboardEvent<HTMLInputElement>;
-
-type AreaChangeEv =
-  | React.ChangeEvent<HTMLTextAreaElement>
-  | React.KeyboardEvent<HTMLTextAreaElement>;
 
 export default function StepAuthoring(): JSX.Element {
   const [CVFn, setCVFn] = useState(CVFnOptions[0]);
@@ -56,6 +48,7 @@ export default function StepAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>CV Target</div>
           <InsertMedia
+            snip
             imgUrl={CVImageUrl}
             style={{ width: "100%", height: "auto" }}
             callback={setCVImageUrl}

@@ -1,23 +1,30 @@
 import React, { CSSProperties, useCallback } from "react";
 import { ReactComponent as Add } from "../../../assets/svg/add.svg";
 import "./index.scss";
-import useMediaSniper from "../../hooks/useMediaInsert";
+import useMediaSniper from "../../hooks/useMediaSniper";
+import useMediaInsert from "../../hooks/useMediaInsert";
 
 interface InsertMediaProps {
   callback: (url: string) => void;
   imgUrl?: string;
   style?: CSSProperties;
+  snip?: boolean;
 }
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
-  const { callback, imgUrl, style } = props;
+  const { callback, imgUrl, style, snip } = props;
 
-  const openSnipTool = useMediaSniper(callback);
+  const openSnipTool = snip
+    ? useMediaSniper(callback)
+    : useMediaInsert(callback);
 
   return (
     <div
       className="insert-media-container"
-      style={{ ...style, backgroundImage: `url(${imgUrl})` }}
+      style={{
+        ...style,
+        backgroundImage: `url(${imgUrl})`,
+      }}
       onClick={openSnipTool}
     >
       {imgUrl ? undefined : (
