@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useHistory, NavLink } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
-import { ReactComponent as CreateIcon } from "../../../assets/svg/create.svg";
+import { ReactComponent as ProfileIcon } from "../../../assets/svg/profile.svg";
 import { AppState } from "../../redux/stores/renderer";
 import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
@@ -129,7 +129,7 @@ export default function TopSearch(): JSX.Element {
         </Flex>
         <ButtonRound
           onClick={openProfile}
-          svg={CreateIcon}
+          svg={ProfileIcon}
           height="24px"
           width="24px"
         />
