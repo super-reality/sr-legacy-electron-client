@@ -31,6 +31,7 @@ module.exports = Object.freeze({
         user_name_wrong: 101,
         user_password_wrong: 102,
         user_already_exist: 103,
+        require_field_missing: 104,
     },
 
     Admin: 1,

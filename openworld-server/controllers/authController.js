@@ -2,12 +2,14 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const auth = require("../middleware/auth")
 const User = require("../models/user")
-const {hashDigest, hashSaltDigest} = require("../utilities/hashing")
+const { hashDigest, hashSaltDigest } = require("../utilities/hashing")
 const constant = require("../config/constant")
 
 exports.signin = function(request, response){
-    const {username, password} = request.body;
-    // const {username, password} = request.query;
+    const {
+        username, 
+        password
+    } = request.body;
 
     User.findOne({username})
     .then(user => user ? user : response.status(constant.ERR_STATUS.Unauthorized).json({err_code: constant.ERR_CODE.user_name_wrong, msg: "Wrong username"}))
@@ -29,8 +31,14 @@ exports.signin = function(request, response){
 }
 
 exports.signup = function(request, response){
-    const {username, password, firstname, lastname, invitecode} = request.body;
-    // const {username, password, firstname, lastname, invitecode} = request.query;
+    const {
+        username, 
+        password, 
+        firstname, 
+        lastname, 
+        invitecode
+    } = request.body;
+    
     User.findOne({username})
     .then(user => {
         if (user) {
