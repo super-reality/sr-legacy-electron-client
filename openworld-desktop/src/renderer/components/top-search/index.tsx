@@ -1,96 +1,56 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, CSSProperties } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { useSpring, animated } from "react-spring";
 import { useLocation, useHistory } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
-import { ReactComponent as CreateIcon } from "../../../assets/svg/create.svg";
-import Select from "../select";
+import { ReactComponent as ProfileIcon } from "../../../assets/svg/profile.svg";
 import { AppState } from "../../redux/stores/renderer";
 import Flex from "../flex";
 import reduxAction from "../../redux/reduxAction";
-import Category from "../../../types/collections";
 import ButtonRound from "../button-round";
-import usePopupCreate from "../../hooks/usePopupCreate";
 import playSound from "../../../utils/playSound";
+import ButtonSimple from "../button-simple";
+import { tabNames } from "../../redux/slices/renderSlice";
+import useSelectHeader from "../../hooks/useSelectHeader";
+import Category from "../../../types/collections";
 
-const selectOptionsByTab: Record<string, Record<string, Category | string>> = {
-  "/discover": {
-    "Discover All": Category.All,
-    Lessons: Category.Lesson,
-    Subjects: Category.Subject,
-    Collections: Category.Collection,
-    Organizations: Category.Organization,
-    Teachers: Category.Teacher,
-    Students: Category.Student,
-    Projects: Category.Project,
-    Tasks: Category.Task,
-    Resources: Category.Resource,
-    Portfolios: Category.Portfolio,
-  },
-  "/learn": {
-    "All Interests": Category.All,
-    "Active Lessons": Category.Lesson,
-    "Active Subjects": Category.Subject,
-    "Active Collections": Category.Collection,
-    "Active Organizations": Category.Organization,
-    "Active Resources": Category.Resource,
-    "Active Tasks": Category.Task,
-    "My Teachers": Category.Teacher,
-  },
-  "/teach": {
-    "All Duties": Category.All,
-    "My Lessons": Category.Lesson,
-    "My Subjects": Category.Subject,
-    "My Collections": Category.Collection,
-    "My Organizations": Category.Organization,
-    "My Projects": Category.Resource,
-    "My Resources": Category.Resource,
-    "My Tasks": Category.Task,
-    "My Students": Category.Student,
-  },
-  "/me": {
-    "My Profile": "profile",
-    "My Score": "score",
-    "My Portfolio": "portfolio",
-    "My Account": "account",
-    "My Events": "events",
-    "My Info": "info",
-  },
-};
+interface TopNavItemProps {
+  style?: CSSProperties;
+  title: tabNames;
+  onClick: () => void;
+}
+
+function TopNavItem(props: TopNavItemProps): JSX.Element {
+  const { title, onClick, style } = props;
+
+  return (
+    <ButtonSimple
+      onClick={onClick}
+      width="calc(25% - 24px)"
+      height="16px"
+      style={{
+        lineHeight: "16px",
+        ...style,
+      }}
+    >
+      {title}
+    </ButtonSimple>
+  );
+}
 
 export default function TopSearch(): JSX.Element {
   const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
 
-  // Select
-  const currentOptions = selectOptionsByTab[location.pathname];
-  const showSelect = !!currentOptions;
-
-  const topSelectStates = useSelector(
-    (state: AppState) => state.render.topSelectStates
-  );
-
-  const currentSelected = useMemo(
-    () =>
-      topSelectStates[location.pathname] ||
-      (selectOptionsByTab[location.pathname]
-        ? Object.values(selectOptionsByTab[location.pathname])[0]
-        : Category.All),
-    [topSelectStates, location]
-  );
-
-  const setCurrentSelected = useCallback(
-    (selected: Category | string) => {
-      reduxAction(dispatch, {
-        type: "SET_TOP_SELECT",
-        arg: { selected, path: location.pathname },
-      });
-    },
-    [dispatch, location]
-  );
+  const topNavButtons: Array<[string, tabNames]> = [
+    // ["/test", "Test"],
+    ["/discover", "Discover"],
+    ["/learn", "Learn"],
+    ["/teach", "Teach"],
+    ["/create", "Create"],
+  ];
 
   // Input
   const topInputStates = useSelector(
@@ -113,80 +73,93 @@ export default function TopSearch(): JSX.Element {
     [dispatch, location]
   );
 
-  // Hide/show animation
-  const offset = 40;
-  const { yScroll, yScrollDelta } = useSelector(
-    (state: AppState) => state.render
-  );
-  const [yPos, setYPos] = useState(offset);
-
-  useEffect(() => {
-    if (yScrollDelta > 0) {
-      setYPos(offset);
-    } else if (yPos + offset < yScroll) {
-      setYPos(Math.max(-12, -yScroll + offset));
-    }
-  }, [yPos, yScrollDelta, yScroll]);
-
-  const spring = useSpring({ top: `${yPos}px` });
-
   const backClick = useCallback(() => {
     playSound("./sounds/back-button.wav");
     history.goBack();
   }, []);
 
-  // Create button
-  const [CreatePopup, openCreate] = usePopupCreate();
+  const openProfile = () => {
+    history.push("/profile");
+  };
+
+  // Dropdowns
+  const [openDropdown, setOpenDropdown] = useState<tabNames | null>(null);
+
+  const onSelect = useCallback(
+    (selected: string | Category, route: string) => {
+      if (openDropdown) {
+        history.push(route);
+        reduxAction(dispatch, {
+          type: "SET_TOP_SELECT",
+          arg: { selected, path: openDropdown },
+        });
+        setOpenDropdown(null);
+      }
+    },
+    [openDropdown]
+  );
+
+  const [SelectDropdown] = useSelectHeader(openDropdown, onSelect);
 
   return (
-    <>
-      <CreatePopup />
-      <animated.div
-        style={spring}
-        className={`top-controls ${!showSelect ? "no-select" : ""}`}
-      >
+    <div className="top-search-container">
+      <div className="top">
         <ButtonRound
           onClick={backClick}
           svg={BackIcon}
-          style={{ margin: "auto" }}
-          height="32px"
-          width="32px"
+          height="24px"
+          width="24px"
         />
-        <Flex>
+        <Flex style={{ width: "calc(100% - 64px)" }}>
           <div className="top-input-container">
             <input
               className="top-input"
               onChange={onInputchange}
               value={currentInputValue}
             />
-            <div className="top-inpu-icon">
-              <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
+            <div className="top-input-icon">
+              <SearchIcon width="16px" height="16px" fill="var(--color-icon)" />
             </div>
           </div>
         </Flex>
-        {currentOptions ? (
-          <Select<Category | string>
-            style={{ width: "auto" }}
-            current={currentSelected}
-            callback={setCurrentSelected}
-            optionFormatter={(arg: Category | string) =>
-              Object.keys(currentOptions).filter(
-                (c) => currentOptions[c] == arg
-              )[0] || ""
-            }
-            options={Object.values(currentOptions)}
-          />
-        ) : (
-          <></>
-        )}
         <ButtonRound
-          onClick={openCreate}
-          svg={CreateIcon}
-          style={{ margin: "auto" }}
-          height="32px"
-          width="32px"
+          onClick={() => {
+            openProfile();
+            playSound("./sounds/top-menu.wav");
+          }}
+          style={{
+            backgroundColor:
+              location.pathname == "/profile" ? "var(--color-background)" : "",
+          }}
+          iconFill={
+            location.pathname == "/profile" ? "var(--color-text-active)" : ""
+          }
+          svg={ProfileIcon}
+          height="24px"
+          width="24px"
         />
-      </animated.div>
-    </>
+      </div>
+      <div className="bottom">
+        {topNavButtons.map((b) => (
+          <TopNavItem
+            onClick={() => {
+              setOpenDropdown(openDropdown !== b[1] ? b[1] : null);
+              playSound("./sounds/top-menu.wav");
+            }}
+            key={b[0]}
+            style={{
+              backgroundColor:
+                openDropdown == b[1] || location.pathname == b[0]
+                  ? "var(--color-background)"
+                  : "",
+              color:
+                location.pathname == b[0] ? "var(--color-text-active)" : "",
+            }}
+            title={b[1]}
+          />
+        ))}
+      </div>
+      {openDropdown ? <SelectDropdown /> : <></>}
+    </div>
   );
 }

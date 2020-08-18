@@ -2,6 +2,7 @@ import React from "react";
 
 import "./index.scss";
 import { IStep } from "../../../types/api";
+import { ItemInner, Icon, Title, Text } from "../item-inner";
 
 interface StepProps {
   data: IStep;
@@ -11,13 +12,16 @@ export default function Step(props: StepProps): JSX.Element {
   const { data } = props;
 
   return (
-    <div className="step-container">
-      <div
-        className="step-icon"
-        style={{ backgroundImage: `url(${data.avatarUrl})` }}
-      />
-      <div className="step-title">{data.name}</div>
-      <div className="step-rating">{data.rating}</div>
-    </div>
+    <ItemInner
+      style={{
+        width: "-webkit-fill-available",
+      }}
+      drag
+      text
+    >
+      <Icon url={data.avatarUrl} />
+      <Title title={data.name} sub={data.id} />
+      <Text>{data.description}</Text>
+    </ItemInner>
   );
 }

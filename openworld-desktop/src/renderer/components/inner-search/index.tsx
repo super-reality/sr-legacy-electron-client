@@ -6,8 +6,8 @@ export default function InnerSearch(): JSX.Element {
   return (
     <div className="inner-search-container">
       <input className="inner-input" />
-      <div style={{ margin: "auto", width: "20px", height: "20px" }}>
-        <SearchIcon width="20px" height="20px" fill="var(--color-text)" />
+      <div style={{ margin: "auto", width: "16px", height: "16px" }}>
+        <SearchIcon width="16px" height="16px" fill="var(--color-text)" />
       </div>
     </div>
   );

@@ -2,26 +2,24 @@
   input {
     background: none;
     border: none;
-    height: 32px;
+    height: 24px;
     width: 100%;
     margin: 0;
     padding: 0 0 0 16px;
   }
 
-  background: var(--color-section-inner);
-  border: 1px solid var(--color-background);
-  border-radius: 16px;
+  background: var(--color-background);
+  border-radius: 5px;
   width: -webkit-fill-available;
   margin: auto;
   color: var(--color-text);
   padding: 0 8px 0 0;
-  height: 32px;
+  height: 24px;
   display: flex;
 }
 
 .inner-input {
   background: var(--color-background);
-  border: 1px solid var(--color-separator);
   border-radius: 24px;
   height: 24px;
   width: -webkit-fill-available;
