@@ -27,7 +27,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
   return (
     <ButtonSimple
       onClick={onClick}
-      width="calc(25% - 20px)"
+      width="calc(25% - 24px)"
       height="16px"
       style={{
         lineHeight: "16px",
