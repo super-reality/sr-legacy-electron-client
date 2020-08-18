@@ -1,14 +1,13 @@
 import React, { CSSProperties, useCallback } from "react";
+import { remote } from "electron";
 import path from "path";
 import url from "url";
 import { ReactComponent as Add } from "../../../assets/svg/add.svg";
-import electron from "../../../electron";
 import jsonRpcRemote from "../../../utils/jsonRpcSend";
 import "./index.scss";
 
 function createSniper(): Promise<string> {
   console.log("createSniper");
-  const { remote } = electron;
 
   const snipWindow = new remote.BrowserWindow({
     width: 200,
@@ -23,6 +22,17 @@ function createSniper(): Promise<string> {
       nodeIntegration: true,
     },
   });
+
+  // change the pathname to get the correct path in build
+  snipWindow.loadURL(
+    url.format({
+      pathname: remote.app.isPackaged
+        ? path.join(process.resourcesPath, "app.asar", "build", "dialog.html")
+        : path.join("..", "public", "dialog.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
 
   snipWindow.on("closed", () => {
     remote.globalShortcut.unregister("Control+S");
@@ -42,14 +52,6 @@ function createSniper(): Promise<string> {
     }
   });
 
-  snipWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, "..", "public", "dialog.html"),
-      protocol: "file:",
-      slashes: true,
-    })
-  );
-
   return new Promise<string>((resolve, reject) => {
     remote.globalShortcut.register("Control+S", () => {
       if (snipWindow != null) {
@@ -59,10 +61,10 @@ function createSniper(): Promise<string> {
         snipWindow.close();
 
         jsonRpcRemote("snipImage", {
-          posx: pos[0],
-          posy: pos[1],
-          width: size[0],
-          height: size[1],
+          posx: pos[0] + 3,
+          posy: pos[1] + 3,
+          width: size[0] - 6,
+          height: size[1] - 6,
           path: "",
         })
           .then((res) => {
