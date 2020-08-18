@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import TopNav from "./components/top-nav";
 import "./App.scss";
 import Test from "./views/test";
 import Auth from "./views/auth";
@@ -10,10 +9,11 @@ import Learn from "./views/learn";
 import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
-import CreateLesson from "./components/create-lesson";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Loading from "./components/loading";
+import Profile from "./views/profile";
+import Create from "./views/create";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -30,16 +30,15 @@ export default function App(): JSX.Element {
 
   return isAuthenticated ? (
     <>
-      <TopNav />
       <TopSearch />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
-        <div style={{ height: "52px" }} />
         <Switch>
-          <Route path="/create/lesson" component={CreateLesson} />
           <Route exact path="/test" component={Test} />
           <Route exact path="/discover" component={Discover} />
           <Route exact path="/learn" component={Learn} />
           <Route exact path="/teach" component={Teach} />
+          <Route exact path="/create" component={Create} />
+          <Route exact path="/profile" component={Profile} />
         </Switch>
       </div>
     </>

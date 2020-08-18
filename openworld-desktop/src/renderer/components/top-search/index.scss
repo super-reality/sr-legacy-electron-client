@@ -1,44 +1,65 @@
-.top-controls {
-  height: 52px;
-  width: inherit;
-  display: grid;
-  grid-template-columns: 42px calc(50% - 42px) calc(50% - 42px) 42px;
-  position: absolute;
-  z-index: 5;
-  border-bottom: 2px solid #8ca1b773;
-  background-color: var(--color-background);
-}
+.top-search-container {
+  width: calc(100% - 32px);
+  border-radius: 5px;
+  margin: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-section);
 
-.no-select {
-  grid-template-columns: 42px calc(100% - 84px) 42px;
+  .top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bottom {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+
+    .topnav-item {
+      cursor: pointer;
+      color: var(--color-text);
+      min-width: 64px;
+      text-align: center;
+      line-height: 40px;
+      opacity: 0.5;
+      -webkit-transition: all 0.1s ease-in-out;
+
+      &:hover {
+        background-color: var(--color-background-hover);
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .top-input-container {
   input {
     background: none;
     border: none;
-    height: 32px;
+    height: 24px;
     width: 100%;
     margin: 0;
-    padding: 0 8px;
+    padding: 0 4px;
   }
 
-  .top-inpu-icon {
+  .top-input-icon {
     width: 20px;
     height: 20px;
     margin: auto 0;
   }
 
-  background: var(--color-section);
+  background: var(--color-background);
   border: 1px solid var(--color-background);
-  border-radius: 16px;
+  border-radius: 5px;
   width: -webkit-fill-available;
   margin: auto;
   color: var(--color-text);
-  padding: 0 8px;
-  height: 32px;
+  padding: 0 4px;
+  height: 24px;
   display: flex;
-  margin: auto 8px;
+  margin: auto 4px;
 }
 
 .top-input {

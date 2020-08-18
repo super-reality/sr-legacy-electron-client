@@ -10,6 +10,7 @@ export interface IBase {
 export interface IStep extends IBase {
   id: string;
   media: string[];
+  description: string;
 }
 
 export interface ILessonData extends IBase {
