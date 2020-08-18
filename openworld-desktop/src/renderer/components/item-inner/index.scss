@@ -22,6 +22,15 @@
   grid-template-rows: 32px;
   grid-template-areas: "icon title score";
   @include animated;
+  @include disable-select;
+
+  &.can-drag {
+    background-image: url(../../../assets/images/drag.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-position-x: 5px;
+    padding-left: 22px;
+  }
 
   &.can-hover {
     cursor: pointer;

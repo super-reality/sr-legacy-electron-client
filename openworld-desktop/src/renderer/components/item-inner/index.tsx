@@ -7,19 +7,20 @@ interface InnerItemProps {
   style?: CSSProperties;
   text?: boolean;
   controls?: boolean;
+  drag?: boolean;
   onClick?: () => void;
 }
 
 export function ItemInner(
   props: PropsWithChildren<InnerItemProps>
 ): JSX.Element {
-  const { style, controls, text, children, onClick } = props;
+  const { drag, style, controls, text, children, onClick } = props;
   return (
     <div
       onClick={onClick}
       className={`item-container ${onClick ? "can-hover" : ""} ${
-        controls ? "controls" : ""
-      } ${text ? "text" : ""}`}
+        drag ? "can-drag" : ""
+      } ${controls ? "controls" : ""} ${text ? "text" : ""}`}
       style={{ ...style }}
     >
       {children}

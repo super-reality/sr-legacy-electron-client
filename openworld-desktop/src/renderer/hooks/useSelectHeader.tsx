@@ -65,7 +65,6 @@ export default function useSelectHeader(
 
   const leftOffset = 16;
   const buttonSize = (width - leftOffset - leftOffset) / 4 - 24 + 16;
-  console.log(buttonSize);
   const centers: Record<tabNames, number> = {
     Discover: 16 + 8 * 0 + buttonSize * 0.5,
     Learn: 16 + 8 * 1 + buttonSize * 1.5,

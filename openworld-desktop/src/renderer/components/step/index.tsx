@@ -12,7 +12,13 @@ export default function Step(props: StepProps): JSX.Element {
   const { data } = props;
 
   return (
-    <ItemInner text>
+    <ItemInner
+      style={{
+        width: "-webkit-fill-available",
+      }}
+      drag
+      text
+    >
       <Icon url={data.avatarUrl} />
       <Title title={data.name} sub={data.id} />
       <Text>{data.description}</Text>

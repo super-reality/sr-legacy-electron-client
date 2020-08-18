@@ -1,3 +1,10 @@
 @mixin animated {
   -webkit-transition: all .15s cubic-bezier(0, 0, 0.2, 1);
 }
+
+@mixin disable-select {
+  -webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+}
