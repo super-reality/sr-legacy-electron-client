@@ -5,14 +5,23 @@ import CheckButton from "../check-button";
 
 interface InnerItemProps {
   style?: CSSProperties;
+  text?: boolean;
+  controls?: boolean;
+  onClick?: () => void;
 }
 
 export function ItemInner(
   props: PropsWithChildren<InnerItemProps>
 ): JSX.Element {
-  const { style, children } = props;
+  const { style, controls, text, children, onClick } = props;
   return (
-    <div className="item-container" style={{ ...style }}>
+    <div
+      onClick={onClick}
+      className={`item-container ${onClick ? "can-hover" : ""} ${
+        controls ? "controls" : ""
+      } ${text ? "text" : ""}`}
+      style={{ ...style }}
+    >
       {children}
     </div>
   );
@@ -21,38 +30,72 @@ export function ItemInner(
 interface IconProps {
   url: string;
   style?: CSSProperties;
+  area?: string;
 }
 
 export function Icon(props: PropsWithChildren<IconProps>): JSX.Element {
-  const { url, style, children } = props;
+  const { url, area, style, children } = props;
   return (
     <div
       className="item-icon"
-      style={{ ...style, backgroundImage: `url(${url})` }}
+      style={{ ...style, gridArea: area, backgroundImage: `url(${url})` }}
     >
       {children}
     </div>
   );
 }
 
+interface PointsProps {
+  points: number;
+  style?: CSSProperties;
+}
+
+export function Points(props: PointsProps): JSX.Element {
+  const { points, style } = props;
+  return (
+    <div
+      className={`item-points ${points < 0 ? "red" : "green"}`}
+      style={{ ...style }}
+    >
+      {points}
+    </div>
+  );
+}
+
 interface TitleProps {
   style?: CSSProperties;
+  area?: string;
   title: string;
   sub?: string;
 }
 
 export function Title(props: PropsWithChildren<TitleProps>): JSX.Element {
-  const { title, sub, style, children } = props;
+  const { title, area, sub, style, children } = props;
   return (
-    <div className="item-titles" style={{ ...style }}>
+    <div className="item-titles" style={{ ...style, gridArea: area }}>
       <div className="item-title">{title}</div>
       {sub ? <div className="item-sub">{sub}</div> : <></>}
     </div>
   );
 }
 
+interface TextProps {
+  style?: CSSProperties;
+  area?: string;
+}
+
+export function Text(props: PropsWithChildren<TextProps>): JSX.Element {
+  const { style, area, children } = props;
+  return (
+    <div className="item-text" style={{ ...style, gridArea: area }}>
+      {children}
+    </div>
+  );
+}
+
 interface SocialProps {
   style?: CSSProperties;
+  area?: string;
   rating?: number;
   share?: string;
   checked?: boolean;
@@ -61,6 +104,7 @@ interface SocialProps {
 
 export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
   const {
+    area,
     rating,
     checked,
     share,
@@ -69,7 +113,7 @@ export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
     children,
   } = props;
   return (
-    <div className="item-social" style={{ ...style }}>
+    <div className="item-social" style={{ ...style, gridArea: area }}>
       {rating ? <div className="item-rating">{rating}</div> : <></>}
       {share ? (
         <div className="item-share">

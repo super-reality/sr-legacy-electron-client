@@ -2,8 +2,14 @@ import React, { useCallback, useState } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import Flex from "../flex";
+import Select from "../select";
+import ButtonSimple from "../button-simple";
 
-export default function PlaceAuthoring(): JSX.Element {
+const visibilityOptions = ["public", "friends", "private"];
+
+const entryOptions = ["bid", "free", "fixed", "range"];
+
+export default function PublishAuthoring(): JSX.Element {
   const [title, setTitle] = useState("");
 
   const handleChange = useCallback(
@@ -18,10 +24,10 @@ export default function PlaceAuthoring(): JSX.Element {
   );
 
   return (
-    <div className="inner">
+    <>
       <Flex>
         <div className="container-with-desc">
-          <div>Collection</div>
+          <div>Parent Subject</div>
           <input
             placeholder="Title"
             value={title}
@@ -30,28 +36,9 @@ export default function PlaceAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Subject</div>
-          <input
-            placeholder="Title"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
-          />
-        </div>
+      <Flex style={{ marginTop: "8px" }}>
+        <ButtonSimple onClick={() => {}}>Publish</ButtonSimple>
       </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Parent Lesson (optional)</div>
-          <input
-            placeholder="Title"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
-          />
-        </div>
-      </Flex>
-    </div>
+    </>
   );
 }

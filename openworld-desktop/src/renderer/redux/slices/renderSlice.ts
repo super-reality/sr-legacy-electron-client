@@ -2,10 +2,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Category from "../../../types/collections";
 
+export type tabNames = "Discover" | "Learn" | "Teach" | "Create" | "Profile";
+
 const initialState = {
   yScroll: 0,
   yScrollDelta: 0,
-  topSelectStates: {} as Record<string, Category | string>,
+  topSelectStates: {
+    Discover: Category.All,
+    Learn: Category.All,
+    Teach: Category.All,
+    Create: Category.Help,
+    Profile: "",
+  } as Record<tabNames, Category | string>,
   topInputStates: {} as Record<string, string>,
 };
 

@@ -10,7 +10,7 @@ interface ReactSelectProps<K> {
   style?: React.CSSProperties;
 }
 
-export default function Select<K>({
+export default function ReactSelect<K>({
   optionFormatter,
   current,
   callback,

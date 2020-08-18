@@ -4,14 +4,27 @@
   height: 24px;
   margin: 8px 0;
   padding: 0 12px;
-  color: var(--color-text-dark);
+  color: var(--color-text);
   line-height: 24px;
   font-size: 14px;
   border-radius: 8px;
   background-color: var(--color-section-separator);
 
   &:hover {
-    background-color: #CDCDCD;
+    background-color: var(--color-section-separator-hover);
+  }
+}
+
+.collapsible-box-outer {
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 12px;
+  color: var(--color-text);
+  font-size: 14px;
+
+  &:hover {
   }
 }
 
@@ -25,10 +38,6 @@
 }
 
 .collapsible-content {
-  /*
-  -webkit-transition: all .2s ease-in-out;
-  height: 0px;
-  */
   overflow: hidden;
 
   &.expanded {
@@ -36,3 +45,4 @@
     height: auto !important;
   }
 }
+

@@ -10,7 +10,7 @@ export default function Discover(): JSX.Element {
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
   );
-  const current = (topSelectStates["/discover"] as Category) || Category.All;
+  const current = topSelectStates.Discover as Category;
 
   return (
     <div className="mid">

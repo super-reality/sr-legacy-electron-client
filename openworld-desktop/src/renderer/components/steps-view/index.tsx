@@ -18,24 +18,26 @@ export default function StepsView(props: StepsViewProps): JSX.Element {
   const [sort, setSort] = useState(sortOptions[0]);
 
   return (
-    <div>
-      <Flex>
-        <div>
-          <InnerSearch />
-        </div>
-        <ReactSelect
-          style={{ width: "-webkit-fill-available", marginLeft: "8px" }}
-          className="dark"
-          options={sortOptions}
-          current={sort}
-          callback={setSort}
-        />
-      </Flex>
+    <>
+      <div className="mid">
+        <Flex>
+          <div>
+            <InnerSearch />
+          </div>
+          <ReactSelect
+            style={{ width: "-webkit-fill-available", marginLeft: "8px" }}
+            className="dark"
+            options={sortOptions}
+            current={sort}
+            callback={setSort}
+          />
+        </Flex>
+      </div>
       <div className="steps-container">
         {steps.map((step) => {
           return <Step key={step.id} data={step} />;
         })}
       </div>
-    </div>
+    </>
   );
 }
