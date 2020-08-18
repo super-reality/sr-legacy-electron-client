@@ -35,15 +35,15 @@ function createSniper(): Promise<string> {
   );
 
   snipWindow.on("closed", () => {
-    remote.globalShortcut.unregister("Control+S");
-    remote.globalShortcut.unregister("Control+D");
+    remote.globalShortcut.unregister("Shift+S");
+    remote.globalShortcut.unregister("Shift+D");
     snipWindow.destroy();
   });
   let translucent = false;
 
   // snipWindow.webContents.openDevTools();
 
-  remote.globalShortcut.register("Control+D", () => {
+  remote.globalShortcut.register("Shift+D", () => {
     translucent = !translucent;
     if (translucent == true) {
       snipWindow.setIgnoreMouseEvents(true);
@@ -53,12 +53,12 @@ function createSniper(): Promise<string> {
   });
 
   return new Promise<string>((resolve, reject) => {
-    remote.globalShortcut.register("Control+S", () => {
+    remote.globalShortcut.register("Shift+S", () => {
       if (snipWindow != null) {
         const pos = snipWindow.getPosition();
         const size = snipWindow.getSize();
-        console.log(pos, size);
         snipWindow.close();
+        console.log(snipWindow, "sniptwindow");
 
         jsonRpcRemote("snipImage", {
           posx: pos[0] + 3,
