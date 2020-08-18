@@ -13,6 +13,9 @@ enum Category {
   Help,
   User,
   Event,
+  Journal,
+  Offer,
+  Invite,
 }
 
 export default Category;

@@ -1,3 +1,5 @@
+@import '../misc.scss';
+
 .item-icon {
   grid-area: icon;
   width: 32px;
@@ -19,6 +21,15 @@
   grid-template-columns: 32px auto auto;
   grid-template-rows: 32px;
   grid-template-areas: "icon title score";
+  @include animated;
+
+  &.can-hover {
+    cursor: pointer;
+  }
+
+  &.can-hover:hover {
+    background-color: var(--color-background-hover);
+  }
 
   &.text {
     grid-template-rows: 32px auto;
@@ -37,22 +48,25 @@
 
   .item-titles {
     grid-area: title;
-    font-size: 14px;
     line-height: 16px;
     justify-content: center;
     display: flex;
     flex-direction: column;
 
     .item-title {
+      color: var(--color-text-active);
+      font-size: 16px;
     }
 
     .item-sub {
+      font-size: 14px;
       opacity: 0.6;
     }
   }
 
   .item-text {
     grid-area: text;
+    font-size: 14px;
   }
 
   .item-social {
@@ -72,6 +86,28 @@
 
     .item-checked {
       margin-right: 4px;
+    }
+  }
+
+  .item-points {
+    height: 32px;
+    border-radius: 4px;
+    background-color: var(--color-icon);
+    color: var(--color-background);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 32px;
+    text-align: center;
+    width: fit-content;
+    padding: 0 8px;
+    margin-left: auto;
+
+    &.green {
+      background-color: var(--color-green);
+    }
+
+    &.red {
+      background-color: var(--color-red);
     }
   }
 }

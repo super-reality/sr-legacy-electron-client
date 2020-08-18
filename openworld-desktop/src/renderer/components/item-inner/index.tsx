@@ -7,17 +7,19 @@ interface InnerItemProps {
   style?: CSSProperties;
   text?: boolean;
   controls?: boolean;
+  onClick?: () => void;
 }
 
 export function ItemInner(
   props: PropsWithChildren<InnerItemProps>
 ): JSX.Element {
-  const { style, controls, text, children } = props;
+  const { style, controls, text, children, onClick } = props;
   return (
     <div
-      className={`item-container ${controls ? "controls" : ""} ${
-        text ? "text" : ""
-      }`}
+      onClick={onClick}
+      className={`item-container ${onClick ? "can-hover" : ""} ${
+        controls ? "controls" : ""
+      } ${text ? "text" : ""}`}
       style={{ ...style }}
     >
       {children}
@@ -39,6 +41,23 @@ export function Icon(props: PropsWithChildren<IconProps>): JSX.Element {
       style={{ ...style, gridArea: area, backgroundImage: `url(${url})` }}
     >
       {children}
+    </div>
+  );
+}
+
+interface PointsProps {
+  points: number;
+  style?: CSSProperties;
+}
+
+export function Points(props: PointsProps): JSX.Element {
+  const { points, style } = props;
+  return (
+    <div
+      className={`item-points ${points < 0 ? "red" : "green"}`}
+      style={{ ...style }}
+    >
+      {points}
     </div>
   );
 }

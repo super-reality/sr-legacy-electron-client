@@ -1,3 +1,5 @@
+@import '../misc.scss';
+
 .insert-media-icon {
   display: flex;
   width: 100%;
@@ -15,6 +17,7 @@
   background-color: var(--color-background);
   background-position: center;
   background-size: cover;
+  @include animated;
 
   &:hover {
     background-color: var(--color-background-hover);

@@ -1,3 +1,5 @@
+@import './misc.scss';
+
 .icon-button {
   opacity: 0.8;
   cursor: pointer;
@@ -23,6 +25,7 @@
   background-color: var(--color-button);
   border-radius: 5px;
   display: flex;
+  @include animated;
 
   .svg-icon {
     margin: auto;
@@ -46,6 +49,7 @@
   border-radius: 5px;
   padding: 8px;
   color: var(--color-text);
+  @include animated;
 
   &:hover {
     background-color: var(--color-button-hover);
@@ -69,6 +73,7 @@
   background-color: #6fb6ff;
   border-radius: 500px;
   padding: 8px;
+  @include animated;
 
   &:hover {
     background-color: #b7dbff;
