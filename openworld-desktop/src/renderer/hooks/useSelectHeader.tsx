@@ -53,10 +53,6 @@ const selectOptionsByTab: Record<
     "Create Resource": Category.Resource,
     "Create Organization": Category.Organization,
   },
-  Profile: {
-    Me: "me",
-    "My Lessons": "my lessons",
-  },
 };
 
 export default function useSelectHeader(
@@ -70,7 +66,6 @@ export default function useSelectHeader(
     Learn: "/learn",
     Teach: "/teach",
     Create: "/create",
-    Profile: "/profile",
   };
 
   if (title) {
