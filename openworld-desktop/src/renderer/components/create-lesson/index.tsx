@@ -27,9 +27,6 @@ export default function CreateLesson(): JSX.Element {
           <Collapsible expanded title="Rules">
             <RulesAuthoring />
           </Collapsible>
-          <Collapsible expanded title="Publish">
-            <PublishAuthoring />
-          </Collapsible>
         </div>
       </Collapsible>
       <Collapsible outer expanded title="Create Lesson Step">
@@ -39,6 +36,11 @@ export default function CreateLesson(): JSX.Element {
       </Collapsible>
       <Collapsible outer expanded title="Created Steps">
         <StepsView steps={data.steps} />
+      </Collapsible>
+      <Collapsible expanded title="Publish">
+        <div className="mid">
+          <PublishAuthoring />
+        </div>
       </Collapsible>
     </>
   );

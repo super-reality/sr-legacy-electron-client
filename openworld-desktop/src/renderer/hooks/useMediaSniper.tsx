@@ -4,9 +4,7 @@ import url from "url";
 import { useCallback } from "react";
 import jsonRpcRemote from "../../utils/jsonRpcSend";
 
-function createSniper(): Promise<string> {
-  console.log("createSniper");
-
+function createSniper(imgUrl: any): Promise<string> {
   const snipWindow = new remote.BrowserWindow({
     width: 200,
     height: 200,
@@ -33,15 +31,15 @@ function createSniper(): Promise<string> {
   );
 
   snipWindow.on("closed", () => {
-    remote.globalShortcut.unregister("Control+S");
-    remote.globalShortcut.unregister("Control+D");
+    remote.globalShortcut.unregister("Shift+S");
+    remote.globalShortcut.unregister("Shift+D");
     snipWindow.destroy();
   });
   let translucent = false;
 
   // snipWindow.webContents.openDevTools();
 
-  remote.globalShortcut.register("Control+D", () => {
+  remote.globalShortcut.register("Shift+D", () => {
     translucent = !translucent;
     if (translucent == true) {
       snipWindow.setIgnoreMouseEvents(true);
@@ -51,30 +49,34 @@ function createSniper(): Promise<string> {
   });
 
   return new Promise<string>((resolve, reject) => {
-    remote.globalShortcut.register("Control+S", () => {
+    remote.globalShortcut.register("Shift+S", () => {
       if (snipWindow != null) {
         const pos = snipWindow.getPosition();
         const size = snipWindow.getSize();
-        console.log(pos, size);
         snipWindow.close();
-
+        let imglocalPath: any = "";
+        if (imgUrl != undefined) {
+          imglocalPath = imgUrl;
+        }
         jsonRpcRemote("snipImage", {
           posx: pos[0] + 3,
           posy: pos[1] + 3,
           width: size[0] - 6,
           height: size[1] - 6,
-          path: "",
+          path: imglocalPath,
         })
           .then((res) => {
             const rescopy: any = res;
-            const ImagePathCopy = rescopy.result.imgPath;
-            console.log(ImagePathCopy);
+            let ImagePathCopy: string = "";
+            try {
+              ImagePathCopy = rescopy.result.imgPath;
+            } catch (err) {
+              reject(err);
+            }
             resolve(ImagePathCopy);
           })
           .catch((err) => {
-            console.log("error ocurred checkmehere");
             reject(err);
-            console.log(err);
           });
       } else {
         reject();
@@ -84,10 +86,11 @@ function createSniper(): Promise<string> {
 }
 
 export default function useMediaSniper(
+  imgUrl: any,
   onFinish: (url: string) => void
 ): () => void {
   const open = useCallback(() => {
-    createSniper().then(onFinish);
+    createSniper(imgUrl).then(onFinish);
   }, []);
 
   return open;

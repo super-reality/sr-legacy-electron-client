@@ -15,7 +15,7 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
   const { callback, imgUrl, style, snip } = props;
 
   const openSnipTool = snip
-    ? useMediaSniper(callback)
+    ? useMediaSniper(imgUrl, callback)
     : useMediaInsert(callback);
 
   return (
