@@ -16,7 +16,7 @@ export default function CreateLesson(): JSX.Element {
 
   return (
     <>
-      <Collapsible outer expanded title="Create Teacher Bot Lesson">
+      <Collapsible outer expanded title="Add Lesson Info">
         <div className="mid">
           <Collapsible expanded title="Info">
             <InfoAuthoring />
@@ -24,12 +24,12 @@ export default function CreateLesson(): JSX.Element {
           <Collapsible expanded title="Media">
             <MediaAuthoring />
           </Collapsible>
-          <Collapsible expanded title="Rules">
+          {/* <Collapsible expanded title="Rules">
             <RulesAuthoring />
-          </Collapsible>
+          </Collapsible> */}
         </div>
       </Collapsible>
-      <Collapsible outer expanded title="Create Lesson Step">
+      <Collapsible outer expanded title="Add Lesson Step">
         <div className="mid">
           <StepAuthoring />
         </div>

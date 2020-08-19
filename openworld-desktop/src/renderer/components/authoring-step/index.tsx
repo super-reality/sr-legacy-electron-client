@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
-import InsertMedia from "../insert-media";
+import InsertStepMedia from "../insert-stepMedia";
 import Flex from "../flex";
 import Select from "../select";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
@@ -62,18 +62,18 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <div className="step-authoring-grid">
-      <Flex>
+      {/* <Flex>
         <div className="container-with-desc">
           <div>CV Function</div>
           <Select current={CVFn} options={CVFnOptions} callback={setCVFn} />
         </div>
-      </Flex>
+      </Flex> */}
       <Flex>
         <div className="container-with-desc">
-          <div>CV Target</div>
+          <div>CV Target or Media</div>
           <Flex style={{ flexDirection: "column" }}>
             {[...CVImageUrls, undefined].map((url, i) => (
-              <InsertMedia
+              <InsertStepMedia
                 snip
                 // eslint-disable-next-line react/no-array-index-key
                 key={`insert-media-${datekey}-${i}`}

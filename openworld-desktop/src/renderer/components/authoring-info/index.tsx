@@ -4,24 +4,36 @@ import "../containers.scss";
 import Flex from "../flex";
 import InsertMedia from "../insert-media";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
+import Select from "../select";
+
+const entryOptions = ["beginner", "intermediate", "advanced"];
 
 export default function InfoAuthoring(): JSX.Element {
-  const [title, setTitle] = useState("");
   const [iconUrl, setIconUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [sdescription, setSdescription] = useState("");
+  const [description, setDescription] = useState("");
+  const [entry, setEntry] = useState(entryOptions[0]);
 
   const handleChange = useCallback((e: InputChangeEv): void => {
-    setTitle(e.currentTarget.value);
+    if (e.currentTarget.name == "Title") {
+      setTitle(e.currentTarget.value);
+    } else if (e.currentTarget.name == "SDescription") {
+      setSdescription(e.currentTarget.value);
+    } else if (e.currentTarget.name == "Description") {
+      setDescription(e.currentTarget.value);
+    }
   }, []);
 
   const handleAreaChange = useCallback((e: AreaChangeEv): void => {
-    setTitle(e.currentTarget.value);
+    setDescription(e.currentTarget.value);
   }, []);
 
   return (
     <>
       <Flex style={{ gridArea: "icon" }}>
         <div className="container-with-desc">
-          <div>Icon</div>
+          <div>Lesson Icon</div>
           <InsertMedia
             imgUrl={iconUrl}
             style={{ width: "32px", height: "32px" }}
@@ -31,10 +43,11 @@ export default function InfoAuthoring(): JSX.Element {
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>TItle</div>
+          <div>Lesson TItle</div>
           <input
             placeholder="Title"
             value={title}
+            name="Title"
             onChange={handleChange}
             onKeyDown={handleChange}
           />
@@ -42,10 +55,11 @@ export default function InfoAuthoring(): JSX.Element {
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Short Description</div>
+          <div>Lesson Short Description</div>
           <input
-            placeholder="Title"
-            value={title}
+            placeholder="Short Description"
+            value={sdescription}
+            name="SDescription"
             onChange={handleChange}
             onKeyDown={handleChange}
           />
@@ -53,17 +67,23 @@ export default function InfoAuthoring(): JSX.Element {
       </Flex>
       <Flex style={{ gridArea: "text" }}>
         <div className="container-with-desc">
-          <div>Description</div>
+          <div>Lesson Description</div>
           <textarea
             style={{ resize: "vertical", minHeight: "64px" }}
-            placeholder=""
-            value={title}
+            placeholder="Description"
+            value={description}
             onChange={handleAreaChange}
             onKeyDown={handleAreaChange}
           />
         </div>
       </Flex>
       <Flex>
+        <div className="container-with-desc">
+          <div>Entry</div>
+          <Select current={entry} options={entryOptions} callback={setEntry} />
+        </div>
+      </Flex>
+      {/* <Flex>
         <div className="container-with-desc">
           <div>Tags</div>
           <input
@@ -73,7 +93,7 @@ export default function InfoAuthoring(): JSX.Element {
             onKeyDown={handleChange}
           />
         </div>
-      </Flex>
+      </Flex> */}
     </>
   );
 }
