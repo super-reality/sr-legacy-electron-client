@@ -1,13 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, {
-  useRef,
-  useCallback,
-  MutableRefObject,
-  CSSProperties,
-  useEffect,
-  useState,
-} from "react";
+import React, { useRef, useCallback, useState, CSSProperties } from "react";
 import { clamp } from "lodash";
 // @ts-ignore
 import swap from "lodash-move";
@@ -23,16 +16,27 @@ interface ContainerProps {
 export default function useDraggableList(
   argItems: JSX.Element[],
   itemHeight: number,
-  onChange: (list: number[]) => void
-): [(props: ContainerProps) => JSX.Element, MutableRefObject<number[]>] {
+  onChange: (swapA: number, swapB: number) => void
+): [
+  (props: ContainerProps) => JSX.Element,
+  (newItems: JSX.Element[]) => void,
+  React.MutableRefObject<number[]>
+] {
   // Returns fitting styles for dragged/idle items
   const [items, setItems] = useState(argItems);
   const refOrder = useRef(items.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
 
-  useEffect(() => {
-    setItems(argItems);
-    refOrder.current = argItems.map((_, index) => index);
-  }, [argItems]);
+  const resetItems = useCallback((newItems: JSX.Element[]) => {
+    setItems(newItems);
+    refOrder.current = newItems.map((_, index) => index);
+  }, []);
+
+  const changeFn = useCallback(
+    (swapA: number, swapB: number) => {
+      onChange(swapA, swapB);
+    },
+    [onChange]
+  );
 
   const fn = useCallback(
     (
@@ -72,7 +76,7 @@ export default function useDraggableList(
 
     setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
     if (!down) {
-      onChange(newOrder);
+      changeFn(curIndex, curRow);
       refOrder.current = newOrder;
     }
   });
@@ -93,7 +97,7 @@ export default function useDraggableList(
           <animated.div
             className="dragList"
             {...bind(i)}
-            key={`draggable-list-${i}`}
+            key={`draggable-list-${items[i].key}`}
             style={
               {
                 margin: "0 10px",
@@ -115,5 +119,5 @@ export default function useDraggableList(
     );
   };
 
-  return [Component, refOrder];
+  return [Component, resetItems, refOrder];
 }
