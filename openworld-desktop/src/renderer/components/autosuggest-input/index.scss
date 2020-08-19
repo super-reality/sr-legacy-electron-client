@@ -1,0 +1,66 @@
+@import "../misc.scss";
+
+.react-autosuggest__container {
+  position: relative;
+
+  .react-autosuggest__container--open {
+    box-shadow: 0px 5px 5px 2px #00000040;
+  }
+
+  .react-autosuggest__input {
+  }
+
+  .react-autosuggest__input--open {
+  }
+
+  .react-autosuggest__input--focused {
+  }
+
+  .react-autosuggest__suggestions-container {
+    display: none;
+  }
+
+  .react-autosuggest__suggestions-container--open {
+    display: flex;
+    width: 100%;
+    position: absolute;
+    z-index: 10;
+  }
+
+  .react-autosuggest__suggestions-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .react-autosuggest__suggestion {
+    list-style-type: none;
+    color: var(--color-text);
+    background-color: var(--color-button);
+    padding: 0 8px;
+    height: 24px;
+    @include animated;
+
+    &:hover {
+      background-color: var(--color-button-hover);
+    }
+  }
+
+  .react-autosuggest__suggestion--first {
+  }
+
+  .react-autosuggest__suggestion--highlighted {
+    color: var(--color-text-active);
+  }
+
+  .react-autosuggest__section-container {
+  }
+
+  .react-autosuggest__section-container--first {
+  }
+
+  .react-autosuggest__section-title {
+  }
+}

@@ -18,6 +18,10 @@ const projectSchema = new Schema({
     },
     // medias urls
     medias: { type: Array },
+    // budget
+    budget: { type: Number },
+    // visibility: either of Public/Team/Private
+    visibility: { type: String },
     // user id that created this project
     createdBy: { type: ObjectId },
     // created date

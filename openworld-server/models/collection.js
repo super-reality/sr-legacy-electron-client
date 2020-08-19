@@ -20,8 +20,14 @@ const collectionSchema = new Schema({
         type: String, 
         required: true 
     },
+    // tag Array
+    tags: { type: Array },
     // medias urls
     medias: { type: Array },
+    // visibility
+    visibility: { type: String },
+    // entry
+    entry: { type: String },
     // number of shares
     numberOfShares: { type: Number },
     // number of activations
@@ -32,8 +38,6 @@ const collectionSchema = new Schema({
     numberOfLessons: { type: Number },
     // average user engagement
     avgUserEngage: { type: String },
-    // collection url
-    collectionUrl: { type: String },
     // user options
     options: { type: Array },    
     // if remixed

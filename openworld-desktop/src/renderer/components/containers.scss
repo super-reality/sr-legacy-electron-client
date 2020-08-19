@@ -1,3 +1,5 @@
+@import "./misc.scss";
+
 .inner {
   background-color: var(--color-background);
   border-radius: 8px;
@@ -9,6 +11,7 @@
   background-color: var(--color-section);
   padding: 10px;
   margin: 10px;
+  @include soft-shadow;
 }
 
 .container-with-desc {
