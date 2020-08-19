@@ -1,29 +1,29 @@
 const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId
 
-/* *** define job post schema *** */
-const jobpostSchema = new Schema({
-    // jobpost icon url
+/* *** define point pool schema *** */
+const pointpoolSchema = new Schema({
+    // pointpool icon url
     icon: { type: String },
-    // jobpost name
+    // pointpool name
     name: { 
         type: String, 
         required: true,
         index: true
     },
-    // jobpost long description
+    // pointpool long description
     description: { 
         type: String, 
         required: true 
     },
     // medias urls
     medias: { type: Array },
-    // user id that created this jobpost
+    // user id that created this pointpool
     createdBy: { type: ObjectId },
     // created date
     createdAt: { type: Date, default: Date.now }
 });
 
-const Jobpost = new model("Jobpost", jobpostSchema);
+const Pointpool = new model("Pointpool", pointpoolSchema);
 
-module.exports = Jobpost;
+module.exports = Pointpool;

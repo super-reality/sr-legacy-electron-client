@@ -27,7 +27,10 @@ const authorizePermissions = (user, permissions) => new Promise((resolve, reject
 const auth = (permissions = []) => (request, response, next) => {
     try {
         authenticateUser(getJwtFromRequest(request))
-            .then(user => authorizePermissions(user, permissions))
+            .then(user => {
+                authorizePermissions(user, permissions)
+                request.user = user
+            })
             .then(() => next())
             .catch(error => response.sendStatus(401))
     }

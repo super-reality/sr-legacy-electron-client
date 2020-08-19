@@ -23,18 +23,20 @@ const subjectSchema = new Schema({
         type: String, 
         required: true 
     },
+    // tag Array
+    tags: { type: Array },
     // medias urls
     medias: { type: Array },
+    // visibility
+    visibility: { type: String },
+    // entry
+    entry: { type: String },
     // number of shares
     numberOfShares: { type: Number },
     // number of activations
     numberOfActivations: { type: Number },
     // number of completions
-    numberOfCompletions: { type: String },
-    // average user engagement
-    avgUserEngage: { type: String },
-    // subject url
-    subjectUrl: { type: String },
+    numberOfCompletions: { type: Number },
     // user options
     options: { type: Array },
     // if remixed

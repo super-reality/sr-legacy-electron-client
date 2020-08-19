@@ -4,9 +4,15 @@ const ObjectId = Schema.Types.ObjectId
 /* *** define lesson schema *** */
 const lessonSchema = new Schema({
     // parent subject id
-    subjectId: { type: ObjectId }, 
+    subjectId: { 
+        type: ObjectId,
+        required: true,
+    }, 
     // lesson icon url
-    icon: { type: String },
+    icon: { 
+        type: String,
+        required: true, 
+    },
     // lesson name
     name: { 
         type: String, 
@@ -27,8 +33,14 @@ const lessonSchema = new Schema({
     medias: { type: Array },
     // total steps
     totalSteps: { 
-        type: Number
+        type: Array
     },
+    // tag Array
+    tags: { type: Array },
+    // visibility
+    visibility: { type: String },
+    // entry
+    entry: { type: String },
     // lesson Rating
     rating: { type: Number },
     // total rating count. this is used for new rating
@@ -38,11 +50,9 @@ const lessonSchema = new Schema({
     // number of activations
     numberOfActivations: { type: Number },
     // number of completions
-    numberOfCompletions: { type: String },
+    numberOfCompletions: { type: Number },
     // average user engagement
     avgUserEngage: { type: String },
-    // lesson url
-    lessonUrl: { type: String },
     // user options
     options: { type: Array },
     // if remixed
