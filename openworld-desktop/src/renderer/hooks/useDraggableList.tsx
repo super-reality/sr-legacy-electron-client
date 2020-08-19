@@ -20,7 +20,8 @@ interface ContainerProps {
 
 export default function useDraggableList(
   items: JSX.Element[],
-  itemHeight: number
+  itemHeight: number,
+  onChange: (list: number[]) => void
 ): [(props: ContainerProps) => JSX.Element, MutableRefObject<number[]>] {
   // Returns fitting styles for dragged/idle items
   const fn = useCallback(
@@ -59,8 +60,12 @@ export default function useDraggableList(
       items.length - 1
     );
     const newOrder = swap(order.current, curIndex, curRow);
+
     setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
-    if (!down) order.current = newOrder;
+    if (!down) {
+      onChange(newOrder);
+      order.current = newOrder;
+    }
   });
 
   const Component = (props: ContainerProps) => {

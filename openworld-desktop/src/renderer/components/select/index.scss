@@ -1,3 +1,5 @@
+@import "../misc.scss";
+
 .select-container {
   width: inherit;
   height: 24px;
@@ -6,6 +8,7 @@
   position: relative;
   margin: auto 0;
   border-radius: 5px;
+  @include disable-select;
 
   .select-title {
     white-space: nowrap;
@@ -35,6 +38,8 @@
     white-space: nowrap;
     margin: 0;
     padding: 0;
+    @include animated;
+    @include disable-select;
   
     &.dark {
       background-color: var(--color-background) !important;
@@ -103,10 +108,11 @@
     -webkit-transition: all 0.1s cubic-bezier(0.2, 0.5, 0.35, 1);
     width: 100%;
     background-color: var(--color-button) !important;
-  
+    @include animated;
+    @include disable-select;
+
     &.disabled {
       color: var(--color-text-disabled);
-      background-color: var(--color-background) !important;
     }
   
     &:enabled {

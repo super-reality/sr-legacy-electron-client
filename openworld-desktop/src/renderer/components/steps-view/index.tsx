@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./index.scss";
 import "../create-lesson/index.scss";
 import Flex from "../flex";
@@ -22,8 +22,12 @@ export default function StepsView(props: StepsViewProps): JSX.Element {
     return <Step key={step.id} data={step} />;
   });
 
+  const onChange = useCallback((list) => {
+    console.log(list);
+  }, []);
+
   // To get the new order of the list we use the mutable ref object returned
-  const [List, ref] = useDraggableList(stepsList, 90);
+  const [List] = useDraggableList(stepsList, 90, onChange);
 
   return (
     <>
