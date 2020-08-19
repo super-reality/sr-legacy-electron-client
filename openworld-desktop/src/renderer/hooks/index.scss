@@ -34,7 +34,7 @@
   margin-top: 70px;
   border-radius: 0 0 5px 5px;
   z-index: 15;
-  box-shadow: 0px 12px 10px 2px #0000004a;
+  @include diffuse-shadow;
 
   .option {
     height: 24px;

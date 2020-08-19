@@ -4,10 +4,14 @@ import "../containers.scss";
 import Flex from "../flex";
 import InsertMedia from "../insert-media";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
+import Select from "../select";
+
+const difficultyOptions = ["Begginer", "Intermediate", "Advanced"];
 
 export default function InfoAuthoring(): JSX.Element {
   const [title, setTitle] = useState("");
   const [iconUrl, setIconUrl] = useState("");
+  const [difficulty, setDifficulty] = useState(difficultyOptions[1]);
 
   const handleChange = useCallback((e: InputChangeEv): void => {
     setTitle(e.currentTarget.value);
@@ -65,12 +69,11 @@ export default function InfoAuthoring(): JSX.Element {
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Tags</div>
-          <input
-            placeholder="Title"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
+          <div>Difficulty</div>
+          <Select
+            current={difficulty}
+            options={difficultyOptions}
+            callback={setDifficulty}
           />
         </div>
       </Flex>
