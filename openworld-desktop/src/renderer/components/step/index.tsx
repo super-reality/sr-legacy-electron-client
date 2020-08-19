@@ -1,26 +1,28 @@
 import React from "react";
 
 import "./index.scss";
-import { IStep } from "../../../types/api";
 import { ItemInner, Icon, Title, Text } from "../item-inner";
+import { InitialStepType } from "../../redux/slices/createLessonSlice";
 
 interface StepProps {
-  data: IStep;
+  data: InitialStepType;
+  number: number;
 }
 
 export default function Step(props: StepProps): JSX.Element {
-  const { data } = props;
+  const { data, number } = props;
 
   return (
     <ItemInner
       style={{
+        margin: "0",
         width: "-webkit-fill-available",
       }}
       drag
       text
     >
-      <Icon url={data.avatarUrl} />
-      <Title title={data.name} sub={data.id} />
+      <Icon url={data.icon} />
+      <Title title={data.name} sub={`Step ${number}`} />
       <Text>{data.description}</Text>
     </ItemInner>
   );

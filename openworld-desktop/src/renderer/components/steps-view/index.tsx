@@ -1,26 +1,38 @@
-import React, { useState, useEffect, useCallback } from "react";
+/* eslint-disable react/no-array-index-key */
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
 import "../create-lesson/index.scss";
+import { useSelector } from "react-redux";
 import Flex from "../flex";
-import { IStep } from "../../../types/api";
 import InnerSearch from "../inner-search";
 import Step from "../step";
 import ReactSelect from "../select";
 import useDraggableList from "../../hooks/useDraggableList";
-
-interface StepsViewProps {
-  steps: IStep[];
-}
+import { AppState } from "../../redux/stores/renderer";
+import { InitialStepType } from "../../redux/slices/createLessonSlice";
 
 const sortOptions = ["Name", "Hghest Rated", "Duration"];
 
-export default function StepsView(props: StepsViewProps): JSX.Element {
-  const { steps } = props;
+export default function StepsView(): JSX.Element {
+  const steps = useSelector((state: AppState) => state.createLesson.steps);
   const [sort, setSort] = useState(sortOptions[0]);
 
-  const stepsList = steps.map((step) => {
-    return <Step key={step.id} data={step} />;
-  });
+  const stepsList = useMemo(
+    () =>
+      steps
+        // eslint-disable-next-line no-underscore-dangle
+        .filter((k, n) => k._id == undefined)
+        .map((step, i) => {
+          return (
+            <Step
+              key={`step-view-${i}`}
+              number={i + 1}
+              data={step as InitialStepType}
+            />
+          );
+        }),
+    [steps]
+  );
 
   const onChange = useCallback((list) => {
     console.log(list);
@@ -45,7 +57,10 @@ export default function StepsView(props: StepsViewProps): JSX.Element {
           />
         </Flex>
       </div>
-      <List className="steps-container" />
+      <List
+        key={`steps-draggable-${steps.length}`}
+        className="steps-container"
+      />
     </>
   );
 }

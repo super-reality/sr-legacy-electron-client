@@ -1,4 +1,6 @@
 .steps-container {
+  width: calc(100% - 20px);
+  margin: auto;
   display: flex;
   overflow: hidden;
   flex-direction: column;

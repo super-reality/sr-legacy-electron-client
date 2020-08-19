@@ -5,6 +5,8 @@ import React, {
   useCallback,
   MutableRefObject,
   CSSProperties,
+  useEffect,
+  useState,
 } from "react";
 import { clamp } from "lodash";
 // @ts-ignore
@@ -19,11 +21,19 @@ interface ContainerProps {
 }
 
 export default function useDraggableList(
-  items: JSX.Element[],
+  argItems: JSX.Element[],
   itemHeight: number,
   onChange: (list: number[]) => void
 ): [(props: ContainerProps) => JSX.Element, MutableRefObject<number[]>] {
   // Returns fitting styles for dragged/idle items
+  const [items, setItems] = useState(argItems);
+  const refOrder = useRef(items.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
+
+  useEffect(() => {
+    setItems(argItems);
+    refOrder.current = argItems.map((_, index) => index);
+  }, [argItems]);
+
   const fn = useCallback(
     (
       order: number[],
@@ -50,21 +60,20 @@ export default function useDraggableList(
     [itemHeight]
   );
 
-  const order = useRef(items.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
-  const [springs, setSprings] = useSprings(items.length, fn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
+  const [springs, setSprings] = useSprings(items.length, fn(refOrder.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
   const bind = useDrag(({ args: [originalIndex], down, movement: [, y] }) => {
-    const curIndex = order.current.indexOf(originalIndex);
+    const curIndex = refOrder.current.indexOf(originalIndex);
     const curRow = clamp(
       Math.round((curIndex * itemHeight + y) / itemHeight),
       0,
       items.length - 1
     );
-    const newOrder = swap(order.current, curIndex, curRow);
+    const newOrder = swap(refOrder.current, curIndex, curRow);
 
     setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
     if (!down) {
       onChange(newOrder);
-      order.current = newOrder;
+      refOrder.current = newOrder;
     }
   });
 
@@ -104,5 +113,5 @@ export default function useDraggableList(
     );
   };
 
-  return [Component, order];
+  return [Component, refOrder];
 }

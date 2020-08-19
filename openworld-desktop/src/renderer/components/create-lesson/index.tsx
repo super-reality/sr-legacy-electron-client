@@ -36,7 +36,7 @@ export default function CreateLesson(): JSX.Element {
         </div>
       </Collapsible>
       <Collapsible outer expanded title="Created Steps">
-        <StepsView steps={data.steps} />
+        <StepsView />
       </Collapsible>
     </>
   );
