@@ -66,17 +66,8 @@
 }
 
 .button-login {
-  width: -webkit-fill-available;
-  height: 42px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: var(--color-text-dark);
   background-color: #6fb6ff;
-  border-radius: 500px;
-  padding: 8px;
-  @include animated;
-  @include disable-select;
 
   &:hover {
     background-color: #b7dbff;

@@ -3,6 +3,7 @@ import "../buttons.scss";
 
 interface ButtonSimpleProps {
   style?: CSSProperties;
+  className?: string;
   margin?: string;
   width?: string;
   height?: string;
@@ -12,12 +13,12 @@ interface ButtonSimpleProps {
 export default function ButtonSimple(
   props: PropsWithChildren<ButtonSimpleProps>
 ): JSX.Element {
-  const { children, style, margin, height, width, onClick } = props;
+  const { children, className, style, margin, height, width, onClick } = props;
 
   return (
     <div
       onClick={onClick}
-      className="button-simple"
+      className={`button-simple ${className}`}
       style={{ margin, width, height, ...style }}
     >
       {children}

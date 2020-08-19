@@ -1,3 +1,5 @@
+@import "../../components/misc.scss";
+
 .auth-container {
   display: flex;
   flex-direction: column;
@@ -6,6 +8,7 @@
   max-height: 100%;
   margin: auto;
   font-size: 18px;
+  @include soft-shadow;
 
   fieldset {
     background-color: var(--color-section);
@@ -22,6 +25,8 @@
     margin: 8px 0;
 
     label {
+      font-size: 15px;
+      opacity: 0.75;
       margin-bottom: 8px;
       display: block;
     }

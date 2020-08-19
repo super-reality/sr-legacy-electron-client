@@ -13,6 +13,7 @@ import { ApiError } from "../../api/types";
 import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
+import Flex from "../../components/flex";
 
 export default function Auth(): JSX.Element {
   const dispatch = useDispatch();
@@ -67,11 +68,10 @@ export default function Auth(): JSX.Element {
     <div className="auth-container">
       <div>
         {page == "login" ? (
-          <form onSubmit={handleLoginSubmit}>
+          <form>
             <fieldset>
-              <legend>Sign in</legend>
               <div className="input-container">
-                <label>Username</label>
+                <label>Email</label>
                 <input
                   ref={usernameField}
                   key="singin-username"
@@ -91,21 +91,25 @@ export default function Auth(): JSX.Element {
                   disabled={isPending}
                 />
               </div>
-              <div style={{ marginTop: "16px" }}>
-                <button
+              <Flex
+                style={{ marginTop: "16px", justifyContent: "space-between" }}
+              >
+                <ButtonSimple
                   className="button-login"
-                  type="submit"
-                  disabled={isPending}
+                  width="calc(50% - 32px)"
+                  onClick={handleLoginSubmit}
                 >
                   Sign in
-                </button>
-              </div>
+                </ButtonSimple>
+                <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
+                  Sign up
+                </ButtonSimple>
+              </Flex>
             </fieldset>
           </form>
         ) : (
-          <form onSubmit={handleSingupSubmit}>
+          <form>
             <fieldset>
-              <legend>Sign up</legend>
               <div className="input-container">
                 <label>First Name</label>
                 <input
@@ -156,21 +160,23 @@ export default function Auth(): JSX.Element {
                   disabled={isPending}
                 />
               </div>
-              <div style={{ marginTop: "16px" }}>
-                <button
+              <Flex
+                style={{ marginTop: "16px", justifyContent: "space-between" }}
+              >
+                <ButtonSimple
                   className="button-login"
-                  type="submit"
-                  disabled={isPending}
+                  width="calc(50% - 32px)"
+                  onClick={handleSingupSubmit}
                 >
-                  Sign Up
-                </button>
-              </div>
+                  Sign up
+                </ButtonSimple>
+                <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
+                  Sign in
+                </ButtonSimple>
+              </Flex>
             </fieldset>
           </form>
         )}
-        <ButtonSimple onClick={togglePage}>
-          {page == "login" ? "Dont have an account? Sign up!" : "Log in"}
-        </ButtonSimple>
       </div>
     </div>
   );
