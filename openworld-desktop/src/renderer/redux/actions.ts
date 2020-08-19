@@ -12,6 +12,7 @@ export const actions = {
   SET_TOP_INPUT: renderSlice.setTopInput,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
+  CREATE_LESSON_STEP: createLessonSlice.addStep,
 };
 
 export type ActionKeys = keyof typeof actions;

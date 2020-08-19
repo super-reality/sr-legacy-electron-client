@@ -12,8 +12,6 @@ export default function MediAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { medias } = useSelector((state: AppState) => state.createLesson);
 
-  // const [imageUrls, setImageUrls] = useState<string[]>([]);
-
   const insertUrl = (image: string, index: number) => {
     const arr = [...medias];
     arr.splice(index, 1, image);
@@ -22,7 +20,6 @@ export default function MediAuthoring(): JSX.Element {
       type: "CREATE_LESSON_DATA",
       arg: { medias: arr },
     });
-    // setImageUrls(arr);
   };
 
   const datekey = new Date().getTime();

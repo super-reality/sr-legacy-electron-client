@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
+import { useSelector, useDispatch } from "react-redux";
 import Flex from "../flex";
 import ButtonSimple from "../button-simple";
 import AutosuggestInput from "../autosuggest-input";
 import Select from "../select";
+import { AppState } from "../../redux/stores/renderer";
+import reduxAction from "../../redux/reduxAction";
 
 interface Lang {
   name: string;
@@ -87,7 +90,19 @@ const getVals = (str: string) => {
 const entryOptions = ["Bid", "Invite", "Free"]; // ?
 
 export default function PublishAuthoring(): JSX.Element {
-  const [entry, setEntry] = useState(entryOptions[0]);
+  const dispatch = useDispatch();
+  const { entry } = useSelector((state: AppState) => state.createLesson);
+
+  const setEntry = useCallback(
+    (_entry: string) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { entry: _entry },
+      });
+    },
+    [dispatch]
+  );
+
   return (
     <>
       <Flex>
