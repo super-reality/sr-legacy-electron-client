@@ -9,31 +9,38 @@ import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import ButtonSimple from "../button-simple";
 import { IStep } from "../../../types/api";
 
-const CVFnOptions = ["on", "if", "after"]; // ??
+const CVFnOptions = ["Computer vision On", "Computer vision Off"];
 
-const CVTriggerOptions = ["On CV Target Found", "On CV .."]; // ??
+type FnOptions = "And" | "Or" | "Ignore";
 
-const CVActionOptions = ["Read Text", "Do something else"];
+const ImageFnOptions: FnOptions[] = ["And", "Or", "Ignore"];
 
-const CVNextStepOptions = [
-  "After Text finished reading",
-  "After click",
-  "After stuff",
-];
+interface ImageFnData {
+  url: string;
+  fn: FnOptions;
+}
+
+const CVNextStepOptions = ["On Highlight clicked", "On Text reading finished"];
 
 export default function StepAuthoring(): JSX.Element {
+  const [CVFnImage, setCVFnImage] = useState("");
   const [CVFn, setCVFn] = useState(CVFnOptions[0]);
-  const [CVTrigger, setCVTrigger] = useState(CVTriggerOptions[0]);
-  const [CVAction, setCVAction] = useState(CVActionOptions[0]);
+
   const [CVNextStep, setCVNextStep] = useState(CVNextStepOptions[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageUrls, setCVImageUrls] = useState<string[]>([]);
+  const [CVImageData, setCVImageData] = useState<ImageFnData[]>([]);
+
+  const setImageCVFn = (fn: FnOptions, index: number) => {
+    const arr = [...CVImageData];
+    arr[index].fn = fn;
+    setCVImageData(arr);
+  };
 
   const insertCVImage = (image: string, index: number) => {
-    const arr = [...CVImageUrls];
-    arr.splice(index, 1, image);
-    setCVImageUrls(arr);
+    const arr = [...CVImageData];
+    arr.splice(index, 1, { url: image, fn: "Or" });
+    setCVImageData(arr);
   };
 
   const handleStepnameChange = useCallback((e: InputChangeEv): void => {
@@ -47,7 +54,7 @@ export default function StepAuthoring(): JSX.Element {
   const addStep = useCallback(() => {
     const newStep: IStep = {
       id: "randomid",
-      media: CVImageUrls,
+      media: CVImageData.map((d) => d.url),
       description,
       name: stepname,
       avatarUrl: "",
@@ -62,47 +69,76 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <div className="step-authoring-grid">
-      <Flex>
-        <div className="container-with-desc">
-          <div>CV Function</div>
-          <Select current={CVFn} options={CVFnOptions} callback={setCVFn} />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>CV Target</div>
-          <Flex style={{ flexDirection: "column" }}>
-            {[...CVImageUrls, undefined].map((url, i) => (
-              <InsertMedia
-                snip
-                // eslint-disable-next-line react/no-array-index-key
-                key={`insert-media-${datekey}-${i}`}
-                imgUrl={url}
-                style={{
-                  marginBottom: "8px",
-                  width: "100%",
-                  height: url ? "200px" : "auto",
-                }}
-                callback={(str) => {
-                  insertCVImage(str, i);
-                }}
-              />
-            ))}
+      <InsertMedia
+        snip
+        imgUrl={CVFnImage}
+        style={{
+          marginBottom: "8px",
+          width: "100%",
+          height: CVFnImage ? "140px" : "auto",
+        }}
+        callback={setCVFnImage}
+      />
+      {CVFnImage ? (
+        <>
+          <Flex>
+            <div className="container-with-desc">
+              <div>CV Function</div>
+              <Select current={CVFn} options={CVFnOptions} callback={setCVFn} />
+            </div>
           </Flex>
-          {/* <InsertMedia
-            snip
-            imgUrl={CVImageUrl}
-            style={{
-              width: "100%",
-              minHeight: "32px",
-              height: CVImageUrl ? "200px" : "auto",
-            }}
-            callback={setCVImageUrl}
-          /> */}
-        </div>
-      </Flex>
+          <Flex>
+            <div className="container-with-desc" style={{ marginTop: "8px" }}>
+              <div>CV Targets</div>
+              <Flex style={{ flexDirection: "column" }}>
+                {[...CVImageData, undefined].map((d, i) => {
+                  const fn = d?.fn;
+                  const url = d?.url || undefined;
+                  return (
+                    <>
+                      <InsertMedia
+                        snip
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`insert-media-${datekey}-${i}`}
+                        imgUrl={url}
+                        style={{
+                          marginBottom: "8px",
+                          width: "100%",
+                          height: url ? "140px" : "auto",
+                        }}
+                        callback={(str) => {
+                          insertCVImage(str, i);
+                        }}
+                      />
+                      {fn ? (
+                        <div
+                          className="container-with-desc"
+                          style={{ marginBottom: "16px" }}
+                        >
+                          <div>Image Function</div>
+                          <Select
+                            current={fn}
+                            options={ImageFnOptions}
+                            callback={(f) => {
+                              setImageCVFn(f, i);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  );
+                })}
+              </Flex>
+            </div>
+          </Flex>
+        </>
+      ) : (
+        <></>
+      )}
 
-      <Flex style={{ gridArea: "step" }}>
+      <Flex>
         <div className="container-with-desc">
           <div>Step Name</div>
           <input
@@ -115,28 +151,6 @@ export default function StepAuthoring(): JSX.Element {
       </Flex>
 
       <Flex>
-        <div className="container-with-desc">
-          <div>Trigger</div>
-          <Select
-            current={CVTrigger}
-            options={CVTriggerOptions}
-            callback={setCVTrigger}
-          />
-        </div>
-      </Flex>
-
-      <Flex>
-        <div className="container-with-desc">
-          <div>Action</div>
-          <Select
-            current={CVAction}
-            options={CVActionOptions}
-            callback={setCVAction}
-          />
-        </div>
-      </Flex>
-
-      <Flex style={{ gridArea: "text" }}>
         <div className="container-with-desc">
           <div>Step Description</div>
           <textarea
@@ -162,11 +176,11 @@ export default function StepAuthoring(): JSX.Element {
       <Flex>
         <ButtonSimple
           margin="8px auto"
-          width="100px"
-          height="16px"
+          width="200px"
+          height="24px"
           onClick={addStep}
         >
-          Add Step
+          Save and add new step
         </ButtonSimple>
       </Flex>
     </div>
