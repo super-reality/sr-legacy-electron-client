@@ -58,7 +58,6 @@ export default function StepAuthoring(): JSX.Element {
 
   const addStep = useCallback(() => {
     const newStep: InitialStepType = {
-      _id: undefined,
       cv: CVImageData,
       icon: "",
       name: stepname,

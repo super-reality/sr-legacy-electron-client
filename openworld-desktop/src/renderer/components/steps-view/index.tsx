@@ -19,18 +19,15 @@ export default function StepsView(): JSX.Element {
 
   const stepsList = useMemo(
     () =>
-      steps
-        // eslint-disable-next-line no-underscore-dangle
-        .filter((k, n) => k._id == undefined)
-        .map((step, i) => {
-          return (
-            <Step
-              key={`step-view-${i}`}
-              number={i + 1}
-              data={step as InitialStepType}
-            />
-          );
-        }),
+      steps.map((step, i) => {
+        return (
+          <Step
+            key={`step-view-${i}`}
+            number={i + 1}
+            data={step as InitialStepType}
+          />
+        );
+      }),
     [steps]
   );
 

@@ -32,7 +32,6 @@ export interface CVFn {
 }
 
 const InitialStep = {
-  _id: undefined,
   cv: [] as CVFn[],
   icon: "",
   name: "",
@@ -53,7 +52,7 @@ const initialState = {
   tags: [] as string[],
   visibility: "public",
   entry: "bid",
-  steps: [{ _id: "" }] as Array<InitialStepType | { _id: string }>,
+  steps: [] as InitialStepType[],
 };
 
 export type CreateLessonState = typeof initialState;
@@ -67,7 +66,6 @@ const createLessonSlice = createSlice({
       action: PayloadAction<Partial<CreateLessonState>>
     ): void => {
       state = Object.assign(state, action.payload);
-      // state = { ...state, ...action.payload };
     },
     addTag: (state: CreateLessonState, action: PayloadAction<string>): void => {
       state.tags = [...state.tags, action.payload];
