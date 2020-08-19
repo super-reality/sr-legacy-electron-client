@@ -2,16 +2,18 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const auth = require("../middleware/auth")
 const User = require("../models/user")
-const {hashDigest, hashSaltDigest} = require("../utilities/hashing")
+const { hashDigest, hashSaltDigest } = require("../utilities/hashing")
 const constant = require("../config/constant")
 
 exports.signin = function(request, response){
-    const {username, password} = request.body;
-    // const {username, password} = request.query;
+    const {
+        username, 
+        password
+    } = request.body;
 
     User.findOne({username})
-    .then(user => user ? user : response.status(401).json({err_code: constant.ERR_CODE.user_name_wrong, msg: "Wrong username"}))
-    .then(user => user.passwordHash === hashSaltDigest(password, user.passwordSalt) ? user : response.status(401).json({salt: user.passwordSalt, hash: hashSaltDigest(password, user.passwordSalt),err_code: constant.ERR_CODE.user_password_wrong, msg: "Wrong password"}))
+    .then(user => user ? user : response.status(constant.ERR_STATUS.Unauthorized).json({err_code: constant.ERR_CODE.user_name_wrong, msg: "Wrong username"}))
+    .then(user => user.passwordHash === hashSaltDigest(password, user.passwordSalt) ? user : response.status(constant.ERR_STATUS.Unauthorized).json({salt: user.passwordSalt, hash: hashSaltDigest(password, user.passwordSalt),err_code: constant.ERR_CODE.user_password_wrong, msg: "Wrong password"}))
     .then(user => {
         const token = jwt.sign(
             {},
@@ -25,16 +27,22 @@ exports.signin = function(request, response){
         );
         response.send({err_code: constant.ERR_CODE.success, user : user, token: token})
     })
-    .catch(error => response.status(500).json({error: error.status ? error.status : 500}))
+    .catch(error => response.status(constant.ERR_CODE.Internal_Server_Error).json({error: error.status ? error.status : 500}))
 }
 
 exports.signup = function(request, response){
-    const {username, password, firstname, lastname, invitecode} = request.body;
-    // const {username, password, firstname, lastname, invitecode} = request.query;
+    const {
+        username, 
+        password, 
+        firstname, 
+        lastname, 
+        invitecode
+    } = request.body;
+    
     User.findOne({username})
     .then(user => {
         if (user) {
-            response.status(401).json({err_code: constant.ERR_CODE.user_already_exist, msg: "User already exist"})
+            response.status(constant.ERR_STATUS.Unauthorized).json({err_code: constant.ERR_CODE.user_already_exist, msg: "User already exist"})
         } else {
             var newUser = User()
             newUser.firstname = firstname
@@ -46,7 +54,7 @@ exports.signup = function(request, response){
 
             newUser.save(function (err) {
                 if (err != null) {
-                    response.status(401).json({
+                    response.status(constant.ERR_STATUS.Unauthorized).json({
                         error: err.status ? err.status : 500
                     });
                 } else {
@@ -69,7 +77,7 @@ exports.signup = function(request, response){
             });
         }
     })
-    .catch(error => response.status(500).json({error: error.status ? error.status : 500}))
+    .catch(error => response.status(constant.ERR_CODE.Internal_Server_Error).json({error: error.status ? error.status : 500}))
 }
 
 exports.verify = function(request, response) {
