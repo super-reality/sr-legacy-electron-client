@@ -11,14 +11,19 @@ import { IStep } from "../../../types/api";
 
 const CVFnOptions = ["on", "if", "after"]; // ??
 
-const CVTriggerOptions = ["On CV Target Found", "On CV .."]; // ??
+const CVTriggerOptions = [
+  "On step loaded",
+  "On focus detected",
+  "On gaze detected",
+  "On highlight clicked",
+];
 
 const CVActionOptions = ["Read Text", "Do something else"];
 
 const CVNextStepOptions = [
-  "After Text finished reading",
-  "After click",
-  "After stuff",
+  "Press next step button",
+  "On highlight clicked",
+  "On text reading finished",
 ];
 
 export default function StepAuthoring(): JSX.Element {
@@ -72,22 +77,40 @@ export default function StepAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>CV Target or Media</div>
           <Flex style={{ flexDirection: "column" }}>
-            {[...CVImageUrls, undefined].map((url, i) => (
-              <InsertStepMedia
-                snip
-                // eslint-disable-next-line react/no-array-index-key
-                key={`insert-media-${datekey}-${i}`}
-                imgUrl={url}
-                style={{
-                  marginBottom: "8px",
-                  width: "100%",
-                  height: url ? "200px" : "auto",
-                }}
-                callback={(str) => {
-                  insertCVImage(str, i);
-                }}
-              />
-            ))}
+            {[...CVImageUrls, undefined].map((url, i) =>
+              i == 0 ? (
+                <InsertStepMedia
+                  snip
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`insert-media-${datekey}-${i}`}
+                  isCVOn
+                  imgUrl={url}
+                  style={{
+                    marginBottom: "8px",
+                    width: "100%",
+                    height: url ? "200px" : "auto",
+                  }}
+                  callback={(str) => {
+                    insertCVImage(str, i);
+                  }}
+                />
+              ) : (
+                <InsertStepMedia
+                  snip
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`insert-media-${datekey}-${i}`}
+                  imgUrl={url}
+                  style={{
+                    marginBottom: "8px",
+                    width: "100%",
+                    height: url ? "200px" : "auto",
+                  }}
+                  callback={(str) => {
+                    insertCVImage(str, i);
+                  }}
+                />
+              )
+            )}
           </Flex>
           {/* <InsertMedia
             snip
@@ -116,7 +139,7 @@ export default function StepAuthoring(): JSX.Element {
 
       <Flex>
         <div className="container-with-desc">
-          <div>Trigger</div>
+          <div>Step Trigger</div>
           <Select
             current={CVTrigger}
             options={CVTriggerOptions}
@@ -166,7 +189,7 @@ export default function StepAuthoring(): JSX.Element {
           height="16px"
           onClick={addStep}
         >
-          Add Step
+          Save & Add
         </ButtonSimple>
       </Flex>
     </div>

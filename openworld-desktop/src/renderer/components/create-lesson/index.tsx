@@ -24,9 +24,9 @@ export default function CreateLesson(): JSX.Element {
           <Collapsible expanded title="Media">
             <MediaAuthoring />
           </Collapsible>
-          {/* <Collapsible expanded title="Rules">
+          <Collapsible expanded title="Rules">
             <RulesAuthoring />
-          </Collapsible> */}
+          </Collapsible>
         </div>
       </Collapsible>
       <Collapsible outer expanded title="Add Lesson Step">
