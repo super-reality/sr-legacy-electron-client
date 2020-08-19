@@ -6,6 +6,8 @@ import InsertMedia from "../insert-media";
 import Flex from "../flex";
 import Select from "../select";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
+import ButtonSimple from "../button-simple";
+import { IStep } from "../../../types/api";
 
 const CVFnOptions = ["on", "if", "after"]; // ??
 
@@ -40,6 +42,20 @@ export default function StepAuthoring(): JSX.Element {
 
   const handleDescriptionChange = useCallback((e: AreaChangeEv): void => {
     setDescription(e.currentTarget.value);
+  }, []);
+
+  const addStep = useCallback(() => {
+    const newStep: IStep = {
+      id: "randomid",
+      media: CVImageUrls,
+      description,
+      name: stepname,
+      avatarUrl: "",
+      creator: "",
+      rating: 0,
+      checkState: false,
+    };
+    // code to add to the steps list here
   }, []);
 
   const datekey = new Date().getTime();
@@ -142,6 +158,16 @@ export default function StepAuthoring(): JSX.Element {
             callback={setCVNextStep}
           />
         </div>
+      </Flex>
+      <Flex>
+        <ButtonSimple
+          margin="8px auto"
+          width="100px"
+          height="16px"
+          onClick={addStep}
+        >
+          Add Step
+        </ButtonSimple>
       </Flex>
     </div>
   );

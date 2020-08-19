@@ -1,0 +1,9 @@
+.dragList {
+  position: absolute;
+  height: 90px;
+  width: -webkit-fill-available;
+  overflow: visible;
+  pointer-events: auto;
+  transform-origin: 50% 50% 0px;
+  touch-action: none;
+}

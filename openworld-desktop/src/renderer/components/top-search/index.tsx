@@ -27,7 +27,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
   return (
     <ButtonSimple
       onClick={onClick}
-      width="calc(25% - 20px)"
+      width="calc(25% - 24px)"
       height="16px"
       style={{
         lineHeight: "16px",
@@ -124,14 +124,12 @@ export default function TopSearch(): JSX.Element {
         </Flex>
         <ButtonRound
           onClick={() => {
-            setOpenDropdown(openDropdown !== "Profile" ? "Profile" : null);
+            openProfile();
             playSound("./sounds/top-menu.wav");
           }}
           style={{
             backgroundColor:
-              openDropdown == "Profile" || location.pathname == "/profile"
-                ? "var(--color-background)"
-                : "",
+              location.pathname == "/profile" ? "var(--color-background)" : "",
           }}
           iconFill={
             location.pathname == "/profile" ? "var(--color-text-active)" : ""

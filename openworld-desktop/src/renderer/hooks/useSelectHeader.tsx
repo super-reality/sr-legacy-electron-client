@@ -1,8 +1,11 @@
 import React from "react";
 import "./index.scss";
 import { useLocation } from "react-router-dom";
+import { useWindowSize } from "react-use";
+import { useSelector } from "react-redux";
 import Category from "../../types/collections";
 import { tabNames } from "../redux/slices/renderSlice";
+import { AppState } from "../redux/stores/renderer";
 
 const selectOptionsByTab: Record<
   tabNames,
@@ -53,10 +56,6 @@ const selectOptionsByTab: Record<
     "Create Resource": Category.Resource,
     "Create Organization": Category.Organization,
   },
-  Profile: {
-    Me: "me",
-    "My Lessons": "my lessons",
-  },
 };
 
 export default function useSelectHeader(
@@ -64,26 +63,47 @@ export default function useSelectHeader(
   onSelect: (selected: string | Category, route: string) => void
 ): [() => JSX.Element] {
   const location = useLocation();
+  const topSelectStates = useSelector(
+    (state: AppState) => state.render.topSelectStates
+  );
+
+  const { width } = useWindowSize();
+
+  const leftOffset = 16;
+  const buttonSize = (width - leftOffset - leftOffset) / 4 - 24 + 16;
+  const centers: Record<tabNames, number> = {
+    Discover: 16 + 8 * 0 + buttonSize * 0.5,
+    Learn: 16 + 8 * 1 + buttonSize * 1.5,
+    Teach: 16 + 8 * 2 + buttonSize * 2.5,
+    Create: 16 + 8 * 3 + buttonSize * 3.5,
+  };
 
   const titleToRoute: Record<tabNames, string> = {
     Discover: "/discover",
     Learn: "/learn",
     Teach: "/teach",
     Create: "/create",
-    Profile: "/profile",
   };
 
   if (title) {
+    const current = topSelectStates[title];
+    const left = Math.min(Math.max(8, centers[title] - 104), width - 208 - 8);
     const currentOptions = selectOptionsByTab[title];
     const Dropdown = () => (
-      <div className="dropdown-container">
+      <div className="dropdown-container" style={{ left: `${left}px` }}>
         {Object.keys(currentOptions).map((option) => {
+          const active =
+            currentOptions[option] == current &&
+            location.pathname == titleToRoute[title];
           return (
             <div
               className="option"
               key={`option-${option}`}
               onClick={() => {
                 onSelect(currentOptions[option], titleToRoute[title]);
+              }}
+              style={{
+                color: active ? "var(--color-text-active)" : "",
               }}
             >
               {option}
