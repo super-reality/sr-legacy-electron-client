@@ -17,6 +17,7 @@ export default function Step(props: StepProps): JSX.Element {
       style={{
         margin: "0",
         width: "-webkit-fill-available",
+        height: "-webkit-fill-available",
       }}
       drag
       text

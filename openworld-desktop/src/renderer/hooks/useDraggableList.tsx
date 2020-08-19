@@ -45,7 +45,7 @@ export default function useDraggableList(
       down && index === originalIndex
         ? {
             y: curIndex! * itemHeight + y!,
-            scale: 1.1,
+            scale: 1.05,
             zIndex: "1",
             shadow: 15,
             immediate: (n: string) => n === "y" || n === "zIndex",
@@ -96,7 +96,9 @@ export default function useDraggableList(
             key={`draggable-list-${i}`}
             style={
               {
-                height: `${itemHeight}px`,
+                margin: "0 10px",
+                height: `${itemHeight - 8}px`,
+                width: `calc(100% - 20px)`,
                 zIndex,
                 boxShadow: shadow.to(
                   (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`
