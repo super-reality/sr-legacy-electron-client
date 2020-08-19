@@ -1,10 +1,18 @@
 @mixin animated {
-  -webkit-transition: all .15s cubic-bezier(0, 0, 0.2, 1);
+  -webkit-transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
 }
 
 @mixin disable-select {
-  -webkit-user-select: none;  
-  -moz-user-select: none;    
-  -ms-user-select: none;      
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
+}
+
+@mixin soft-shadow {
+  box-shadow: 0px 4px 4px 1px #00000040;
+}
+
+@mixin diffuse-shadow {
+  box-shadow: 0px 12px 10px 2px #00000040;
 }

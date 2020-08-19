@@ -26,6 +26,7 @@
   border-radius: 5px;
   display: flex;
   @include animated;
+  @include disable-select;
 
   .svg-icon {
     margin: auto;
@@ -50,6 +51,7 @@
   padding: 8px;
   color: var(--color-text);
   @include animated;
+  @include disable-select;
 
   &:hover {
     background-color: var(--color-button-hover);
@@ -74,6 +76,7 @@
   border-radius: 500px;
   padding: 8px;
   @include animated;
+  @include disable-select;
 
   &:hover {
     background-color: #b7dbff;

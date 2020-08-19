@@ -4,6 +4,7 @@ import "../containers.scss";
 import Flex from "../flex";
 import ButtonSimple from "../button-simple";
 import AutosuggestInput from "../autosuggest-input";
+import Select from "../select";
 
 interface Lang {
   name: string;
@@ -83,7 +84,10 @@ const getVals = (str: string) => {
       );
 };
 
+const entryOptions = ["Bid", "Invite", "Free"]; // ?
+
 export default function PublishAuthoring(): JSX.Element {
+  const [entry, setEntry] = useState(entryOptions[0]);
   return (
     <>
       <Flex>
@@ -98,8 +102,21 @@ export default function PublishAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
+      <Flex>
+        <div className="container-with-desc">
+          <div>Entry</div>
+          <Select current={entry} options={entryOptions} callback={setEntry} />
+        </div>
+      </Flex>
       <Flex style={{ marginTop: "8px" }}>
-        <ButtonSimple onClick={() => {}}>Publish</ButtonSimple>
+        <ButtonSimple
+          margin="8px auto"
+          width="200px"
+          height="24px"
+          onClick={() => {}}
+        >
+          Publish
+        </ButtonSimple>
       </Flex>
     </>
   );
