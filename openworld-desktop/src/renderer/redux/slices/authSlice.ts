@@ -14,7 +14,7 @@ const initialState = {
 
 type AuthState = typeof initialState;
 
-const hoverSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -52,6 +52,6 @@ export const {
   setAuthSucessful,
   setAuthFailed,
   setAuthInvalidated,
-} = hoverSlice.actions;
+} = authSlice.actions;
 
-export default hoverSlice;
+export default authSlice;

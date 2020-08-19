@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useState } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import Flex from "../flex";

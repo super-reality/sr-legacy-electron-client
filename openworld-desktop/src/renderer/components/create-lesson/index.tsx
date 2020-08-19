@@ -4,7 +4,6 @@ import "../containers.scss";
 import "../lesson.scss";
 import Collapsible from "../collapsible";
 import MediaAuthoring from "../authoring-media";
-import RulesAuthoring from "../authoring-rules";
 import InfoAuthoring from "../authoring-info";
 import StepAuthoring from "../authoring-step";
 import PublishAuthoring from "../authoring-publish";
