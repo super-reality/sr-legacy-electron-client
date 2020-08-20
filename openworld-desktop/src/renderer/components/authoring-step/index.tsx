@@ -17,6 +17,7 @@ import {
   FnOptions,
   IStep,
 } from "../../api/types/step/step";
+import constantFormat from "../../../utils/constantFormat";
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
@@ -124,11 +125,7 @@ export default function StepAuthoring(): JSX.Element {
                     <Select
                       current={fn}
                       options={options}
-                      optionFormatter={(value) =>
-                        optionKeys.filter(
-                          (k) => current[k as OptType] == value
-                        )[0]
-                      }
+                      optionFormatter={constantFormat(current)}
                       callback={(f) => {
                         setImageCVFn(f, i);
                       }}

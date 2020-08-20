@@ -33,11 +33,11 @@ export default function Select<K>({
 
   const onClickOption = React.useCallback(
     (event) => {
-      setCurrentOption(event.currentTarget.value);
+      setCurrentOption(options[event.currentTarget.value]);
       setOptionsOpen(false);
-      if (callback) callback(event.currentTarget.value);
+      if (callback) callback(options[event.currentTarget.value]);
     },
-    [callback]
+    [callback, options]
   );
 
   const buttonClassNames = `select-button ${className} ${
@@ -56,7 +56,7 @@ export default function Select<K>({
       </button>
       {optionsOpen && (
         <div className={`select-options-container ${className}`}>
-          {options.map((option) => {
+          {options.map((option, i) => {
             return typeof option === "string" && option.startsWith("%%") ? (
               <div className={`select-title ${className}`} key={option}>
                 {option.replace("%%", "")}
@@ -68,7 +68,7 @@ export default function Select<K>({
                   option === currentOption ? "disabled" : ""
                 }`}
                 key={`${option}--option-key`}
-                value={`${option}`}
+                value={i}
                 disabled={option === currentOption}
                 onClick={onClickOption}
               >

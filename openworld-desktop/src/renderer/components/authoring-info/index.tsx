@@ -8,15 +8,15 @@ import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import Select from "../select";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
-
-const difficultyOptions = ["Begginer", "Intermediate", "Advanced"];
+import { DifficultyOptions } from "../../api/types/lesson/lesson";
+import constantFormat from "../../../utils/constantFormat";
 
 export default function InfoAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { name, icon, shortDescription, description } = useSelector(
     (state: AppState) => state.createLesson
   );
-  const [difficulty, setDifficulty] = useState(difficultyOptions[1]);
+  const [difficulty, setDifficulty] = useState(DifficultyOptions.Intermediate);
 
   const setIcon = useCallback(
     (url: string) => {
@@ -80,7 +80,7 @@ export default function InfoAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>Short Description</div>
           <input
-            placeholder="Title"
+            placeholder="description"
             value={shortDescription}
             onChange={handleShortDescChange}
             onKeyDown={handleShortDescChange}
@@ -104,7 +104,8 @@ export default function InfoAuthoring(): JSX.Element {
           <div>Difficulty</div>
           <Select
             current={difficulty}
-            options={difficultyOptions}
+            options={Object.values(DifficultyOptions)}
+            optionFormatter={constantFormat(DifficultyOptions)}
             callback={setDifficulty}
           />
         </div>
