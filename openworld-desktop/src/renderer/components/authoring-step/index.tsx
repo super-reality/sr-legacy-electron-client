@@ -21,7 +21,6 @@ import reduxAction from "../../redux/reduxAction";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  // const { steps } = useSelector((state: AppState) => state.createLesson);
 
   const [CVTrigger, setCVTrigger] = useState(Object.keys(TriggerOptions)[0]);
   const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
@@ -29,7 +28,7 @@ export default function StepAuthoring(): JSX.Element {
   const [description, setDescription] = useState("");
   const [CVImageData, setCVImageData] = useState<CVFn[]>([]);
 
-  const setImageCVFn = (fn: InitalFnOptions | FnOptions, index: number) => {
+  const setImageCVFn = (fn: number, index: number) => {
     const arr = [...CVImageData];
     arr[index].fn = fn;
     setCVImageData(arr);
@@ -111,7 +110,7 @@ export default function StepAuthoring(): JSX.Element {
                     <div>Image Function</div>
                     <Select
                       current={fn}
-                      options={optionKeys as (InitalFnOptions | FnOptions)[]}
+                      options={optionKeys as number[]}
                       callback={(f) => {
                         setImageCVFn(f, i);
                       }}

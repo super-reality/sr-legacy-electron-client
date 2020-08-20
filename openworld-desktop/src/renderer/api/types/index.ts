@@ -30,12 +30,40 @@ export type CodeSuccess = 0;
 export type CodeUserNameWrong = 101;
 export type CodeUserPasswordWrong = 102;
 export type CodeUserAlreadyExist = 103;
+export type CodeRequireFieldMissing = 104;
 
 export type ErrorCodes =
   | CodeSuccess
   | CodeUserNameWrong
   | CodeUserPasswordWrong
   | CodeUserAlreadyExist;
+
+export type StatusBadRequest = 400;
+export type StatusUnauthorized = 401;
+export type StatusForbidden = 403;
+export type StatusNotFound = 404;
+export type StatusMethodNotAllowed = 405;
+export type StatusNotAcceptable = 406;
+export type StatusRequestTimeout = 408;
+export type StatusUnsupportedMediaType = 415;
+export type StatusUnavailableForLegalReasons = 451;
+export type StatusInternalServerError = 500;
+export type StatusNotImplemented = 501;
+export type StatusServiceUnavailable = 503;
+
+export type StatusCodes =
+  | StatusBadRequest
+  | StatusUnauthorized
+  | StatusForbidden
+  | StatusNotFound
+  | StatusMethodNotAllowed
+  | StatusNotAcceptable
+  | StatusRequestTimeout
+  | StatusUnsupportedMediaType
+  | StatusUnavailableForLegalReasons
+  | StatusInternalServerError
+  | StatusNotImplemented
+  | StatusServiceUnavailable;
 
 export type UserAdmin = 1;
 export type UserClient = 2;

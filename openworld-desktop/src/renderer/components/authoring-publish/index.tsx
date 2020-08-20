@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import { useSelector, useDispatch } from "react-redux";
