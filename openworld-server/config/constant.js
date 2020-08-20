@@ -12,6 +12,33 @@ module.exports = Object.freeze({
         Resource : 9,
         TeacherBot : 10,
     },
+    Difficulty : {
+        Beginner : 1,
+        Intermediate : 2,
+        Advanced : 3,
+    },
+    Image_Function: {
+        Computer_Vision_On : 1,
+        Computer_Vision_On_But_Visible : 2,
+        Computer_Vision_Off : 3,
+    },
+    Image_Function_Additional: {
+        And : 1,
+        Or : 2,
+        Ignore : 3,
+    },
+    Step_Trigger: {
+        None : 0,
+        On_Step_Loaded : 1,
+        On_Focus_Detected : 2,
+        On_Gaze_Detected : 3,
+        On_Highlight_Clicked : 4,
+    },
+    Next_Step: {
+        Press_Next_Step_Button: 1,
+        On_Highlight_Clicked: 2,
+        On_Text_Reading_Finished: 3,
+    },
     ERR_STATUS: {
         Bad_Request: 400,
         Unauthorized: 401,
