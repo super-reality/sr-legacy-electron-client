@@ -5,6 +5,7 @@ import * as createLessonSlice from "./slices/createLessonSlice";
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
   AUTH_SUCCESSFUL: AuthSlice.setAuthSucessful,
+  AUTH_TOKEN: AuthSlice.setAuthToken,
   AUTH_FAILED: AuthSlice.setAuthFailed,
   AUTH_INVALIDATED: AuthSlice.setAuthInvalidated,
   SET_YSCROLL: renderSlice.setYScroll,
