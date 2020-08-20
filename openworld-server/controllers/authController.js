@@ -81,5 +81,5 @@ exports.signup = function(request, response){
 }
 
 exports.verify = function(request, response) {
-    response.sendStatus(200)
+    response.send({err_code: constant.ERR_CODE.success, user : request.user})
 }
