@@ -22,7 +22,6 @@ export default function Step(props: StepProps): JSX.Element {
       drag
       text
     >
-      <Icon url={data.icon} />
       <Title title={data.name} sub={`Step ${number}`} />
       <Text>{data.description}</Text>
     </ItemInner>

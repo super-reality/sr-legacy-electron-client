@@ -28,14 +28,15 @@ export const NextStepOptions = {
 
 export interface ICVFn {
   image: string;
-  fn: number;
+  function: number;
 }
 
 export interface IStep {
-  cv: ICVFn[];
-  icon: string;
+  image: string;
+  imageFunction: number;
+  additionalFunctions: ICVFn[];
   name: string;
-  description: string;
   trigger: number;
+  description: string;
   next: number;
 }

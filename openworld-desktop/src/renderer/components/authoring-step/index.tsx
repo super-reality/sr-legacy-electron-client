@@ -32,7 +32,7 @@ export default function StepAuthoring(): JSX.Element {
 
   const setImageCVFn = (fn: number, index: number) => {
     const arr = [...CVImageData];
-    arr[index].fn = fn;
+    arr[index].function = fn;
     setCVImageData(arr);
   };
 
@@ -40,7 +40,7 @@ export default function StepAuthoring(): JSX.Element {
     const arr = [...CVImageData];
     const CVFunction: ICVFn = {
       image,
-      fn:
+      function:
         CVImageData.length == 0
           ? InitalFnOptions["Computer vision On"]
           : FnOptions.And,
@@ -59,8 +59,9 @@ export default function StepAuthoring(): JSX.Element {
 
   const addStep = useCallback(() => {
     const newStep: IStep = {
-      cv: CVImageData,
-      icon: "",
+      image: CVImageData[0].image,
+      imageFunction: CVImageData[0].function,
+      additionalFunctions: CVImageData.splice(0, 1),
       name: stepname,
       description: description,
       trigger: TriggerOptions[CVTrigger as TriggerKeys],
@@ -84,7 +85,7 @@ export default function StepAuthoring(): JSX.Element {
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
           {[...CVImageData, undefined].map((d, i) => {
-            const fn = d?.fn;
+            const fn = d?.function;
             const url = !d?.image || d?.image == "" ? undefined : d.image;
             const options = i == 0 ? InitalFnOptions : FnOptions;
             const optionKeys: unknown = Object.keys(options);
