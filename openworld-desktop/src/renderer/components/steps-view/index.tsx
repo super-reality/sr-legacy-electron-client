@@ -39,10 +39,6 @@ export default function StepsView(): JSX.Element {
   const onChange = useCallback(
     (swapA: number, swapB: number) => {
       const newSteps = swap(steps, swapA, swapB) as typeof steps;
-      console.log(
-        steps.map((s) => s.name),
-        newSteps.map((s) => s.name)
-      );
       reduxAction(dispatch, {
         type: "CREATE_LESSON_DATA",
         arg: { steps: newSteps },

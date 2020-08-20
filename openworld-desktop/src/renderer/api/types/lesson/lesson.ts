@@ -1,4 +1,3 @@
-import { CodeSuccess } from "..";
 import { IStep } from "../step/step";
 import Link from "../link/link";
 
@@ -15,10 +14,4 @@ export interface ILesson {
   ownership: Link[];
   entry: string;
   steps: IStep[];
-}
-
-/* eslint-disable camelcase */
-export default interface LessonCreate {
-  err_code: CodeSuccess;
-  data: ILesson;
 }

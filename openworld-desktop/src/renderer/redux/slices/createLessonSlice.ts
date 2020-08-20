@@ -1,20 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  TriggerOptions,
-  NextStepOptions,
-  IStep,
-} from "../../api/types/step/step";
+import { IStep } from "../../api/types/step/step";
 import { ILesson } from "../../api/types/lesson/lesson";
-
-const InitialStep = {
-  cv: [],
-  icon: "",
-  name: "",
-  description: "",
-  trigger: TriggerOptions["On Highlight clicked"],
-  next: NextStepOptions["Press Next Step"],
-};
 
 const initialState: ILesson = {
   parent: [],
@@ -47,12 +34,12 @@ const createLessonSlice = createSlice({
     addStep: (state: ILesson, action: PayloadAction<IStep>): void => {
       state.steps = [...state.steps, action.payload];
     },
-    publish: (state: ILesson, action: any): void => {
-      // console.log(action, "state");
+    reset: (state: ILesson, action: PayloadAction<null>): void => {
+      state = Object.assign(state, initialState);
     },
   },
 });
 
-export const { setData, addTag, addStep, publish } = createLessonSlice.actions;
+export const { setData, addTag, addStep, reset } = createLessonSlice.actions;
 
 export default createLessonSlice;
