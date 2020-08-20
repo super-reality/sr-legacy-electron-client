@@ -1,11 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, {
-  useRef,
-  useCallback,
-  MutableRefObject,
-  CSSProperties,
-} from "react";
+import React, { useRef, useCallback, useState, CSSProperties } from "react";
 import { clamp } from "lodash";
 // @ts-ignore
 import swap from "lodash-move";
@@ -19,11 +14,30 @@ interface ContainerProps {
 }
 
 export default function useDraggableList(
-  items: JSX.Element[],
+  argItems: JSX.Element[],
   itemHeight: number,
-  onChange: (list: number[]) => void
-): [(props: ContainerProps) => JSX.Element, MutableRefObject<number[]>] {
+  onChange: (swapA: number, swapB: number) => void
+): [
+  (props: ContainerProps) => JSX.Element,
+  (newItems: JSX.Element[]) => void,
+  React.MutableRefObject<number[]>
+] {
   // Returns fitting styles for dragged/idle items
+  const [items, setItems] = useState(argItems);
+  const refOrder = useRef(items.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
+
+  const resetItems = useCallback((newItems: JSX.Element[]) => {
+    setItems(newItems);
+    refOrder.current = newItems.map((_, index) => index);
+  }, []);
+
+  const changeFn = useCallback(
+    (swapA: number, swapB: number) => {
+      onChange(swapA, swapB);
+    },
+    [onChange]
+  );
+
   const fn = useCallback(
     (
       order: number[],
@@ -35,7 +49,7 @@ export default function useDraggableList(
       down && index === originalIndex
         ? {
             y: curIndex! * itemHeight + y!,
-            scale: 1.1,
+            scale: 1.05,
             zIndex: "1",
             shadow: 15,
             immediate: (n: string) => n === "y" || n === "zIndex",
@@ -50,21 +64,20 @@ export default function useDraggableList(
     [itemHeight]
   );
 
-  const order = useRef(items.map((_, index) => index)); // Store indicies as a local ref, this represents the item order
-  const [springs, setSprings] = useSprings(items.length, fn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
+  const [springs, setSprings] = useSprings(items.length, fn(refOrder.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
   const bind = useDrag(({ args: [originalIndex], down, movement: [, y] }) => {
-    const curIndex = order.current.indexOf(originalIndex);
+    const curIndex = refOrder.current.indexOf(originalIndex);
     const curRow = clamp(
       Math.round((curIndex * itemHeight + y) / itemHeight),
       0,
       items.length - 1
     );
-    const newOrder = swap(order.current, curIndex, curRow);
+    const newOrder = swap(refOrder.current, curIndex, curRow);
 
     setSprings(fn(newOrder, down, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
     if (!down) {
-      onChange(newOrder);
-      order.current = newOrder;
+      changeFn(curIndex, curRow);
+      refOrder.current = newOrder;
     }
   });
 
@@ -84,10 +97,12 @@ export default function useDraggableList(
           <animated.div
             className="dragList"
             {...bind(i)}
-            key={`draggable-list-${i}`}
+            key={`draggable-list-${items[i].key}`}
             style={
               {
-                height: `${itemHeight}px`,
+                margin: "0 10px",
+                height: `${itemHeight - 8}px`,
+                width: `calc(100% - 20px)`,
                 zIndex,
                 boxShadow: shadow.to(
                   (s) => `rgba(0, 0, 0, 0.15) 0px ${s}px ${2 * s}px 0px`
@@ -104,5 +119,5 @@ export default function useDraggableList(
     );
   };
 
-  return [Component, order];
+  return [Component, resetItems, refOrder];
 }

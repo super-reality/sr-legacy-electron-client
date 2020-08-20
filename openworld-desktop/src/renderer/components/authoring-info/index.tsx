@@ -1,99 +1,113 @@
 import React, { useCallback, useState } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
+import { useDispatch, useSelector } from "react-redux";
 import Flex from "../flex";
 import InsertMedia from "../insert-media";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import Select from "../select";
+import reduxAction from "../../redux/reduxAction";
+import { AppState } from "../../redux/stores/renderer";
 
-const entryOptions = ["beginner", "intermediate", "advanced"];
+const difficultyOptions = ["Begginer", "Intermediate", "Advanced"];
 
 export default function InfoAuthoring(): JSX.Element {
-  const [iconUrl, setIconUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [sdescription, setSdescription] = useState("");
-  const [description, setDescription] = useState("");
-  const [entry, setEntry] = useState(entryOptions[0]);
+  const dispatch = useDispatch();
+  const { name, icon, shortDescription, description } = useSelector(
+    (state: AppState) => state.createLesson
+  );
+  const [difficulty, setDifficulty] = useState(difficultyOptions[1]);
 
-  const handleChange = useCallback((e: InputChangeEv): void => {
-    if (e.currentTarget.name == "Title") {
-      setTitle(e.currentTarget.value);
-    } else if (e.currentTarget.name == "SDescription") {
-      setSdescription(e.currentTarget.value);
-    } else if (e.currentTarget.name == "Description") {
-      setDescription(e.currentTarget.value);
-    }
-  }, []);
+  const setIcon = useCallback(
+    (url: string) => {
+      reduxAction(dispatch, { type: "CREATE_LESSON_DATA", arg: { icon: url } });
+    },
+    [dispatch]
+  );
 
-  const handleAreaChange = useCallback((e: AreaChangeEv): void => {
-    setDescription(e.currentTarget.value);
-  }, []);
+  const handleNameChange = useCallback(
+    (e: InputChangeEv): void =>
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { name: e.currentTarget.value },
+      }),
+    [dispatch]
+  );
+
+  const handleShortDescChange = useCallback(
+    (e: InputChangeEv): void =>
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { shortDescription: e.currentTarget.value },
+      }),
+    [dispatch]
+  );
+
+  const handleDescChange = useCallback(
+    (e: AreaChangeEv): void =>
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { description: e.currentTarget.value },
+      }),
+    [dispatch]
+  );
 
   return (
     <>
       <Flex style={{ gridArea: "icon" }}>
         <div className="container-with-desc">
-          <div>Lesson Icon</div>
+          <div>Icon</div>
           <InsertMedia
-            imgUrl={iconUrl}
+            imgUrl={icon}
             style={{ width: "32px", height: "32px" }}
-            callback={setIconUrl}
+            callback={setIcon}
           />
         </div>
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Lesson TItle</div>
+          <div>TItle</div>
           <input
             placeholder="Title"
-            value={title}
-            name="Title"
-            onChange={handleChange}
-            onKeyDown={handleChange}
+            value={name}
+            onChange={handleNameChange}
+            onKeyDown={handleNameChange}
           />
         </div>
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Lesson Short Description</div>
+          <div>Short Description</div>
           <input
-            placeholder="Short Description"
-            value={sdescription}
-            name="SDescription"
-            onChange={handleChange}
-            onKeyDown={handleChange}
+            placeholder="Title"
+            value={shortDescription}
+            onChange={handleShortDescChange}
+            onKeyDown={handleShortDescChange}
           />
         </div>
       </Flex>
       <Flex style={{ gridArea: "text" }}>
         <div className="container-with-desc">
-          <div>Lesson Description</div>
+          <div>Description</div>
           <textarea
             style={{ resize: "vertical", minHeight: "64px" }}
-            placeholder="Description"
+            placeholder=""
             value={description}
-            onChange={handleAreaChange}
-            onKeyDown={handleAreaChange}
+            onChange={handleDescChange}
+            onKeyDown={handleDescChange}
           />
         </div>
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Entry</div>
-          <Select current={entry} options={entryOptions} callback={setEntry} />
-        </div>
-      </Flex>
-      {/* <Flex>
-        <div className="container-with-desc">
-          <div>Tags</div>
-          <input
-            placeholder="Title"
-            value={title}
-            onChange={handleChange}
-            onKeyDown={handleChange}
+          <div>Difficulty</div>
+          <Select
+            current={difficulty}
+            options={difficultyOptions}
+            callback={setDifficulty}
           />
         </div>
-      </Flex> */}
+      </Flex>
     </>
   );
 }

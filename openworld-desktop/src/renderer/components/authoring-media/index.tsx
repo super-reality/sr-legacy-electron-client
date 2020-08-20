@@ -1,17 +1,25 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
+import React from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
+import { useDispatch, useSelector } from "react-redux";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
+import { AppState } from "../../redux/stores/renderer";
+import reduxAction from "../../redux/reduxAction";
 
 export default function MediAuthoring(): JSX.Element {
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const dispatch = useDispatch();
+  const { medias } = useSelector((state: AppState) => state.createLesson);
 
   const insertUrl = (image: string, index: number) => {
-    const arr = [...imageUrls];
+    const arr = [...medias];
     arr.splice(index, 1, image);
-    setImageUrls(arr);
+
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_DATA",
+      arg: { medias: arr },
+    });
   };
 
   const datekey = new Date().getTime();
@@ -21,7 +29,7 @@ export default function MediAuthoring(): JSX.Element {
       <div className="container-with-desc">
         <div>Add Media</div>
         <Flex style={{ flexDirection: "column" }}>
-          {[...imageUrls, undefined].map((url, i) => (
+          {[...medias, undefined].map((url, i) => (
             <InsertMedia
               // eslint-disable-next-line react/no-array-index-key
               key={`insert-media-${datekey}-${i}`}

@@ -20,7 +20,7 @@ export default function Splash(): JSX.Element {
         margin="16px auto"
         style={{
           maxWidth: "200px",
-          height: "40px",
+          height: "32px",
           width: "-webkit-fill-available",
         }}
         onClick={() => history.push("/auth")}

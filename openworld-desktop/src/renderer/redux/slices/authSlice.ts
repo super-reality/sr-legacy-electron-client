@@ -1,19 +1,20 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import SignIn from "../../api/types/auth/signin";
 
 const initialState = {
-  isValid: false,
+  isValid: true, // true disables auth !
   isPending: false,
   updatedAt: Date.now(),
   token: "",
-  name: "Rodney Dudey",
+  name: "",
   avatarUrl:
     "https://qph.fs.quoracdn.net/main-qimg-87001d2ce810c2f48c97032cbc905939.webp",
 };
 
 type AuthState = typeof initialState;
 
-const hoverSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -22,12 +23,16 @@ const hoverSlice = createSlice({
     },
     setAuthSucessful: (
       state: AuthState,
-      action: PayloadAction<AuthState["token"]>
+      action: PayloadAction<SignIn>
     ): void => {
+      const { firstname, lastname } = action.payload.user;
+      state.updatedAt = Date.now();
       state.isValid = true;
-      state.token = action.payload;
+      state.token = action.payload.token;
+      state.name = `${firstname} ${lastname}`;
     },
     setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {
+      state.updatedAt = Date.now();
       state.isValid = false;
       state.isPending = false;
     },
@@ -35,6 +40,7 @@ const hoverSlice = createSlice({
       state: AuthState,
       action: PayloadAction<null>
     ): void => {
+      state.updatedAt = Date.now();
       state.isValid = false;
       state.isPending = false;
     },
@@ -46,6 +52,6 @@ export const {
   setAuthSucessful,
   setAuthFailed,
   setAuthInvalidated,
-} = hoverSlice.actions;
+} = authSlice.actions;
 
-export default hoverSlice;
+export default authSlice;

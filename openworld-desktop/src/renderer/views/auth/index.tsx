@@ -1,15 +1,24 @@
-import React, { useCallback, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useRef, useState, useEffect } from "react";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
-import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
+import { API_URL } from "../../constants";
+import handleAuthLogin from "../../api/handleAuthSignin";
+import handleAuthSingup from "../../api/handleAuthSignup";
+import handleAuthError from "../../api/handleAuthError";
+import { ApiError } from "../../api/types";
+import SignUp from "../../api/types/auth/signup";
+import SignIn from "../../api/types/auth/signin";
+import reduxAction from "../../redux/reduxAction";
+import Flex from "../../components/flex";
 
 export default function Auth(): JSX.Element {
+  const dispatch = useDispatch();
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
-  const dispatch = useDispatch();
 
   const togglePage = useCallback(() => {
     setPage(page == "login" ? "register" : "login");
@@ -23,22 +32,50 @@ export default function Auth(): JSX.Element {
   const registerPasswordField = useRef<HTMLInputElement | null>(null);
   const registerCodeField = useRef<HTMLInputElement | null>(null);
 
+  const defaultUser = window.localStorage.getItem("username");
+  // const defaultToken = window.localStorage.getItem("token");
+
   const handleLoginSubmit = useCallback(() => {
-    // Dummy , this should call the api
-    reduxAction(dispatch, { type: "AUTH_SUCCESSFUL", arg: "" });
+    reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
+    const payload = {
+      username: usernameField.current?.value,
+      password: passwordField.current?.value,
+    };
+
+    axios
+      .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload)
+      .then((res) => handleAuthLogin(res))
+      .catch(handleAuthError);
+  }, []);
+
+  const handleSingupSubmit = useCallback(() => {
+    reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
+    const payload = {
+      username: registerEmailField.current?.value,
+      firstname: registerFirstnameFiled.current?.value,
+      lastname: registerLastnameField.current?.value,
+      invitecode: registerCodeField.current?.value,
+      password: registerPasswordField.current?.value,
+    };
+
+    axios
+      .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
+      .then((res) => handleAuthSingup(res))
+      .catch(handleAuthError);
   }, []);
 
   return (
     <div className="auth-container">
       <div>
         {page == "login" ? (
-          <form onSubmit={handleLoginSubmit}>
+          <form>
             <fieldset>
-              <legend>Sign in</legend>
               <div className="input-container">
-                <label>Username</label>
+                <label>Email</label>
                 <input
                   ref={usernameField}
+                  key="singin-username"
+                  defaultValue={defaultUser || ""}
                   type="text"
                   placeholder="username"
                   disabled={isPending}
@@ -48,30 +85,36 @@ export default function Auth(): JSX.Element {
                 <label>Password</label>
                 <input
                   ref={passwordField}
+                  key="singin-password"
                   type="password"
                   placeholder="password"
                   disabled={isPending}
                 />
               </div>
-              <div style={{ marginTop: "16px" }}>
-                <button
+              <Flex
+                style={{ marginTop: "16px", justifyContent: "space-between" }}
+              >
+                <ButtonSimple
                   className="button-login"
-                  type="submit"
-                  disabled={isPending}
+                  width="calc(50% - 32px)"
+                  onClick={handleLoginSubmit}
                 >
                   Sign in
-                </button>
-              </div>
+                </ButtonSimple>
+                <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
+                  Sign up
+                </ButtonSimple>
+              </Flex>
             </fieldset>
           </form>
         ) : (
-          <form onSubmit={handleLoginSubmit}>
+          <form>
             <fieldset>
-              <legend>Sign up</legend>
               <div className="input-container">
                 <label>First Name</label>
                 <input
                   ref={registerFirstnameFiled}
+                  key="signup-firstname"
                   type="text"
                   placeholder="first name"
                   disabled={isPending}
@@ -81,6 +124,7 @@ export default function Auth(): JSX.Element {
                 <label>Last Name</label>
                 <input
                   ref={registerLastnameField}
+                  key="signup-lastname"
                   type="text"
                   placeholder="last name"
                   disabled={isPending}
@@ -90,6 +134,7 @@ export default function Auth(): JSX.Element {
                 <label>Email</label>
                 <input
                   ref={registerEmailField}
+                  key="signup-email"
                   type="email"
                   placeholder="email@adress.com"
                   disabled={isPending}
@@ -99,6 +144,7 @@ export default function Auth(): JSX.Element {
                 <label>Password</label>
                 <input
                   ref={registerPasswordField}
+                  key="signup-password"
                   type="password"
                   placeholder=""
                   disabled={isPending}
@@ -108,26 +154,29 @@ export default function Auth(): JSX.Element {
                 <label>Input Code</label>
                 <input
                   ref={registerCodeField}
+                  key="signup-code"
                   type="text"
                   placeholder="invite code"
                   disabled={isPending}
                 />
               </div>
-              <div style={{ marginTop: "16px" }}>
-                <button
+              <Flex
+                style={{ marginTop: "16px", justifyContent: "space-between" }}
+              >
+                <ButtonSimple
                   className="button-login"
-                  type="submit"
-                  disabled={isPending}
+                  width="calc(50% - 32px)"
+                  onClick={handleSingupSubmit}
                 >
-                  Sign Up
-                </button>
-              </div>
+                  Sign up
+                </ButtonSimple>
+                <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
+                  Sign in
+                </ButtonSimple>
+              </Flex>
             </fieldset>
           </form>
         )}
-        <ButtonSimple onClick={togglePage}>
-          {page == "login" ? "Dont have an account? Sign up!" : "Log in"}
-        </ButtonSimple>
       </div>
     </div>
   );

@@ -2,36 +2,34 @@ import React, { useCallback, useState } from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
+import { useDispatch } from "react-redux";
 import InsertMedia from "../insert-media";
 import Flex from "../flex";
 import Select from "../select";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import ButtonSimple from "../button-simple";
-import { IStep } from "../../../types/api";
 
-const CVFnOptions = ["Computer vision On", "Computer vision Off"];
-
-type FnOptions = "And" | "Or" | "Ignore";
-
-const ImageFnOptions: FnOptions[] = ["And", "Or", "Ignore"];
-
-interface ImageFnData {
-  url: string;
-  fn: FnOptions;
-}
-
-const CVNextStepOptions = ["On Highlight clicked", "On Text reading finished"];
+import {
+  CVFn,
+  InitalFnOptions,
+  FnOptions,
+  NextStepOptions,
+  TriggerOptions,
+  InitialStepType,
+} from "../../redux/slices/createLessonSlice";
+import reduxAction from "../../redux/reduxAction";
 
 export default function StepAuthoring(): JSX.Element {
-  const [CVFnImage, setCVFnImage] = useState("");
-  const [CVFn, setCVFn] = useState(CVFnOptions[0]);
+  const dispatch = useDispatch();
+  // const { steps } = useSelector((state: AppState) => state.createLesson);
 
-  const [CVNextStep, setCVNextStep] = useState(CVNextStepOptions[0]);
+  const [CVTrigger, setCVTrigger] = useState(Object.keys(TriggerOptions)[0]);
+  const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageData, setCVImageData] = useState<ImageFnData[]>([]);
+  const [CVImageData, setCVImageData] = useState<CVFn[]>([]);
 
-  const setImageCVFn = (fn: FnOptions, index: number) => {
+  const setImageCVFn = (fn: InitalFnOptions | FnOptions, index: number) => {
     const arr = [...CVImageData];
     arr[index].fn = fn;
     setCVImageData(arr);
@@ -39,7 +37,14 @@ export default function StepAuthoring(): JSX.Element {
 
   const insertCVImage = (image: string, index: number) => {
     const arr = [...CVImageData];
-    arr.splice(index, 1, { url: image, fn: "Or" });
+    const CVFunction: CVFn = {
+      image,
+      fn:
+        CVImageData.length == 0
+          ? InitalFnOptions["Computer vision On"]
+          : FnOptions.And,
+    };
+    arr.splice(index, 1, CVFunction);
     setCVImageData(arr);
   };
 
@@ -52,92 +57,74 @@ export default function StepAuthoring(): JSX.Element {
   }, []);
 
   const addStep = useCallback(() => {
-    const newStep: IStep = {
-      id: "randomid",
-      media: CVImageData.map((d) => d.url),
-      description,
+    const newStep: InitialStepType = {
+      cv: CVImageData,
+      icon: "",
       name: stepname,
-      avatarUrl: "",
-      creator: "",
-      rating: 0,
-      checkState: false,
+      description: description,
+      trigger: CVTrigger,
+      next: CVNextStep,
     };
-    // code to add to the steps list here
-  }, []);
+    // Update current working lesson
+    reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: newStep });
+    // Reset states
+    setCVTrigger(Object.keys(TriggerOptions)[0]);
+    setCVNextStep(Object.keys(NextStepOptions)[0]);
+    setStepname("");
+    setDescription("");
+    setCVImageData([]);
+  }, [dispatch, CVImageData, stepname, description, CVTrigger, CVNextStep]);
 
   const datekey = new Date().getTime();
 
   return (
     <div className="step-authoring-grid">
-      <InsertMedia
-        snip
-        imgUrl={CVFnImage}
-        style={{
-          marginBottom: "8px",
-          width: "100%",
-          height: CVFnImage ? "140px" : "auto",
-        }}
-        callback={setCVFnImage}
-      />
-      {CVFnImage ? (
-        <>
-          <Flex>
-            <div className="container-with-desc">
-              <div>CV Function</div>
-              <Select current={CVFn} options={CVFnOptions} callback={setCVFn} />
-            </div>
-          </Flex>
-          <Flex>
-            <div className="container-with-desc" style={{ marginTop: "8px" }}>
-              <div>CV Targets</div>
-              <Flex style={{ flexDirection: "column" }}>
-                {[...CVImageData, undefined].map((d, i) => {
-                  const fn = d?.fn;
-                  const url = d?.url || undefined;
-                  return (
-                    <>
-                      <InsertMedia
-                        snip
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`insert-media-${datekey}-${i}`}
-                        imgUrl={url}
-                        style={{
-                          marginBottom: "8px",
-                          width: "100%",
-                          height: url ? "140px" : "auto",
-                        }}
-                        callback={(str) => {
-                          insertCVImage(str, i);
-                        }}
-                      />
-                      {fn ? (
-                        <div
-                          className="container-with-desc"
-                          style={{ marginBottom: "16px" }}
-                        >
-                          <div>Image Function</div>
-                          <Select
-                            current={fn}
-                            options={ImageFnOptions}
-                            callback={(f) => {
-                              setImageCVFn(f, i);
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  );
-                })}
-              </Flex>
-            </div>
-          </Flex>
-        </>
-      ) : (
-        <></>
-      )}
-
+      <>
+        <div>Add CV Target</div>
+        <Flex style={{ flexDirection: "column" }}>
+          {[...CVImageData, undefined].map((d, i) => {
+            const fn = d?.fn;
+            const url = !d?.image || d?.image == "" ? undefined : d.image;
+            const options = i == 0 ? InitalFnOptions : FnOptions;
+            const optionKeys: unknown = Object.keys(options);
+            return (
+              <>
+                <InsertMedia
+                  snip
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`insert-media-${datekey}-${i}`}
+                  imgUrl={url}
+                  style={{
+                    marginBottom: "8px",
+                    width: "100%",
+                    height: url ? "140px" : "auto",
+                  }}
+                  callback={(str) => {
+                    insertCVImage(str, i);
+                  }}
+                />
+                {fn ? (
+                  <div
+                    className="container-with-desc"
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <div>Image Function</div>
+                    <Select
+                      current={fn}
+                      options={optionKeys as (InitalFnOptions | FnOptions)[]}
+                      callback={(f) => {
+                        setImageCVFn(f, i);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </>
+            );
+          })}
+        </Flex>
+      </>
       <Flex>
         <div className="container-with-desc">
           <div>Step Name</div>
@@ -149,7 +136,16 @@ export default function StepAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-
+      <Flex>
+        <div className="container-with-desc">
+          <div>Step trigger</div>
+          <Select
+            current={CVTrigger}
+            options={Object.keys(TriggerOptions)}
+            callback={setCVTrigger}
+          />
+        </div>
+      </Flex>
       <Flex>
         <div className="container-with-desc">
           <div>Step Description</div>
@@ -162,13 +158,12 @@ export default function StepAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-
       <Flex>
         <div className="container-with-desc">
           <div>Next Step</div>
           <Select
             current={CVNextStep}
-            options={CVNextStepOptions}
+            options={Object.keys(NextStepOptions)}
             callback={setCVNextStep}
           />
         </div>

@@ -1,33 +1,65 @@
-import React, { useState, useEffect, useCallback } from "react";
+/* eslint-disable react/no-array-index-key */
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
 import "../create-lesson/index.scss";
+import { useSelector, useDispatch } from "react-redux";
+import swap from "lodash-move";
 import Flex from "../flex";
-import { IStep } from "../../../types/api";
 import InnerSearch from "../inner-search";
 import Step from "../step";
 import ReactSelect from "../select";
 import useDraggableList from "../../hooks/useDraggableList";
-
-interface StepsViewProps {
-  steps: IStep[];
-}
+import { AppState } from "../../redux/stores/renderer";
+import { InitialStepType } from "../../redux/slices/createLessonSlice";
+import reduxAction from "../../redux/reduxAction";
 
 const sortOptions = ["Name", "Hghest Rated", "Duration"];
 
-export default function StepsView(props: StepsViewProps): JSX.Element {
-  const { steps } = props;
+export default function StepsView(): JSX.Element {
+  const dispatch = useDispatch();
+  const steps = useSelector((state: AppState) => state.createLesson.steps);
   const [sort, setSort] = useState(sortOptions[0]);
 
-  const stepsList = steps.map((step) => {
-    return <Step key={step.id} data={step} />;
-  });
+  // Memoize to avoid infinite re renders
+  const stepsList = useMemo(
+    () =>
+      steps.map((step, i) => {
+        return (
+          <Step
+            key={`step-view-${step.name}-${step.description}-${step.next}`}
+            number={i + 1}
+            data={step as InitialStepType}
+          />
+        );
+      }),
+    [steps]
+  );
 
-  const onChange = useCallback((list) => {
-    console.log(list);
-  }, []);
+  // Update the store when the list is reordered
+  const onChange = useCallback(
+    (swapA: number, swapB: number) => {
+      const newSteps = swap(steps, swapA, swapB) as typeof steps;
+      console.log(
+        steps.map((s) => s.name),
+        newSteps.map((s) => s.name)
+      );
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { steps: newSteps },
+      });
+    },
+    [steps]
+  );
 
   // To get the new order of the list we use the mutable ref object returned
-  const [List] = useDraggableList(stepsList, 90, onChange);
+  const [List, setItems, refs] = useDraggableList(stepsList, 90, onChange);
+
+  // Force update the list when new items are added
+  useEffect(() => {
+    if (stepsList.length !== refs.current.length) {
+      setItems(stepsList);
+    }
+  }, [stepsList, refs]);
 
   return (
     <>
