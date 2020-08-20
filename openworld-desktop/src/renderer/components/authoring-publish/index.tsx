@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -14,89 +14,22 @@ import { ApiError } from "../../api/types";
 import handleLessonCreate from "../../api/handleLessonCreate";
 import handleGenericError from "../../api/handleGenericError";
 import LessonCreate from "../../api/types/lesson/create";
+import handleLessonSearchParent from "../../api/handleLessonSearchParent";
+import LessonSearchParent, {
+  Parents,
+} from "../../api/types/lesson/search-parent";
 
-interface Lang {
-  name: string;
-  year: number;
-}
-
-const languages: Lang[] = [
-  {
-    name: "C",
-    year: 1972,
-  },
-  {
-    name: "C#",
-    year: 2000,
-  },
-  {
-    name: "C++",
-    year: 1983,
-  },
-  {
-    name: "Clojure",
-    year: 2007,
-  },
-  {
-    name: "Elm",
-    year: 2012,
-  },
-  {
-    name: "Go",
-    year: 2009,
-  },
-  {
-    name: "Haskell",
-    year: 1990,
-  },
-  {
-    name: "Java",
-    year: 1995,
-  },
-  {
-    name: "JavaScript",
-    year: 1995,
-  },
-  {
-    name: "Perl",
-    year: 1987,
-  },
-  {
-    name: "PHP",
-    year: 1995,
-  },
-  {
-    name: "Python",
-    year: 1991,
-  },
-  {
-    name: "Ruby",
-    year: 1995,
-  },
-  {
-    name: "Scala",
-    year: 2003,
-  },
-];
-
-const getVal = (suggestion: Lang) => suggestion.name;
-const renderVal = (suggestion: Lang) => <div>{suggestion.name}</div>;
-
-// Teach Autosuggest how to calculate suggestions for any given input value.
-const getVals = (str: string) => {
-  const inputValue = str.trim().toLowerCase();
-
-  return inputValue.length === 0
-    ? []
-    : languages.filter(
-        (lang) => lang.name.toLowerCase().indexOf(inputValue) > -1
-      );
-};
+const getVal = (p: Parents) =>
+  p.subjectName || p.collectionName || p.lessonName || "";
+const renderVal = (p: Parents) => (
+  <div>{p.subjectName || p.collectionName || p.lessonName || ""}</div>
+);
 
 const entryOptions = ["Bid", "Invite", "Free"]; // ?
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
+  const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
   const lessondata = useSelector((state: AppState) => state.createLesson);
 
@@ -117,16 +50,39 @@ export default function PublishAuthoring(): JSX.Element {
       .catch(handleGenericError);
   }, [lessondata]);
 
+  // Teach Autosuggest how to calculate suggestions for any given input value.
+  const getParentsFilter = useCallback(
+    (str: string) => {
+      return suggestions;
+    },
+    [suggestions]
+  );
+
+  const onSuggestChange = useCallback((value: string) => {
+    if (value.length > 2) {
+      axios
+        .get<LessonSearchParent | ApiError>(
+          `${API_URL}/lesson/search-parent/${value}`
+        )
+        .then((response) => {
+          const values = handleLessonSearchParent(response);
+          if (values) setSuggestions(values);
+        })
+        .catch(handleGenericError);
+    }
+  }, []);
+
   return (
     <>
       <Flex>
         <div className="container-with-desc">
           <div>Parent Subject</div>
-          <AutosuggestInput<Lang>
+          <AutosuggestInput<Parents>
             getValue={getVal}
             renderSuggestion={renderVal}
-            filter={getVals}
+            filter={getParentsFilter}
             id="parent-subject"
+            onChangeCallback={onSuggestChange}
             submitCallback={(l) => console.log(l)}
           />
         </div>

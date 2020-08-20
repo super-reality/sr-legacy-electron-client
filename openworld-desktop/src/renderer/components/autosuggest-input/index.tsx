@@ -31,6 +31,7 @@ export default function AutosuggestInput<T>({
   initialValue,
   placeholder,
   submitCallback,
+  onChangeCallback,
 }: {
   getValue: (suggestion: T) => string;
   renderSuggestion: (suggestion: T) => JSX.Element;
@@ -39,6 +40,7 @@ export default function AutosuggestInput<T>({
   initialValue?: string;
   placeholder?: string;
   submitCallback: (value: T) => void;
+  onChangeCallback?: (value: string) => void;
 }): JSX.Element {
   const [inputValue, setInputValue] = React.useState(initialValue ?? "");
   const [suggestions, setSuggestions] = React.useState([] as T[]);
@@ -46,6 +48,7 @@ export default function AutosuggestInput<T>({
   const onChange = React.useCallback(
     (_event: unknown, { newValue }: { newValue: string }): void => {
       setInputValue(newValue);
+      if (onChangeCallback) onChangeCallback(newValue);
     },
     []
   );
