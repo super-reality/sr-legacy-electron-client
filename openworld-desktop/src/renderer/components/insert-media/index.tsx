@@ -9,10 +9,11 @@ interface InsertMediaProps {
   imgUrl?: string;
   style?: CSSProperties;
   snip?: boolean;
+  keepSize?: boolean;
 }
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
-  const { callback, imgUrl, style, snip } = props;
+  const { callback, imgUrl, style, snip, keepSize } = props;
 
   const openSnipTool = snip
     ? useMediaSniper(imgUrl, callback)
@@ -23,11 +24,12 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
       className="insert-media-container"
       style={{
         ...style,
+        backgroundImage: keepSize ? `url(${imgUrl})` : "",
       }}
       onClick={openSnipTool}
     >
       {imgUrl ? (
-        <img src={imgUrl} />
+        !keepSize && <img src={imgUrl} />
       ) : (
         <Add
           style={{ margin: "auto" }}
