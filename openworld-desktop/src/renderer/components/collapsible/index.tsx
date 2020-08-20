@@ -12,13 +12,20 @@ import { ReactComponent as DropArrow } from "../../../assets/svg/drop.svg";
 interface CollapsibleProps {
   title: string;
   outer?: boolean;
+  id?: string;
   expanded?: boolean;
 }
 
 export default function Collapsible(
   props: PropsWithChildren<CollapsibleProps>
 ): JSX.Element {
-  const { expanded, outer, title, children } = props;
+  const { id, outer, title, children } = props;
+  let { expanded } = props;
+
+  const localId = `collapsible-${id || title}`;
+  if (window.localStorage.getItem(localId) !== null) {
+    expanded = window.localStorage.getItem(localId) == "true";
+  }
 
   const [open, setOpen] = useState(!!expanded);
   const [overflow, setOverflow] = useState<"visible" | "hidden">(
@@ -31,6 +38,9 @@ export default function Collapsible(
 
   const toggleopen = useCallback(() => {
     if (open) setOverflow("hidden");
+    setTimeout(() => {
+      window.localStorage.setItem(localId, !open ? "true" : "false");
+    }, 200);
     setOpen(!open);
   }, [open]);
 

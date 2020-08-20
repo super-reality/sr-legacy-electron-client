@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,9 +9,11 @@ import AutosuggestInput from "../autosuggest-input";
 import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
-import { ApiError } from "../../api/types";
 import { API_URL } from "../../constants";
-import handleLessonCreation from "../../api/handleLesson";
+import { ApiError } from "../../api/types";
+import handleLessonCreate from "../../api/handleLessonCreate";
+import handleGenericError from "../../api/handleGenericError";
+import LessonCreate from "../../api/types/lesson/create";
 
 interface Lang {
   name: string;
@@ -110,9 +112,9 @@ export default function PublishAuthoring(): JSX.Element {
 
   const lessonPublish = useCallback(() => {
     axios
-      .post<any | ApiError>(`${API_URL}lesson/create`, lessondata)
-      .then(handleLessonCreation)
-      .catch(handleLessonCreation);
+      .post<LessonCreate | ApiError>(`${API_URL}/lesson/create`, lessondata)
+      .then(handleLessonCreate)
+      .catch(handleGenericError);
   }, [dispatch]);
 
   return (

@@ -3,11 +3,12 @@ const ObjectId = Schema.Types.ObjectId
 
 /* *** define step schema *** */
 const stepSchema = new Schema({
-    // step icon url
-    icon: { 
-        type: String,
-        required: true, 
-    },
+    // step Image
+    image: { type: String },
+    // image function
+    imageFunction: { type: Number },
+    // additional image function
+    additionalFunctions: { type: Array },
     // step name
     name: { 
         type: String, 
@@ -19,12 +20,8 @@ const stepSchema = new Schema({
         type: String, 
         required: true 
     },
-    // images and functions
-    imageFunctions: { type: Array },
     // trigger
-    trigger: { type: String },
-    // action
-    action: { type: String },
+    trigger: { type: Number },
     // next Step action
     next: { type: Number },
     // user id that created this step

@@ -8,38 +8,41 @@ import Flex from "../flex";
 import Select from "../select";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import ButtonSimple from "../button-simple";
-
+import reduxAction from "../../redux/reduxAction";
 import {
-  CVFn,
+  TriggerOptions,
+  NextStepOptions,
+  ICVFn,
   InitalFnOptions,
   FnOptions,
-  NextStepOptions,
-  TriggerOptions,
-  InitialStepType,
-} from "../../redux/slices/createLessonSlice";
-import reduxAction from "../../redux/reduxAction";
+  IStep,
+} from "../../api/types/step/step";
+
+type TriggerKeys = keyof typeof TriggerOptions;
+type NextStepKeys = keyof typeof NextStepOptions;
+type InitFnKeys = keyof typeof InitalFnOptions;
+type FnKeys = keyof typeof FnOptions;
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  // const { steps } = useSelector((state: AppState) => state.createLesson);
 
   const [CVTrigger, setCVTrigger] = useState(Object.keys(TriggerOptions)[0]);
   const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageData, setCVImageData] = useState<CVFn[]>([]);
+  const [CVImageData, setCVImageData] = useState<ICVFn[]>([]);
 
-  const setImageCVFn = (fn: InitalFnOptions | FnOptions, index: number) => {
+  const setImageCVFn = (fn: number, index: number) => {
     const arr = [...CVImageData];
-    arr[index].fn = fn;
+    arr[index].function = fn;
     setCVImageData(arr);
   };
 
   const insertCVImage = (image: string, index: number) => {
     const arr = [...CVImageData];
-    const CVFunction: CVFn = {
+    const CVFunction: ICVFn = {
       image,
-      fn:
+      function:
         CVImageData.length == 0
           ? InitalFnOptions["Computer vision On"]
           : FnOptions.And,
@@ -57,13 +60,14 @@ export default function StepAuthoring(): JSX.Element {
   }, []);
 
   const addStep = useCallback(() => {
-    const newStep: InitialStepType = {
-      cv: CVImageData,
-      icon: "",
+    const newStep: IStep = {
+      image: CVImageData[0].image,
+      imageFunction: CVImageData[0].function,
+      additionalFunctions: CVImageData.splice(0, 1),
       name: stepname,
       description: description,
-      trigger: CVTrigger,
-      next: CVNextStep,
+      trigger: TriggerOptions[CVTrigger as TriggerKeys],
+      next: NextStepOptions[CVNextStep as NextStepKeys],
     };
     // Update current working lesson
     reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: newStep });
@@ -83,10 +87,19 @@ export default function StepAuthoring(): JSX.Element {
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
           {[...CVImageData, undefined].map((d, i) => {
-            const fn = d?.fn;
-            const url = !d?.image || d?.image == "" ? undefined : d.image;
-            const options = i == 0 ? InitalFnOptions : FnOptions;
-            const optionKeys: unknown = Object.keys(options);
+            let options: number[] = [];
+            let optionKeys: string[] = [];
+            let fn = 0;
+            let url: undefined | string;
+            const current = i == 0 ? InitalFnOptions : FnOptions;
+            type OptType = keyof typeof current;
+            if (d) {
+              options = Object.values(current);
+              optionKeys = Object.keys(current);
+              fn = options[d.function as OptType];
+              url = !d?.image || d?.image == "" ? undefined : d.image;
+            }
+
             return (
               <>
                 <InsertMedia
@@ -103,7 +116,7 @@ export default function StepAuthoring(): JSX.Element {
                     insertCVImage(str, i);
                   }}
                 />
-                {fn ? (
+                {d ? (
                   <div
                     className="container-with-desc"
                     style={{ marginBottom: "16px" }}
@@ -111,7 +124,12 @@ export default function StepAuthoring(): JSX.Element {
                     <div>Image Function</div>
                     <Select
                       current={fn}
-                      options={optionKeys as (InitalFnOptions | FnOptions)[]}
+                      options={options}
+                      optionFormatter={(value) =>
+                        optionKeys.filter(
+                          (k) => current[k as OptType] == value
+                        )[0]
+                      }
                       callback={(f) => {
                         setImageCVFn(f, i);
                       }}

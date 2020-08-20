@@ -4,7 +4,7 @@ const constant  = require("../config/constant")
 
 exports.create = function(request, response){
     const { 
-        collectionId, 
+        parent, 
         icon, 
         name, 
         shortDescription, 
@@ -16,7 +16,7 @@ exports.create = function(request, response){
     } = request.body;
 
     var subject = Subject()
-    subject.collectionId = collectionId
+    subject.parent = parent
     subject.icon = icon
     subject.name = name
     subject.shortDescription = shortDescription

@@ -13,7 +13,7 @@ export const actions = {
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
-  LESSON_PUBLISH: createLessonSlice.publish,
+  CREATE_LESSON_RESET: createLessonSlice.reset,
 };
 
 export type ActionKeys = keyof typeof actions;
