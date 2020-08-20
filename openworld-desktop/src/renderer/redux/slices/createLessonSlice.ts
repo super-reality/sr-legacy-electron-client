@@ -76,9 +76,12 @@ const createLessonSlice = createSlice({
     ): void => {
       state.steps = [...state.steps, action.payload];
     },
+    publish: (state: CreateLessonState, action: any): void => {
+      // console.log(action, "state");
+    },
   },
 });
 
-export const { setData, addTag, addStep } = createLessonSlice.actions;
+export const { setData, addTag, addStep, publish } = createLessonSlice.actions;
 
 export default createLessonSlice;

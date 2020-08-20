@@ -2,12 +2,16 @@ import React, { useState, useCallback } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import Flex from "../flex";
 import ButtonSimple from "../button-simple";
 import AutosuggestInput from "../autosuggest-input";
 import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
+import { ApiError } from "../../api/types";
+import handleLessonCreation from "../../api/handleLesson";
+import { API_URL } from "../../constants";
 
 interface Lang {
   name: string;
@@ -92,6 +96,7 @@ const entryOptions = ["Bid", "Invite", "Free"]; // ?
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { entry } = useSelector((state: AppState) => state.createLesson);
+  const lessondata = useSelector((state: AppState) => state.createLesson);
 
   const setEntry = useCallback(
     (_entry: string) => {
@@ -102,6 +107,13 @@ export default function PublishAuthoring(): JSX.Element {
     },
     [dispatch]
   );
+
+  const lessonPublish = useCallback(() => {
+    axios
+      .post<any | ApiError>(`${API_URL}auth/signin`, lessondata)
+      .then(handleLessonCreation)
+      .catch(handleLessonCreation);
+  }, [dispatch]);
 
   return (
     <>
@@ -128,7 +140,7 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={() => {}}
+          onClick={lessonPublish}
         >
           Publish
         </ButtonSimple>
