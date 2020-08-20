@@ -1,9 +1,9 @@
 import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
-import ILesson from "./types/schemas/ILesson";
+import LessonCreate from "./types/lesson/lesson";
 
 export default function handleLessonCreation(
-  res: AxiosResponse<any | ApiError>
+  res: AxiosResponse<LessonCreate | ApiError>
 ) {
   if (res.status === 200) {
     // All ok!

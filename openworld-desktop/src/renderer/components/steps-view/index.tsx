@@ -10,8 +10,8 @@ import Step from "../step";
 import ReactSelect from "../select";
 import useDraggableList from "../../hooks/useDraggableList";
 import { AppState } from "../../redux/stores/renderer";
-import { InitialStepType } from "../../redux/slices/createLessonSlice";
 import reduxAction from "../../redux/reduxAction";
+import { IStep } from "../../api/types/step/step";
 
 const sortOptions = ["Name", "Hghest Rated", "Duration"];
 
@@ -28,7 +28,7 @@ export default function StepsView(): JSX.Element {
           <Step
             key={`step-view-${step.name}-${step.description}-${step.next}`}
             number={i + 1}
-            data={step as InitialStepType}
+            data={step as IStep}
           />
         );
       }),

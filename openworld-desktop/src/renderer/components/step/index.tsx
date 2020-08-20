@@ -2,10 +2,10 @@ import React from "react";
 
 import "./index.scss";
 import { ItemInner, Icon, Title, Text } from "../item-inner";
-import { InitialStepType } from "../../redux/slices/createLessonSlice";
+import { IStep } from "../../api/types/step/step";
 
 interface StepProps {
-  data: InitialStepType;
+  data: IStep;
   number: number;
 }
 

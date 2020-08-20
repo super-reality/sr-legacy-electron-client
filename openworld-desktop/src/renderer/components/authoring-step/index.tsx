@@ -8,16 +8,18 @@ import Flex from "../flex";
 import Select from "../select";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
 import ButtonSimple from "../button-simple";
-
+import reduxAction from "../../redux/reduxAction";
 import {
-  CVFn,
+  TriggerOptions,
+  NextStepOptions,
+  ICVFn,
   InitalFnOptions,
   FnOptions,
-  NextStepOptions,
-  TriggerOptions,
-  InitialStepType,
-} from "../../redux/slices/createLessonSlice";
-import reduxAction from "../../redux/reduxAction";
+  IStep,
+} from "../../api/types/step/step";
+
+type TriggerKeys = keyof typeof TriggerOptions;
+type NextStepKeys = keyof typeof NextStepOptions;
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -26,7 +28,7 @@ export default function StepAuthoring(): JSX.Element {
   const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageData, setCVImageData] = useState<CVFn[]>([]);
+  const [CVImageData, setCVImageData] = useState<ICVFn[]>([]);
 
   const setImageCVFn = (fn: number, index: number) => {
     const arr = [...CVImageData];
@@ -36,7 +38,7 @@ export default function StepAuthoring(): JSX.Element {
 
   const insertCVImage = (image: string, index: number) => {
     const arr = [...CVImageData];
-    const CVFunction: CVFn = {
+    const CVFunction: ICVFn = {
       image,
       fn:
         CVImageData.length == 0
@@ -56,13 +58,13 @@ export default function StepAuthoring(): JSX.Element {
   }, []);
 
   const addStep = useCallback(() => {
-    const newStep: InitialStepType = {
+    const newStep: IStep = {
       cv: CVImageData,
       icon: "",
       name: stepname,
       description: description,
-      trigger: CVTrigger,
-      next: CVNextStep,
+      trigger: TriggerOptions[CVTrigger as TriggerKeys],
+      next: NextStepOptions[CVNextStep as NextStepKeys],
     };
     // Update current working lesson
     reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: newStep });
