@@ -38,7 +38,6 @@ export default function MediAuthoring(): JSX.Element {
               style={{
                 marginBottom: "8px",
                 width: "100%",
-                height: url ? "200px" : "auto",
               }}
               callback={(str) => {
                 insertUrl(str, i);

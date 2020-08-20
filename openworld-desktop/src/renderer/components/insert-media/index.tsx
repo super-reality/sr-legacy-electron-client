@@ -23,11 +23,12 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
       className="insert-media-container"
       style={{
         ...style,
-        backgroundImage: `url(${imgUrl})`,
       }}
       onClick={openSnipTool}
     >
-      {imgUrl ? undefined : (
+      {imgUrl ? (
+        <img src={imgUrl} />
+      ) : (
         <Add
           style={{ margin: "auto" }}
           fill="var(--color-text)"

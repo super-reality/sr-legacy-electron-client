@@ -110,7 +110,6 @@ export default function StepAuthoring(): JSX.Element {
                   style={{
                     marginBottom: "8px",
                     width: "100%",
-                    height: url ? "140px" : "auto",
                   }}
                   callback={(str) => {
                     insertCVImage(str, i);
