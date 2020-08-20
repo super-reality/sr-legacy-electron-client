@@ -63,7 +63,7 @@ export default function StepAuthoring(): JSX.Element {
     const newStep: IStep = {
       image: CVImageData[0].image,
       imageFunction: CVImageData[0].function,
-      additionalFunctions: CVImageData.splice(0, 1),
+      additionalFunctions: CVImageData.slice(1),
       name: stepname,
       description: description,
       trigger: TriggerOptions[CVTrigger as TriggerKeys],

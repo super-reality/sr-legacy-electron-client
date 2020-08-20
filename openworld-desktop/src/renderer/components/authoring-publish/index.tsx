@@ -115,7 +115,7 @@ export default function PublishAuthoring(): JSX.Element {
       .post<LessonCreate | ApiError>(`${API_URL}/lesson/create`, lessondata)
       .then(handleLessonCreate)
       .catch(handleGenericError);
-  }, [dispatch]);
+  }, [lessondata]);
 
   return (
     <>
