@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import SignIn from "../../api/types/auth/signin";
 
 const initialState = {
-  isValid: true, // true disables auth !
+  isValid: false, // true disables auth !
   isPending: false,
   updatedAt: Date.now(),
   token: "",

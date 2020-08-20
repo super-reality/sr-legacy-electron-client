@@ -8,7 +8,6 @@ import { ApiError } from "./types";
 export default function handleAuthSignin(
   res: AxiosResponse<ApiError | SignIn>
 ) {
-  console.log(res);
   if (res.status === 200) {
     if (res.data.err_code === 0) {
       window.localStorage.setItem("username", res.data.user.username);

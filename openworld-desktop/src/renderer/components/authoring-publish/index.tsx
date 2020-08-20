@@ -10,8 +10,8 @@ import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import { ApiError } from "../../api/types";
-import handleLessonCreation from "../../api/handleLesson";
 import { API_URL } from "../../constants";
+import handleLessonCreation from "../../api/handleLesson";
 
 interface Lang {
   name: string;
@@ -110,7 +110,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   const lessonPublish = useCallback(() => {
     axios
-      .post<any | ApiError>(`${API_URL}auth/signin`, lessondata)
+      .post<any | ApiError>(`${API_URL}lesson/create`, lessondata)
       .then(handleLessonCreation)
       .catch(handleLessonCreation);
   }, [dispatch]);

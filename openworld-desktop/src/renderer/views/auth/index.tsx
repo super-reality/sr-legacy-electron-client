@@ -5,7 +5,7 @@ import "./index.scss";
 import "../../components/buttons.scss";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
-import { API_URL } from "../../constants";
+import { API_URL, timeout } from "../../constants";
 import handleAuthLogin from "../../api/handleAuthSignin";
 import handleAuthSingup from "../../api/handleAuthSignup";
 import handleAuthError from "../../api/handleAuthError";
@@ -19,7 +19,6 @@ export default function Auth(): JSX.Element {
   const dispatch = useDispatch();
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
-
   const togglePage = useCallback(() => {
     setPage(page == "login" ? "register" : "login");
   }, [page]);
@@ -43,7 +42,9 @@ export default function Auth(): JSX.Element {
     };
 
     axios
-      .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload)
+      .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
+        timeout: timeout,
+      })
       .then((res) => handleAuthLogin(res))
       .catch(handleAuthError);
   }, []);

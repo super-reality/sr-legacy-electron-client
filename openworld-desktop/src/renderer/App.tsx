@@ -52,4 +52,3 @@ export default function App(): JSX.Element {
     </>
   );
 }
-// <ProtectedRoute path="/admin" authPath="/auth" component={Admin} />
