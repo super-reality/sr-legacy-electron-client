@@ -32,21 +32,38 @@ export default function Auth(): JSX.Element {
   const registerCodeField = useRef<HTMLInputElement | null>(null);
 
   const defaultUser = window.localStorage.getItem("username");
-  // const defaultToken = window.localStorage.getItem("token");
+  const defaultToken = window.localStorage.getItem("token");
+
+  useEffect(() => {
+    if (defaultToken && defaultUser && passwordField.current) {
+      passwordField.current.value = "*";
+    }
+  }, [passwordField.current]);
 
   const handleLoginSubmit = useCallback(() => {
     reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
-    const payload = {
-      username: usernameField.current?.value,
-      password: passwordField.current?.value,
-    };
 
-    axios
-      .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
-        timeout: timeout,
-      })
-      .then((res) => handleAuthLogin(res))
-      .catch(handleAuthError);
+    if (defaultToken && passwordField.current?.value == "*") {
+      reduxAction(dispatch, { type: "AUTH_TOKEN", arg: defaultToken });
+      axios
+        .post<SignIn | ApiError>(`${API_URL}auth/verify`, null, {
+          timeout: timeout,
+        })
+        .then((res) => handleAuthLogin(res))
+        .catch(handleAuthError);
+    } else {
+      const payload = {
+        username: usernameField.current?.value,
+        password: passwordField.current?.value,
+      };
+
+      axios
+        .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
+          timeout: timeout,
+        })
+        .then((res) => handleAuthLogin(res))
+        .catch(handleAuthError);
+    }
   }, []);
 
   const handleSingupSubmit = useCallback(() => {

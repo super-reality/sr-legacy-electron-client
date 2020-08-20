@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Axios from "axios";
 import SignIn from "../../api/types/auth/signin";
 
 const initialState = {
@@ -31,6 +32,12 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.name = `${firstname} ${lastname}`;
     },
+    setAuthToken: (state: AuthState, action: PayloadAction<string>): void => {
+      state.updatedAt = Date.now();
+      Axios.defaults.headers.post.Authorization = `Bearer ${action.payload}`;
+      Axios.defaults.headers.get.Authorization = `Bearer ${action.payload}`;
+      state.token = action.payload;
+    },
     setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {
       state.updatedAt = Date.now();
       state.isValid = false;
@@ -50,6 +57,7 @@ const authSlice = createSlice({
 export const {
   setAuthPending,
   setAuthSucessful,
+  setAuthToken,
   setAuthFailed,
   setAuthInvalidated,
 } = authSlice.actions;
