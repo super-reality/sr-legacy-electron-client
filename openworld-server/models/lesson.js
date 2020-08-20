@@ -3,9 +3,9 @@ const ObjectId = Schema.Types.ObjectId
 
 /* *** define lesson schema *** */
 const lessonSchema = new Schema({
-    // parent subject id
-    subjectId: { 
-        type: ObjectId,
+    // parent subject id or lesson id
+    parent: { 
+        type: Array,
         required: true,
     }, 
     // lesson icon url
@@ -29,6 +29,8 @@ const lessonSchema = new Schema({
         type: String, 
         required: true 
     },
+    // difficulty
+    difficulty: { type: Number },
     // medias urls
     medias: { type: Array },
     // total steps
@@ -38,7 +40,9 @@ const lessonSchema = new Schema({
     // tag Array
     tags: { type: Array },
     // visibility
-    visibility: { type: String },
+    visibility: { type: Array },
+    // ownership
+    ownership: { type: Array },
     // entry
     entry: { type: String },
     // lesson Rating

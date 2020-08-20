@@ -4,7 +4,7 @@ const ObjectId = Schema.Types.ObjectId
 /* *** define subject schema *** */
 const subjectSchema = new Schema({
     // parent collection id
-    collectionId: { type: ObjectId }, 
+    parent: { type: Array }, 
     // subject icon url
     icon: { type: String },
     // subject name
