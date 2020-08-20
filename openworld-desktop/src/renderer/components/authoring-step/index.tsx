@@ -20,6 +20,8 @@ import {
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
+type InitFnKeys = keyof typeof InitalFnOptions;
+type FnKeys = keyof typeof FnOptions;
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -85,10 +87,19 @@ export default function StepAuthoring(): JSX.Element {
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
           {[...CVImageData, undefined].map((d, i) => {
-            const fn = d?.function;
-            const url = !d?.image || d?.image == "" ? undefined : d.image;
-            const options = i == 0 ? InitalFnOptions : FnOptions;
-            const optionKeys: unknown = Object.keys(options);
+            let options: number[] = [];
+            let optionKeys: string[] = [];
+            let fn = 0;
+            let url: undefined | string;
+            const current = i == 0 ? InitalFnOptions : FnOptions;
+            type OptType = keyof typeof current;
+            if (d) {
+              options = Object.values(current);
+              optionKeys = Object.keys(current);
+              fn = options[d.function as OptType];
+              url = !d?.image || d?.image == "" ? undefined : d.image;
+            }
+
             return (
               <>
                 <InsertMedia
@@ -105,7 +116,7 @@ export default function StepAuthoring(): JSX.Element {
                     insertCVImage(str, i);
                   }}
                 />
-                {fn ? (
+                {d ? (
                   <div
                     className="container-with-desc"
                     style={{ marginBottom: "16px" }}
@@ -113,7 +124,12 @@ export default function StepAuthoring(): JSX.Element {
                     <div>Image Function</div>
                     <Select
                       current={fn}
-                      options={optionKeys as number[]}
+                      options={options}
+                      optionFormatter={(value) =>
+                        optionKeys.filter(
+                          (k) => current[k as OptType] == value
+                        )[0]
+                      }
                       callback={(f) => {
                         setImageCVFn(f, i);
                       }}

@@ -17,14 +17,16 @@ const InitialStep = {
 };
 
 const initialState: ILesson = {
-  subjectId: "",
+  parent: [],
+  difficulty: 0,
+  ownership: [],
+  tags: [],
   icon: "",
   name: "",
   shortDescription: "",
   description: "",
-  medias: [] as string[],
-  tags: [] as string[],
-  visibility: "public",
+  medias: [],
+  visibility: [],
   entry: "bid",
   steps: [],
 };
