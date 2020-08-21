@@ -8,6 +8,10 @@ import {
   TriggerOptions,
 } from "../step/step";
 
+test("Constants were not added", () => {
+  expect(Object.keys(constant).length).toBe(11);
+});
+
 test("Lesson constants are updated", () => {
   expect(Object.keys(DifficultyOptions).sort()).toStrictEqual(
     Object.keys(constant.Difficulty).sort()
