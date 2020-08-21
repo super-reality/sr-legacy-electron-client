@@ -36,7 +36,8 @@ exports.signup = function(request, response){
         password, 
         firstname, 
         lastname, 
-        invitecode
+        invitecode,
+        age
     } = request.body;
     
     User.findOne({username})
@@ -49,6 +50,7 @@ exports.signup = function(request, response){
             newUser.lastname = lastname
             newUser.username = username
             newUser.invitecode = invitecode
+            newUser.age = age
             newUser.passwordSalt = hashDigest(Date.now().toString())
             newUser.passwordHash = hashSaltDigest(password, newUser.passwordSalt)
 
