@@ -35,7 +35,7 @@ export default function useTagsBox(
     <div className="tags-container">
       {tags.map((tag, i) => (
         <Tag
-          key={`tags-${tag}`}
+          key={`tags-${tag.id}`}
           name={tag.name}
           close
           onCloseCallback={() => removeTag(i)}
