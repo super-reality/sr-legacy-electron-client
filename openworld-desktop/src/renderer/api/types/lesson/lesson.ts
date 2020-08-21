@@ -10,6 +10,11 @@ export const DifficultyOptions = {
   Advanced: constants.Difficulty.Advanced,
 };
 
+export const EntryOptions = {
+  Open: constants.Entry.Open,
+  Invite: constants.Entry.Invite,
+};
+
 export interface ILesson {
   parent: Link[];
   icon: string;
@@ -21,6 +26,6 @@ export interface ILesson {
   tags: string[];
   visibility: Link[];
   ownership: Link[];
-  entry: string;
+  entry: number;
   steps: IStep[];
 }

@@ -20,6 +20,8 @@ import LessonSearchParent, {
 } from "../../api/types/lesson/search-parent";
 import useTagsBox from "../tag-box";
 import Link from "../../api/types/link/link";
+import { EntryOptions } from "../../api/types/lesson/lesson";
+import constantFormat from "../../../utils/constantFormat";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -33,8 +35,6 @@ const getId = (p: Parents) => {
 
 const renderVal = (p: Parents) => <div>{getVal(p)}</div>;
 
-const entryOptions = ["Bid", "Invite", "Free"]; // ?
-
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
@@ -42,7 +42,7 @@ export default function PublishAuthoring(): JSX.Element {
   const lessondata = useSelector((state: AppState) => state.createLesson);
 
   const setEntry = useCallback(
-    (_entry: string) => {
+    (_entry: number) => {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_DATA",
         arg: { entry: _entry },
@@ -99,7 +99,12 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Entry</div>
-          <Select current={entry} options={entryOptions} callback={setEntry} />
+          <Select
+            current={entry}
+            options={Object.values(EntryOptions)}
+            optionFormatter={constantFormat(EntryOptions)}
+            callback={setEntry}
+          />
         </div>
       </Flex>
       <Flex>
