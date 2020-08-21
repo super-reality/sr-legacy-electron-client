@@ -59,21 +59,21 @@ export default function AutosuggestInput<T>({
     []
   );
 
-  const onSuggestionsFetchRequested = React.useCallback(
-    ({ value }: { value: string }): void => {
-      if (filter) setSuggestions(filter(value));
-    },
-    []
-  );
+  const onSuggestionsFetchRequested = React.useCallback<
+    Autosuggest.SuggestionsFetchRequested
+  >(({ value }: { value: string }): void => {
+    if (filter) setSuggestions(filter(value));
+  }, []);
 
-  const onSuggestionsClearRequested = React.useCallback(
-    (): void => setSuggestions([]),
-    []
-  );
+  const onSuggestionsClearRequested = React.useCallback<
+    Autosuggest.OnSuggestionsClearRequested
+  >((): void => setSuggestions([]), []);
 
-  const onSuggestionSelected = React.useCallback(
-    (_event, { suggestionValue, method }): void => {
-      submitCallback(suggestionValue);
+  const onSuggestionSelected = React.useCallback<
+    Autosuggest.OnSuggestionSelected<T>
+  >(
+    (_event, { suggestion, suggestionValue, method }): void => {
+      submitCallback(suggestion);
       if (method === "click") {
         setInputValue(suggestionValue);
       }

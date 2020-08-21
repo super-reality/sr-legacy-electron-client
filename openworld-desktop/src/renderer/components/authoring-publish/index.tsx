@@ -18,12 +18,19 @@ import handleLessonSearchParent from "../../api/handleLessonSearchParent";
 import LessonSearchParent, {
   Parents,
 } from "../../api/types/lesson/search-parent";
+import useTagsBox from "../tag-box";
 
-const getVal = (p: Parents) =>
-  p.subjectName || p.collectionName || p.lessonName || "";
-const renderVal = (p: Parents) => (
-  <div>{p.subjectName || p.collectionName || p.lessonName || ""}</div>
-);
+const getVal = (p: Parents) => {
+  return p.type == "lesson"
+    ? `${p.subjectName}/${p.lessonName}`
+    : `${p.collectionName}/${p.subjectName}`;
+};
+
+const getId = (p: Parents) => {
+  return p.type == "lesson" ? p.lessonId : p.subjectId;
+};
+
+const renderVal = (p: Parents) => <div>{getVal(p)}</div>;
 
 const entryOptions = ["Bid", "Invite", "Free"]; // ?
 
@@ -45,18 +52,10 @@ export default function PublishAuthoring(): JSX.Element {
 
   const lessonPublish = useCallback(() => {
     axios
-      .post<LessonCreate | ApiError>(`${API_URL}/lesson/create`, lessondata)
+      .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
       .then(handleLessonCreate)
       .catch(handleGenericError);
   }, [lessondata]);
-
-  // Teach Autosuggest how to calculate suggestions for any given input value.
-  const getParentsFilter = useCallback(
-    (str: string) => {
-      return suggestions;
-    },
-    [suggestions]
-  );
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
@@ -72,8 +71,11 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
+  const [TagsBox, addTag, getTags] = useTagsBox([]);
+
   return (
     <>
+      <TagsBox />
       <Flex>
         <div className="container-with-desc">
           <div>Parent Subject</div>
@@ -83,7 +85,7 @@ export default function PublishAuthoring(): JSX.Element {
             renderSuggestion={renderVal}
             id="parent-subject"
             onChangeCallback={onSuggestChange}
-            submitCallback={(l) => console.log(l)}
+            submitCallback={(p) => addTag({ name: getVal(p), id: getId(p) })}
           />
         </div>
       </Flex>
