@@ -18,6 +18,10 @@ module.exports = Object.freeze({
         Intermediate : 3,
         Advanced : 4,
     },
+    Entry: {
+        Open: 1,
+        Invite: 2
+    },
     Image_Function: {
         Computer_Vision_On : 1,
         Computer_Vision_On_But_Visible : 2,
