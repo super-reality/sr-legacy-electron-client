@@ -14,7 +14,7 @@ const initialState: ILesson = {
   description: "",
   medias: [],
   visibility: [],
-  entry: "bid",
+  entry: "Bid",
   steps: [],
 };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -19,6 +19,7 @@ import LessonSearchParent, {
   Parents,
 } from "../../api/types/lesson/search-parent";
 import useTagsBox from "../tag-box";
+import Link from "../../api/types/link/link";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -61,7 +62,7 @@ export default function PublishAuthoring(): JSX.Element {
     if (value.length > 2) {
       axios
         .get<LessonSearchParent | ApiError>(
-          `${API_URL}lesson/search-parent/${value}`
+          `${API_URL}lesson/search-parent/${encodeURIComponent(value)}`
         )
         .then((response) => {
           const values = handleLessonSearchParent(response);
@@ -71,28 +72,58 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
-  const [TagsBox, addTag, getTags] = useTagsBox([]);
+  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox([]);
+
+  useEffect(() => {
+    const tagsList: Link[] = getParentTags().map((t) => {
+      return { _id: t.id, type: "subject" };
+    });
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_DATA",
+      arg: { parent: tagsList },
+    });
+  }, [getParentTags]);
+
+  const [TagsBox, addTag, getTags] = useTagsBox([], true);
+
+  useEffect(() => {
+    const tagsList: string[] = getTags().map((t) => t.name);
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_DATA",
+      arg: { tags: tagsList },
+    });
+  }, [getTags]);
 
   return (
     <>
-      <TagsBox />
       <Flex>
         <div className="container-with-desc">
-          <div>Parent Subject</div>
+          <div>Entry</div>
+          <Select current={entry} options={entryOptions} callback={setEntry} />
+        </div>
+      </Flex>
+      <Flex>
+        <div className="container-with-desc">
+          <div>Parent Subjects</div>
+          <ParentTagsBox />
           <AutosuggestInput<Parents>
+            style={{ marginTop: "8px" }}
             forceSuggestions={suggestions}
             getValue={getVal}
             renderSuggestion={renderVal}
             id="parent-subject"
             onChangeCallback={onSuggestChange}
-            submitCallback={(p) => addTag({ name: getVal(p), id: getId(p) })}
+            submitCallback={(p) =>
+              addParentTag({ name: getVal(p), id: getId(p) })
+            }
+            selectClear
           />
         </div>
       </Flex>
       <Flex>
         <div className="container-with-desc">
-          <div>Entry</div>
-          <Select current={entry} options={entryOptions} callback={setEntry} />
+          <div>Tags</div>
+          <TagsBox />
         </div>
       </Flex>
       <Flex style={{ marginTop: "8px" }}>

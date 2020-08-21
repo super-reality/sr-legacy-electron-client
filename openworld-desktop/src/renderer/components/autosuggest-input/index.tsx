@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, CSSProperties } from "react";
 import Autosuggest, { InputProps } from "react-autosuggest";
 import "./index.scss";
 
@@ -33,6 +33,8 @@ export default function AutosuggestInput<T>({
   submitCallback,
   onChangeCallback,
   forceSuggestions,
+  style,
+  selectClear,
 }: {
   getValue: (suggestion: T) => string;
   renderSuggestion: (suggestion: T) => JSX.Element;
@@ -43,6 +45,8 @@ export default function AutosuggestInput<T>({
   submitCallback: (value: T) => void;
   onChangeCallback?: (value: string) => void;
   forceSuggestions?: T[];
+  style?: CSSProperties;
+  selectClear?: boolean;
 }): JSX.Element {
   const [inputValue, setInputValue] = React.useState(initialValue ?? "");
   const [suggestions, setSuggestions] = React.useState([] as T[]);
@@ -72,9 +76,10 @@ export default function AutosuggestInput<T>({
   const onSuggestionSelected = React.useCallback<
     Autosuggest.OnSuggestionSelected<T>
   >(
-    (_event, { suggestion, suggestionValue, method }): void => {
+    (e, { suggestion, suggestionValue, method }): void => {
       submitCallback(suggestion);
-      if (method === "click") {
+      if (selectClear) setInputValue(initialValue ?? "");
+      else if (method === "click") {
         setInputValue(suggestionValue);
       }
     },
@@ -86,11 +91,9 @@ export default function AutosuggestInput<T>({
       e: React.FocusEvent<HTMLElement>,
       { highlightedSuggestion }: { highlightedSuggestion: T }
     ): void => {
-      // const input = e.target as HTMLInputElement;
       const val = highlightedSuggestion;
       if (val) {
         submitCallback(highlightedSuggestion);
-        // setInputValue(initialValue ?? "");
       }
       // setCellWrapperOverflow(input, "");
     },
@@ -107,7 +110,7 @@ export default function AutosuggestInput<T>({
   };
 
   return (
-    <div onFocus={onFocus}>
+    <div onFocus={onFocus} style={style}>
       <Autosuggest
         id={id}
         suggestions={suggestions}
