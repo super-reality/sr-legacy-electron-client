@@ -20,6 +20,7 @@ import LessonSearchParent, {
 } from "../../api/types/lesson/search-parent";
 import useTagsBox from "../tag-box";
 import Link from "../../api/types/link/link";
+import usePopup from "../../hooks/usePopup";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -51,12 +52,45 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const lessonPublish = useCallback(() => {
-    axios
-      .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
-      .then(handleLessonCreate)
-      .catch(handleGenericError);
+  const [Popup, open] = usePopup(false);
+
+  const validateFields = useCallback(() => {
+    const reasons: string[] = [];
+    if (lessondata.name.length == 0) reasons.push("Title is required");
+    else if (lessondata.name.length < 5) reasons.push("Title is too short");
+
+    if (lessondata.description.length == 0)
+      reasons.push("Description is required");
+    else if (lessondata.description.length < 10)
+      reasons.push("Description is too short");
+
+    if (lessondata.shortDescription.length == 0)
+      reasons.push("Short description is required");
+    else if (lessondata.shortDescription.length < 5)
+      reasons.push("Short description is too short");
+
+    if (lessondata.icon == "") reasons.push("Icon is required");
+    if (lessondata.medias.length == 0) reasons.push("Media is required");
+
+    if (lessondata.parent.length == 0)
+      reasons.push("At least one parent subject is required");
+    if (lessondata.steps.length == 0)
+      reasons.push("At least one step is required");
+
+    return reasons;
   }, [lessondata]);
+
+  const lessonPublish = useCallback(() => {
+    const reasons = validateFields();
+    if (reasons.length == 0) {
+      axios
+        .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
+        .then(handleLessonCreate)
+        .catch(handleGenericError);
+    } else {
+      open();
+    }
+  }, [open, lessondata]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
@@ -96,6 +130,13 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
+      <Popup width="400px" height="300px">
+        <div style={{ margin: "auto" }}>
+          {validateFields().map((r) => (
+            <div key={r}>{r}</div>
+          ))}
+        </div>
+      </Popup>
       <Flex>
         <div className="container-with-desc">
           <div>Entry</div>
