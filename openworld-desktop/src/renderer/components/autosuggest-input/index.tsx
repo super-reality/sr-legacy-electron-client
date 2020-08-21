@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Autosuggest, { InputProps } from "react-autosuggest";
 import "./index.scss";
 
@@ -32,18 +32,24 @@ export default function AutosuggestInput<T>({
   placeholder,
   submitCallback,
   onChangeCallback,
+  forceSuggestions,
 }: {
   getValue: (suggestion: T) => string;
   renderSuggestion: (suggestion: T) => JSX.Element;
-  filter: (str: string) => T[];
+  filter?: (str: string) => T[];
   id: string;
   initialValue?: string;
   placeholder?: string;
   submitCallback: (value: T) => void;
   onChangeCallback?: (value: string) => void;
+  forceSuggestions?: T[];
 }): JSX.Element {
   const [inputValue, setInputValue] = React.useState(initialValue ?? "");
   const [suggestions, setSuggestions] = React.useState([] as T[]);
+
+  useEffect(() => {
+    if (forceSuggestions) setSuggestions(forceSuggestions);
+  }, [forceSuggestions]);
 
   const onChange = React.useCallback(
     (_event: unknown, { newValue }: { newValue: string }): void => {
@@ -54,7 +60,9 @@ export default function AutosuggestInput<T>({
   );
 
   const onSuggestionsFetchRequested = React.useCallback(
-    ({ value }: { value: string }): void => setSuggestions(filter(value)),
+    ({ value }: { value: string }): void => {
+      if (filter) setSuggestions(filter(value));
+    },
     []
   );
 

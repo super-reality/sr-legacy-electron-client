@@ -62,7 +62,7 @@ export default function PublishAuthoring(): JSX.Element {
     if (value.length > 2) {
       axios
         .get<LessonSearchParent | ApiError>(
-          `${API_URL}/lesson/search-parent/${value}`
+          `${API_URL}lesson/search-parent/${value}`
         )
         .then((response) => {
           const values = handleLessonSearchParent(response);
@@ -78,9 +78,9 @@ export default function PublishAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>Parent Subject</div>
           <AutosuggestInput<Parents>
+            forceSuggestions={suggestions}
             getValue={getVal}
             renderSuggestion={renderVal}
-            filter={getParentsFilter}
             id="parent-subject"
             onChangeCallback={onSuggestChange}
             submitCallback={(l) => console.log(l)}
