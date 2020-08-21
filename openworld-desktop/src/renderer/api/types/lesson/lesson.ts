@@ -1,18 +1,18 @@
 import { IStep } from "../step/step";
 import Link from "../link/link";
 
-import constants from "../../constant";
+import constant from "../../constant";
 
 export const DifficultyOptions = {
-  Intro: constants.Difficulty.Intro,
-  Beginner: constants.Difficulty.Beginner,
-  Intermediate: constants.Difficulty.Intermediate,
-  Advanced: constants.Difficulty.Advanced,
+  Intro: constant.Difficulty.Intro,
+  Beginner: constant.Difficulty.Beginner,
+  Intermediate: constant.Difficulty.Intermediate,
+  Advanced: constant.Difficulty.Advanced,
 };
 
 export const EntryOptions = {
-  Open: constants.Entry.Open,
-  Invite: constants.Entry.Invite,
+  Open: constant.Entry.Open,
+  Invite: constant.Entry.Invite,
 };
 
 export interface ILesson {
