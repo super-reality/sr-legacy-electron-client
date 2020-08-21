@@ -13,9 +13,10 @@ module.exports = Object.freeze({
         TeacherBot : 10,
     },
     Difficulty : {
-        Beginner : 1,
-        Intermediate : 2,
-        Advanced : 3,
+        Intro: 1,
+        Beginner : 2,
+        Intermediate : 3,
+        Advanced : 4,
     },
     Image_Function: {
         Computer_Vision_On : 1,
