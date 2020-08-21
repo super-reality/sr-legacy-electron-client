@@ -48,6 +48,9 @@ export default function Auth(): JSX.Element {
       axios
         .post<SignIn | ApiError>(`${API_URL}auth/verify`, null, {
           timeout: timeout,
+          headers: {
+            Authorization: `Bearer ${defaultToken}`,
+          },
         })
         .then((res) => handleAuthLogin(res))
         .catch(handleAuthError);

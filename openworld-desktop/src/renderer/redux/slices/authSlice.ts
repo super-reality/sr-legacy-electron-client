@@ -29,9 +29,11 @@ const authSlice = createSlice({
       const { firstname, lastname } = action.payload.user;
       state.updatedAt = Date.now();
       state.isValid = true;
-      Axios.defaults.headers.post.Authorization = `Bearer ${action.payload.token}`;
-      Axios.defaults.headers.get.Authorization = `Bearer ${action.payload.token}`;
-      state.token = action.payload.token;
+      if (action.payload.token) {
+        Axios.defaults.headers.post.Authorization = `Bearer ${action.payload.token}`;
+        Axios.defaults.headers.get.Authorization = `Bearer ${action.payload.token}`;
+        state.token = action.payload.token;
+      }
       state.name = `${firstname} ${lastname}`;
     },
     setAuthToken: (state: AuthState, action: PayloadAction<string>): void => {

@@ -11,7 +11,9 @@ export default function handleAuthSignin(
   if (res.status === 200) {
     if (res.data.err_code === 0) {
       window.localStorage.setItem("username", res.data.user.username);
-      window.localStorage.setItem("token", res.data.token);
+      if (res.data.token) {
+        window.localStorage.setItem("token", res.data.token);
+      }
       reduxAction(store.dispatch, {
         type: "AUTH_SUCCESSFUL",
         arg: res.data,
