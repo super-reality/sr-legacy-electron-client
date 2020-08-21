@@ -2,7 +2,7 @@ import constant from "../../constant";
 
 export const InitalFnOptions = {
   "Computer vision On": constant.Image_Function.Computer_Vision_On,
-  "Computer vision On but invisible":
+  "Computer vision On (Invisible)":
     constant.Image_Function.Computer_Vision_On_But_Visible,
   "Computer vision Off": constant.Image_Function.Computer_Vision_Off,
 };
