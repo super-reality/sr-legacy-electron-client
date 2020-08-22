@@ -8,7 +8,7 @@ import Flex from "../flex";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 
-export default function MediAuthoring(): JSX.Element {
+export default function MediaAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { medias } = useSelector((state: AppState) => state.createLesson);
 

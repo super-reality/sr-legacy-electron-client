@@ -22,6 +22,7 @@ import useTagsBox from "../tag-box";
 import Link from "../../api/types/link/link";
 import { EntryOptions } from "../../api/types/lesson/lesson";
 import constantFormat from "../../../utils/constantFormat";
+import BaseSelect from "../base-select";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -96,17 +97,13 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Entry</div>
-          <Select
-            current={entry}
-            options={Object.values(EntryOptions)}
-            optionFormatter={constantFormat(EntryOptions)}
-            callback={setEntry}
-          />
-        </div>
-      </Flex>
+      <BaseSelect
+        title="Entry"
+        current={entry}
+        options={Object.values(EntryOptions)}
+        optionFormatter={constantFormat(EntryOptions)}
+        callback={setEntry}
+      />
       <Flex>
         <div className="container-with-desc">
           <div>Parent Subjects</div>

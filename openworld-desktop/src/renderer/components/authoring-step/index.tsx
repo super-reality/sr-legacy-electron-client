@@ -18,6 +18,9 @@ import {
   IStep,
 } from "../../api/types/step/step";
 import constantFormat from "../../../utils/constantFormat";
+import BaseInput from "../base-input";
+import BaseSelect from "../base-select";
+import BaseTextArea from "../base-textarea";
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
@@ -137,49 +140,30 @@ export default function StepAuthoring(): JSX.Element {
           })}
         </Flex>
       </>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step Name</div>
-          <input
-            placeholder="Step name"
-            value={stepname}
-            onChange={handleStepnameChange}
-            onKeyDown={handleStepnameChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step trigger</div>
-          <Select
-            current={CVTrigger}
-            options={Object.keys(TriggerOptions)}
-            callback={setCVTrigger}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step Description</div>
-          <textarea
-            style={{ resize: "vertical", minHeight: "64px" }}
-            placeholder=""
-            value={description}
-            onChange={handleDescriptionChange}
-            onKeyDown={handleDescriptionChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Next Step</div>
-          <Select
-            current={CVNextStep}
-            options={Object.keys(NextStepOptions)}
-            callback={setCVNextStep}
-          />
-        </div>
-      </Flex>
+      <BaseInput
+        title="Step Name"
+        placeholder="Step name"
+        value={stepname}
+        onChange={handleStepnameChange}
+      />
+      <BaseSelect
+        title="Step trigger"
+        current={CVTrigger}
+        options={Object.keys(TriggerOptions)}
+        callback={setCVTrigger}
+      />
+      <BaseTextArea
+        title="Step Description"
+        placeholder=""
+        value={description}
+        onChange={handleDescriptionChange}
+      />
+      <BaseSelect
+        title="Next Step"
+        current={CVNextStep}
+        options={Object.keys(NextStepOptions)}
+        callback={setCVNextStep}
+      />
       <Flex>
         <ButtonSimple
           margin="8px auto"
