@@ -1,9 +1,9 @@
 name: Publish
 
 on:
-  create:
-    tags:
-      - '*'
+  push:
+    branches:
+      - refs/tags/*
 
 jobs:
   publish:
