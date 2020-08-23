@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
 import "../create-lesson/index.scss";
 import "../containers.scss";
+import "../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Flex from "../flex";
 import ButtonSimple from "../button-simple";
 import AutosuggestInput from "../autosuggest-input";
-import Select from "../select";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import { API_URL } from "../../constants";
@@ -53,7 +53,7 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const [Popup, open] = usePopup(false);
+  const [Popup, open, closePopup] = usePopup(false);
 
   const validateFields = useCallback(() => {
     const reasons: string[] = [];
@@ -131,11 +131,17 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <Popup width="400px" height="300px">
-        <div style={{ margin: "auto" }}>
+      <Popup width="400px" height="auto">
+        <div className="validation-popup">
+          <div className="title">Please review before publishing:</div>
           {validateFields().map((r) => (
-            <div key={r}>{r}</div>
+            <div className="line" key={r}>
+              {r}
+            </div>
           ))}
+          <ButtonSimple className="button" onClick={closePopup}>
+            Ok
+          </ButtonSimple>
         </div>
       </Popup>
       <BaseSelect
