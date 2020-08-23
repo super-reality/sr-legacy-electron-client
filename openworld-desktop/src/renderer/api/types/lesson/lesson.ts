@@ -1,12 +1,18 @@
 import { IStep } from "../step/step";
 import Link from "../link/link";
 
-import constants from "../../constant";
+import constant from "../../constant";
 
 export const DifficultyOptions = {
-  Beginner: constants.Difficulty.Beginner,
-  Intermediate: constants.Difficulty.Intermediate,
-  Advanced: constants.Difficulty.Advanced,
+  Intro: constant.Difficulty.Intro,
+  Beginner: constant.Difficulty.Beginner,
+  Intermediate: constant.Difficulty.Intermediate,
+  Advanced: constant.Difficulty.Advanced,
+};
+
+export const EntryOptions = {
+  Open: constant.Entry.Open,
+  Invite: constant.Entry.Invite,
 };
 
 export interface ILesson {
@@ -20,6 +26,6 @@ export interface ILesson {
   tags: string[];
   visibility: Link[];
   ownership: Link[];
-  entry: string;
+  entry: number;
   steps: IStep[];
 }

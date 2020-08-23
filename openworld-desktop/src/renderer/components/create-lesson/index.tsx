@@ -8,13 +8,14 @@ import InfoAuthoring from "../authoring-info";
 import StepAuthoring from "../authoring-step";
 import PublishAuthoring from "../authoring-publish";
 import StepsView from "../steps-view";
-import { mockLessonData } from "../../../__mocks__/mocks";
+import createOptions from "../../views/create/components";
+import CreateOption from "../create-option";
+import Category from "../../../types/collections";
 
 export default function CreateLesson(): JSX.Element {
-  const data = mockLessonData;
-
   return (
     <>
+      <CreateOption data={createOptions[Category.Lesson]} />
       <Collapsible outer expanded title="Add Lesson Info">
         <div className="mid">
           <Collapsible expanded title="Info">

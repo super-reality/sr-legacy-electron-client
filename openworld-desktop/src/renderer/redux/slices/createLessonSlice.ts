@@ -1,11 +1,15 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IStep } from "../../api/types/step/step";
-import { ILesson } from "../../api/types/lesson/lesson";
+import {
+  ILesson,
+  EntryOptions,
+  DifficultyOptions,
+} from "../../api/types/lesson/lesson";
 
 const initialState: ILesson = {
   parent: [],
-  difficulty: 0,
+  difficulty: DifficultyOptions.Intermediate,
   ownership: [],
   tags: [],
   icon: "",
@@ -14,7 +18,7 @@ const initialState: ILesson = {
   description: "",
   medias: [],
   visibility: [],
-  entry: "Bid",
+  entry: EntryOptions.Invite,
   steps: [],
 };
 

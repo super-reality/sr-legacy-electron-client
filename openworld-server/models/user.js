@@ -17,6 +17,8 @@ const userSchema = new Schema({
     },
     firstname: { type: String },
     lastname: { type: String },
+    inviteCode: { type: String },
+    age: { type: Number },
     // description
     description: { type: String },
     budget: { type: Number },
