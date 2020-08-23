@@ -5,5 +5,5 @@ import { CodeSuccess } from "..";
 export default interface SignIn {
   err_code: CodeSuccess;
   user: IUser;
-  token: string;
+  token?: string;
 }

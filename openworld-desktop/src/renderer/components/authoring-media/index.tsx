@@ -3,17 +3,18 @@ import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import InsertMedia from "../insert-media";
-import Flex from "../flex";
+import BaseInsertMedia from "../base-insert-media";
 import { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 
-export default function MediAuthoring(): JSX.Element {
+export default function MediaAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { medias } = useSelector((state: AppState) => state.createLesson);
 
   const insertUrl = (image: string, index: number) => {
-    const arr = [...medias];
+    console.log(image, index);
+    console.log(medias);
+    const arr: string[] = [...medias];
     arr.splice(index, 1, image);
 
     reduxAction(dispatch, {
@@ -22,30 +23,12 @@ export default function MediAuthoring(): JSX.Element {
     });
   };
 
-  const datekey = new Date().getTime();
-
   return (
-    <Flex style={{ gridArea: "media" }}>
-      <div className="container-with-desc">
-        <div>Add Media</div>
-        <Flex style={{ flexDirection: "column" }}>
-          {[...medias, undefined].map((url, i) => (
-            <InsertMedia
-              // eslint-disable-next-line react/no-array-index-key
-              key={`insert-media-${datekey}-${i}`}
-              snip
-              imgUrl={url}
-              style={{
-                marginBottom: "8px",
-                width: "100%",
-              }}
-              callback={(str) => {
-                insertUrl(str, i);
-              }}
-            />
-          ))}
-        </Flex>
-      </div>
-    </Flex>
+    <BaseInsertMedia
+      style={{ gridArea: "media" }}
+      title="Add Media"
+      urls={medias}
+      callback={insertUrl}
+    />
   );
 }

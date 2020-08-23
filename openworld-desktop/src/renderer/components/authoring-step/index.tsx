@@ -18,11 +18,12 @@ import {
   IStep,
 } from "../../api/types/step/step";
 import constantFormat from "../../../utils/constantFormat";
+import BaseInput from "../base-input";
+import BaseSelect from "../base-select";
+import BaseTextArea from "../base-textarea";
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
-type InitFnKeys = keyof typeof InitalFnOptions;
-type FnKeys = keyof typeof FnOptions;
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -39,18 +40,22 @@ export default function StepAuthoring(): JSX.Element {
     setCVImageData(arr);
   };
 
-  const insertCVImage = (image: string, index: number) => {
-    const arr = [...CVImageData];
-    const CVFunction: ICVFn = {
-      image,
-      function:
-        CVImageData.length == 0
-          ? InitalFnOptions["Computer vision On"]
-          : FnOptions.And,
-    };
-    arr.splice(index, 1, CVFunction);
-    setCVImageData(arr);
-  };
+  const insertCVImage = useCallback(
+    (image: string, index: number) => {
+      const arr = [...CVImageData];
+      const defaultFn =
+        index == 0
+          ? Object.values(InitalFnOptions)[0]
+          : Object.values(FnOptions)[0];
+      const CVFunction: ICVFn = {
+        image,
+        function: CVImageData[index] ? CVImageData[index].function : defaultFn,
+      };
+      arr.splice(index, 1, CVFunction);
+      setCVImageData(arr);
+    },
+    [CVImageData]
+  );
 
   const handleStepnameChange = useCallback((e: InputChangeEv): void => {
     setStepname(e.currentTarget.value);
@@ -88,21 +93,17 @@ export default function StepAuthoring(): JSX.Element {
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
           {[...CVImageData, undefined].map((d, i) => {
-            let options: number[] = [];
-            let optionKeys: string[] = [];
-            let fn = 0;
-            let url: undefined | string;
+            const defaultFn =
+              i == 0
+                ? Object.values(InitalFnOptions)[0]
+                : Object.values(FnOptions)[0];
+
             const current = i == 0 ? InitalFnOptions : FnOptions;
-            type OptType = keyof typeof current;
-            if (d) {
-              options = Object.values(current);
-              optionKeys = Object.keys(current);
-              fn = options[d.function as OptType];
-              url = !d?.image || d?.image == "" ? undefined : d.image;
-            }
+            const url = !d?.image || d?.image == "" ? undefined : d.image;
+            const fn = !d?.function ? defaultFn : d.function;
 
             return (
-              <>
+              <React.Fragment key={d?.image || "cv-add"}>
                 <InsertMedia
                   snip
                   // eslint-disable-next-line react/no-array-index-key
@@ -124,7 +125,7 @@ export default function StepAuthoring(): JSX.Element {
                     <div>Image Function</div>
                     <Select
                       current={fn}
-                      options={options}
+                      options={Object.values(current)}
                       optionFormatter={constantFormat(current)}
                       callback={(f) => {
                         setImageCVFn(f, i);
@@ -134,54 +135,35 @@ export default function StepAuthoring(): JSX.Element {
                 ) : (
                   <></>
                 )}
-              </>
+              </React.Fragment>
             );
           })}
         </Flex>
       </>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step Name</div>
-          <input
-            placeholder="Step name"
-            value={stepname}
-            onChange={handleStepnameChange}
-            onKeyDown={handleStepnameChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step trigger</div>
-          <Select
-            current={CVTrigger}
-            options={Object.keys(TriggerOptions)}
-            callback={setCVTrigger}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Step Description</div>
-          <textarea
-            style={{ resize: "vertical", minHeight: "64px" }}
-            placeholder=""
-            value={description}
-            onChange={handleDescriptionChange}
-            onKeyDown={handleDescriptionChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Next Step</div>
-          <Select
-            current={CVNextStep}
-            options={Object.keys(NextStepOptions)}
-            callback={setCVNextStep}
-          />
-        </div>
-      </Flex>
+      <BaseInput
+        title="Step Name"
+        placeholder="Step name"
+        value={stepname}
+        onChange={handleStepnameChange}
+      />
+      <BaseSelect
+        title="Step trigger"
+        current={CVTrigger}
+        options={Object.keys(TriggerOptions)}
+        callback={setCVTrigger}
+      />
+      <BaseTextArea
+        title="Step Description"
+        placeholder=""
+        value={description}
+        onChange={handleDescriptionChange}
+      />
+      <BaseSelect
+        title="Next Step"
+        current={CVNextStep}
+        options={Object.keys(NextStepOptions)}
+        callback={setCVNextStep}
+      />
       <Flex>
         <ButtonSimple
           margin="8px auto"

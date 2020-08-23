@@ -41,11 +41,13 @@
     "wait-on": "^5.1.0"
   },
   "scripts": {
-    "start": "nf start -p 3000",
+    "pre:constants": "copyfiles -u 3 \"../openworld-server/config/constant.js\" src/renderer/api && eslint src/renderer/api/constant.js --fix",
+    "start": "npm run pre:constants && nf start -p 3000",
     "react-start": "craco start",
     "react-build": "craco build",
     "test": "craco test --env=jsdom",
     "test:eslint": "eslint src/* --ext tsx",
+    "test:all": "npm run pre:constants && npm run test:eslint && craco test --env=jsdom --watchAll=false",
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-start": "node src/start-react",
@@ -104,6 +106,7 @@
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
+    "copyfiles": "^2.3.0",
     "electron": "^9.1.2",
     "electron-builder": "^22.8.0",
     "electron-packager": "^15.0.0",

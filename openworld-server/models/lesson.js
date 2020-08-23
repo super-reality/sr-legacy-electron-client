@@ -44,7 +44,7 @@ const lessonSchema = new Schema({
     // ownership
     ownership: { type: Array },
     // entry
-    entry: { type: String },
+    entry: { type: Number },
     // lesson Rating
     rating: { type: Number },
     // total rating count. this is used for new rating

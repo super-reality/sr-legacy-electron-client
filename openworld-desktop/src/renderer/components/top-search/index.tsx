@@ -14,6 +14,7 @@ import ButtonSimple from "../button-simple";
 import { tabNames } from "../../redux/slices/renderSlice";
 import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
+import useOutsideClick from "../../hooks/useOutsideClick";
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -99,7 +100,15 @@ export default function TopSearch(): JSX.Element {
     [openDropdown]
   );
 
-  const [SelectDropdown] = useSelectHeader(openDropdown, onSelect);
+  const [SelectDropdown, dropdownRef] = useSelectHeader(openDropdown, onSelect);
+
+  const closeDropdown = useCallback(() => {
+    if (openDropdown) {
+      setOpenDropdown(null);
+    }
+  }, [openDropdown]);
+
+  useOutsideClick(dropdownRef, closeDropdown);
 
   return (
     <div className="top-search-container">

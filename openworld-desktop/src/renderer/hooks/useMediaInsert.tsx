@@ -15,7 +15,7 @@ export default function useMediaSniper(
         if (!ret.canceled)
           onFinish(`"${ret.filePaths[0].replace(/\\/g, "/")}"`);
       });
-  }, []);
+  }, [onFinish]);
 
   return open;
 }

@@ -25,6 +25,7 @@
     width: 100%;
     position: absolute;
     z-index: 10;
+    @include soft-shadow;
   }
 
   .react-autosuggest__suggestions-list {

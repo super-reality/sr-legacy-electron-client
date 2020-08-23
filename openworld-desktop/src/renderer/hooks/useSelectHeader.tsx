@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./index.scss";
 import { useLocation } from "react-router-dom";
 import { useWindowSize } from "react-use";
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Category from "../../types/collections";
 import { tabNames } from "../redux/slices/renderSlice";
 import { AppState } from "../redux/stores/renderer";
+import useOutsideClick from "./useOutsideClick";
 
 const selectOptionsByTab: Record<
   tabNames,
@@ -61,7 +62,8 @@ const selectOptionsByTab: Record<
 export default function useSelectHeader(
   title: tabNames | null,
   onSelect: (selected: string | Category, route: string) => void
-): [() => JSX.Element] {
+): [() => JSX.Element, React.MutableRefObject<HTMLDivElement | null>] {
+  const ref = useRef<HTMLDivElement | null>(null);
   const location = useLocation();
   const topSelectStates = useSelector(
     (state: AppState) => state.render.topSelectStates
@@ -90,7 +92,11 @@ export default function useSelectHeader(
     const left = Math.min(Math.max(8, centers[title] - 104), width - 208 - 8);
     const currentOptions = selectOptionsByTab[title];
     const Dropdown = () => (
-      <div className="dropdown-container" style={{ left: `${left}px` }}>
+      <div
+        ref={ref}
+        className="dropdown-container"
+        style={{ left: `${left}px` }}
+      >
         {Object.keys(currentOptions).map((option) => {
           const active =
             currentOptions[option] == current &&
@@ -112,8 +118,8 @@ export default function useSelectHeader(
         })}
       </div>
     );
-    return [Dropdown];
+    return [Dropdown, ref];
   }
 
-  return [() => <></>];
+  return [() => <></>, ref];
 }

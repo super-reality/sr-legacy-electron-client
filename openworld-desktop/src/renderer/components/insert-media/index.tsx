@@ -14,10 +14,11 @@ interface InsertMediaProps {
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
   const { callback, imgUrl, style, snip, keepSize } = props;
+  const call = useCallback(callback, [callback]);
 
   const openSnipTool = snip
-    ? useMediaSniper(imgUrl, callback)
-    : useMediaInsert(callback);
+    ? useMediaSniper(imgUrl, call)
+    : useMediaInsert(call);
 
   return (
     <div

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, CSSProperties } from "react";
 import Autosuggest, { InputProps } from "react-autosuggest";
 import "./index.scss";
 
@@ -32,18 +32,28 @@ export default function AutosuggestInput<T>({
   placeholder,
   submitCallback,
   onChangeCallback,
+  forceSuggestions,
+  style,
+  selectClear,
 }: {
   getValue: (suggestion: T) => string;
   renderSuggestion: (suggestion: T) => JSX.Element;
-  filter: (str: string) => T[];
+  filter?: (str: string) => T[];
   id: string;
   initialValue?: string;
   placeholder?: string;
   submitCallback: (value: T) => void;
   onChangeCallback?: (value: string) => void;
+  forceSuggestions?: T[];
+  style?: CSSProperties;
+  selectClear?: boolean;
 }): JSX.Element {
   const [inputValue, setInputValue] = React.useState(initialValue ?? "");
   const [suggestions, setSuggestions] = React.useState([] as T[]);
+
+  useEffect(() => {
+    if (forceSuggestions) setSuggestions(forceSuggestions);
+  }, [forceSuggestions]);
 
   const onChange = React.useCallback(
     (_event: unknown, { newValue }: { newValue: string }): void => {
@@ -53,20 +63,23 @@ export default function AutosuggestInput<T>({
     []
   );
 
-  const onSuggestionsFetchRequested = React.useCallback(
-    ({ value }: { value: string }): void => setSuggestions(filter(value)),
-    []
-  );
+  const onSuggestionsFetchRequested = React.useCallback<
+    Autosuggest.SuggestionsFetchRequested
+  >(({ value }: { value: string }): void => {
+    if (filter) setSuggestions(filter(value));
+  }, []);
 
-  const onSuggestionsClearRequested = React.useCallback(
-    (): void => setSuggestions([]),
-    []
-  );
+  const onSuggestionsClearRequested = React.useCallback<
+    Autosuggest.OnSuggestionsClearRequested
+  >((): void => setSuggestions([]), []);
 
-  const onSuggestionSelected = React.useCallback(
-    (_event, { suggestionValue, method }): void => {
-      submitCallback(suggestionValue);
-      if (method === "click") {
+  const onSuggestionSelected = React.useCallback<
+    Autosuggest.OnSuggestionSelected<T>
+  >(
+    (e, { suggestion, suggestionValue, method }): void => {
+      submitCallback(suggestion);
+      if (selectClear) setInputValue(initialValue ?? "");
+      else if (method === "click") {
         setInputValue(suggestionValue);
       }
     },
@@ -78,11 +91,9 @@ export default function AutosuggestInput<T>({
       e: React.FocusEvent<HTMLElement>,
       { highlightedSuggestion }: { highlightedSuggestion: T }
     ): void => {
-      // const input = e.target as HTMLInputElement;
       const val = highlightedSuggestion;
       if (val) {
         submitCallback(highlightedSuggestion);
-        // setInputValue(initialValue ?? "");
       }
       // setCellWrapperOverflow(input, "");
     },
@@ -99,7 +110,7 @@ export default function AutosuggestInput<T>({
   };
 
   return (
-    <div onFocus={onFocus}>
+    <div onFocus={onFocus} style={style}>
       <Autosuggest
         id={id}
         suggestions={suggestions}

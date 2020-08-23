@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Flex from "../flex";
 import InsertMedia from "../insert-media";
 import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
-import Select from "../select";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import { DifficultyOptions } from "../../api/types/lesson/lesson";
 import constantFormat from "../../../utils/constantFormat";
+import BaseInput from "../base-input";
+import BaseSelect from "../base-select";
+import BaseTextArea from "../base-textarea";
 
 export default function InfoAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -65,51 +67,32 @@ export default function InfoAuthoring(): JSX.Element {
           />
         </div>
       </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>TItle</div>
-          <input
-            placeholder="Title"
-            value={name}
-            onChange={handleNameChange}
-            onKeyDown={handleNameChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Short Description</div>
-          <input
-            placeholder="description"
-            value={shortDescription}
-            onChange={handleShortDescChange}
-            onKeyDown={handleShortDescChange}
-          />
-        </div>
-      </Flex>
-      <Flex style={{ gridArea: "text" }}>
-        <div className="container-with-desc">
-          <div>Description</div>
-          <textarea
-            style={{ resize: "vertical", minHeight: "64px" }}
-            placeholder=""
-            value={description}
-            onChange={handleDescChange}
-            onKeyDown={handleDescChange}
-          />
-        </div>
-      </Flex>
-      <Flex>
-        <div className="container-with-desc">
-          <div>Difficulty</div>
-          <Select
-            current={difficulty}
-            options={Object.values(DifficultyOptions)}
-            optionFormatter={constantFormat(DifficultyOptions)}
-            callback={setDifficulty}
-          />
-        </div>
-      </Flex>
+      <BaseInput
+        title="TItle"
+        placeholder="Title"
+        value={name}
+        onChange={handleNameChange}
+      />
+      <BaseInput
+        title="Short Description"
+        placeholder="Description"
+        value={shortDescription}
+        onChange={handleShortDescChange}
+      />
+      <BaseTextArea
+        style={{ gridArea: "text" }}
+        title="Description"
+        placeholder=""
+        value={description}
+        onChange={handleDescChange}
+      />
+      <BaseSelect
+        title="Difficulty"
+        current={difficulty}
+        options={Object.values(DifficultyOptions)}
+        optionFormatter={constantFormat(DifficultyOptions)}
+        callback={setDifficulty}
+      />
     </>
   );
 }

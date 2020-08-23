@@ -55,10 +55,8 @@ function createSniper(imgUrl: any): Promise<string> {
         const pos = snipWindow.getPosition();
         const size = snipWindow.getSize();
         snipWindow.close();
-        let imglocalPath: any = "";
-        if (imgUrl != undefined) {
-          imglocalPath = imgUrl;
-        }
+        const imglocalPath = "";
+
         jsonRpcRemote("snipImage", {
           posx: pos[0] + 3,
           posy: pos[1] + 3,
@@ -66,11 +64,10 @@ function createSniper(imgUrl: any): Promise<string> {
           height: size[1] - 6,
           path: imglocalPath,
         })
-          .then((res) => {
-            const rescopy: any = res;
+          .then((res: any) => {
             let ImagePathCopy: string = "";
             try {
-              ImagePathCopy = rescopy.result.imgPath;
+              ImagePathCopy = res.result.imgPath;
             } catch (err) {
               reject(err);
             }
@@ -93,7 +90,7 @@ export default function useMediaSniper(
 ): () => void {
   const open = useCallback(() => {
     createSniper(imgUrl).then(onFinish);
-  }, []);
+  }, [onFinish, imgUrl]);
 
   return open;
 }
