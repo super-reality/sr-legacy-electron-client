@@ -1,7 +1,7 @@
 name: Publish
 
 on:
-  push:
+  create:
     tags:
       - '*'
 
@@ -12,15 +12,9 @@ jobs:
     strategy:
       matrix:
         include:
-#          - os: ubuntu-latest
-#            artifact_name: openworld-desktop.Appimage
-#            asset_name: openworld-desktop-linux-amd64
           - os: windows-latest
             artifact_name: openworld-desktop.exe
             asset_name: openworld-desktop-windows-amd64
-#          - os: macos-latest
-#            artifact_name: openworld-desktop.pkg
-#            asset_name: openworld-desktop-macos-amd64
 
     steps:
     - uses: actions/checkout@v2
@@ -39,10 +33,9 @@ jobs:
       run: npm run build
 
     - name: Upload binaries
-      working-directory: openworld-desktop
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: public/${{ matrix.artifact_name }}
+        file: openworld-desktop/dist/${{ matrix.artifact_name }}
         asset_name: ${{ matrix.asset_name }}
         tag: ${{ github.ref }}
