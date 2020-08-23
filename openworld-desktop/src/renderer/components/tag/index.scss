@@ -1,0 +1,39 @@
+@import "../misc.scss";
+
+.tag {
+  height: 24px;
+  width: auto;
+  border-radius: 500px;
+  margin: 3px;
+  display: flex;
+  background-color: var(--color-background);
+  @include disable-select;
+
+  input {
+    background-color: #00000000;
+    height: 20px;
+    padding: 0 12px;
+    border: none;
+  }
+
+  .name {
+    text-align: center;
+    font-size: 12px;
+    line-height: 23px;
+    padding: 0 8px;
+    width: calc(100% - 24px);
+  }
+
+  .close {
+    cursor: pointer;
+    display: flex;
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+    @include animated;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

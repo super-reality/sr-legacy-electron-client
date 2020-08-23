@@ -9,13 +9,25 @@ const mongoose = require("mongoose");
 mongoose.Promise = Promise;
 const database = mongoose.connection;
 const User = require("./models/user");
+let apiRoutes = require("./routes/api/v1/apis");
 
 const {hashDigest, hashSaltDigest} = require("./utilities/hashing");
 
 app.use(express.json());
-app.use("/api/v1/auth", require("./routes/api/v1/auth"));
-app.use("/api/v1/classrooms", auth(), require("./routes/api/v1/classrooms"));
-app.use("/api/v1/users", auth(), require("./routes/api/v1/users"));
+
+// setting for local server connection from other port
+app.use(function (req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+    next();
+});
+
+app.use("/api/v1", apiRoutes);
 
 database.once("open", () => {
     console.log("database connected");

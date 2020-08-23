@@ -1,9 +1,0 @@
-appId: "com.gamegen.openworld-desktop"
-productName: "Open World Desktop"
-copyright: "Copyright © 2020 Game Gen. All rights reserved."
-mac:
-  category: "public.app-category.education"
-files:
-    - "build/**/*"
-    - "node_modules/**/*"
-    - "src/main.js"
