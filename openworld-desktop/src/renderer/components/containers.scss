@@ -1,0 +1,28 @@
+@import "./misc.scss";
+
+.inner {
+  background-color: var(--color-background);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.mid {
+  border-radius: 8px;
+  background-color: var(--color-section);
+  padding: 10px;
+  margin: 10px;
+  @include soft-shadow;
+}
+
+.container-with-desc {
+  font-size: 14px;
+  line-height: 24px;
+  text-align: left;
+  width: -webkit-fill-available;
+}
+
+.container-title {
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 18px;
+}

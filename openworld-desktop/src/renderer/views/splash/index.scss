@@ -1,0 +1,25 @@
+.splash-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  max-height: 100%;
+  margin: auto;
+
+  .images{
+    display: grid;
+    grid-template-rows: 64px minmax(auto, 792px);
+    width: -webkit-fill-available;
+    height: 100%;
+  }
+
+  .splash-image {
+    justify-content: center;
+    width: calc(100% - 24px);
+    display: flex;
+    margin: 8px auto;
+
+    img {
+      width: 100%;
+    }
+  }
+}

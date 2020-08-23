@@ -1,0 +1,20 @@
+.step-authoring-grid {
+  display: grid;
+  grid-template-columns: auto;
+  gap: 4px;
+  grid-template-rows: auto auto auto auto auto auto;
+  grid-template-areas:
+    "step"
+    "event"
+    "images"
+    "action"
+    "text"
+    "next";
+}
+
+.insert-images-div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  grid-template-rows: auto;
+}

@@ -1,0 +1,13 @@
+.lesson-title-container {
+  display: flex;
+  
+  .lesson-title {
+    font-size: 18px;
+    margin: 2px 0;
+  }
+  
+  .lesson-subtitle {
+    font-size: 12px;
+    margin: 2px 0;
+  }
+}

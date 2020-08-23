@@ -1,0 +1,73 @@
+
+.popup-modal {
+  display: flex;
+  margin: 16px auto auto auto;
+  width: -webkit-fill-available;
+  justify-content: center;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  font-size: 18px;
+
+  .modal-yes {
+    cursor: pointer;
+    color: var(--color-checked);
+    width: 40%;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: var(--color-section-inner-hover);
+    }
+    &:active {
+      background-color: var(--color-section-inner);
+    }
+  }
+
+  .modal-no {
+    cursor: pointer;
+    width: 40%;
+    border-radius: 8px;
+
+    &:hover {
+      background-color: var(--color-section-inner-hover);
+    }
+    &:active {
+      background-color: var(--color-section-inner);
+    }
+  }
+}
+
+.popup-title {
+  margin: auto auto 16px auto;
+  font-size: 18px;
+}
+
+.popup-regular-title {
+  padding: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 18px;
+  border-bottom: 1px solid var(--color-separator);
+}
+
+.validation-popup {
+  .title {
+    font-size: 18px;
+    font-weight: 400;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    margin-bottom: 10px;
+    color: var(--color-text-dark);
+    background-color: var(--color-red);
+  }
+
+  .line {
+    margin: 4px 16px;
+  }
+
+  .button {
+    width: 96px;
+    margin: 16px auto;
+  }
+}
