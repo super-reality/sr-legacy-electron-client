@@ -31,7 +31,9 @@ jobs:
         with:
           tag-prefix: ''
         env:
-          PACKAGEJSON_DIR: 'openworld-desktop'
+          PACKAGEJSON_DIR: "openworld-desktop"
+          GITHUB_USER: "Manwe's Bot"
+          GITHUB_EMAIL: "manuel.etchegaray7@gmail.com"
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: "cat package.json"
