@@ -1,4 +1,4 @@
-import { ILessonData, IStep } from "../types/api";
+import { ILessonData, IStep } from "./types/api";
 
 export const mockStep: IStep = {
   id: "12",
