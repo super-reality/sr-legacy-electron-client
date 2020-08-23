@@ -24,11 +24,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: get-npm-version
-      id: package-version
-      uses: martinbeentjes/npm-get-version-action@master
+    - name: Extract version
+      id: extract_version
+      uses: Saionaro/extract-package-version@v1.1.1
       with:
-        path: openworld-desktop/package.json
+        path: openworld-desktop
 
     - name: Install
       working-directory: openworld-desktop
@@ -42,6 +42,6 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: openworld-desktop/dist/openworld-desktop-${{ steps.package-version.outputs.current-version }}${{ matrix.artifact_name }}
-        asset_name: openworld-desktop-${{ steps.package-version.outputs.current-version }}${{ matrix.artifact_name }}
+        file: openworld-desktop/dist/openworld-desktop-${{ steps.extract_version.outputs.version }}${{ matrix.artifact_name }}
+        asset_name: openworld-desktop-${{ steps.extract_version.outputs.version }}${{ matrix.artifact_name }}
         tag: ${{ github.ref }}
