@@ -45,7 +45,7 @@
     "react-start": "craco start",
     "react-build": "craco build",
     "test": "craco test --env=jsdom",
-    "test:eslint": "eslint src/* --ext tsx",
+    "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
     "test:all": "npm run pre:constants && npm run test:eslint && craco test --env=jsdom --watchAll=false",
     "eject": "react-scripts eject",
     "electron": "electron .",
