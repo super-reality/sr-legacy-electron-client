@@ -27,7 +27,7 @@ jobs:
           version: ${{ matrix.node_version }}
 
       - name: "Version Bump"
-        uses: "Manuel-777/gh-action-bump-version@master"
+        uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: ''
         env:
