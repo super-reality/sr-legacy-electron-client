@@ -16,17 +16,24 @@ jobs:
         uses: "actions/checkout@v1"
         with:
           ref: ${{ github.ref }}
-      - name: "cat openworld-desktop/package.json"
-        run: cat ./openworld-desktop/package.json
+
+      - name: "cat package.json"
+        working-directory: openworld-desktop
+        run: cat ./package.json
+
       - name: Use node ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
           version: ${{ matrix.node_version }}
+
       - name: "Version Bump"
         uses: "Manuel-777/gh-action-bump-version@master"
         with:
           tag-prefix: ''
         env:
+          PACKAGEJSON_DIR: 'openworld-desktop'
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      - name: "cat openworld-desktop/package.json"
-        run: cat ./openworld-desktop/package.json
+
+      - name: "cat package.json"
+        working-directory: openworld-desktop
+        run: cat ./package.json
