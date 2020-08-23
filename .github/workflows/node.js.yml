@@ -23,7 +23,9 @@ jobs:
       run: npm install
 
     - name: Test
+      working-directory: openworld-desktop
       run: npm test
 
     - name: Build
+      working-directory: openworld-desktop
       run: npm build
