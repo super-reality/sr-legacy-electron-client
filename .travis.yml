@@ -21,5 +21,4 @@ jobs:
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
-        - npm install
         - npm test:all
