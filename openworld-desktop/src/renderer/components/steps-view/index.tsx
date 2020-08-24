@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./index.scss";
-import "../create-lesson/index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import swap from "lodash-move";
 import Flex from "../flex";

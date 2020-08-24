@@ -1,15 +1,13 @@
 import React from "react";
-import "./index.scss";
-import "../containers.scss";
-import "../create-lesson/index.scss";
+import "../../containers.scss";
 import { useDispatch, useSelector } from "react-redux";
-import BaseInsertMedia from "../base-insert-media";
-import { AppState } from "../../redux/stores/renderer";
-import reduxAction from "../../redux/reduxAction";
+import BaseInsertMedia from "../../base-insert-media";
+import { AppState } from "../../../redux/stores/renderer";
+import reduxAction from "../../../redux/reduxAction";
 
 export default function MediaAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { medias } = useSelector((state: AppState) => state.createLesson);
+  const { medias } = useSelector((state: AppState) => state.createCollection);
 
   const insertUrl = (image: string, index: number) => {
     console.log(image, index);
@@ -18,7 +16,7 @@ export default function MediaAuthoring(): JSX.Element {
     arr.splice(index, 1, image);
 
     reduxAction(dispatch, {
-      type: "CREATE_LESSON_DATA",
+      type: "CREATE_COLLECTION_DATA",
       arg: { medias: arr },
     });
   };

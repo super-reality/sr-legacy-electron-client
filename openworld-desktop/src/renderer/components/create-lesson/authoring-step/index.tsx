@@ -1,14 +1,13 @@
 import React, { useCallback, useState } from "react";
 import "./index.scss";
-import "../containers.scss";
-import "../create-lesson/index.scss";
+import "../../containers.scss";
 import { useDispatch } from "react-redux";
-import InsertMedia from "../insert-media";
-import Flex from "../flex";
-import Select from "../select";
-import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
-import ButtonSimple from "../button-simple";
-import reduxAction from "../../redux/reduxAction";
+import InsertMedia from "../../insert-media";
+import Flex from "../../flex";
+import Select from "../../select";
+import { InputChangeEv, AreaChangeEv } from "../../../../types/utils";
+import ButtonSimple from "../../button-simple";
+import reduxAction from "../../../redux/reduxAction";
 import {
   TriggerOptions,
   NextStepOptions,
@@ -16,11 +15,11 @@ import {
   InitalFnOptions,
   FnOptions,
   IStep,
-} from "../../api/types/step/step";
-import constantFormat from "../../../utils/constantFormat";
-import BaseInput from "../base-input";
-import BaseSelect from "../base-select";
-import BaseTextArea from "../base-textarea";
+} from "../../../api/types/step/step";
+import constantFormat from "../../../../utils/constantFormat";
+import BaseInput from "../../base-input";
+import BaseSelect from "../../base-select";
+import BaseTextArea from "../../base-textarea";
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
@@ -89,57 +88,55 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <div className="step-authoring-grid">
-      <>
-        <div>Add CV Target</div>
-        <Flex style={{ flexDirection: "column" }}>
-          {[...CVImageData, undefined].map((d, i) => {
-            const defaultFn =
-              i == 0
-                ? Object.values(InitalFnOptions)[0]
-                : Object.values(FnOptions)[0];
+      <div>Add CV Target</div>
+      <Flex style={{ flexDirection: "column" }}>
+        {[...CVImageData, undefined].map((d, i) => {
+          const defaultFn =
+            i == 0
+              ? Object.values(InitalFnOptions)[0]
+              : Object.values(FnOptions)[0];
 
-            const current = i == 0 ? InitalFnOptions : FnOptions;
-            const url = !d?.image || d?.image == "" ? undefined : d.image;
-            const fn = !d?.function ? defaultFn : d.function;
+          const current = i == 0 ? InitalFnOptions : FnOptions;
+          const url = !d?.image || d?.image == "" ? undefined : d.image;
+          const fn = !d?.function ? defaultFn : d.function;
 
-            return (
-              <React.Fragment key={d?.image || "cv-add"}>
-                <InsertMedia
-                  snip
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`insert-media-${datekey}-${i}`}
-                  imgUrl={url}
-                  style={{
-                    marginBottom: "8px",
-                    width: "100%",
-                  }}
-                  callback={(str) => {
-                    insertCVImage(str, i);
-                  }}
-                />
-                {d ? (
-                  <div
-                    className="container-with-desc"
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <div>Image Function</div>
-                    <Select
-                      current={fn}
-                      options={Object.values(current)}
-                      optionFormatter={constantFormat(current)}
-                      callback={(f) => {
-                        setImageCVFn(f, i);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <></>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </Flex>
-      </>
+          return (
+            <React.Fragment key={d?.image || "cv-add"}>
+              <InsertMedia
+                snip
+                // eslint-disable-next-line react/no-array-index-key
+                key={`insert-media-${datekey}-${i}`}
+                imgUrl={url}
+                style={{
+                  marginBottom: "8px",
+                  width: "100%",
+                }}
+                callback={(str) => {
+                  insertCVImage(str, i);
+                }}
+              />
+              {d ? (
+                <div
+                  className="container-with-desc"
+                  style={{ marginBottom: "16px" }}
+                >
+                  <div>Image Function</div>
+                  <Select
+                    current={fn}
+                    options={Object.values(current)}
+                    optionFormatter={constantFormat(current)}
+                    callback={(f) => {
+                      setImageCVFn(f, i);
+                    }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </Flex>
       <BaseInput
         title="Step Name"
         placeholder="Step name"

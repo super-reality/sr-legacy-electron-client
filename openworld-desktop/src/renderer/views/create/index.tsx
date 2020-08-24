@@ -4,9 +4,10 @@ import "../../components/containers.scss";
 import { useSelector } from "react-redux";
 import Category from "../../../types/collections";
 import { AppState } from "../../redux/stores/renderer";
-import CreateLesson from "../../components/create-lesson";
 import CreateOption from "../../components/create-option";
 import createOptions from "./components";
+import CreateCollection from "../../components/create-collection";
+import CreateLesson from "../../components/create-lesson";
 
 export default function Create(): JSX.Element {
   const topSelectStates = useSelector(
@@ -23,6 +24,7 @@ export default function Create(): JSX.Element {
       ) : (
         <></>
       )}
+      {current == Category.Collection ? <CreateCollection /> : <></>}
       {current == Category.Lesson ? <CreateLesson /> : <></>}
     </>
   );
