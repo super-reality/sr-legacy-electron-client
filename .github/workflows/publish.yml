@@ -2,14 +2,13 @@ name: Publish
 
 on:
   push:
-    branches:
-      - "master"
+    tags:        
+      - v*
 
 jobs:
   publish:
     name: Publish for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    if: "contains(github.event.head_commit.message, 'ci: version bump')"
     strategy:
       matrix:
         include:
