@@ -1,29 +1,28 @@
 import React, { useCallback, useState, useEffect } from "react";
-import "../create-lesson/index.scss";
-import "../containers.scss";
-import "../popups.scss";
+import "../../containers.scss";
+import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import Flex from "../flex";
-import ButtonSimple from "../button-simple";
-import AutosuggestInput from "../autosuggest-input";
-import { AppState } from "../../redux/stores/renderer";
-import reduxAction from "../../redux/reduxAction";
-import { API_URL } from "../../constants";
-import { ApiError } from "../../api/types";
-import handleLessonCreate from "../../api/handleLessonCreate";
-import handleGenericError from "../../api/handleGenericError";
-import LessonCreate from "../../api/types/lesson/create";
-import handleLessonSearchParent from "../../api/handleLessonSearchParent";
+import Flex from "../../flex";
+import ButtonSimple from "../../button-simple";
+import AutosuggestInput from "../../autosuggest-input";
+import { AppState } from "../../../redux/stores/renderer";
+import reduxAction from "../../../redux/reduxAction";
+import { API_URL } from "../../../constants";
+import { ApiError } from "../../../api/types";
+import handleLessonCreate from "../../../api/handleLessonCreate";
+import handleGenericError from "../../../api/handleGenericError";
+import LessonCreate from "../../../api/types/lesson/create";
+import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
 import LessonSearchParent, {
   Parents,
-} from "../../api/types/lesson/search-parent";
-import useTagsBox from "../tag-box";
-import Link from "../../api/types/link/link";
-import { EntryOptions } from "../../api/types/lesson/lesson";
-import constantFormat from "../../../utils/constantFormat";
-import BaseSelect from "../base-select";
-import usePopup from "../../hooks/usePopup";
+} from "../../../api/types/lesson/search-parent";
+import useTagsBox from "../../tag-box";
+import Link from "../../../api/types/link/link";
+import { EntryOptions } from "../../../api/types/lesson/lesson";
+import constantFormat from "../../../../utils/constantFormat";
+import BaseSelect from "../../base-select";
+import usePopup from "../../../hooks/usePopup";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -67,7 +66,7 @@ export default function PublishAuthoring(): JSX.Element {
 
     if (lessondata.shortDescription.length == 0)
       reasons.push("Short description is required");
-    else if (lessondata.shortDescription.length < 5)
+    else if (lessondata.shortDescription.length < 4)
       reasons.push("Short description is too short");
 
     if (lessondata.icon == "") reasons.push("Icon is required");

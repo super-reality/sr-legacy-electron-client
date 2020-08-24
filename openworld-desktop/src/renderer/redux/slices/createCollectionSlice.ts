@@ -1,16 +1,17 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICollection } from "../../api/types/collection/collection";
+import { EntryOptions } from "../../api/types/lesson/lesson";
 
 const initialState: ICollection = {
   icon: "",
   name: "",
   shortDescription: "",
   description: "",
-  medias: "",
+  medias: [],
   tags: [],
   visibility: "",
-  entry: "",
+  entry: EntryOptions.Open,
 };
 
 const createCollectionSlice = createSlice({

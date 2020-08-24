@@ -3,8 +3,8 @@ export interface ICollection {
   name: string;
   shortDescription: string;
   description: string;
-  medias: string;
+  medias: string[];
   tags: string[];
   visibility: string;
-  entry: string;
+  entry: number;
 }
