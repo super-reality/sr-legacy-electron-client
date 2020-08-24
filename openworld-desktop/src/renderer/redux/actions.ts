@@ -1,6 +1,7 @@
 import * as AuthSlice from "./slices/authSlice";
 import * as renderSlice from "./slices/renderSlice";
 import * as createLessonSlice from "./slices/createLessonSlice";
+import * as createCollectionSlice from "./slices/createCollectionSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -15,6 +16,9 @@ export const actions = {
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
   CREATE_LESSON_RESET: createLessonSlice.reset,
+  CREATE_COLLECTION_DATA: createCollectionSlice.setData,
+  CREATE_COLLECTION_TAG: createCollectionSlice.addTag,
+  CREATE_COLLECTION_RESET: createCollectionSlice.reset,
 };
 
 export type ActionKeys = keyof typeof actions;
