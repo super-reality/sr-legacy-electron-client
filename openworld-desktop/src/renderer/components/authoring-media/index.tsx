@@ -1,5 +1,4 @@
 import React from "react";
-import "./index.scss";
 import "../containers.scss";
 import "../create-lesson/index.scss";
 import { useDispatch, useSelector } from "react-redux";
