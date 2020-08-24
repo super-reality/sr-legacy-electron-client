@@ -1,4 +1,24 @@
 import { ILessonData, IStep } from "./types/api";
+import { ICollection } from "./renderer/api/types/collection/collection";
+import { EntryOptions } from "./renderer/api/types/lesson/lesson";
+
+export const mockCollections: ICollection[] = [
+  {
+    icon:
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=244994b5-4ae7-4e46-b3f7-5912a7ac1883&api_key=CometServer1&access_token=1598336230_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_3daff014d358bc0c90a0e812d0ff5f0b250c356e",
+    name: "Unity",
+    shortDescription:
+      "World's Leading Real-Time 2D And 3D Development Platform.",
+    description: "World's Leading Real-Time 2D And 3D Development Platform.",
+    medias: [
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=298d8198-1370-4e6d-8c34-11dc5d5d0efd&api_key=CometServer1&access_token=1598336230_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_3daff014d358bc0c90a0e812d0ff5f0b250c356e",
+    ],
+    tags: [],
+    visibility: "",
+    entry: EntryOptions.Open,
+    subjects: 20,
+  },
+];
 
 export const mockStep: IStep = {
   id: "12",

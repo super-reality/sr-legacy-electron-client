@@ -133,3 +133,18 @@ export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
     </div>
   );
 }
+
+interface ImageProps {
+  src: string;
+  style?: CSSProperties;
+  area?: string;
+}
+
+export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
+  const { src, style, area, children } = props;
+  return (
+    <div className="item-image" style={{ ...style, gridArea: area }}>
+      <img src={src} />
+    </div>
+  );
+}
