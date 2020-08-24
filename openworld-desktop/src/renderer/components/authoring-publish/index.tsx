@@ -4,6 +4,7 @@ import "../containers.scss";
 import "../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { remote } from "electron";
 import Flex from "../flex";
 import ButtonSimple from "../button-simple";
 import AutosuggestInput from "../autosuggest-input";
@@ -58,12 +59,12 @@ export default function PublishAuthoring(): JSX.Element {
   const validateFields = useCallback(() => {
     const reasons: string[] = [];
     if (lessondata.name.length == 0) reasons.push("Title is required");
-    else if (lessondata.name.length < 5) reasons.push("Title is too short");
+    else if (lessondata.name.length < 3) reasons.push("Title is too short");
 
-    if (lessondata.description.length == 0)
-      reasons.push("Description is required");
-    else if (lessondata.description.length < 10)
-      reasons.push("Description is too short");
+    // if (lessondata.description.length == 0)
+    //   reasons.push("Description is required");
+    // else if (lessondata.description.length < 5)
+    //   reasons.push("Description is too short");
 
     if (lessondata.shortDescription.length == 0)
       reasons.push("Short description is required");
@@ -71,7 +72,8 @@ export default function PublishAuthoring(): JSX.Element {
       reasons.push("Short description is too short");
 
     if (lessondata.icon == "") reasons.push("Icon is required");
-    if (lessondata.medias.length == 0) reasons.push("Media is required");
+    if (lessondata.medias.length == 0)
+      reasons.push("At least One Media is required  for creation");
 
     if (lessondata.parent.length == 0)
       reasons.push("At least one parent subject is required");
@@ -85,7 +87,10 @@ export default function PublishAuthoring(): JSX.Element {
     const reasons = validateFields();
     if (reasons.length == 0) {
       axios
-        .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
+        .post<LessonCreate | ApiError>(
+          `${API_URL}lesson/create`,
+          JSON.stringify(lessondata)
+        )
         .then(handleLessonCreate)
         .catch(handleGenericError);
     } else {
