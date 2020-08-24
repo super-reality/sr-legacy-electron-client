@@ -37,6 +37,7 @@ afterAll(() => {
 });
 
 test("Tests", () => {
+  expect(electronApp.browserWindow).toBeDefined();
   return electronApp.browserWindow.capturePage().then((image) => {
     expect(image).toMatchImageSnapshot();
   });
