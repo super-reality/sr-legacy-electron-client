@@ -89,57 +89,55 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <div className="step-authoring-grid">
-      <>
-        <div>Add CV Target</div>
-        <Flex style={{ flexDirection: "column" }}>
-          {[...CVImageData, undefined].map((d, i) => {
-            const defaultFn =
-              i == 0
-                ? Object.values(InitalFnOptions)[0]
-                : Object.values(FnOptions)[0];
+      <div>Add CV Target</div>
+      <Flex style={{ flexDirection: "column" }}>
+        {[...CVImageData, undefined].map((d, i) => {
+          const defaultFn =
+            i == 0
+              ? Object.values(InitalFnOptions)[0]
+              : Object.values(FnOptions)[0];
 
-            const current = i == 0 ? InitalFnOptions : FnOptions;
-            const url = !d?.image || d?.image == "" ? undefined : d.image;
-            const fn = !d?.function ? defaultFn : d.function;
+          const current = i == 0 ? InitalFnOptions : FnOptions;
+          const url = !d?.image || d?.image == "" ? undefined : d.image;
+          const fn = !d?.function ? defaultFn : d.function;
 
-            return (
-              <React.Fragment key={d?.image || "cv-add"}>
-                <InsertMedia
-                  snip
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`insert-media-${datekey}-${i}`}
-                  imgUrl={url}
-                  style={{
-                    marginBottom: "8px",
-                    width: "100%",
-                  }}
-                  callback={(str) => {
-                    insertCVImage(str, i);
-                  }}
-                />
-                {d ? (
-                  <div
-                    className="container-with-desc"
-                    style={{ marginBottom: "16px" }}
-                  >
-                    <div>Image Function</div>
-                    <Select
-                      current={fn}
-                      options={Object.values(current)}
-                      optionFormatter={constantFormat(current)}
-                      callback={(f) => {
-                        setImageCVFn(f, i);
-                      }}
-                    />
-                  </div>
-                ) : (
-                  <></>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </Flex>
-      </>
+          return (
+            <React.Fragment key={d?.image || "cv-add"}>
+              <InsertMedia
+                snip
+                // eslint-disable-next-line react/no-array-index-key
+                key={`insert-media-${datekey}-${i}`}
+                imgUrl={url}
+                style={{
+                  marginBottom: "8px",
+                  width: "100%",
+                }}
+                callback={(str) => {
+                  insertCVImage(str, i);
+                }}
+              />
+              {d ? (
+                <div
+                  className="container-with-desc"
+                  style={{ marginBottom: "16px" }}
+                >
+                  <div>Image Function</div>
+                  <Select
+                    current={fn}
+                    options={Object.values(current)}
+                    optionFormatter={constantFormat(current)}
+                    callback={(f) => {
+                      setImageCVFn(f, i);
+                    }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </Flex>
       <BaseInput
         title="Step Name"
         placeholder="Step name"
