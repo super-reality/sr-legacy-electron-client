@@ -28,6 +28,28 @@ export function ItemInner(
   );
 }
 
+export function ContainerTop(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-top" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
+export function ContainerFlex(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-flex" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 interface IconProps {
   url: string;
   style?: CSSProperties;

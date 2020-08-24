@@ -1,7 +1,16 @@
 import React from "react";
 
 import "./index.scss";
-import { ItemInner, Icon, Points, Title, Text, Image } from "../item-inner";
+import {
+  ItemInner,
+  Icon,
+  Points,
+  Title,
+  Text,
+  Image,
+  ContainerTop,
+  ContainerFlex,
+} from "../item-inner";
 import { ICollection } from "../../api/types/collection/collection";
 
 interface CollectionProps {
@@ -13,13 +22,17 @@ export default function Collection(props: CollectionProps): JSX.Element {
 
   return (
     <ItemInner text>
-      <Icon url={data.icon} />
-      <Points points={1.5} />
-      <Title title={data.name} sub={`${data.subjects || 0} Subjects`} />
-      <Text>
-        {data.description}
+      <ContainerTop>
+        <Icon url={data.icon} />
+        <Points points={1.5} />
+        <Title title={data.name} sub={`${data.subjects || 0} Subjects`} />
+      </ContainerTop>
+      <ContainerFlex>
+        <Text>{data.description}</Text>
+      </ContainerFlex>
+      <ContainerFlex>
         <Image src={data.medias[0]} />
-      </Text>
+      </ContainerFlex>
     </ItemInner>
   );
 }

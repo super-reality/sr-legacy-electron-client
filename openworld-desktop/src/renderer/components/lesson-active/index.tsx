@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import "./index.scss";
 import "../popups.scss";
-import { ItemInner, Icon, Title, Social } from "../item-inner";
+import { ItemInner, Icon, Title, Social, ContainerTop } from "../item-inner";
 import { ILessonData } from "../../../types/api";
 import usePopupModal from "../../hooks/usePopupModal";
 
@@ -21,9 +21,11 @@ export default function LessonActive(props: LessonActiveProps) {
   return (
     <ItemInner>
       <PopupModal />
-      <Icon url={data.avatarUrl} />
-      <Title title={data.name} sub={data.creator} />
-      <Social area="score" checked checkButtonCallback={open} />
+      <ContainerTop>
+        <Icon url={data.avatarUrl} />
+        <Title title={data.name} sub={data.creator} />
+        <Social area="score" checked checkButtonCallback={open} />
+      </ContainerTop>
     </ItemInner>
   );
 }
