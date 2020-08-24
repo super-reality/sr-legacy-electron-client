@@ -1,0 +1,24 @@
+language: node_js
+
+services:
+  - docker
+
+node_js:
+  - '11'
+
+env:
+  global:
+  - ELECTRON_CACHE=$HOME/.cache/electron
+  - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+cache: npm
+
+filter_secrets: false
+
+jobs:
+  include:
+    - stage: Tests
+      os: Linux
+      env: YARN_GPG=no
+      script:
+        - cd openworld-desktop
+        - npm test:all
