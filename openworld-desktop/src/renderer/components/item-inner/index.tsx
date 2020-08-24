@@ -50,6 +50,17 @@ export function ContainerFlex(
   );
 }
 
+export function ContainerBottom(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-bottom" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 interface IconProps {
   url: string;
   style?: CSSProperties;

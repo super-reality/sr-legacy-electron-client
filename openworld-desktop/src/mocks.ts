@@ -18,6 +18,21 @@ export const mockCollections: ICollection[] = [
     entry: EntryOptions.Open,
     subjects: 20,
   },
+  {
+    icon:
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=6e582c9f-0950-4e7d-be95-fea0d3bb581d&api_key=CometServer1&access_token=1598353648_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_ac00490666e8779bb49d897b6a35ed903024ce61",
+    name: "Blender",
+    shortDescription:
+      "World's Leading Real-Time 2D And 3D Development Platform.",
+    description: "World's Leading Real-Time 2D And 3D Development Platform.",
+    medias: [
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=0c90fe7a-43e6-4c01-8a5f-6c2001e327f4&api_key=CometServer1&access_token=1598353648_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_ac00490666e8779bb49d897b6a35ed903024ce61",
+    ],
+    tags: [],
+    visibility: "",
+    entry: EntryOptions.Open,
+    subjects: 10,
+  },
 ];
 
 export const mockStep: IStep = {

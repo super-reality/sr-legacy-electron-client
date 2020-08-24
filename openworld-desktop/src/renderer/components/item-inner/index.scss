@@ -27,6 +27,14 @@
     display: grid;
   }
 
+  .container-bottom {
+    grid-template-columns: 32px auto 32px;
+    grid-template-rows: 32px;
+    grid-template-areas: "check fill share";
+    gap: 8px;
+    display: grid;
+  }
+
   .container-flex {
     display: flex;
   }
