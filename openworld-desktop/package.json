@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/jest-image-snapshot": "^3.1.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.19.2",
@@ -119,7 +120,9 @@
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
     "jest": "24.9.0",
+    "jest-image-snapshot": "^4.1.0",
     "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "spectron": "^11.1.0"
   }
 }
