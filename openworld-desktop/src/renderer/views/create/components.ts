@@ -38,6 +38,15 @@ createOptions[Category.Journal] = {
   description: "Track and share your progress.",
 };
 
+createOptions[Category.Collection] = {
+  title: "Collection",
+  category: Category.Collection,
+  created: 1,
+  image: "string",
+  cost: -10,
+  description: "Collections contain subjects.",
+};
+
 createOptions[Category.Lesson] = {
   title: "Lesson",
   category: Category.Lesson,

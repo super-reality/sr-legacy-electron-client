@@ -1,28 +1,30 @@
 import React, { useCallback, useState } from "react";
-import "../create-lesson/index.scss";
-import "../containers.scss";
+import "../../containers.scss";
 import { useDispatch, useSelector } from "react-redux";
-import Flex from "../flex";
-import InsertMedia from "../insert-media";
-import { InputChangeEv, AreaChangeEv } from "../../../types/utils";
-import reduxAction from "../../redux/reduxAction";
-import { AppState } from "../../redux/stores/renderer";
-import { DifficultyOptions } from "../../api/types/lesson/lesson";
-import constantFormat from "../../../utils/constantFormat";
-import BaseInput from "../base-input";
-import BaseSelect from "../base-select";
-import BaseTextArea from "../base-textarea";
+import Flex from "../../flex";
+import InsertMedia from "../../insert-media";
+import { InputChangeEv, AreaChangeEv } from "../../../../types/utils";
+import reduxAction from "../../../redux/reduxAction";
+import { AppState } from "../../../redux/stores/renderer";
+import { DifficultyOptions } from "../../../api/types/lesson/lesson";
+import constantFormat from "../../../../utils/constantFormat";
+import BaseInput from "../../base-input";
+import BaseSelect from "../../base-select";
+import BaseTextArea from "../../base-textarea";
 
 export default function InfoAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { name, icon, shortDescription, description } = useSelector(
-    (state: AppState) => state.createLesson
+    (state: AppState) => state.createCollection
   );
   const [difficulty, setDifficulty] = useState(DifficultyOptions.Intermediate);
 
   const setIcon = useCallback(
     (url: string) => {
-      reduxAction(dispatch, { type: "CREATE_LESSON_DATA", arg: { icon: url } });
+      reduxAction(dispatch, {
+        type: "CREATE_COLLECTION_DATA",
+        arg: { icon: url },
+      });
     },
     [dispatch]
   );
@@ -30,7 +32,7 @@ export default function InfoAuthoring(): JSX.Element {
   const handleNameChange = useCallback(
     (e: InputChangeEv): void =>
       reduxAction(dispatch, {
-        type: "CREATE_LESSON_DATA",
+        type: "CREATE_COLLECTION_DATA",
         arg: { name: e.currentTarget.value },
       }),
     [dispatch]
@@ -39,7 +41,7 @@ export default function InfoAuthoring(): JSX.Element {
   const handleShortDescChange = useCallback(
     (e: InputChangeEv): void =>
       reduxAction(dispatch, {
-        type: "CREATE_LESSON_DATA",
+        type: "CREATE_COLLECTION_DATA",
         arg: { shortDescription: e.currentTarget.value },
       }),
     [dispatch]
@@ -48,7 +50,7 @@ export default function InfoAuthoring(): JSX.Element {
   const handleDescChange = useCallback(
     (e: AreaChangeEv): void =>
       reduxAction(dispatch, {
-        type: "CREATE_LESSON_DATA",
+        type: "CREATE_COLLECTION_DATA",
         arg: { description: e.currentTarget.value },
       }),
     [dispatch]
