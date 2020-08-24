@@ -4,7 +4,7 @@ services:
   - docker
 
 node_js:
-  - '11'
+  - '12'
 
 env:
   global:
@@ -21,4 +21,5 @@ jobs:
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
+        - npm install
         - npm run test:all
