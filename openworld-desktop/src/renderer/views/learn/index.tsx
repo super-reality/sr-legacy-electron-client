@@ -7,7 +7,7 @@ import Collapsible from "../../components/collapsible";
 import LessonActive from "../../components/lesson-active";
 import { AppState } from "../../redux/stores/renderer";
 import Category from "../../../types/collections";
-import { mockLessonData } from "../../../__mocks__/mocks";
+import { mockLessonData } from "../../../mocks";
 
 export default function Learn(): JSX.Element {
   const topSelectStates = useSelector(
