@@ -5,36 +5,35 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
-import AutosuggestInput from "../../autosuggest-input";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
-import handleLessonCreate from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
-import LessonCreate from "../../../api/types/lesson/create";
-import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
-import LessonSearchParent, {
-  Parents,
-} from "../../../api/types/lesson/search-parent";
 import useTagsBox from "../../tag-box";
-import Link from "../../../api/types/link/link";
+import usePopup from "../../../hooks/usePopup";
+import handleSubjectSearchParent from "../../../api/handleSubjectSearchParent";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
-import usePopup from "../../../hooks/usePopup";
 import { getParentVal, getParentId, renderParent } from "../../links";
+import { Parents } from "../../../api/types/lesson/search-parent";
+import Link from "../../../api/types/link/link";
+import AutosuggestInput from "../../autosuggest-input";
+import SubjectCreate from "../../../api/types/subject/create";
+import handleSubjectCreate from "../../../api/handleSubjectCreate";
+import SubjectSearchParent from "../../../api/types/subject/search-parent";
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
-  const { entry } = useSelector((state: AppState) => state.createLesson);
-  const lessondata = useSelector((state: AppState) => state.createLesson);
+  const { entry } = useSelector((state: AppState) => state.createSubject);
+  const finalData = useSelector((state: AppState) => state.createSubject);
 
   const setEntry = useCallback(
     (_entry: number) => {
       reduxAction(dispatch, {
-        type: "CREATE_LESSON_DATA",
+        type: "CREATE_SUBJECT_DATA",
         arg: { entry: _entry },
       });
     },
@@ -45,50 +44,45 @@ export default function PublishAuthoring(): JSX.Element {
 
   const validateFields = useCallback(() => {
     const reasons: string[] = [];
-    if (lessondata.name.length == 0) reasons.push("Title is required");
-    else if (lessondata.name.length < 5) reasons.push("Title is too short");
+    if (finalData.name.length == 0) reasons.push("Title is required");
+    else if (finalData.name.length < 4) reasons.push("Title is too short");
 
-    if (lessondata.description.length == 0)
+    if (finalData.description.length == 0)
       reasons.push("Description is required");
-    else if (lessondata.description.length < 10)
+    else if (finalData.description.length < 10)
       reasons.push("Description is too short");
 
-    if (lessondata.shortDescription.length == 0)
+    if (finalData.shortDescription.length == 0)
       reasons.push("Short description is required");
-    else if (lessondata.shortDescription.length < 4)
+    else if (finalData.shortDescription.length < 5)
       reasons.push("Short description is too short");
 
-    if (lessondata.icon == "") reasons.push("Icon is required");
-    if (lessondata.medias.length == 0) reasons.push("Media is required");
-
-    if (lessondata.parent.length == 0)
-      reasons.push("At least one parent subject is required");
-    if (lessondata.steps.length == 0)
-      reasons.push("At least one step is required");
+    if (finalData.icon == "") reasons.push("Icon is required");
+    if (finalData.medias.length == 0) reasons.push("Media is required");
 
     return reasons;
-  }, [lessondata]);
+  }, [finalData]);
 
-  const lessonPublish = useCallback(() => {
+  const onPublish = useCallback(() => {
     const reasons = validateFields();
     if (reasons.length == 0) {
       axios
-        .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
-        .then(handleLessonCreate)
+        .post<SubjectCreate | ApiError>(`${API_URL}subject/create`, finalData)
+        .then(handleSubjectCreate)
         .catch(handleGenericError);
     } else {
       open();
     }
-  }, [open, lessondata]);
+  }, [open, finalData]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
       axios
-        .get<LessonSearchParent | ApiError>(
-          `${API_URL}lesson/search-parent/${encodeURIComponent(value)}`
+        .get<SubjectSearchParent | ApiError>(
+          `${API_URL}subject/search-parent/${encodeURIComponent(value)}`
         )
         .then((response) => {
-          const values = handleLessonSearchParent(response);
+          const values = handleSubjectSearchParent(response);
           if (values) setSuggestions(values);
         })
         .catch(handleGenericError);
@@ -102,7 +96,7 @@ export default function PublishAuthoring(): JSX.Element {
       return { _id: t.id, type: "subject" };
     });
     reduxAction(dispatch, {
-      type: "CREATE_LESSON_DATA",
+      type: "CREATE_SUBJECT_DATA",
       arg: { parent: tagsList },
     });
   }, [getParentTags]);
@@ -112,7 +106,7 @@ export default function PublishAuthoring(): JSX.Element {
   useEffect(() => {
     const tagsList: string[] = getTags().map((t) => t.name);
     reduxAction(dispatch, {
-      type: "CREATE_LESSON_DATA",
+      type: "CREATE_SUBJECT_DATA",
       arg: { tags: tagsList },
     });
   }, [getTags]);
@@ -141,7 +135,7 @@ export default function PublishAuthoring(): JSX.Element {
       />
       <Flex>
         <div className="container-with-desc">
-          <div>Parent Subjects</div>
+          <div>Parent Collections</div>
           <ParentTagsBox />
           <AutosuggestInput<Parents>
             style={{ marginTop: "8px" }}
@@ -168,7 +162,7 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={lessonPublish}
+          onClick={onPublish}
         >
           Publish
         </ButtonSimple>

@@ -7,6 +7,7 @@ import { AppState } from "../../redux/stores/renderer";
 import CreateOption from "../../components/create-option";
 import createOptions from "./components";
 import CreateCollection from "../../components/create-collection";
+import CreateSubject from "../../components/create-subject";
 import CreateLesson from "../../components/create-lesson";
 
 export default function Create(): JSX.Element {
@@ -25,6 +26,7 @@ export default function Create(): JSX.Element {
         <></>
       )}
       {current == Category.Collection ? <CreateCollection /> : <></>}
+      {current == Category.Subject ? <CreateSubject /> : <></>}
       {current == Category.Lesson ? <CreateLesson /> : <></>}
     </>
   );
