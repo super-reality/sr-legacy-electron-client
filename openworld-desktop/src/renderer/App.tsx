@@ -14,7 +14,6 @@ import Splash from "./views/splash";
 import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
-import testIpc from "../utils/testIpc";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -28,8 +27,6 @@ export default function App(): JSX.Element {
       reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
     }
   }, [scrollRef, dispatch]);
-
-  useEffect(() => testIpc, []);
 
   return isAuthenticated ? (
     <>

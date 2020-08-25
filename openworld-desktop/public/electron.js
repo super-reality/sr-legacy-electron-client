@@ -27,7 +27,7 @@ function createWindow() {
         slashes: true,
       })
   );
-  // mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools();
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
 
