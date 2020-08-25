@@ -7,7 +7,7 @@ jest.setTimeout(20000);
 expect.extend({ toMatchImageSnapshot });
 
 // Only to test locally
-process.env.ELECTRON_START_URL = "http://localhost:3000";
+// process.env.ELECTRON_START_URL = "http://localhost:3000";
 
 const electron = require("electron");
 
