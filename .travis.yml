@@ -32,3 +32,4 @@ jobs:
         - npm install
         - npm run react:build
         - npm run test:all
+        - npm run build
