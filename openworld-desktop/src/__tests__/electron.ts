@@ -11,8 +11,8 @@ expect.extend({ toMatchImageSnapshot });
 
 const electronApp = new Application({
   path: electronPath as string,
-  host: "localhost",
-  port: 3000,
+  // host: "localhost",
+  // port: 3000,
   args: [path.join(__dirname, "..", "..")],
 });
 

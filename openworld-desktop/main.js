@@ -1,1 +1,1 @@
-require("./public/electron");
+require("./build/electron");
