@@ -53,5 +53,5 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: openworld-desktop/dist/openworld-desktop-${{ steps.extract_version.outputs.version }}${{ matrix.artifact_name }}
-        asset_name: openworld-desktop-${{ steps.extract_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ env.NOW }}.${{ matrix.artifact_name }}
+        asset_name: openworld-desktop-${{ steps.extract_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ env.NOW }}${{ matrix.artifact_name }}
         tag: v${{ steps.extract_version.outputs.version }}
