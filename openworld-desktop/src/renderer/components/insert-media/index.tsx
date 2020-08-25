@@ -3,6 +3,7 @@ import { ReactComponent as Add } from "../../../assets/svg/add.svg";
 import "./index.scss";
 import useMediaSniper from "../../hooks/useMediaSniper";
 import useMediaInsert from "../../hooks/useMediaInsert";
+import isElectron from "../../../utils/isElectron";
 
 interface InsertMediaProps {
   callback: (url: string) => void;
@@ -16,9 +17,8 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
   const { callback, imgUrl, style, snip, keepSize } = props;
   const call = useCallback(callback, [callback]);
 
-  const openSnipTool = snip
-    ? useMediaSniper(imgUrl, call)
-    : useMediaInsert(call);
+  const openSnipTool =
+    snip && isElectron() ? useMediaSniper(imgUrl, call) : useMediaInsert(call);
 
   return (
     <div
