@@ -30,6 +30,6 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
-        - npm run react:build
+        - npm run react-build
         - npm run test:all
-        - npm run build
+
