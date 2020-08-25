@@ -3,6 +3,8 @@ import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { remote } from "electron";
+import * as crypto from "crypto";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
@@ -12,17 +14,18 @@ import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
 import handleLessonCreate from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
-import LessonCreate from "../../../api/types/lesson/create";
+import LessonCreate, { LessonResp } from "../../../api/types/lesson/create";
 import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
 import LessonSearchParent, {
   Parents,
 } from "../../../api/types/lesson/search-parent";
 import useTagsBox from "../../tag-box";
 import Link from "../../../api/types/link/link";
-import { EntryOptions } from "../../../api/types/lesson/lesson";
+import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
+import handleLessonCreation from "../../../api/handleLesson";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -41,6 +44,7 @@ export default function PublishAuthoring(): JSX.Element {
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
   const lessondata = useSelector((state: AppState) => state.createLesson);
+  const [creationState, setCreatoinState] = useState(true);
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -80,16 +84,36 @@ export default function PublishAuthoring(): JSX.Element {
     return reasons;
   }, [lessondata]);
 
+  const preprocessLessonDataBeforePost = (postData: ILesson): ILesson => {
+    const icon = crypto.createHash("md5").update(postData.icon).digest("hex");
+    const medias = postData.medias.map((item: string, idx: Number) => {
+      return crypto.createHash("md5").update(item).digest("hex");
+    });
+    return { ...postData, icon, medias };
+  };
+
   const lessonPublish = useCallback(() => {
     const reasons = validateFields();
+
     if (reasons.length == 0) {
+      // process file to upload to s3 storage.
+      const postLessonData = preprocessLessonDataBeforePost(lessondata);
+      console.log("postlessondata", postLessonData);
       axios
-        .post<LessonCreate | ApiError>(`${API_URL}lesson/create`, lessondata)
-        .then(handleLessonCreate)
-        .catch(handleGenericError);
-    } else {
-      open();
+        .post<ApiError | LessonResp>(`${API_URL}lesson/create`, postLessonData)
+        .then((res) => {
+          if (res.status == 200) {
+            handleLessonCreate(res.data);
+          }
+        })
+        .catch((err) => {
+          setCreatoinState(false);
+          open();
+          handleGenericError(err);
+        });
     }
+    setCreatoinState(false);
+    open();
   }, [open, lessondata]);
 
   const onSuggestChange = useCallback((value: string) => {
@@ -138,6 +162,11 @@ export default function PublishAuthoring(): JSX.Element {
               {r}
             </div>
           ))}
+          {creationState == true ? (
+            <div className="line">Creation of this lesson succeed</div>
+          ) : (
+            <div className="line">Creation of this lesson failed.</div>
+          )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok
           </ButtonSimple>

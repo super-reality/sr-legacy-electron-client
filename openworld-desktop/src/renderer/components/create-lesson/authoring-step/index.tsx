@@ -20,6 +20,7 @@ import constantFormat from "../../../../utils/constantFormat";
 import BaseInput from "../../base-input";
 import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
+import usePopup from "../../../hooks/usePopup";
 
 type TriggerKeys = keyof typeof TriggerOptions;
 type NextStepKeys = keyof typeof NextStepOptions;
@@ -64,7 +65,13 @@ export default function StepAuthoring(): JSX.Element {
     setDescription(e.currentTarget.value);
   }, []);
 
+  const [Popup, open, closePopup] = usePopup(false);
+
   const addStep = useCallback(() => {
+    if (CVImageData.length < 1 || stepname.length < 1) {
+      open();
+      return;
+    }
     const newStep: IStep = {
       image: CVImageData[0].image,
       imageFunction: CVImageData[0].function,
@@ -87,90 +94,103 @@ export default function StepAuthoring(): JSX.Element {
   const datekey = new Date().getTime();
 
   return (
-    <div className="step-authoring-grid">
-      <div>Add CV Target</div>
-      <Flex style={{ flexDirection: "column" }}>
-        {[...CVImageData, undefined].map((d, i) => {
-          const defaultFn =
-            i == 0
-              ? Object.values(InitalFnOptions)[0]
-              : Object.values(FnOptions)[0];
+    <>
+      <Popup width="400px" height="auto">
+        <div className="validation-popup">
+          <div className="title">Step Creation failed</div>
+          <div className="line">
+            Please insert at least one Image and step name
+          </div>
+          <ButtonSimple className="button" onClick={closePopup}>
+            Ok
+          </ButtonSimple>
+        </div>
+      </Popup>
+      <div className="step-authoring-grid">
+        <div>Add CV Target</div>
+        <Flex style={{ flexDirection: "column" }}>
+          {[...CVImageData, undefined].map((d, i) => {
+            const defaultFn =
+              i == 0
+                ? Object.values(InitalFnOptions)[0]
+                : Object.values(FnOptions)[0];
 
-          const current = i == 0 ? InitalFnOptions : FnOptions;
-          const url = !d?.image || d?.image == "" ? undefined : d.image;
-          const fn = !d?.function ? defaultFn : d.function;
+            const current = i == 0 ? InitalFnOptions : FnOptions;
+            const url = !d?.image || d?.image == "" ? undefined : d.image;
+            const fn = !d?.function ? defaultFn : d.function;
 
-          return (
-            <React.Fragment key={d?.image || "cv-add"}>
-              <InsertMedia
-                snip
-                // eslint-disable-next-line react/no-array-index-key
-                key={`insert-media-${datekey}-${i}`}
-                imgUrl={url}
-                style={{
-                  marginBottom: "8px",
-                  width: "100%",
-                }}
-                callback={(str) => {
-                  insertCVImage(str, i);
-                }}
-              />
-              {d ? (
-                <div
-                  className="container-with-desc"
-                  style={{ marginBottom: "16px" }}
-                >
-                  <div>Image Function</div>
-                  <Select
-                    current={fn}
-                    options={Object.values(current)}
-                    optionFormatter={constantFormat(current)}
-                    callback={(f) => {
-                      setImageCVFn(f, i);
-                    }}
-                  />
-                </div>
-              ) : (
-                <></>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </Flex>
-      <BaseInput
-        title="Step Name"
-        placeholder="Step name"
-        value={stepname}
-        onChange={handleStepnameChange}
-      />
-      <BaseSelect
-        title="Step trigger"
-        current={CVTrigger}
-        options={Object.keys(TriggerOptions)}
-        callback={setCVTrigger}
-      />
-      <BaseTextArea
-        title="Step Description"
-        placeholder=""
-        value={description}
-        onChange={handleDescriptionChange}
-      />
-      <BaseSelect
-        title="Next Step"
-        current={CVNextStep}
-        options={Object.keys(NextStepOptions)}
-        callback={setCVNextStep}
-      />
-      <Flex>
-        <ButtonSimple
-          margin="8px auto"
-          width="200px"
-          height="24px"
-          onClick={addStep}
-        >
-          Save and add new step
-        </ButtonSimple>
-      </Flex>
-    </div>
+            return (
+              <React.Fragment key={d?.image || "cv-add"}>
+                <InsertMedia
+                  snip
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`insert-media-${datekey}-${i}`}
+                  imgUrl={url}
+                  style={{
+                    marginBottom: "8px",
+                    width: "100%",
+                  }}
+                  callback={(str) => {
+                    insertCVImage(str, i);
+                  }}
+                />
+                {d ? (
+                  <div
+                    className="container-with-desc"
+                    style={{ marginBottom: "16px" }}
+                  >
+                    <div>Image Function</div>
+                    <Select
+                      current={fn}
+                      options={Object.values(current)}
+                      optionFormatter={constantFormat(current)}
+                      callback={(f) => {
+                        setImageCVFn(f, i);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </Flex>
+        <BaseInput
+          title="Step Name"
+          placeholder="Step name"
+          value={stepname}
+          onChange={handleStepnameChange}
+        />
+        <BaseSelect
+          title="Step trigger"
+          current={CVTrigger}
+          options={Object.keys(TriggerOptions)}
+          callback={setCVTrigger}
+        />
+        <BaseTextArea
+          title="Step Description"
+          placeholder=""
+          value={description}
+          onChange={handleDescriptionChange}
+        />
+        <BaseSelect
+          title="Next Step"
+          current={CVNextStep}
+          options={Object.keys(NextStepOptions)}
+          callback={setCVNextStep}
+        />
+        <Flex>
+          <ButtonSimple
+            margin="8px auto"
+            width="200px"
+            height="24px"
+            onClick={addStep}
+          >
+            Save and add new step
+          </ButtonSimple>
+        </Flex>
+      </div>
+    </>
   );
 }

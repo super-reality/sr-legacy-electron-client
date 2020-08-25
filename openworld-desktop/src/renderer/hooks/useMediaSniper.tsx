@@ -3,7 +3,6 @@ import path from "path";
 import url from "url";
 import { useCallback } from "react";
 import jsonRpcRemote from "../../utils/jsonRpcSend";
-import uploadFileToS3 from "../../utils/uploadImage";
 
 function createSniper(imgUrl: any): Promise<string> {
   const snipWindow = new remote.BrowserWindow({
@@ -71,7 +70,6 @@ function createSniper(imgUrl: any): Promise<string> {
             } catch (err) {
               reject(err);
             }
-            uploadFileToS3(ImagePathCopy);
             resolve(ImagePathCopy);
           })
           .catch((err) => {
