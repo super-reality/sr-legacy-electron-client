@@ -17,5 +17,12 @@ function tryUpload(file) {
 }
 
 fs.readdir(snapshotsDir, (err, files) => {
+  if (files.length > 0) {
+    console.log("--------------------------------------------------");
+    console.log("Uploading Visual regression test results to IMGUR:");
+    console.log("");
+  }
   files.forEach(tryUpload);
 });
+
+console.log("");
