@@ -1,4 +1,39 @@
 import { ILessonData, IStep } from "./types/api";
+import { ICollection } from "./renderer/api/types/collection/collection";
+import { EntryOptions } from "./renderer/api/types/lesson/lesson";
+
+export const mockCollections: ICollection[] = [
+  {
+    icon:
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=244994b5-4ae7-4e46-b3f7-5912a7ac1883&api_key=CometServer1&access_token=1598336230_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_3daff014d358bc0c90a0e812d0ff5f0b250c356e",
+    name: "Unity",
+    shortDescription:
+      "World's Leading Real-Time 2D And 3D Development Platform.",
+    description: "World's Leading Real-Time 2D And 3D Development Platform.",
+    medias: [
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=298d8198-1370-4e6d-8c34-11dc5d5d0efd&api_key=CometServer1&access_token=1598336230_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_3daff014d358bc0c90a0e812d0ff5f0b250c356e",
+    ],
+    tags: [],
+    visibility: "",
+    entry: EntryOptions.Open,
+    subjects: 20,
+  },
+  {
+    icon:
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=6e582c9f-0950-4e7d-be95-fea0d3bb581d&api_key=CometServer1&access_token=1598353648_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_ac00490666e8779bb49d897b6a35ed903024ce61",
+    name: "Blender",
+    shortDescription:
+      "World's Leading Real-Time 2D And 3D Development Platform.",
+    description: "World's Leading Real-Time 2D And 3D Development Platform.",
+    medias: [
+      "https://cdn-sharing.adobecc.com/id/urn:aaid:sc:US:b9bafe78-9b7b-4d12-9709-9c476b04e264;version=0?component_id=0c90fe7a-43e6-4c01-8a5f-6c2001e327f4&api_key=CometServer1&access_token=1598353648_urn%3Aaaid%3Asc%3AUS%3Ab9bafe78-9b7b-4d12-9709-9c476b04e264%3Bpublic_ac00490666e8779bb49d897b6a35ed903024ce61",
+    ],
+    tags: [],
+    visibility: "",
+    entry: EntryOptions.Open,
+    subjects: 10,
+  },
+];
 
 export const mockStep: IStep = {
   id: "12",

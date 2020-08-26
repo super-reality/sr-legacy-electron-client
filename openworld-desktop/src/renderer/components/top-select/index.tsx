@@ -45,7 +45,7 @@ export default function ReactSelect<K>({
   }`;
 
   return (
-    <div className={`select-container ${className}`} style={style}>
+    <div className={`top-select-container ${className}`} style={style}>
       <button
         type="button"
         key={`${currentOption}-key`}
