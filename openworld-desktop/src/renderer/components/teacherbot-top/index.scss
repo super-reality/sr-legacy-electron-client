@@ -1,0 +1,28 @@
+@import "../misc.scss";
+
+.teacher-bot-top {
+  cursor: pointer;
+  width: -webkit-fill-available;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 24px;
+  background-color: var(--color-green);
+  border-radius: 6px;
+  margin: auto;
+  display: flex;
+  @include disable-select;
+
+  .face {
+    width: 40px;
+    height: 40px;
+  }
+
+  .points {
+    color: var(--color-text-dark);
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+    font-size: 14px;
+  }
+}

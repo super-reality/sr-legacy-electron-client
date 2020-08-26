@@ -15,6 +15,7 @@ import { tabNames } from "../../redux/slices/renderSlice";
 import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import TeacherBotTop from "../teacherbot-top";
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -119,7 +120,7 @@ export default function TopSearch(): JSX.Element {
           height="24px"
           width="24px"
         />
-        <Flex style={{ width: "calc(100% - 64px)" }}>
+        <Flex>
           <div className="top-input-container">
             <input
               className="top-input"
@@ -131,12 +132,14 @@ export default function TopSearch(): JSX.Element {
             </div>
           </div>
         </Flex>
+        <TeacherBotTop />
         <ButtonRound
           onClick={() => {
             openProfile();
             playSound("./sounds/top-menu.wav");
           }}
           style={{
+            margin: "auto",
             backgroundColor:
               location.pathname == "/profile" ? "var(--color-background)" : "",
           }}
