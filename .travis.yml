@@ -39,5 +39,5 @@ jobs:
         - npm install
         - npm install http-server -g
         - npm run build:web
-        - npm run test:all
+        - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
 
