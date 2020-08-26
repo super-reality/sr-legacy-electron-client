@@ -37,6 +37,7 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
+        - npm install http-server -g
         - npm run build:web
         - npm run test:all
 
