@@ -6,15 +6,20 @@ services:
 node_js:
   - '12'
 
+dist: trusty
 sudo: required
 services:
   - xvfb
+
 addons:
   chrome: stable
   hostname: localhost
 
 before_script:
   - export DISPLAY=:99.0
+
+before_install:
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 env:
   global:
@@ -23,9 +28,6 @@ env:
 cache: npm
 
 filter_secrets: false
-
-before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 jobs:
   include:

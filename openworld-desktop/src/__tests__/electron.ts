@@ -35,9 +35,9 @@ beforeAll((done) => {
 describe("it renders", () => {
   test("it matches snapshots", async (done) => {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       ignoreHTTPSErrors: true,
-      args: [`--window-size=350,800`],
+      args: ["`--window-size=350,800", "--no-sandbox"],
     });
     const page = await browser.newPage();
 
