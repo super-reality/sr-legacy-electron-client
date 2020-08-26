@@ -1,36 +1,43 @@
 import React, { useCallback } from "react";
 import usePopup from "./usePopup";
 
+interface ModalProps {
+  newTitle?: string;
+}
+
 export default function usePopupModal(
-  title: string,
+  title?: string,
   callbackYes?: () => void,
   callbackNo?: () => void
-): [() => JSX.Element, () => void] {
+): [(props: ModalProps) => JSX.Element, () => void] {
   const [YesNoPopup, doOpen, close] = usePopup(false);
 
   const clickYes = useCallback(() => {
     close();
     if (callbackYes) callbackYes();
-  }, [close]);
+  }, [close, callbackYes]);
 
   const clickNo = useCallback(() => {
     close();
     if (callbackNo) callbackNo();
-  }, [close]);
+  }, [close, callbackNo]);
 
-  const Modal = () => (
-    <YesNoPopup width="300px" height="250px">
-      <div className="popup-title">{title}</div>
-      <div className="popup-modal">
-        <div className="modal-yes" onClick={clickYes}>
-          Yes
+  const Modal = (props: ModalProps) => {
+    const { newTitle } = props;
+    return (
+      <YesNoPopup width="300px" height="250px">
+        <div className="popup-title">{newTitle || title || ""}</div>
+        <div className="popup-modal">
+          <div className="modal-yes" onClick={clickYes}>
+            Yes
+          </div>
+          <div className="modal-no" onClick={clickNo}>
+            No
+          </div>
         </div>
-        <div className="modal-no" onClick={clickNo}>
-          No
-        </div>
-      </div>
-    </YesNoPopup>
-  );
+      </YesNoPopup>
+    );
+  };
 
   return [Modal, doOpen];
 }
