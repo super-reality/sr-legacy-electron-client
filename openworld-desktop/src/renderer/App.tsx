@@ -14,6 +14,7 @@ import Splash from "./views/splash";
 import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
+import Tests from "./views/tests";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -47,6 +48,7 @@ export default function App(): JSX.Element {
       {isPending ? <Loading /> : <></>}
       <Switch>
         <Route exact path="/" component={Splash} />
+        <Route exact path="/tests/:id" component={Tests} />
         <Route path="*" component={Auth} />
       </Switch>
     </>

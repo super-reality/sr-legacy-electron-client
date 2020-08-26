@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-env jest-puppeteer */
 import puppeteer from "puppeteer";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
@@ -63,6 +64,12 @@ describe("it renders", () => {
 
     const loginImage = await page.screenshot();
     expect(loginImage).toMatchImageSnapshot();
+
+    for (let i = 0; i < 5; i += 1) {
+      await page.goto(`http://localhost:3000/#/tests/${i}`);
+      const img = await page.screenshot();
+      expect(img).toMatchImageSnapshot();
+    }
 
     browser.close();
     done();
