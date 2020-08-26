@@ -3,12 +3,11 @@ import puppeteer from "puppeteer";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
 import net from "net";
 
-jest.setTimeout(20000);
+jest.setTimeout(60000);
 
 expect.extend({ toMatchImageSnapshot });
 
 const client = new net.Socket();
-
 let startedJest = false;
 
 const tryConnection = () => {
@@ -16,7 +15,7 @@ const tryConnection = () => {
     client.connect({ port: 3000 }, () => {
       client.end();
       if (!startedJest) {
-        console.log("starting Jest");
+        console.log("Connection ok!");
         startedJest = true;
         resolve();
       }
@@ -28,10 +27,9 @@ const tryConnection = () => {
   });
 };
 
-beforeAll(async (done) => {
-  await tryConnection();
-  console.log("Connection ok!");
-  return done;
+beforeAll((done) => {
+  tryConnection();
+  done();
 });
 
 describe("it renders", () => {
@@ -67,6 +65,6 @@ describe("it renders", () => {
     expect(loginImage).toMatchImageSnapshot();
 
     browser.close();
-    return done();
+    done();
   });
 });
