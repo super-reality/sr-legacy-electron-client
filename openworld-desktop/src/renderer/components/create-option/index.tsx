@@ -33,7 +33,7 @@ export default function CreateOption(props: StepProps): JSX.Element {
   return (
     <ItemInner text onClick={hover ? onClick : undefined}>
       <ContainerTop>
-        <Icon url={data.image} />
+        <Icon style={{ backgroundColor: "rgba(0,0,0,0)" }} url={data.image} />
         <Title title={data.title} sub={`${data.created} created`} />
         <Points points={data.cost} />
       </ContainerTop>
