@@ -35,6 +35,7 @@ jobs:
       os: Linux
       env: YARN_GPG=no
       script:
+        - echo fs.inotify.max_user_watches=288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
         - cd openworld-desktop
         - npm install
         - npm run react-build
