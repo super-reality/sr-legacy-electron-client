@@ -47,7 +47,7 @@
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
     "build:web": "craco build --config craco.web.config.js",
-    "test": "craco test --runInBand",
+    "test": "concurrently \"npm run start:web\" \"craco test --env=jsdom --runInBand\"",
     "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
     "test:all": "npm run pre:constants && npm run test:eslint && craco test --watchAll=false",
     "eject": "react-scripts eject",

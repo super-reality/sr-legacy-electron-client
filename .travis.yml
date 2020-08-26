@@ -11,6 +11,8 @@ services:
   - xvfb
 addons:
   chrome: stable
+  hostname: localhost
+
 before_script:
   - export DISPLAY=:99.0
 
@@ -23,7 +25,6 @@ cache: npm
 filter_secrets: false
 
 before_install:
-  - # start your web application and listen on `localhost`
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 jobs:
