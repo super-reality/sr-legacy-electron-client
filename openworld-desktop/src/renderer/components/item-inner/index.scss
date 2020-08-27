@@ -116,10 +116,12 @@
 
     &.green {
       background-color: var(--color-green);
+      box-shadow: 0px 0px 8px 0px var(--color-green);
     }
 
     &.red {
       background-color: var(--color-red);
+      box-shadow: 0px 0px 8px 0px var(--color-red);
     }
   }
 

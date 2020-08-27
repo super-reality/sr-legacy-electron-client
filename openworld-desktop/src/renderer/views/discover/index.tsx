@@ -1,17 +1,17 @@
 import React from "react";
 import "./index.scss";
 import "../../components/containers.scss";
-import { useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import Collapsible from "../../components/collapsible";
-import { AppState } from "../../redux/stores/renderer";
 import Category from "../../../types/collections";
 import DiscoverFinder from "../../components/discover-finder";
 
 export default function Discover(): JSX.Element {
-  const topSelectStates = useSelector(
-    (state: AppState) => state.render.topSelectStates
-  );
-  const current = topSelectStates.Discover as Category;
+  const catMatch = useRouteMatch<{
+    any: string;
+    category: string;
+  }>("/discover/:category");
+  const current = (catMatch?.params.category || Category.All) as Category;
 
   return (
     <>

@@ -61,6 +61,7 @@ export default function Collapsible(
     <>
       <div
         className={`collapsible-box${outer ? "-outer" : ""}`}
+        key={localId}
         onClick={toggleopen}
       >
         <div className={`icon-collapse ${open ? "open" : ""}`}>
