@@ -13,7 +13,7 @@ test("Can get a file extension", () => {
 });
 
 test("Can get a file sha1 hash", () => {
-  expect(getFileSha1(file)).toBe("da39a3ee5e6b4b0d3255bfef95601890afd80709");
+  expect(getFileSha1(file)).toBe("7b9d27774fa36de33529ff6b2487cef0bee6d75a");
 });
 
 /*
