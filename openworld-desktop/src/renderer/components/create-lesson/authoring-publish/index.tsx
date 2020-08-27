@@ -29,23 +29,35 @@ import getFileExt from "../../../../utils/getFileExt";
 import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
 
-const uploadArtifacts = (original: ILesson): Promise<string[]> => {
+const uploadArtifacts = (
+  original: ILesson
+): Promise<Record<string, string>> => {
   const fileNames = [];
   const iconPath = original.icon.split('"').join("");
   fileNames.push(iconPath);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
   original.steps.forEach((step) => fileNames.push(step.image));
-  return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
+  const ret: Record<string, string> = {};
+  return Promise.all(
+    fileNames.map((file) =>
+      uploadFileToS3(file).then((f) => {
+        ret[file] = f;
+      })
+    )
+  ).then(() => ret);
 };
 
-const preprocessDataBeforePost = (postData: ILesson): ILesson => {
+const preprocessDataBeforePost = (
+  postData: ILesson,
+  artifacts: Record<string, string>
+): ILesson => {
   const localData = { ...postData };
-  const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
+  const icon = artifacts[localData.icon];
   const medias = localData.medias.map((item: string) => {
-    return getFileSha1(item) + getFileExt(item);
+    return artifacts[item];
   });
   const steps = localData.steps.map((element) => {
-    const image = getFileSha1(element.image) + getFileExt(element.image);
+    const image = artifacts[element.image];
     return { ...element, image };
   });
   return { ...localData, icon, medias, steps };
@@ -98,14 +110,13 @@ export default function PublishAuthoring(): JSX.Element {
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
-    const postLessonData = preprocessDataBeforePost(lessondata);
     if (reasons.length == 0) {
       setLoading(true);
       uploadArtifacts(lessondata)
-        .then(() =>
+        .then((artifacts) =>
           axios.post<ApiError | LessonResp>(
             `${API_URL}lesson/create`,
-            postLessonData
+            preprocessDataBeforePost(lessondata, artifacts)
           )
         )
         .then(handleLessonCreate)

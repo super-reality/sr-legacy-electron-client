@@ -23,19 +23,31 @@ import getFileExt from "../../../../utils/getFileExt";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import setLoading from "../../../redux/utils/setLoading";
 
-const uploadArtifacts = (original: ICollection): Promise<string[]> => {
+const uploadArtifacts = (
+  original: ICollection
+): Promise<Record<string, string>> => {
   const fileNames = [];
   const iconPath = original.icon.split('"').join("");
   fileNames.push(iconPath);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-  return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
+  const ret: Record<string, string> = {};
+  return Promise.all(
+    fileNames.map((file) =>
+      uploadFileToS3(file).then((f) => {
+        ret[file] = f;
+      })
+    )
+  ).then(() => ret);
 };
 
-const preprocessDataBeforePost = (postData: ICollection): ICollection => {
+const preprocessDataBeforePost = (
+  postData: ICollection,
+  artifacts: Record<string, string>
+): ICollection => {
   const localData = { ...postData };
-  const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
+  const icon = artifacts[localData.icon];
   const medias = localData.medias.map((item: string) => {
-    return getFileSha1(item) + getFileExt(item);
+    return artifacts[item];
   });
   return { ...localData, icon, medias };
 };
@@ -83,12 +95,11 @@ export default function PublishAuthoring(): JSX.Element {
     const reasons = validateFields();
     setLoading(true);
     if (reasons.length == 0) {
-      const dataPost = preprocessDataBeforePost(finalData);
       uploadArtifacts(finalData)
-        .then(() =>
+        .then((artifacts) =>
           axios.post<CollectionCreate | ApiError>(
             `${API_URL}collection/create`,
-            dataPost
+            preprocessDataBeforePost(finalData, artifacts)
           )
         )
         .then(handleCollectionCreate)
