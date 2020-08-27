@@ -11,7 +11,7 @@ const matchConfig: any = {
   customDiffConfig: {
     ssim: "fast",
   },
-  failureThreshold: 0.01,
+  failureThreshold: 0.05,
   failureThresholdType: "percent",
 };
 
@@ -47,7 +47,11 @@ describe("it renders", () => {
     const browser = await puppeteer.launch({
       headless: true,
       ignoreHTTPSErrors: true,
-      args: ["`--window-size=350,800", "--no-sandbox"],
+      args: [
+        "`--window-size=350,800",
+        "--no-sandbox",
+        "--font-render-hinting=none",
+      ],
     });
     const page = await browser.newPage();
 
