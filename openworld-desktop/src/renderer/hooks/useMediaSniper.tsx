@@ -72,7 +72,7 @@ function createSniper(imgUrl: any): Promise<string> {
             } catch (err) {
               reject(err);
             }
-            resolve(ImagePathCopy);
+            resolve(ImagePathCopy.replace(/\\/g, "/").replace(/"/g, ""));
           })
           .catch((err) => {
             reject(err);

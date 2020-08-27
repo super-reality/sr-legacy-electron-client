@@ -13,7 +13,7 @@ export default function CreateCollection(): JSX.Element {
   return (
     <>
       <CreateOption data={createOptions[Category.Collection]} />
-      <Collapsible outer expanded title="Add Lesson Info">
+      <Collapsible outer expanded title="Add Collection Info">
         <div className="mid">
           <Collapsible expanded title="Info">
             <InfoAuthoring />
