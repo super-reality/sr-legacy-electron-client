@@ -6,7 +6,6 @@ import getFileExt from "./getFileExt";
 // Enter copied or downloaded access ID and secret key here
 const ID = "AKIAR5KZMOTEB45JUE45";
 const SECRET = "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";
-// The name of the bucket that you have created
 const BUCKET_NAME = "openverse-lms";
 const s3 = new AWS.S3({
   accessKeyId: ID,

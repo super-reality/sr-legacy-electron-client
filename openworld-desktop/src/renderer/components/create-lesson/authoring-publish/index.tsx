@@ -25,7 +25,6 @@ import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
 import uploadFileToS3 from "../../../../utils/uploadImage";
-import hashMD5 from "../../../../utils/hashMD5";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
 
@@ -104,9 +103,7 @@ export default function PublishAuthoring(): JSX.Element {
     return { ...localData, icon, medias, steps };
   };
 
-  const afterProcessLessonDataBeforePost = (
-    originlessondata: ILesson
-  ): void => {
+  const uploadArtifacts = (originlessondata: ILesson): void => {
     const iconPath = originlessondata.icon.split('"').join("");
     uploadFileToS3(iconPath);
     originlessondata.medias.forEach((mediaPath) => uploadFileToS3(mediaPath));
@@ -124,8 +121,8 @@ export default function PublishAuthoring(): JSX.Element {
         .then((res) => {
           if (res.status == 200) {
             gSetLoadingState(true);
-            handleLessonCreate(res.data).then((lessonId) => {
-              afterProcessLessonDataBeforePost(lessondata);
+            handleLessonCreate(res.data).then(() => {
+              uploadArtifacts(lessondata);
             });
           }
         })
