@@ -8,7 +8,7 @@ import * as crypto from "crypto";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
@@ -26,6 +26,7 @@ import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
 import handleLessonCreation from "../../../api/handleLesson";
+import uploadFileToS3 from "../../../../utils/uploadImage";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -85,25 +86,60 @@ export default function PublishAuthoring(): JSX.Element {
   }, [lessondata]);
 
   const preprocessLessonDataBeforePost = (postData: ILesson): ILesson => {
-    const icon = crypto.createHash("md5").update(postData.icon).digest("hex");
-    const medias = postData.medias.map((item: string, idx: Number) => {
+    const localData = { ...postData };
+    const icon = crypto.createHash("md5").update(localData.icon).digest("hex");
+    const medias = localData.medias.map((item: string, idx: Number) => {
       return crypto.createHash("md5").update(item).digest("hex");
     });
-    return { ...postData, icon, medias };
+    const steps = localData.steps.map((element, idx) => {
+      const image = crypto
+        .createHash("md5")
+        .update(element.image)
+        .digest("hex");
+      return { ...element, image };
+    });
+    return { ...localData, icon, medias, steps };
+  };
+
+  const afterProcessLessonDataBeforePost = (
+    lessonId: string,
+    originlessondata: ILesson,
+    postLessonData: ILesson
+  ): void => {
+    uploadFileToS3(
+      originlessondata.icon,
+      `${postLessonData.icon + lessonId}.png`
+    );
+    for (let i = 0; i < originlessondata.medias.length; i += 1) {
+      uploadFileToS3(
+        originlessondata.medias[i],
+        `${postLessonData.medias[i] + lessonId}.png`
+      );
+    }
+    for (let i = 0; i < originlessondata.steps.length; i += 1) {
+      uploadFileToS3(
+        originlessondata.steps[i].image,
+        `${postLessonData.steps[i].image + lessonId}png`
+      );
+    }
+    reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
   };
 
   const lessonPublish = useCallback(() => {
     const reasons = validateFields();
-
+    const postLessonData = preprocessLessonDataBeforePost(lessondata);
     if (reasons.length == 0) {
-      // process file to upload to s3 storage.
-      const postLessonData = preprocessLessonDataBeforePost(lessondata);
-      console.log("postlessondata", postLessonData);
       axios
         .post<ApiError | LessonResp>(`${API_URL}lesson/create`, postLessonData)
         .then((res) => {
           if (res.status == 200) {
-            handleLessonCreate(res.data);
+            handleLessonCreate(res.data).then((lessonId) => {
+              afterProcessLessonDataBeforePost(
+                lessonId,
+                lessondata,
+                postLessonData
+              );
+            });
           }
         })
         .catch((err) => {

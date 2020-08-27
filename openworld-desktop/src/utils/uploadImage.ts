@@ -10,14 +10,17 @@ const s3 = new AWS.S3({
   accessKeyId: ID,
   secretAccessKey: SECRET,
 });
-export default function uploadFileToS3(fileName: string): void {
+export default function uploadFileToS3(
+  localFileName: string,
+  remotefileName: string
+): void {
   // Read content from the file
-  const fileContent = fs.readFileSync(fileName);
+  const fileContent = fs.readFileSync(localFileName);
 
   // Setting up S3 upload parameters
   const params = {
     Bucket: BUCKET_NAME,
-    Key: "cat.jpg", // File name you want to save as in S3
+    Key: remotefileName, // File name you want to save as in S3
     Body: fileContent,
   };
 
