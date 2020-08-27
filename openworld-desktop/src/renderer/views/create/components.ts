@@ -1,4 +1,10 @@
 import Category from "../../../types/collections";
+import CatCollection from "../../../assets/images/cat-collection.png";
+import CatLesson from "../../../assets/images/cat-lesson.png";
+import CatOffer from "../../../assets/images/cat-offer.png";
+import CatOrganization from "../../../assets/images/cat-organization.png";
+import CatProject from "../../../assets/images/cat-project.png";
+import CatSubject from "../../../assets/images/cat-subject.png";
 
 export interface Option {
   title: string;
@@ -42,7 +48,7 @@ createOptions[Category.Collection] = {
   title: "Collection",
   category: Category.Collection,
   created: 1,
-  image: "string",
+  image: CatCollection,
   cost: -10,
   description: "Collections contain subjects.",
 };
@@ -51,7 +57,7 @@ createOptions[Category.Lesson] = {
   title: "Lesson",
   category: Category.Lesson,
   created: 7,
-  image: "string",
+  image: CatLesson,
   cost: 15,
   description: "Teach the world what you know and make it better.",
 };
@@ -60,7 +66,7 @@ createOptions[Category.Offer] = {
   title: "Offer",
   category: Category.Offer,
   created: 35,
-  image: "string",
+  image: CatOffer,
   cost: 1,
   description: "Teacher Bot is a give and take economy.",
 };

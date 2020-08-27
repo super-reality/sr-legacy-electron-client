@@ -28,6 +28,39 @@ export function ItemInner(
   );
 }
 
+export function ContainerTop(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-top" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
+export function ContainerFlex(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-flex" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
+export function ContainerBottom(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-bottom" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 interface IconProps {
   url: string;
   style?: CSSProperties;
@@ -130,6 +163,21 @@ export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
       ) : (
         <></>
       )}
+    </div>
+  );
+}
+
+interface ImageProps {
+  src: string;
+  style?: CSSProperties;
+  area?: string;
+}
+
+export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
+  const { src, style, area, children } = props;
+  return (
+    <div className="item-image" style={{ ...style, gridArea: area }}>
+      <img src={src} />
     </div>
   );
 }

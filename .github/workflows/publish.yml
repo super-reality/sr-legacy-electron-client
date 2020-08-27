@@ -1,9 +1,12 @@
 name: Publish
 
-on:
-  push:
-    tags:        
-      - "*"
+on: [push]
+#  push:
+#    branches:
+#      - "master"
+#      - "develop"
+#      - "manwe"
+#      - "acer"
 
 jobs:
   publish:
@@ -38,10 +41,17 @@ jobs:
       working-directory: openworld-desktop
       run: npm run build
 
+    - name: Set current date as env variable
+      run: echo "::set-env name=NOW::$(date +'%Y-%m-%d-T%H:%M:%S')"
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//_/g')"
+
     - name: Upload binaries
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: openworld-desktop/dist/openworld-desktop-${{ steps.extract_version.outputs.version }}${{ matrix.artifact_name }}
-        asset_name: openworld-desktop-${{ steps.extract_version.outputs.version }}${{ matrix.artifact_name }}
+        asset_name: openworld-desktop-${{ steps.extract_version.outputs.version }}-${{ env.BRANCH_NAME }}-${{ env.NOW }}${{ matrix.artifact_name }}
         tag: v${{ steps.extract_version.outputs.version }}

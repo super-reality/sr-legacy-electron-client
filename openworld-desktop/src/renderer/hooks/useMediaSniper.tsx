@@ -1,10 +1,11 @@
-import { remote } from "electron";
+/* eslint-disable global-require */
 import path from "path";
 import url from "url";
 import { useCallback } from "react";
 import jsonRpcRemote from "../../utils/jsonRpcSend";
 
 function createSniper(imgUrl: any): Promise<string> {
+  const { remote } = require("electron");
   const snipWindow = new remote.BrowserWindow({
     width: 200,
     height: 200,
@@ -18,12 +19,13 @@ function createSniper(imgUrl: any): Promise<string> {
       nodeIntegration: true,
     },
   });
+  const proc: any = process;
 
   // change the pathname to get the correct path in build
   snipWindow.loadURL(
     url.format({
       pathname: remote.app.isPackaged
-        ? path.join(process.resourcesPath, "app.asar", "build", "dialog.html")
+        ? path.join(proc.resourcesPath, "app.asar", "build", "dialog.html")
         : path.join("..", "public", "dialog.html"),
       protocol: "file:",
       slashes: true,

@@ -7,4 +7,5 @@ export interface ICollection {
   tags: string[];
   visibility: string;
   entry: number;
+  subjects?: number;
 }

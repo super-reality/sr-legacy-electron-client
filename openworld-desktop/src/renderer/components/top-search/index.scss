@@ -11,8 +11,9 @@
   @include soft-shadow;
 
   .top {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 24px auto 70px 24px;
+    gap: 8px;
   }
 
   .bottom {
