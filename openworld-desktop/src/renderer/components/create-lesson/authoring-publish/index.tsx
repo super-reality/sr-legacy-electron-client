@@ -3,8 +3,8 @@ import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { remote } from "electron";
 import * as crypto from "crypto";
+import { bool } from "aws-sdk/clients/signer";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
@@ -14,7 +14,7 @@ import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
 import handleLessonCreate from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
-import LessonCreate, { LessonResp } from "../../../api/types/lesson/create";
+import { LessonResp } from "../../../api/types/lesson/create";
 import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
 import LessonSearchParent, {
   Parents,
@@ -25,7 +25,6 @@ import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
-import handleLessonCreation from "../../../api/handleLesson";
 import uploadFileToS3 from "../../../../utils/uploadImage";
 
 const getVal = (p: Parents) => {
@@ -54,6 +53,11 @@ export default function PublishAuthoring(): JSX.Element {
         arg: { entry: _entry },
       });
     },
+    [dispatch]
+  );
+  const gSetLoadingState = useCallback(
+    (_entry: bool) =>
+      reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: _entry }),
     [dispatch]
   );
 
@@ -107,7 +111,7 @@ export default function PublishAuthoring(): JSX.Element {
     postLessonData: ILesson
   ): void => {
     uploadFileToS3(
-      originlessondata.icon,
+      originlessondata.icon.split('"').join(""),
       `${postLessonData.icon + lessonId}.png`
     );
     for (let i = 0; i < originlessondata.medias.length; i += 1) {
@@ -123,6 +127,7 @@ export default function PublishAuthoring(): JSX.Element {
       );
     }
     reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
+    gSetLoadingState(false);
   };
 
   const lessonPublish = useCallback(() => {
@@ -133,6 +138,7 @@ export default function PublishAuthoring(): JSX.Element {
         .post<ApiError | LessonResp>(`${API_URL}lesson/create`, postLessonData)
         .then((res) => {
           if (res.status == 200) {
+            gSetLoadingState(true);
             handleLessonCreate(res.data).then((lessonId) => {
               afterProcessLessonDataBeforePost(
                 lessonId,

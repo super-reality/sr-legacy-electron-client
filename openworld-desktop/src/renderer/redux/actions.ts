@@ -2,6 +2,7 @@ import * as AuthSlice from "./slices/authSlice";
 import * as renderSlice from "./slices/renderSlice";
 import * as createLessonSlice from "./slices/createLessonSlice";
 import * as createCollectionSlice from "./slices/createCollectionSlice";
+import * as commonPropSlice from "./slices/commonProps";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -19,6 +20,7 @@ export const actions = {
   CREATE_COLLECTION_DATA: createCollectionSlice.setData,
   CREATE_COLLECTION_TAG: createCollectionSlice.addTag,
   CREATE_COLLECTION_RESET: createCollectionSlice.reset,
+  SET_LOADING_STATE: commonPropSlice.setIsLoading,
 };
 
 export type ActionKeys = keyof typeof actions;

@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
+import Loader from "react-loader-spinner";
 import Test from "./views/test";
 import Auth from "./views/auth";
 import Discover from "./views/discover";
@@ -14,9 +15,13 @@ import Splash from "./views/splash";
 import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  const isLoading = useSelector(
+    (state: AppState) => state.commonProps.isLoading
+  );
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
@@ -31,16 +36,20 @@ export default function App(): JSX.Element {
   return isAuthenticated ? (
     <>
       <TopSearch />
-      <div onScroll={handleScroll} ref={scrollRef} className="content">
-        <Switch>
-          <Route exact path="/test" component={Test} />
-          <Route exact path="/discover" component={Discover} />
-          <Route exact path="/learn" component={Learn} />
-          <Route exact path="/teach" component={Teach} />
-          <Route exact path="/create" component={Create} />
-          <Route exact path="/profile" component={Profile} />
-        </Switch>
-      </div>
+      {isLoading ? (
+        <Loader type="Circles" color="#00BFFF" height={80} width={80} />
+      ) : (
+        <div onScroll={handleScroll} ref={scrollRef} className="content">
+          <Switch>
+            <Route exact path="/test" component={Test} />
+            <Route exact path="/discover" component={Discover} />
+            <Route exact path="/learn" component={Learn} />
+            <Route exact path="/teach" component={Teach} />
+            <Route exact path="/create" component={Create} />
+            <Route exact path="/profile" component={Profile} />
+          </Switch>
+        </div>
+      )}
     </>
   ) : (
     <>
