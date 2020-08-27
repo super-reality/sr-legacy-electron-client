@@ -15,23 +15,33 @@ const s3 = new AWS.S3({
 export default function uploadFileToS3(
   localFileName: string,
   remotefileName?: string
-): void {
-  // Read content from the file
-  const fileContent = fs.readFileSync(localFileName);
-
-  // Setting up S3 upload parameters
-  const params = {
-    Bucket: BUCKET_NAME,
-    Key:
-      remotefileName || getFileSha1(localFileName) + getFileExt(localFileName), // File name you want to save as in S3
-    Body: fileContent,
-  };
-
-  // Uploading files to the bucket
-  s3.upload(params, (err: any, data: any) => {
-    if (err) {
-      throw err;
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // Read content from the file
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(localFileName);
+    } catch (e) {
+      reject(e);
     }
-    console.log(`File uploaded successfully. ${data.Location}`);
+
+    // Setting up S3 upload parameters
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key:
+        remotefileName ||
+        getFileSha1(localFileName) + getFileExt(localFileName), // File name you want to save as in S3
+      Body: fileContent,
+    };
+
+    // Uploading files to the bucket
+    s3.upload(params, (err: any, data: any) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(`File uploaded successfully. ${data.Location}`);
+        resolve(data.Location);
+      }
+    });
   });
 }

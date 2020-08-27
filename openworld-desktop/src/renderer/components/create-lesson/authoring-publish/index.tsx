@@ -56,11 +56,6 @@ export default function PublishAuthoring(): JSX.Element {
     },
     [dispatch]
   );
-  const gSetLoadingState = useCallback(
-    (_entry: bool) =>
-      reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: _entry }),
-    [dispatch]
-  );
 
   const [Popup, open, closePopup] = usePopup(false);
 
@@ -103,38 +98,39 @@ export default function PublishAuthoring(): JSX.Element {
     return { ...localData, icon, medias, steps };
   };
 
-  const uploadArtifacts = (originlessondata: ILesson): void => {
+  const uploadArtifacts = (originlessondata: ILesson): Promise<string[]> => {
+    const fileNames = [];
     const iconPath = originlessondata.icon.split('"').join("");
-    uploadFileToS3(iconPath);
-    originlessondata.medias.forEach((mediaPath) => uploadFileToS3(mediaPath));
-    originlessondata.steps.forEach((step) => uploadFileToS3(step.image));
-    reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
-    gSetLoadingState(false);
+    fileNames.push(iconPath);
+    originlessondata.medias.forEach((mediaPath) => fileNames.push(mediaPath));
+    originlessondata.steps.forEach((step) => fileNames.push(step.image));
+
+    return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
   };
 
   const lessonPublish = useCallback(() => {
     const reasons = validateFields();
     const postLessonData = preprocessLessonDataBeforePost(lessondata);
     if (reasons.length == 0) {
-      axios
-        .post<ApiError | LessonResp>(`${API_URL}lesson/create`, postLessonData)
-        .then((res) => {
-          if (res.status == 200) {
-            gSetLoadingState(true);
-            handleLessonCreate(res.data).then(() => {
-              uploadArtifacts(lessondata);
-            });
-          }
-        })
+      reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: true });
+      uploadArtifacts(lessondata)
+        .then(() =>
+          axios.post<ApiError | LessonResp>(
+            `${API_URL}lesson/create`,
+            postLessonData
+          )
+        )
+        .then(handleLessonCreate)
         .catch((err) => {
           setCreatoinState(false);
           open();
           handleGenericError(err);
         });
+    } else {
+      setCreatoinState(false);
+      open();
     }
-    setCreatoinState(false);
-    open();
-  }, [open, lessondata]);
+  }, [dispatch, open, lessondata]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
