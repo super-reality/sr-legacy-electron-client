@@ -11,7 +11,7 @@ const initialState: ISubject = {
   description: "",
   medias: [],
   tags: [],
-  visibility: "",
+  visibility: [],
   entry: EntryOptions.Open,
 };
 
