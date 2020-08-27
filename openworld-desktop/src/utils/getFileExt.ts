@@ -1,3 +1,5 @@
 export default function getFileExt(path: string): string {
-  return `.${path.split(".").pop() || ""}`;
+  const pop = path.split(".").pop();
+  if (pop == path) return "";
+  return `.${pop || ""}`;
 }

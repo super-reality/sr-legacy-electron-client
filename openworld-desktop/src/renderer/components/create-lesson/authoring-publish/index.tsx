@@ -24,7 +24,7 @@ import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
-import uploadFileToS3 from "../../../../utils/uploadImage";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
 
