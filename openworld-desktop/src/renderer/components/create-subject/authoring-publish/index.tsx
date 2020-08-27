@@ -135,7 +135,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   useEffect(() => {
     const tagsList: Link[] = getParentTags().map((t) => {
-      return { _id: t.id, type: "subject" };
+      return { _id: t.id, type: "collection" };
     });
     reduxAction(dispatch, {
       type: "CREATE_SUBJECT_DATA",

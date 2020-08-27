@@ -7,7 +7,6 @@ import SubjectCreate from "./types/subject/create";
 export default function handleSubjectCreate(
   res: AxiosResponse<SubjectCreate | ApiError>
 ) {
-  reduxAction(store.dispatch, { type: "SET_LOADING_STATE", arg: false });
   return new Promise((resolve, reject) => {
     if (res.status == 200) {
       if (res.data.err_code == 0) {
