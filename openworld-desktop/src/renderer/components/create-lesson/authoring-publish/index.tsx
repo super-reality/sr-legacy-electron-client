@@ -27,18 +27,7 @@ import usePopup from "../../../hooks/usePopup";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
-
-const getVal = (p: Parents) => {
-  return p.type == "lesson"
-    ? `${p.subjectName}/${p.lessonName}`
-    : `${p.collectionName}/${p.subjectName}`;
-};
-
-const getId = (p: Parents) => {
-  return p.type == "lesson" ? p.lessonId : p.subjectId;
-};
-
-const renderVal = (p: Parents) => <div>{getVal(p)}</div>;
+import { getParentVal, getParentId, renderParent } from "../../links";
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -202,12 +191,12 @@ export default function PublishAuthoring(): JSX.Element {
           <AutosuggestInput<Parents>
             style={{ marginTop: "8px" }}
             forceSuggestions={suggestions}
-            getValue={getVal}
-            renderSuggestion={renderVal}
+            getValue={getParentVal}
+            renderSuggestion={renderParent}
             id="parent-subject"
             onChangeCallback={onSuggestChange}
             submitCallback={(p) =>
-              addParentTag({ name: getVal(p), id: getId(p) })
+              addParentTag({ name: getParentVal(p), id: getParentId(p) })
             }
             selectClear
           />

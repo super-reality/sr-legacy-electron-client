@@ -53,6 +53,15 @@ createOptions[Category.Collection] = {
   description: "Collections contain subjects.",
 };
 
+createOptions[Category.Subject] = {
+  title: "Subject",
+  category: Category.Subject,
+  created: 1,
+  image: "string",
+  cost: -5,
+  description: "Subjects contain lessons.",
+};
+
 createOptions[Category.Lesson] = {
   title: "Lesson",
   category: Category.Lesson,
