@@ -6,3 +6,11 @@ export default interface LessonCreate {
   err_code: CodeSuccess;
   data: ILesson;
 }
+
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+export interface LessonResp {
+  err_code: CodeSuccess;
+  lesson: { _id: string; medias: string[]; icon: string };
+  status: Number;
+}
