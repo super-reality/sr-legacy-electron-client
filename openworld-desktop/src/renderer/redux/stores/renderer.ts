@@ -5,6 +5,7 @@ import renderSlice from "../slices/renderSlice";
 import createLessonSlice from "../slices/createLessonSlice";
 import createCollectionSlice from "../slices/createCollectionSlice";
 import createSubjectSlice from "../slices/createSubjectSlice";
+import commonPropSlice from "../slices/commonProps";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   createLesson: createLessonSlice.reducer,
   createCollection: createCollectionSlice.reducer,
   createSubject: createSubjectSlice.reducer,
+  commonProps: commonPropSlice.reducer,
 });
 
 const store = configureStore({
