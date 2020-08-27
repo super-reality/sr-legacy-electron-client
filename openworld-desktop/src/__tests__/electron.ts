@@ -6,6 +6,15 @@ import net from "net";
 
 jest.setTimeout(60000);
 
+const matchConfig: any = {
+  comparisonMethod: "ssim",
+  customDiffConfig: {
+    ssim: "fast",
+  },
+  failureThreshold: 0.01,
+  failureThresholdType: "percent",
+};
+
 expect.extend({ toMatchImageSnapshot });
 
 const client = new net.Socket();
@@ -58,17 +67,17 @@ describe("it renders", () => {
     expect(btnText).toEqual("Login");
 
     const splashImage = await page.screenshot();
-    expect(splashImage).toMatchImageSnapshot();
+    expect(splashImage).toMatchImageSnapshot(matchConfig);
 
     if (btn) await btn.click();
 
     const loginImage = await page.screenshot();
-    expect(loginImage).toMatchImageSnapshot();
+    expect(loginImage).toMatchImageSnapshot(matchConfig);
 
     for (let i = 0; i < 5; i += 1) {
       await page.goto(`http://localhost:3000/#/tests/${i}`);
       const img = await page.screenshot();
-      expect(img).toMatchImageSnapshot();
+      expect(img).toMatchImageSnapshot(matchConfig);
     }
 
     browser.close();
