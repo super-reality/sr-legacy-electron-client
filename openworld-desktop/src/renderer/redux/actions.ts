@@ -10,7 +10,6 @@ export const actions = {
   AUTH_FAILED: AuthSlice.setAuthFailed,
   AUTH_INVALIDATED: AuthSlice.setAuthInvalidated,
   SET_YSCROLL: renderSlice.setYScroll,
-  SET_TOP_SELECT: renderSlice.setTopSelect,
   SET_TOP_INPUT: renderSlice.setTopInput,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,

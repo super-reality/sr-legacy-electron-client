@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import "./index.scss";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -11,7 +12,6 @@ import {
   ContainerTop,
   ContainerFlex,
 } from "../item-inner";
-import reduxAction from "../../redux/reduxAction";
 import { Option } from "../../views/create/components";
 
 interface StepProps {
@@ -22,13 +22,11 @@ interface StepProps {
 export default function CreateOption(props: StepProps): JSX.Element {
   const { data, hover } = props;
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const onClick = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "SET_TOP_SELECT",
-      arg: { selected: data.category, path: "Create" },
-    });
-  }, [dispatch]);
+  const onClick = useCallback(() => history.push(`/create/${data.category}`), [
+    dispatch,
+  ]);
 
   return (
     <ItemInner text onClick={hover ? onClick : undefined}>
