@@ -1,3 +1,5 @@
+import Link from "../link/link";
+
 export interface ICollection {
   icon: string;
   name: string;
@@ -5,7 +7,6 @@ export interface ICollection {
   description: string;
   medias: string[];
   tags: string[];
-  visibility: string;
+  visibility: Link[];
   entry: number;
-  subjects?: number;
 }

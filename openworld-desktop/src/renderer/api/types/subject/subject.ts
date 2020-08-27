@@ -8,6 +8,6 @@ export interface ISubject {
   description: string;
   medias: string[];
   tags: string[];
-  visibility: string;
+  visibility: Link[];
   entry: number;
 }
