@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import * as crypto from "crypto";
 import { bool } from "aws-sdk/clients/signer";
+import { useAlert } from "react-alert";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
@@ -12,7 +13,9 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
-import handleLessonCreate from "../../../api/handleLessonCreate";
+import handleLessonCreate, {
+  createLesson,
+} from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
 import { LessonResp } from "../../../api/types/lesson/create";
 import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
@@ -123,39 +126,33 @@ export default function PublishAuthoring(): JSX.Element {
     for (let i = 0; i < originlessondata.steps.length; i += 1) {
       uploadFileToS3(
         originlessondata.steps[i].image,
-        `${postLessonData.steps[i].image + lessonId}png`
+        `${postLessonData.steps[i].image + lessonId}.png`
       );
     }
     reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
-    gSetLoadingState(false);
   };
 
   const lessonPublish = useCallback(() => {
     const reasons = validateFields();
     const postLessonData = preprocessLessonDataBeforePost(lessondata);
     if (reasons.length == 0) {
-      axios
-        .post<ApiError | LessonResp>(`${API_URL}lesson/create`, postLessonData)
+      createLesson(postLessonData)
         .then((res) => {
-          if (res.status == 200) {
-            gSetLoadingState(true);
-            handleLessonCreate(res.data).then((lessonId) => {
-              afterProcessLessonDataBeforePost(
-                lessonId,
-                lessondata,
-                postLessonData
-              );
-            });
-          }
+          handleLessonCreate(res).then((lessonId) => {
+            afterProcessLessonDataBeforePost(
+              lessonId,
+              lessondata,
+              postLessonData
+            );
+          });
         })
         .catch((err) => {
-          setCreatoinState(false);
           open();
           handleGenericError(err);
         });
+    } else {
+      open();
     }
-    setCreatoinState(false);
-    open();
   }, [open, lessondata]);
 
   const onSuggestChange = useCallback((value: string) => {
@@ -204,11 +201,6 @@ export default function PublishAuthoring(): JSX.Element {
               {r}
             </div>
           ))}
-          {creationState == true ? (
-            <div className="line">Creation of this lesson succeed</div>
-          ) : (
-            <div className="line">Creation of this lesson failed.</div>
-          )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok
           </ButtonSimple>
