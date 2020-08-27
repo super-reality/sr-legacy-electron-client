@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
@@ -14,6 +14,7 @@ import Splash from "./views/splash";
 import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
+import Tests from "./views/tests";
 import "typeface-roboto";
 
 export default function App(): JSX.Element {
@@ -48,6 +49,7 @@ export default function App(): JSX.Element {
       {isPending ? <Loading /> : <></>}
       <Switch>
         <Route exact path="/" component={Splash} />
+        <Route exact path="/tests/:id" component={Tests} />
         <Route path="*" component={Auth} />
       </Switch>
     </>
