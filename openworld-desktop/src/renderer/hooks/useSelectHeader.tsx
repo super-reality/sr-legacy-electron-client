@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import "./index.scss";
-import { useLocation } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useWindowSize } from "react-use";
 import { useSelector } from "react-redux";
 import Category from "../../types/collections";
@@ -61,13 +61,19 @@ const selectOptionsByTab: Record<
 
 export default function useSelectHeader(
   title: tabNames | null,
-  onSelect: (selected: string | Category, route: string) => void
+  onSelect: (route: string, selected: string | Category) => void
 ): [() => JSX.Element, React.MutableRefObject<HTMLDivElement | null>] {
   const ref = useRef<HTMLDivElement | null>(null);
-  const location = useLocation();
-  const topSelectStates = useSelector(
-    (state: AppState) => state.render.topSelectStates
-  );
+
+  const mainMatch = useRouteMatch<{
+    any: string;
+    category: string;
+  }>("/:any");
+
+  const catMatch = useRouteMatch<{
+    any: string;
+    category: string;
+  }>("/:any/:category");
 
   const { width } = useWindowSize();
 
@@ -81,14 +87,13 @@ export default function useSelectHeader(
   };
 
   const titleToRoute: Record<tabNames, string> = {
-    Discover: "/discover",
-    Learn: "/learn",
-    Teach: "/teach",
-    Create: "/create",
+    Discover: "discover",
+    Learn: "learn",
+    Teach: "teach",
+    Create: "create",
   };
 
   if (title) {
-    const current = topSelectStates[title];
     const left = Math.min(Math.max(8, centers[title] - 104), width - 208 - 8);
     const currentOptions = selectOptionsByTab[title];
     const Dropdown = () => (
@@ -99,14 +104,14 @@ export default function useSelectHeader(
       >
         {Object.keys(currentOptions).map((option) => {
           const active =
-            currentOptions[option] == current &&
-            location.pathname == titleToRoute[title];
+            `${currentOptions[option]}` == catMatch?.params.category &&
+            mainMatch?.params.any == titleToRoute[title];
           return (
             <div
               className="option"
               key={`option-${option}`}
               onClick={() => {
-                onSelect(currentOptions[option], titleToRoute[title]);
+                onSelect(titleToRoute[title], currentOptions[option]);
               }}
               style={{
                 color: active ? "var(--color-text-active)" : "",

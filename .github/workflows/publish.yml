@@ -42,7 +42,7 @@ jobs:
       run: npm run build
 
     - name: Set current date as env variable
-      run: echo "::set-env name=NOW::$(date +'%Y%m%d%H%M%S')"
+      run: echo "::set-env name=NOW::$(date +'%Y-%m-%d-T%H:%M:%S')"
 
     - name: Extract branch name
       shell: bash

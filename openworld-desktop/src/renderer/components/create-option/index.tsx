@@ -2,8 +2,16 @@ import React, { useCallback } from "react";
 
 import "./index.scss";
 import { useDispatch } from "react-redux";
-import { ItemInner, Icon, Title, Text, Points } from "../item-inner";
-import reduxAction from "../../redux/reduxAction";
+import { useHistory } from "react-router-dom";
+import {
+  ItemInner,
+  Icon,
+  Title,
+  Text,
+  Points,
+  ContainerTop,
+  ContainerFlex,
+} from "../item-inner";
 import { Option } from "../../views/create/components";
 
 interface StepProps {
@@ -14,20 +22,22 @@ interface StepProps {
 export default function CreateOption(props: StepProps): JSX.Element {
   const { data, hover } = props;
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const onClick = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "SET_TOP_SELECT",
-      arg: { selected: data.category, path: "Create" },
-    });
-  }, [dispatch]);
+  const onClick = useCallback(() => history.push(`/create/${data.category}`), [
+    dispatch,
+  ]);
 
   return (
     <ItemInner text onClick={hover ? onClick : undefined}>
-      <Icon url={data.image} />
-      <Title title={data.title} sub={`${data.created} created`} />
-      <Points points={data.cost} />
-      <Text>{data.description}</Text>
+      <ContainerTop>
+        <Icon style={{ backgroundColor: "rgba(0,0,0,0)" }} url={data.image} />
+        <Title title={data.title} sub={`${data.created} created`} />
+        <Points points={data.cost} />
+      </ContainerTop>
+      <ContainerFlex>
+        <Text>{data.description}</Text>
+      </ContainerFlex>
     </ItemInner>
   );
 }

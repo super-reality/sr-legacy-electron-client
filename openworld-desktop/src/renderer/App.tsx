@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
@@ -14,6 +14,8 @@ import Splash from "./views/splash";
 import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
+import Tests from "./views/tests";
+import "typeface-roboto";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -34,11 +36,11 @@ export default function App(): JSX.Element {
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <Switch>
           <Route exact path="/test" component={Test} />
-          <Route exact path="/discover" component={Discover} />
-          <Route exact path="/learn" component={Learn} />
-          <Route exact path="/teach" component={Teach} />
-          <Route exact path="/create" component={Create} />
-          <Route exact path="/profile" component={Profile} />
+          <Route path="/discover" component={Discover} />
+          <Route path="/learn" component={Learn} />
+          <Route path="/teach" component={Teach} />
+          <Route path="/create" component={Create} />
+          <Route path="/profile" component={Profile} />
         </Switch>
       </div>
     </>
@@ -47,6 +49,7 @@ export default function App(): JSX.Element {
       {isPending ? <Loading /> : <></>}
       <Switch>
         <Route exact path="/" component={Splash} />
+        <Route exact path="/tests/:id" component={Tests} />
         <Route path="*" component={Auth} />
       </Switch>
     </>

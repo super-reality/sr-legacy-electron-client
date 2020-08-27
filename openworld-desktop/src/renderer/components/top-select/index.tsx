@@ -1,5 +1,7 @@
 import React from "react";
 import "./index.scss";
+import { useRouteMatch } from "react-router-dom";
+import Category from "../../../types/collections";
 
 interface ReactSelectProps<K> {
   optionFormatter?: (option: K | string) => string | JSX.Element;
@@ -45,7 +47,7 @@ export default function ReactSelect<K>({
   }`;
 
   return (
-    <div className={`select-container ${className}`} style={style}>
+    <div className={`top-select-container ${className}`} style={style}>
       <button
         type="button"
         key={`${currentOption}-key`}
