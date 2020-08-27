@@ -9,4 +9,5 @@ export interface ICollection {
   tags: string[];
   visibility: Link[];
   entry: number;
+  subjects?: number;
 }
