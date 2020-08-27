@@ -37,6 +37,7 @@
     "reactn": "^2.2.7",
     "redux": "^4.0.5",
     "request": "^2.88.2",
+    "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
   },

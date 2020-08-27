@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState, CSSProperties } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as ProfileIcon } from "../../../assets/svg/profile.svg";
@@ -43,16 +43,25 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
 
 export default function TopSearch(): JSX.Element {
   const dispatch = useDispatch();
-  const location = useLocation();
   const history = useHistory();
 
   const topNavButtons: Array<[string, tabNames]> = [
-    // ["/test", "Test"],
-    ["/discover", "Discover"],
-    ["/learn", "Learn"],
-    ["/teach", "Teach"],
-    ["/create", "Create"],
+    // ["test", "Test"],
+    ["discover", "Discover"],
+    ["learn", "Learn"],
+    ["teach", "Teach"],
+    ["create", "Create"],
   ];
+
+  const mainMatch = useRouteMatch<{
+    any: string;
+    categorgy: string;
+  }>("/:any");
+
+  const catMatch = useRouteMatch<{
+    any: string;
+    categorgy: string;
+  }>("/:any/:categorgy");
 
   // Input
   const topInputStates = useSelector(
@@ -60,8 +69,8 @@ export default function TopSearch(): JSX.Element {
   );
 
   const currentInputValue = useMemo(
-    () => topInputStates[location.pathname] || "",
-    [topInputStates, location]
+    () => topInputStates[mainMatch?.params.any || ""] || "",
+    [topInputStates, mainMatch]
   );
 
   const onInputchange = useCallback(
@@ -69,10 +78,10 @@ export default function TopSearch(): JSX.Element {
       const str = event.currentTarget.value;
       reduxAction(dispatch, {
         type: "SET_TOP_INPUT",
-        arg: { str, path: location.pathname },
+        arg: { str, path: mainMatch?.params.any || "" },
       });
     },
-    [dispatch, location]
+    [dispatch, mainMatch]
   );
 
   const backClick = useCallback(() => {
@@ -88,13 +97,10 @@ export default function TopSearch(): JSX.Element {
   const [openDropdown, setOpenDropdown] = useState<tabNames | null>(null);
 
   const onSelect = useCallback(
-    (selected: string | Category, route: string) => {
+    (route: string, selected: string | Category) => {
+      console.log(route, selected);
       if (openDropdown) {
-        history.push(route);
-        reduxAction(dispatch, {
-          type: "SET_TOP_SELECT",
-          arg: { selected, path: openDropdown },
-        });
+        history.push(`/${route}/${selected}`);
         setOpenDropdown(null);
       }
     },
@@ -141,10 +147,12 @@ export default function TopSearch(): JSX.Element {
           style={{
             margin: "auto",
             backgroundColor:
-              location.pathname == "/profile" ? "var(--color-background)" : "",
+              mainMatch?.params.any == "profile"
+                ? "var(--color-background)"
+                : "",
           }}
           iconFill={
-            location.pathname == "/profile" ? "var(--color-text-active)" : ""
+            mainMatch?.params.any == "profile" ? "var(--color-text-active)" : ""
           }
           svg={ProfileIcon}
           height="24px"
@@ -161,11 +169,11 @@ export default function TopSearch(): JSX.Element {
             key={b[0]}
             style={{
               backgroundColor:
-                openDropdown == b[1] || location.pathname == b[0]
+                openDropdown == b[1] || mainMatch?.params.any == b[0]
                   ? "var(--color-background)"
                   : "",
               color:
-                location.pathname == b[0] ? "var(--color-text-active)" : "",
+                mainMatch?.params.any == b[0] ? "var(--color-text-active)" : "",
             }}
             title={b[1]}
           />
