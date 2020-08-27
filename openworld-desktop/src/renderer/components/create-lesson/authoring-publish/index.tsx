@@ -45,7 +45,7 @@ export default function PublishAuthoring(): JSX.Element {
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
   const lessondata = useSelector((state: AppState) => state.createLesson);
-  const [creationState, setCreatoinState] = useState(true);
+  const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -122,12 +122,12 @@ export default function PublishAuthoring(): JSX.Element {
         )
         .then(handleLessonCreate)
         .catch((err) => {
-          setCreatoinState(false);
+          setCreationState(false);
           open();
           handleGenericError(err);
         });
     } else {
-      setCreatoinState(false);
+      setCreationState(false);
       open();
     }
   }, [dispatch, open, lessondata]);
