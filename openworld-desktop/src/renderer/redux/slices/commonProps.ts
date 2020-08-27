@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { bool } from "aws-sdk/clients/signer";
 
 const initialState = {
   isLoading: false,
@@ -14,7 +13,7 @@ const commonPropSlice = createSlice({
   reducers: {
     setIsLoading: (
       state: commonPropState,
-      action: PayloadAction<bool>
+      action: PayloadAction<boolean>
     ): void => {
       state.isLoading = action.payload;
     },

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
-import Loader from "react-loader-spinner";
 import Test from "./views/test";
 import Auth from "./views/auth";
 import Discover from "./views/discover";
@@ -17,7 +16,6 @@ import Profile from "./views/profile";
 import Create from "./views/create";
 import Tests from "./views/tests";
 import "typeface-roboto";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -39,7 +37,7 @@ export default function App(): JSX.Element {
     <>
       <TopSearch />
       {isLoading ? (
-        <Loader type="Circles" color="#00BFFF" height={80} width={80} />
+        <Loading />
       ) : (
         <div onScroll={handleScroll} ref={scrollRef} className="content">
           <Switch>

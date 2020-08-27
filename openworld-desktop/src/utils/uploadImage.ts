@@ -1,6 +1,8 @@
 import * as AWS from "aws-sdk";
+import fs from "fs";
+import getFileSha1 from "./getFileSha1";
+import getFileExt from "./getFileExt";
 
-const fs = require("fs");
 // Enter copied or downloaded access ID and secret key here
 const ID = "AKIAR5KZMOTEB45JUE45";
 const SECRET = "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";
@@ -10,9 +12,10 @@ const s3 = new AWS.S3({
   accessKeyId: ID,
   secretAccessKey: SECRET,
 });
+
 export default function uploadFileToS3(
   localFileName: string,
-  remotefileName: string
+  remotefileName?: string
 ): void {
   // Read content from the file
   const fileContent = fs.readFileSync(localFileName);
@@ -20,12 +23,13 @@ export default function uploadFileToS3(
   // Setting up S3 upload parameters
   const params = {
     Bucket: BUCKET_NAME,
-    Key: remotefileName, // File name you want to save as in S3
+    Key:
+      remotefileName || getFileSha1(localFileName) + getFileExt(localFileName), // File name you want to save as in S3
     Body: fileContent,
   };
 
   // Uploading files to the bucket
-  s3.upload(params, function (err: any, data: any) {
+  s3.upload(params, (err: any, data: any) => {
     if (err) {
       throw err;
     }

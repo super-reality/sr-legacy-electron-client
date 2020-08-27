@@ -3,7 +3,6 @@ import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import * as crypto from "crypto";
 import { bool } from "aws-sdk/clients/signer";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
@@ -26,6 +25,9 @@ import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
 import uploadFileToS3 from "../../../../utils/uploadImage";
+import hashMD5 from "../../../../utils/hashMD5";
+import getFileSha1 from "../../../../utils/getFileSha1";
+import getFileExt from "../../../../utils/getFileExt";
 
 const getVal = (p: Parents) => {
   return p.type == "lesson"
@@ -91,41 +93,24 @@ export default function PublishAuthoring(): JSX.Element {
 
   const preprocessLessonDataBeforePost = (postData: ILesson): ILesson => {
     const localData = { ...postData };
-    const icon = crypto.createHash("md5").update(localData.icon).digest("hex");
-    const medias = localData.medias.map((item: string, idx: Number) => {
-      return crypto.createHash("md5").update(item).digest("hex");
+    const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
+    const medias = localData.medias.map((item: string) => {
+      return getFileSha1(item) + getFileExt(item);
     });
-    const steps = localData.steps.map((element, idx) => {
-      const image = crypto
-        .createHash("md5")
-        .update(element.image)
-        .digest("hex");
+    const steps = localData.steps.map((element) => {
+      const image = getFileSha1(element.image) + getFileExt(element.image);
       return { ...element, image };
     });
     return { ...localData, icon, medias, steps };
   };
 
   const afterProcessLessonDataBeforePost = (
-    lessonId: string,
-    originlessondata: ILesson,
-    postLessonData: ILesson
+    originlessondata: ILesson
   ): void => {
-    uploadFileToS3(
-      originlessondata.icon.split('"').join(""),
-      `${postLessonData.icon + lessonId}.png`
-    );
-    for (let i = 0; i < originlessondata.medias.length; i += 1) {
-      uploadFileToS3(
-        originlessondata.medias[i],
-        `${postLessonData.medias[i] + lessonId}.png`
-      );
-    }
-    for (let i = 0; i < originlessondata.steps.length; i += 1) {
-      uploadFileToS3(
-        originlessondata.steps[i].image,
-        `${postLessonData.steps[i].image + lessonId}png`
-      );
-    }
+    const iconPath = originlessondata.icon.split('"').join("");
+    uploadFileToS3(iconPath);
+    originlessondata.medias.forEach((mediaPath) => uploadFileToS3(mediaPath));
+    originlessondata.steps.forEach((step) => uploadFileToS3(step.image));
     reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
     gSetLoadingState(false);
   };
@@ -140,11 +125,7 @@ export default function PublishAuthoring(): JSX.Element {
           if (res.status == 200) {
             gSetLoadingState(true);
             handleLessonCreate(res.data).then((lessonId) => {
-              afterProcessLessonDataBeforePost(
-                lessonId,
-                lessondata,
-                postLessonData
-              );
+              afterProcessLessonDataBeforePost(lessondata);
             });
           }
         })
