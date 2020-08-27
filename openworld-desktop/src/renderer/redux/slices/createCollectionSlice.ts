@@ -10,7 +10,7 @@ const initialState: ICollection = {
   description: "",
   medias: [],
   tags: [],
-  visibility: "",
+  visibility: [],
   entry: EntryOptions.Open,
 };
 

@@ -29,6 +29,28 @@ import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
 import { getParentVal, getParentId, renderParent } from "../../links";
 
+const uploadArtifacts = (original: ILesson): Promise<string[]> => {
+  const fileNames = [];
+  const iconPath = original.icon.split('"').join("");
+  fileNames.push(iconPath);
+  original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
+  original.steps.forEach((step) => fileNames.push(step.image));
+  return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
+};
+
+const preprocessDataBeforePost = (postData: ILesson): ILesson => {
+  const localData = { ...postData };
+  const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
+  const medias = localData.medias.map((item: string) => {
+    return getFileSha1(item) + getFileExt(item);
+  });
+  const steps = localData.steps.map((element) => {
+    const image = getFileSha1(element.image) + getFileExt(element.image);
+    return { ...element, image };
+  });
+  return { ...localData, icon, medias, steps };
+};
+
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
@@ -74,32 +96,9 @@ export default function PublishAuthoring(): JSX.Element {
     return reasons;
   }, [lessondata]);
 
-  const preprocessLessonDataBeforePost = (postData: ILesson): ILesson => {
-    const localData = { ...postData };
-    const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
-    const medias = localData.medias.map((item: string) => {
-      return getFileSha1(item) + getFileExt(item);
-    });
-    const steps = localData.steps.map((element) => {
-      const image = getFileSha1(element.image) + getFileExt(element.image);
-      return { ...element, image };
-    });
-    return { ...localData, icon, medias, steps };
-  };
-
-  const uploadArtifacts = (originlessondata: ILesson): Promise<string[]> => {
-    const fileNames = [];
-    const iconPath = originlessondata.icon.split('"').join("");
-    fileNames.push(iconPath);
-    originlessondata.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-    originlessondata.steps.forEach((step) => fileNames.push(step.image));
-
-    return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
-  };
-
-  const lessonPublish = useCallback(() => {
+  const doPublish = useCallback(() => {
     const reasons = validateFields();
-    const postLessonData = preprocessLessonDataBeforePost(lessondata);
+    const postLessonData = preprocessDataBeforePost(lessondata);
     if (reasons.length == 0) {
       reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: true });
       uploadArtifacts(lessondata)
@@ -213,7 +212,7 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={lessonPublish}
+          onClick={doPublish}
         >
           Publish
         </ButtonSimple>

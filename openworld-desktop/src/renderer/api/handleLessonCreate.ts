@@ -14,7 +14,7 @@ export default function handleLessonCreate(
     if (res.status == 200) {
       if (res.data.err_code == 0) {
         reduxAction(store.dispatch, {
-          type: "CREATE_COLLECTION_RESET",
+          type: "CREATE_LESSON_RESET",
           arg: null,
         });
         resolve();

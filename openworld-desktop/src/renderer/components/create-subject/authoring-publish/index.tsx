@@ -20,9 +20,30 @@ import { getParentVal, getParentId, renderParent } from "../../links";
 import { Parents } from "../../../api/types/lesson/search-parent";
 import Link from "../../../api/types/link/link";
 import AutosuggestInput from "../../autosuggest-input";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import SubjectCreate from "../../../api/types/subject/create";
 import handleSubjectCreate from "../../../api/handleSubjectCreate";
 import SubjectSearchParent from "../../../api/types/subject/search-parent";
+import { ISubject } from "../../../api/types/subject/subject";
+import getFileSha1 from "../../../../utils/getFileSha1";
+import getFileExt from "../../../../utils/getFileExt";
+
+const uploadArtifacts = (original: ISubject): Promise<string[]> => {
+  const fileNames = [];
+  const iconPath = original.icon.split('"').join("");
+  fileNames.push(iconPath);
+  original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
+  return Promise.all(fileNames.map((file) => uploadFileToS3(file)));
+};
+
+const preprocessDataBeforePost = (postData: ISubject): ISubject => {
+  const localData = { ...postData };
+  const icon = getFileSha1(localData.icon) + getFileExt(localData.icon);
+  const medias = localData.medias.map((item: string) => {
+    return getFileSha1(item) + getFileExt(item);
+  });
+  return { ...localData, icon, medias };
+};
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -63,11 +84,18 @@ export default function PublishAuthoring(): JSX.Element {
     return reasons;
   }, [finalData]);
 
-  const onPublish = useCallback(() => {
+  const doPublish = useCallback(() => {
     const reasons = validateFields();
+    reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: true });
     if (reasons.length == 0) {
-      axios
-        .post<SubjectCreate | ApiError>(`${API_URL}subject/create`, finalData)
+      const dataPost = preprocessDataBeforePost(finalData);
+      uploadArtifacts(finalData)
+        .then(() =>
+          axios.post<SubjectCreate | ApiError>(
+            `${API_URL}subject/create`,
+            dataPost
+          )
+        )
         .then(handleSubjectCreate)
         .catch(handleGenericError);
     } else {
@@ -162,7 +190,7 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={onPublish}
+          onClick={doPublish}
         >
           Publish
         </ButtonSimple>
