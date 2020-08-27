@@ -26,7 +26,7 @@ import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
 import { getParentVal, getParentId, renderParent } from "../../links";
-import { uploadFileToS3 } from "../../../../utils/uploadImage";
+import uploadFileToS3 from "../../../../utils/uploadImage";
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
