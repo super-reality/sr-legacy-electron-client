@@ -12,6 +12,12 @@ const s3 = new AWS.S3({
   secretAccessKey: SECRET,
 });
 
+// WARNING
+// This should not be in the client in production!
+// This entire function should be replaced with a specific API call to upload
+// artifacts to the S3 bucket, providing auth token like the rest of api calls,
+// and should return a Promise like the current implementation, to not break
+// the current publishing codes and flow.
 export default function uploadFileToS3(
   localFileName: string,
   remotefileName?: string
@@ -32,6 +38,7 @@ export default function uploadFileToS3(
         remotefileName ||
         getFileSha1(localFileName) + getFileExt(localFileName), // File name you want to save as in S3
       Body: fileContent,
+      ACL: "public-read",
     };
 
     // Uploading files to the bucket

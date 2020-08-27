@@ -60,6 +60,10 @@
     margin-bottom: 10px;
     color: var(--color-text-dark);
     background-color: var(--color-red);
+
+    &.green {
+      background-color: var(--color-green);
+    }
   }
 
   .line {

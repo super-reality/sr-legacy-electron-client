@@ -157,21 +157,25 @@ export default function PublishAuthoring(): JSX.Element {
     <>
       <Popup width="400px" height="auto">
         <div className="validation-popup">
-          <div className="title">Please review before publishing:</div>
-          {validateFields().map((r) => (
-            <div className="line" key={r}>
-              {r}
-            </div>
-          ))}
           {creationState == true ? (
-            <div className="line">Creation of this subject succeed</div>
+            <>
+              <div className="title green">Sucess</div>
+              <div className="line">The subject was created sucessfuly!</div>
+            </>
           ) : (
-            <></>
-          )}
-          {creationState == false && validateFields().length == 0 ? (
-            <div className="line">Creation of this subject failed.</div>
-          ) : (
-            <></>
+            <>
+              <div className="title">Please review before publishing:</div>
+              {validateFields().map((r) => (
+                <div className="line" key={r}>
+                  {r}
+                </div>
+              ))}
+              {creationState == false && validateFields().length == 0 ? (
+                <div className="line">Creation of this subject failed.</div>
+              ) : (
+                <></>
+              )}
+            </>
           )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok
