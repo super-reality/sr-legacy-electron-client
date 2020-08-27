@@ -27,6 +27,7 @@ import SubjectSearchParent from "../../../api/types/subject/search-parent";
 import { ISubject } from "../../../api/types/subject/subject";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
+import setLoading from "../../../redux/utils/setLoading";
 
 const uploadArtifacts = (original: ISubject): Promise<string[]> => {
   const fileNames = [];
@@ -50,6 +51,7 @@ export default function PublishAuthoring(): JSX.Element {
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createSubject);
   const finalData = useSelector((state: AppState) => state.createSubject);
+  const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -86,7 +88,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
-    reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: true });
+    setLoading(true);
     if (reasons.length == 0) {
       const dataPost = preprocessDataBeforePost(finalData);
       uploadArtifacts(finalData)
@@ -97,8 +99,20 @@ export default function PublishAuthoring(): JSX.Element {
           )
         )
         .then(handleSubjectCreate)
-        .catch(handleGenericError);
+        .then(() => {
+          setLoading(false);
+          setCreationState(true);
+          open();
+        })
+        .catch((err) => {
+          setLoading(false);
+          setCreationState(false);
+          open();
+          handleGenericError(err);
+        });
     } else {
+      setLoading(false);
+      setCreationState(false);
       open();
     }
   }, [open, finalData]);
@@ -149,6 +163,16 @@ export default function PublishAuthoring(): JSX.Element {
               {r}
             </div>
           ))}
+          {creationState == true ? (
+            <div className="line">Creation of this subject succeed</div>
+          ) : (
+            <></>
+          )}
+          {creationState == false && validateFields().length == 0 ? (
+            <div className="line">Creation of this subject failed.</div>
+          ) : (
+            <></>
+          )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok
           </ButtonSimple>

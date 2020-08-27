@@ -3,11 +3,10 @@ import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { bool } from "aws-sdk/clients/signer";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
-import store, { AppState } from "../../../redux/stores/renderer";
+import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
@@ -28,6 +27,7 @@ import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import getFileSha1 from "../../../../utils/getFileSha1";
 import getFileExt from "../../../../utils/getFileExt";
 import { getParentVal, getParentId, renderParent } from "../../links";
+import setLoading from "../../../redux/utils/setLoading";
 
 const uploadArtifacts = (original: ILesson): Promise<string[]> => {
   const fileNames = [];
@@ -100,7 +100,7 @@ export default function PublishAuthoring(): JSX.Element {
     const reasons = validateFields();
     const postLessonData = preprocessDataBeforePost(lessondata);
     if (reasons.length == 0) {
-      reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: true });
+      setLoading(true);
       uploadArtifacts(lessondata)
         .then(() =>
           axios.post<ApiError | LessonResp>(
@@ -109,12 +109,19 @@ export default function PublishAuthoring(): JSX.Element {
           )
         )
         .then(handleLessonCreate)
+        .then(() => {
+          setLoading(false);
+          setCreationState(true);
+          open();
+        })
         .catch((err) => {
+          setLoading(false);
           setCreationState(false);
           open();
           handleGenericError(err);
         });
     } else {
+      setLoading(false);
       setCreationState(false);
       open();
     }
@@ -169,7 +176,12 @@ export default function PublishAuthoring(): JSX.Element {
           {creationState == true ? (
             <div className="line">Creation of this lesson succeed</div>
           ) : (
+            <></>
+          )}
+          {creationState == false && validateFields().length == 0 ? (
             <div className="line">Creation of this lesson failed.</div>
+          ) : (
+            <></>
           )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok

@@ -9,7 +9,6 @@ import store from "../redux/stores/renderer";
 export default function handleLessonCreate(
   res: AxiosResponse<ApiError | LessonResp>
 ): Promise<void> {
-  reduxAction(store.dispatch, { type: "SET_LOADING_STATE", arg: false });
   return new Promise((resolve, reject) => {
     if (res.status == 200) {
       if (res.data.err_code == 0) {
