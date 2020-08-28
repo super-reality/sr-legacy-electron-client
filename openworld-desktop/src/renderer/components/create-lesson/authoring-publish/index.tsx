@@ -26,7 +26,9 @@ import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
 import uploadMany from "../../../../utils/uploadMany";
-import makeValidation, { ValidationFields } from "../../../../utils/makeValidation";
+import makeValidation, {
+  ValidationFields,
+} from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (
   original: ILesson
