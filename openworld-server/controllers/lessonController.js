@@ -7,18 +7,18 @@ const constant  = require("../config/constant")
 
 exports.create = function(request, response){
     const { 
-        parent, 
-        icon, 
-        name, 
-        shortDescription, 
-        description, 
+        parent,
+        icon,
+        name,
+        shortDescription,
+        description,
         difficulty,
-        medias, 
-        tags, 
-        visibility, 
+        medias,
+        tags,
+        visibility,
         ownership,
-        entry, 
-        steps 
+        entry,
+        steps
     } = request.body;
 
     var lesson = Lesson()
