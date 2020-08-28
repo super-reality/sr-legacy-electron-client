@@ -33,8 +33,8 @@
     grid-template-columns: 50px auto auto;
     grid-template-rows: 32px minmax(16px, auto);
     grid-template-areas:
-        "icon title score"
-        "icon text text";
+      "icon title score"
+      "icon text text";
     
     .item-icon {
       width: 100%;

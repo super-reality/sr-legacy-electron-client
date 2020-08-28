@@ -38,6 +38,6 @@ jobs:
         - cd openworld-desktop
         - npm install
         - npm run build:web
-        - npm run build:web
+        - npm run react-build
         - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
 
