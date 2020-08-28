@@ -1,8 +1,6 @@
 const Subject   = require("../models/subject")
-const Collection= require("../models/collection")
 const Tag       = require("../models/tag")
-const constant  = require("../config/constant");
-
+const constant  = require("../config/constant")
 
 exports.create = function(request, response){
     const { 
@@ -63,24 +61,4 @@ exports.create = function(request, response){
             });
         }
     })
-}
-
-exports.searchParent = function(request, response){
-    const { query } = request.params;
-    Collection.find({name: {$regex: query, $options: 'i'}}, 'name').sort({'name': "asc"}).limit(100).exec(async function(err, collections) {
-        if (err != null) {
-            response.status(constant.ERR_STATUS.Bad_Request).json({
-                error: err
-            });
-        } else {
-            var result = []
-            collections.forEach(item => {
-                result.push({type: "collection", collectionId: item._id, collectionName: item.name})
-            });
-            response.json({
-                err_code: constant.ERR_CODE.success,
-                parents : result
-            });
-        }
-    });
 }

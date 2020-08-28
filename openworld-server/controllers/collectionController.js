@@ -20,59 +20,51 @@ exports.create = function(request, response){
         entry
     } = request.body;
 
-    Collection.findOne({name})
-    .then(res => {
-        if (res) {
-            response.json({err_code: constant.ERR_CODE.collection_already_exist, msg: "Collection already exist"})
+    var collection = Collection()
+    collection.icon = icon
+    collection.name = name
+    collection.shortDescription = shortDescription
+    collection.description = description
+    collection.medias = medias
+    collection.tags = tags
+    collection.visibility = visibility
+    collection.entry = entry
+    collection.rating = 0
+    collection.ratingCount = 0
+    collection.numberOfShares = 0
+    collection.numberOfActivations = 0
+    collection.numberOfCompletions = 0
+    collection.createdBy = request.user._id
+
+    // save collection document
+    collection.save(function (err) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
         } else {
-            var collection = Collection()
-            collection.icon = icon
-            collection.name = name
-            collection.shortDescription = shortDescription
-            collection.description = description
-            collection.medias = medias
-            collection.tags = tags
-            collection.visibility = visibility
-            collection.entry = entry
-            collection.rating = 0
-            collection.ratingCount = 0
-            collection.numberOfShares = 0
-            collection.numberOfActivations = 0
-            collection.numberOfCompletions = 0
-            collection.createdBy = request.user._id
-
-            // save collection document
-            collection.save(function (err) {
-                if (err != null) {
-                    response.status(constant.ERR_STATUS.Bad_Request).json({
-                        error: err
-                    });
-                } else {
-                    // save tags to Tag table
-                    for (var i = 0; i < tags.length; i++){
-                        const tagName = tags[i]
-                        Tag.findOne({name: tagName})
-                        .then(result => {
-                            if (result) {
-                            } else {
-                                var tag = Tag()
-                                tag.name = tagName
-                                tag.type = "collection"
-                                tag.save()
-                            }
-                        })
-                        .catch(error => {})
+            // save tags to Tag table
+            for (var i = 0; i < tags.length; i++){
+                const tagName = tags[i]
+                Tag.findOne({name: tagName})
+                .then(result => {
+                    if (result) {
+                    } else {
+                        var tag = Tag()
+                        tag.name = tagName
+                        tag.type = "collection"
+                        tag.save()
                     }
+                })
+                .catch(error => {})
+            }
 
-                    response.json({
-                        err_code: constant.ERR_CODE.success,
-                        collection
-                    })
-                }
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                collection
             })
         }
     })
-    .catch(error => response.status(constant.ERR_CODE.Internal_Server_Error).json({error: error.status ? error.status : 500}))
 }
 
 
