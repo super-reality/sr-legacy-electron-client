@@ -1,18 +1,30 @@
-interface ValidationField {
+export interface ValidationField {
   name: string;
   minLength?: number;
   minItems?: number;
   maxItems?: number;
 }
 
-type ValidationFields = Record<string, ValidationField>;
+export type ValidationFields<T> = {
+  [K in keyof T]?: ValidationField;
+};
+/*
+const test = {
+  A: "foo",
+  B: "var",
+};
 
-export default function makeValidation(
-  fields: ValidationFields,
-  data: Record<string, any>
+const d: ValidationFields<typeof test> = {
+  Aa: { name: "A" },
+};
+*/
+export default function makeValidation<D extends Record<string, any>>(
+  fields: ValidationFields<D>,
+  data: D
 ) {
   const reasons: string[] = [];
-  Object.keys(data).forEach((key) => {
+  type Fields = keyof D;
+  Object.keys(data).forEach((key: Fields) => {
     const valid = fields[key];
     if (valid) {
       // Check min length

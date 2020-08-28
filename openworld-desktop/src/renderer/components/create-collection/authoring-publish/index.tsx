@@ -20,7 +20,9 @@ import { ICollection } from "../../../api/types/collection/collection";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
 import uploadMany from "../../../../utils/uploadMany";
-import makeValidation from "../../../../utils/makeValidation";
+import makeValidation, {
+  ValidationFields,
+} from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (original: ICollection) => {
   const fileNames = [];
@@ -60,7 +62,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("collection");
 
-  const validation = {
+  const validation: ValidationFields<ICollection> = {
     name: { name: "Title", minLength: 4 },
     description: { name: "Description", minLength: 4 },
     shortDescription: { name: "Short description", minLength: 4 },
@@ -69,7 +71,7 @@ export default function PublishAuthoring(): JSX.Element {
   };
 
   const validateFields = useCallback(
-    () => makeValidation(validation, finalData),
+    () => makeValidation<ICollection>(validation, finalData),
     [finalData]
   );
 

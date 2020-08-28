@@ -26,7 +26,7 @@ import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
 import uploadMany from "../../../../utils/uploadMany";
-import makeValidation from "../../../../utils/makeValidation";
+import makeValidation, { ValidationFields } from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (
   original: ILesson
@@ -74,7 +74,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("lesson");
 
-  const validation = {
+  const validation: ValidationFields<ILesson> = {
     name: { name: "Title", minLength: 4 },
     description: { name: "Description", minLength: 4 },
     shortDescription: { name: "Short description", minLength: 4 },
@@ -85,7 +85,7 @@ export default function PublishAuthoring(): JSX.Element {
   };
 
   const validateFields = useCallback(
-    () => makeValidation(validation, finalData),
+    () => makeValidation<ILesson>(validation, finalData),
     [finalData]
   );
 
