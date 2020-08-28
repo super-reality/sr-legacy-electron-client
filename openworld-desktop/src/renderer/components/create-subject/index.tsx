@@ -9,11 +9,11 @@ import createOptions from "../../views/create/components";
 import CreateOption from "../create-option";
 import Category from "../../../types/collections";
 
-export default function CreateCollection(): JSX.Element {
+export default function CreateSubject(): JSX.Element {
   return (
     <>
-      <CreateOption data={createOptions[Category.Collection]} />
-      <Collapsible outer expanded title="Add Collection Info">
+      <CreateOption data={createOptions[Category.Subject]} />
+      <Collapsible outer expanded title="Create Subject">
         <div className="mid">
           <Collapsible expanded title="Info">
             <InfoAuthoring />
@@ -26,7 +26,7 @@ export default function CreateCollection(): JSX.Element {
           </Collapsible>
         </div>
       </Collapsible>
-      <Collapsible outer expanded title="My Collections" />
+      <Collapsible outer expanded title="My Subjects" />
       <Collapsible outer expanded title="Chat" />
     </>
   );

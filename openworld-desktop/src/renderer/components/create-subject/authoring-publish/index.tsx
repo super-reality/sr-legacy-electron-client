@@ -12,19 +12,25 @@ import { ApiError } from "../../../api/types";
 import handleGenericError from "../../../api/handleGenericError";
 import useTagsBox from "../../tag-box";
 import usePopup from "../../../hooks/usePopup";
-import CollectionCreate from "../../../api/types/collection/create";
-import handleCollectionCreate from "../../../api/handleCollectionCreate";
+import handleSubjectSearchParent from "../../../api/handleSubjectSearchParent";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
-import { ICollection } from "../../../api/types/collection/collection";
-import getFileExt from "../../../../utils/getFileExt";
+import { getParentVal, getParentId, renderParent } from "../../links";
+import { Parents } from "../../../api/types/lesson/search-parent";
+import Link from "../../../api/types/link/link";
+import AutosuggestInput from "../../autosuggest-input";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import SubjectCreate from "../../../api/types/subject/create";
+import handleSubjectCreate from "../../../api/handleSubjectCreate";
+import SubjectSearchParent from "../../../api/types/subject/search-parent";
+import { ISubject } from "../../../api/types/subject/subject";
 import getFileSha1 from "../../../../utils/getFileSha1";
+import getFileExt from "../../../../utils/getFileExt";
 import setLoading from "../../../redux/utils/setLoading";
 
 const uploadArtifacts = (
-  original: ICollection
+  original: ISubject
 ): Promise<Record<string, string>> => {
   const fileNames = [];
   const iconPath = original.icon.split('"').join("");
@@ -41,9 +47,9 @@ const uploadArtifacts = (
 };
 
 const preprocessDataBeforePost = (
-  postData: ICollection,
+  postData: ISubject,
   artifacts: Record<string, string>
-): ICollection => {
+): ISubject => {
   const localData = { ...postData };
   const icon = artifacts[localData.icon];
   const medias = localData.medias.map((item: string) => {
@@ -54,14 +60,15 @@ const preprocessDataBeforePost = (
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { entry } = useSelector((state: AppState) => state.createCollection);
-  const finalData = useSelector((state: AppState) => state.createCollection);
+  const [suggestions, setSuggestions] = useState<Parents[]>([]);
+  const { entry } = useSelector((state: AppState) => state.createSubject);
+  const finalData = useSelector((state: AppState) => state.createSubject);
   const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
     (_entry: number) => {
       reduxAction(dispatch, {
-        type: "CREATE_COLLECTION_DATA",
+        type: "CREATE_SUBJECT_DATA",
         arg: { entry: _entry },
       });
     },
@@ -97,12 +104,12 @@ export default function PublishAuthoring(): JSX.Element {
     if (reasons.length == 0) {
       uploadArtifacts(finalData)
         .then((artifacts) =>
-          axios.post<CollectionCreate | ApiError>(
-            `${API_URL}collection/create`,
+          axios.post<SubjectCreate | ApiError>(
+            `${API_URL}subject/create`,
             preprocessDataBeforePost(finalData, artifacts)
           )
         )
-        .then(handleCollectionCreate)
+        .then(handleSubjectCreate)
         .then(() => {
           setLoading(false);
           setCreationState(true);
@@ -121,12 +128,38 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, [open, finalData]);
 
+  const onSuggestChange = useCallback((value: string) => {
+    if (value.length > 2) {
+      axios
+        .get<SubjectSearchParent | ApiError>(
+          `${API_URL}subject/search-parent/${encodeURIComponent(value)}`
+        )
+        .then((response) => {
+          const values = handleSubjectSearchParent(response);
+          if (values) setSuggestions(values);
+        })
+        .catch(handleGenericError);
+    }
+  }, []);
+
+  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox([]);
+
+  useEffect(() => {
+    const tagsList: Link[] = getParentTags().map((t) => {
+      return { _id: t.id, type: "collection" };
+    });
+    reduxAction(dispatch, {
+      type: "CREATE_SUBJECT_DATA",
+      arg: { parent: tagsList },
+    });
+  }, [getParentTags]);
+
   const [TagsBox, addTag, getTags] = useTagsBox([], true);
 
   useEffect(() => {
     const tagsList: string[] = getTags().map((t) => t.name);
     reduxAction(dispatch, {
-      type: "CREATE_COLLECTION_DATA",
+      type: "CREATE_SUBJECT_DATA",
       arg: { tags: tagsList },
     });
   }, [getTags]);
@@ -138,7 +171,7 @@ export default function PublishAuthoring(): JSX.Element {
           {creationState == true ? (
             <>
               <div className="title green">Sucess</div>
-              <div className="line">The collection was created sucessfuly!</div>
+              <div className="line">The subject was created sucessfuly!</div>
             </>
           ) : (
             <>
@@ -149,7 +182,7 @@ export default function PublishAuthoring(): JSX.Element {
                 </div>
               ))}
               {creationState == false && validateFields().length == 0 ? (
-                <div className="line">Creation of this collection failed.</div>
+                <div className="line">Creation of this subject failed.</div>
               ) : (
                 <></>
               )}
@@ -167,6 +200,24 @@ export default function PublishAuthoring(): JSX.Element {
         optionFormatter={constantFormat(EntryOptions)}
         callback={setEntry}
       />
+      <Flex>
+        <div className="container-with-desc">
+          <div>Parent Collections</div>
+          <ParentTagsBox />
+          <AutosuggestInput<Parents>
+            style={{ marginTop: "8px" }}
+            forceSuggestions={suggestions}
+            getValue={getParentVal}
+            renderSuggestion={renderParent}
+            id="parent-subject"
+            onChangeCallback={onSuggestChange}
+            submitCallback={(p) =>
+              addParentTag({ name: getParentVal(p), id: getParentId(p) })
+            }
+            selectClear
+          />
+        </div>
+      </Flex>
       <Flex>
         <div className="container-with-desc">
           <div>Tags</div>

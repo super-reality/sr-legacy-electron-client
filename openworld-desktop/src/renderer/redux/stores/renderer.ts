@@ -4,6 +4,7 @@ import authSlice from "../slices/authSlice";
 import renderSlice from "../slices/renderSlice";
 import createLessonSlice from "../slices/createLessonSlice";
 import createCollectionSlice from "../slices/createCollectionSlice";
+import createSubjectSlice from "../slices/createSubjectSlice";
 import commonPropSlice from "../slices/commonProps";
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   render: renderSlice.reducer,
   createLesson: createLessonSlice.reducer,
   createCollection: createCollectionSlice.reducer,
+  createSubject: createSubjectSlice.reducer,
   commonProps: commonPropSlice.reducer,
 });
 

@@ -13,8 +13,7 @@ export default function useMediaSniper(
       })
       .then((ret: any) => {
         // onFinish(ret.filePaths[0]);
-        if (!ret.canceled)
-          onFinish(`"${ret.filePaths[0].replace(/\\/g, "/")}"`);
+        if (!ret.canceled) onFinish(ret.filePaths[0].replace(/\\/g, "/"));
       });
   }, [onFinish]);
 

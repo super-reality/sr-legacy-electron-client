@@ -2,6 +2,7 @@ import * as AuthSlice from "./slices/authSlice";
 import * as renderSlice from "./slices/renderSlice";
 import * as createLessonSlice from "./slices/createLessonSlice";
 import * as createCollectionSlice from "./slices/createCollectionSlice";
+import * as createSubjectSlice from "./slices/createSubjectSlice";
 import * as commonPropSlice from "./slices/commonProps";
 
 export const actions = {
@@ -19,6 +20,9 @@ export const actions = {
   CREATE_COLLECTION_DATA: createCollectionSlice.setData,
   CREATE_COLLECTION_TAG: createCollectionSlice.addTag,
   CREATE_COLLECTION_RESET: createCollectionSlice.reset,
+  CREATE_SUBJECT_DATA: createSubjectSlice.setData,
+  CREATE_SUBJECT_TAG: createSubjectSlice.addTag,
+  CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
 };
 

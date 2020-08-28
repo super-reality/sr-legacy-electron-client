@@ -1,6 +1,7 @@
 import Link from "../link/link";
 
-export interface ICollection {
+export interface ISubject {
+  parent: Link[];
   icon: string;
   name: string;
   shortDescription: string;
@@ -9,5 +10,4 @@ export interface ICollection {
   tags: string[];
   visibility: Link[];
   entry: number;
-  subjects?: number;
 }

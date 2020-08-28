@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
-import Loader from "react-loader-spinner";
 import Test from "./views/test";
 import Auth from "./views/auth";
 import Discover from "./views/discover";
@@ -17,7 +16,6 @@ import Profile from "./views/profile";
 import Create from "./views/create";
 import Tests from "./views/tests";
 import "typeface-roboto";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -38,20 +36,17 @@ export default function App(): JSX.Element {
   return isAuthenticated ? (
     <>
       <TopSearch />
-      {isLoading ? (
-        <Loader type="Circles" color="#00BFFF" height={80} width={80} />
-      ) : (
-        <div onScroll={handleScroll} ref={scrollRef} className="content">
-          <Switch>
-            <Route exact path="/test" component={Test} />
-            <Route path="/discover" component={Discover} />
-            <Route path="/learn" component={Learn} />
-            <Route path="/teach" component={Teach} />
-            <Route path="/create" component={Create} />
-            <Route path="/profile" component={Profile} />
-          </Switch>
-        </div>
-      )}
+      {isLoading ? <Loading /> : <></>}
+      <div onScroll={handleScroll} ref={scrollRef} className="content">
+        <Switch>
+          <Route exact path="/test" component={Test} />
+          <Route path="/discover" component={Discover} />
+          <Route path="/learn" component={Learn} />
+          <Route path="/teach" component={Teach} />
+          <Route path="/create" component={Create} />
+          <Route path="/profile" component={Profile} />
+        </Switch>
+      </div>
     </>
   ) : (
     <>

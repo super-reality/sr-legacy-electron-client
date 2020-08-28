@@ -3,19 +3,14 @@ import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import * as crypto from "crypto";
-import { bool } from "aws-sdk/clients/signer";
-import { useAlert } from "react-alert";
 import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import AutosuggestInput from "../../autosuggest-input";
-import store, { AppState } from "../../../redux/stores/renderer";
+import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
-import handleLessonCreate, {
-  createLesson,
-} from "../../../api/handleLessonCreate";
+import handleLessonCreate from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
 import { LessonResp } from "../../../api/types/lesson/create";
 import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
@@ -28,26 +23,52 @@ import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import usePopup from "../../../hooks/usePopup";
-import uploadFileToS3 from "../../../../utils/uploadImage";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import getFileSha1 from "../../../../utils/getFileSha1";
+import getFileExt from "../../../../utils/getFileExt";
+import { getParentVal, getParentId, renderParent } from "../../links";
+import setLoading from "../../../redux/utils/setLoading";
 
-const getVal = (p: Parents) => {
-  return p.type == "lesson"
-    ? `${p.subjectName}/${p.lessonName}`
-    : `${p.collectionName}/${p.subjectName}`;
+const uploadArtifacts = (
+  original: ILesson
+): Promise<Record<string, string>> => {
+  const fileNames = [];
+  const iconPath = original.icon.split('"').join("");
+  fileNames.push(iconPath);
+  original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
+  original.steps.forEach((step) => fileNames.push(step.image));
+  const ret: Record<string, string> = {};
+  return Promise.all(
+    fileNames.map((file) =>
+      uploadFileToS3(file).then((f) => {
+        ret[file] = f;
+      })
+    )
+  ).then(() => ret);
 };
 
-const getId = (p: Parents) => {
-  return p.type == "lesson" ? p.lessonId : p.subjectId;
+const preprocessDataBeforePost = (
+  postData: ILesson,
+  artifacts: Record<string, string>
+): ILesson => {
+  const localData = { ...postData };
+  const icon = artifacts[localData.icon];
+  const medias = localData.medias.map((item: string) => {
+    return artifacts[item];
+  });
+  const steps = localData.steps.map((element) => {
+    const image = artifacts[element.image];
+    return { ...element, image };
+  });
+  return { ...localData, icon, medias, steps };
 };
-
-const renderVal = (p: Parents) => <div>{getVal(p)}</div>;
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
   const lessondata = useSelector((state: AppState) => state.createLesson);
-  const [creationState, setCreatoinState] = useState(true);
+  const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -56,11 +77,6 @@ export default function PublishAuthoring(): JSX.Element {
         arg: { entry: _entry },
       });
     },
-    [dispatch]
-  );
-  const gSetLoadingState = useCallback(
-    (_entry: bool) =>
-      reduxAction(dispatch, { type: "SET_LOADING_STATE", arg: _entry }),
     [dispatch]
   );
 
@@ -92,68 +108,35 @@ export default function PublishAuthoring(): JSX.Element {
     return reasons;
   }, [lessondata]);
 
-  const preprocessLessonDataBeforePost = (postData: ILesson): ILesson => {
-    const localData = { ...postData };
-    const icon = crypto.createHash("md5").update(localData.icon).digest("hex");
-    const medias = localData.medias.map((item: string, idx: Number) => {
-      return crypto.createHash("md5").update(item).digest("hex");
-    });
-    const steps = localData.steps.map((element, idx) => {
-      const image = crypto
-        .createHash("md5")
-        .update(element.image)
-        .digest("hex");
-      return { ...element, image };
-    });
-    return { ...localData, icon, medias, steps };
-  };
-
-  const afterProcessLessonDataBeforePost = (
-    lessonId: string,
-    originlessondata: ILesson,
-    postLessonData: ILesson
-  ): void => {
-    uploadFileToS3(
-      originlessondata.icon.split('"').join(""),
-      `${postLessonData.icon + lessonId}.png`
-    );
-    for (let i = 0; i < originlessondata.medias.length; i += 1) {
-      uploadFileToS3(
-        originlessondata.medias[i],
-        `${postLessonData.medias[i] + lessonId}.png`
-      );
-    }
-    for (let i = 0; i < originlessondata.steps.length; i += 1) {
-      uploadFileToS3(
-        originlessondata.steps[i].image,
-        `${postLessonData.steps[i].image + lessonId}.png`
-      );
-    }
-    reduxAction(store.dispatch, { type: "CREATE_LESSON_RESET", arg: null });
-  };
-
-  const lessonPublish = useCallback(() => {
+  const doPublish = useCallback(() => {
     const reasons = validateFields();
-    const postLessonData = preprocessLessonDataBeforePost(lessondata);
     if (reasons.length == 0) {
-      createLesson(postLessonData)
-        .then((res) => {
-          handleLessonCreate(res).then((lessonId) => {
-            afterProcessLessonDataBeforePost(
-              lessonId,
-              lessondata,
-              postLessonData
-            );
-          });
+      setLoading(true);
+      uploadArtifacts(lessondata)
+        .then((artifacts) =>
+          axios.post<ApiError | LessonResp>(
+            `${API_URL}lesson/create`,
+            preprocessDataBeforePost(lessondata, artifacts)
+          )
+        )
+        .then(handleLessonCreate)
+        .then(() => {
+          setLoading(false);
+          setCreationState(true);
+          open();
         })
         .catch((err) => {
+          setLoading(false);
+          setCreationState(false);
           open();
           handleGenericError(err);
         });
     } else {
+      setLoading(false);
+      setCreationState(false);
       open();
     }
-  }, [open, lessondata]);
+  }, [dispatch, open, lessondata]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
@@ -195,12 +178,26 @@ export default function PublishAuthoring(): JSX.Element {
     <>
       <Popup width="400px" height="auto">
         <div className="validation-popup">
-          <div className="title">Please review before publishing:</div>
-          {validateFields().map((r) => (
-            <div className="line" key={r}>
-              {r}
-            </div>
-          ))}
+          {creationState == true ? (
+            <>
+              <div className="title green">Sucess</div>
+              <div className="line">The lesson was created sucessfuly!</div>
+            </>
+          ) : (
+            <>
+              <div className="title">Please review before publishing:</div>
+              {validateFields().map((r) => (
+                <div className="line" key={r}>
+                  {r}
+                </div>
+              ))}
+              {creationState == false && validateFields().length == 0 ? (
+                <div className="line">Creation of this lesson failed.</div>
+              ) : (
+                <></>
+              )}
+            </>
+          )}
           <ButtonSimple className="button" onClick={closePopup}>
             Ok
           </ButtonSimple>
@@ -220,12 +217,12 @@ export default function PublishAuthoring(): JSX.Element {
           <AutosuggestInput<Parents>
             style={{ marginTop: "8px" }}
             forceSuggestions={suggestions}
-            getValue={getVal}
-            renderSuggestion={renderVal}
+            getValue={getParentVal}
+            renderSuggestion={renderParent}
             id="parent-subject"
             onChangeCallback={onSuggestChange}
             submitCallback={(p) =>
-              addParentTag({ name: getVal(p), id: getId(p) })
+              addParentTag({ name: getParentVal(p), id: getParentId(p) })
             }
             selectClear
           />
@@ -242,7 +239,7 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={lessonPublish}
+          onClick={doPublish}
         >
           Publish
         </ButtonSimple>

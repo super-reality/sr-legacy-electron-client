@@ -21,6 +21,7 @@
   }
 
   .react-autosuggest__suggestions-container--open {
+    cursor: pointer;
     display: flex;
     width: 100%;
     position: absolute;

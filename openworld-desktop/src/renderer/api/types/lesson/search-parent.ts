@@ -1,6 +1,14 @@
 import { CodeSuccess } from "..";
 
-// type ParentType = "subject" | "lesson";
+interface Collection {
+  type: "collection";
+  collectionId: string;
+  collectionName: string;
+  subjectId: undefined;
+  subjectName: undefined;
+  lessonId: undefined;
+  lessonName: undefined;
+}
 
 interface Subject {
   type: "subject";
@@ -22,7 +30,7 @@ interface Lesson {
   lessonName: string;
 }
 
-export type Parents = Subject | Lesson;
+export type Parents = Subject | Lesson | Collection;
 
 /* eslint-disable camelcase */
 export default interface LessonSearchParent {

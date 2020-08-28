@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ICollection } from "../../api/types/collection/collection";
+import { ISubject } from "../../api/types/subject/subject";
 import { EntryOptions } from "../../api/types/lesson/lesson";
 
-const initialState: ICollection = {
+const initialState: ISubject = {
+  parent: [],
   icon: "",
   name: "",
   shortDescription: "",
@@ -14,25 +15,25 @@ const initialState: ICollection = {
   entry: EntryOptions.Open,
 };
 
-const createCollectionSlice = createSlice({
-  name: "createCollection",
+const createSubjectSlice = createSlice({
+  name: "createSubject",
   initialState,
   reducers: {
     setData: (
-      state: ICollection,
-      action: PayloadAction<Partial<ICollection>>
+      state: ISubject,
+      action: PayloadAction<Partial<ISubject>>
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    addTag: (state: ICollection, action: PayloadAction<string>): void => {
+    addTag: (state: ISubject, action: PayloadAction<string>): void => {
       state.tags = [...state.tags, action.payload];
     },
-    reset: (state: ICollection, action: PayloadAction<null>): void => {
+    reset: (state: ISubject, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
     },
   },
 });
 
-export const { setData, addTag, reset } = createCollectionSlice.actions;
+export const { setData, addTag, reset } = createSubjectSlice.actions;
 
-export default createCollectionSlice;
+export default createSubjectSlice;
