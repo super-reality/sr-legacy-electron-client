@@ -9,8 +9,7 @@ import {
   Title,
   Text,
   Points,
-  ContainerTop,
-  ContainerFlex,
+  ContainerTopBig,
 } from "../item-inner";
 import { Option } from "../../views/create/components";
 
@@ -30,14 +29,12 @@ export default function CreateOption(props: StepProps): JSX.Element {
 
   return (
     <ItemInner text onClick={hover ? onClick : undefined}>
-      <ContainerTop>
+      <ContainerTopBig>
         <Icon style={{ backgroundColor: "rgba(0,0,0,0)" }} url={data.image} />
         <Title title={data.title} sub={`${data.created} created`} />
         <Points points={data.cost} />
-      </ContainerTop>
-      <ContainerFlex>
         <Text>{data.description}</Text>
-      </ContainerFlex>
+      </ContainerTopBig>
     </ItemInner>
   );
 }

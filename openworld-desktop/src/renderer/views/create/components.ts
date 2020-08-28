@@ -57,7 +57,7 @@ createOptions[Category.Subject] = {
   title: "Subject",
   category: Category.Subject,
   created: 1,
-  image: "string",
+  image: CatSubject,
   cost: -5,
   description: "Subjects contain lessons.",
 };

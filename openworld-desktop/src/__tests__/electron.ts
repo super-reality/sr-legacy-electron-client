@@ -60,6 +60,15 @@ describe("it renders", () => {
       height: 800,
     });
 
+    // Test pages
+    for (let i = 0; i < 5; i += 1) {
+      await page.goto(`http://localhost:3000/#/tests/${i}`);
+      await page.waitFor(1000);
+      const img = await page.screenshot();
+      expect(img).toMatchImageSnapshot(matchConfig);
+    }
+
+    // Go to root / splash
     await page.goto("http://localhost:3000");
     await page.waitForSelector("#root > div > div.button-simple.undefined");
 
@@ -70,19 +79,49 @@ describe("it renders", () => {
     );
     expect(btnText).toEqual("Login");
 
+    // Welcome splash
     const splashImage = await page.screenshot();
     expect(splashImage).toMatchImageSnapshot(matchConfig);
 
     if (btn) await btn.click();
 
+    // Login form
     const loginImage = await page.screenshot();
     expect(loginImage).toMatchImageSnapshot(matchConfig);
 
-    for (let i = 0; i < 5; i += 1) {
-      await page.goto(`http://localhost:3000/#/tests/${i}`);
-      const img = await page.screenshot();
-      expect(img).toMatchImageSnapshot(matchConfig);
-    }
+    // Replicate login process
+    await page.$eval(
+      "#root > div > div > form > fieldset > div:nth-child(1) > input[type=text]",
+      (e: any) => {
+        e.value = "manwe@gmail.com";
+      }
+    );
+    await page.$eval(
+      "#root > div > div > form > fieldset > div:nth-child(2) > input[type=password]",
+      (e: any) => {
+        e.value = "password";
+      }
+    );
+    const loginSubmit = await page.$(
+      "#root > div > div > form > fieldset > div:nth-child(3) > div.button-simple.button-login"
+    );
+
+    if (loginSubmit) await loginSubmit.click();
+
+    // Wait for root / login suceess
+    await page.waitForSelector("#root > div.top-search-container");
+    const rootImage = await page.screenshot();
+    expect(rootImage).toMatchImageSnapshot(matchConfig);
+
+    await page.goto(`http://localhost:3000/#/learn/1`);
+    await page.waitFor(1000);
+    const learn = await page.screenshot();
+    expect(learn).toMatchImageSnapshot(matchConfig);
+
+    await page.goto(`http://localhost:3000/#/create/0`);
+    await page.waitFor(1000);
+    const create = await page.screenshot();
+    expect(create).toMatchImageSnapshot(matchConfig);
 
     browser.close();
     done();

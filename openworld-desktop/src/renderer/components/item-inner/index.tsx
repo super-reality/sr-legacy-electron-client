@@ -39,6 +39,17 @@ export function ContainerTop(
   );
 }
 
+export function ContainerTopBig(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-top-big" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 export function ContainerFlex(
   props: PropsWithChildren<{ style?: CSSProperties }>
 ): JSX.Element {

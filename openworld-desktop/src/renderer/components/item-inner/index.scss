@@ -27,6 +27,21 @@
     display: grid;
   }
 
+  .container-top-big {
+    gap: 8px;
+    display: grid;
+    grid-template-columns: 50px auto auto;
+    grid-template-rows: 32px minmax(16px, auto);
+    grid-template-areas:
+        "icon title score"
+        "icon text text";
+    
+    .item-icon {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   .container-bottom {
     grid-template-columns: 32px auto 32px;
     grid-template-rows: 32px;
