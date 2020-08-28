@@ -11,45 +11,34 @@ import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
 import handleGenericError from "../../../api/handleGenericError";
 import useTagsBox from "../../tag-box";
-import usePopup from "../../../hooks/usePopup";
 import CollectionCreate from "../../../api/types/collection/create";
 import handleCollectionCreate from "../../../api/handleCollectionCreate";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import { ICollection } from "../../../api/types/collection/collection";
-import getFileExt from "../../../../utils/getFileExt";
-import getFileSha1 from "../../../../utils/getFileSha1";
 import setLoading from "../../../redux/utils/setLoading";
+import usePopupValidation from "../../../hooks/usePopupValidation";
+import uploadMany from "../../../../utils/uploadMany";
 
-const uploadArtifacts = (
-  original: ICollection
-): Promise<Record<string, string>> => {
+const uploadArtifacts = (original: ICollection) => {
   const fileNames = [];
-  const iconPath = original.icon.split('"').join("");
-  fileNames.push(iconPath);
+  fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-  const ret: Record<string, string> = {};
-  return Promise.all(
-    fileNames.map((file) =>
-      uploadFileToS3(file).then((f) => {
-        ret[file] = f;
-      })
-    )
-  ).then(() => ret);
+  return uploadMany(fileNames);
 };
 
 const preprocessDataBeforePost = (
   postData: ICollection,
   artifacts: Record<string, string>
 ): ICollection => {
-  const localData = { ...postData };
-  const icon = artifacts[localData.icon];
-  const medias = localData.medias.map((item: string) => {
-    return artifacts[item];
-  });
-  return { ...localData, icon, medias };
+  return {
+    ...postData,
+    icon: artifacts[postData.icon],
+    medias: postData.medias.map((item: string) => {
+      return artifacts[item];
+    }),
+  };
 };
 
 export default function PublishAuthoring(): JSX.Element {
@@ -68,7 +57,7 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const [Popup, open, closePopup] = usePopup(false);
+  const [ValidationPopup, open] = usePopupValidation("collection");
 
   const validateFields = useCallback(() => {
     const reasons: string[] = [];
@@ -133,33 +122,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <Popup width="400px" height="auto">
-        <div className="validation-popup">
-          {creationState == true ? (
-            <>
-              <div className="title green">Sucess</div>
-              <div className="line">The collection was created sucessfuly!</div>
-            </>
-          ) : (
-            <>
-              <div className="title">Please review before publishing:</div>
-              {validateFields().map((r) => (
-                <div className="line" key={r}>
-                  {r}
-                </div>
-              ))}
-              {creationState == false && validateFields().length == 0 ? (
-                <div className="line">Creation of this collection failed.</div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-          <ButtonSimple className="button" onClick={closePopup}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
+      <ValidationPopup sucess={creationState} validationFn={validateFields} />
       <BaseSelect
         title="Entry"
         current={entry}

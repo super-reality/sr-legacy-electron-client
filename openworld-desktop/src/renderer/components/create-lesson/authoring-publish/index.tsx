@@ -22,45 +22,36 @@ import Link from "../../../api/types/link/link";
 import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
-import usePopup from "../../../hooks/usePopup";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
-import getFileSha1 from "../../../../utils/getFileSha1";
-import getFileExt from "../../../../utils/getFileExt";
 import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
+import usePopupValidation from "../../../hooks/usePopupValidation";
+import uploadMany from "../../../../utils/uploadMany";
 
 const uploadArtifacts = (
   original: ILesson
 ): Promise<Record<string, string>> => {
   const fileNames = [];
-  const iconPath = original.icon.split('"').join("");
-  fileNames.push(iconPath);
+  fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
   original.steps.forEach((step) => fileNames.push(step.image));
-  const ret: Record<string, string> = {};
-  return Promise.all(
-    fileNames.map((file) =>
-      uploadFileToS3(file).then((f) => {
-        ret[file] = f;
-      })
-    )
-  ).then(() => ret);
+  return uploadMany(fileNames);
 };
 
 const preprocessDataBeforePost = (
   postData: ILesson,
   artifacts: Record<string, string>
 ): ILesson => {
-  const localData = { ...postData };
-  const icon = artifacts[localData.icon];
-  const medias = localData.medias.map((item: string) => {
-    return artifacts[item];
-  });
-  const steps = localData.steps.map((element) => {
-    const image = artifacts[element.image];
-    return { ...element, image };
-  });
-  return { ...localData, icon, medias, steps };
+  return {
+    ...postData,
+    icon: artifacts[postData.icon],
+    medias: postData.medias.map((item: string) => {
+      return artifacts[item];
+    }),
+    steps: postData.steps.map((element) => {
+      const image = artifacts[element.image];
+      return { ...element, image };
+    }),
+  };
 };
 
 export default function PublishAuthoring(): JSX.Element {
@@ -80,7 +71,7 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const [Popup, open, closePopup] = usePopup(false);
+  const [ValidationPopup, open] = usePopupValidation("lesson");
 
   const validateFields = useCallback(() => {
     const reasons: string[] = [];
@@ -176,33 +167,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <Popup width="400px" height="auto">
-        <div className="validation-popup">
-          {creationState == true ? (
-            <>
-              <div className="title green">Sucess</div>
-              <div className="line">The lesson was created sucessfuly!</div>
-            </>
-          ) : (
-            <>
-              <div className="title">Please review before publishing:</div>
-              {validateFields().map((r) => (
-                <div className="line" key={r}>
-                  {r}
-                </div>
-              ))}
-              {creationState == false && validateFields().length == 0 ? (
-                <div className="line">Creation of this lesson failed.</div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-          <ButtonSimple className="button" onClick={closePopup}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
+      <ValidationPopup validationFn={validateFields} sucess={creationState} />
       <BaseSelect
         title="Entry"
         current={entry}
