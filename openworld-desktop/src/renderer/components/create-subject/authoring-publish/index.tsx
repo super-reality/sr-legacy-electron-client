@@ -26,6 +26,7 @@ import { ISubject } from "../../../api/types/subject/subject";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
 import uploadMany from "../../../../utils/uploadMany";
+import makeValidation from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (original: ISubject) => {
   const fileNames = [];
@@ -66,26 +67,19 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("subject");
 
-  const validateFields = useCallback(() => {
-    const reasons: string[] = [];
-    if (finalData.name.length == 0) reasons.push("Title is required");
-    else if (finalData.name.length < 4) reasons.push("Title is too short");
+  const validation = {
+    name: { name: "Title", minLength: 4 },
+    description: { name: "Description", minLength: 4 },
+    shortDescription: { name: "Short description", minLength: 4 },
+    icon: { name: "Icon", minLength: 4 },
+    medias: { name: "Media", minItems: 1 },
+    parent: { name: "Parent Collections", minItems: 1 },
+  };
 
-    if (finalData.description.length == 0)
-      reasons.push("Description is required");
-    else if (finalData.description.length < 10)
-      reasons.push("Description is too short");
-
-    if (finalData.shortDescription.length == 0)
-      reasons.push("Short description is required");
-    else if (finalData.shortDescription.length < 5)
-      reasons.push("Short description is too short");
-
-    if (finalData.icon == "") reasons.push("Icon is required");
-    if (finalData.medias.length == 0) reasons.push("Media is required");
-
-    return reasons;
-  }, [finalData]);
+  const validateFields = useCallback(
+    () => makeValidation(validation, finalData),
+    [finalData]
+  );
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();

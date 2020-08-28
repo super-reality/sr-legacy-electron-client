@@ -26,6 +26,7 @@ import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
 import uploadMany from "../../../../utils/uploadMany";
+import makeValidation from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (
   original: ILesson
@@ -58,7 +59,7 @@ export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
-  const lessondata = useSelector((state: AppState) => state.createLesson);
+  const finalData = useSelector((state: AppState) => state.createLesson);
   const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
@@ -73,41 +74,30 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("lesson");
 
-  const validateFields = useCallback(() => {
-    const reasons: string[] = [];
-    if (lessondata.name.length == 0) reasons.push("Title is required");
-    else if (lessondata.name.length < 5) reasons.push("Title is too short");
+  const validation = {
+    name: { name: "Title", minLength: 4 },
+    description: { name: "Description", minLength: 4 },
+    shortDescription: { name: "Short description", minLength: 4 },
+    icon: { name: "Icon", minLength: 4 },
+    medias: { name: "Media", minItems: 1 },
+    parent: { name: "Parent Collections", minItems: 1 },
+    steps: { name: "Step", minItems: 1 },
+  };
 
-    if (lessondata.description.length == 0)
-      reasons.push("Description is required");
-    else if (lessondata.description.length < 10)
-      reasons.push("Description is too short");
-
-    if (lessondata.shortDescription.length == 0)
-      reasons.push("Short description is required");
-    else if (lessondata.shortDescription.length < 4)
-      reasons.push("Short description is too short");
-
-    if (lessondata.icon == "") reasons.push("Icon is required");
-    if (lessondata.medias.length == 0) reasons.push("Media is required");
-
-    if (lessondata.parent.length == 0)
-      reasons.push("At least one parent subject is required");
-    if (lessondata.steps.length == 0)
-      reasons.push("At least one step is required");
-
-    return reasons;
-  }, [lessondata]);
+  const validateFields = useCallback(
+    () => makeValidation(validation, finalData),
+    [finalData]
+  );
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
     if (reasons.length == 0) {
       setLoading(true);
-      uploadArtifacts(lessondata)
+      uploadArtifacts(finalData)
         .then((artifacts) =>
           axios.post<ApiError | LessonResp>(
             `${API_URL}lesson/create`,
-            preprocessDataBeforePost(lessondata, artifacts)
+            preprocessDataBeforePost(finalData, artifacts)
           )
         )
         .then(handleLessonCreate)
@@ -127,7 +117,7 @@ export default function PublishAuthoring(): JSX.Element {
       setCreationState(false);
       open();
     }
-  }, [dispatch, open, lessondata]);
+  }, [dispatch, open, finalData]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
