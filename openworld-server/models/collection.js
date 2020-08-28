@@ -25,9 +25,9 @@ const collectionSchema = new Schema({
     // medias urls
     medias: { type: Array },
     // visibility
-    visibility: { type: String },
+    visibility: { type: Array },
     // entry
-    entry: { type: String },
+    entry: { type: Number },
     // number of shares
     numberOfShares: { type: Number },
     // number of activations

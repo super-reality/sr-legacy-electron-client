@@ -4,7 +4,10 @@ const ObjectId = Schema.Types.ObjectId
 /* *** define subject schema *** */
 const subjectSchema = new Schema({
     // parent collection id
-    parent: { type: Array }, 
+    parent: { 
+        type: Array,
+        required: true 
+    }, 
     // subject icon url
     icon: { type: String },
     // subject name
@@ -28,9 +31,9 @@ const subjectSchema = new Schema({
     // medias urls
     medias: { type: Array },
     // visibility
-    visibility: { type: String },
+    visibility: { type: Array },
     // entry
-    entry: { type: String },
+    entry: { type: Number },
     // number of shares
     numberOfShares: { type: Number },
     // number of activations
