@@ -130,6 +130,7 @@ export default function TopSearch(): JSX.Element {
 
   return (
     <div className="top-search-container">
+      <div className="title" />
       <div className="top">
         <ButtonRound
           onClick={backClick}
