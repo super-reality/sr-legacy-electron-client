@@ -50,6 +50,7 @@
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
     "build:web": "craco build --config craco.web.config.js",
+    "deploy:web": "node deploy-web.js",
     "jest-server": "http-server ./build -p 3000",
     "jest:watch": "craco test --env=jsdom",
     "jest:ci": "craco test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
