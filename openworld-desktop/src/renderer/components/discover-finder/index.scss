@@ -1,2 +1,10 @@
 .discover-list {
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(350px, 1fr) );
+}
+
+.discover-separator {
+  display: grid;
+  grid-template-columns: minmax(auto, 400px) minmax(180px, auto);
+  gap: 8px;
 }

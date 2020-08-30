@@ -22,6 +22,7 @@ import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import TeacherBotTop from "../teacherbot-top";
+import isElectron from "../../../utils/isElectron";
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -132,13 +133,17 @@ export default function TopSearch(): JSX.Element {
     <div className="top-search-container">
       <div className="title" />
       <div className="top">
-        <ButtonRound
-          onClick={backClick}
-          svg={BackIcon}
-          height="24px"
-          width="24px"
-          style={{ margin: "auto" }}
-        />
+        {isElectron() ? (
+          <ButtonRound
+            onClick={backClick}
+            svg={BackIcon}
+            height="24px"
+            width="24px"
+            style={{ margin: "auto" }}
+          />
+        ) : (
+          <div />
+        )}
         <Flex>
           <div className="top-input-container">
             <input

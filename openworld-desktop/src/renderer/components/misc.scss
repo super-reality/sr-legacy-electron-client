@@ -18,6 +18,7 @@
 }
 
 $break-desktop: 800px;
+$break-wrapper: 1600px;
 
 @mixin media-screen-min($size) {
   @media screen and (min-width: $size) {
