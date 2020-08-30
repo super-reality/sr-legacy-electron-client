@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState, CSSProperties } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  CSSProperties,
+  useRef,
+} from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
@@ -44,6 +50,7 @@ function TopNavItem(props: TopNavItemProps): JSX.Element {
 export default function TopSearch(): JSX.Element {
   const dispatch = useDispatch();
   const history = useHistory();
+  const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
 
   const topNavButtons: Array<[string, tabNames]> = [
     // ["test", "Test"],
@@ -107,7 +114,11 @@ export default function TopSearch(): JSX.Element {
     [openDropdown]
   );
 
-  const [SelectDropdown, dropdownRef] = useSelectHeader(openDropdown, onSelect);
+  const [SelectDropdown, dropdownRef] = useSelectHeader(
+    openDropdown,
+    onSelect,
+    dropdownContainerRef
+  );
 
   const closeDropdown = useCallback(() => {
     if (openDropdown) {
@@ -125,6 +136,7 @@ export default function TopSearch(): JSX.Element {
           svg={BackIcon}
           height="24px"
           width="24px"
+          style={{ margin: "auto" }}
         />
         <Flex>
           <div className="top-input-container">
@@ -159,7 +171,7 @@ export default function TopSearch(): JSX.Element {
           width="24px"
         />
       </div>
-      <div className="bottom">
+      <div className="bottom" ref={dropdownContainerRef}>
         {topNavButtons.map((b) => (
           <TopNavItem
             onClick={() => {
