@@ -1,6 +1,15 @@
+@import "../misc.scss";
+
 .discover-list {
-  display: grid;
-  grid-template-columns: repeat( auto-fit, minmax(350px, 1fr) );
+  @include media-screen-min(400px) {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(350px, 1fr) );
+  }
+
+  @include media-screen-max(400px) {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .discover-separator {
