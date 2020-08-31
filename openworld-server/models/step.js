@@ -4,11 +4,9 @@ const ObjectId = Schema.Types.ObjectId
 /* *** define step schema *** */
 const stepSchema = new Schema({
     // step Image
-    image: { type: String },
-    // image function
-    imageFunction: { type: Number },
-    // additional image function
-    additionalFunctions: { type: Array },
+    images: { type: Array },
+    // image function: ex: [1, 3, 2]
+    functions: { type: Array },
     // step name
     name: { 
         type: String, 
