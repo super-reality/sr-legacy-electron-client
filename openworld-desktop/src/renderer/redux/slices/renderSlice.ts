@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Category from "../../../types/collections";
 
 export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 

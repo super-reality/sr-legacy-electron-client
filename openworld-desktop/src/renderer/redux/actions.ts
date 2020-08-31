@@ -3,7 +3,8 @@ import * as renderSlice from "./slices/renderSlice";
 import * as createLessonSlice from "./slices/createLessonSlice";
 import * as createCollectionSlice from "./slices/createCollectionSlice";
 import * as createSubjectSlice from "./slices/createSubjectSlice";
-import * as commonPropSlice from "./slices/commonProps";
+import * as commonPropSlice from "./slices/commonPropSlice";
+import * as userDataSlice from "./slices/userDataSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -24,6 +25,10 @@ export const actions = {
   CREATE_SUBJECT_TAG: createSubjectSlice.addTag,
   CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
+  USERDATA_RESET: userDataSlice.clearUserData,
+  USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
+  USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,
+  USERDATA_TOGGLE_LESSON: userDataSlice.toggleLesson,
 };
 
 export type ActionKeys = keyof typeof actions;
