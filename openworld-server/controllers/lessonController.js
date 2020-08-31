@@ -5,7 +5,10 @@ const Step      = require("../models/step")
 const Tag       = require("../models/tag")
 const constant  = require("../config/constant")
 
-exports.create = function(request, response){
+const fileupload = require("../utilities/upload")
+const path = require('path')
+
+exports.create = async function(request, response){
     const { 
         parent,
         icon,
@@ -20,6 +23,25 @@ exports.create = function(request, response){
         entry,
         steps
     } = request.body;
+    
+    // check there are parent values
+    if (parent.length < 1) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.require_field_missing,
+            msg: "Parent field should have value"
+        });
+        return
+    }
+
+    // check parent have already this lesson
+    var lesson_already_exist = await isUniqueInParent(parent, name)
+    if (lesson_already_exist) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.lesson_already_exist_in_parent,
+            msg: "One of parents already has this lesson"
+        });
+        return
+    }
 
     var lesson = Lesson()
     lesson.parent = parent
@@ -71,13 +93,162 @@ exports.create = function(request, response){
                     totalSteps.push(steps[i]._id)
                 } else {
                     var step = Step()
-                    step.image = steps[i].image
-                    step.imageFunction = steps[i].imageFunction
-                    step.additionalFunctions = steps[i].additionalFunctions
+                    step.images = steps[i].images
+                    step.functions = steps[i].functions
                     step.name = steps[i].name
                     step.trigger = steps[i].trigger
                     step.description = steps[i].description
                     step.next = steps[i].next
+                    step.createdBy = request.user._id
+
+                    await step.save()
+                    totalSteps.push(step._id)
+                }
+            }
+
+            // update lesson's totalSteps to steps array
+            lesson.totalSteps = totalSteps
+            lesson.save(function (err) {
+                if (err) {
+                    response.status(constant.ERR_STATUS.Bad_Request).json({
+                        error: err
+                    });
+                } else {
+                    response.json({
+                        err_code: constant.ERR_CODE.success,
+                        lesson
+                    });
+                }
+            });
+        }
+    })
+}
+
+exports.createWithForm = async function(request, response){
+    const { 
+        parent,
+        name,
+        shortDescription,
+        description,
+        difficulty,
+        tags,
+        visibility,
+        ownership,
+        entry,
+        steps
+    } = request.body;
+
+    const files = request.files
+    const parentArray = JSON.parse(parent)
+    const tagsObject = JSON.parse(tags)
+    const visibilityObject = JSON.parse(visibility)
+    const ownershipObject = JSON.parse(ownership)
+    var stepsObject = JSON.parse(steps)
+    
+    // check there are parent values
+    if (parentArray.length < 1) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.require_field_missing,
+            msg: "Parent field should have value"
+        });
+        return
+    }
+
+    // check parent have already this lesson
+    var lesson_already_exist = await isUniqueInParent(parentArray, name)
+    if (lesson_already_exist) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.lesson_already_exist_in_parent,
+            msg: "One of parents already has this lesson"
+        });
+        return
+    }
+
+    var lesson = Lesson()
+    lesson.parent = parentArray
+    // lesson.icon = icon
+    lesson.name = name
+    lesson.shortDescription = shortDescription
+    lesson.description = description
+    lesson.difficulty = difficulty
+    // lesson.medias = medias
+    lesson.tags = tagsObject
+    lesson.visibility = visibilityObject
+    lesson.ownership = ownershipObject
+    lesson.entry = entry
+    // lesson.totalSteps = []
+    lesson.rating = 0
+    lesson.ratingCount = 0
+    lesson.numberOfShares = 0
+    lesson.numberOfActivations = 0
+    lesson.numberOfCompletions = 0
+    lesson.createdBy = request.user._id
+
+    // save lesson document
+    lesson.save(async function (err) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            // save tags to Tag table
+            for (var i = 0; i < tagsObject.length; i++){
+                const tagName = tagsObject[i]
+                Tag.findOne({name: tagName})
+                .then(result => {
+                    if (result) {
+                    } else {
+                        var tag = Tag()
+                        tag.name = tagName
+                        tag.type = "lesson"
+                        tag.save()
+                    }
+                })
+                .catch(error => {})
+            }
+
+            // save icon and media
+            var mediaFiles = []
+            var stepsFiles = []
+            stepsObject.forEach(element => {
+                stepsFiles.push([])
+            });
+
+            files.forEach(element => {
+                if (element.fieldname == "icon") {
+                    const key = 'lesson-icon-' + lesson._id + "-" + Date.now() + path.extname(element.originalname)
+                    fileupload(element, key, (success, data) => {
+                    })
+                    lesson.icon = constant.S3_ENDPOINT + key
+                } else if (element.fieldname == "medias") {
+                    const key = 'lesson-media-' + lesson._id + "-" + Date.now() + path.extname(element.originalname)
+                    fileupload(element, key, (success, data) => {
+                    })
+                    mediaFiles.push(constant.S3_ENDPOINT + key)
+                } else if (element.fieldname.startsWith("step")) {
+                    var index = element.fieldname.substring(5)
+                    const key = 'lesson-step-' + lesson._id + "-" + index + "-" + Date.now() + path.extname(element.originalname)
+                    fileupload(element, key, (success, data) => {
+                    })
+                    stepsFiles[index].push(constant.S3_ENDPOINT + key)
+                }
+            });
+
+            lesson.medias = mediaFiles
+
+            // save steps to Step table
+            var totalSteps = []
+            for (var i = 0; i < stepsObject.length; i++){
+                if (stepsObject[i]._id) {
+                    totalSteps.push(stepsObject[i]._id)
+                } else {
+                    var step = Step()
+                    step.images = stepsFiles[i]
+                    step.functions = stepsObject[i].functions
+                    step.name = stepsObject[i].name
+                    step.trigger = stepsObject[i].trigger
+                    step.description = stepsObject[i].description
+                    step.next = stepsObject[i].next
                     step.createdBy = request.user._id
 
                     await step.save()
@@ -152,4 +323,29 @@ exports.searchParent = function(request, response){
             });
         }
     });
+}
+
+isUniqueInParent = async(parents, name) => {
+    const promises = parents.map((item) => {
+        return new Promise((resolve, reject) => {
+            Lesson.findOne( { parent: item, name: name }, (err, lesson) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    if (lesson) {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                }
+            })
+        })
+    })
+    
+    const results = await Promise.all(promises)
+    console.log(results)
+    if (results.includes(true)) {
+        return true
+    }
+    return false
 }

@@ -182,15 +182,14 @@ interface ImageProps {
   src: string;
   style?: CSSProperties;
   area?: string;
-  onClick: any;
 }
 
 export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
-  const { src, style, area, children, onClick } = props;
+  const { src, style, area, children } = props;
 
   return (
     <div className="item-image" style={{ ...style, gridArea: area }}>
-      <img src={src} onClick={onClick} />
+      <img src={src} />
     </div>
   );
 }

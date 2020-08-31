@@ -9,7 +9,11 @@ const collectionController  = require('../../../controllers/collectionController
 const subjectController     = require('../../../controllers/subjectController')
 const lessonController      = require('../../../controllers/lessonController')
 const stepController        = require('../../../controllers/stepController')
-const tagController        = require('../../../controllers/tagController')
+const tagController         = require('../../../controllers/tagController')
+const fileController        = require('../../../controllers/fileController')
+
+const multer  = require('multer');
+const fileParser  = multer({ storage: multer.memoryStorage() });
 
 // full route "/v1/api"
 router.get('/', function (req, res) {
@@ -46,6 +50,7 @@ router.group("/subject", (router) => {
 // lessons routes
 router.group("/lesson", (router) => {
     router.post("/create", auth(), lessonController.create)
+    router.post("/createWithForm", [auth(), fileParser.any()], lessonController.createWithForm)
     router.get("/search-parent/:query", auth(), lessonController.searchParent)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })
@@ -53,6 +58,11 @@ router.group("/lesson", (router) => {
 // tag routes
 router.group("/tag", (router) => {
     router.get("/search/:query", auth(), tagController.search)
+})
+
+// file routes
+router.group("/file", (router) => {
+    router.post("/upload", [auth(), fileParser.any()], fileController.upload)
 })
 
 module.exports = router

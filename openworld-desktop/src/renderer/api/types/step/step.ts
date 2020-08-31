@@ -27,15 +27,9 @@ export const NextStepOptions = {
   "On text reading finished": constant.Next_Step.On_Text_Reading_Finished,
 };
 
-export interface ICVFn {
-  image: string;
-  function: number;
-}
-
 export interface IStep {
-  image: string;
-  imageFunction: number;
-  additionalFunctions: ICVFn[];
+  images: string[];
+  functions: number[];
   name: string;
   trigger: number;
   description: string;
