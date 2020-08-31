@@ -11,6 +11,9 @@ const lessonController      = require('../../../controllers/lessonController')
 const stepController        = require('../../../controllers/stepController')
 const tagController        = require('../../../controllers/tagController')
 
+const multer  = require('multer');
+const fileParser  = multer({ storage: multer.memoryStorage() });
+
 // full route "/v1/api"
 router.get('/', function (req, res) {
     res.json({
@@ -45,7 +48,7 @@ router.group("/subject", (router) => {
 
 // lessons routes
 router.group("/lesson", (router) => {
-    router.post("/create", auth(), lessonController.create)
+    router.post("/create", [auth(), fileParser.any()], lessonController.create)
     router.get("/search-parent/:query", auth(), lessonController.searchParent)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })
