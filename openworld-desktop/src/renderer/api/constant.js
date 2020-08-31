@@ -73,4 +73,8 @@ module.exports = Object.freeze({
 
   Admin: 1,
   Client: 2,
+
+  S3_ENDPOINT: process.env.S3_ENDPOINT
+    ? process.env.S3_ENDPOINT
+    : "https://s3.us-west-1.amazonaws.com/openverse-lms/",
 });
