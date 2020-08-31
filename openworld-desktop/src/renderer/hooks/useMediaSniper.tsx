@@ -4,6 +4,46 @@ import url from "url";
 import { useCallback } from "react";
 import jsonRpcRemote from "../../utils/jsonRpcSend";
 
+export function createFindBox(
+  posx: Number,
+  posy: Number,
+  width: Number,
+  height: Number
+): void {
+  const { remote } = require("electron");
+  const snipWindow = new remote.BrowserWindow({
+    width: width,
+    height: height,
+    frame: false,
+    x: posx,
+    y: posy,
+    // transparent: true,
+    opacity: 1,
+    alwaysOnTop: true,
+    resizable: false,
+    movable: true,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+  });
+  const proc: any = process;
+  snipWindow.loadURL(
+    url.format({
+      pathname: remote.app.isPackaged
+        ? path.join(proc.resourcesPath, "app.asar", "build", "find.html")
+        : path.join("..", "public", "find.html"),
+      protocol: "file:",
+      slashes: true,
+    })
+  );
+  snipWindow.on("closed", () => {
+    snipWindow.destroy();
+  });
+  snipWindow.on("mouseEnterFromFindTarget", () => {
+    console.log("mouseenterevne");
+    snipWindow.close();
+  });
+}
 function createSniper(imgUrl: any): Promise<string> {
   const { remote } = require("electron");
   const snipWindow = new remote.BrowserWindow({
