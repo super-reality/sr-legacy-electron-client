@@ -1,3 +1,5 @@
+@import "./components/misc.scss";
+
 :root {
   --color-background: #202225;
   --color-section: #2F3136;
@@ -80,6 +82,16 @@ a:focus, a:hover, a:visited, a:link, a:active {
 .content {
   overflow: auto;
   height: calc(100vh - 45px);
+}
+
+.content-wrapper {
+  @include media-screen-max($break-wrapper) {
+    width: auto;
+  }
+  @include media-screen-min($break-wrapper) {
+    width: $break-wrapper;
+    margin: auto;
+  }
 }
 
 ::-webkit-scrollbar {

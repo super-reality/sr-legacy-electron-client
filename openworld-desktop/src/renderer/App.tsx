@@ -38,14 +38,16 @@ export default function App(): JSX.Element {
       <TopSearch />
       {isLoading ? <Loading /> : <></>}
       <div onScroll={handleScroll} ref={scrollRef} className="content">
-        <Switch>
-          <Route exact path="/test" component={Test} />
-          <Route path="/discover" component={Discover} />
-          <Route path="/learn" component={Learn} />
-          <Route path="/teach" component={Teach} />
-          <Route path="/create" component={Create} />
-          <Route path="/profile" component={Profile} />
-        </Switch>
+        <div className="content-wrapper">
+          <Switch>
+            <Route exact path="/test" component={Test} />
+            <Route path="/discover" component={Discover} />
+            <Route path="/learn" component={Learn} />
+            <Route path="/teach" component={Teach} />
+            <Route path="/create" component={Create} />
+            <Route path="/profile" component={Profile} />
+          </Switch>
+        </div>
       </div>
     </>
   ) : (

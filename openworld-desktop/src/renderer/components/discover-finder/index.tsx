@@ -24,18 +24,22 @@ export default function DiscoverFinder(
   return (
     <>
       <div className="mid">
-        <Flex>
+        <div className="discover-separator">
           <div>
             <InnerSearch />
           </div>
           <Select
-            style={{ width: "-webkit-fill-available", marginLeft: "8px" }}
+            style={{
+              maxWidth: "180px",
+              width: "-webkit-fill-available",
+              justifySelf: "self-end",
+            }}
             className="dark"
             options={sortOptions}
             current={sort}
             callback={setSort}
           />
-        </Flex>
+        </div>
       </div>
       <div className="discover-list">
         {Component ? (

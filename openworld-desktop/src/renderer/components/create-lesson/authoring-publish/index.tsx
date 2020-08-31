@@ -22,52 +22,46 @@ import Link from "../../../api/types/link/link";
 import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
-import usePopup from "../../../hooks/usePopup";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
-import getFileSha1 from "../../../../utils/getFileSha1";
-import getFileExt from "../../../../utils/getFileExt";
 import { getParentVal, getParentId, renderParent } from "../../links";
 import setLoading from "../../../redux/utils/setLoading";
+import usePopupValidation from "../../../hooks/usePopupValidation";
+import uploadMany from "../../../../utils/uploadMany";
+import makeValidation, {
+  ValidationFields,
+} from "../../../../utils/makeValidation";
 
 const uploadArtifacts = (
   original: ILesson
 ): Promise<Record<string, string>> => {
   const fileNames = [];
-  const iconPath = original.icon.split('"').join("");
-  fileNames.push(iconPath);
+  fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
   original.steps.forEach((step) => fileNames.push(step.image));
-  const ret: Record<string, string> = {};
-  return Promise.all(
-    fileNames.map((file) =>
-      uploadFileToS3(file).then((f) => {
-        ret[file] = f;
-      })
-    )
-  ).then(() => ret);
+  return uploadMany(fileNames);
 };
 
 const preprocessDataBeforePost = (
   postData: ILesson,
   artifacts: Record<string, string>
 ): ILesson => {
-  const localData = { ...postData };
-  const icon = artifacts[localData.icon];
-  const medias = localData.medias.map((item: string) => {
-    return artifacts[item];
-  });
-  const steps = localData.steps.map((element) => {
-    const image = artifacts[element.image];
-    return { ...element, image };
-  });
-  return { ...localData, icon, medias, steps };
+  return {
+    ...postData,
+    icon: artifacts[postData.icon],
+    medias: postData.medias.map((item: string) => {
+      return artifacts[item];
+    }),
+    steps: postData.steps.map((element) => {
+      const image = artifacts[element.image];
+      return { ...element, image };
+    }),
+  };
 };
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
   const { entry } = useSelector((state: AppState) => state.createLesson);
-  const lessondata = useSelector((state: AppState) => state.createLesson);
+  const finalData = useSelector((state: AppState) => state.createLesson);
   const [creationState, setCreationState] = useState(true);
 
   const setEntry = useCallback(
@@ -80,43 +74,32 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const [Popup, open, closePopup] = usePopup(false);
+  const [ValidationPopup, open] = usePopupValidation("lesson");
 
-  const validateFields = useCallback(() => {
-    const reasons: string[] = [];
-    if (lessondata.name.length == 0) reasons.push("Title is required");
-    else if (lessondata.name.length < 5) reasons.push("Title is too short");
+  const validation: ValidationFields<ILesson> = {
+    name: { name: "Title", minLength: 4 },
+    description: { name: "Description", minLength: 4 },
+    shortDescription: { name: "Short description", minLength: 4 },
+    icon: { name: "Icon", minLength: 4 },
+    medias: { name: "Media", minItems: 1 },
+    parent: { name: "Parent Collections", minItems: 1 },
+    steps: { name: "Step", minItems: 1 },
+  };
 
-    if (lessondata.description.length == 0)
-      reasons.push("Description is required");
-    else if (lessondata.description.length < 10)
-      reasons.push("Description is too short");
-
-    if (lessondata.shortDescription.length == 0)
-      reasons.push("Short description is required");
-    else if (lessondata.shortDescription.length < 4)
-      reasons.push("Short description is too short");
-
-    if (lessondata.icon == "") reasons.push("Icon is required");
-    if (lessondata.medias.length == 0) reasons.push("Media is required");
-
-    if (lessondata.parent.length == 0)
-      reasons.push("At least one parent subject is required");
-    if (lessondata.steps.length == 0)
-      reasons.push("At least one step is required");
-
-    return reasons;
-  }, [lessondata]);
+  const validateFields = useCallback(
+    () => makeValidation<ILesson>(validation, finalData),
+    [finalData]
+  );
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
     if (reasons.length == 0) {
       setLoading(true);
-      uploadArtifacts(lessondata)
+      uploadArtifacts(finalData)
         .then((artifacts) =>
           axios.post<ApiError | LessonResp>(
             `${API_URL}lesson/create`,
-            preprocessDataBeforePost(lessondata, artifacts)
+            preprocessDataBeforePost(finalData, artifacts)
           )
         )
         .then(handleLessonCreate)
@@ -136,7 +119,7 @@ export default function PublishAuthoring(): JSX.Element {
       setCreationState(false);
       open();
     }
-  }, [dispatch, open, lessondata]);
+  }, [dispatch, open, finalData]);
 
   const onSuggestChange = useCallback((value: string) => {
     if (value.length > 2) {
@@ -176,33 +159,7 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <Popup width="400px" height="auto">
-        <div className="validation-popup">
-          {creationState == true ? (
-            <>
-              <div className="title green">Sucess</div>
-              <div className="line">The lesson was created sucessfuly!</div>
-            </>
-          ) : (
-            <>
-              <div className="title">Please review before publishing:</div>
-              {validateFields().map((r) => (
-                <div className="line" key={r}>
-                  {r}
-                </div>
-              ))}
-              {creationState == false && validateFields().length == 0 ? (
-                <div className="line">Creation of this lesson failed.</div>
-              ) : (
-                <></>
-              )}
-            </>
-          )}
-          <ButtonSimple className="button" onClick={closePopup}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
+      <ValidationPopup validationFn={validateFields} sucess={creationState} />
       <BaseSelect
         title="Entry"
         current={entry}

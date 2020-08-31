@@ -5,10 +5,34 @@
   border-radius: 5px;
   margin: 8px;
   padding: 8px;
-  display: flex;
   flex-direction: column;
   background-color: var(--color-section);
+  display: grid;
+  gap: 8px;
   @include soft-shadow;
+
+  @include media-screen-min($break-desktop) {
+    grid-template-columns: minmax(auto, 340px) auto minmax(auto, 400px) !important;
+    grid-template-rows: 32px !important;
+  }
+
+  @include media-screen-max($break-desktop) {
+    grid-template-columns: auto;
+    grid-template-rows: 32px 32px;
+  }
+
+  .title {
+    background-image: url(../../../assets/images/teacherbot.png);
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @include media-screen-max($break-desktop) {
+      display: none;
+    }
+  }
 
   .top {
     display: grid;
@@ -17,7 +41,6 @@
   }
 
   .bottom {
-    margin-top: 8px;
     display: flex;
     justify-content: space-between;
 
