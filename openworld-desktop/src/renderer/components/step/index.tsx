@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import "./index.scss";
 import {
@@ -14,10 +14,12 @@ import { IStep } from "../../api/types/step/step";
 interface StepProps {
   data: IStep;
   number: number;
+  drag?: boolean;
+  style?: CSSProperties;
 }
 
 export default function Step(props: StepProps): JSX.Element {
-  const { data, number } = props;
+  const { data, drag, style, number } = props;
 
   return (
     <ItemInner
@@ -25,14 +27,21 @@ export default function Step(props: StepProps): JSX.Element {
         margin: "0",
         width: "-webkit-fill-available",
         height: "-webkit-fill-available",
+        ...style,
       }}
-      drag
+      drag={drag}
       text
     >
       <ContainerFlex>
         <Title title={data.name} sub={`Step ${number}`} />
       </ContainerFlex>
-      <ContainerFlex>
+      <ContainerFlex
+        style={{
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
         <Text>{data.description}</Text>
       </ContainerFlex>
     </ItemInner>

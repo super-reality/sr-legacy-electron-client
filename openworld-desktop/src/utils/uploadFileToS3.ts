@@ -9,6 +9,7 @@ export default function uploadFileToS3(
   localFileName: string,
   type: string = "lesson"
 ): Promise<string> {
+  console.log("upload:", localFileName);
   return new Promise((resolve, reject) => {
     try {
       const fileContent = fs.readFileSync(localFileName);

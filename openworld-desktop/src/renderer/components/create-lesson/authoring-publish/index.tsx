@@ -36,7 +36,9 @@ const uploadArtifacts = (
   const fileNames = [];
   fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-  original.steps.forEach((step) => fileNames.push(step.images));
+  original.steps.forEach((step) =>
+    step.images.forEach((img) => fileNames.push(img))
+  );
   return uploadMany(fileNames);
 };
 
