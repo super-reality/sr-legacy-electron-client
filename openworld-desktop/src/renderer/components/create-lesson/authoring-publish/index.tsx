@@ -36,7 +36,7 @@ const uploadArtifacts = (
   const fileNames = [];
   fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-  original.steps.forEach((step) => fileNames.push(step.image));
+  original.steps.forEach((step) => fileNames.push(step.images));
   return uploadMany(fileNames);
 };
 
@@ -51,8 +51,12 @@ const preprocessDataBeforePost = (
       return artifacts[item];
     }),
     steps: postData.steps.map((element) => {
-      const image = artifacts[element.image];
-      return { ...element, image };
+      return {
+        ...element,
+        images: element.images.map((img: string) => {
+          return artifacts[img];
+        }),
+      };
     }),
   };
 };

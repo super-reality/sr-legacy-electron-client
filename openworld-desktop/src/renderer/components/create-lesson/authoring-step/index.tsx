@@ -11,7 +11,6 @@ import reduxAction from "../../../redux/reduxAction";
 import {
   TriggerOptions,
   NextStepOptions,
-  ICVFn,
   InitalFnOptions,
   FnOptions,
   IStep,
@@ -32,29 +31,31 @@ export default function StepAuthoring(): JSX.Element {
   const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
   const [stepname, setStepname] = useState("");
   const [description, setDescription] = useState("");
-  const [CVImageData, setCVImageData] = useState<ICVFn[]>([]);
+  const [CVImages, setCVImages] = useState<string[]>([]);
+  const [CVFunctions, setCVFunctions] = useState<number[]>([]);
 
   const setImageCVFn = (fn: number, index: number) => {
-    const arr = [...CVImageData];
-    arr[index].function = fn;
-    setCVImageData(arr);
+    const arr = [...CVFunctions];
+    arr[index] = fn;
+    setCVFunctions(arr);
   };
 
   const insertCVImage = useCallback(
     (image: string, index: number) => {
-      const arr = [...CVImageData];
+      const imgArr = [...CVImages];
+      imgArr.splice(index, 1, image);
+      setCVImages(imgArr);
+
       const defaultFn =
-        index == 0
+        CVFunctions[index] ||
+        (index == 0
           ? Object.values(InitalFnOptions)[0]
-          : Object.values(FnOptions)[0];
-      const CVFunction: ICVFn = {
-        image,
-        function: CVImageData[index] ? CVImageData[index].function : defaultFn,
-      };
-      arr.splice(index, 1, CVFunction);
-      setCVImageData(arr);
+          : Object.values(FnOptions)[0]);
+      const fnArr = [...CVFunctions];
+      fnArr.splice(index, 1, defaultFn);
+      setCVFunctions(fnArr);
     },
-    [CVImageData]
+    [CVImages, CVFunctions]
   );
 
   const handleStepnameChange = useCallback((e: InputChangeEv): void => {
@@ -68,14 +69,13 @@ export default function StepAuthoring(): JSX.Element {
   const [Popup, open, closePopup] = usePopup(false);
 
   const addStep = useCallback(() => {
-    if (CVImageData.length < 1 || stepname.length < 1) {
+    if (CVImages.length < 1 || stepname.length < 1) {
       open();
       return;
     }
     const newStep: IStep = {
-      image: CVImageData[0].image,
-      imageFunction: CVImageData[0].function,
-      additionalFunctions: CVImageData.slice(1),
+      images: CVImages,
+      functions: CVFunctions,
       name: stepname,
       description: description,
       trigger: TriggerOptions[CVTrigger as TriggerKeys],
@@ -88,8 +88,9 @@ export default function StepAuthoring(): JSX.Element {
     setCVNextStep(Object.keys(NextStepOptions)[0]);
     setStepname("");
     setDescription("");
-    setCVImageData([]);
-  }, [dispatch, CVImageData, stepname, description, CVTrigger, CVNextStep]);
+    setCVImages([]);
+    setCVFunctions([]);
+  }, [dispatch, CVImages, stepname, description, CVTrigger, CVNextStep]);
 
   const datekey = new Date().getTime();
 
@@ -109,18 +110,18 @@ export default function StepAuthoring(): JSX.Element {
       <div className="step-authoring-grid">
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
-          {[...CVImageData, undefined].map((d, i) => {
+          {[...CVImages, undefined].map((image, i) => {
             const defaultFn =
               i == 0
                 ? Object.values(InitalFnOptions)[0]
                 : Object.values(FnOptions)[0];
 
             const current = i == 0 ? InitalFnOptions : FnOptions;
-            const url = !d?.image || d?.image == "" ? undefined : d.image;
-            const fn = !d?.function ? defaultFn : d.function;
+            const url = !image || image == "" ? undefined : image;
+            const fn = !image ? defaultFn : CVFunctions[i];
 
             return (
-              <React.Fragment key={d?.image || "cv-add"}>
+              <React.Fragment key={image || "cv-add"}>
                 <InsertMedia
                   snip
                   // eslint-disable-next-line react/no-array-index-key
@@ -134,7 +135,7 @@ export default function StepAuthoring(): JSX.Element {
                     insertCVImage(str, i);
                   }}
                 />
-                {d ? (
+                {image ? (
                   <div
                     className="container-with-desc"
                     style={{ marginBottom: "16px" }}
