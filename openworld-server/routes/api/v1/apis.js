@@ -52,6 +52,9 @@ router.group("/lesson", (router) => {
     router.post("/create", auth(), lessonController.create)
     router.post("/createWithForm", [auth(), fileParser.any()], lessonController.createWithForm)
     router.get("/search-parent/:query", auth(), lessonController.searchParent)
+
+    router.post("/search", auth(), lessonController.search)
+    router.get("/:id", auth(), lessonController.detail)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })
 
