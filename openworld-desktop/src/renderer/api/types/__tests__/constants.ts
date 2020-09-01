@@ -24,11 +24,11 @@ test("Lesson constants are updated", () => {
   );
 
   expect(Object.values(LessonSortOptions).sort()).toStrictEqual(
-    Object.keys(constant.Lesson_Sort).sort()
+    Object.values(constant.Lesson_Sort).sort()
   );
 
   expect(Object.values(SubjectSortOptions).sort()).toStrictEqual(
-    Object.keys(constant.Subject_Sort).sort()
+    Object.values(constant.Subject_Sort).sort()
   );
 });
 
