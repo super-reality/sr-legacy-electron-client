@@ -44,7 +44,8 @@ router.group("/collection", (router) => {
 router.group("/subject", (router) => {
     router.post("/create", auth(), subjectController.create)
     router.get("/search-parent/:query", auth(), subjectController.searchParent)
-    // router.put("/update/:lesson_id", auth(), lessonController.list)
+    router.post("/search", auth(), subjectController.search)
+    router.get("/:id", auth(), subjectController.detail)
 })
 
 // lessons routes

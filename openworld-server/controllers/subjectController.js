@@ -2,9 +2,9 @@ const Subject   = require("../models/subject")
 const Collection= require("../models/collection")
 const Tag       = require("../models/tag")
 const constant  = require("../config/constant");
+const Lesson = require("../models/lesson");
 
-
-exports.create = function(request, response){
+exports.create = async function(request, response){
     const { 
         parent, 
         icon, 
@@ -16,6 +16,25 @@ exports.create = function(request, response){
         visibility, 
         entry 
     } = request.body;
+
+    // check there are parent values
+    if (parent.length < 1) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.require_field_missing,
+            msg: "Parent field should have value"
+        });
+        return
+    }
+
+    // check parent have already this subject
+    var subject_already_exist = await isUniqueInParentOfSubject(parent, name)
+    if (subject_already_exist) {
+        response.status(constant.ERR_STATUS.Bad_Request).json({
+            err_code: constant.ERR_CODE.subject_already_exist_in_parent,
+            msg: "One of parents already has this lesson"
+        });
+        return
+    }
 
     var subject = Subject()
     subject.parent = parent
@@ -83,4 +102,145 @@ exports.searchParent = function(request, response){
             });
         }
     });
+}
+
+exports.search = function(request, response){
+    var { 
+        query,
+        sort,
+        parent,
+        fields,
+    } = request.body;
+
+    var sortField = {"name" : 1}
+    if (sort == null) {
+        sort = constant.Subject_Sort.Newest
+    }
+
+    switch (sort) {
+        case constant.Subject_Sort.Most_Popular:
+            break
+        case constant.Subject_Sort.Most_Lesson:
+            break
+        case constant.Subject_Sort.Newest:
+            sortField = {"createdAt" : -1}
+            break
+        case constant.Subject_Sort.Oldest:
+            sortField = {"createdAt" : 1}
+            break
+        case constant.Subject_Sort.My_Teacher:
+            break
+        case constant.Subject_Sort.Highest_Avg:
+            break
+        case constant.Subject_Sort.Highest_Score:
+            break
+        case constant.Subject_Sort.Highest_Trans:
+            break
+    }
+
+    var condition = {}
+    if (query && query != "") {
+        condition["name"] = {$regex: query, $options: 'i'}
+    }
+    if (parent) {
+        condition["parent"] = parent
+    }
+    if (fields == null || fields == "") {
+        fields = 'name shortDescription icon medias createdAt'
+    }
+    
+    Subject.find(condition, fields, { sort: sortField}).limit(100).find(function(err, subjects) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                subjects
+            });
+        }
+    });
+}
+
+exports.detail = function(request, response){
+    const { id } = request.params;
+    
+    Subject.findById(id, async function(err, subject) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (subject) {
+                var parentArray = []
+                for (var i = 0; i < subject.parent.length; i++) {
+                    let item = subject.parent[i]
+                    if (item.type == "subject") {
+                        let psubject = await Subject.findById(item._id, "name")
+                        if (psubject) {
+                            parentArray.push({type: "subject", subjectId: psubject._id, subjectName: psubject.name})
+                        }
+                    } else if (item.type == "collection") {
+                        let collection = await Collection.findById(item._id, "name")
+                        if (collection) {
+                            parentArray.push({type: "collection", collectionId: collection._id, collectionName: collection.name})
+                        }
+                    }
+                }
+
+                // find child lessons who have this subject as their parent
+                var result = subject
+                result.parent = parentArray
+
+                Lesson.find({parent: {_id: id, type: "subject"}}).find(function(err, lessons) {
+                    if (err != null) {
+                        console.log("find children lesson return error")
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            subject: result,
+                            lessons: []
+                        });
+                    } else {
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            subject: result,
+                            lessons: lessons
+                        });
+                    }
+                });
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.subject_not_exist,
+                    msg: "Subject is not exist"
+                });
+            }
+            
+        }
+    });
+}
+
+isUniqueInParentOfSubject = async(parents, name) => {
+    const promises = parents.map((item) => {
+        return new Promise((resolve, reject) => {
+            Subject.findOne( { parent: item, name: name }, (err, subject) => {
+                if (err) {
+                    reject(false)
+                } else {
+                    if (subject) {
+                        resolve(true)
+                    } else {
+                        resolve(false)
+                    }
+                }
+            })
+        })
+    })
+    
+    const results = await Promise.all(promises)
+    console.log(results)
+    if (results.includes(true)) {
+        return true
+    }
+    return false
 }
