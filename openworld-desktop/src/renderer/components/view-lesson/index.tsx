@@ -18,13 +18,15 @@ import Collapsible from "../collapsible";
 import Step from "../step";
 import TeacherBotLesson from "../teacherbot-lesson";
 import LessonActive from "../lesson-active";
+import createDetachedWindow from "../../../utils/createDetachedWindow";
 
 interface LessonActiveProps {
   id: string;
+  data?: any;
 }
 
 export default function ViewLesson(props: LessonActiveProps) {
-  const { id } = props;
+  const { id, data } = props;
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -32,12 +34,12 @@ export default function ViewLesson(props: LessonActiveProps) {
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
-  const data = globalData.lessons[id] || undefined;
+  const lessonData = data || globalData.lessons[id] || undefined;
 
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
-    if (!data) open();
+    if (!lessonData) open();
   }, []);
 
   return (
@@ -56,19 +58,31 @@ export default function ViewLesson(props: LessonActiveProps) {
           </ButtonSimple>
         </div>
       </Popup>
-      {data ? (
+      {lessonData ? (
         <>
+          <ButtonSimple
+            width="120px"
+            height="16px"
+            onClick={() =>
+              createDetachedWindow(
+                { width: 350, height: 400 },
+                { arg: lessonData, type: "LESSON_VIEW" }
+              )
+            }
+          >
+            Open
+          </ButtonSimple>
           <ItemInner>
             <ContainerTopFace>
               <TeacherBotLesson />
               <Title
                 style={{ marginTop: "2px", justifyContent: "initial" }}
-                title={data.steps[currentStep].name}
+                title={lessonData.steps[currentStep].name}
                 sub={`Step ${currentStep + 1}`}
               />
             </ContainerTopFace>
             <ContainerFlex>
-              <Text>{data.steps[currentStep].description}</Text>
+              <Text>{lessonData.steps[currentStep].description}</Text>
             </ContainerFlex>
             <ContainerFlex>
               <ButtonSimple width="120px" height="16px" onClick={doNext}>
@@ -77,10 +91,10 @@ export default function ViewLesson(props: LessonActiveProps) {
             </ContainerFlex>
           </ItemInner>
           <Collapsible outer title="Lesson Info">
-            <LessonActive data={data} />
+            <LessonActive data={lessonData} />
           </Collapsible>
           <Collapsible outer title="Steps">
-            {data.steps.map((step: any, i: number) => (
+            {lessonData.steps.map((step: any, i: number) => (
               <Step
                 key={`step-${i}`}
                 number={i + 1}
