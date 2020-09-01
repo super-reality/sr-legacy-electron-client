@@ -1,28 +1,23 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useHistory } from "react-router-dom";
 import {
   ItemInner,
-  Icon,
   Title,
-  Social,
-  ContainerTop,
+  ContainerTopFace,
   ContainerFlex,
   Text,
 } from "../item-inner";
-import usePopupModal from "../../hooks/usePopupModal";
-import CheckButton from "../check-button";
-import { ILesson } from "../../api/types/lesson/lesson";
-import Category from "../../../types/collections";
 import globalData from "../../globalData";
 import usePopup from "../../hooks/usePopup";
 import ButtonSimple from "../button-simple";
-import Tests from "../../views/tests";
 import Collapsible from "../collapsible";
 import Step from "../step";
+import TeacherBotLesson from "../teacherbot-lesson";
+import LessonActive from "../lesson-active";
 
 interface LessonActiveProps {
   id: string;
@@ -31,6 +26,11 @@ interface LessonActiveProps {
 export default function ViewLesson(props: LessonActiveProps) {
   const { id } = props;
   const history = useHistory();
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const doNext = useCallback(() => {
+    setCurrentStep(currentStep + 1);
+  }, [currentStep]);
 
   const data = globalData.lessons[id] || undefined;
 
@@ -59,14 +59,26 @@ export default function ViewLesson(props: LessonActiveProps) {
       {data ? (
         <>
           <ItemInner>
-            <ContainerTop>
-              <Icon url={data.icon} />
-              <Title title={data.name} sub={data.shortDescription} />
-            </ContainerTop>
+            <ContainerTopFace>
+              <TeacherBotLesson />
+              <Title
+                style={{ marginTop: "2px", justifyContent: "initial" }}
+                title={data.steps[currentStep].name}
+                sub={`Step ${currentStep + 1}`}
+              />
+            </ContainerTopFace>
             <ContainerFlex>
-              <Text>{data.description}</Text>
+              <Text>{data.steps[currentStep].description}</Text>
+            </ContainerFlex>
+            <ContainerFlex>
+              <ButtonSimple width="120px" height="16px" onClick={doNext}>
+                Next
+              </ButtonSimple>
             </ContainerFlex>
           </ItemInner>
+          <Collapsible outer title="Lesson Info">
+            <LessonActive data={data} />
+          </Collapsible>
           <Collapsible outer title="Steps">
             {data.steps.map((step: any, i: number) => (
               <Step

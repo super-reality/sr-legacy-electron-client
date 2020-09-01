@@ -1,0 +1,16 @@
+@import "../misc.scss";
+
+.teacher-bot-lesson {
+  cursor: pointer;
+  width: -webkit-fill-available;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--color-green);
+  border-radius: 6px;
+  margin: auto;
+  display: flex;
+  width: 120px;
+  height: 60px;
+  @include disable-select;
+}

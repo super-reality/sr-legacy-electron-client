@@ -28,6 +28,17 @@ export function ItemInner(
   );
 }
 
+export function ContainerTopFace(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-topface" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 export function ContainerTop(
   props: PropsWithChildren<{ style?: CSSProperties }>
 ): JSX.Element {

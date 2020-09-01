@@ -32,6 +32,14 @@
   margin: 5px 10px;
   padding: 10px;
 
+  .container-topface {
+    grid-template-columns: 120px auto auto;
+    grid-template-rows: 64px;
+    grid-template-areas: "icon title score";
+    gap: 8px;
+    display: grid;
+  }
+
   .container-top {
     grid-template-columns: 32px auto auto;
     grid-template-rows: 32px;
