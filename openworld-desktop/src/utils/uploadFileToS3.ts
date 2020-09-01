@@ -12,7 +12,10 @@ export default function uploadFileToS3(
   return new Promise((resolve, reject) => {
     try {
       const fileContent = fs.readFileSync(localFileName);
-      const file = new File([fileContent], localFileName);
+      const file = new File(
+        [fileContent],
+        `${Math.floor(Math.random() * 1000).toString()}.png`
+      );
       const data = new FormData();
       data.append(type, file);
       axios

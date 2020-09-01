@@ -1,4 +1,3 @@
-import * as AWS from "aws-sdk";
 import jsonRpcRemote from "./jsonRpcSend";
 
 export default function uploadFileToS3Test(
