@@ -11,7 +11,7 @@ import { LessonSortOptions } from "../lesson/search";
 import { SubjectSortOptions } from "../subject/search";
 
 test("Constants were not added", () => {
-  expect(Object.keys(constant).length).toBe(13);
+  expect(Object.keys(constant).length).toBe(14);
 });
 
 test("Lesson constants are updated", () => {
