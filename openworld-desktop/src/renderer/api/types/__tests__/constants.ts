@@ -7,6 +7,7 @@ import {
   NextStepOptions,
   TriggerOptions,
 } from "../step/step";
+import { LessonSortOptions } from "../lesson/search";
 
 test("Constants were not added", () => {
   expect(Object.keys(constant).length).toBe(12);
@@ -19,6 +20,10 @@ test("Lesson constants are updated", () => {
 
   expect(Object.keys(EntryOptions).sort()).toStrictEqual(
     Object.keys(constant.Entry).sort()
+  );
+
+  expect(Object.keys(LessonSortOptions).sort()).toStrictEqual(
+    Object.keys(constant.Lesson_Sort).sort()
   );
 });
 

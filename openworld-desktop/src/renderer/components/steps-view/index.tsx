@@ -61,7 +61,7 @@ export default function StepsView(): JSX.Element {
       <div className="mid">
         <Flex>
           <div>
-            <InnerSearch />
+            <InnerSearch onChange={() => {}} value="" />
           </div>
           <ReactSelect
             style={{ width: "-webkit-fill-available", marginLeft: "8px" }}
