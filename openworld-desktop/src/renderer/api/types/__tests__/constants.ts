@@ -8,9 +8,10 @@ import {
   TriggerOptions,
 } from "../step/step";
 import { LessonSortOptions } from "../lesson/search";
+import { SubjectSortOptions } from "../subject/search";
 
 test("Constants were not added", () => {
-  expect(Object.keys(constant).length).toBe(12);
+  expect(Object.keys(constant).length).toBe(13);
 });
 
 test("Lesson constants are updated", () => {
@@ -22,8 +23,12 @@ test("Lesson constants are updated", () => {
     Object.keys(constant.Entry).sort()
   );
 
-  expect(Object.keys(LessonSortOptions).sort()).toStrictEqual(
+  expect(Object.values(LessonSortOptions).sort()).toStrictEqual(
     Object.keys(constant.Lesson_Sort).sort()
+  );
+
+  expect(Object.values(SubjectSortOptions).sort()).toStrictEqual(
+    Object.keys(constant.Subject_Sort).sort()
   );
 });
 
