@@ -23,11 +23,9 @@ export default function Discover(): JSX.Element {
         <></>
       )}
       {current == Category.Subject || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Subjects"
-        />
+        <Collapsible outer expanded={current !== Category.All} title="Subjects">
+          <DiscoverFinder category={Category.Subject} />
+        </Collapsible>
       ) : (
         <></>
       )}

@@ -15,17 +15,26 @@ import LessonSearch, { LessonSortOptions } from "../../api/types/lesson/search";
 import handleDiscoverSearch from "../../api/handleDiscoverSearch";
 import constantFormat from "../../../utils/constantFormat";
 import LessonActive from "../lesson-active";
+import SubjectSearch, {
+  SubjectSortOptions,
+} from "../../api/types/subject/search";
 
 interface DiscoverFinderProps {
   category: Category;
 }
 
+type AllSearch = LessonSearch | SubjectSearch;
+
 export default function DiscoverFinder(
   props: DiscoverFinderProps
 ): JSX.Element {
   const { category } = props;
-  const [sort, setSort] = useState(Object.values(LessonSortOptions)[0]);
-  const [data, setData] = useState<LessonSearch | undefined>(undefined);
+  let currentSort: typeof LessonSortOptions | typeof SubjectSortOptions;
+  if (category == Category.Subject) currentSort = SubjectSortOptions;
+  else currentSort = LessonSortOptions;
+  const [sort, setSort] = useState(Object.values(currentSort)[0]);
+
+  const [data, setData] = useState<AllSearch | undefined>(undefined);
   const [searchValue, setSearchValue] = useState("");
 
   const onChange = useCallback((e: InputChangeEv) => {
@@ -33,19 +42,17 @@ export default function DiscoverFinder(
   }, []);
 
   useEffect(() => {
-    let currentUrl;
+    if (category == Category.Collection) return;
+    let currentUrl: "lesson" | "subject";
     switch (category) {
       case Category.Lesson:
         currentUrl = "lesson";
-        break;
-      case Category.Collection:
-        currentUrl = "collection";
         break;
       case Category.Subject:
         currentUrl = "subject";
         break;
       default:
-        currentUrl = "";
+        currentUrl = "lesson";
         break;
     }
     const payload = {
@@ -54,11 +61,8 @@ export default function DiscoverFinder(
     };
 
     setLoading(true);
-    Axios.post<LessonSearch | ApiError>(
-      `${API_URL}${currentUrl}/search`,
-      payload
-    )
-      .then(handleDiscoverSearch)
+    Axios.post<AllSearch | ApiError>(`${API_URL}${currentUrl}/search`, payload)
+      .then((res) => handleDiscoverSearch(res, currentUrl))
       .then((d) => {
         setData(d);
         setLoading(false);
@@ -82,8 +86,8 @@ export default function DiscoverFinder(
               justifySelf: "self-end",
             }}
             className="dark"
-            options={Object.values(LessonSortOptions)}
-            optionFormatter={constantFormat(LessonSortOptions)}
+            options={Object.values(currentSort)}
+            optionFormatter={constantFormat(currentSort)}
             current={sort}
             callback={setSort}
           />
@@ -95,7 +99,7 @@ export default function DiscoverFinder(
         ) : (
           <></>
         )}
-        {data?.lessons ? (
+        {data?.type == "lesson" ? (
           data.lessons.map((d) => <LessonActive key={d._id} data={d} />)
         ) : (
           <></>

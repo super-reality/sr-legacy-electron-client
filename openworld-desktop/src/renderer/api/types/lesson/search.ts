@@ -25,5 +25,6 @@ interface ILessonSearch {
 /* eslint-disable camelcase */
 export default interface LessonSearch {
   err_code: CodeSuccess;
+  type: "lesson";
   lessons: ILessonSearch[];
 }

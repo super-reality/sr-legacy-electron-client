@@ -22,6 +22,9 @@ module.exports = Object.freeze({
 
     collection_already_exist: 201,
 
+    subject_already_exist_in_parent: 301,
+    subject_not_exist: 302,
+
     lesson_already_exist_in_parent: 401,
     lesson_not_exist: 402,
   },
@@ -80,6 +83,16 @@ module.exports = Object.freeze({
     Beginner: 6,
     Intermediate: 7,
     Advanced: 8,
+  },
+  Subject_Sort: {
+    Most_Popular: 1,
+    Most_Lesson: 2,
+    Newest: 3,
+    Oldest: 4,
+    My_Teacher: 5,
+    Highest_Avg: 6,
+    Highest_Score: 7,
+    Highest_Trans: 8,
   },
 
   Admin: 1,
