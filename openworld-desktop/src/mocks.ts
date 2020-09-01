@@ -1,6 +1,6 @@
-import { ILessonData, IStep } from "./types/api";
+import { IStep } from "./types/api";
 import { ICollection } from "./renderer/api/types/collection/collection";
-import { EntryOptions } from "./renderer/api/types/lesson/lesson";
+import { ILesson, EntryOptions } from "./renderer/api/types/lesson/lesson";
 
 export const mockCollections: ICollection[] = [
   {
@@ -45,61 +45,53 @@ export const mockStep: IStep = {
   description: "Add some awesome things",
 };
 
-export const mockLessonData: ILessonData = {
-  id: "35",
-  name: "Box Modelling",
-  creator: "Jhonny C.",
-  purpose: "",
-  media: [],
-  avatarUrl:
-    "https://sites.google.com/site/lukepickerings3dwork/_/rsrc/1392205456929/home/mesh-construction/box-modelling/Box%20Modelling.jpg",
-  rating: 4.9,
-  checkState: false,
-  subjectName: "Blender",
+export const mockLessonData = {
+  parent: [{ _id: "5f455a7ea5a75872b42d73da", type: "subject" }],
+  medias: [
+    "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1598904390808.png",
+  ],
   steps: [
     {
-      id: "12",
-      name: "Awesomeness",
-      creator: "Jhonny C.",
-      rating: 99,
-      media: [],
-      avatarUrl:
-        "https://image.shutterstock.com/image-vector/cartoon-game-sword-vector-illustration-260nw-431439559.jpg",
-      checkState: false,
-      description: "Learn how to make awesomeness",
+      images: [
+        "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1598904389121.png",
+      ],
+      functions: [],
+      name: "Installation",
+      description:
+        "First, install VS Code.\nGo to code.visualstudio.com and download latest version for your OS.",
+      trigger: 1,
+      next: 1,
     },
     {
-      id: "01",
-      name: "Juice",
-      creator: "Jhonny C.",
-      rating: 45,
-      media: [],
-      avatarUrl:
-        "https://lexiscleankitchen.com/wp-content/uploads/2018/12/Kick-That-Cold-Juice1.jpg",
-      checkState: false,
-      description: "Add some juicy juice!",
-    },
-    {
-      id: "78",
-      name: "Draw bolts",
-      creator: "Jhonny C.",
-      rating: 42,
-      media: [],
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQ-7E002_QIzTSzYBIXoArw4qKChtf2vEIStg&usqp=CAU",
-      checkState: false,
-      description: "Make stuff blow up",
-    },
-    {
-      id: "56",
-      name: "Hit something",
-      creator: "Jhonny C.",
-      rating: 37,
-      media: [],
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDADslFYupS-oEjgKOxTMxQPNDG6F8pTHTReZ_5XPcUYa3ezpJ&s",
-      checkState: false,
-      description: "Make your character punch some stuff",
+      images: [
+        "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1598904389143.png",
+      ],
+      functions: [1],
+      name: "Open",
+      description:
+        "Once installed, go to your desktop and double click on the VS code icon.",
+      trigger: 0,
+      next: 2,
     },
   ],
+  tags: [],
+  visibility: [],
+  ownership: [],
+  options: [],
+  _id: "5f4d58471f990c3396043511",
+  createdAt: "2020-08-31T20:06:31.418Z",
+  icon:
+    "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1598904388887.png",
+  name: "Open VS Code",
+  shortDescription: "How to open VS code",
+  description: "A small tutorial on how to open VS Code, from scratch",
+  difficulty: 3,
+  entry: 1,
+  rating: 0,
+  ratingCount: 0,
+  numberOfShares: 0,
+  numberOfActivations: 0,
+  numberOfCompletions: 0,
+  createdBy: "5f45a91aa5a75872b42d73e7",
+  __v: 1,
 };
