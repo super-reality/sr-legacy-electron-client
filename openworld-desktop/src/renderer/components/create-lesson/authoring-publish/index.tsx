@@ -36,9 +36,7 @@ const uploadArtifacts = (
   const fileNames = [];
   fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
-  original.steps.forEach((step) =>
-    step.images.forEach((img) => fileNames.push(img))
-  );
+  original.steps.forEach((step) => fileNames.push(...step.images));
   return uploadMany(fileNames);
 };
 
@@ -46,7 +44,7 @@ const preprocessDataBeforePost = (
   postData: ILesson,
   artifacts: Record<string, string>
 ): ILesson => {
-  return {
+  const result = {
     ...postData,
     icon: artifacts[postData.icon],
     medias: postData.medias.map((item: string) => {
@@ -61,6 +59,7 @@ const preprocessDataBeforePost = (
       };
     }),
   };
+  return result;
 };
 
 export default function PublishAuthoring(): JSX.Element {
