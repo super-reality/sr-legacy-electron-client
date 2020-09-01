@@ -9,7 +9,7 @@ import {
 } from "../step/step";
 
 test("Constants were not added", () => {
-  expect(Object.keys(constant).length).toBe(11);
+  expect(Object.keys(constant).length).toBe(12);
 });
 
 test("Lesson constants are updated", () => {
