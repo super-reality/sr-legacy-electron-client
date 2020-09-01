@@ -18,12 +18,13 @@ import Collapsible from "../collapsible";
 import Step from "../step";
 import TeacherBotLesson from "../teacherbot-lesson";
 import LessonActive from "../lesson-active";
+import { ILessonGet } from "../../api/types/lesson/get";
 
-interface LessonActiveProps {
+interface ViewLessonProps {
   id: string;
 }
 
-export default function ViewLesson(props: LessonActiveProps) {
+export default function ViewLesson(props: ViewLessonProps) {
   const { id } = props;
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
@@ -32,8 +33,8 @@ export default function ViewLesson(props: LessonActiveProps) {
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
-  const data = globalData.lessons[id] || undefined;
-
+  const data: ILessonGet = globalData.lessons[id] || undefined;
+  console.log(data);
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
@@ -63,12 +64,12 @@ export default function ViewLesson(props: LessonActiveProps) {
               <TeacherBotLesson />
               <Title
                 style={{ marginTop: "2px", justifyContent: "initial" }}
-                title={data.steps[currentStep].name}
+                title={data.totalSteps[currentStep].name}
                 sub={`Step ${currentStep + 1}`}
               />
             </ContainerTopFace>
             <ContainerFlex>
-              <Text>{data.steps[currentStep].description}</Text>
+              <Text>{data.totalSteps[currentStep].description}</Text>
             </ContainerFlex>
             <ContainerFlex>
               <ButtonSimple width="120px" height="16px" onClick={doNext}>
@@ -77,10 +78,10 @@ export default function ViewLesson(props: LessonActiveProps) {
             </ContainerFlex>
           </ItemInner>
           <Collapsible outer title="Lesson Info">
-            <LessonActive data={data} />
+            <LessonActive id={id} />
           </Collapsible>
           <Collapsible outer title="Steps">
-            {data.steps.map((step: any, i: number) => (
+            {data.totalSteps.map((step, i: number) => (
               <Step
                 key={`step-${i}`}
                 number={i + 1}

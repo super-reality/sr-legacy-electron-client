@@ -14,7 +14,7 @@ import { API_URL } from "../../constants";
 import LessonSearch, { LessonSortOptions } from "../../api/types/lesson/search";
 import handleDiscoverSearch from "../../api/handleDiscoverSearch";
 import constantFormat from "../../../utils/constantFormat";
-import LessonActive from "../lesson-active";
+import Lesson from "../lesson";
 import SubjectSearch, {
   SubjectSortOptions,
 } from "../../api/types/subject/search";
@@ -44,9 +44,12 @@ export default function DiscoverFinder(
   useEffect(() => {
     if (category == Category.Collection) return;
     let currentUrl: "lesson" | "subject";
+    let fields = "";
     switch (category) {
       case Category.Lesson:
         currentUrl = "lesson";
+        fields =
+          "medias _id createdAt icon name shortDescription description totalSteps rating";
         break;
       case Category.Subject:
         currentUrl = "subject";
@@ -57,7 +60,8 @@ export default function DiscoverFinder(
     }
     const payload = {
       query: searchValue,
-      sort: sort,
+      sort,
+      fields,
     };
 
     setLoading(true);
@@ -100,7 +104,7 @@ export default function DiscoverFinder(
           <></>
         )}
         {data?.type == "lesson" ? (
-          data.lessons.map((d) => <LessonActive key={d._id} data={d} />)
+          data.lessons.map((d) => <Lesson key={d._id} data={d} />)
         ) : (
           <></>
         )}

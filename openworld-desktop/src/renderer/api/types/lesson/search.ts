@@ -12,14 +12,16 @@ export const LessonSortOptions = {
   Advanced: constant.Lesson_Sort.Advanced,
 };
 
-interface ILessonSearch {
+export interface ILessonSearch {
   medias: string[];
   _id: string;
   createdAt: string;
   icon: string;
   name: string;
   shortDescription: string;
+  description: string;
   rating: number;
+  totalSteps: string[];
 }
 
 /* eslint-disable camelcase */

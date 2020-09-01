@@ -146,7 +146,7 @@ exports.search = function(request, response){
         condition["parent"] = parent
     }
     if (fields == null || fields == "") {
-        fields = 'name shortDescription icon medias createdAt'
+        fields = 'name rating shortDescription icon medias createdAt'
     }
     
     Subject.find(condition, fields, { sort: sortField}).limit(100).find(function(err, subjects) {

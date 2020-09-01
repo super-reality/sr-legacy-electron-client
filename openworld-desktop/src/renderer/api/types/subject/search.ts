@@ -12,7 +12,7 @@ export const SubjectSortOptions = {
   "Highest Trans": constant.Subject_Sort.Highest_Trans,
 };
 
-interface ISubjectSearch {
+export interface ISubjectSearch {
   medias: string[];
   _id: string;
   createdAt: string;

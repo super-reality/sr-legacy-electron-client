@@ -1,6 +1,6 @@
 import { CodeSuccess } from "..";
 
-interface Collection {
+export interface Collection {
   type: "collection";
   collectionId: string;
   collectionName: string;
@@ -10,7 +10,7 @@ interface Collection {
   lessonName: undefined;
 }
 
-interface Subject {
+export interface Subject {
   type: "subject";
   collectionId: string;
   collectionName: string;
@@ -20,7 +20,7 @@ interface Subject {
   lessonName: undefined;
 }
 
-interface Lesson {
+export interface Lesson {
   type: "lesson";
   collectionId: undefined;
   collectionName: undefined;

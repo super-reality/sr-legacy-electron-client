@@ -28,6 +28,53 @@ export function ItemInner(
   );
 }
 
+export function ItemInnerLoader(
+  props: PropsWithChildren<InnerItemProps>
+): JSX.Element {
+  const { style } = props;
+  return (
+    <div className="item-container loader" style={{ ...style }}>
+      <div
+        className="item-icon"
+        style={{
+          ...style,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "icon",
+        }}
+      />
+      <div
+        style={{
+          width: "60%",
+          height: "10px",
+          borderRadius: "4px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "titleup",
+        }}
+      />
+      <div
+        style={{
+          width: "40%",
+          height: "10px",
+          borderRadius: "4px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "titlebot",
+        }}
+      />
+      <div
+        style={{
+          width: "100%",
+          height: "32px",
+          borderRadius: "5px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "score",
+        }}
+      />
+    </div>
+  );
+}
+
 export function ContainerTopFace(
   props: PropsWithChildren<{ style?: CSSProperties }>
 ): JSX.Element {
