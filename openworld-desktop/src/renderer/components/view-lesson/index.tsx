@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   ItemInner,
   Title,
@@ -19,6 +20,7 @@ import Step from "../step";
 import TeacherBotLesson from "../teacherbot-lesson";
 import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
+import { AppState } from "../../redux/stores/renderer";
 
 interface LessonActiveProps {
   id: string;
@@ -29,10 +31,18 @@ export default function ViewLesson(props: LessonActiveProps) {
   const { id, data } = props;
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
+  const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
+
+  const clickDetach = useCallback(() => {
+    createDetachedWindow(
+      { width: 350, height: 400 },
+      { arg: globalData.lessons[id], type: "LESSON_VIEW" }
+    );
+  }, []);
 
   const lessonData = data || globalData.lessons[id] || undefined;
 
@@ -60,36 +70,31 @@ export default function ViewLesson(props: LessonActiveProps) {
       </Popup>
       {lessonData ? (
         <>
-          <ButtonSimple
-            width="120px"
-            height="16px"
-            onClick={() =>
-              createDetachedWindow(
-                { width: 350, height: 400 },
-                { arg: lessonData, type: "LESSON_VIEW" }
-              )
-            }
+          <Collapsible
+            outer
+            expanded
+            detach={detached ? undefined : clickDetach}
+            title="Step"
           >
-            Open
-          </ButtonSimple>
-          <ItemInner>
-            <ContainerTopFace>
-              <TeacherBotLesson />
-              <Title
-                style={{ marginTop: "2px", justifyContent: "initial" }}
-                title={lessonData.steps[currentStep].name}
-                sub={`Step ${currentStep + 1}`}
-              />
-            </ContainerTopFace>
-            <ContainerFlex>
-              <Text>{lessonData.steps[currentStep].description}</Text>
-            </ContainerFlex>
-            <ContainerFlex>
-              <ButtonSimple width="120px" height="16px" onClick={doNext}>
-                Next
-              </ButtonSimple>
-            </ContainerFlex>
-          </ItemInner>
+            <ItemInner>
+              <ContainerTopFace>
+                <TeacherBotLesson />
+                <Title
+                  style={{ marginTop: "2px", justifyContent: "initial" }}
+                  title={lessonData.steps[currentStep].name}
+                  sub={`Step ${currentStep + 1}`}
+                />
+              </ContainerTopFace>
+              <ContainerFlex>
+                <Text>{lessonData.steps[currentStep].description}</Text>
+              </ContainerFlex>
+              <ContainerFlex>
+                <ButtonSimple width="120px" height="16px" onClick={doNext}>
+                  Next
+                </ButtonSimple>
+              </ContainerFlex>
+            </ItemInner>
+          </Collapsible>
           <Collapsible outer title="Lesson Info">
             <LessonActive data={lessonData} />
           </Collapsible>

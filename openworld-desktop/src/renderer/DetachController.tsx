@@ -8,7 +8,7 @@ export default function DetachController(): JSX.Element {
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   return (
-    <div className="content">
+    <div className="content-deatched">
       <div className="content-wrapper">
         {detached?.type == "LESSON_VIEW" ? (
           <ViewLesson id="" data={detached.arg} />
