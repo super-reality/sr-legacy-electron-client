@@ -15,6 +15,7 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
+import TrashButton from "../trash-button";
 import { ISubjectSearch } from "../../api/types/subject/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
@@ -52,6 +53,7 @@ export default function Subject(props: Subject): JSX.Element {
           callback={open}
         />
         <div />
+        <TrashButton type="subject" id={data._id} />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

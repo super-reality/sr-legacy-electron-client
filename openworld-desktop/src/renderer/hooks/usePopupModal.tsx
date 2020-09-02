@@ -25,7 +25,7 @@ export default function usePopupModal(
   const Modal = (props: ModalProps) => {
     const { newTitle } = props;
     return (
-      <YesNoPopup width="300px" height="250px">
+      <YesNoPopup width="300px" height="200px">
         <div className="popup-title">{newTitle || title || ""}</div>
         <div className="popup-modal">
           <div className="modal-yes" onClick={clickYes}>
