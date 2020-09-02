@@ -325,6 +325,127 @@ exports.searchParent = function(request, response){
     });
 }
 
+exports.search = function(request, response){
+    var { 
+        query,
+        sort,
+        parent,
+        fields,
+    } = request.body;
+
+    var sortField = {"name" : 1}
+    var difficulty = 0
+    if (sort == null) {
+        sort = constant.Lesson_Sort.Newest
+    }
+
+    switch (sort) {
+        case constant.Lesson_Sort.Newest:
+            sortField = {"createdAt" : -1}
+            break
+        case constant.Lesson_Sort.Oldest:
+            sortField = {"createdAt" : 1}
+            break
+        case constant.Lesson_Sort.Highest_Avg:
+            sortField = {"rating" : -1}
+            break
+        case constant.Lesson_Sort.Lowest_Avg:
+            sortField = {"rating" : 1}
+            break
+        case constant.Lesson_Sort.Intro:
+            difficulty = constant.Difficulty.Intro
+            break
+        case constant.Lesson_Sort.Beginner:
+            difficulty = constant.Difficulty.Beginner
+            break
+        case constant.Lesson_Sort.Intermediate:
+            difficulty = constant.Difficulty.Intermediate
+            break
+        case constant.Lesson_Sort.Advanced:
+            difficulty = constant.Difficulty.Advanced
+            break
+    }
+
+    var condition = {}
+    if (query && query != "") {
+        condition["name"] = {$regex: query, $options: 'i'}
+    }
+    if (difficulty) {
+        condition["difficulty"] = difficulty
+    }
+    if (parent) {
+        condition["parent"] = parent
+    }
+    if (fields == null || fields == "") {
+        fields = 'name shortDescription icon medias rating createdAt'
+    }
+    
+    Lesson.find(condition, fields, { sort: sortField}).limit(100).find(function(err, lessons) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                lessons
+            });
+        }
+    });
+}
+
+exports.detail = function(request, response){
+    const { id } = request.params;
+    Lesson.findById(id, async function(err, lesson) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (lesson) {
+                var parentArray = []
+                for (var i = 0; i < lesson.parent.length; i++) {
+                    let item = lesson.parent[i]
+                    if (item.type == "subject") {
+                        let subject = await Subject.findById(item._id, "name")
+                        if (subject) {
+                            parentArray.push({type: "subject", subjectId: subject._id, subjectName: subject.name})
+                        }
+                    } else if (item.type == "lesson") {
+                        let les = await Lesson.findById(item._id, "name")
+                        if (les) {
+                            parentArray.push({type: "lesson", lessonId: les._id, lessonName: les.name})
+                        }
+                    }
+                }
+                
+                var steps = []
+                for (var i = 0; i < lesson.totalSteps.length; i++) {
+                    let step = await Step.findById(lesson.totalSteps[i])
+                    if (step) {
+                        steps.push(step)
+                    }
+                }
+                var result = lesson
+
+                result.parent = parentArray
+                result.totalSteps = steps
+
+                response.json({
+                    err_code: constant.ERR_CODE.success,
+                    lesson: result
+                });
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.lesson_not_exist,
+                    msg: "Lesson is not exist"
+                });
+            }
+            
+        }
+    });
+}
+
 isUniqueInParent = async(parents, name) => {
     const promises = parents.map((item) => {
         return new Promise((resolve, reject) => {

@@ -22,7 +22,11 @@ module.exports = Object.freeze({
 
     collection_already_exist: 201,
 
+    subject_already_exist_in_parent: 301,
+    subject_not_exist: 302,
+
     lesson_already_exist_in_parent: 401,
+    lesson_not_exist: 402,
   },
 
   Category: {
@@ -69,6 +73,26 @@ module.exports = Object.freeze({
     Press_Next_Step_Button: 1,
     On_Highlight_Clicked: 2,
     On_Text_Reading_Finished: 3,
+  },
+  Lesson_Sort: {
+    Newest: 1,
+    Oldest: 2,
+    Highest_Avg: 3,
+    Lowest_Avg: 4,
+    Intro: 5,
+    Beginner: 6,
+    Intermediate: 7,
+    Advanced: 8,
+  },
+  Subject_Sort: {
+    Most_Popular: 1,
+    Most_Lesson: 2,
+    Newest: 3,
+    Oldest: 4,
+    My_Teacher: 5,
+    Highest_Avg: 6,
+    Highest_Score: 7,
+    Highest_Trans: 8,
   },
 
   Admin: 1,
