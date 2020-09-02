@@ -30,12 +30,30 @@ interface ViewLessonProps {
 
 export default function ViewLesson(props: ViewLessonProps) {
   const { id, data } = props;
+  const lessonData = data || globalData.lessons[id] || undefined;
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
+    if (lessonData == undefined) {
+      return;
+    }
+    console.log(lessonData.totalSteps.length, currentStep);
+    if (lessonData?.totalSteps.length <= currentStep + 1) {
+      return;
+    }
     setCurrentStep(currentStep + 1);
+  }, [currentStep]);
+
+  const doPrev = useCallback(() => {
+    if (lessonData == undefined) {
+      return;
+    }
+    if (currentStep - 1 < 0) {
+      return;
+    }
+    setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
   const clickDetach = useCallback(() => {
@@ -45,7 +63,6 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
-  const lessonData = data || globalData.lessons[id] || undefined;
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
@@ -88,7 +105,10 @@ export default function ViewLesson(props: ViewLessonProps) {
               <ContainerFlex>
                 <Text>{lessonData.totalSteps[currentStep].description}</Text>
               </ContainerFlex>
-              <ContainerFlex>
+              <ContainerFlex style={{ justifyContent: "space-around" }}>
+                <ButtonSimple width="120px" height="16px" onClick={doPrev}>
+                  Prev
+                </ButtonSimple>
                 <ButtonSimple width="120px" height="16px" onClick={doNext}>
                   Next
                 </ButtonSimple>
