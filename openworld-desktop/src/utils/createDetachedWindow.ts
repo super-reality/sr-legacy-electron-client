@@ -3,6 +3,7 @@
 import path from "path";
 import url from "url";
 import { DetachArg } from "./handleIpc";
+import store from "../renderer/redux/stores/renderer";
 
 export default function createDetachedWindow(
   props: any,
@@ -43,6 +44,7 @@ export default function createDetachedWindow(
   return new Promise<void>((resolve) => {
     newWindow.webContents.openDevTools();
     newWindow.webContents.once("dom-ready", () => {
+      newWindow.webContents.send("token", store.getState().auth.token);
       newWindow.webContents.send("detached", detach);
       setTimeout(function () {
         newWindow.show();

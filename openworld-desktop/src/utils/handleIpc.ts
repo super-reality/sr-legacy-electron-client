@@ -15,4 +15,8 @@ export default function handleIpc(): void {
   ipcRenderer.on("detached", (e: any, arg: DetachArg) => {
     reduxAction(store.dispatch, { type: "SET_DETACHED", arg });
   });
+
+  ipcRenderer.on("token", (e: any, arg: string) => {
+    reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
+  });
 }
