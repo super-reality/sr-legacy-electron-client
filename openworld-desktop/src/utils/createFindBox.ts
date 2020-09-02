@@ -94,3 +94,39 @@ export function findCVMatch(imageUrl: string): Promise<boolean> {
       });
   });
 }
+
+export function findCVArrayMatch(
+  imageUrls: string[],
+  functions: Number[]
+): Promise<boolean> {
+  const win = remote.getCurrentWindow();
+  const pos = win.getPosition();
+  const size = win.getSize();
+  return new Promise((resolve, reject) => {
+    jsonRpcRemote("findCVArray", {
+      imageUrls: imageUrls,
+      functions: functions,
+      parentx: pos[0],
+      parenty: pos[1],
+      parentwidth: size[0],
+      parentheight: size[1],
+    })
+      .then((res: any) => {
+        if (res.result[0] == 1) {
+          resolve(true);
+          console.log(res.result, "result");
+          createFindBox({
+            x: res.result[1],
+            y: res.result[2],
+            width: res.result[3],
+            height: res.result[4],
+          }).then(() => {});
+        } else {
+          resolve(false);
+        }
+      })
+      .catch((e) => {
+        reject();
+      });
+  });
+}

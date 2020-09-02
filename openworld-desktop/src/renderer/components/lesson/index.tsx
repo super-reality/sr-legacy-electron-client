@@ -3,6 +3,7 @@ import React, { useCallback } from "react";
 
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
+import { isCompositeComponent } from "react-dom/test-utils";
 import {
   ItemInner,
   Icon,
@@ -37,7 +38,6 @@ export default function Lesson(props: LessonProps): JSX.Element {
   }, [checked]);
 
   const [PopupModal, open] = usePopupModal("", clickYes);
-
   return (
     <ItemInner text>
       <PopupModal
@@ -54,7 +54,11 @@ export default function Lesson(props: LessonProps): JSX.Element {
         <Text>{data.description}</Text>
       </ContainerFlex>
       <ContainerFlex>
-        <Image src={data.medias[0]} />
+        <Image
+          src={data.medias[0]}
+          onClick={open}
+          style={{ cursor: "pointer" }}
+        />
       </ContainerFlex>
       <ContainerBottom>
         <CheckButton

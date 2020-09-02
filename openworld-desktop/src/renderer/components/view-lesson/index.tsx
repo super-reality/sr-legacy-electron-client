@@ -29,14 +29,24 @@ export default function ViewLesson(props: ViewLessonProps) {
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
 
-  const doNext = useCallback(() => {
-    setCurrentStep(currentStep + 1);
-  }, [currentStep]);
-
   const data: ILessonGet = globalData.lessons[id] || undefined;
   console.log(data);
   const [Popup, open] = usePopup(false);
 
+  const doNext = useCallback(() => {
+    console.log(data.totalSteps.length, currentStep);
+    if (data.totalSteps.length <= currentStep + 1) {
+      return;
+    }
+    setCurrentStep(currentStep + 1);
+  }, [currentStep]);
+  const doPrev = useCallback(() => {
+    console.log(data.totalSteps.length, currentStep);
+    if (currentStep - 1 < 0) {
+      return;
+    }
+    setCurrentStep(currentStep - 1);
+  }, [currentStep]);
   useEffect(() => {
     if (!data) open();
   }, []);
@@ -71,7 +81,10 @@ export default function ViewLesson(props: ViewLessonProps) {
             <ContainerFlex>
               <Text>{data.totalSteps[currentStep].description}</Text>
             </ContainerFlex>
-            <ContainerFlex>
+            <ContainerFlex style={{ justifyContent: "space-around" }}>
+              <ButtonSimple width="120px" height="16px" onClick={doPrev}>
+                Prev
+              </ButtonSimple>
               <ButtonSimple width="120px" height="16px" onClick={doNext}>
                 Next
               </ButtonSimple>

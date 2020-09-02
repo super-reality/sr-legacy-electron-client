@@ -17,8 +17,6 @@ import { ICollection } from "../../api/types/collection/collection";
 import CheckButton from "../check-button";
 import usePopupModal from "../../hooks/usePopupModal";
 import ShareButton from "../share-button";
-import createFindBox, { findCVMatch } from "../../../utils/createFindBox";
-import jsonRpcRemote from "../../../utils/jsonRpcSend";
 
 const { remote } = require("electron");
 
@@ -33,16 +31,6 @@ export default function Collection(props: CollectionProps): JSX.Element {
   const clickYes = useCallback(() => {
     setChecked(!checked);
   }, [checked]);
-
-  const onClick = useCallback(() => {
-    findCVMatch(data.medias[0])
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   const [PopupModal, open] = usePopupModal("", clickYes);
 
@@ -62,7 +50,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
         <Text>{data.description}</Text>
       </ContainerFlex>
       <ContainerFlex>
-        <Image src={data.medias[0]} onClick={onClick} />
+        <Image src={data.medias[0]} />
       </ContainerFlex>
       <ContainerBottom>
         <CheckButton
