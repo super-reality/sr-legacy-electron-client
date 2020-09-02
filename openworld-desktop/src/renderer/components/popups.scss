@@ -43,10 +43,12 @@
 }
 
 .popup-regular-title {
-  padding: 16px;
-  margin-bottom: 8px;
-  text-align: center;
   font-size: 18px;
+  font-weight: 400;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  margin-bottom: 10px;
   border-bottom: 1px solid var(--color-separator);
 }
 
