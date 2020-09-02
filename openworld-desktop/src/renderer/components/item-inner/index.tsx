@@ -240,7 +240,7 @@ interface ImageProps {
   src: string;
   style?: CSSProperties;
   area?: string;
-  onClick: any;
+  onClick?: any;
 }
 
 export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
