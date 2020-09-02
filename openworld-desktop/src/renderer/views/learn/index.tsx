@@ -5,13 +5,15 @@ import "./index.scss";
 import "../../components/containers.scss";
 import "../../components/buttons.scss";
 import { useRouteMatch } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Collapsible from "../../components/collapsible";
 import LessonActive from "../../components/lesson-active";
 import Category from "../../../types/collections";
-import { mockLessonData } from "../../../mocks";
 import ViewLesson from "../../components/view-lesson";
+import { AppState } from "../../redux/stores/renderer";
 
 export default function Learn(): JSX.Element {
+  const userdata = useSelector((state: AppState) => state.userData);
   const catMatch = useRouteMatch<{
     category: string;
   }>({ path: "/learn/:category" });
@@ -34,7 +36,9 @@ export default function Learn(): JSX.Element {
           <ViewLesson id={openIndividual} />
         ) : (
           <Collapsible outer expanded title="Active Lessons">
-            <LessonActive data={mockLessonData} />
+            {userdata.lessons.map((id) => (
+              <LessonActive key={id} id={id} />
+            ))}
           </Collapsible>
         )
       ) : (
