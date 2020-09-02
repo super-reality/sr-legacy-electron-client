@@ -36,7 +36,7 @@ export default function App(): JSX.Element {
   return isAuthenticated ? (
     <>
       <TopSearch />
-      {isLoading ? <Loading /> : <></>}
+      <Loading state={isLoading} />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <div className="content-wrapper">
           <Switch>
@@ -51,7 +51,7 @@ export default function App(): JSX.Element {
     </>
   ) : (
     <>
-      {isPending ? <Loading /> : <></>}
+      <Loading state={isPending} />
       <Switch>
         <Route exact path="/" component={Splash} />
         <Route exact path="/tests/:id" component={Tests} />
