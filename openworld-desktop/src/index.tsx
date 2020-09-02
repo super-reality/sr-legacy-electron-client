@@ -5,6 +5,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./renderer/App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
+import handleIpc from "./utils/handleIpc";
+
+handleIpc();
 
 ReactDOM.render(
   <React.StrictMode>

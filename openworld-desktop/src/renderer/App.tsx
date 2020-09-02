@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
@@ -15,12 +15,13 @@ import Loading from "./components/loading";
 import Profile from "./views/profile";
 import Create from "./views/create";
 import Tests from "./views/tests";
+import DetachController from "./DetachController";
 import "typeface-roboto";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
-  const isLoading = useSelector(
-    (state: AppState) => state.commonProps.isLoading
+  const { isLoading, detached } = useSelector(
+    (state: AppState) => state.commonProps
   );
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
@@ -32,6 +33,10 @@ export default function App(): JSX.Element {
       reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
     }
   }, [scrollRef, dispatch]);
+
+  if (detached) {
+    return <DetachController />;
+  }
 
   return isAuthenticated ? (
     <>
