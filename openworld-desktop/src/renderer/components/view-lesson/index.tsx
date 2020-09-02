@@ -41,7 +41,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   const clickDetach = useCallback(() => {
     createDetachedWindow(
       { width: 350, height: 400 },
-      { arg: globalData.lessons[id], type: "LESSON_VIEW" }
+      { arg: data || globalData.lessons[id], type: "LESSON_VIEW" }
     );
   }, []);
 
@@ -96,7 +96,7 @@ export default function ViewLesson(props: ViewLessonProps) {
             </ItemInner>
           </Collapsible>
           <Collapsible outer title="Lesson Info">
-            <LessonActive id={id} />
+            <LessonActive id={data?._id || id} />
           </Collapsible>
           <Collapsible outer title="Steps">
             {lessonData.totalSteps.map((step, i: number) => (
