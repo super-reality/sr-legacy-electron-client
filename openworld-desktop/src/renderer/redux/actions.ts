@@ -25,6 +25,7 @@ export const actions = {
   CREATE_SUBJECT_TAG: createSubjectSlice.addTag,
   CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
+  SET_DETACHED: commonPropSlice.setDetached,
   USERDATA_RESET: userDataSlice.clearUserData,
   USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
   USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,

@@ -84,6 +84,11 @@ a:focus, a:hover, a:visited, a:link, a:active {
   height: calc(100vh - 45px);
 }
 
+.content-detached {
+  overflow: auto;
+  height: 100vh;
+}
+
 .content-wrapper {
   @include media-screen-max($break-wrapper) {
     width: auto;
