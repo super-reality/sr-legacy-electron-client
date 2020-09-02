@@ -22,6 +22,10 @@ import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import { ILessonGet } from "../../api/types/lesson/get";
+import {
+  findCVArrayMatch,
+  getCurrentFindWindow,
+} from "../../../utils/createFindBox";
 
 interface ViewLessonProps {
   id: string;
@@ -39,7 +43,6 @@ export default function ViewLesson(props: ViewLessonProps) {
     if (lessonData == undefined) {
       return;
     }
-    console.log(lessonData.totalSteps.length, currentStep);
     if (lessonData?.totalSteps.length <= currentStep + 1) {
       return;
     }
@@ -66,8 +69,27 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
+    if (lessonData) {
+      const imageUrls = lessonData.totalSteps[currentStep].images;
+      const { functions } = lessonData.totalSteps[currentStep];
+      if (getCurrentFindWindow() != null) {
+        // close current find window.
+        getCurrentFindWindow().close();
+      }
+      findCVArrayMatch(imageUrls, functions)
+        .then((res) => {
+          if (res) {
+            console.log("match exists");
+          } else {
+            console.log("match failed");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     if (!lessonData) open();
-  }, []);
+  });
 
   return (
     <>
