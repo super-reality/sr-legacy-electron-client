@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from "react";
+import React, { CSSProperties } from "react";
 import { ReactComponent as Add } from "../../../assets/svg/add.svg";
 import "./index.scss";
 import usePopupImageSource from "../../hooks/usePopupImageSource";

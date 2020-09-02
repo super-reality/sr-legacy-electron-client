@@ -1,8 +1,7 @@
 import { IStep } from "./types/api";
-import { ICollection } from "./renderer/api/types/collection/collection";
-import { EntryOptions } from "./renderer/api/types/lesson/lesson";
+import { ICollectionSearch } from "./renderer/api/types/collection/search";
 
-export const mockCollections: ICollection[] = [
+export const mockCollections: ICollectionSearch[] = [
   {
     icon:
       "https://img2.freepng.es/20180828/oha/kisspng-unity-3d-computer-graphics-video-games-augmented-r-5b8597ae517de9.3224610015354817743338.jpg",
@@ -11,10 +10,9 @@ export const mockCollections: ICollection[] = [
       "World's Leading Real-Time 2D And 3D Development Platform.",
     description: "World's Leading Real-Time 2D And 3D Development Platform.",
     medias: ["https://blog.dataart.com/wp-content/uploads/2013/12/21.png"],
-    tags: [],
-    visibility: [],
-    entry: EntryOptions.Open,
-    subjects: 20,
+    _id: "as1d32a1sd3a",
+    createdAt: "",
+    rating: 20,
   },
   {
     icon:
@@ -26,10 +24,9 @@ export const mockCollections: ICollection[] = [
     medias: [
       "https://www.blender.org/wp-content/uploads/2019/07/blender_render-1280x720.jpg?x59680",
     ],
-    tags: [],
-    visibility: [],
-    entry: EntryOptions.Open,
-    subjects: 10,
+    _id: "as21da3sda",
+    createdAt: "",
+    rating: 10,
   },
 ];
 
