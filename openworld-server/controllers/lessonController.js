@@ -446,6 +446,23 @@ exports.detail = function(request, response){
     });
 }
 
+exports.deleteOne = function(request, response){
+    const { id } = request.params;
+    
+    Lesson.deleteOne({_id: id}, function(err) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                msg: "Lesson deleted successfully"
+            });
+        }
+    });
+}
+
 isUniqueInParent = async(parents, name) => {
     const promises = parents.map((item) => {
         return new Promise((resolve, reject) => {
