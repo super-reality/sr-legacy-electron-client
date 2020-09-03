@@ -92,7 +92,12 @@ export default function usePopupImageSource(
             margin="8px auto"
             width="140px"
             height="16px"
-            onClick={() => (value !== "" ? callback(value) : false)}
+            onClick={() => {
+              if (value !== "") {
+                call(value);
+                close();
+              }
+            }}
           >
             Ok
           </ButtonSimple>
