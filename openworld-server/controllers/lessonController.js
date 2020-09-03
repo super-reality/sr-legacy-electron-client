@@ -274,6 +274,137 @@ exports.createWithForm = async function(request, response){
     })
 }
 
+exports.update = function(request, response){
+    const { 
+        _id,
+        parent,
+        icon,
+        name,
+        shortDescription,
+        description,
+        difficulty,
+        medias,
+        tags,
+        visibility,
+        ownership,
+        entry,
+        steps
+    } = request.body;
+
+    Lesson.findById(_id, async function(err, lesson) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (lesson) {
+                // check parent have already this lesson
+                var lesson_already_exist = await isUniqueInParent(parent, name, { _id: {$ne: lesson._id}})
+                if (lesson_already_exist) {
+                    response.status(constant.ERR_STATUS.Bad_Request).json({
+                        err_code: constant.ERR_CODE.lesson_already_exist_in_parent,
+                        msg: "One of parents already has this lesson"
+                    });
+                    return
+                }
+            
+                lesson.parent = parent
+                lesson.icon = icon
+                lesson.name = name
+                lesson.shortDescription = shortDescription
+                lesson.description = description
+                lesson.difficulty = difficulty
+                lesson.medias = medias
+                lesson.tags = tags
+                lesson.visibility = visibility
+                lesson.ownership = ownership
+                lesson.entry = entry
+
+                // save lesson document
+                lesson.save(async function (err) {
+                    if (err != null) {
+                        response.status(constant.ERR_STATUS.Bad_Request).json({
+                            error: err
+                        });
+                    } else {
+                        // save tags to Tag table
+                        for (var i = 0; i < tags.length; i++){
+                            const tagName = tags[i]
+                            Tag.findOne({name: tagName})
+                            .then(result => {
+                                if (result) {
+                                } else {
+                                    var tag = Tag()
+                                    tag.name = tagName
+                                    tag.type = "lesson"
+                                    tag.save()
+                                }
+                            })
+                            .catch(error => {})
+                        }
+
+                        // save steps to Step table
+                        var totalSteps = []
+                        for (var i = 0; i < steps.length; i++){
+                            if (steps[i]._id) {
+                                totalSteps.push(steps[i]._id)
+                                if (steps[i].name != null) {
+                                    Step.findById(_id, async function(err, step) {
+                                        if (err == null && step) {
+                                            step.images = steps[i].images
+                                            step.functions = steps[i].functions
+                                            step.name = steps[i].name
+                                            step.trigger = steps[i].trigger
+                                            step.description = steps[i].description
+                                            step.next = steps[i].next
+                                            step.createdBy = request.user._id
+
+                                            step.save()
+                                        }
+                                    })
+                                }
+                            } else {
+                                var step = Step()
+                                step.images = steps[i].images
+                                step.functions = steps[i].functions
+                                step.name = steps[i].name
+                                step.trigger = steps[i].trigger
+                                step.description = steps[i].description
+                                step.next = steps[i].next
+                                step.createdBy = request.user._id
+
+                                await step.save()
+                                totalSteps.push(step._id)
+                            }
+                        }
+
+                        // update lesson's totalSteps to steps array
+                        lesson.totalSteps = totalSteps
+                        lesson.save(function (err) {
+                            if (err) {
+                                response.status(constant.ERR_STATUS.Bad_Request).json({
+                                    error: err
+                                });
+                            } else {
+                                response.json({
+                                    err_code: constant.ERR_CODE.success,
+                                    lesson
+                                });
+                            }
+                        });
+                    }
+                })
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.lesson_not_exist,
+                    msg: "Lesson is not exist"
+                });
+            }
+            
+        }
+    });
+}
+
 exports.searchParent = function(request, response){
     const { query } = request.params;
     Subject.find({name: {$regex: query, $options: 'i'}}, 'name parent').sort({'name': "asc"}).limit(100).exec(async function(err, subjects) {
@@ -463,10 +594,14 @@ exports.deleteOne = function(request, response){
     });
 }
 
-isUniqueInParent = async(parents, name) => {
+isUniqueInParent = async(parents, name, except = null) => {
     const promises = parents.map((item) => {
         return new Promise((resolve, reject) => {
-            Lesson.findOne( { parent: item, name: name }, (err, lesson) => {
+            var condition = { parent: item, name: name }
+            if (except) {
+                condition = { parent: item, name: name, except }
+            }
+            Lesson.findOne( condition, (err, lesson) => {
                 if (err) {
                     reject(false)
                 } else {
