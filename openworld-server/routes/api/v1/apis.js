@@ -47,6 +47,7 @@ router.group("/collection", (router) => {
     router.get("/list", auth(), collectionController.list)
     router.post("/search", auth(), collectionController.search)
     router.get("/:id", auth(), collectionController.detail)
+    router.put("/update", auth(), collectionController.update)
     router.delete("/:id", auth(), collectionController.deleteOne)
 })
 
@@ -56,6 +57,7 @@ router.group("/subject", (router) => {
     router.get("/search-parent/:query", auth(), subjectController.searchParent)
     router.post("/search", auth(), subjectController.search)
     router.get("/:id", auth(), subjectController.detail)
+    router.put("/update", auth(), subjectController.update)
     router.delete("/:id", auth(), subjectController.deleteOne)
 })
 
@@ -67,6 +69,7 @@ router.group("/lesson", (router) => {
 
     router.post("/search", auth(), lessonController.search)
     router.get("/:id", auth(), lessonController.detail)
+    router.put("/update", auth(), lessonController.update)
     router.delete("/:id", auth(), lessonController.deleteOne)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })

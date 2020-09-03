@@ -173,6 +173,75 @@ exports.detail = function(request, response){
     });
 }
 
+exports.update = function(request, response){
+    const { 
+        _id,
+        icon, 
+        name, 
+        shortDescription, 
+        description, 
+        medias, 
+        tags, 
+        visibility, 
+        entry
+    } = request.body;
+
+    Collection.findById(_id, async function(err, collection) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (collection) {
+                collection.icon = icon
+                collection.name = name
+                collection.shortDescription = shortDescription
+                collection.description = description
+                collection.medias = medias
+                collection.tags = tags
+                collection.visibility = visibility
+                collection.entry = entry
+
+                // save collection document
+                collection.save(function (err) {
+                    if (err != null) {
+                        response.status(constant.ERR_STATUS.Bad_Request).json({
+                            error: err
+                        });
+                    } else {
+                        // save tags to Tag table
+                        for (var i = 0; i < tags.length; i++){
+                            const tagName = tags[i]
+                            Tag.findOne({name: tagName})
+                            .then(result => {
+                                if (result) {
+                                } else {
+                                    var tag = Tag()
+                                    tag.name = tagName
+                                    tag.type = "collection"
+                                    tag.save()
+                                }
+                            })
+                            .catch(error => {})
+                        }
+
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            collection
+                        })
+                    }
+                })
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.collection_not_exist,
+                    msg: "Collection is not exist"
+                });
+            }
+            
+        }
+    });
+}
+
 exports.find = function(request, response){
     const { search, category } = request.query
 
