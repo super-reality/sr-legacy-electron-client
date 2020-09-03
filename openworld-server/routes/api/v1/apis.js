@@ -31,6 +31,13 @@ router.group("/auth", (router) => {
     router.post("/verify", auth(), authController.verify)
 })
 
+// user routes
+router.group("/user", (router) => {
+
+    // book lesson
+    router.post("/book-lesson", auth(), userController.bookLesson)
+})
+
 // find
 router.get("/find", collectionController.find)
 
@@ -38,6 +45,9 @@ router.get("/find", collectionController.find)
 router.group("/collection", (router) => {
     router.post("/create", auth(), collectionController.create)
     router.get("/list", auth(), collectionController.list)
+    router.post("/search", auth(), collectionController.search)
+    router.get("/:id", auth(), collectionController.detail)
+    router.delete("/:id", auth(), collectionController.deleteOne)
 })
 
 // subject routes
@@ -46,6 +56,7 @@ router.group("/subject", (router) => {
     router.get("/search-parent/:query", auth(), subjectController.searchParent)
     router.post("/search", auth(), subjectController.search)
     router.get("/:id", auth(), subjectController.detail)
+    router.delete("/:id", auth(), subjectController.deleteOne)
 })
 
 // lessons routes
@@ -56,6 +67,7 @@ router.group("/lesson", (router) => {
 
     router.post("/search", auth(), lessonController.search)
     router.get("/:id", auth(), lessonController.detail)
+    router.delete("/:id", auth(), lessonController.deleteOne)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })
 
