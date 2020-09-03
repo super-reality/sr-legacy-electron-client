@@ -6,8 +6,11 @@ import App from "./renderer/App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
 import handleIpc from "./utils/handleIpc";
+import isElectron from "./utils/isElectron";
 
-handleIpc();
+if (isElectron()) {
+  handleIpc();
+}
 
 ReactDOM.render(
   <React.StrictMode>

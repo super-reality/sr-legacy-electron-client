@@ -22,6 +22,7 @@ import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import { ILessonGet } from "../../api/types/lesson/get";
+import isElectron from "../../../utils/isElectron";
 
 interface ViewLessonProps {
   id: string;
@@ -46,6 +47,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, []);
 
   const lessonData = data || globalData.lessons[id] || undefined;
+  console.log(lessonData);
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export default function ViewLesson(props: ViewLessonProps) {
           <Collapsible
             outer
             expanded
-            detach={detached ? undefined : clickDetach}
+            detach={detached || !isElectron() ? undefined : clickDetach}
             title="Step"
           >
             <ItemInner>
