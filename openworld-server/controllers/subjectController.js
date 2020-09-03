@@ -2,7 +2,7 @@ const Subject   = require("../models/subject")
 const Collection= require("../models/collection")
 const Tag       = require("../models/tag")
 const constant  = require("../config/constant");
-const Lesson = require("../models/lesson");
+const Lesson    = require("../models/lesson");
 
 exports.create = async function(request, response){
     const { 
@@ -216,6 +216,23 @@ exports.detail = function(request, response){
                 });
             }
             
+        }
+    });
+}
+
+exports.deleteOne = function(request, response){
+    const { id } = request.params;
+    
+    Subject.deleteOne({_id: id}, function(err) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                msg: "Subject deleted successfully"
+            });
         }
     });
 }
