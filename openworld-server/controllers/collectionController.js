@@ -2,11 +2,8 @@
 
 const Collection    = require('../models/collection')
 const Subject       = require('../models/subject')
-const collection        = require('../models/collection')
-const Step          = require('../models/task')
 const Tag           = require("../models/tag")
-
-const constant = require('../config/constant')
+const constant      = require('../config/constant')
 
 exports.create = function(request, response){
     const { 
@@ -75,6 +72,97 @@ exports.create = function(request, response){
     .catch(error => response.status(constant.ERR_CODE.Internal_Server_Error).json({error: error.status ? error.status : 500}))
 }
 
+exports.search = function(request, response){
+    var { 
+        query,
+        sort,
+        fields,
+    } = request.body;
+
+    var sortField = {"name" : 1}
+    if (sort == null) {
+        sort = constant.Collection_Sort.Newest
+    }
+
+    switch (sort) {
+        case constant.Collection_Sort.Most_Popular:
+            break
+        case constant.Collection_Sort.Most_Lesson:
+            break
+        case constant.Collection_Sort.Newest:
+            sortField = {"createdAt" : -1}
+            break
+        case constant.Collection_Sort.Oldest:
+            sortField = {"createdAt" : 1}
+            break
+        case constant.Collection_Sort.My_Teacher:
+            break
+        case constant.Collection_Sort.Highest_Avg:
+            break
+        case constant.Collection_Sort.Highest_Score:
+            break
+        case constant.Collection_Sort.Highest_Trans:
+            break
+    }
+
+    var condition = {}
+    if (query && query != "") {
+        condition["name"] = {$regex: query, $options: 'i'}
+    }
+    if (fields == null || fields == "") {
+        fields = 'name shortDescription icon medias createdAt'
+    }
+    
+    Collection.find(condition, fields, { sort: sortField}).limit(100).find(function(err, collections) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                collections
+            });
+        }
+    });
+}
+
+exports.detail = function(request, response){
+    const { id } = request.params;
+    
+    Collection.findById(id, async function(err, collection) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (collection) {
+                // find child subject who have this collection as their parent
+                Subject.find({parent: {_id: id, type: "collection"}}).find(function(err, subjects) {
+                    if (err != null) {
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            collection,
+                            subjects: []
+                        });
+                    } else {
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            collection,
+                            subjects
+                        });
+                    }
+                });
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.collection_not_exist,
+                    msg: "Collection is not exist"
+                });
+            }
+            
+        }
+    });
+}
 
 exports.find = function(request, response){
     const { search, category } = request.query
@@ -141,4 +229,21 @@ exports.find = function(request, response){
 exports.list = function(request, response){
     const { query } = request.query;
     response.json({query})
+}
+
+exports.deleteOne = function(request, response){
+    const { id } = request.params;
+    
+    Collection.deleteOne({_id: id}, function(err) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            response.json({
+                err_code: constant.ERR_CODE.success,
+                msg: "Collection deleted successfully"
+            });
+        }
+    });
 }
