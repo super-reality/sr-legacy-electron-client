@@ -96,7 +96,7 @@ export default function ViewLesson(props: ViewLessonProps) {
             </ItemInner>
           </Collapsible>
           <Collapsible outer title="Lesson Info">
-            <LessonActive id={data?._id || id} />
+            <LessonActive id={data?._id || id} compact />
           </Collapsible>
           <Collapsible outer title="Steps">
             {lessonData.totalSteps.map((step, i: number) => (

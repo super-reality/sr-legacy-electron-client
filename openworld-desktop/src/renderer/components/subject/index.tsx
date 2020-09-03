@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -26,18 +27,23 @@ interface Subject {
 
 export default function Subject(props: Subject): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.subjects.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "subject", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/subject/${data._id}`);
+  }, []);
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
-        <Points points={data.rating} />
+        <Points points={0} />
         <Title title={data.name} sub={`${0} Lessons`} />
       </ContainerTop>
       <ContainerFlex>

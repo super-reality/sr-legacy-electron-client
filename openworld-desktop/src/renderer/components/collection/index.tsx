@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -26,19 +27,24 @@ interface CollectionProps {
 
 export default function Collection(props: CollectionProps): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.collections.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "collection", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/collection/${data._id}`);
+  }, []);
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
         <Points points={0} />
-        <Title title={data.name} sub={`${0} Subjects`} />
+        <Title title={data.name} sub={`${data.subjectCount} Subjects`} />
       </ContainerTop>
       <ContainerFlex>
         <Text>{data.description}</Text>

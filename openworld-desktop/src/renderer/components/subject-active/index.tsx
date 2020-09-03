@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from "react";
 
@@ -21,34 +20,40 @@ import ShareButton from "../share-button";
 import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import SubjectGet, { ISubjectGet } from "../../api/types/subject/get";
 import globalData from "../../globalData";
 import { API_URL } from "../../constants";
 import { ApiError } from "../../api/types";
-import Collapsible from "../collapsible";
-import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
-import handleLessonGet from "../../api/handleLessonGet";
-import Step from "../step";
+import handleSubjectGet from "../../api/handleSubjectGet";
 
-interface LessonActiveProps {
+import Collapsible from "../collapsible";
+import { ILessonGet } from "../../api/types/lesson/get";
+import Lesson from "../lesson";
+
+interface SubjectActiveProps {
   id: string;
-  compact?: boolean;
 }
 
-export default function LessonActive(props: LessonActiveProps): JSX.Element {
-  const { id, compact } = props;
-  const [data, setData] = useState<ILessonGet | undefined>();
+export default function Collection(props: SubjectActiveProps): JSX.Element {
+  const { id } = props;
+  const [data, setData] = useState<ISubjectGet | undefined>();
+  const [lessons, setLessons] = useState<ILessonGet[]>([]);
   const checked = useSelector((state: AppState) =>
-    state.userData.lessons.includes(id)
+    state.userData.collections.includes(id)
   );
 
-  const [PopupAdd, open] = usePopupAdd(checked, "lesson", id);
+  const [PopupAdd, open] = usePopupAdd(checked, "collection", id);
 
   useEffect(() => {
-    Axios.get<LessonGet | ApiError>(`${API_URL}lesson/${id}`)
-      .then(handleLessonGet)
+    Axios.get<SubjectGet | ApiError>(`${API_URL}subject/${id}`)
+      .then(handleSubjectGet)
       .then((d) => {
-        globalData.lessons[id] = d.lesson;
-        setData(d.lesson);
+        globalData.collections[id] = d.subject;
+        d.lessons.forEach((lesson) => {
+          globalData.subjects[lesson._id] = lesson;
+        });
+        setLessons(d.lessons);
+        setData(d.subject);
       })
       .catch(console.error);
   }, []);
@@ -60,14 +65,14 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
         <ContainerTop>
           <Icon url={data.icon} />
           <Points points={0} />
-          <Title title={data.name} sub={`${data.totalSteps.length} Steps`} />
+          <Title title={data.name} sub={`${0} Lessons`} />
         </ContainerTop>
         <ContainerFlex>
           <Text>{data.description}</Text>
         </ContainerFlex>
         <ContainerFlex>
           {data.medias.map((url) => (
-            <Image key={`url-image-${url}`} src={url} />
+            <Image key={`media-url-${url}`} src={url} />
           ))}
         </ContainerFlex>
         <ContainerBottom>
@@ -77,25 +82,15 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
             callback={open}
           />
           <div />
-          <TrashButton type="collection" id={data._id} />
+          <TrashButton type="subject" id={data._id} />
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>
-      {compact ? (
-        <></>
-      ) : (
-        <Collapsible expanded outer title="Subjects">
-          {data.totalSteps.map((step, i: number) => (
-            <Step
-              key={`step-${i}`}
-              number={i + 1}
-              data={step}
-              drag={false}
-              style={{ margin: "5px 10px", height: "auto" }}
-            />
-          ))}
-        </Collapsible>
-      )}
+      <Collapsible expanded outer title="Lessons">
+        {lessons.map((s) => (
+          <Lesson key={s._id} data={s} />
+        ))}
+      </Collapsible>
     </>
   ) : (
     <ItemInnerLoader style={{ height: "400px" }} />

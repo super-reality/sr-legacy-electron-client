@@ -37,7 +37,7 @@ export default function Learn(): JSX.Element {
         ) : (
           <Collapsible outer expanded title="Active Lessons">
             {userdata.lessons.map((id) => (
-              <LessonActive key={id} id={id} />
+              <ViewLesson key={id} id={id} />
             ))}
           </Collapsible>
         )

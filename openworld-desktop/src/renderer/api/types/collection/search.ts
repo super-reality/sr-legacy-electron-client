@@ -12,6 +12,7 @@ export interface ICollectionSearch {
   description: string;
   shortDescription: string;
   rating: number;
+  subjectCount: number;
 }
 
 /* eslint-disable camelcase */

@@ -20,7 +20,6 @@ export interface ISubjectSearch {
   name: string;
   description: string;
   shortDescription: string;
-  rating: number;
 }
 
 /* eslint-disable camelcase */

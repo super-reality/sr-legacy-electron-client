@@ -1,12 +1,12 @@
 import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
-import LessonGet from "./types/lesson/get";
+import CollectionGet from "./types/collection/get";
 
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-export default function handleLessonGet(
-  res: AxiosResponse<ApiError | LessonGet>
-): Promise<LessonGet> {
+export default function handleCollectionGet(
+  res: AxiosResponse<ApiError | CollectionGet>
+): Promise<CollectionGet> {
   return new Promise((resolve, reject) => {
     if (res.status == 200) {
       if (res.data.err_code == 0) {

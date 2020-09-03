@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -16,9 +17,9 @@ import {
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
 import TrashButton from "../trash-button";
-import { ILessonSearch } from "../../api/types/lesson/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import { ILessonSearch } from "../../api/types/lesson/search";
 
 interface LessonProps {
   data: ILessonSearch;
@@ -26,14 +27,19 @@ interface LessonProps {
 
 export default function Lesson(props: LessonProps): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.lessons.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "lesson", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/lesson/${data._id}`);
+  }, []);
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
