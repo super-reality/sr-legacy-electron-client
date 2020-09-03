@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import "./index.scss";
 import "../../containers.scss";
 import { useDispatch } from "react-redux";
@@ -33,6 +33,7 @@ export default function StepAuthoring(): JSX.Element {
   const [description, setDescription] = useState("");
   const [CVImages, setCVImages] = useState<string[]>([]);
   const [CVFunctions, setCVFunctions] = useState<number[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const setImageCVFn = (fn: number, index: number) => {
     const arr = [...CVFunctions];
@@ -73,6 +74,13 @@ export default function StepAuthoring(): JSX.Element {
       open();
       return;
     }
+    if (containerRef.current) {
+      reduxAction(dispatch, {
+        type: "SET_YSCROLL_MOVE",
+        arg: containerRef.current.offsetTop - 150,
+      });
+    }
+
     const newStep: IStep = {
       images: CVImages,
       functions: CVFunctions,
@@ -90,7 +98,15 @@ export default function StepAuthoring(): JSX.Element {
     setDescription("");
     setCVImages([]);
     setCVFunctions([]);
-  }, [dispatch, CVImages, stepname, description, CVTrigger, CVNextStep]);
+  }, [
+    dispatch,
+    containerRef,
+    CVImages,
+    stepname,
+    description,
+    CVTrigger,
+    CVNextStep,
+  ]);
 
   const datekey = new Date().getTime();
 
@@ -107,7 +123,7 @@ export default function StepAuthoring(): JSX.Element {
           </ButtonSimple>
         </div>
       </Popup>
-      <div className="step-authoring-grid">
+      <div className="step-authoring-grid" ref={containerRef}>
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
           {[...CVImages, undefined].map((image, i) => {

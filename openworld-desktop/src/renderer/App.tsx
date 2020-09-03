@@ -22,6 +22,9 @@ export default function App(): JSX.Element {
   const isLoading = useSelector(
     (state: AppState) => state.commonProps.isLoading
   );
+  const yScrollMoveTo = useSelector(
+    (state: AppState) => state.render.yScrollMoveTo
+  );
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
@@ -32,6 +35,13 @@ export default function App(): JSX.Element {
       reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
     }
   }, [scrollRef, dispatch]);
+
+  useEffect(() => {
+    if (scrollRef.current && yScrollMoveTo !== undefined) {
+      scrollRef.current.scrollTop = yScrollMoveTo;
+      reduxAction(dispatch, { type: "SET_YSCROLL_MOVE", arg: undefined });
+    }
+  }, [yScrollMoveTo]);
 
   return isAuthenticated ? (
     <>
