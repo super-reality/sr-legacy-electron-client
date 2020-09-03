@@ -4,7 +4,7 @@ import url from "url";
 import { useCallback } from "react";
 import jsonRpcRemote from "../../utils/jsonRpcSend";
 
-function createSniper(imgUrl: any): Promise<string> {
+function createSniper(): Promise<string> {
   const { remote } = require("electron");
   const snipWindow = new remote.BrowserWindow({
     width: 200,
@@ -85,12 +85,11 @@ function createSniper(imgUrl: any): Promise<string> {
 }
 
 export default function useMediaSniper(
-  imgUrl: any,
   onFinish: (url: string) => void
 ): () => void {
   const open = useCallback(() => {
-    createSniper(imgUrl).then(onFinish);
-  }, [onFinish, imgUrl]);
+    createSniper().then(onFinish);
+  }, [onFinish]);
 
   return open;
 }

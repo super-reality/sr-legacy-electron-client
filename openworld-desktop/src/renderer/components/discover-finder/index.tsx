@@ -5,36 +5,41 @@ import Axios from "axios";
 import Category from "../../../types/collections";
 import InnerSearch from "../inner-search";
 import Select from "../select";
-import Collection from "../collection";
-import { mockCollections } from "../../../mocks";
 import { InputChangeEv } from "../../../types/utils";
 import setLoading from "../../redux/utils/setLoading";
 import { ApiError } from "../../api/types";
 import { API_URL } from "../../constants";
-import LessonSearch, { LessonSortOptions } from "../../api/types/lesson/search";
-import handleDiscoverSearch from "../../api/handleDiscoverSearch";
 import constantFormat from "../../../utils/constantFormat";
+import Collection from "../collection";
+import Subject from "../subject";
 import Lesson from "../lesson";
-import SubjectSearch, {
-  SubjectSortOptions,
-} from "../../api/types/subject/search";
+import handleDiscoverSearch, {
+  AllSearchResults,
+  SearchUrlNames,
+} from "../../api/handleDiscoverSearch";
+import { CollectionSortOptions } from "../../api/types/collection/search";
+import { SubjectSortOptions } from "../../api/types/subject/search";
+import { LessonSortOptions } from "../../api/types/lesson/search";
 
 interface DiscoverFinderProps {
   category: Category;
 }
 
-type AllSearch = LessonSearch | SubjectSearch;
+type SortTypes =
+  | typeof LessonSortOptions
+  | typeof SubjectSortOptions
+  | typeof CollectionSortOptions;
 
 export default function DiscoverFinder(
   props: DiscoverFinderProps
 ): JSX.Element {
   const { category } = props;
-  let currentSort: typeof LessonSortOptions | typeof SubjectSortOptions;
+  let currentSort: SortTypes;
   if (category == Category.Subject) currentSort = SubjectSortOptions;
   else currentSort = LessonSortOptions;
   const [sort, setSort] = useState(Object.values(currentSort)[0]);
 
-  const [data, setData] = useState<AllSearch | undefined>(undefined);
+  const [data, setData] = useState<AllSearchResults | undefined>(undefined);
   const [searchValue, setSearchValue] = useState("");
 
   const onChange = useCallback((e: InputChangeEv) => {
@@ -42,8 +47,7 @@ export default function DiscoverFinder(
   }, []);
 
   useEffect(() => {
-    if (category == Category.Collection) return;
-    let currentUrl: "lesson" | "subject";
+    let currentUrl: SearchUrlNames;
     let fields = "";
     switch (category) {
       case Category.Lesson:
@@ -53,6 +57,13 @@ export default function DiscoverFinder(
         break;
       case Category.Subject:
         currentUrl = "subject";
+        fields =
+          "name _id rating shortDescription description icon medias createdAt rating";
+        break;
+      case Category.Collection:
+        currentUrl = "collection";
+        fields =
+          "name _id rating shortDescription description icon medias createdAt rating";
         break;
       default:
         currentUrl = "lesson";
@@ -65,7 +76,10 @@ export default function DiscoverFinder(
     };
 
     setLoading(true);
-    Axios.post<AllSearch | ApiError>(`${API_URL}${currentUrl}/search`, payload)
+    Axios.post<AllSearchResults | ApiError>(
+      `${API_URL}${currentUrl}/search`,
+      payload
+    )
       .then((res) => handleDiscoverSearch(res, currentUrl))
       .then((d) => {
         setData(d);
@@ -98,8 +112,13 @@ export default function DiscoverFinder(
         </div>
       </div>
       <div className="discover-list">
-        {category == Category.Collection ? (
-          mockCollections.map((d) => <Collection key={d.name} data={d} />)
+        {data?.type == "collection" ? (
+          data.collections.map((d) => <Collection key={d.name} data={d} />)
+        ) : (
+          <></>
+        )}
+        {data?.type == "subject" ? (
+          data.subjects.map((d) => <Subject key={d.name} data={d} />)
         ) : (
           <></>
         )}

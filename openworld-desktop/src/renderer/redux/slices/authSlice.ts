@@ -33,6 +33,7 @@ const authSlice = createSlice({
       if (action.payload.token) {
         Axios.defaults.headers.post.Authorization = `Bearer ${action.payload.token}`;
         Axios.defaults.headers.get.Authorization = `Bearer ${action.payload.token}`;
+        Axios.defaults.headers.delete.Authorization = `Bearer ${action.payload.token}`;
         state.token = action.payload.token;
       }
       state.name = `${firstname} ${lastname}`;
@@ -41,6 +42,7 @@ const authSlice = createSlice({
       state.updatedAt = Date.now();
       Axios.defaults.headers.post.Authorization = `Bearer ${action.payload}`;
       Axios.defaults.headers.get.Authorization = `Bearer ${action.payload}`;
+      Axios.defaults.headers.delete.Authorization = `Bearer ${action.payload}`;
       state.token = action.payload;
     },
     setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {

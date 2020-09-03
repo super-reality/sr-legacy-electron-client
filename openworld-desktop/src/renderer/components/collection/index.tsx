@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from "react";
+/* eslint-disable no-underscore-dangle */
+import React from "react";
 
-import "./index.scss";
+import { useSelector } from "react-redux";
 import {
   ItemInner,
   Icon,
@@ -12,36 +13,32 @@ import {
   ContainerFlex,
   ContainerBottom,
 } from "../item-inner";
-import { ICollection } from "../../api/types/collection/collection";
 import CheckButton from "../check-button";
-import usePopupModal from "../../hooks/usePopupModal";
 import ShareButton from "../share-button";
+import TrashButton from "../trash-button";
+import { ICollectionSearch } from "../../api/types/collection/search";
+import { AppState } from "../../redux/stores/renderer";
+import usePopupAdd from "../../hooks/usePopupAdd";
 
 interface CollectionProps {
-  data: ICollection;
+  data: ICollectionSearch;
 }
 
 export default function Collection(props: CollectionProps): JSX.Element {
-  const [checked, setChecked] = useState(false);
   const { data } = props;
+  const checked = useSelector((state: AppState) =>
+    state.userData.collections.includes(data._id)
+  );
 
-  const clickYes = useCallback(() => {
-    setChecked(!checked);
-  }, [checked]);
-
-  const [PopupModal, open] = usePopupModal("", clickYes);
+  const [PopupAdd, open] = usePopupAdd(checked, "collection", data._id);
 
   return (
     <ItemInner text>
-      <PopupModal
-        newTitle={
-          checked ? "Remove from your collections?" : "Add to your collections?"
-        }
-      />
+      <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
-        <Points points={1.5} />
-        <Title title={data.name} sub={`${data.subjects || 0} Subjects`} />
+        <Points points={0} />
+        <Title title={data.name} sub={`${0} Subjects`} />
       </ContainerTop>
       <ContainerFlex>
         <Text>{data.description}</Text>
@@ -56,6 +53,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
           callback={open}
         />
         <div />
+        <TrashButton type="collection" id={data._id} />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

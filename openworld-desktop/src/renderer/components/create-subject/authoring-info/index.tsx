@@ -62,6 +62,9 @@ export default function InfoAuthoring(): JSX.Element {
         <div className="container-with-desc">
           <div>Icon</div>
           <InsertMedia
+            snip
+            url
+            disk
             keepSize
             imgUrl={icon}
             style={{ width: "32px", height: "32px" }}

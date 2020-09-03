@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import { useCallback } from "react";
 
-export default function useMediaSniper(
+export default function useMediaInsert(
   onFinish: (url: string) => void
 ): () => void {
   const open = useCallback(() => {

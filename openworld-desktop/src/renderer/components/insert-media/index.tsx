@@ -1,44 +1,45 @@
-import React, { CSSProperties, useCallback } from "react";
+import React, { CSSProperties } from "react";
 import { ReactComponent as Add } from "../../../assets/svg/add.svg";
 import "./index.scss";
-import useMediaSniper from "../../hooks/useMediaSniper";
-import useMediaInsert from "../../hooks/useMediaInsert";
-import isElectron from "../../../utils/isElectron";
+import usePopupImageSource from "../../hooks/usePopupImageSource";
 
 interface InsertMediaProps {
   callback: (url: string) => void;
   imgUrl?: string;
   style?: CSSProperties;
   snip?: boolean;
+  url?: boolean;
+  disk?: boolean;
   keepSize?: boolean;
 }
 
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
-  const { callback, imgUrl, style, snip, keepSize } = props;
-  const call = useCallback(callback, [callback]);
+  const { callback, imgUrl, style, snip, url, disk, keepSize } = props;
 
-  const openSnipTool =
-    snip && isElectron() ? useMediaSniper(imgUrl, call) : useMediaInsert(call);
+  const [Popup, open] = usePopupImageSource(callback, snip, url, disk);
 
   return (
-    <div
-      className="insert-media-container"
-      style={{
-        ...style,
-        backgroundImage: keepSize ? `url(${imgUrl})` : "",
-      }}
-      onClick={openSnipTool}
-    >
-      {imgUrl ? (
-        !keepSize && <img src={imgUrl} />
-      ) : (
-        <Add
-          style={{ margin: "auto" }}
-          fill="var(--color-text)"
-          width="12px"
-          height="12px"
-        />
-      )}
-    </div>
+    <>
+      {Popup}
+      <div
+        className="insert-media-container"
+        style={{
+          ...style,
+          backgroundImage: keepSize ? `url(${imgUrl})` : "",
+        }}
+        onClick={open}
+      >
+        {imgUrl ? (
+          !keepSize && <img src={imgUrl} />
+        ) : (
+          <Add
+            style={{ margin: "auto" }}
+            fill="var(--color-text)"
+            width="12px"
+            height="12px"
+          />
+        )}
+      </div>
+    </>
   );
 }
