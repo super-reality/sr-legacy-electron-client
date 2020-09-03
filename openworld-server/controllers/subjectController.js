@@ -84,6 +84,87 @@ exports.create = async function(request, response){
     })
 }
 
+exports.update = function(request, response){
+    const { 
+        _id,
+        parent, 
+        icon, 
+        name, 
+        shortDescription, 
+        description, 
+        medias, 
+        tags, 
+        visibility, 
+        entry 
+    } = request.body;
+
+    Subject.findById(_id, async function(err, subject) {
+        if (err != null) {
+            response.status(constant.ERR_STATUS.Bad_Request).json({
+                error: err
+            });
+        } else {
+            if (subject) {
+                // check parent have already this subject
+                var subject_already_exist = await isUniqueInParentOfSubject(parent, name, { _id: {$ne: subject._id}})
+                if (subject_already_exist) {
+                    response.status(constant.ERR_STATUS.Bad_Request).json({
+                        err_code: constant.ERR_CODE.subject_already_exist_in_parent,
+                        msg: "One of parents already has this lesson"
+                    });
+                    return
+                }
+                
+                subject.parent = parent
+                subject.icon = icon
+                subject.name = name
+                subject.shortDescription = shortDescription
+                subject.description = description
+                subject.medias = medias
+                subject.tags = tags
+                subject.visibility = visibility
+                subject.entry = entry
+
+                // save subject document
+                subject.save(async function (err) {
+                    if (err != null) {
+                        response.status(constant.ERR_STATUS.Bad_Request).json({
+                            error: err
+                        });
+                    } else {
+                        // save tags to Tag table
+                        for (var i = 0; i < tags.length; i++){
+                            const tagName = tags[i]
+                            Tag.findOne({name: tagName})
+                            .then(result => {
+                                if (result) {
+                                } else {
+                                    var tag = Tag()
+                                    tag.name = tagName
+                                    tag.type = "subject"
+                                    tag.save()
+                                }
+                            })
+                            .catch(error => {})
+                        }
+
+                        response.json({
+                            err_code: constant.ERR_CODE.success,
+                            subject
+                        });
+                    }
+                })
+            } else {
+                response.json({
+                    err_code: constant.ERR_CODE.subject_not_exist,
+                    msg: "Subject is not exist"
+                });
+            }
+            
+        }
+    });
+}
+
 exports.searchParent = function(request, response){
     const { query } = request.params;
     Collection.find({name: {$regex: query, $options: 'i'}}, 'name').sort({'name': "asc"}).limit(100).exec(async function(err, collections) {
@@ -237,10 +318,14 @@ exports.deleteOne = function(request, response){
     });
 }
 
-isUniqueInParentOfSubject = async(parents, name) => {
+isUniqueInParentOfSubject = async(parents, name, except = null) => {
     const promises = parents.map((item) => {
         return new Promise((resolve, reject) => {
-            Subject.findOne( { parent: item, name: name }, (err, subject) => {
+            var condition = { parent: item, name: name }
+            if (except) {
+                condition = { parent: item, name: name, except }
+            }
+            Subject.findOne( condition, (err, subject) => {
                 if (err) {
                     reject(false)
                 } else {
