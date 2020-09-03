@@ -4,6 +4,7 @@ const Collection    = require('../models/collection')
 const Subject       = require('../models/subject')
 const Tag           = require("../models/tag")
 const constant      = require('../config/constant')
+const { ObjectID } = require('mongodb')
 
 exports.create = function(request, response){
     const { 
@@ -113,15 +114,23 @@ exports.search = function(request, response){
         fields = 'name shortDescription icon medias createdAt'
     }
     
-    Collection.find(condition, fields, { sort: sortField}).limit(100).find(function(err, collections) {
+    Collection.find(condition, fields, { sort: sortField}).limit(100).find(async function(err, collections) {
         if (err != null) {
             response.status(constant.ERR_STATUS.Bad_Request).json({
                 error: err
             });
         } else {
+            var result = []
+            for (var i = 0; i < collections.length; i++){
+                var item = JSON.parse(JSON.stringify(collections[i]))
+                const subjectCount = await Subject.countDocuments({parent: {_id: item._id, type: "collection"}})
+                item.subjectCount = subjectCount
+                result.push(item)
+            }
+
             response.json({
                 err_code: constant.ERR_CODE.success,
-                collections
+                collections: result
             });
         }
     });
