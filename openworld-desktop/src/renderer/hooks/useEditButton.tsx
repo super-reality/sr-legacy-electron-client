@@ -36,23 +36,13 @@ interface LessonArg {
 
 type EditArg = CollectionArg | SubjectArg | LessonArg;
 
-function fetchData<T>(arg: EditArg): Promise<T> {
+function fetchData<A>(arg: EditArg): Promise<A> {
   return new Promise((resolve, reject) => {
     Axios.get<NonNullable<typeof arg["api"]> | ApiError>(
       `${API_URL}${arg.type}/${arg.id}`
     )
-      .then((d) => handleGenericGet<NonNullable<typeof arg["api"]>>(d))
-      .then((d) => {
-        if (d && arg.type == "collection") {
-          resolve(d.collection);
-        }
-        if (d && arg.type == "subject") {
-          resolve(d.subject);
-        }
-        if (d && arg.type == "lesson") {
-          resolve(d.lesson);
-        }
-      })
+      .then(handleGenericGet)
+      .then((d: any) => resolve(d))
       .catch(reject);
   });
 }
@@ -64,11 +54,11 @@ export default function useEditButton(arg: EditArg): () => JSX.Element {
   );
 
   const callback = useCallback(() => {
-    fetchData<typeof arg["data"]>(arg).then((getData) => {
-      if (arg.type == "collection" && getData) {
-        triggerEditCollection(getData);
-      }
-    });
+    if (arg.type == "collection") {
+      fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
+        triggerEditCollection(getData.collection);
+      });
+    }
   }, [data]);
 
   const Component = () => (

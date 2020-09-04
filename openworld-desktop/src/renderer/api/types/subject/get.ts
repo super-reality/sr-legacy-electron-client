@@ -1,4 +1,4 @@
-import { CodeSuccess } from "..";
+import { CodeSuccess, ApiSucess } from "..";
 import Link from "../link/link";
 import { ILessonGet } from "../lesson/get";
 
@@ -22,7 +22,7 @@ export interface ISubjectGet {
 }
 
 /* eslint-disable camelcase */
-export default interface SubjectGet {
+export default interface SubjectGet extends ApiSucess {
   err_code: CodeSuccess;
   subject: ISubjectGet;
   lessons: ILessonGet[];

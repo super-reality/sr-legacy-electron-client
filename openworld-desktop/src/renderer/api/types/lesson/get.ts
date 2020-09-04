@@ -1,4 +1,4 @@
-import { CodeSuccess } from "..";
+import { CodeSuccess, ApiSucess } from "..";
 import { IStep } from "../step/step";
 import Link from "../link/link";
 import { Subject } from "./search-parent";
@@ -28,7 +28,7 @@ export interface ILessonGet {
 }
 
 /* eslint-disable camelcase */
-export default interface LessonGet {
+export default interface LessonGet extends ApiSucess {
   err_code: CodeSuccess;
   lesson: ILessonGet;
 }
