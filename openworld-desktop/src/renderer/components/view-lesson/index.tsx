@@ -23,6 +23,10 @@ import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
+import {
+  findCVArrayMatch,
+  getCurrentFindWindow,
+} from "../../../utils/createFindBox";
 
 interface ViewLessonProps {
   id: string;
@@ -31,12 +35,29 @@ interface ViewLessonProps {
 
 export default function ViewLesson(props: ViewLessonProps) {
   const { id, data } = props;
+  const lessonData = data || globalData.lessons[id] || undefined;
   const history = useHistory();
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
+    if (lessonData == undefined) {
+      return;
+    }
+    if (lessonData?.totalSteps.length <= currentStep + 1) {
+      return;
+    }
     setCurrentStep(currentStep + 1);
+  }, [currentStep]);
+
+  const doPrev = useCallback(() => {
+    if (lessonData == undefined) {
+      return;
+    }
+    if (currentStep - 1 < 0) {
+      return;
+    }
+    setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
   const clickDetach = useCallback(() => {
@@ -46,11 +67,28 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
-  const lessonData = data || globalData.lessons[id] || undefined;
-  console.log(lessonData);
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
+    if (lessonData) {
+      const imageUrls = lessonData.totalSteps[currentStep].images;
+      const { functions } = lessonData.totalSteps[currentStep];
+      if (getCurrentFindWindow() != null) {
+        // close current find window.
+        getCurrentFindWindow().close();
+      }
+      findCVArrayMatch(imageUrls, functions)
+        .then((res) => {
+          if (res) {
+            console.log("match exists");
+          } else {
+            console.log("match failed");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     if (!lessonData) open();
   }, []);
 
@@ -90,7 +128,10 @@ export default function ViewLesson(props: ViewLessonProps) {
               <ContainerFlex>
                 <Text>{lessonData.totalSteps[currentStep].description}</Text>
               </ContainerFlex>
-              <ContainerFlex>
+              <ContainerFlex style={{ justifyContent: "space-around" }}>
+                <ButtonSimple width="120px" height="16px" onClick={doPrev}>
+                  Prev
+                </ButtonSimple>
                 <ButtonSimple width="120px" height="16px" onClick={doNext}>
                   Next
                 </ButtonSimple>

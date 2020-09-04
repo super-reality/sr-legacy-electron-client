@@ -21,6 +21,8 @@ import { ICollectionSearch } from "../../api/types/collection/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 
+const { remote } = require("electron");
+
 interface CollectionProps {
   data: ICollectionSearch;
 }
