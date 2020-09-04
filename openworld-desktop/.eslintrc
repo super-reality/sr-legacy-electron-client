@@ -24,6 +24,7 @@
     "no-undef": "error",
     "no-global-assign": "warn",
     "no-empty": "warn",
+    "no-underscore-dangle": "off",
     "object-shorthand": 0,
     "complexity": [
       "warn",
@@ -48,7 +49,6 @@
         "ignoreFunctionalComponents": true
       }
     ],
-    "no-underscore-dangle": "off",
     "eqeqeq": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
