@@ -1,9 +1,10 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector } from "react-redux";
+import { findAllByTestId } from "@testing-library/react";
 import {
   ItemInner,
   Title,
@@ -22,6 +23,12 @@ import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
 import useDataGet from "../../hooks/useDataGet";
+import {
+  findCVArrayMatch,
+  getCurrentFindWindow,
+} from "../../../utils/createFindBox";
+import jsonRpcRemote from "../../../utils/jsonRpcSend";
+import usePopup from "../../hooks/usePopup";
 
 interface ViewLessonProps {
   id: string;
@@ -32,10 +39,27 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [onProcessing, setOnProcessing] = useState<boolean>(false);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
+    if (data == undefined || onProcessing) {
+      return;
+    }
+    if (data?.totalSteps.length <= currentStep + 1) {
+      return;
+    }
     setCurrentStep(currentStep + 1);
+  }, [currentStep]);
+
+  const doPrev = useCallback(() => {
+    if (data == undefined || onProcessing) {
+      return;
+    }
+    if (currentStep - 1 < 0) {
+      return;
+    }
+    setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
   const clickDetach = useCallback(() => {
@@ -44,6 +68,44 @@ export default function ViewLesson(props: ViewLessonProps) {
       { arg: data, type: "LESSON_VIEW" }
     );
   }, []);
+
+  const [Popup, open] = usePopup(false);
+
+  useEffect(() => {
+    if (data && onProcessing == false) {
+      setOnProcessing(true);
+      if (getCurrentFindWindow() != null) {
+        let findWin = getCurrentFindWindow();
+        findWin.close();
+        findWin = null;
+      }
+      const imageUrls = data.totalSteps[currentStep].images;
+      const { functions } = data.totalSteps[currentStep];
+      const playText = data.totalSteps[currentStep].description;
+
+      findCVArrayMatch(imageUrls, functions)
+        .then((res) => {
+          if (res) {
+            console.log("match exists");
+          } else {
+            console.log("match failed");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      jsonRpcRemote("TTS", { text: playText })
+        .then((res) => {
+          console.log("playing nice");
+          setOnProcessing(false);
+        })
+        .catch((err) => {
+          console.log("error occured while playing");
+          setOnProcessing(false);
+        });
+    }
+    if (!data) open();
+  }, [onProcessing]);
 
   return (
     <>
@@ -67,7 +129,10 @@ export default function ViewLesson(props: ViewLessonProps) {
               <ContainerFlex>
                 <Text>{data.totalSteps[currentStep].description}</Text>
               </ContainerFlex>
-              <ContainerFlex>
+              <ContainerFlex style={{ justifyContent: "space-around" }}>
+                <ButtonSimple width="120px" height="16px" onClick={doPrev}>
+                  Prev
+                </ButtonSimple>
                 <ButtonSimple width="120px" height="16px" onClick={doNext}>
                   Next
                 </ButtonSimple>

@@ -68,6 +68,9 @@ export default function PublishAuthoring(): JSX.Element {
   const { entry } = useSelector((state: AppState) => state.createLesson);
   const finalData = useSelector((state: AppState) => state.createLesson);
   const [creationState, setCreationState] = useState(true);
+  const [ParentTagsBox, addParentTag, getParentTags, clearAllTags] = useTagsBox(
+    []
+  );
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -112,6 +115,7 @@ export default function PublishAuthoring(): JSX.Element {
           setLoading(false);
           setCreationState(true);
           open();
+          clearAllTags();
         })
         .catch((err) => {
           setLoading(false);
@@ -139,8 +143,6 @@ export default function PublishAuthoring(): JSX.Element {
         .catch(handleGenericError);
     }
   }, []);
-
-  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox([]);
 
   useEffect(() => {
     const tagsList: Link[] = getParentTags().map((t) => {
