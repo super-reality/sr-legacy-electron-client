@@ -5,9 +5,19 @@ import { ApiError, ApiJoin } from "../api/types";
 import handleGenericGet from "../api/handleGenericGet";
 import { API_URL } from "../constants";
 import { ICollectionGet } from "../api/types/collection/get";
+import { ISubjectGet } from "../api/types/subject/get";
+import { ILessonGet } from "../api/types/lesson/get";
 
 function triggerEditCollection(data: ICollectionGet) {
   console.log("triggerEditCollection", data);
+}
+
+function triggerEditSubject(data: ISubjectGet) {
+  console.log("triggerEditSubject", data);
+}
+
+function triggerEditLesson(data: ILessonGet) {
+  console.log("triggerEditLesson", data);
 }
 
 type EditArg = ApiJoin & { id: string };
@@ -28,6 +38,16 @@ export default function useEditButton(arg: EditArg): () => JSX.Element {
     if (arg.type == "collection") {
       fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
         triggerEditCollection(getData.collection);
+      });
+    }
+    if (arg.type == "subject") {
+      fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
+        triggerEditSubject(getData.subject);
+      });
+    }
+    if (arg.type == "lesson") {
+      fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
+        triggerEditLesson(getData.lesson);
       });
     }
   }, []);
