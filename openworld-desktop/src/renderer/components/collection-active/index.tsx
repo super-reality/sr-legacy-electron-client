@@ -16,7 +16,6 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import CollectionGet, { ICollectionGet } from "../../api/types/collection/get";
