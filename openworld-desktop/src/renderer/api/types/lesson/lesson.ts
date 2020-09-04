@@ -16,7 +16,7 @@ export const EntryOptions = {
 };
 
 export interface ILesson {
-  id?: string;
+  _id?: string;
   parent: Link[];
   icon: string;
   name: string;

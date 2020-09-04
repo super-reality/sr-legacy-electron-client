@@ -65,12 +65,14 @@ const preprocessDataBeforePost = (
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
-  const { entry } = useSelector((state: AppState) => state.createLesson);
+  const { entry, tags } = useSelector((state: AppState) => state.createLesson);
   const finalData = useSelector((state: AppState) => state.createLesson);
   const [creationState, setCreationState] = useState(true);
   const [ParentTagsBox, addParentTag, getParentTags, clearAllTags] = useTagsBox(
     []
   );
+
+  const isEditing = finalData._id !== undefined;
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -105,10 +107,11 @@ export default function PublishAuthoring(): JSX.Element {
       setLoading(true);
       uploadArtifacts(finalData)
         .then((artifacts) =>
-          axios.post<ApiError | LessonResp>(
-            `${API_URL}lesson/create`,
-            preprocessDataBeforePost(finalData, artifacts)
-          )
+          axios({
+            method: isEditing ? "PUT" : "POST",
+            url: `${API_URL}lesson/${isEditing ? "update" : "create"}`,
+            data: preprocessDataBeforePost(finalData, artifacts),
+          })
         )
         .then(handleLessonCreate)
         .then(() => {
@@ -154,7 +157,12 @@ export default function PublishAuthoring(): JSX.Element {
     });
   }, [getParentTags]);
 
-  const [TagsBox, addTag, getTags] = useTagsBox([], true);
+  const [TagsBox, addTag, getTags] = useTagsBox(
+    tags.map((t) => {
+      return { name: t, id: t };
+    }),
+    true
+  );
 
   useEffect(() => {
     const tagsList: string[] = getTags().map((t) => t.name);

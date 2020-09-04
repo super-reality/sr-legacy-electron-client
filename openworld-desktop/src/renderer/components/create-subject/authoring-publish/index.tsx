@@ -53,9 +53,11 @@ const preprocessDataBeforePost = (
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
-  const { entry } = useSelector((state: AppState) => state.createSubject);
+  const { entry, tags } = useSelector((state: AppState) => state.createSubject);
   const finalData = useSelector((state: AppState) => state.createSubject);
   const [creationState, setCreationState] = useState(true);
+
+  const isEditing = finalData._id !== undefined;
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -89,10 +91,11 @@ export default function PublishAuthoring(): JSX.Element {
     if (reasons.length == 0) {
       uploadArtifacts(finalData)
         .then((artifacts) =>
-          axios.post<SubjectCreate | ApiError>(
-            `${API_URL}subject/create`,
-            preprocessDataBeforePost(finalData, artifacts)
-          )
+          axios({
+            method: isEditing ? "PUT" : "POST",
+            url: `${API_URL}subject/${isEditing ? "update" : "create"}`,
+            data: preprocessDataBeforePost(finalData, artifacts),
+          })
         )
         .then(handleSubjectCreate)
         .then(() => {
@@ -127,7 +130,11 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
-  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox([]);
+  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox(
+    tags.map((t) => {
+      return { name: t, id: t };
+    })
+  );
 
   useEffect(() => {
     const tagsList: Link[] = getParentTags().map((t) => {

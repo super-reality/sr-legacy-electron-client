@@ -8,10 +8,8 @@ import ButtonSimple from "../../button-simple";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
-import { ApiError } from "../../../api/types";
 import handleGenericError from "../../../api/handleGenericError";
 import useTagsBox from "../../tag-box";
-import CollectionCreate from "../../../api/types/collection/create";
 import handleCollectionCreate from "../../../api/handleCollectionCreate";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
@@ -46,9 +44,13 @@ const preprocessDataBeforePost = (
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { entry } = useSelector((state: AppState) => state.createCollection);
+  const { entry, tags } = useSelector(
+    (state: AppState) => state.createCollection
+  );
   const finalData = useSelector((state: AppState) => state.createCollection);
   const [creationState, setCreationState] = useState(true);
+
+  const isEditing = finalData._id !== undefined;
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -81,10 +83,11 @@ export default function PublishAuthoring(): JSX.Element {
     if (reasons.length == 0) {
       uploadArtifacts(finalData)
         .then((artifacts) =>
-          axios.post<CollectionCreate | ApiError>(
-            `${API_URL}collection/create`,
-            preprocessDataBeforePost(finalData, artifacts)
-          )
+          axios({
+            method: isEditing ? "PUT" : "POST",
+            url: `${API_URL}collection/${isEditing ? "update" : "create"}`,
+            data: preprocessDataBeforePost(finalData, artifacts),
+          })
         )
         .then(handleCollectionCreate)
         .then(() => {
@@ -105,7 +108,12 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, [open, finalData]);
 
-  const [TagsBox, addTag, getTags] = useTagsBox([], true);
+  const [TagsBox, addTag, getTags] = useTagsBox(
+    tags.map((t) => {
+      return { name: t, id: t };
+    }),
+    true
+  );
 
   useEffect(() => {
     const tagsList: string[] = getTags().map((t) => t.name);

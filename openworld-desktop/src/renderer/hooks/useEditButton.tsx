@@ -16,7 +16,7 @@ function triggerEditCollection(data: ICollectionGet) {
   reduxAction(store.dispatch, {
     type: "CREATE_COLLECTION_DATA",
     arg: {
-      id: data._id,
+      _id: data._id,
       icon: data.icon,
       name: data.name,
       shortDescription: data.shortDescription,
@@ -33,7 +33,7 @@ function triggerEditSubject(data: ISubjectGet) {
   reduxAction(store.dispatch, {
     type: "CREATE_SUBJECT_DATA",
     arg: {
-      id: data._id,
+      _id: data._id,
       icon: data.icon,
       name: data.name,
       shortDescription: data.shortDescription,
@@ -50,7 +50,7 @@ function triggerEditLesson(data: ILessonGet) {
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_DATA",
     arg: {
-      id: data._id,
+      _id: data._id,
       icon: data.icon,
       name: data.name,
       shortDescription: data.shortDescription,

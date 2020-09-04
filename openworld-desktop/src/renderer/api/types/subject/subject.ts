@@ -1,7 +1,7 @@
 import Link from "../link/link";
 
 export interface ISubject {
-  id?: string;
+  _id?: string;
   parent: Link[];
   icon: string;
   name: string;
