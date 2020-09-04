@@ -26,6 +26,7 @@ import {
   findCVArrayMatch,
   getCurrentFindWindow,
 } from "../../../utils/createFindBox";
+import jsonRpcRemote from "../../../utils/jsonRpcSend";
 
 interface ViewLessonProps {
   id: string;
@@ -33,6 +34,7 @@ interface ViewLessonProps {
 }
 
 export default function ViewLesson(props: ViewLessonProps) {
+  let onProcessing: boolean = false;
   const { id, data } = props;
   const lessonData = data || globalData.lessons[id] || undefined;
   const history = useHistory();
@@ -40,7 +42,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
-    if (lessonData == undefined) {
+    if (lessonData == undefined || onProcessing) {
       return;
     }
     if (lessonData?.totalSteps.length <= currentStep + 1) {
@@ -50,7 +52,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (lessonData == undefined) {
+    if (lessonData == undefined || onProcessing) {
       return;
     }
     if (currentStep - 1 < 0) {
@@ -69,13 +71,17 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
-    if (lessonData) {
+    if (lessonData && onProcessing == false) {
+      onProcessing = true;
+      if (getCurrentFindWindow() != null) {
+        let findWin = getCurrentFindWindow();
+        findWin.close();
+        findWin = null;
+      }
       const imageUrls = lessonData.totalSteps[currentStep].images;
       const { functions } = lessonData.totalSteps[currentStep];
-      if (getCurrentFindWindow() != null) {
-        // close current find window.
-        getCurrentFindWindow().close();
-      }
+      const playText = lessonData.totalSteps[currentStep].description;
+
       findCVArrayMatch(imageUrls, functions)
         .then((res) => {
           if (res) {
@@ -86,6 +92,15 @@ export default function ViewLesson(props: ViewLessonProps) {
         })
         .catch((err) => {
           console.log(err);
+        });
+      jsonRpcRemote("TTS", { text: playText })
+        .then((res) => {
+          console.log("playing nice");
+          onProcessing = false;
+        })
+        .catch((err) => {
+          console.log("error occured while playing");
+          onProcessing = false;
         });
     }
     if (!lessonData) open();
