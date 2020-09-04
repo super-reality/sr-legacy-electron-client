@@ -4,6 +4,7 @@ import "./index.scss";
 import "../tag/index.scss";
 import Tag from "../tag";
 import { InputChangeEv } from "../../../types/utils";
+import reduxAction from "../../redux/reduxAction";
 
 interface ITag {
   name: string;
@@ -62,7 +63,7 @@ function AddTag(props: AddTagProps): JSX.Element {
 export default function useTagsBox(
   initialTags: ITag[],
   input?: boolean
-): [() => JSX.Element, (toAdd: ITag) => void, () => ITag[]] {
+): [() => JSX.Element, (toAdd: ITag) => void, () => ITag[], () => void] {
   const [tags, setTags] = useState<ITag[]>(initialTags);
 
   const addTag = useCallback(
@@ -83,6 +84,9 @@ export default function useTagsBox(
   );
 
   const getTags = useCallback(() => tags, [tags]);
+  const clearAllTags = useCallback(() => {
+    setTags([]);
+  }, []);
 
   const Container = () => (
     <div className="tags-container">
@@ -98,5 +102,5 @@ export default function useTagsBox(
     </div>
   );
 
-  return [Container, addTag, getTags];
+  return [Container, addTag, getTags, clearAllTags];
 }

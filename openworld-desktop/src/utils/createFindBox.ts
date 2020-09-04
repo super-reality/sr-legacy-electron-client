@@ -47,8 +47,6 @@ export default function createFindBox(pos: Position): Promise<void> {
   );
 
   return new Promise<void>((resolve) => {
-    // findWindow.webContents.openDevTools();
-
     const checkInterval = setInterval(() => {
       const mouse = remote.screen.getCursorScreenPoint();
       if (
@@ -125,14 +123,13 @@ export function findCVArrayMatch(
     })
       .then((res: any) => {
         if (res.result[0] == 1) {
-          resolve(true);
-          console.log(res.result, "result");
           createFindBox({
             x: res.result[1],
             y: res.result[2],
             width: res.result[3],
             height: res.result[4],
           }).then(() => {});
+          resolve(true);
         } else {
           resolve(false);
         }

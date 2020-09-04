@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector } from "react-redux";
+import { findAllByTestId } from "@testing-library/react";
 import {
   ItemInner,
   Title,
@@ -21,11 +22,13 @@ import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
+import useDataGet from "../../hooks/useDataGet";
 import {
   findCVArrayMatch,
   getCurrentFindWindow,
 } from "../../../utils/createFindBox";
-import useDataGet from "../../hooks/useDataGet";
+import jsonRpcRemote from "../../../utils/jsonRpcSend";
+import usePopup from "../../hooks/usePopup";
 
 interface ViewLessonProps {
   id: string;
@@ -36,10 +39,11 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
 
   const [currentStep, setCurrentStep] = useState(0);
+  const [onProcessing, setOnProcessing] = useState<boolean>(false);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
-    if (data == undefined) {
+    if (data == undefined || onProcessing) {
       return;
     }
     if (data?.totalSteps.length <= currentStep + 1) {
@@ -49,7 +53,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (data == undefined) {
+    if (data == undefined || onProcessing) {
       return;
     }
     if (currentStep - 1 < 0) {
@@ -65,14 +69,20 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
+  const [Popup, open] = usePopup(false);
+
   useEffect(() => {
-    if (data) {
+    if (data && onProcessing == false) {
+      setOnProcessing(true);
+      if (getCurrentFindWindow() != null) {
+        let findWin = getCurrentFindWindow();
+        findWin.close();
+        findWin = null;
+      }
       const imageUrls = data.totalSteps[currentStep].images;
       const { functions } = data.totalSteps[currentStep];
-      if (getCurrentFindWindow() != null) {
-        // close current find window.
-        getCurrentFindWindow().close();
-      }
+      const playText = data.totalSteps[currentStep].description;
+
       findCVArrayMatch(imageUrls, functions)
         .then((res) => {
           if (res) {
@@ -84,8 +94,18 @@ export default function ViewLesson(props: ViewLessonProps) {
         .catch((err) => {
           console.log(err);
         });
+      jsonRpcRemote("TTS", { text: playText })
+        .then((res) => {
+          console.log("playing nice");
+          setOnProcessing(false);
+        })
+        .catch((err) => {
+          console.log("error occured while playing");
+          setOnProcessing(false);
+        });
     }
-  }, [currentStep]);
+    if (!data) open();
+  }, [onProcessing, currentStep]);
 
   return (
     <>
