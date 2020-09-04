@@ -7,14 +7,19 @@ export default function uploadMany(
   return Promise.all(
     files.map((file) => {
       return new Promise((resolve, reject) => {
-        uploadFileToS3(file)
-          .then((f) => {
-            ret[file] = f;
-            resolve();
-          })
-          .catch((e) => {
-            reject(e);
-          });
+        if (file.startsWith("http")) {
+          ret[file] = file;
+          resolve();
+        } else {
+          uploadFileToS3(file)
+            .then((f) => {
+              ret[file] = f;
+              resolve();
+            })
+            .catch((e) => {
+              reject(e);
+            });
+        }
       });
     })
   ).then(() => ret);

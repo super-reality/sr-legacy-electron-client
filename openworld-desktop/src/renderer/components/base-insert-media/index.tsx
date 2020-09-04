@@ -31,6 +31,9 @@ export default function BaseInsertMedia(
             <InsertMedia
               // eslint-disable-next-line react/no-array-index-key
               key={`insert-media-${datekey}-${i}`}
+              snip
+              url
+              disk
               imgUrl={url}
               style={{
                 marginBottom: "8px",

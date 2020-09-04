@@ -11,6 +11,7 @@
 .insert-media-container {
   cursor: pointer;
   display: flex;
+  overflow: auto;
   border-radius: 5px;
   min-width: 40px;
   min-height: 40px;

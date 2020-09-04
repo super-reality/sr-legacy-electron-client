@@ -5,6 +5,7 @@ export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 
 const initialState = {
   yScroll: 0,
+  yScrollMoveTo: undefined as number | undefined,
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
 };
@@ -19,6 +20,13 @@ const renderSlice = createSlice({
       state.yScrollDelta = state.yScroll - action.payload;
       state.yScroll = action.payload;
     },
+    setYScrollMoveTo: (
+      state: RenderState,
+      action: PayloadAction<number | undefined>
+    ): void => {
+      console.log("setYScrollMoveTo", action.payload);
+      state.yScrollMoveTo = action.payload;
+    },
     setTopInput: (
       state: RenderState,
       action: PayloadAction<{ str: string; path: string }>
@@ -31,6 +39,10 @@ const renderSlice = createSlice({
   },
 });
 
-export const { setYScroll, setTopInput } = renderSlice.actions;
+export const {
+  setYScroll,
+  setYScrollMoveTo,
+  setTopInput,
+} = renderSlice.actions;
 
 export default renderSlice;

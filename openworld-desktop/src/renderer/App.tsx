@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
@@ -23,6 +23,9 @@ export default function App(): JSX.Element {
   const { isLoading, detached } = useSelector(
     (state: AppState) => state.commonProps
   );
+  const yScrollMoveTo = useSelector(
+    (state: AppState) => state.render.yScrollMoveTo
+  );
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
@@ -34,6 +37,13 @@ export default function App(): JSX.Element {
     }
   }, [scrollRef, dispatch]);
 
+  useEffect(() => {
+    if (scrollRef.current && yScrollMoveTo !== undefined) {
+      scrollRef.current.scrollTop = yScrollMoveTo;
+      reduxAction(dispatch, { type: "SET_YSCROLL_MOVE", arg: undefined });
+    }
+  }, [yScrollMoveTo]);
+
   if (detached) {
     return <DetachController />;
   }
@@ -41,7 +51,7 @@ export default function App(): JSX.Element {
   return isAuthenticated ? (
     <>
       <TopSearch />
-      {isLoading ? <Loading /> : <></>}
+      <Loading state={isLoading} />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
         <div className="content-wrapper">
           <Switch>
@@ -56,7 +66,7 @@ export default function App(): JSX.Element {
     </>
   ) : (
     <>
-      {isPending ? <Loading /> : <></>}
+      <Loading state={isPending} />
       <Switch>
         <Route exact path="/" component={Splash} />
         <Route exact path="/tests/:id" component={Tests} />

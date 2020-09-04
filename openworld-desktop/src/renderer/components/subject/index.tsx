@@ -16,21 +16,21 @@ import {
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
 import TrashButton from "../trash-button";
-import { ILessonSearch } from "../../api/types/lesson/search";
+import { ISubjectSearch } from "../../api/types/subject/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 
-interface LessonProps {
-  data: ILessonSearch;
+interface Subject {
+  data: ISubjectSearch;
 }
 
-export default function Lesson(props: LessonProps): JSX.Element {
+export default function Subject(props: Subject): JSX.Element {
   const { data } = props;
   const checked = useSelector((state: AppState) =>
-    state.userData.lessons.includes(data._id)
+    state.userData.subjects.includes(data._id)
   );
 
-  const [PopupAdd, open] = usePopupAdd(checked, "lesson", data._id);
+  const [PopupAdd, open] = usePopupAdd(checked, "subject", data._id);
 
   return (
     <ItemInner text>
@@ -38,7 +38,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
       <ContainerTop>
         <Icon url={data.icon} />
         <Points points={data.rating} />
-        <Title title={data.name} sub={`${data.totalSteps.length} Steps`} />
+        <Title title={data.name} sub={`${0} Lessons`} />
       </ContainerTop>
       <ContainerFlex>
         <Text>{data.description}</Text>
@@ -53,7 +53,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="lesson" id={data._id} />
+        <TrashButton type="subject" id={data._id} />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

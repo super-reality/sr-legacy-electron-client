@@ -76,3 +76,8 @@ export interface ApiError {
   hash?: string;
   msg: string;
 }
+
+export interface ApiOk {
+  err_code: CodeSuccess;
+  msg: string;
+}
