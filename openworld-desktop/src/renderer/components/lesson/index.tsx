@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useCallback } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
   ItemInner,
@@ -53,7 +53,11 @@ export default function Lesson(props: LessonProps): JSX.Element {
         <Text>{data.description}</Text>
       </ContainerFlex>
       <ContainerFlex>
-        <Image src={data.medias[0]} />
+        <Image
+          src={data.medias[0]}
+          onClick={open}
+          style={{ cursor: "pointer" }}
+        />
       </ContainerFlex>
       <ContainerBottom>
         <CheckButton
