@@ -87,9 +87,9 @@
   }
 
   .container-bottom {
-    grid-template-columns: 32px auto 32px 32px;
+    grid-template-columns: 32px auto 32px 32px 32px;
     grid-template-rows: 32px;
-    grid-template-areas: "check fill trash share";
+    grid-template-areas: "check fill edit trash share";
     gap: 8px;
     display: grid;
   }

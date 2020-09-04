@@ -42,7 +42,7 @@ export default function TrashButton(props: TrashProps): JSX.Element {
       <TrashIcon
         width="20px"
         height="20px"
-        fill="var(--color-text)"
+        fill="var(--color-icon)"
         style={{ margin: "auto" }}
       />
     </div>

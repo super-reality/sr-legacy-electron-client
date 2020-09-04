@@ -20,6 +20,7 @@ import { ICollectionSearch } from "../../api/types/collection/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import useTrashButton from "../../hooks/useTrashButton";
+import useEditButton from "../../hooks/useEditButton";
 
 interface CollectionProps {
   data: ICollectionSearch;
@@ -40,6 +41,8 @@ export default function Collection(props: CollectionProps): JSX.Element {
 
   const [Trash, deleted] = useTrashButton("collection", data?._id);
   if (deleted) return <></>;
+
+  const EditButton = useEditButton({ type: "collection", id: data._id });
 
   return (
     <ItemInner text onClick={doClick}>
@@ -62,6 +65,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
           callback={open}
         />
         <div />
+        <EditButton />
         <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
