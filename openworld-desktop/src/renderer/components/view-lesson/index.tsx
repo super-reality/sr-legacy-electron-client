@@ -3,9 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./index.scss";
 import "../popups.scss";
-import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Axios from "axios";
 import {
   ItemInner,
   Title,
@@ -14,7 +12,6 @@ import {
   Text,
   ItemInnerLoader,
 } from "../item-inner";
-import globalData from "../../globalData";
 import ButtonSimple from "../button-simple";
 import Collapsible from "../collapsible";
 import Step from "../step";
@@ -24,9 +21,7 @@ import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
-import handleLessonGet from "../../api/handleLessonGet";
-import { API_URL } from "../../constants";
-import { ApiError } from "../../api/types";
+import useDataGet from "../../hooks/useDataGet";
 
 interface ViewLessonProps {
   id: string;
@@ -34,9 +29,8 @@ interface ViewLessonProps {
 
 export default function ViewLesson(props: ViewLessonProps) {
   const { id } = props;
-  const [data, setData] = useState<ILessonGet | undefined>(
-    globalData.lessons[id] || undefined
-  );
+  const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
+
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
@@ -49,16 +43,6 @@ export default function ViewLesson(props: ViewLessonProps) {
       { width: 350, height: 400 },
       { arg: data, type: "LESSON_VIEW" }
     );
-  }, []);
-
-  useEffect(() => {
-    Axios.get<LessonGet | ApiError>(`${API_URL}lesson/${id}`)
-      .then(handleLessonGet)
-      .then((d) => {
-        globalData.lessons[id] = d.lesson;
-        setData(d.lesson);
-      })
-      .catch(console.error);
   }, []);
 
   return (

@@ -1,8 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { useSelector } from "react-redux";
-import Axios from "axios";
 import {
   ItemInner,
   Icon,
@@ -21,14 +20,10 @@ import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import SubjectGet, { ISubjectGet } from "../../api/types/subject/get";
-import globalData from "../../globalData";
-import { API_URL } from "../../constants";
-import { ApiError } from "../../api/types";
-import handleSubjectGet from "../../api/handleSubjectGet";
-
 import Collapsible from "../collapsible";
 import { ILessonGet } from "../../api/types/lesson/get";
 import Lesson from "../lesson";
+import useDataGet from "../../hooks/useDataGet";
 
 interface SubjectActiveProps {
   id: string;
@@ -36,27 +31,15 @@ interface SubjectActiveProps {
 
 export default function Collection(props: SubjectActiveProps): JSX.Element {
   const { id } = props;
-  const [data, setData] = useState<ISubjectGet | undefined>();
-  const [lessons, setLessons] = useState<ILessonGet[]>([]);
+  const [data, children] = useDataGet<SubjectGet, ISubjectGet, ILessonGet>(
+    "subject",
+    id
+  );
   const checked = useSelector((state: AppState) =>
     state.userData.collections.includes(id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "collection", id);
-
-  useEffect(() => {
-    Axios.get<SubjectGet | ApiError>(`${API_URL}subject/${id}`)
-      .then(handleSubjectGet)
-      .then((d) => {
-        globalData.collections[id] = d.subject;
-        d.lessons.forEach((lesson) => {
-          globalData.lessons[lesson._id] = lesson;
-        });
-        setLessons(d.lessons);
-        setData(d.subject);
-      })
-      .catch(console.error);
-  }, []);
 
   return data ? (
     <>
@@ -87,7 +70,7 @@ export default function Collection(props: SubjectActiveProps): JSX.Element {
         </ContainerBottom>
       </ItemInner>
       <Collapsible expanded outer title="Lessons">
-        {lessons.map((s) => (
+        {children?.map((s) => (
           <Lesson key={s._id} data={s} />
         ))}
       </Collapsible>
