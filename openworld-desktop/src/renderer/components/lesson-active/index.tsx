@@ -1,9 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { useSelector } from "react-redux";
-import Axios from "axios";
 import {
   ItemInner,
   Icon,
@@ -18,16 +17,13 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
-import globalData from "../../globalData";
-import { API_URL } from "../../constants";
-import { ApiError } from "../../api/types";
 import Collapsible from "../collapsible";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
-import handleLessonGet from "../../api/handleLessonGet";
 import Step from "../step";
+import useDataGet from "../../hooks/useDataGet";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface LessonActiveProps {
   id: string;
@@ -36,22 +32,15 @@ interface LessonActiveProps {
 
 export default function LessonActive(props: LessonActiveProps): JSX.Element {
   const { id, compact } = props;
-  const [data, setData] = useState<ILessonGet | undefined>();
+  const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
   const checked = useSelector((state: AppState) =>
     state.userData.lessons.includes(id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "lesson", id);
 
-  useEffect(() => {
-    Axios.get<LessonGet | ApiError>(`${API_URL}lesson/${id}`)
-      .then(handleLessonGet)
-      .then((d) => {
-        globalData.lessons[id] = d.lesson;
-        setData(d.lesson);
-      })
-      .catch(console.error);
-  }, []);
+  const [Trash, deleted] = useTrashButton("collection", id);
+  if (deleted) return <></>;
 
   return data ? (
     <>
@@ -77,7 +66,7 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
             callback={open}
           />
           <div />
-          <TrashButton type="collection" id={data._id} />
+          <Trash />
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>

@@ -77,6 +77,10 @@ export interface ApiError {
   msg: string;
 }
 
+export interface ApiSucess {
+  err_code: CodeSuccess;
+}
+
 export interface ApiOk {
   err_code: CodeSuccess;
   msg: string;

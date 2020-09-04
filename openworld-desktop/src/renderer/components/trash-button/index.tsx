@@ -12,7 +12,7 @@ interface TrashProps {
   callback?: () => void;
 }
 
-export default function TashButton(props: TrashProps): JSX.Element {
+export default function TrashButton(props: TrashProps): JSX.Element {
   const { style, callback, type, id } = props;
 
   const clickYes = useCallback(() => {
