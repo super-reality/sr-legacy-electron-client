@@ -1,10 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { ReactComponent as AddIcon } from "../../../assets/svg/add.svg";
 import "./index.scss";
 import "../tag/index.scss";
 import Tag from "../tag";
 import { InputChangeEv } from "../../../types/utils";
-import reduxAction from "../../redux/reduxAction";
 
 interface ITag {
   name: string;
@@ -61,10 +60,20 @@ function AddTag(props: AddTagProps): JSX.Element {
 }
 
 export default function useTagsBox(
-  initialTags: ITag[],
+  initialTags: string[],
   input?: boolean
 ): [() => JSX.Element, (toAdd: ITag) => void, () => ITag[], () => void] {
-  const [tags, setTags] = useState<ITag[]>(initialTags);
+  const [tags, setTags] = useState<ITag[]>([]);
+
+  useEffect(() => {
+    if (initialTags.length !== tags.length) {
+      setTags(
+        initialTags.map((t) => {
+          return { name: t, id: t };
+        })
+      );
+    }
+  }, [initialTags]);
 
   const addTag = useCallback(
     (toAdd: ITag) => {
@@ -88,18 +97,21 @@ export default function useTagsBox(
     setTags([]);
   }, []);
 
-  const Container = () => (
-    <div className="tags-container">
-      {tags.map((tag, i) => (
-        <Tag
-          key={`tags-${tag.id}`}
-          name={tag.name}
-          close
-          onCloseCallback={() => removeTag(i)}
-        />
-      ))}
-      {input ? <AddTag callback={addTag} /> : <></>}
-    </div>
+  const Container = useMemo(
+    () => () => (
+      <div className="tags-container">
+        {tags.map((tag, i) => (
+          <Tag
+            key={`tags-${tag.id}`}
+            name={tag.name}
+            close
+            onCloseCallback={() => removeTag(i)}
+          />
+        ))}
+        {input ? <AddTag callback={addTag} /> : <></>}
+      </div>
+    ),
+    [tags]
   );
 
   return [Container, addTag, getTags, clearAllTags];

@@ -108,12 +108,7 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, [open, finalData]);
 
-  const [TagsBox, addTag, getTags] = useTagsBox(
-    tags.map((t) => {
-      return { name: t, id: t };
-    }),
-    true
-  );
+  const [TagsBox, addTag, getTags] = useTagsBox(tags, true);
 
   useEffect(() => {
     const tagsList: string[] = getTags().map((t) => t.name);

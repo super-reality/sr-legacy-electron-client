@@ -130,11 +130,7 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
-  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox(
-    tags.map((t) => {
-      return { name: t, id: t };
-    })
-  );
+  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox(tags);
 
   useEffect(() => {
     const tagsList: Link[] = getParentTags().map((t) => {
