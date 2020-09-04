@@ -50,7 +50,7 @@ export default function Collection(props: SubjectActiveProps): JSX.Element {
       .then((d) => {
         globalData.collections[id] = d.subject;
         d.lessons.forEach((lesson) => {
-          globalData.subjects[lesson._id] = lesson;
+          globalData.lessons[lesson._id] = lesson;
         });
         setLessons(d.lessons);
         setData(d.subject);
