@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
 import SubjectGet from "./types/subject/get";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleSubjectGet(
   res: AxiosResponse<ApiError | SubjectGet>

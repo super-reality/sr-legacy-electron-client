@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React from "react";
 import "./App.scss";
 import { useSelector } from "react-redux";

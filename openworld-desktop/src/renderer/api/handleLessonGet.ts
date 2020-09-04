@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
 import LessonGet from "./types/lesson/get";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleLessonGet(
   res: AxiosResponse<ApiError | LessonGet>

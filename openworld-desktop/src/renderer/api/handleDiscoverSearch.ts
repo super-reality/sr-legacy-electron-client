@@ -8,7 +8,6 @@ export type AllSearchResults = LessonSearch | SubjectSearch | CollectionSearch;
 
 export type SearchUrlNames = "lesson" | "subject" | "collection";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleDiscoverSearch(
   res: AxiosResponse<ApiError | AllSearchResults>,

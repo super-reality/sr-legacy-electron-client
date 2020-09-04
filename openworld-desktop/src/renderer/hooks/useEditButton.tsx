@@ -7,8 +7,24 @@ import { API_URL } from "../constants";
 import { ICollectionGet } from "../api/types/collection/get";
 import { ISubjectGet } from "../api/types/subject/get";
 import { ILessonGet } from "../api/types/lesson/get";
+import reduxAction from "../redux/reduxAction";
+import store from "../redux/stores/renderer";
 
 function triggerEditCollection(data: ICollectionGet) {
+  reduxAction(store.dispatch, {
+    type: "CREATE_COLLECTION_DATA",
+    arg: {
+      id: data._id,
+      icon: data.icon,
+      name: data.name,
+      shortDescription: data.shortDescription,
+      description: data.description,
+      medias: data.medias,
+      tags: data.tags,
+      visibility: data.visibility,
+      entry: data.entry,
+    },
+  });
   console.log("triggerEditCollection", data);
 }
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";

@@ -4,7 +4,6 @@ import { LessonResp } from "./types/lesson/create";
 import reduxAction from "../redux/reduxAction";
 import store from "../redux/stores/renderer";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleLessonCreate(
   res: AxiosResponse<ApiError | LessonResp>

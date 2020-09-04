@@ -1,7 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ApiError, ApiSucess } from "./types";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleGenericGet<T extends ApiSucess>(
   res: AxiosResponse<ApiError | T>

@@ -1,7 +1,6 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useCallback } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
   ItemInner,

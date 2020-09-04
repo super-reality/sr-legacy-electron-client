@@ -2,7 +2,6 @@ import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
 import CollectionGet from "./types/collection/get";
 
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
 export default function handleCollectionGet(
   res: AxiosResponse<ApiError | CollectionGet>

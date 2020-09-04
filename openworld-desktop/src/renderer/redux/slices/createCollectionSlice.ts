@@ -4,6 +4,7 @@ import { ICollection } from "../../api/types/collection/collection";
 import { EntryOptions } from "../../api/types/lesson/lesson";
 
 const initialState: ICollection = {
+  id: undefined,
   icon: "",
   name: "",
   shortDescription: "",

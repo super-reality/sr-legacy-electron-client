@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import Axios from "axios";

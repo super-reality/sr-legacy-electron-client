@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-underscore-dangle */
+
 import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";

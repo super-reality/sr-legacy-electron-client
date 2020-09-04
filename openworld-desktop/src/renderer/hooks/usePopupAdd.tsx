@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import reduxAction from "../redux/reduxAction";

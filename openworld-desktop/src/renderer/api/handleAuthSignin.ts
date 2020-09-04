@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { AxiosResponse } from "axios";
 import store from "../redux/stores/renderer";
 import reduxAction from "../redux/reduxAction";
