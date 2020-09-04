@@ -16,10 +16,10 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { ICollectionSearch } from "../../api/types/collection/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface CollectionProps {
   data: ICollectionSearch;
@@ -37,6 +37,9 @@ export default function Collection(props: CollectionProps): JSX.Element {
   const doClick = useCallback(() => {
     history.push(`/discover/collection/${data._id}`);
   }, []);
+
+  const [Trash, deleted] = useTrashButton("collection", data?._id);
+  if (deleted) return <></>;
 
   return (
     <ItemInner text onClick={doClick}>
@@ -59,7 +62,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="collection" id={data._id} />
+        <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

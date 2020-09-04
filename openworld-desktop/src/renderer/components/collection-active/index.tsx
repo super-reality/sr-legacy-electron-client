@@ -24,6 +24,7 @@ import { ISubjectGet } from "../../api/types/subject/get";
 import Subject from "../subject";
 import Collapsible from "../collapsible";
 import useDataGet from "../../hooks/useDataGet";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface CollectionProps {
   id: string;
@@ -42,6 +43,9 @@ export default function Collection(props: CollectionProps): JSX.Element {
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "collection", id);
+
+  const [Trash, deleted] = useTrashButton("collection", data?._id);
+  if (deleted) return <></>;
 
   return data ? (
     <>
@@ -67,7 +71,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
             callback={open}
           />
           <div />
-          <TrashButton type="collection" id={data._id} />
+          <Trash />
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>

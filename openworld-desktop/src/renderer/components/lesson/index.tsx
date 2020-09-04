@@ -16,10 +16,10 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import { ILessonSearch } from "../../api/types/lesson/search";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface LessonProps {
   data: ILessonSearch;
@@ -37,6 +37,9 @@ export default function Lesson(props: LessonProps): JSX.Element {
   const doClick = useCallback(() => {
     history.push(`/discover/lesson/${data._id}`);
   }, []);
+
+  const [Trash, deleted] = useTrashButton("lesson", data._id);
+  if (deleted) return <></>;
 
   return (
     <ItemInner text onClick={doClick}>
@@ -59,7 +62,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="lesson" id={data._id} />
+        <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

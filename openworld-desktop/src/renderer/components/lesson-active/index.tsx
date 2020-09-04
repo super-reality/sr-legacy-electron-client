@@ -17,13 +17,13 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import Collapsible from "../collapsible";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import Step from "../step";
 import useDataGet from "../../hooks/useDataGet";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface LessonActiveProps {
   id: string;
@@ -38,6 +38,9 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "lesson", id);
+
+  const [Trash, deleted] = useTrashButton("collection", id);
+  if (deleted) return <></>;
 
   return data ? (
     <>
@@ -63,7 +66,7 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
             callback={open}
           />
           <div />
-          <TrashButton type="collection" id={data._id} />
+          <Trash />
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>

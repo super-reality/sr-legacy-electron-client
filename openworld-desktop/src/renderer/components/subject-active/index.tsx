@@ -16,7 +16,6 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import SubjectGet, { ISubjectGet } from "../../api/types/subject/get";
@@ -24,6 +23,7 @@ import Collapsible from "../collapsible";
 import { ILessonGet } from "../../api/types/lesson/get";
 import Lesson from "../lesson";
 import useDataGet from "../../hooks/useDataGet";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface SubjectActiveProps {
   id: string;
@@ -40,6 +40,9 @@ export default function Collection(props: SubjectActiveProps): JSX.Element {
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "collection", id);
+
+  const [Trash, deleted] = useTrashButton("subject", id);
+  if (deleted) return <></>;
 
   return data ? (
     <>
@@ -65,7 +68,7 @@ export default function Collection(props: SubjectActiveProps): JSX.Element {
             callback={open}
           />
           <div />
-          <TrashButton type="subject" id={data._id} />
+          <Trash />
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>
