@@ -70,6 +70,10 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [Popup, open] = usePopup(false);
 
   useEffect(() => {
+    if (!lessonData) open();
+  }, []);
+
+  useEffect(() => {
     if (lessonData) {
       const imageUrls = lessonData.totalSteps[currentStep].images;
       const { functions } = lessonData.totalSteps[currentStep];
@@ -89,8 +93,7 @@ export default function ViewLesson(props: ViewLessonProps) {
           console.log(err);
         });
     }
-    if (!lessonData) open();
-  }, []);
+  }, [currentStep]);
 
   return (
     <>
