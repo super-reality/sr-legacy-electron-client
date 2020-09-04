@@ -7,7 +7,7 @@ export interface ILessonGet {
   parent: Subject[];
   medias: string[];
   totalSteps: IStep[]; // Actually IStepGet
-  tags: Link[];
+  tags: string[];
   visibility: Link[];
   ownership: Link[];
   options: [];

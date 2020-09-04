@@ -19,6 +19,7 @@ import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import { ILessonSearch } from "../../api/types/lesson/search";
 import useTrashButton from "../../hooks/useTrashButton";
+import useEditButton from "../../hooks/useEditButton";
 
 interface LessonProps {
   data: ILessonSearch;
@@ -36,6 +37,8 @@ export default function Lesson(props: LessonProps): JSX.Element {
   const doClick = useCallback(() => {
     history.push(`/discover/lesson/${data._id}`);
   }, []);
+
+  const EditButton = useEditButton({ type: "lesson", id: data._id });
 
   const [Trash, deleted] = useTrashButton("lesson", data._id);
   if (deleted) return <></>;
@@ -65,6 +68,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
           callback={open}
         />
         <div />
+        <EditButton />
         <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>

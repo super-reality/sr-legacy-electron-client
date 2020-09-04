@@ -8,6 +8,7 @@ import {
 } from "../../api/types/lesson/lesson";
 
 const initialState: ILesson = {
+  id: undefined,
   parent: [],
   difficulty: DifficultyOptions.Intermediate,
   ownership: [],

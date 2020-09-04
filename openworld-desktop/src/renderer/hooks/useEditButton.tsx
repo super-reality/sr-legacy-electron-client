@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import Axios from "axios";
+import { useHistory } from "react-router-dom";
 import { ReactComponent as EditButton } from "../../assets/svg/edit.svg";
 import { ApiError, ApiJoin } from "../api/types";
 import handleGenericGet from "../api/handleGenericGet";
@@ -9,6 +10,7 @@ import { ISubjectGet } from "../api/types/subject/get";
 import { ILessonGet } from "../api/types/lesson/get";
 import reduxAction from "../redux/reduxAction";
 import store from "../redux/stores/renderer";
+import Category from "../../types/collections";
 
 function triggerEditCollection(data: ICollectionGet) {
   reduxAction(store.dispatch, {
@@ -25,15 +27,43 @@ function triggerEditCollection(data: ICollectionGet) {
       entry: data.entry,
     },
   });
-  console.log("triggerEditCollection", data);
 }
 
 function triggerEditSubject(data: ISubjectGet) {
-  console.log("triggerEditSubject", data);
+  reduxAction(store.dispatch, {
+    type: "CREATE_SUBJECT_DATA",
+    arg: {
+      id: data._id,
+      icon: data.icon,
+      name: data.name,
+      shortDescription: data.shortDescription,
+      description: data.description,
+      medias: data.medias,
+      tags: data.tags,
+      visibility: data.visibility,
+      entry: data.entry,
+    },
+  });
 }
 
 function triggerEditLesson(data: ILessonGet) {
-  console.log("triggerEditLesson", data);
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_DATA",
+    arg: {
+      id: data._id,
+      icon: data.icon,
+      name: data.name,
+      shortDescription: data.shortDescription,
+      description: data.description,
+      difficulty: data.difficulty,
+      medias: data.medias,
+      tags: data.tags,
+      visibility: data.visibility,
+      ownership: data.ownership,
+      entry: data.entry,
+      steps: data.totalSteps,
+    },
+  });
 }
 
 type EditArg = ApiJoin & { id: string };
@@ -50,21 +80,26 @@ function fetchData<A>(arg: EditArg): Promise<A> {
 }
 
 export default function useEditButton(arg: EditArg): () => JSX.Element {
+  const history = useHistory();
+
   const callback = useCallback(() => {
     if (arg.type == "collection") {
       fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
         triggerEditCollection(getData.collection);
       });
+      history.push(`/create/${Category.Collection}`);
     }
     if (arg.type == "subject") {
       fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
         triggerEditSubject(getData.subject);
       });
+      history.push(`/create/${Category.Subject}`);
     }
     if (arg.type == "lesson") {
       fetchData<NonNullable<typeof arg["api"]>>(arg).then((getData) => {
         triggerEditLesson(getData.lesson);
       });
+      history.push(`/create/${Category.Lesson}`);
     }
   }, []);
 

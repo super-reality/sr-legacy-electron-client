@@ -4,6 +4,7 @@ import { ISubject } from "../../api/types/subject/subject";
 import { EntryOptions } from "../../api/types/lesson/lesson";
 
 const initialState: ISubject = {
+  id: undefined,
   parent: [],
   icon: "",
   name: "",

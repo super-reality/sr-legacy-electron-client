@@ -40,10 +40,10 @@ export default function Collection(props: CollectionProps): JSX.Element {
     history.push(`/discover/collection/${data._id}`);
   }, []);
 
+  const EditButton = useEditButton({ type: "collection", id: data._id });
+
   const [Trash, deleted] = useTrashButton("collection", data?._id);
   if (deleted) return <></>;
-
-  const EditButton = useEditButton({ type: "collection", id: data._id });
 
   return (
     <ItemInner text onClick={doClick}>

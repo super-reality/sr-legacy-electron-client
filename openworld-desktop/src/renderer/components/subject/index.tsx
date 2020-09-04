@@ -19,6 +19,7 @@ import { ISubjectSearch } from "../../api/types/subject/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
 import useTrashButton from "../../hooks/useTrashButton";
+import useEditButton from "../../hooks/useEditButton";
 
 interface Subject {
   data: ISubjectSearch;
@@ -36,6 +37,8 @@ export default function Subject(props: Subject): JSX.Element {
   const doClick = useCallback(() => {
     history.push(`/discover/subject/${data._id}`);
   }, []);
+
+  const EditButton = useEditButton({ type: "subject", id: data._id });
 
   const [Trash, deleted] = useTrashButton("subject", data._id);
   if (deleted) return <></>;
@@ -61,6 +64,7 @@ export default function Subject(props: Subject): JSX.Element {
           callback={open}
         />
         <div />
+        <EditButton />
         <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>

@@ -10,4 +10,11 @@ module.exports = {
       preset: "jest-puppeteer",
     },
   },
+  eslint: {
+    configure: {
+      rules: {
+        "no-underscore-dangle": "off",
+      },
+    },
+  },
 };
