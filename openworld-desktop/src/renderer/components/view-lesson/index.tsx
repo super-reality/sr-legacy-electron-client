@@ -105,7 +105,7 @@ export default function ViewLesson(props: ViewLessonProps) {
         });
     }
     if (!data) open();
-  }, [onProcessing]);
+  }, [onProcessing, currentStep]);
 
   return (
     <>
