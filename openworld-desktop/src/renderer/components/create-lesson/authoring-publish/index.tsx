@@ -30,7 +30,6 @@ import makeValidation, {
 import ITagToString from "../../../../utils/ITagToString";
 import ITagToLink from "../../../../utils/ITagToLink";
 
-
 const uploadArtifacts = (
   original: ILesson
 ): Promise<Record<string, string>> => {
