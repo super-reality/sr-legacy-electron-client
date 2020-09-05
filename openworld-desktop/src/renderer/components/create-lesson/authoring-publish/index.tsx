@@ -12,13 +12,11 @@ import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
 import handleLessonCreate from "../../../api/handleLessonCreate";
 import handleGenericError from "../../../api/handleGenericError";
-import { LessonResp } from "../../../api/types/lesson/create";
 import handleLessonSearchParent from "../../../api/handleLessonSearchParent";
 import LessonSearchParent, {
   Parents,
 } from "../../../api/types/lesson/search-parent";
-import useTagsBox from "../../tag-box";
-import Link from "../../../api/types/link/link";
+import useTagsBox, { ITag } from "../../tag-box";
 import { EntryOptions, ILesson } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
@@ -29,6 +27,9 @@ import uploadMany from "../../../../utils/uploadMany";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
+import ITagToString from "../../../../utils/ITagToString";
+import ITagToLink from "../../../../utils/ITagToLink";
+
 
 const uploadArtifacts = (
   original: ILesson
@@ -43,10 +44,12 @@ const uploadArtifacts = (
 const preprocessDataBeforePost = (
   postData: ILesson,
   artifacts: Record<string, string>
-): ILesson => {
+): any => {
   const result = {
     ...postData,
     icon: artifacts[postData.icon],
+    tags: ITagToString(postData.tags),
+    parent: ITagToLink(postData.parent),
     medias: postData.medias.map((item: string) => {
       return artifacts[item];
     }),
@@ -65,12 +68,35 @@ const preprocessDataBeforePost = (
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
-  const { entry, tags } = useSelector((state: AppState) => state.createLesson);
+  const entry = useSelector((state: AppState) => state.createLesson.entry);
+  const tags = useSelector((state: AppState) => state.createLesson.tags);
+  const parent = useSelector((state: AppState) => state.createLesson.parent);
   const finalData = useSelector((state: AppState) => state.createLesson);
   const [creationState, setCreationState] = useState(true);
-  const [ParentTagsBox, addParentTag, getParentTags, clearAllTags] = useTagsBox(
-    []
+
+  const addParentTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { parent: [...parent, tag] },
+      });
+    },
+    [dispatch, parent]
   );
+
+  const removeParentTag = useCallback(
+    (index: number) => {
+      const newArr = [...parent];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { parent: newArr },
+      });
+    },
+    [dispatch, parent]
+  );
+
+  const ParentTagsBox = useTagsBox(parent, addParentTag, removeParentTag);
 
   const isEditing = finalData._id !== undefined;
 
@@ -86,20 +112,18 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("lesson");
 
-  const validation: ValidationFields<ILesson> = {
-    name: { name: "Title", minLength: 4 },
-    description: { name: "Description", minLength: 4 },
-    shortDescription: { name: "Short description", minLength: 4 },
-    icon: { name: "Icon", minLength: 4 },
-    medias: { name: "Media", minItems: 1 },
-    parent: { name: "Parent Collections", minItems: 1 },
-    steps: { name: "Step", minItems: 1 },
-  };
-
-  const validateFields = useCallback(
-    () => makeValidation<ILesson>(validation, finalData),
-    [finalData]
-  );
+  const validateFields = useCallback(() => {
+    const validation: ValidationFields<ILesson> = {
+      name: { name: "Title", minLength: 4 },
+      description: { name: "Description", minLength: 4 },
+      shortDescription: { name: "Short description", minLength: 4 },
+      icon: { name: "Icon", minLength: 4 },
+      medias: { name: "Media", minItems: 1 },
+      parent: { name: "Parent Collections", minItems: 1 },
+      steps: { name: "Step", minItems: 1 },
+    };
+    return makeValidation<ILesson>(validation, finalData);
+  }, [finalData]);
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
@@ -118,7 +142,6 @@ export default function PublishAuthoring(): JSX.Element {
           setLoading(false);
           setCreationState(true);
           open();
-          clearAllTags();
         })
         .catch((err) => {
           setLoading(false);
@@ -147,25 +170,29 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
-  useEffect(() => {
-    const tagsList: Link[] = getParentTags().map((t) => {
-      return { _id: t.id, type: "subject" };
-    });
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_DATA",
-      arg: { parent: tagsList },
-    });
-  }, [getParentTags]);
+  const addTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { tags: [...tags, tag] },
+      });
+    },
+    [dispatch, tags]
+  );
 
-  const [TagsBox, addTag, getTags] = useTagsBox(tags, true);
+  const removeTag = useCallback(
+    (index: number) => {
+      const newArr = [...tags];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_DATA",
+        arg: { tags: newArr },
+      });
+    },
+    [dispatch, tags]
+  );
 
-  useEffect(() => {
-    const tagsList: string[] = getTags().map((t) => t.name);
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_DATA",
-      arg: { tags: tagsList },
-    });
-  }, [getTags]);
+  const TagsBox = useTagsBox(tags, addTag, removeTag, true);
 
   return (
     <>
@@ -180,7 +207,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Parent Subjects</div>
-          <ParentTagsBox />
+          {ParentTagsBox}
           <AutosuggestInput<Parents>
             style={{ marginTop: "8px" }}
             forceSuggestions={suggestions}
@@ -198,7 +225,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Tags</div>
-          <TagsBox />
+          {TagsBox}
         </div>
       </Flex>
       <Flex style={{ marginTop: "8px" }}>

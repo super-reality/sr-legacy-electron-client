@@ -5,7 +5,7 @@ import "../tag/index.scss";
 import Tag from "../tag";
 import { InputChangeEv } from "../../../types/utils";
 
-interface ITag {
+export interface ITag {
   name: string;
   id: string;
 }
@@ -60,59 +60,30 @@ function AddTag(props: AddTagProps): JSX.Element {
 }
 
 export default function useTagsBox(
-  initialTags: string[],
+  initialTags: ITag[],
+  addTagFn: (tag: ITag) => void,
+  removeTagFn: (i: number) => void,
   input?: boolean
-): [() => JSX.Element, (toAdd: ITag) => void, () => ITag[], () => void] {
-  const [tags, setTags] = useState<ITag[]>([]);
+): JSX.Element {
+  const [tags, setTagsfn] = useState<ITag[]>([]);
 
-  useEffect(() => {
-    if (initialTags.length !== tags.length) {
-      setTags(
-        initialTags.map((t) => {
-          return { name: t, id: t };
-        })
-      );
-    }
-  }, [initialTags]);
+  useEffect(() => setTagsfn(initialTags), [initialTags]);
 
-  const addTag = useCallback(
-    (toAdd: ITag) => {
-      if (tags.filter((t) => t.id == toAdd.id).length == 0)
-        setTags([...tags, toAdd]);
-    },
-    [tags]
+  const addTag = useCallback((toAdd: ITag) => addTagFn(toAdd), [addTagFn]);
+
+  const removeTag = useCallback((i: number) => removeTagFn(i), [removeTagFn]);
+
+  return (
+    <div className="tags-container">
+      {tags.map((tag, i) => (
+        <Tag
+          key={`tags-${tag.id}`}
+          name={tag.name}
+          close
+          onCloseCallback={() => removeTag(i)}
+        />
+      ))}
+      {input ? <AddTag callback={addTag} /> : <></>}
+    </div>
   );
-
-  const removeTag = useCallback(
-    (index: number) => {
-      const newArr = [...tags];
-      newArr.splice(index, 1);
-      setTags(newArr);
-    },
-    [tags]
-  );
-
-  const getTags = useCallback(() => tags, [tags]);
-  const clearAllTags = useCallback(() => {
-    setTags([]);
-  }, []);
-
-  const Container = useMemo(
-    () => () => (
-      <div className="tags-container">
-        {tags.map((tag, i) => (
-          <Tag
-            key={`tags-${tag.id}`}
-            name={tag.name}
-            close
-            onCloseCallback={() => removeTag(i)}
-          />
-        ))}
-        {input ? <AddTag callback={addTag} /> : <></>}
-      </div>
-    ),
-    [tags]
-  );
-
-  return [Container, addTag, getTags, clearAllTags];
 }

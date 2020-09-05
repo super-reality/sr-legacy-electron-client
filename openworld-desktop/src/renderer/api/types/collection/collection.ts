@@ -1,4 +1,5 @@
 import Link from "../link/link";
+import { ITag } from "../../../components/tag-box";
 
 export interface ICollection {
   _id?: string;
@@ -7,7 +8,7 @@ export interface ICollection {
   shortDescription: string;
   description: string;
   medias: string[];
-  tags: string[];
+  tags: ITag[];
   visibility: Link[];
   entry: number;
   subjects?: number;

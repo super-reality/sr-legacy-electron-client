@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,7 +9,7 @@ import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import handleGenericError from "../../../api/handleGenericError";
-import useTagsBox from "../../tag-box";
+import useTagsBox, { ITag } from "../../tag-box";
 import handleCollectionCreate from "../../../api/handleCollectionCreate";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
@@ -21,6 +21,7 @@ import uploadMany from "../../../../utils/uploadMany";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
+import ITagToString from "../../../../utils/ITagToString";
 
 const uploadArtifacts = (original: ICollection) => {
   const fileNames = [];
@@ -32,10 +33,11 @@ const uploadArtifacts = (original: ICollection) => {
 const preprocessDataBeforePost = (
   postData: ICollection,
   artifacts: Record<string, string>
-): ICollection => {
+): any => {
   return {
     ...postData,
     icon: artifacts[postData.icon],
+    tags: ITagToString(postData.tags),
     medias: postData.medias.map((item: string) => {
       return artifacts[item];
     }),
@@ -44,9 +46,8 @@ const preprocessDataBeforePost = (
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { entry, tags } = useSelector(
-    (state: AppState) => state.createCollection
-  );
+  const entry = useSelector((state: AppState) => state.createCollection.entry);
+  const tags = useSelector((state: AppState) => state.createCollection.tags);
   const finalData = useSelector((state: AppState) => state.createCollection);
   const [creationState, setCreationState] = useState(true);
 
@@ -64,18 +65,16 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("collection");
 
-  const validation: ValidationFields<ICollection> = {
-    name: { name: "Title", minLength: 4 },
-    description: { name: "Description", minLength: 4 },
-    shortDescription: { name: "Short description", minLength: 4 },
-    icon: { name: "Icon", minLength: 4 },
-    medias: { name: "Media", minItems: 0 },
-  };
-
-  const validateFields = useCallback(
-    () => makeValidation<ICollection>(validation, finalData),
-    [finalData]
-  );
+  const validateFields = useCallback(() => {
+    const validation: ValidationFields<ICollection> = {
+      name: { name: "Title", minLength: 4 },
+      description: { name: "Description", minLength: 4 },
+      shortDescription: { name: "Short description", minLength: 4 },
+      icon: { name: "Icon", minLength: 4 },
+      medias: { name: "Media", minItems: 0 },
+    };
+    return makeValidation<ICollection>(validation, finalData);
+  }, [finalData]);
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
@@ -108,15 +107,29 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, [open, finalData]);
 
-  const [TagsBox, addTag, getTags] = useTagsBox(tags, true);
+  const addTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_COLLECTION_DATA",
+        arg: { tags: [...tags, tag] },
+      });
+    },
+    [dispatch, tags]
+  );
 
-  useEffect(() => {
-    const tagsList: string[] = getTags().map((t) => t.name);
-    reduxAction(dispatch, {
-      type: "CREATE_COLLECTION_DATA",
-      arg: { tags: tagsList },
-    });
-  }, [getTags]);
+  const removeTag = useCallback(
+    (index: number) => {
+      const newArr = [...tags];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_COLLECTION_DATA",
+        arg: { tags: newArr },
+      });
+    },
+    [dispatch, tags]
+  );
+
+  const TagsBox = useTagsBox(tags, addTag, removeTag, true);
 
   return (
     <>
@@ -131,7 +144,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Tags</div>
-          <TagsBox />
+          {TagsBox}
         </div>
       </Flex>
       <Flex style={{ marginTop: "8px" }}>

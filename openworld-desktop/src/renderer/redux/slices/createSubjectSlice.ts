@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ISubject } from "../../api/types/subject/subject";
 import { EntryOptions } from "../../api/types/lesson/lesson";
+import { ITag } from "../../components/tag-box";
 
 const initialState: ISubject = {
   _id: undefined,
@@ -26,7 +27,7 @@ const createSubjectSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    addTag: (state: ISubject, action: PayloadAction<string>): void => {
+    addTag: (state: ISubject, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
     reset: (state: ISubject, action: PayloadAction<null>): void => {

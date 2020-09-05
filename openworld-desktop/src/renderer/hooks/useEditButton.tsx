@@ -11,6 +11,7 @@ import { ILessonGet } from "../api/types/lesson/get";
 import reduxAction from "../redux/reduxAction";
 import store from "../redux/stores/renderer";
 import Category from "../../types/collections";
+import stringToITag from "../../utils/stringToITag";
 
 function triggerEditCollection(data: ICollectionGet) {
   reduxAction(store.dispatch, {
@@ -22,7 +23,7 @@ function triggerEditCollection(data: ICollectionGet) {
       shortDescription: data.shortDescription,
       description: data.description,
       medias: data.medias,
-      tags: data.tags,
+      tags: stringToITag(data.tags),
       visibility: data.visibility,
       entry: data.entry,
     },
@@ -39,7 +40,7 @@ function triggerEditSubject(data: ISubjectGet) {
       shortDescription: data.shortDescription,
       description: data.description,
       medias: data.medias,
-      tags: data.tags,
+      tags: stringToITag(data.tags),
       visibility: data.visibility,
       entry: data.entry,
     },
@@ -57,7 +58,7 @@ function triggerEditLesson(data: ILessonGet) {
       description: data.description,
       difficulty: data.difficulty,
       medias: data.medias,
-      tags: data.tags,
+      tags: stringToITag(data.tags),
       visibility: data.visibility,
       ownership: data.ownership,
       entry: data.entry,

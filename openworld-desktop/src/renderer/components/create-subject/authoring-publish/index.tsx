@@ -10,16 +10,14 @@ import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
 import { ApiError } from "../../../api/types";
 import handleGenericError from "../../../api/handleGenericError";
-import useTagsBox from "../../tag-box";
+import useTagsBox, { ITag } from "../../tag-box";
 import handleSubjectSearchParent from "../../../api/handleSubjectSearchParent";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import { getParentVal, getParentId, renderParent } from "../../links";
 import { Parents } from "../../../api/types/lesson/search-parent";
-import Link from "../../../api/types/link/link";
 import AutosuggestInput from "../../autosuggest-input";
-import SubjectCreate from "../../../api/types/subject/create";
 import handleSubjectCreate from "../../../api/handleSubjectCreate";
 import SubjectSearchParent from "../../../api/types/subject/search-parent";
 import { ISubject } from "../../../api/types/subject/subject";
@@ -29,6 +27,8 @@ import uploadMany from "../../../../utils/uploadMany";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
+import ITagToString from "../../../../utils/ITagToString";
+import ITagToLink from "../../../../utils/ITagToLink";
 
 const uploadArtifacts = (original: ISubject) => {
   const fileNames = [];
@@ -40,10 +40,12 @@ const uploadArtifacts = (original: ISubject) => {
 const preprocessDataBeforePost = (
   postData: ISubject,
   artifacts: Record<string, string>
-): ISubject => {
+): any => {
   return {
     ...postData,
     icon: artifacts[postData.icon],
+    tags: ITagToString(postData.tags),
+    parent: ITagToLink(postData.parent),
     medias: postData.medias.map((item: string) => {
       return artifacts[item];
     }),
@@ -53,7 +55,9 @@ const preprocessDataBeforePost = (
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState<Parents[]>([]);
-  const { entry, tags } = useSelector((state: AppState) => state.createSubject);
+  const entry = useSelector((state: AppState) => state.createSubject.entry);
+  const tags = useSelector((state: AppState) => state.createSubject.tags);
+  const parent = useSelector((state: AppState) => state.createSubject.parent);
   const finalData = useSelector((state: AppState) => state.createSubject);
   const [creationState, setCreationState] = useState(true);
 
@@ -71,19 +75,17 @@ export default function PublishAuthoring(): JSX.Element {
 
   const [ValidationPopup, open] = usePopupValidation("subject");
 
-  const validation: ValidationFields<ISubject> = {
-    name: { name: "Title", minLength: 4 },
-    description: { name: "Description", minLength: 4 },
-    shortDescription: { name: "Short description", minLength: 4 },
-    icon: { name: "Icon", minLength: 4 },
-    medias: { name: "Media", minItems: 1 },
-    parent: { name: "Parent Collections", minItems: 1 },
-  };
-
-  const validateFields = useCallback(
-    () => makeValidation<ISubject>(validation, finalData),
-    [finalData]
-  );
+  const validateFields = useCallback(() => {
+    const validation: ValidationFields<ISubject> = {
+      name: { name: "Title", minLength: 4 },
+      description: { name: "Description", minLength: 4 },
+      shortDescription: { name: "Short description", minLength: 4 },
+      icon: { name: "Icon", minLength: 4 },
+      medias: { name: "Media", minItems: 1 },
+      parent: { name: "Parent Collections", minItems: 1 },
+    };
+    return makeValidation<ISubject>(validation, finalData);
+  }, [finalData]);
 
   const doPublish = useCallback(() => {
     const reasons = validateFields();
@@ -130,27 +132,53 @@ export default function PublishAuthoring(): JSX.Element {
     }
   }, []);
 
-  const [ParentTagsBox, addParentTag, getParentTags] = useTagsBox(tags);
+  const addParentTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_SUBJECT_DATA",
+        arg: { parent: [...parent, tag] },
+      });
+    },
+    [dispatch, parent]
+  );
 
-  useEffect(() => {
-    const tagsList: Link[] = getParentTags().map((t) => {
-      return { _id: t.id, type: "collection" };
-    });
-    reduxAction(dispatch, {
-      type: "CREATE_SUBJECT_DATA",
-      arg: { parent: tagsList },
-    });
-  }, [getParentTags]);
+  const removeParentTag = useCallback(
+    (index: number) => {
+      const newArr = [...parent];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_SUBJECT_DATA",
+        arg: { parent: newArr },
+      });
+    },
+    [dispatch, parent]
+  );
 
-  const [TagsBox, addTag, getTags] = useTagsBox([], true);
+  const ParentTagsBox = useTagsBox(parent, addParentTag, removeParentTag);
 
-  useEffect(() => {
-    const tagsList: string[] = getTags().map((t) => t.name);
-    reduxAction(dispatch, {
-      type: "CREATE_SUBJECT_DATA",
-      arg: { tags: tagsList },
-    });
-  }, [getTags]);
+  const addTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_SUBJECT_DATA",
+        arg: { tags: [...tags, tag] },
+      });
+    },
+    [dispatch, tags]
+  );
+
+  const removeTag = useCallback(
+    (index: number) => {
+      const newArr = [...tags];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_SUBJECT_DATA",
+        arg: { tags: newArr },
+      });
+    },
+    [dispatch, tags]
+  );
+
+  const TagsBox = useTagsBox(tags, addTag, removeTag, true);
 
   return (
     <>
@@ -165,7 +193,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Parent Collections</div>
-          <ParentTagsBox />
+          {ParentTagsBox}
           <AutosuggestInput<Parents>
             style={{ marginTop: "8px" }}
             forceSuggestions={suggestions}
@@ -183,7 +211,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Tags</div>
-          <TagsBox />
+          {TagsBox}
         </div>
       </Flex>
       <Flex style={{ marginTop: "8px" }}>

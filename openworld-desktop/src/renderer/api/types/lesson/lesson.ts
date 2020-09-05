@@ -2,6 +2,7 @@ import { IStep } from "../step/step";
 import Link from "../link/link";
 
 import constant from "../../constant";
+import { ITag } from "../../../components/tag-box";
 
 export const DifficultyOptions = {
   Intro: constant.Difficulty.Intro,
@@ -17,14 +18,14 @@ export const EntryOptions = {
 
 export interface ILesson {
   _id?: string;
-  parent: Link[];
+  parent: ITag[];
   icon: string;
   name: string;
   shortDescription: string;
   description: string;
   difficulty: number;
   medias: string[];
-  tags: string[];
+  tags: ITag[];
   visibility: Link[];
   ownership: Link[];
   entry: number;

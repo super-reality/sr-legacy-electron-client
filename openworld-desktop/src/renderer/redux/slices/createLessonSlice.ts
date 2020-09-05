@@ -6,6 +6,7 @@ import {
   EntryOptions,
   DifficultyOptions,
 } from "../../api/types/lesson/lesson";
+import { ITag } from "../../components/tag-box";
 
 const initialState: ILesson = {
   _id: undefined,
@@ -33,7 +34,7 @@ const createLessonSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    addTag: (state: ILesson, action: PayloadAction<string>): void => {
+    addTag: (state: ILesson, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
     addStep: (state: ILesson, action: PayloadAction<IStep>): void => {
