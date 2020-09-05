@@ -195,7 +195,11 @@ export default function PublishAuthoring(): JSX.Element {
 
   return (
     <>
-      <ValidationPopup validationFn={validateFields} sucess={creationState} />
+      <ValidationPopup
+        validationFn={validateFields}
+        sucess={creationState}
+        edit={isEditing}
+      />
       <BaseSelect
         title="Entry"
         current={entry}
@@ -234,7 +238,7 @@ export default function PublishAuthoring(): JSX.Element {
           height="24px"
           onClick={doPublish}
         >
-          Publish
+          {isEditing ? "Edit" : "Publish"}
         </ButtonSimple>
       </Flex>
     </>
