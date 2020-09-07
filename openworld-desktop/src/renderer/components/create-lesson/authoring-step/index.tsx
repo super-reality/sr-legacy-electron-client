@@ -100,7 +100,7 @@ export default function StepAuthoring(): JSX.Element {
       });
     }
 
-    if (stepData.index) {
+    if (stepData.index !== undefined) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_STEP_REPLACE",
         arg: { step: stepData, index: stepData.index },
@@ -222,7 +222,9 @@ export default function StepAuthoring(): JSX.Element {
             height="24px"
             onClick={addStep}
           >
-            {stepData.index ? "Save step changes" : "Save and add new step"}
+            {stepData.index !== undefined
+              ? "Save step changes"
+              : "Save and add new step"}
           </ButtonSimple>
         </Flex>
       </div>
