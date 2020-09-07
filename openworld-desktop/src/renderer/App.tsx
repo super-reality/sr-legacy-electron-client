@@ -68,9 +68,9 @@ export default function App(): JSX.Element {
     <>
       <Loading state={isPending} />
       <Switch>
-        <Route exact path="/" component={Splash} />
         <Route exact path="/tests/:id" component={Tests} />
-        <Route path="*" component={Auth} />
+        <Route exact path="/auth" component={Auth} />
+        <Route path="*" component={Splash} />
       </Switch>
     </>
   );
