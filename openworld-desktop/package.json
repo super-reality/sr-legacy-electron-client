@@ -27,6 +27,7 @@
     "lodash-move": "^1.1.1",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.14.1",
+    "opencv4nodejs": "^5.6.0",
     "react": "^16.13.1",
     "react-autosuggest": "^10.0.2",
     "react-dom": "^16.13.1",
@@ -39,6 +40,7 @@
     "reactn": "^2.2.7",
     "redux": "^4.0.5",
     "request": "^2.88.2",
+    "screenshot-desktop": "^1.12.2",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
