@@ -20,19 +20,21 @@ export default function StepsView(): JSX.Element {
   const [sort, setSort] = useState(sortOptions[0]);
 
   // Memoize to avoid infinite re renders
+  /*
   const stepsList = useMemo(
     () =>
       steps.map((step, i) => {
         return (
           <Step
             key={`step-view-${step.name}-${step.description}-${step.next}`}
-            number={i + 1}
+            number={i}
             data={step as IStep}
           />
         );
       }),
     [steps]
   );
+  */
 
   // Update the store when the list is reordered
   const onChange = useCallback(
@@ -47,6 +49,7 @@ export default function StepsView(): JSX.Element {
   );
 
   // To get the new order of the list we use the mutable ref object returned
+  /*
   const [List, setItems, refs] = useDraggableList(stepsList, 90, onChange);
 
   // Force update the list when new items are added
@@ -55,6 +58,7 @@ export default function StepsView(): JSX.Element {
       setItems(stepsList);
     }
   }, [stepsList, refs]);
+  */
 
   return (
     <>
@@ -72,7 +76,17 @@ export default function StepsView(): JSX.Element {
           />
         </Flex>
       </div>
-      <List className="steps-container" />
+      <div className="steps-container">
+        {steps.map((step, i) => {
+          return (
+            <Step
+              key={`step-view-${step.name}-${step.description}-${step.next}`}
+              number={i}
+              data={step as IStep}
+            />
+          );
+        })}
+      </div>
     </>
   );
 }

@@ -100,9 +100,21 @@ export default function StepAuthoring(): JSX.Element {
       });
     }
 
-    reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: stepData });
+    if (stepData.index) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_STEP_REPLACE",
+        arg: { step: stepData, index: stepData.index },
+      });
+    } else {
+      reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: stepData });
+    }
+
     reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
   }, [dispatch, containerRef, stepData]);
+
+  const clearStep = useCallback(() => {
+    reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
+  }, [dispatch]);
 
   const datekey = new Date().getTime();
 
@@ -195,14 +207,22 @@ export default function StepAuthoring(): JSX.Element {
           optionFormatter={constantFormat(TriggerOptions)}
           callback={setCVNextStep}
         />
-        <Flex>
+        <Flex column>
           <ButtonSimple
             margin="8px auto"
-            width="200px"
+            width="180px"
+            height="24px"
+            onClick={clearStep}
+          >
+            Clear Step (does not save)
+          </ButtonSimple>
+          <ButtonSimple
+            margin="8px auto"
+            width="180px"
             height="24px"
             onClick={addStep}
           >
-            Save and add new step
+            {stepData.index ? "Save step changes" : "Save and add new step"}
           </ButtonSimple>
         </Flex>
       </div>

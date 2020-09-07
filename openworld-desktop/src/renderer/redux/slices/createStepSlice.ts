@@ -7,6 +7,7 @@ import {
 } from "../../api/types/step/step";
 
 const initialState: IStep = {
+  index: undefined,
   images: [],
   functions: [],
   name: "",

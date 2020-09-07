@@ -70,6 +70,14 @@
     }
   }
 
+  .container-step-edit {
+    grid-template-columns: auto 32px 32px;
+    grid-template-rows: 32px 16px;
+    grid-template-areas: "title edit delete" "text text text";
+    gap: 8px;
+    display: grid;
+  }
+
   .container-topface {
     grid-template-columns: 120px auto auto;
     grid-template-rows: 64px;

@@ -1,15 +1,11 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useCallback } from "react";
 
 import "./index.scss";
-import {
-  ItemInner,
-  Icon,
-  Title,
-  Text,
-  ContainerTop,
-  ContainerFlex,
-} from "../item-inner";
+import { useDispatch } from "react-redux";
+import { ItemInner, Title, Text } from "../item-inner";
 import { IStep } from "../../api/types/step/step";
+import EditButton from "../edit-button";
+import reduxAction from "../../redux/reduxAction";
 
 interface StepProps {
   data: IStep;
@@ -20,30 +16,39 @@ interface StepProps {
 
 export default function Step(props: StepProps): JSX.Element {
   const { data, drag, style, number } = props;
+  const dispatch = useDispatch();
+
+  const doEdit = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_STEP_DATA",
+      arg: { ...data, index: number },
+    });
+  }, [dispatch]);
 
   return (
     <ItemInner
       style={{
-        margin: "0",
+        margin: "8px",
         width: "-webkit-fill-available",
-        height: "-webkit-fill-available",
         ...style,
       }}
       drag={drag}
       text
     >
-      <ContainerFlex>
-        <Title title={data.name} sub={`Step ${number}`} />
-      </ContainerFlex>
-      <ContainerFlex
-        style={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        <Text>{data.description}</Text>
-      </ContainerFlex>
+      <div className="container-step-edit">
+        <Title title={data.name} sub={`Step ${number + 1}`} />
+        <div />
+        <EditButton callback={doEdit} />
+        <Text
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "pre",
+          }}
+        >
+          {data.description}
+        </Text>
+      </div>
     </ItemInner>
   );
 }

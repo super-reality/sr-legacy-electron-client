@@ -28,6 +28,7 @@ export const NextStepOptions = {
 };
 
 export interface IStep {
+  index?: number;
   images: string[];
   functions: number[];
   name: string;

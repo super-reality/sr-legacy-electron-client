@@ -24,6 +24,7 @@ import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import Step from "../step";
 import useDataGet from "../../hooks/useDataGet";
 import useTrashButton from "../../hooks/useTrashButton";
+import Flex from "../flex";
 
 interface LessonActiveProps {
   id: string;
@@ -54,11 +55,11 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
         <ContainerFlex>
           <Text>{data.description}</Text>
         </ContainerFlex>
-        <ContainerFlex>
+        <Flex column>
           {data.medias.map((url) => (
             <Image key={`url-image-${url}`} src={url} />
           ))}
-        </ContainerFlex>
+        </Flex>
         <ContainerBottom>
           <CheckButton
             style={{ margin: "auto" }}

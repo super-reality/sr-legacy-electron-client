@@ -19,6 +19,7 @@ export const actions = {
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
+  CREATE_LESSON_STEP_REPLACE: createLessonSlice.replaceStep,
   CREATE_LESSON_RESET: createLessonSlice.reset,
   CREATE_STEP_DATA: createStepSlice.setData,
   CREATE_STEP_RESET: createStepSlice.reset,

@@ -40,6 +40,14 @@ const createLessonSlice = createSlice({
     addStep: (state: ILesson, action: PayloadAction<IStep>): void => {
       state.steps = [...state.steps, action.payload];
     },
+    replaceStep: (
+      state: ILesson,
+      action: PayloadAction<{ step: IStep; index: number }>
+    ): void => {
+      const newSteps = [...state.steps];
+      newSteps[action.payload.index] = action.payload.step;
+      state.steps = newSteps;
+    },
     reset: (state: ILesson, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.parent = [];
@@ -52,6 +60,12 @@ const createLessonSlice = createSlice({
   },
 });
 
-export const { setData, addTag, addStep, reset } = createLessonSlice.actions;
+export const {
+  setData,
+  addTag,
+  addStep,
+  replaceStep,
+  reset,
+} = createLessonSlice.actions;
 
 export default createLessonSlice;
