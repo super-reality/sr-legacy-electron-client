@@ -1,4 +1,5 @@
 import React, { CSSProperties, useCallback } from "react";
+import _ from "lodash";
 
 import "./index.scss";
 import { useDispatch } from "react-redux";
@@ -21,7 +22,18 @@ export default function StepCreate(props: StepProps): JSX.Element {
   const doEdit = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_STEP_DATA",
-      arg: { ...data, index: number },
+      arg: {
+        ..._.pick(
+          data,
+          "images",
+          "functions",
+          "name",
+          "trigger",
+          "description",
+          "next"
+        ),
+        index: number,
+      },
     });
   }, [dispatch]);
 

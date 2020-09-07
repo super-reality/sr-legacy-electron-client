@@ -28,6 +28,8 @@ import {
 import jsonRpcRemote from "../../../utils/jsonRpcSend";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
+import Flex from "../flex";
+import { InitalFnOptions } from "../../api/types/step/step";
 
 interface ViewLessonProps {
   id: string;
@@ -44,6 +46,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const stepNow = data?.totalSteps[currentStep];
+  console.log(stepNow);
 
   const doStart = useCallback(() => {
     setIsPlaying(true);
@@ -101,7 +104,6 @@ export default function ViewLesson(props: ViewLessonProps) {
         .catch((err) => {
           console.log(err);
         });
-      /*
       jsonRpcRemote("TTS", { text: description })
         .then((res) => {
           console.log("playing nice");
@@ -111,7 +113,6 @@ export default function ViewLesson(props: ViewLessonProps) {
           console.log("error occured while playing");
           setOnProcessing(false);
         });
-      */
     }
   }, [onProcessing, currentStep]);
 
@@ -138,6 +139,21 @@ export default function ViewLesson(props: ViewLessonProps) {
                 <ContainerFlex>
                   <Text>{stepNow.description}</Text>
                 </ContainerFlex>
+                <Flex column>
+                  {stepNow.functions.map((f, i) => {
+                    if (i == 0 && f == InitalFnOptions["Computer vision Off"]) {
+                      return (
+                        <Image
+                          key={`image-${stepNow.images[i]}`}
+                          src={stepNow.images[i]}
+                        />
+                      );
+                    }
+                    return (
+                      <React.Fragment key={`image-${stepNow.images[i]}`} />
+                    );
+                  })}
+                </Flex>
                 <ContainerFlex style={{ justifyContent: "space-around" }}>
                   {currentStep > 0 && (
                     <ButtonSimple width="120px" height="16px" onClick={doPrev}>

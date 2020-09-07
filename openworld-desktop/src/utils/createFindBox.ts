@@ -3,8 +3,6 @@ import path from "path";
 import url from "url";
 import jsonRpcRemote from "./jsonRpcSend";
 
-const { remote } = require("electron");
-
 interface Position {
   x: number;
   y: number;
@@ -19,6 +17,7 @@ export function getCurrentFindWindow() {
 }
 
 export default function createFindBox(pos: Position): Promise<void> {
+  const { remote } = require("electron");
   findWindow = new remote.BrowserWindow({
     width: pos.width + 64,
     height: pos.height + 64,
@@ -74,6 +73,7 @@ export default function createFindBox(pos: Position): Promise<void> {
 }
 
 export function findCVMatch(imageUrl: string): Promise<boolean> {
+  const { remote } = require("electron");
   const win = remote.getCurrentWindow();
   const pos = win.getPosition();
   const size = win.getSize();
@@ -109,6 +109,7 @@ export function findCVArrayMatch(
   imageUrls: string[],
   functions: number[]
 ): Promise<boolean> {
+  const { remote } = require("electron");
   const win = remote.getCurrentWindow();
   const pos = win.getPosition();
   const size = win.getSize();
