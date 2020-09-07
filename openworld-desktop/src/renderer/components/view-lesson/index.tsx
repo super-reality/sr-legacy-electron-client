@@ -11,6 +11,7 @@ import {
   ContainerFlex,
   Text,
   ItemInnerLoader,
+  Image,
 } from "../item-inner";
 import ButtonSimple from "../button-simple";
 import Collapsible from "../collapsible";
@@ -21,15 +22,11 @@ import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
 import useDataGet from "../../hooks/useDataGet";
-import {
-  findCVArrayMatch,
-  getCurrentFindWindow,
-} from "../../../utils/createFindBox";
-import jsonRpcRemote from "../../../utils/jsonRpcSend";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step/step";
+import capture from "./capture";
 
 interface ViewLessonProps {
   id: string;
@@ -49,7 +46,8 @@ export default function ViewLesson(props: ViewLessonProps) {
   console.log(stepNow);
 
   const doStart = useCallback(() => {
-    setIsPlaying(true);
+    capture();
+    // setIsPlaying(true);
   }, []);
 
   const doNext = useCallback(() => {
@@ -86,34 +84,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, []);
 
   useEffect(() => {
-    if (data && stepNow && onProcessing == false) {
-      // setOnProcessing(true);
-      if (getCurrentFindWindow() != null) {
-        getCurrentFindWindow().close();
-      }
-      const { functions, images, description } = stepNow;
-
-      findCVArrayMatch(images, functions)
-        .then((res) => {
-          if (res) {
-            console.log("match exists");
-          } else {
-            console.log("match failed");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      jsonRpcRemote("TTS", { text: description })
-        .then((res) => {
-          console.log("playing nice");
-          setOnProcessing(false);
-        })
-        .catch((err) => {
-          console.log("error occured while playing");
-          setOnProcessing(false);
-        });
-    }
+    // Do CV here
   }, [onProcessing, currentStep]);
 
   return (

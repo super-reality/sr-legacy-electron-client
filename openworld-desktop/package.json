@@ -63,7 +63,8 @@
     "electron-start": "node src/start-react",
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
-    "build": "npm run react-build && npm run electron-build"
+    "build": "npm run react-build && npm run electron-build",
+    "electron-rebuild": "electron-rebuild -w opencv4nodejs"
   },
   "build": {
     "appId": "com.openworld.desktop",
