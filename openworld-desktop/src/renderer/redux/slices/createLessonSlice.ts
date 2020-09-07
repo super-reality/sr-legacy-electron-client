@@ -42,6 +42,12 @@ const createLessonSlice = createSlice({
     },
     reset: (state: ILesson, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
+      state.parent = [];
+      state.ownership = [];
+      state.tags = [];
+      state.medias = [];
+      state.visibility = [];
+      state.steps = [];
     },
   },
 });

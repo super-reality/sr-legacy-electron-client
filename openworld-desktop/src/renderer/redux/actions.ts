@@ -1,8 +1,9 @@
 import * as AuthSlice from "./slices/authSlice";
 import * as renderSlice from "./slices/renderSlice";
-import * as createLessonSlice from "./slices/createLessonSlice";
 import * as createCollectionSlice from "./slices/createCollectionSlice";
 import * as createSubjectSlice from "./slices/createSubjectSlice";
+import * as createLessonSlice from "./slices/createLessonSlice";
+import * as createStepSlice from "./slices/createStepSlice";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
 
@@ -19,6 +20,8 @@ export const actions = {
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
   CREATE_LESSON_RESET: createLessonSlice.reset,
+  CREATE_STEP_DATA: createStepSlice.setData,
+  CREATE_STEP_RESET: createStepSlice.reset,
   CREATE_COLLECTION_DATA: createCollectionSlice.setData,
   CREATE_COLLECTION_TAG: createCollectionSlice.addTag,
   CREATE_COLLECTION_RESET: createCollectionSlice.reset,

@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import "./index.scss";
 import "../../containers.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import InsertMedia from "../../insert-media";
 import Flex from "../../flex";
 import Select from "../../select";
@@ -20,57 +20,76 @@ import BaseInput from "../../base-input";
 import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
-
-type TriggerKeys = keyof typeof TriggerOptions;
-type NextStepKeys = keyof typeof NextStepOptions;
+import { AppState } from "../../../redux/stores/renderer";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-
-  const [CVTrigger, setCVTrigger] = useState(Object.keys(TriggerOptions)[0]);
-  const [CVNextStep, setCVNextStep] = useState(Object.keys(NextStepOptions)[0]);
-  const [stepname, setStepname] = useState("");
-  const [description, setDescription] = useState("");
-  const [CVImages, setCVImages] = useState<string[]>([]);
-  const [CVFunctions, setCVFunctions] = useState<number[]>([]);
+  const stepData = useSelector((state: AppState) => state.createStep);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const setImageCVFn = (fn: number, index: number) => {
-    const arr = [...CVFunctions];
-    arr[index] = fn;
-    setCVFunctions(arr);
+  const Redux = useCallback(
+    (arg: Partial<IStep>) => {
+      reduxAction(dispatch, {
+        type: "CREATE_STEP_DATA",
+        arg,
+      });
+    },
+    [dispatch]
+  );
+
+  const setCVTrigger = (value: number) => {
+    Redux({ trigger: value });
   };
+
+  const setCVNextStep = (value: number) => {
+    Redux({ next: value });
+  };
+
+  const setImageCVFn = useCallback(
+    (fn: number, index: number) => {
+      const arr = [...stepData.functions];
+      arr[index] = fn;
+      Redux({ functions: arr });
+    },
+    [stepData]
+  );
 
   const insertCVImage = useCallback(
     (image: string, index: number) => {
-      const imgArr = [...CVImages];
+      const imgArr = [...stepData.images];
       imgArr.splice(index, 1, image);
-      setCVImages(imgArr);
 
       const defaultFn =
-        CVFunctions[index] ||
+        stepData.functions[index] ||
         (index == 0
           ? Object.values(InitalFnOptions)[0]
           : Object.values(FnOptions)[0]);
-      const fnArr = [...CVFunctions];
+      const fnArr = [...stepData.functions];
       fnArr.splice(index, 1, defaultFn);
-      setCVFunctions(fnArr);
+
+      Redux({ images: imgArr, functions: fnArr });
     },
-    [CVImages, CVFunctions]
+    [stepData]
   );
 
-  const handleStepnameChange = useCallback((e: InputChangeEv): void => {
-    setStepname(e.currentTarget.value);
-  }, []);
+  const handleStepnameChange = useCallback(
+    (e: InputChangeEv): void => {
+      Redux({ name: e.currentTarget.value });
+    },
+    [stepData]
+  );
 
-  const handleDescriptionChange = useCallback((e: AreaChangeEv): void => {
-    setDescription(e.currentTarget.value);
-  }, []);
+  const handleDescriptionChange = useCallback(
+    (e: AreaChangeEv): void => {
+      Redux({ description: e.currentTarget.value });
+    },
+    [stepData]
+  );
 
   const [Popup, open, closePopup] = usePopup(false);
 
   const addStep = useCallback(() => {
-    if (CVImages.length < 1 || stepname.length < 1) {
+    if (stepData.images.length < 1 || stepData.name.length < 1) {
       open();
       return;
     }
@@ -81,32 +100,9 @@ export default function StepAuthoring(): JSX.Element {
       });
     }
 
-    const newStep: IStep = {
-      images: CVImages,
-      functions: CVFunctions,
-      name: stepname,
-      description: description,
-      trigger: TriggerOptions[CVTrigger as TriggerKeys],
-      next: NextStepOptions[CVNextStep as NextStepKeys],
-    };
-    // Update current working lesson
-    reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: newStep });
-    // Reset states
-    setCVTrigger(Object.keys(TriggerOptions)[0]);
-    setCVNextStep(Object.keys(NextStepOptions)[0]);
-    setStepname("");
-    setDescription("");
-    setCVImages([]);
-    setCVFunctions([]);
-  }, [
-    dispatch,
-    containerRef,
-    CVImages,
-    stepname,
-    description,
-    CVTrigger,
-    CVNextStep,
-  ]);
+    reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: stepData });
+    reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
+  }, [dispatch, containerRef, stepData]);
 
   const datekey = new Date().getTime();
 
@@ -126,7 +122,7 @@ export default function StepAuthoring(): JSX.Element {
       <div className="step-authoring-grid" ref={containerRef}>
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
-          {[...CVImages, undefined].map((image, i) => {
+          {[...stepData.images, undefined].map((image, i) => {
             const defaultFn =
               i == 0
                 ? Object.values(InitalFnOptions)[0]
@@ -134,7 +130,7 @@ export default function StepAuthoring(): JSX.Element {
 
             const current = i == 0 ? InitalFnOptions : FnOptions;
             const url = !image || image == "" ? undefined : image;
-            const fn = !image ? defaultFn : CVFunctions[i];
+            const fn = !image ? defaultFn : stepData.functions[i];
 
             return (
               <React.Fragment key={image || "cv-add"}>
@@ -176,25 +172,27 @@ export default function StepAuthoring(): JSX.Element {
         <BaseInput
           title="Step Name"
           placeholder="Step name"
-          value={stepname}
+          value={stepData.name}
           onChange={handleStepnameChange}
         />
         <BaseSelect
           title="Step trigger"
-          current={CVTrigger}
-          options={Object.keys(TriggerOptions)}
+          current={stepData.trigger}
+          options={Object.values(TriggerOptions)}
+          optionFormatter={constantFormat(TriggerOptions)}
           callback={setCVTrigger}
         />
         <BaseTextArea
           title="Step Description"
           placeholder=""
-          value={description}
+          value={stepData.description}
           onChange={handleDescriptionChange}
         />
         <BaseSelect
           title="Next Step"
-          current={CVNextStep}
-          options={Object.keys(NextStepOptions)}
+          current={stepData.next}
+          options={Object.values(NextStepOptions)}
+          optionFormatter={constantFormat(TriggerOptions)}
           callback={setCVNextStep}
         />
         <Flex>

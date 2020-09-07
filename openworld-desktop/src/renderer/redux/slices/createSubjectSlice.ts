@@ -32,6 +32,10 @@ const createSubjectSlice = createSlice({
     },
     reset: (state: ISubject, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
+      state.parent = [];
+      state.tags = [];
+      state.medias = [];
+      state.visibility = [];
     },
   },
 });

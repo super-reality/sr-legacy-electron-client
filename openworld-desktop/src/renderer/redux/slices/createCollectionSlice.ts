@@ -31,6 +31,9 @@ const createCollectionSlice = createSlice({
     },
     reset: (state: ICollection, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
+      state.medias = [];
+      state.tags = [];
+      state.visibility = [];
     },
   },
 });
