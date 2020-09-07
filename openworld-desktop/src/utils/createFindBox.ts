@@ -107,7 +107,7 @@ export function findCVMatch(imageUrl: string): Promise<boolean> {
 
 export function findCVArrayMatch(
   imageUrls: string[],
-  functions: Number[]
+  functions: number[]
 ): Promise<boolean> {
   const win = remote.getCurrentWindow();
   const pos = win.getPosition();
@@ -122,6 +122,7 @@ export function findCVArrayMatch(
       parentheight: size[1],
     })
       .then((res: any) => {
+        console.log("findCVArray", res);
         if (res.result[0] == 1) {
           createFindBox({
             x: res.result[1],

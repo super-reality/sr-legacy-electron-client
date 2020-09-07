@@ -21,6 +21,11 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
+import {
+  findCVArrayMatch,
+  getCurrentFindWindow,
+} from "../../../../utils/createFindBox";
+import jsonRpcRemote from "../../../../utils/jsonRpcSend";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -36,6 +41,24 @@ export default function StepAuthoring(): JSX.Element {
     },
     [dispatch]
   );
+
+  const doTest = useCallback(() => {
+    if (getCurrentFindWindow() != null) {
+      let findWin = getCurrentFindWindow();
+      findWin.close();
+      findWin = null;
+    }
+    findCVArrayMatch(stepData.images, stepData.functions)
+      .then((res) => {
+        if (res) {
+          console.log("match exists: ", res);
+        } else {
+          console.log("match failed: ", res);
+        }
+      })
+      .catch(console.error);
+    jsonRpcRemote("TTS", { text: stepData.description }).catch(console.error);
+  }, [stepData]);
 
   const setCVTrigger = (value: number) => {
     Redux({ trigger: value });
@@ -208,6 +231,14 @@ export default function StepAuthoring(): JSX.Element {
           callback={setCVNextStep}
         />
         <Flex column>
+          <ButtonSimple
+            margin="8px auto"
+            width="180px"
+            height="24px"
+            onClick={doTest}
+          >
+            Test CV
+          </ButtonSimple>
           <ButtonSimple
             margin="8px auto"
             width="180px"

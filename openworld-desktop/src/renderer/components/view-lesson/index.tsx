@@ -38,27 +38,29 @@ export default function ViewLesson(props: ViewLessonProps) {
   const { id } = props;
   const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
 
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [onProcessing, setOnProcessing] = useState<boolean>(false);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
+  const stepNow = data?.totalSteps[currentStep];
+
+  const doStart = useCallback(() => {
+    setIsPlaying(true);
+  }, []);
+
   const doNext = useCallback(() => {
-    if (data == undefined || onProcessing) {
+    if (
+      data == undefined ||
+      onProcessing ||
+      data?.totalSteps.length <= currentStep + 1
+    )
       return;
-    }
-    if (data?.totalSteps.length <= currentStep + 1) {
-      return;
-    }
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (data == undefined || onProcessing) {
-      return;
-    }
-    if (currentStep - 1 < 0) {
-      return;
-    }
+    if (data == undefined || onProcessing || currentStep - 1 < 0) return;
     setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
@@ -69,21 +71,17 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
-  const [Popup, open] = usePopup(false);
-
   useEffect(() => {
-    if (data && onProcessing == false) {
-      setOnProcessing(true);
+    if (data && stepNow && onProcessing == false) {
+      // setOnProcessing(true);
       if (getCurrentFindWindow() != null) {
         let findWin = getCurrentFindWindow();
         findWin.close();
         findWin = null;
       }
-      const imageUrls = data.totalSteps[currentStep].images;
-      const { functions } = data.totalSteps[currentStep];
-      const playText = data.totalSteps[currentStep].description;
+      const { functions, images, description } = stepNow;
 
-      findCVArrayMatch(imageUrls, functions)
+      findCVArrayMatch(images, functions)
         .then((res) => {
           if (res) {
             console.log("match exists");
@@ -94,7 +92,8 @@ export default function ViewLesson(props: ViewLessonProps) {
         .catch((err) => {
           console.log(err);
         });
-      jsonRpcRemote("TTS", { text: playText })
+      /*
+      jsonRpcRemote("TTS", { text: description })
         .then((res) => {
           console.log("playing nice");
           setOnProcessing(false);
@@ -103,44 +102,58 @@ export default function ViewLesson(props: ViewLessonProps) {
           console.log("error occured while playing");
           setOnProcessing(false);
         });
+      */
     }
-    if (!data) open();
   }, [onProcessing, currentStep]);
 
   return (
     <>
-      {data ? (
+      {data && stepNow ? (
         <>
-          <Collapsible
-            outer
-            expanded
-            detach={detached || !isElectron() ? undefined : clickDetach}
-            title="Step"
-          >
-            <ItemInner>
-              <ContainerTopFace>
-                <TeacherBotLesson />
-                <Title
-                  style={{ marginTop: "2px", justifyContent: "initial" }}
-                  title={data.totalSteps[currentStep].name}
-                  sub={`Step ${currentStep + 1}`}
-                />
-              </ContainerTopFace>
-              <ContainerFlex>
-                <Text>{data.totalSteps[currentStep].description}</Text>
-              </ContainerFlex>
-              <ContainerFlex style={{ justifyContent: "space-around" }}>
-                <ButtonSimple width="120px" height="16px" onClick={doPrev}>
-                  Prev
-                </ButtonSimple>
-                <ButtonSimple width="120px" height="16px" onClick={doNext}>
-                  Next
-                </ButtonSimple>
-              </ContainerFlex>
-            </ItemInner>
-          </Collapsible>
+          {isPlaying == true && (
+            <Collapsible
+              outer
+              expanded
+              detach={detached || !isElectron() ? undefined : clickDetach}
+              title="Step"
+            >
+              <ItemInner>
+                <ContainerTopFace>
+                  <TeacherBotLesson />
+                  <Title
+                    style={{ marginTop: "2px", justifyContent: "initial" }}
+                    title={stepNow.name}
+                    sub={`Step ${currentStep + 1}`}
+                  />
+                </ContainerTopFace>
+                <ContainerFlex>
+                  <Text>{stepNow.description}</Text>
+                </ContainerFlex>
+                <ContainerFlex style={{ justifyContent: "space-around" }}>
+                  {currentStep > 0 && (
+                    <ButtonSimple width="120px" height="16px" onClick={doPrev}>
+                      Prev
+                    </ButtonSimple>
+                  )}
+                  <ButtonSimple width="120px" height="16px" onClick={doNext}>
+                    Next
+                  </ButtonSimple>
+                </ContainerFlex>
+              </ItemInner>
+            </Collapsible>
+          )}
           <Collapsible outer title="Lesson Info">
             <LessonActive id={data?._id || id} compact />
+            {isPlaying == false && (
+              <ButtonSimple
+                width="120px"
+                height="16px"
+                margin="8px auto"
+                onClick={doStart}
+              >
+                Start Lesson
+              </ButtonSimple>
+            )}
           </Collapsible>
           <Collapsible outer title="Steps">
             {data.totalSteps.map((step, i: number) => (
