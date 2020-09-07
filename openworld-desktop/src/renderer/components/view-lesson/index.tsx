@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ItemInner,
   Title,
@@ -14,7 +14,6 @@ import {
 } from "../item-inner";
 import ButtonSimple from "../button-simple";
 import Collapsible from "../collapsible";
-import Step from "../step";
 import TeacherBotLesson from "../teacherbot-lesson";
 import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
@@ -27,6 +26,8 @@ import {
   getCurrentFindWindow,
 } from "../../../utils/createFindBox";
 import jsonRpcRemote from "../../../utils/jsonRpcSend";
+import Step from "../step";
+import reduxAction from "../../redux/reduxAction";
 
 interface ViewLessonProps {
   id: string;
@@ -35,6 +36,7 @@ interface ViewLessonProps {
 export default function ViewLesson(props: ViewLessonProps) {
   const { id } = props;
   const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
+  const dispatch = useDispatch();
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -62,6 +64,17 @@ export default function ViewLesson(props: ViewLessonProps) {
     setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
+  const openStep = useCallback(
+    (i: number) => {
+      reduxAction(dispatch, {
+        type: "SET_YSCROLL_MOVE",
+        arg: 0,
+      });
+      setCurrentStep(i);
+    },
+    [dispatch]
+  );
+
   const clickDetach = useCallback(() => {
     createDetachedWindow(
       { width: 350, height: 400 },
@@ -73,7 +86,6 @@ export default function ViewLesson(props: ViewLessonProps) {
     if (data && stepNow && onProcessing == false) {
       // setOnProcessing(true);
       if (getCurrentFindWindow() != null) {
-        // close current find window.
         getCurrentFindWindow().close();
       }
       const { functions, images, description } = stepNow;
@@ -158,7 +170,7 @@ export default function ViewLesson(props: ViewLessonProps) {
                 key={`step-${i}`}
                 number={i + 1}
                 data={step}
-                drag={false}
+                onClick={() => openStep(i)}
                 style={{ margin: "5px 10px", height: "auto" }}
               />
             ))}

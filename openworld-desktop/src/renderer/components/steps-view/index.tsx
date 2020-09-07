@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import swap from "lodash-move";
 import Flex from "../flex";
 import InnerSearch from "../inner-search";
-import Step from "../step";
+import StepCreate from "../step-create";
 import ReactSelect from "../select";
 import useDraggableList from "../../hooks/useDraggableList";
 import { AppState } from "../../redux/stores/renderer";
@@ -79,10 +79,10 @@ export default function StepsView(): JSX.Element {
       <div className="steps-container">
         {steps.map((step, i) => {
           return (
-            <Step
+            <StepCreate
               key={`step-view-${step.name}-${step.description}-${step.next}`}
               number={i}
-              data={step as IStep}
+              data={step}
             />
           );
         })}

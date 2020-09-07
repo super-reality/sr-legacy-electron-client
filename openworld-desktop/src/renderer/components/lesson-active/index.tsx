@@ -80,7 +80,6 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
               key={`step-${i}`}
               number={i + 1}
               data={step}
-              drag={false}
               style={{ margin: "5px 10px", height: "auto" }}
             />
           ))}

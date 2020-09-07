@@ -1,18 +1,29 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useCallback } from "react";
 
 import "./index.scss";
+import { useDispatch } from "react-redux";
 import { ItemInner, Title, Text } from "../item-inner";
 import { IStep } from "../../api/types/step/step";
+import EditButton from "../edit-button";
+import reduxAction from "../../redux/reduxAction";
 
 interface StepProps {
   data: IStep;
   number: number;
-  onClick?: () => void;
+  drag?: boolean;
   style?: CSSProperties;
 }
 
-export default function Step(props: StepProps): JSX.Element {
-  const { data, onClick, style, number } = props;
+export default function StepCreate(props: StepProps): JSX.Element {
+  const { data, drag, style, number } = props;
+  const dispatch = useDispatch();
+
+  const doEdit = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_STEP_DATA",
+      arg: { ...data, index: number },
+    });
+  }, [dispatch]);
 
   return (
     <ItemInner
@@ -21,13 +32,13 @@ export default function Step(props: StepProps): JSX.Element {
         width: "-webkit-fill-available",
         ...style,
       }}
-      onClick={onClick}
+      drag={drag}
       text
     >
       <div className="container-step-edit">
         <Title title={data.name} sub={`Step ${number + 1}`} />
         <div />
-        <div />
+        <EditButton callback={doEdit} />
         <Text
           style={{
             overflow: "hidden",

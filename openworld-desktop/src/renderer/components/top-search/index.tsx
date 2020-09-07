@@ -106,7 +106,6 @@ export default function TopSearch(): JSX.Element {
 
   const onSelect = useCallback(
     (route: string, selected: string | Category) => {
-      console.log(route, selected);
       if (openDropdown) {
         history.push(`/${route}/${selected}`);
         setOpenDropdown(null);
