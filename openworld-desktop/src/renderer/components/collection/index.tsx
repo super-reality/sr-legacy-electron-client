@@ -21,6 +21,8 @@ import usePopupAdd from "../../hooks/usePopupAdd";
 import useTrashButton from "../../hooks/useTrashButton";
 import useEditButton from "../../hooks/useEditButton";
 
+const { remote } = require("electron");
+
 interface CollectionProps {
   data: ICollectionSearch;
 }

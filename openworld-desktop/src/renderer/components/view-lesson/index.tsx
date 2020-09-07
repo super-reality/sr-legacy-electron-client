@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector } from "react-redux";
-import { findAllByTestId } from "@testing-library/react";
 import {
   ItemInner,
   Title,
@@ -28,7 +27,6 @@ import {
   getCurrentFindWindow,
 } from "../../../utils/createFindBox";
 import jsonRpcRemote from "../../../utils/jsonRpcSend";
-import usePopup from "../../hooks/usePopup";
 
 interface ViewLessonProps {
   id: string;
@@ -75,9 +73,8 @@ export default function ViewLesson(props: ViewLessonProps) {
     if (data && stepNow && onProcessing == false) {
       // setOnProcessing(true);
       if (getCurrentFindWindow() != null) {
-        let findWin = getCurrentFindWindow();
-        findWin.close();
-        findWin = null;
+        // close current find window.
+        getCurrentFindWindow().close();
       }
       const { functions, images, description } = stepNow;
 
