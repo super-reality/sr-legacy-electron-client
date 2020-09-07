@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
 import React from "react";
 
@@ -19,27 +18,32 @@ import CheckButton from "../check-button";
 import ShareButton from "../share-button";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import CollectionGet, { ICollectionGet } from "../../api/types/collection/get";
+import { ISubjectGet } from "../../api/types/subject/get";
+import Subject from "../subject";
 import Collapsible from "../collapsible";
-import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
-import Step from "../step";
 import useDataGet from "../../hooks/useDataGet";
 import useTrashButton from "../../hooks/useTrashButton";
 
-interface LessonActiveProps {
+interface CollectionProps {
   id: string;
-  compact?: boolean;
 }
 
-export default function LessonActive(props: LessonActiveProps): JSX.Element {
-  const { id, compact } = props;
-  const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
+export default function Collection(props: CollectionProps): JSX.Element {
+  const { id } = props;
+  const [data, children] = useDataGet<
+    CollectionGet,
+    ICollectionGet,
+    ISubjectGet
+  >("collection", id);
+
   const checked = useSelector((state: AppState) =>
-    state.userData.lessons.includes(id)
+    state.userData.collections.includes(id)
   );
 
-  const [PopupAdd, open] = usePopupAdd(checked, "lesson", id);
+  const [PopupAdd, open] = usePopupAdd(checked, "collection", id);
 
-  const [Trash, deleted] = useTrashButton("collection", id);
+  const [Trash, deleted] = useTrashButton("collection", data?._id);
   if (deleted) return <></>;
 
   return data ? (
@@ -49,7 +53,7 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
         <ContainerTop>
           <Icon url={data.icon} />
           <Points points={0} />
-          <Title title={data.name} sub={`${data.totalSteps.length} Steps`} />
+          <Title title={data.name} sub={`${children?.length || 0} Subjects`} />
         </ContainerTop>
         <ContainerFlex>
           <Text>{data.description}</Text>
@@ -70,21 +74,11 @@ export default function LessonActive(props: LessonActiveProps): JSX.Element {
           <ShareButton style={{ margin: "auto" }} />
         </ContainerBottom>
       </ItemInner>
-      {compact ? (
-        <></>
-      ) : (
-        <Collapsible expanded outer title="Subjects">
-          {data.totalSteps.map((step, i: number) => (
-            <Step
-              key={`step-${i}`}
-              number={i + 1}
-              data={step}
-              drag={false}
-              style={{ margin: "5px 10px", height: "auto" }}
-            />
-          ))}
-        </Collapsible>
-      )}
+      <Collapsible expanded outer title="Subjects">
+        {children?.map((s) => (
+          <Subject key={s._id} data={s} />
+        ))}
+      </Collapsible>
     </>
   ) : (
     <ItemInnerLoader style={{ height: "400px" }} />

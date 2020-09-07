@@ -1,9 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import "../popups.scss";
-import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   ItemInner,
@@ -11,9 +10,8 @@ import {
   ContainerTopFace,
   ContainerFlex,
   Text,
+  ItemInnerLoader,
 } from "../item-inner";
-import globalData from "../../globalData";
-import usePopup from "../../hooks/usePopup";
 import ButtonSimple from "../button-simple";
 import Collapsible from "../collapsible";
 import Step from "../step";
@@ -21,38 +19,37 @@ import TeacherBotLesson from "../teacherbot-lesson";
 import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
-import { ILessonGet } from "../../api/types/lesson/get";
+import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
+import isElectron from "../../../utils/isElectron";
 import {
   findCVArrayMatch,
   getCurrentFindWindow,
 } from "../../../utils/createFindBox";
-import jsonRpcRemote from "../../../utils/jsonRpcSend";
+import useDataGet from "../../hooks/useDataGet";
 
 interface ViewLessonProps {
   id: string;
-  data?: ILessonGet;
 }
 
 export default function ViewLesson(props: ViewLessonProps) {
-  let onProcessing: boolean = false;
-  const { id, data } = props;
-  const lessonData = data || globalData.lessons[id] || undefined;
-  const history = useHistory();
+  const { id } = props;
+  const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
+
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
   const doNext = useCallback(() => {
-    if (lessonData == undefined || onProcessing) {
+    if (data == undefined) {
       return;
     }
-    if (lessonData?.totalSteps.length <= currentStep + 1) {
+    if (data?.totalSteps.length <= currentStep + 1) {
       return;
     }
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (lessonData == undefined || onProcessing) {
+    if (data == undefined) {
       return;
     }
     if (currentStep - 1 < 0) {
@@ -64,24 +61,18 @@ export default function ViewLesson(props: ViewLessonProps) {
   const clickDetach = useCallback(() => {
     createDetachedWindow(
       { width: 350, height: 400 },
-      { arg: data || globalData.lessons[id], type: "LESSON_VIEW" }
+      { arg: data, type: "LESSON_VIEW" }
     );
   }, []);
 
-  const [Popup, open] = usePopup(false);
-
   useEffect(() => {
-    if (lessonData && onProcessing == false) {
-      onProcessing = true;
+    if (data) {
+      const imageUrls = data.totalSteps[currentStep].images;
+      const { functions } = data.totalSteps[currentStep];
       if (getCurrentFindWindow() != null) {
-        let findWin = getCurrentFindWindow();
-        findWin.close();
-        findWin = null;
+        // close current find window.
+        getCurrentFindWindow().close();
       }
-      const imageUrls = lessonData.totalSteps[currentStep].images;
-      const { functions } = lessonData.totalSteps[currentStep];
-      const playText = lessonData.totalSteps[currentStep].description;
-
       findCVArrayMatch(imageUrls, functions)
         .then((res) => {
           if (res) {
@@ -93,41 +84,17 @@ export default function ViewLesson(props: ViewLessonProps) {
         .catch((err) => {
           console.log(err);
         });
-      jsonRpcRemote("TTS", { text: playText })
-        .then((res) => {
-          console.log("playing nice");
-          onProcessing = false;
-        })
-        .catch((err) => {
-          console.log("error occured while playing");
-          onProcessing = false;
-        });
     }
-    if (!lessonData) open();
-  });
+  }, [currentStep]);
 
   return (
     <>
-      <Popup width="340px" height="auto">
-        <div className="validation-popup">
-          <div className="title red">Oops!</div>
-          <div className="line">The requested lesson is not available..</div>
-          <ButtonSimple
-            width="140px"
-            height="24px"
-            margin="16px auto"
-            onClick={() => history.goBack()}
-          >
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
-      {lessonData ? (
+      {data ? (
         <>
           <Collapsible
             outer
             expanded
-            detach={detached ? undefined : clickDetach}
+            detach={detached || !isElectron() ? undefined : clickDetach}
             title="Step"
           >
             <ItemInner>
@@ -135,12 +102,12 @@ export default function ViewLesson(props: ViewLessonProps) {
                 <TeacherBotLesson />
                 <Title
                   style={{ marginTop: "2px", justifyContent: "initial" }}
-                  title={lessonData.totalSteps[currentStep].name}
+                  title={data.totalSteps[currentStep].name}
                   sub={`Step ${currentStep + 1}`}
                 />
               </ContainerTopFace>
               <ContainerFlex>
-                <Text>{lessonData.totalSteps[currentStep].description}</Text>
+                <Text>{data.totalSteps[currentStep].description}</Text>
               </ContainerFlex>
               <ContainerFlex style={{ justifyContent: "space-around" }}>
                 <ButtonSimple width="120px" height="16px" onClick={doPrev}>
@@ -153,10 +120,10 @@ export default function ViewLesson(props: ViewLessonProps) {
             </ItemInner>
           </Collapsible>
           <Collapsible outer title="Lesson Info">
-            <LessonActive id={data?._id || id} />
+            <LessonActive id={data?._id || id} compact />
           </Collapsible>
           <Collapsible outer title="Steps">
-            {lessonData.totalSteps.map((step, i: number) => (
+            {data.totalSteps.map((step, i: number) => (
               <Step
                 key={`step-${i}`}
                 number={i + 1}
@@ -168,7 +135,7 @@ export default function ViewLesson(props: ViewLessonProps) {
           </Collapsible>
         </>
       ) : (
-        <></>
+        <ItemInnerLoader style={{ height: "400px" }} />
       )}
     </>
   );

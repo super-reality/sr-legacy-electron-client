@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
+import { useHistory } from "react-router-dom";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
 import { API_URL, timeout } from "../../constants";
@@ -14,9 +15,11 @@ import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../../components/flex";
+import Category from "../../../types/collections";
 
 export default function Auth(): JSX.Element {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
   const togglePage = useCallback(() => {
@@ -42,7 +45,6 @@ export default function Auth(): JSX.Element {
 
   const handleLoginSubmit = useCallback(() => {
     reduxAction(dispatch, { type: "AUTH_PENDING", arg: null });
-
     if (defaultToken && passwordField.current?.value == "*") {
       reduxAction(dispatch, { type: "AUTH_TOKEN", arg: defaultToken });
       axios
@@ -52,7 +54,10 @@ export default function Auth(): JSX.Element {
             Authorization: `Bearer ${defaultToken}`,
           },
         })
-        .then((res) => handleAuthLogin(res))
+        .then((res) => {
+          handleAuthLogin(res);
+          history.push(`/discover/${Category.Collection}`);
+        })
         .catch(handleAuthError);
     } else {
       const payload = {
@@ -64,7 +69,10 @@ export default function Auth(): JSX.Element {
         .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
           timeout: timeout,
         })
-        .then((res) => handleAuthLogin(res))
+        .then((res) => {
+          handleAuthLogin(res);
+          history.push(`/discover/${Category.Collection}`);
+        })
         .catch(handleAuthError);
     }
   }, []);

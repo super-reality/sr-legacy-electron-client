@@ -1,5 +1,6 @@
 import { CodeSuccess } from "..";
 import constant from "../../constant";
+import { IStep } from "../step/step";
 
 export const LessonSortOptions = {
   Newest: constant.Lesson_Sort.Newest,
@@ -21,7 +22,7 @@ export interface ILessonSearch {
   shortDescription: string;
   description: string;
   rating: number;
-  totalSteps: string[];
+  totalSteps: IStep[];
 }
 
 /* eslint-disable camelcase */

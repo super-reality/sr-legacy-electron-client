@@ -63,7 +63,7 @@ export default function DiscoverFinder(
       case Category.Collection:
         currentUrl = "collection";
         fields =
-          "name _id rating shortDescription description icon medias createdAt rating";
+          "name _id rating shortDescription description icon medias createdAt subjectCount";
         break;
       default:
         currentUrl = "lesson";

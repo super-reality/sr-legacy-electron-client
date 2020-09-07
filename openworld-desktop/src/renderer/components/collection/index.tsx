@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -15,10 +16,12 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { ICollectionSearch } from "../../api/types/collection/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import useTrashButton from "../../hooks/useTrashButton";
+
+const { remote } = require("electron");
 
 interface CollectionProps {
   data: ICollectionSearch;
@@ -26,19 +29,27 @@ interface CollectionProps {
 
 export default function Collection(props: CollectionProps): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.collections.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "collection", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/collection/${data._id}`);
+  }, []);
+
+  const [Trash, deleted] = useTrashButton("collection", data?._id);
+  if (deleted) return <></>;
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
         <Points points={0} />
-        <Title title={data.name} sub={`${0} Subjects`} />
+        <Title title={data.name} sub={`${data.subjectCount} Subjects`} />
       </ContainerTop>
       <ContainerFlex>
         <Text>{data.description}</Text>
@@ -53,7 +64,7 @@ export default function Collection(props: CollectionProps): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="collection" id={data._id} />
+        <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

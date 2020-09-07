@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -15,10 +16,10 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
-import { ILessonSearch } from "../../api/types/lesson/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import { ILessonSearch } from "../../api/types/lesson/search";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface LessonProps {
   data: ILessonSearch;
@@ -26,14 +27,22 @@ interface LessonProps {
 
 export default function Lesson(props: LessonProps): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.lessons.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "lesson", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/lesson/${data._id}`);
+  }, []);
+
+  const [Trash, deleted] = useTrashButton("lesson", data._id);
+  if (deleted) return <></>;
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
@@ -44,7 +53,11 @@ export default function Lesson(props: LessonProps): JSX.Element {
         <Text>{data.description}</Text>
       </ContainerFlex>
       <ContainerFlex>
-        <Image src={data.medias[0]} />
+        <Image
+          src={data.medias[0]}
+          onClick={open}
+          style={{ cursor: "pointer" }}
+        />
       </ContainerFlex>
       <ContainerBottom>
         <CheckButton
@@ -53,7 +66,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="lesson" id={data._id} />
+        <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

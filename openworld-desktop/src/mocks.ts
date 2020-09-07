@@ -13,6 +13,7 @@ export const mockCollections: ICollectionSearch[] = [
     _id: "as1d32a1sd3a",
     createdAt: "",
     rating: 20,
+    subjectCount: 0,
   },
   {
     icon:
@@ -27,6 +28,7 @@ export const mockCollections: ICollectionSearch[] = [
     _id: "as21da3sda",
     createdAt: "",
     rating: 10,
+    subjectCount: 0,
   },
 ];
 

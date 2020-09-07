@@ -1,12 +1,11 @@
 import { AxiosResponse } from "axios";
-import { ApiError } from "./types";
-import LessonGet from "./types/lesson/get";
+import { ApiError, ApiSucess } from "./types";
 
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-export default function handleLessonGet(
-  res: AxiosResponse<ApiError | LessonGet>
-): Promise<LessonGet> {
+export default function handleGenericGet<T extends ApiSucess>(
+  res: AxiosResponse<ApiError | T>
+): Promise<T> {
   return new Promise((resolve, reject) => {
     if (res.status == 200) {
       if (res.data.err_code == 0) {

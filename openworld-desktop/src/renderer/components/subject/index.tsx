@@ -1,7 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React from "react";
+import React, { useCallback } from "react";
 
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   ItemInner,
   Icon,
@@ -15,10 +16,10 @@ import {
 } from "../item-inner";
 import CheckButton from "../check-button";
 import ShareButton from "../share-button";
-import TrashButton from "../trash-button";
 import { ISubjectSearch } from "../../api/types/subject/search";
 import { AppState } from "../../redux/stores/renderer";
 import usePopupAdd from "../../hooks/usePopupAdd";
+import useTrashButton from "../../hooks/useTrashButton";
 
 interface Subject {
   data: ISubjectSearch;
@@ -26,18 +27,26 @@ interface Subject {
 
 export default function Subject(props: Subject): JSX.Element {
   const { data } = props;
+  const history = useHistory();
   const checked = useSelector((state: AppState) =>
     state.userData.subjects.includes(data._id)
   );
 
   const [PopupAdd, open] = usePopupAdd(checked, "subject", data._id);
 
+  const doClick = useCallback(() => {
+    history.push(`/discover/subject/${data._id}`);
+  }, []);
+
+  const [Trash, deleted] = useTrashButton("subject", data._id);
+  if (deleted) return <></>;
+
   return (
-    <ItemInner text>
+    <ItemInner text onClick={doClick}>
       <PopupAdd />
       <ContainerTop>
         <Icon url={data.icon} />
-        <Points points={data.rating} />
+        <Points points={0} />
         <Title title={data.name} sub={`${0} Lessons`} />
       </ContainerTop>
       <ContainerFlex>
@@ -53,7 +62,7 @@ export default function Subject(props: Subject): JSX.Element {
           callback={open}
         />
         <div />
-        <TrashButton type="subject" id={data._id} />
+        <Trash />
         <ShareButton style={{ margin: "auto" }} />
       </ContainerBottom>
     </ItemInner>

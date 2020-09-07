@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from "react";
 import "./App.scss";
 import { useSelector } from "react-redux";
@@ -11,7 +12,7 @@ export default function DetachController(): JSX.Element {
     <div className="content-deatched">
       <div className="content-wrapper">
         {detached?.type == "LESSON_VIEW" ? (
-          <ViewLesson id="" data={detached.arg} />
+          <ViewLesson id={detached.arg._id} />
         ) : (
           <></>
         )}

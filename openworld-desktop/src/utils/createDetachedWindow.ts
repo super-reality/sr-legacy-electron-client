@@ -4,12 +4,17 @@ import path from "path";
 import url from "url";
 import { DetachArg } from "./handleIpc";
 import store from "../renderer/redux/stores/renderer";
+import isElectron from "./isElectron";
 
 export default function createDetachedWindow(
   props: any,
   detach: DetachArg,
   callback?: () => void
 ): Promise<void> {
+  if (!isElectron()) {
+    console.error("createDetachedWindow was not escaped correcty.");
+    return new Promise(() => {});
+  }
   const { remote } = require("electron");
   const newWindow = new remote.BrowserWindow({
     frame: true,
