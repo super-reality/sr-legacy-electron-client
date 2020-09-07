@@ -1,25 +1,42 @@
 .splash-container {
   display: flex;
   flex-direction: column;
-  max-width: 400px;
-  max-height: 100%;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  max-width: 360px;
+  max-height: 750px;
   margin: auto;
 
-  .images{
-    display: grid;
-    grid-template-rows: 64px minmax(auto, 792px);
-    width: -webkit-fill-available;
-    height: 100%;
-  }
-
-  .splash-image {
-    justify-content: center;
+  .splash-logo {
     width: calc(100% - 24px);
     display: flex;
-    margin: 8px auto;
+    justify-content: center;
+    margin: auto;
 
     img {
       width: 100%;
     }
+  }
+
+  .splash-video {
+    width: calc(100% - 24px);
+    height: calc(100% - 128px);
+    border-radius: 20px;
+    justify-content: center;
+    overflow: hidden;
+    display: flex;
+    margin: 8px auto;
+
+    video {
+      object-fit: cover;
+      display: block;
+      height: 102%;
+      margin: auto;
+    }
+  }
+
+  .splash-button {
+    width: calc(100% - 24px);
+    height: 64px;
   }
 }

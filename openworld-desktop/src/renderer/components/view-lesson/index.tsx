@@ -11,6 +11,7 @@ import {
   ContainerFlex,
   Text,
   ItemInnerLoader,
+  Image,
 } from "../item-inner";
 import ButtonSimple from "../button-simple";
 import Collapsible from "../collapsible";
