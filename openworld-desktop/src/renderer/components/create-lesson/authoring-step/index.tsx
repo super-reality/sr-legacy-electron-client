@@ -57,7 +57,9 @@ export default function StepAuthoring(): JSX.Element {
         }
       })
       .catch(console.error);
-    jsonRpcRemote("TTS", { text: stepData.description }).catch(console.error);
+    if (stepData.description !== "") {
+      jsonRpcRemote("TTS", { text: stepData.description }).catch(console.error);
+    }
   }, [stepData]);
 
   const setCVTrigger = (value: number) => {
