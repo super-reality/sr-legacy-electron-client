@@ -56,7 +56,7 @@ async function testFor(width: number, height: number) {
 
   // Test pages
   for (let i = 0; i < 5; i += 1) {
-    await page.goto(`http://localhost:3000/#/tests/${i}`);
+    await page.goto(`http://localhost:3000/tests/${i}`);
     await page.waitFor(1000);
     const img = await page.screenshot();
     expect(img).toMatchImageSnapshot(matchConfig);
@@ -107,12 +107,12 @@ async function testFor(width: number, height: number) {
   const rootImage = await page.screenshot();
   expect(rootImage).toMatchImageSnapshot(matchConfig);
 
-  await page.goto(`http://localhost:3000/#/learn/1`);
+  await page.goto(`http://localhost:3000/learn/1`);
   await page.waitFor(1000);
   const learn = await page.screenshot();
   expect(learn).toMatchImageSnapshot(matchConfig);
 
-  await page.goto(`http://localhost:3000/#/create/0`);
+  await page.goto(`http://localhost:3000/create/0`);
   await page.waitFor(1000);
   const create = await page.screenshot();
   expect(create).toMatchImageSnapshot(matchConfig);
