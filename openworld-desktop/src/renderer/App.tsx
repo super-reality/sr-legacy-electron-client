@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
+import { useTransition, animated } from "react-spring";
 import Test from "./views/test";
 import Auth from "./views/auth";
 import Discover from "./views/discover";
@@ -20,13 +21,15 @@ import "typeface-roboto";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
+  const isPending = useSelector((state: AppState) => state.auth.isPending);
+
   const { isLoading, detached } = useSelector(
     (state: AppState) => state.commonProps
   );
   const yScrollMoveTo = useSelector(
     (state: AppState) => state.render.yScrollMoveTo
   );
-  const isPending = useSelector((state: AppState) => state.auth.isPending);
+
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
@@ -68,9 +71,8 @@ export default function App(): JSX.Element {
     <>
       <Loading state={isPending} />
       <Switch>
-        <Route exact path="/" component={Splash} />
         <Route exact path="/tests/:id" component={Tests} />
-        <Route path="*" component={Auth} />
+        <Route path="*" component={Splash} />
       </Switch>
     </>
   );
