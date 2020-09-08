@@ -1,42 +1,48 @@
 .splash-container {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  width: -webkit-fill-available;
-  height: -webkit-fill-available;
-  max-width: 360px;
-  max-height: 750px;
-  margin: auto;
 
   .splash-logo {
+    position: absolute;
     width: calc(100% - 24px);
-    display: flex;
-    justify-content: center;
-    margin: auto;
+    max-width: 400px;
+    top: 32px;
 
     img {
       width: 100%;
     }
   }
 
-  .splash-video {
-    width: calc(100% - 24px);
-    height: calc(100% - 128px);
-    border-radius: 20px;
-    justify-content: center;
-    overflow: hidden;
-    display: flex;
-    margin: 8px auto;
+  video {
+    object-fit: cover;
+    display: block;
+    height: 102%;
+    margin: auto;
+  }
 
-    video {
-      object-fit: cover;
-      display: block;
-      height: 102%;
-      margin: auto;
+  .splash-elements {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: calc(100% - 128px);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+
+    .splash-mute {
+      margin: 8px;
+      display: flex;
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
     }
   }
 
   .splash-button {
-    width: calc(100% - 24px);
-    height: 64px;
+    width: 100%;
+    position: absolute;
   }
 }

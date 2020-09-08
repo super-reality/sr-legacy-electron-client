@@ -19,7 +19,7 @@ export default function MuteButton(props: EditProps): JSX.Element {
     <div
       className="icon-button"
       style={{
-        margin: "auto",
+        margin: "8px",
         display: "flex",
       }}
       onClick={(e) => {
