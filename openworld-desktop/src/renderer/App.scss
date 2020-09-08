@@ -119,3 +119,16 @@ a:focus, a:hover, a:visited, a:link, a:active {
     background: #4f5152;
   }
 }
+
+.animation-container{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.animation-el{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}

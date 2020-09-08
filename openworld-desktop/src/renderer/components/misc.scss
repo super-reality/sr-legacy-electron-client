@@ -13,6 +13,10 @@
   box-shadow: 0px 4px 4px 1px #0000001a;
 }
 
+@mixin hard-shadow {
+  box-shadow: 0px 4px 8px 5px #00000070;
+}
+
 @mixin diffuse-shadow {
   box-shadow: 0px 12px 10px 2px #00000040;
 }
