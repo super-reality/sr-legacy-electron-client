@@ -3,7 +3,6 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
-import { useHistory } from "react-router-dom";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
 import { API_URL, timeout } from "../../constants";
@@ -15,11 +14,14 @@ import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../../components/flex";
-import Category from "../../../types/collections";
 
-export default function Auth(): JSX.Element {
+interface AuthProps {
+  onAuth: () => void;
+}
+
+export default function Auth(props: AuthProps): JSX.Element {
+  const { onAuth } = props;
   const dispatch = useDispatch();
-  const history = useHistory();
   const { isPending } = useSelector((state: AppState) => state.auth);
   const [page, setPage] = useState<"login" | "register">("login");
   const togglePage = useCallback(() => {
@@ -56,7 +58,7 @@ export default function Auth(): JSX.Element {
         })
         .then((res) => {
           handleAuthLogin(res);
-          history.push(`/discover/${Category.Collection}`);
+          onAuth();
         })
         .catch(handleAuthError);
     } else {
@@ -71,7 +73,7 @@ export default function Auth(): JSX.Element {
         })
         .then((res) => {
           handleAuthLogin(res);
-          history.push(`/discover/${Category.Collection}`);
+          onAuth();
         })
         .catch(handleAuthError);
     }

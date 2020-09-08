@@ -23,13 +23,15 @@ const authSlice = createSlice({
     setAuthPending: (state: AuthState, action: PayloadAction<null>): void => {
       state.isPending = true;
     },
+    setAuthValid: (state: AuthState, action: PayloadAction<boolean>): void => {
+      state.isValid = action.payload;
+    },
     setAuthSucessful: (
       state: AuthState,
       action: PayloadAction<SignIn>
     ): void => {
       const { firstname, lastname } = action.payload.user;
       state.updatedAt = Date.now();
-      state.isValid = true;
       if (action.payload.token) {
         const bearer = `Bearer ${action.payload.token}`;
         Axios.defaults.headers.post.Authorization = bearer;
@@ -66,6 +68,7 @@ const authSlice = createSlice({
 });
 
 export const {
+  setAuthValid,
   setAuthPending,
   setAuthSucessful,
   setAuthToken,

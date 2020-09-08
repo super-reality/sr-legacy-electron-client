@@ -9,6 +9,7 @@ import * as userDataSlice from "./slices/userDataSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
+  AUTH_VALID: AuthSlice.setAuthValid,
   AUTH_SUCCESSFUL: AuthSlice.setAuthSucessful,
   AUTH_TOKEN: AuthSlice.setAuthToken,
   AUTH_FAILED: AuthSlice.setAuthFailed,
