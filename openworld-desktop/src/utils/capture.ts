@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 import fs from "fs";
-import cv from "../services/cv";
 
 function toBuffer(blob: Blob | null, cb: (err: any, buff?: Buffer) => void) {
   if (typeof Blob === "undefined" || !(blob instanceof Blob)) {

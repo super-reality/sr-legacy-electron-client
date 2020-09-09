@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
+import _ from "lodash";
 import { captureDesktopStream } from "../../../utils/capture";
 import ButtonSimple from "../../components/button-simple";
 
-const win = window;
-const { cv } = win as any;
-
-const maxVideoSize = 400;
+const maxVideoSize = 200;
 
 function imageDataFromMat(mat: any) {
   // converts the mat type to cv.CV_8U
+  const win = window as any;
+  const { cv } = win;
   const img = new cv.Mat();
   const depth = mat.type() % 8;
   const scale =
@@ -61,22 +61,35 @@ export default function Test() {
    * In the onClick event we'll capture a frame within
    * the video to pass it to our service.
    */
-  async function onClick() {
+  function onClick() {
     updateProcessing(true);
-
     if (canvasEl.current && videoElement.current) {
       const ctx = canvasEl.current.getContext("2d");
       if (ctx) {
         ctx.drawImage(videoElement.current, 0, 0, maxVideoSize, maxVideoSize);
         const image = ctx.getImageData(0, 0, maxVideoSize, maxVideoSize);
 
+        const win = window as any;
+        const { cv } = win;
+
+        try {
+          const img = cv.matFromImageData(image.data);
+          cv.cvtColor(img, img, cv.COLOR_RGBA2GRAY);
+          cv.imshow(canvasEl, img);
+          img.delete();
+        } catch (e) {
+          console.error(e);
+        }
+        /*
         const img = cv.matFromImageData(image);
         const result = new cv.Mat();
+        
         cv.cvtColor(img, result, cv.COLOR_BGR2GRAY);
 
         const processedImage = imageDataFromMat(result);
         // Render the processed image to the canvas
         ctx.putImageData(processedImage, 0, 0);
+        */
         updateProcessing(false);
       }
     }
@@ -87,7 +100,7 @@ export default function Test() {
    * element to show what's on camera.
    */
   useEffect(() => {
-    async function initCamara() {
+    async function initVideoStream() {
       if (videoElement.current) {
         videoElement.current.width = maxVideoSize;
         videoElement.current.height = maxVideoSize;
@@ -105,7 +118,7 @@ export default function Test() {
     }
 
     async function load() {
-      const videoLoaded = (await initCamara()) as HTMLVideoElement;
+      const videoLoaded = (await initVideoStream()) as HTMLVideoElement;
       videoLoaded.play();
       return videoLoaded;
     }
