@@ -74,14 +74,12 @@ export default function Test() {
         const { cv } = win;
 
         try {
-          // const src = new cv.Mat(maxVideoSize, maxVideoSize, cv.CV_8UC4);
+          const src = new cv.Mat(maxVideoSize, maxVideoSize, cv.CV_8UC4);
           const dstC1 = new cv.Mat(maxVideoSize, maxVideoSize, cv.CV_8UC1);
-          /*
           const vc = new cv.VideoCapture(videoElement.current);
           vc.read(src);
 
           cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
-          */
           cv.imshow("canvasOutput", dstC1);
         } catch (e) {
           console.error(e);
