@@ -26,7 +26,6 @@ import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step/step";
-import capture from "./capture";
 
 interface ViewLessonProps {
   id: string;
@@ -46,8 +45,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   console.log(stepNow);
 
   const doStart = useCallback(() => {
-    capture();
-    // setIsPlaying(true);
+    setIsPlaying(true);
   }, []);
 
   const doNext = useCallback(() => {
