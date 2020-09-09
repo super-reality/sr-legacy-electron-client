@@ -3,7 +3,7 @@ import _ from "lodash";
 import { captureDesktopStream } from "../../../utils/capture";
 import ButtonSimple from "../../components/button-simple";
 
-const maxVideoSize = 200;
+const maxVideoSize = 400;
 
 function imageDataFromMat(mat: any) {
   // converts the mat type to cv.CV_8U
@@ -66,17 +66,23 @@ export default function Test() {
     if (canvasEl.current && videoElement.current) {
       const ctx = canvasEl.current.getContext("2d");
       if (ctx) {
+        /*
         ctx.drawImage(videoElement.current, 0, 0, maxVideoSize, maxVideoSize);
         const image = ctx.getImageData(0, 0, maxVideoSize, maxVideoSize);
-
+        */
         const win = window as any;
         const { cv } = win;
 
         try {
-          const img = cv.matFromImageData(image.data);
-          cv.cvtColor(img, img, cv.COLOR_RGBA2GRAY);
-          cv.imshow(canvasEl, img);
-          img.delete();
+          // const src = new cv.Mat(maxVideoSize, maxVideoSize, cv.CV_8UC4);
+          const dstC1 = new cv.Mat(maxVideoSize, maxVideoSize, cv.CV_8UC1);
+          /*
+          const vc = new cv.VideoCapture(videoElement.current);
+          vc.read(src);
+
+          cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+          */
+          cv.imshow("canvasOutput", dstC1);
         } catch (e) {
           console.error(e);
         }
@@ -144,7 +150,12 @@ export default function Test() {
       >
         {processing ? "Processing..." : "Take a photo"}
       </ButtonSimple>
-      <canvas ref={canvasEl} width={maxVideoSize} height={maxVideoSize} />
+      <canvas
+        id="canvasOutput"
+        ref={canvasEl}
+        width={maxVideoSize}
+        height={maxVideoSize}
+      />
     </div>
   );
 }
