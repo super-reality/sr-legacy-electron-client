@@ -9,7 +9,6 @@ import MuteButton from "../../components/mute-button";
 import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
-import capture from "../../../utils/capture";
 import Test from "./test";
 
 export default function Splash(): JSX.Element {
@@ -83,7 +82,7 @@ export default function Splash(): JSX.Element {
               height: "32px",
               width: "-webkit-fill-available",
             }}
-            onClick={() => capture()}
+            onClick={() => setShowAuth(true)}
           >
             Login
           </ButtonSimple>

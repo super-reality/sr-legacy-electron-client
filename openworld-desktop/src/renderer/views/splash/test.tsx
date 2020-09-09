@@ -1,9 +1,45 @@
 import React, { useEffect, useRef, useState } from "react";
-import ogCV from "../../../services/cv";
 import { captureDesktopStream } from "../../../utils/capture";
+import ButtonSimple from "../../components/button-simple";
 
-const cv = ogCV as any;
+const win = window;
+const { cv } = win as any;
+
 const maxVideoSize = 400;
+
+function imageDataFromMat(mat: any) {
+  // converts the mat type to cv.CV_8U
+  const img = new cv.Mat();
+  const depth = mat.type() % 8;
+  const scale =
+    // eslint-disable-next-line no-nested-ternary
+    depth <= cv.CV_8S ? 1.0 : depth <= cv.CV_32S ? 1.0 / 256.0 : 255.0;
+  const shift = depth === cv.CV_8S || depth === cv.CV_16S ? 128.0 : 0.0;
+  mat.convertTo(img, cv.CV_8U, scale, shift);
+
+  // converts the img type to cv.CV_8UC4
+  switch (img.type()) {
+    case cv.CV_8UC1:
+      cv.cvtColor(img, img, cv.COLOR_GRAY2RGBA);
+      break;
+    case cv.CV_8UC3:
+      cv.cvtColor(img, img, cv.COLOR_RGB2RGBA);
+      break;
+    case cv.CV_8UC4:
+      break;
+    default:
+      throw new Error(
+        "Bad number of channels (Source image must have 1, 3 or 4 channels)"
+      );
+  }
+  const clampedArray = new ImageData(
+    new Uint8ClampedArray(img.data),
+    img.cols,
+    img.rows
+  );
+  img.delete();
+  return clampedArray;
+}
 
 /**
  * What we're going to render is:
@@ -33,12 +69,14 @@ export default function Test() {
       if (ctx) {
         ctx.drawImage(videoElement.current, 0, 0, maxVideoSize, maxVideoSize);
         const image = ctx.getImageData(0, 0, maxVideoSize, maxVideoSize);
-        // Load the model
-        await cv.load();
-        // Processing image
-        const processedImage = await cv.imageProcessing(image);
+
+        const img = cv.matFromImageData(image);
+        const result = new cv.Mat();
+        cv.cvtColor(img, result, cv.COLOR_BGR2GRAY);
+
+        const processedImage = imageDataFromMat(result);
         // Render the processed image to the canvas
-        ctx.putImageData(processedImage.data.payload, 0, 0);
+        ctx.putImageData(processedImage, 0, 0);
         updateProcessing(false);
       }
     }
@@ -85,14 +123,14 @@ export default function Test() {
       }}
     >
       <video className="video" playsInline ref={videoElement} />
-      <button
-        type="button"
-        disabled={processing}
-        style={{ width: maxVideoSize, padding: 10 }}
+      <ButtonSimple
+        width="200px"
+        height="24px"
+        margin="auto 8px"
         onClick={onClick}
       >
         {processing ? "Processing..." : "Take a photo"}
-      </button>
+      </ButtonSimple>
       <canvas ref={canvasEl} width={maxVideoSize} height={maxVideoSize} />
     </div>
   );

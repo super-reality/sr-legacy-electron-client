@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <script type="text/javascript">
+      function onOpenCvReady() {
+        console.log("OpenCV is ready");
+      }
+      function onOpenCvError() {
+        console.log("OpenCV error on load");
+      }
+    </script>
+    <script async="" src="./js/opencv.js" type="text/javascript" onload="onOpenCvReady();" onerror="onOpenCvError();"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
