@@ -10,6 +10,7 @@ import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
 import capture from "../../../utils/capture";
+import Test from "./test";
 
 export default function Splash(): JSX.Element {
   const history = useHistory();
@@ -86,6 +87,7 @@ export default function Splash(): JSX.Element {
           >
             Login
           </ButtonSimple>
+          <Test />
         </animated.div>
         <div className="splash-mute">
           <MuteButton state={mute} callback={onMute} />
