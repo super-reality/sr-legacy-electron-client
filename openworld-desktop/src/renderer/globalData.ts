@@ -6,6 +6,7 @@ const globalData = {
   collections: {} as Record<string, ICollectionGet>,
   subjects: {} as Record<string, ISubjectGet>,
   lessons: {} as Record<string, ILessonGet>,
+  cvFindWindow: null as any | null,
 };
 
 export default globalData;

@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import _ from "lodash";
-import { captureDesktopStream } from "../../../utils/capture";
-import ButtonSimple from "../../components/button-simple";
-import cvTestImage from "../../../assets/images/cvtest.png";
-import createFindBox from "../../../utils/createFindBox";
-
-const maxCanvasSize = 400;
-const threshold = 10.98;
+import { captureDesktopStream } from "./capture";
 
 function cvResize(image: any, w: number, h: number): any {
   const win = window as any;
@@ -20,16 +20,47 @@ function cvResize(image: any, w: number, h: number): any {
   return dst;
 }
 
-export default function Test() {
+interface Result {
+  dist: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+interface Options {
+  maxCanvasSize: number;
+  threshold: number;
+}
+
+const defaultOptions: Options = {
+  maxCanvasSize: 400,
+  threshold: 0.98,
+};
+
+export default function useCVMatch(
+  image: string,
+  callback: (result: Result) => void,
+  options?: Partial<Options>
+): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const [capturing, setCapturing] = useState<boolean>(false);
   const videoElement = useRef<HTMLVideoElement | null>(null);
   const canvasEl = useRef<HTMLCanvasElement | null>(null);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
 
-  const onClick = useCallback(() => {
-    setCapturing(!capturing);
-  }, [capturing]);
+  const opt = {
+    ...defaultOptions,
+    ...options,
+  };
+
+  const beginCapture = useCallback(() => {
+    setCapturing(true);
+  }, []);
+
+  const endCapture = useCallback(() => {
+    setCapturing(false);
+  }, []);
 
   const doMatch = useCallback(() => {
     const win = window as any;
@@ -38,8 +69,16 @@ export default function Test() {
 
     if (canvasEl.current && videoElement.current && templateEl.current) {
       try {
-        const src = new cv.Mat(maxCanvasSize, maxCanvasSize, cv.CV_8UC4);
-        const dstC1 = new cv.Mat(maxCanvasSize, maxCanvasSize, cv.CV_8UC1);
+        const src = new cv.Mat(
+          opt.maxCanvasSize,
+          opt.maxCanvasSize,
+          cv.CV_8UC4
+        );
+        const dstC1 = new cv.Mat(
+          opt.maxCanvasSize,
+          opt.maxCanvasSize,
+          cv.CV_8UC1
+        );
         if (frames !== 0) {
           // Original to grayscale
           const vc = new cv.VideoCapture(videoElement.current);
@@ -48,26 +87,24 @@ export default function Test() {
           cv.cvtColor(dstC1, src, cv.COLOR_GRAY2RGBA);
 
           // Dest and mask
-          const dst = new cv.Mat(maxCanvasSize, maxCanvasSize, cv.CV_8UC4);
+          const dst = new cv.Mat(
+            opt.maxCanvasSize,
+            opt.maxCanvasSize,
+            cv.CV_8UC4
+          );
           const mask = new cv.Mat();
 
           // Metrics
-          const xScale = 1920 / maxCanvasSize;
-          const yScale = 1080 / maxCanvasSize;
+          const xScale = 1920 / opt.maxCanvasSize;
+          const yScale = 1080 / opt.maxCanvasSize;
 
           // Template
           const ogTemplate = cv.imread("templateImage");
-          console.log(
-            "template: ",
-            ogTemplate.cols / xScale,
-            ogTemplate.rows / yScale
-          );
           const templ = cvResize(
             ogTemplate,
             ogTemplate.cols / xScale,
             ogTemplate.rows / yScale
           );
-          // ogTemplate.delete();
 
           // Do match
           // console.log(src, dst, templ);
@@ -120,17 +157,20 @@ export default function Test() {
             0
           );
 
-          console.log("Best match rate: ", bestDist);
-          if (bestDist > threshold) {
-            createFindBox({
+          // console.log("Best match rate: ", bestDist);
+          if (bestDist > opt.threshold) {
+            const result: Result = {
+              dist: bestDist,
               x: Math.round(xScale * bestPoint.x),
               y: Math.round(yScale * bestPoint.y),
               width: Math.round(templ.cols * xScale),
               height: Math.round(templ.rows * yScale),
-            }).then(() => {});
-            cv.imshow("canvasOutput", src);
+            };
+            callback(result);
           }
+          cv.imshow("canvasOutput", src);
         } else {
+          // First frame will always be empty
           cv.imshow("canvasOutput", dstC1);
         }
       } catch (e) {
@@ -138,13 +178,13 @@ export default function Test() {
       }
       setFrames(frames + 1);
     }
-  }, [frames, videoElement, canvasEl, templateEl]);
+  }, [callback, frames, videoElement, canvasEl, templateEl]);
 
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        videoElement.current.width = maxCanvasSize;
-        videoElement.current.height = maxCanvasSize;
+        videoElement.current.width = opt.maxCanvasSize;
+        videoElement.current.height = opt.maxCanvasSize;
         videoElement.current.srcObject = await captureDesktopStream();
 
         return new Promise((resolve) => {
@@ -175,42 +215,38 @@ export default function Test() {
     }
   }, [capturing, frames]);
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
-    >
-      <video
-        style={{ width: "400px" }}
-        className="video"
-        playsInline
-        ref={videoElement}
-      />
-      <img
-        style={{ display: "none" }}
-        id="templateImage"
-        src={cvTestImage}
-        ref={templateEl}
-      />
-      <canvas
-        style={{ width: "400px", height: "250px" }}
-        id="canvasOutput"
-        ref={canvasEl}
-        width={maxCanvasSize}
-        height={maxCanvasSize}
-      />
-      <ButtonSimple
-        width="200px"
-        height="24px"
-        margin="auto 8px"
-        onClick={onClick}
+  const Component = useMemo(
+    () => () => (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
-        {capturing ? "Stop capturing" : "Begin capturing"}
-      </ButtonSimple>
-    </div>
+        <video
+          style={{ width: "400px" }}
+          className="video"
+          playsInline
+          ref={videoElement}
+        />
+        <img
+          style={{ display: "none" }}
+          id="templateImage"
+          src={image}
+          ref={templateEl}
+        />
+        <canvas
+          style={{ width: "400px", height: "250px" }}
+          id="canvasOutput"
+          ref={canvasEl}
+          width={opt.maxCanvasSize}
+          height={opt.maxCanvasSize}
+        />
+      </div>
+    ),
+    []
   );
+
+  return [Component, capturing, beginCapture, endCapture, doMatch];
 }

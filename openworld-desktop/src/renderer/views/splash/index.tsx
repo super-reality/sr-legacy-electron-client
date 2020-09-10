@@ -9,7 +9,9 @@ import MuteButton from "../../components/mute-button";
 import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
 import Category from "../../../types/collections";
-import Test from "./test";
+import useCVMatch from "../../../utils/useCVMatch";
+import cvTestImage from "../../../assets/images/cvtest.png";
+import createFindBox from "../../../utils/createFindBox";
 
 export default function Splash(): JSX.Element {
   const history = useHistory();
@@ -60,6 +62,13 @@ export default function Splash(): JSX.Element {
     setAuth(true);
   }, []);
 
+  const cvShow = useCallback((res: any) => {
+    // console.log(res);
+    createFindBox(res);
+  }, []);
+
+  const [CV, isCapturing, doCV, endCv] = useCVMatch(cvTestImage, cvShow);
+
   return (
     <animated.div style={fadeOutSpring} className="splash-container">
       <animated.div style={upSpring} className="splash-shadow-top" />
@@ -86,7 +95,21 @@ export default function Splash(): JSX.Element {
           >
             Login
           </ButtonSimple>
-          <Test />
+          <ButtonSimple
+            margin="16px auto"
+            style={{
+              maxWidth: "200px",
+              height: "32px",
+              width: "-webkit-fill-available",
+            }}
+            onClick={() => {
+              if (isCapturing) endCv();
+              else doCV();
+            }}
+          >
+            {isCapturing ? "End CV Capture" : "Start CV Capture"}
+          </ButtonSimple>
+          <CV />
         </animated.div>
         <div className="splash-mute">
           <MuteButton state={mute} callback={onMute} />

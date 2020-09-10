@@ -2,6 +2,7 @@
 import path from "path";
 import url from "url";
 import jsonRpcRemote from "./jsonRpcSend";
+import globalData from "../renderer/globalData";
 
 interface Position {
   x: number;
@@ -10,15 +11,23 @@ interface Position {
   height: number;
 }
 
-let findWindow: any = null;
-
 export function getCurrentFindWindow() {
-  return findWindow;
+  return globalData.cvFindWindow;
 }
 
 export default function createFindBox(pos: Position): Promise<void> {
   const { remote } = require("electron");
-  findWindow = new remote.BrowserWindow({
+
+  if (globalData.cvFindWindow != null) {
+    globalData.cvFindWindow.setBounds({
+      width: pos.width + 64,
+      height: pos.height + 64,
+      x: pos.x - 32,
+      y: pos.y - 32,
+    });
+    return new Promise<void>((r) => r());
+  }
+  globalData.cvFindWindow = new remote.BrowserWindow({
     width: pos.width + 64,
     height: pos.height + 64,
     frame: false,
@@ -35,7 +44,7 @@ export default function createFindBox(pos: Position): Promise<void> {
   });
 
   const proc: any = process;
-  findWindow.loadURL(
+  globalData.cvFindWindow.loadURL(
     url.format({
       pathname: remote.app.isPackaged
         ? path.join(proc.resourcesPath, "app.asar", "build", "find.html")
@@ -54,18 +63,18 @@ export default function createFindBox(pos: Position): Promise<void> {
         mouse.x < pos.x + pos.width &&
         mouse.y < pos.y + pos.height
       ) {
-        if (findWindow != null) {
-          findWindow.close();
-          findWindow = null;
+        if (globalData.cvFindWindow != null) {
+          globalData.cvFindWindow.close();
+          globalData.cvFindWindow = null;
         }
         clearInterval(checkInterval);
       }
     }, 100);
 
-    findWindow.on("closed", () => {
-      if (findWindow != null) {
-        findWindow.destroy();
-        findWindow = null;
+    globalData.cvFindWindow.on("closed", () => {
+      if (globalData.cvFindWindow != null) {
+        globalData.cvFindWindow.destroy();
+        globalData.cvFindWindow = null;
       }
       resolve();
     });
