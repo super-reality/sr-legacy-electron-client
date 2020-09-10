@@ -30,11 +30,13 @@ interface Result {
 
 interface Options {
   maxCanvasSize: number;
+  interval: number;
   threshold: number;
 }
 
 const defaultOptions: Options = {
   maxCanvasSize: 400,
+  interval: 500,
   threshold: 0.98,
 };
 
@@ -65,7 +67,7 @@ export default function useCVMatch(
   const doMatch = useCallback(() => {
     const win = window as any;
     const { cv } = win;
-    if (cv == undefined) return;
+    if (cv == undefined || image == "") return;
 
     if (canvasEl.current && videoElement.current && templateEl.current) {
       try {
@@ -95,8 +97,8 @@ export default function useCVMatch(
           const mask = new cv.Mat();
 
           // Metrics
-          const xScale = 1920 / opt.maxCanvasSize;
-          const yScale = 1080 / opt.maxCanvasSize;
+          const xScale = window.screen.width / opt.maxCanvasSize;
+          const yScale = window.screen.height / opt.maxCanvasSize;
 
           // Template
           const ogTemplate = cv.imread("templateImage");
@@ -210,7 +212,7 @@ export default function useCVMatch(
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (capturing) {
-      const id = setInterval(doMatch, 500);
+      const id = setInterval(doMatch, opt.interval);
       return () => clearInterval(id);
     }
   }, [capturing, frames]);
@@ -231,9 +233,10 @@ export default function useCVMatch(
           ref={videoElement}
         />
         <img
-          style={{ display: "none" }}
+          style={{ display: "block" }}
           id="templateImage"
           src={image}
+          crossOrigin="anonymous"
           ref={templateEl}
         />
         <canvas

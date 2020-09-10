@@ -21,11 +21,12 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
-import {
+import createFindBox, {
   findCVArrayMatch,
   getCurrentFindWindow,
 } from "../../../../utils/createFindBox";
 import jsonRpcRemote from "../../../../utils/jsonRpcSend";
+import useCVMatch from "../../../../utils/useCVMatch";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -42,25 +43,20 @@ export default function StepAuthoring(): JSX.Element {
     [dispatch]
   );
 
+  const cvShow = useCallback((res: any) => {
+    createFindBox(res);
+  }, []);
+
+  const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
+    stepData.images[0] || "",
+    cvShow
+  );
+
   const doTest = useCallback(() => {
-    if (getCurrentFindWindow() != null) {
-      let findWin = getCurrentFindWindow();
-      findWin.close();
-      findWin = null;
-    }
-    findCVArrayMatch(stepData.images, stepData.functions)
-      .then((res) => {
-        if (res) {
-          console.log("match exists: ", res);
-        } else {
-          console.log("match failed: ", res);
-        }
-      })
-      .catch(console.error);
-    if (stepData.description !== "") {
-      jsonRpcRemote("TTS", { text: stepData.description }).catch(console.error);
-    }
-  }, [stepData]);
+    // play audio too
+    // The CV logic for functions and triggers should be abstracted out
+    singleCV();
+  }, [singleCV]);
 
   const setCVTrigger = (value: number) => {
     Redux({ trigger: value });
@@ -145,6 +141,7 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <>
+      <CV />
       <Popup width="400px" height="auto">
         <div className="validation-popup">
           <div className="title">Step Creation failed</div>

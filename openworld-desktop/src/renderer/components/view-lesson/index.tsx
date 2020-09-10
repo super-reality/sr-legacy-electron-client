@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,6 +26,8 @@ import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step/step";
+import createFindBox from "../../../utils/createFindBox";
+import useCVMatch from "../../../utils/useCVMatch";
 
 interface ViewLessonProps {
   id: string;
@@ -38,28 +40,17 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [onProcessing, setOnProcessing] = useState<boolean>(false);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
-  const stepNow = data?.totalSteps[currentStep];
-  console.log(stepNow);
-
-  const doStart = useCallback(() => {
-    setIsPlaying(true);
-  }, []);
+  const stepNow = useMemo(() => data?.totalSteps[currentStep], [currentStep]);
 
   const doNext = useCallback(() => {
-    if (
-      data == undefined ||
-      onProcessing ||
-      data?.totalSteps.length <= currentStep + 1
-    )
-      return;
+    if (data == undefined || data?.totalSteps.length <= currentStep + 1) return;
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (data == undefined || onProcessing || currentStep - 1 < 0) return;
+    if (data == undefined || currentStep - 1 < 0) return;
     setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
@@ -81,14 +72,33 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
+  const cvShow = useCallback((res: any) => {
+    createFindBox(res);
+  }, []);
+
+  const [CV, isCapturing, startCV, endCv] = useCVMatch(
+    "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1599330196102.png" ||
+      stepNow?.images[0] ||
+      "",
+    cvShow
+  );
+
   useEffect(() => {
-    // Do CV here
-  }, [onProcessing, currentStep]);
+    return () => {
+      endCv();
+    };
+  }, []);
+
+  const doStart = useCallback(() => {
+    startCV();
+    setIsPlaying(true);
+  }, [startCV]);
 
   return (
     <>
       {data && stepNow ? (
         <>
+          <CV />
           {isPlaying == true && (
             <Collapsible
               outer
