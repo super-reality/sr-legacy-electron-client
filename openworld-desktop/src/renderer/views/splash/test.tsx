@@ -128,8 +128,8 @@ export default function Test() {
               width: Math.round(templ.cols * xScale),
               height: Math.round(templ.rows * yScale),
             }).then(() => {});
+            cv.imshow("canvasOutput", src);
           }
-          cv.imshow("canvasOutput", src);
         } else {
           cv.imshow("canvasOutput", dstC1);
         }
