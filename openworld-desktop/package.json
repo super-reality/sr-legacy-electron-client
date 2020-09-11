@@ -89,6 +89,15 @@
       "icon": "public/logo512.png",
       "artifactName": "${productName}-${version}.${ext}"
     },
+    "extraResources": [
+      {
+        "from": "./public/extra/",
+        "to": "extra",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "directories": {
       "buildResources": "public"
     }
