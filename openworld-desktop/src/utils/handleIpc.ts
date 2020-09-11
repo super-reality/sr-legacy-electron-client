@@ -6,7 +6,12 @@ interface DetachLesson {
   arg: any;
 }
 
-export type DetachArg = DetachLesson;
+interface DetachSniping {
+  type: "SNIPING_TOOL";
+  arg: string;
+}
+
+export type DetachArg = DetachLesson | DetachSniping;
 
 export default function handleIpc(): void {
   // eslint-disable-next-line global-require

@@ -23,6 +23,7 @@ export default function createDetachedWindow(
     show: false,
     paintWhenInitiallyHidden: true,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
     },
     ...props,

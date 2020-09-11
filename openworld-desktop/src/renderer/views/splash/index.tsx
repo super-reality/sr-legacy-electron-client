@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import "./index.scss";
 import { useHistory } from "react-router-dom";
 import { animated, useSpring } from "react-spring";

@@ -36,7 +36,7 @@ interface Options {
 
 const defaultOptions: Options = {
   maxCanvasSize: 600,
-  interval: 1000,
+  interval: 500,
   threshold: 0.99,
 };
 
