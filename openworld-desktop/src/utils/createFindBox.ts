@@ -2,6 +2,7 @@
 import path from "path";
 import url from "url";
 import jsonRpcRemote from "./jsonRpcSend";
+import globalData from "../renderer/globalData";
 
 interface Position {
   x: number;
@@ -10,15 +11,23 @@ interface Position {
   height: number;
 }
 
-let findWindow: any = null;
-
 export function getCurrentFindWindow() {
-  return findWindow;
+  return globalData.cvFindWindow;
 }
 
 export default function createFindBox(pos: Position): Promise<void> {
   const { remote } = require("electron");
-  findWindow = new remote.BrowserWindow({
+
+  if (globalData.cvFindWindow != null) {
+    globalData.cvFindWindow.setBounds({
+      width: pos.width + 64,
+      height: pos.height + 64,
+      x: pos.x - 32,
+      y: pos.y - 32,
+    });
+    return new Promise<void>((r) => r());
+  }
+  globalData.cvFindWindow = new remote.BrowserWindow({
     width: pos.width + 64,
     height: pos.height + 64,
     frame: false,
@@ -35,7 +44,7 @@ export default function createFindBox(pos: Position): Promise<void> {
   });
 
   const proc: any = process;
-  findWindow.loadURL(
+  globalData.cvFindWindow.loadURL(
     url.format({
       pathname: remote.app.isPackaged
         ? path.join(proc.resourcesPath, "app.asar", "build", "find.html")
@@ -54,90 +63,20 @@ export default function createFindBox(pos: Position): Promise<void> {
         mouse.x < pos.x + pos.width &&
         mouse.y < pos.y + pos.height
       ) {
-        if (findWindow != null) {
-          findWindow.close();
-          findWindow = null;
+        if (globalData.cvFindWindow != null) {
+          globalData.cvFindWindow.close();
+          globalData.cvFindWindow = null;
         }
         clearInterval(checkInterval);
       }
     }, 100);
 
-    findWindow.on("closed", () => {
-      if (findWindow != null) {
-        findWindow.destroy();
-        findWindow = null;
+    globalData.cvFindWindow.on("closed", () => {
+      if (globalData.cvFindWindow != null) {
+        globalData.cvFindWindow.destroy();
+        globalData.cvFindWindow = null;
       }
       resolve();
     });
-  });
-}
-
-export function findCVMatch(imageUrl: string): Promise<boolean> {
-  const { remote } = require("electron");
-  const win = remote.getCurrentWindow();
-  const pos = win.getPosition();
-  const size = win.getSize();
-  return new Promise((resolve, reject) => {
-    jsonRpcRemote("findCV", {
-      imageUrl: imageUrl,
-      parentx: pos[0],
-      parenty: pos[1],
-      parentwidth: size[0],
-      parentheight: size[1],
-    })
-      .then((res: any) => {
-        if (res.result[0] == 1) {
-          resolve(true);
-          console.log(res.result, "result");
-          createFindBox({
-            x: res.result[1],
-            y: res.result[2],
-            width: res.result[3],
-            height: res.result[4],
-          }).then(() => {});
-        } else {
-          resolve(false);
-        }
-      })
-      .catch((e) => {
-        reject();
-      });
-  });
-}
-
-export function findCVArrayMatch(
-  imageUrls: string[],
-  functions: number[]
-): Promise<boolean> {
-  const { remote } = require("electron");
-  const win = remote.getCurrentWindow();
-  const pos = win.getPosition();
-  const size = win.getSize();
-  return new Promise((resolve, reject) => {
-    jsonRpcRemote("findCVArray", {
-      imageUrls: imageUrls,
-      functions: functions,
-      parentx: pos[0],
-      parenty: pos[1],
-      parentwidth: size[0],
-      parentheight: size[1],
-    })
-      .then((res: any) => {
-        console.log("findCVArray", res);
-        if (res.result[0] == 1) {
-          createFindBox({
-            x: res.result[1],
-            y: res.result[2],
-            width: res.result[3],
-            height: res.result[4],
-          }).then(() => {});
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      })
-      .catch((e) => {
-        reject();
-      });
   });
 }

@@ -30,6 +30,7 @@
     "react": "^16.13.1",
     "react-autosuggest": "^10.0.2",
     "react-dom": "^16.13.1",
+    "react-image-crop": "^8.6.5",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
@@ -39,6 +40,7 @@
     "reactn": "^2.2.7",
     "redux": "^4.0.5",
     "request": "^2.88.2",
+    "tmp": "^0.2.1",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
@@ -61,7 +63,8 @@
     "electron-start": "node src/start-react",
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
-    "build": "npm run react-build && npm run electron-build"
+    "build": "npm run react-build && npm run electron-build",
+    "electron-rebuild": "electron-rebuild -w opencv4nodejs"
   },
   "build": {
     "appId": "com.openworld.desktop",
@@ -86,6 +89,15 @@
       "icon": "public/logo512.png",
       "artifactName": "${productName}-${version}.${ext}"
     },
+    "extraResources": [
+      {
+        "from": "./public/extra/",
+        "to": "extra",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "directories": {
       "buildResources": "public"
     }
@@ -120,7 +132,7 @@
     "aws-sdk": "^2.740.0",
     "copyfiles": "^2.3.0",
     "dotenv": "^8.2.0",
-    "electron": "^9.1.2",
+    "electron": "^9.3.0",
     "electron-builder": "^22.8.0",
     "electron-packager": "^15.0.0",
     "eslint": "6.8.0",

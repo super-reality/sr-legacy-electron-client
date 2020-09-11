@@ -81,7 +81,7 @@ export default function Splash(): JSX.Element {
               height: "32px",
               width: "-webkit-fill-available",
             }}
-            onClick={() => setShowAuth(!showAuth)}
+            onClick={() => setShowAuth(true)}
           >
             Login
           </ButtonSimple>

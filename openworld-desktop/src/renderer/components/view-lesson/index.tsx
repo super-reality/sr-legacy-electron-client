@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -22,15 +22,12 @@ import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
 import isElectron from "../../../utils/isElectron";
 import useDataGet from "../../hooks/useDataGet";
-import {
-  findCVArrayMatch,
-  getCurrentFindWindow,
-} from "../../../utils/createFindBox";
-import jsonRpcRemote from "../../../utils/jsonRpcSend";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step/step";
+import createFindBox from "../../../utils/createFindBox";
+import useCVMatch from "../../hooks/useCVMatch";
 
 interface ViewLessonProps {
   id: string;
@@ -43,28 +40,17 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [onProcessing, setOnProcessing] = useState<boolean>(false);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
-  const stepNow = data?.totalSteps[currentStep];
-  console.log(stepNow);
-
-  const doStart = useCallback(() => {
-    setIsPlaying(true);
-  }, []);
+  const stepNow = useMemo(() => data?.totalSteps[currentStep], [currentStep]);
 
   const doNext = useCallback(() => {
-    if (
-      data == undefined ||
-      onProcessing ||
-      data?.totalSteps.length <= currentStep + 1
-    )
-      return;
+    if (data == undefined || data?.totalSteps.length <= currentStep + 1) return;
     setCurrentStep(currentStep + 1);
   }, [currentStep]);
 
   const doPrev = useCallback(() => {
-    if (data == undefined || onProcessing || currentStep - 1 < 0) return;
+    if (data == undefined || currentStep - 1 < 0) return;
     setCurrentStep(currentStep - 1);
   }, [currentStep]);
 
@@ -86,41 +72,31 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
-  useEffect(() => {
-    if (data && stepNow && onProcessing == false) {
-      // setOnProcessing(true);
-      if (getCurrentFindWindow() != null) {
-        getCurrentFindWindow().close();
-      }
-      const { functions, images, description } = stepNow;
+  const cvShow = useCallback((res: any) => {
+    createFindBox(res);
+  }, []);
 
-      findCVArrayMatch(images, functions)
-        .then((res) => {
-          if (res) {
-            console.log("match exists");
-          } else {
-            console.log("match failed");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      jsonRpcRemote("TTS", { text: description })
-        .then((res) => {
-          console.log("playing nice");
-          setOnProcessing(false);
-        })
-        .catch((err) => {
-          console.log("error occured while playing");
-          setOnProcessing(false);
-        });
-    }
-  }, [onProcessing, currentStep]);
+  const [CV, isCapturing, startCV, endCv] = useCVMatch(
+    stepNow?.images[0] || "",
+    cvShow
+  );
+
+  useEffect(() => {
+    return () => {
+      endCv();
+    };
+  }, []);
+
+  const doStart = useCallback(() => {
+    startCV();
+    setIsPlaying(true);
+  }, [startCV]);
 
   return (
     <>
       {data && stepNow ? (
         <>
+          <CV />
           {isPlaying == true && (
             <Collapsible
               outer

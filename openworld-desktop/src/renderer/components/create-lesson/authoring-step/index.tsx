@@ -21,11 +21,8 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
-import {
-  findCVArrayMatch,
-  getCurrentFindWindow,
-} from "../../../../utils/createFindBox";
-import jsonRpcRemote from "../../../../utils/jsonRpcSend";
+import createFindBox from "../../../../utils/createFindBox";
+import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -42,25 +39,27 @@ export default function StepAuthoring(): JSX.Element {
     [dispatch]
   );
 
+  const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
+
+  const cvShow = useCallback((res: CVResult) => {
+    if (res.dist > 0.99) {
+      createFindBox(res);
+    } else {
+      cvNotFound();
+    }
+  }, []);
+
+  const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
+    stepData.images[0] || "",
+    cvShow,
+    { threshold: 0 }
+  );
+
   const doTest = useCallback(() => {
-    if (getCurrentFindWindow() != null) {
-      let findWin = getCurrentFindWindow();
-      findWin.close();
-      findWin = null;
-    }
-    findCVArrayMatch(stepData.images, stepData.functions)
-      .then((res) => {
-        if (res) {
-          console.log("match exists: ", res);
-        } else {
-          console.log("match failed: ", res);
-        }
-      })
-      .catch(console.error);
-    if (stepData.description !== "") {
-      jsonRpcRemote("TTS", { text: stepData.description }).catch(console.error);
-    }
-  }, [stepData]);
+    // play audio too
+    // The CV logic for functions and triggers should be abstracted out
+    singleCV();
+  }, [singleCV]);
 
   const setCVTrigger = (value: number) => {
     Redux({ trigger: value });
@@ -145,6 +144,16 @@ export default function StepAuthoring(): JSX.Element {
 
   return (
     <>
+      <CV />
+      <CVPopup width="400px" height="auto">
+        <div className="validation-popup">
+          <div className="title">Not found</div>
+          <div className="line">No CV Targets could be found.</div>
+          <ButtonSimple className="button" onClick={closeCvNotFound}>
+            Ok
+          </ButtonSimple>
+        </div>
+      </CVPopup>
       <Popup width="400px" height="auto">
         <div className="validation-popup">
           <div className="title">Step Creation failed</div>

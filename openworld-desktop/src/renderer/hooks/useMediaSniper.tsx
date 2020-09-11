@@ -1,94 +1,38 @@
 /* eslint-disable global-require */
-import path from "path";
-import url from "url";
 import { useCallback } from "react";
-import jsonRpcRemote from "../../utils/jsonRpcSend";
-
-function createSniper(): Promise<string> {
-  const { remote } = require("electron");
-  const snipWindow = new remote.BrowserWindow({
-    width: 200,
-    height: 200,
-    frame: false,
-    transparent: true,
-    opacity: 1,
-    alwaysOnTop: true,
-    resizable: true,
-    movable: true,
-    webPreferences: {
-      nodeIntegration: true,
-    },
-  });
-  const proc: any = process;
-
-  // change the pathname to get the correct path in build
-  snipWindow.loadURL(
-    url.format({
-      pathname: remote.app.isPackaged
-        ? path.join(proc.resourcesPath, "app.asar", "build", "dialog.html")
-        : path.join("..", "public", "dialog.html"),
-      protocol: "file:",
-      slashes: true,
-    })
-  );
-
-  snipWindow.on("closed", () => {
-    remote.globalShortcut.unregister("Shift+S");
-    remote.globalShortcut.unregister("Shift+D");
-    snipWindow.destroy();
-  });
-  let translucent = false;
-
-  // snipWindow.webContents.openDevTools();
-
-  remote.globalShortcut.register("Shift+D", () => {
-    translucent = !translucent;
-    if (translucent == true) {
-      snipWindow.setIgnoreMouseEvents(true);
-    } else {
-      snipWindow.setIgnoreMouseEvents(false);
-    }
-  });
-
-  return new Promise<string>((resolve, reject) => {
-    remote.globalShortcut.register("Shift+S", () => {
-      if (snipWindow != null) {
-        const pos = snipWindow.getPosition();
-        const size = snipWindow.getSize();
-        snipWindow.close();
-        const imglocalPath = "";
-
-        jsonRpcRemote("snipImage", {
-          posx: pos[0] + 3,
-          posy: pos[1] + 3,
-          width: size[0] - 6,
-          height: size[1] - 6,
-          path: imglocalPath,
-        })
-          .then((res: any) => {
-            let ImagePathCopy: string = "";
-            try {
-              ImagePathCopy = res.result.imgPath;
-            } catch (err) {
-              reject(err);
-            }
-            resolve(ImagePathCopy.replace(/\\/g, "/").replace(/"/g, ""));
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      } else {
-        reject();
-      }
-    });
-  });
-}
+import path from "path";
+import fs from "fs";
+import createDetachedWindow from "../../utils/createDetachedWindow";
+import screenshotcapture from "../../utils/screencapture";
+import setLoading from "../redux/utils/setLoading";
 
 export default function useMediaSniper(
   onFinish: (url: string) => void
 ): () => void {
   const open = useCallback(() => {
-    createSniper().then(onFinish);
+    setLoading(true);
+    // eslint-disable-next-line global-require
+    const { app, remote } = require("electron");
+    const userData = (app || remote.app).getPath("userData");
+
+    const fileName = path.join(userData, "capture.png").replace(/\\/g, "/");
+    screenshotcapture(fileName, (err: any, imagePath: string) => {
+      createDetachedWindow(
+        {
+          fullscreen: true,
+          frame: false,
+          focus: true,
+          width: 800,
+          height: 600,
+        },
+        { arg: fileName, type: "SNIPING_TOOL" }
+      ).then(() => {
+        setLoading(false);
+        const crop = path.join(userData, "crop.png");
+        const timestamped = path.join(userData, `${new Date().getTime()}.png`);
+        fs.copyFile(crop, timestamped, () => onFinish(timestamped));
+      });
+    });
   }, [onFinish]);
 
   return open;
