@@ -21,12 +21,8 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
-import createFindBox, {
-  findCVArrayMatch,
-  getCurrentFindWindow,
-} from "../../../../utils/createFindBox";
-import jsonRpcRemote from "../../../../utils/jsonRpcSend";
-import useCVMatch from "../../../../utils/useCVMatch";
+import createFindBox from "../../../../utils/createFindBox";
+import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -43,13 +39,20 @@ export default function StepAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const cvShow = useCallback((res: any) => {
-    createFindBox(res);
+  const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
+
+  const cvShow = useCallback((res: CVResult) => {
+    if (res.dist > 0.99) {
+      createFindBox(res);
+    } else {
+      cvNotFound();
+    }
   }, []);
 
   const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
     stepData.images[0] || "",
-    cvShow
+    cvShow,
+    { threshold: 0 }
   );
 
   const doTest = useCallback(() => {
@@ -142,6 +145,15 @@ export default function StepAuthoring(): JSX.Element {
   return (
     <>
       <CV />
+      <CVPopup width="400px" height="auto">
+        <div className="validation-popup">
+          <div className="title">Not found</div>
+          <div className="line">No CV Targets could be found.</div>
+          <ButtonSimple className="button" onClick={closeCvNotFound}>
+            Ok
+          </ButtonSimple>
+        </div>
+      </CVPopup>
       <Popup width="400px" height="auto">
         <div className="validation-popup">
           <div className="title">Step Creation failed</div>

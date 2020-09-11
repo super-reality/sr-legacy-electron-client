@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import _ from "lodash";
-import { captureDesktopStream } from "./capture";
+import { captureDesktopStream } from "../../utils/capture";
 
 function cvResize(image: any, w: number, h: number): any {
   const win = window as any;
@@ -20,7 +20,7 @@ function cvResize(image: any, w: number, h: number): any {
   return dst;
 }
 
-interface Result {
+export interface CVResult {
   dist: number;
   x: number;
   y: number;
@@ -35,14 +35,14 @@ interface Options {
 }
 
 const defaultOptions: Options = {
-  maxCanvasSize: 400,
-  interval: 500,
-  threshold: 0.98,
+  maxCanvasSize: 600,
+  interval: 1000,
+  threshold: 0.99,
 };
 
 export default function useCVMatch(
   image: string,
-  callback: (result: Result) => void,
+  callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const [capturing, setCapturing] = useState<boolean>(false);
@@ -67,6 +67,7 @@ export default function useCVMatch(
   const doMatch = useCallback(() => {
     const win = window as any;
     const { cv } = win;
+    // console.log(cv.ACCESS_FAST, image, frames);
     if (cv == undefined || image == "") return;
 
     if (canvasEl.current && videoElement.current && templateEl.current) {
@@ -161,7 +162,7 @@ export default function useCVMatch(
 
           // console.log("Best match rate: ", bestDist);
           if (bestDist > opt.threshold) {
-            const result: Result = {
+            const result: CVResult = {
               dist: bestDist,
               x: Math.round(xScale * bestPoint.x),
               y: Math.round(yScale * bestPoint.y),
@@ -207,7 +208,8 @@ export default function useCVMatch(
     }
 
     load();
-  }, []);
+    setFrames(0);
+  }, [image]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -221,7 +223,7 @@ export default function useCVMatch(
     () => () => (
       <div
         style={{
-          display: "flex",
+          display: "none",
           flexDirection: "column",
           alignItems: "center",
         }}
@@ -248,7 +250,7 @@ export default function useCVMatch(
         />
       </div>
     ),
-    []
+    [image]
   );
 
   return [Component, capturing, beginCapture, endCapture, doMatch];

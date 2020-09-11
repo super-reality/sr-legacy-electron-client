@@ -27,7 +27,7 @@ import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step/step";
 import createFindBox from "../../../utils/createFindBox";
-import useCVMatch from "../../../utils/useCVMatch";
+import useCVMatch from "../../hooks/useCVMatch";
 
 interface ViewLessonProps {
   id: string;
@@ -77,9 +77,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, []);
 
   const [CV, isCapturing, startCV, endCv] = useCVMatch(
-    "https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1599330196102.png" ||
-      stepNow?.images[0] ||
-      "",
+    stepNow?.images[0] || "",
     cvShow
   );
 
