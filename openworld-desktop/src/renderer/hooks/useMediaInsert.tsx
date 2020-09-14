@@ -9,7 +9,16 @@ export default function useMediaInsert(
     remote.dialog
       .showOpenDialog(remote.getCurrentWindow(), {
         properties: ["openFile"],
-        filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg"] }],
+        filters: [
+          {
+            name: "Images",
+            extensions: ["bmp", "png", "jpg", "jpeg", "ico", "webm"],
+          },
+          {
+            name: "Any",
+            extensions: ["*"],
+          },
+        ],
       })
       .then((ret: any) => {
         // onFinish(ret.filePaths[0]);
