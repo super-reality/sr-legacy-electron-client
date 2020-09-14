@@ -67,133 +67,137 @@ export default function useCVMatch(
     setCapturing(false);
   }, []);
 
-  const doMatch = useCallback(() => {
-    const win = window as any;
-    const { cv } = win;
-    console.log(cv.ACCESS_FAST ? "CV Ok" : "CV Off", image, frames);
-    if (
-      cv == undefined ||
-      (image == "" && templateEl.current?.currentSrc == "")
-    )
-      return;
+  const doMatch = useCallback(
+    (force: boolean = false) => {
+      const win = window as any;
+      const { cv } = win;
+      console.log(cv.ACCESS_FAST ? "CV Ok" : "CV Off", image, frames);
+      if (
+        cv == undefined ||
+        (image == "" && templateEl.current?.currentSrc == "")
+      )
+        return;
 
-    if (canvasEl.current && videoElement.current && templateEl.current) {
-      try {
-        const src = new cv.Mat(
-          opt.maxCanvasSize,
-          opt.maxCanvasSize,
-          cv.CV_8UC4
-        );
-        const dstC1 = new cv.Mat(
-          opt.maxCanvasSize,
-          opt.maxCanvasSize,
-          cv.CV_8UC1
-        );
-        if (frames !== 0) {
-          // Original to grayscale
-          const vc = new cv.VideoCapture(videoElement.current);
-          vc.read(src);
-          cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
-          cv.cvtColor(dstC1, src, cv.COLOR_GRAY2RGBA);
-
-          // Dest and mask
-          const dst = new cv.Mat(
+      if (canvasEl.current && videoElement.current && templateEl.current) {
+        try {
+          const src = new cv.Mat(
             opt.maxCanvasSize,
             opt.maxCanvasSize,
             cv.CV_8UC4
           );
-          const mask = new cv.Mat();
-
-          // Metrics
-          const xScale = window.screen.width / opt.maxCanvasSize;
-          const yScale = window.screen.height / opt.maxCanvasSize;
-
-          // Template
-          const ogTemplate = cv.imread("templateImage");
-          const tw = ogTemplate.cols / xScale;
-          const th = ogTemplate.rows / yScale;
-          const templ = cvResize(ogTemplate, tw, th);
-
-          // Do match
-          // console.log(src, dst, templ);
-          cv.matchTemplate(src, templ, dst, cv.TM_CCORR_NORMED, mask);
-
-          const newDst: Array<Array<any>> = [];
-          let start = 0;
-          let end = dst.cols;
-
-          let bestDist = 0;
-          let bestPoint = {
-            x: 0,
-            y: 0,
-          };
-
-          for (let i = 0; i < dst.rows; i += 1) {
-            newDst[i] = [];
-            for (let k = 0; k < dst.cols; k += 1) {
-              newDst[i][k] = dst.data32F[start];
-
-              if (newDst[i][k] > bestDist) {
-                bestDist = newDst[i][k];
-                bestPoint = {
-                  x: k,
-                  y: i,
-                };
-              }
-              start += 1;
-            }
-            start = end;
-            end += dst.cols;
-          }
-
-          // Re-scale to draw
-          const point = new cv.Point(
-            bestPoint.x + templ.cols,
-            bestPoint.y + templ.rows
+          const dstC1 = new cv.Mat(
+            opt.maxCanvasSize,
+            opt.maxCanvasSize,
+            cv.CV_8UC1
           );
+          if (force || frames !== 0) {
+            // Original to grayscale
+            const vc = new cv.VideoCapture(videoElement.current);
+            vc.read(src);
+            cv.cvtColor(src, dstC1, cv.COLOR_RGBA2GRAY);
+            cv.cvtColor(dstC1, src, cv.COLOR_GRAY2RGBA);
 
-          // Output
-          const redScalar = new cv.Scalar(255, 0, 0, 255);
-          cv.rectangle(src, bestPoint, point, redScalar, 2, cv.LINE_8, 0);
-          cv.rectangle(
-            src,
-            { x: templ.cols / 2, y: templ.rows / 2 },
-            { x: dst.cols + templ.cols / 2, y: dst.rows + templ.rows / 2 },
-            redScalar,
-            2,
-            cv.LINE_8,
-            0
-          );
+            // Dest and mask
+            const dst = new cv.Mat(
+              opt.maxCanvasSize,
+              opt.maxCanvasSize,
+              cv.CV_8UC4
+            );
+            const mask = new cv.Mat();
 
-          console.log("Best match rate: ", bestDist);
-          const size = Math.sqrt(templ.cols * templ.rows) / opt.thresholdFactor;
-          console.log("Threshold: ", opt.threshold - size);
+            // Metrics
+            const xScale = window.screen.width / opt.maxCanvasSize;
+            const yScale = window.screen.height / opt.maxCanvasSize;
 
-          if (bestDist > opt.threshold - size) {
-            const result: CVResult = {
-              dist: bestDist,
-              sizeFactor: size,
-              x: Math.round(xScale * bestPoint.x),
-              y: Math.round(yScale * bestPoint.y),
-              width: Math.round(templ.cols * xScale),
-              height: Math.round(templ.rows * yScale),
+            // Template
+            const ogTemplate = cv.imread("templateImage");
+            const tw = ogTemplate.cols / xScale;
+            const th = ogTemplate.rows / yScale;
+            const templ = cvResize(ogTemplate, tw, th);
+
+            // Do match
+            // console.log(src, dst, templ);
+            cv.matchTemplate(src, templ, dst, cv.TM_CCORR_NORMED, mask);
+
+            const newDst: Array<Array<any>> = [];
+            let start = 0;
+            let end = dst.cols;
+
+            let bestDist = 0;
+            let bestPoint = {
+              x: 0,
+              y: 0,
             };
-            callback(result);
+
+            for (let i = 0; i < dst.rows; i += 1) {
+              newDst[i] = [];
+              for (let k = 0; k < dst.cols; k += 1) {
+                newDst[i][k] = dst.data32F[start];
+
+                if (newDst[i][k] > bestDist) {
+                  bestDist = newDst[i][k];
+                  bestPoint = {
+                    x: k,
+                    y: i,
+                  };
+                }
+                start += 1;
+              }
+              start = end;
+              end += dst.cols;
+            }
+
+            // Re-scale to draw
+            const point = new cv.Point(
+              bestPoint.x + templ.cols,
+              bestPoint.y + templ.rows
+            );
+
+            // Output
+            const redScalar = new cv.Scalar(255, 0, 0, 255);
+            cv.rectangle(src, bestPoint, point, redScalar, 2, cv.LINE_8, 0);
+            cv.rectangle(
+              src,
+              { x: templ.cols / 2, y: templ.rows / 2 },
+              { x: dst.cols + templ.cols / 2, y: dst.rows + templ.rows / 2 },
+              redScalar,
+              2,
+              cv.LINE_8,
+              0
+            );
+
+            console.log("Best match rate: ", bestDist);
+            const size =
+              Math.sqrt(templ.cols * templ.rows) / opt.thresholdFactor;
+            console.log("Threshold: ", opt.threshold - size);
+
+            if (bestDist > opt.threshold - size) {
+              const result: CVResult = {
+                dist: bestDist,
+                sizeFactor: size,
+                x: Math.round(xScale * bestPoint.x),
+                y: Math.round(yScale * bestPoint.y),
+                width: Math.round(templ.cols * xScale),
+                height: Math.round(templ.rows * yScale),
+              };
+              callback(result);
+            }
+            cv.imshow("canvasOutput", src);
+          } else {
+            // First frame will always be empty
+            cv.imshow("canvasOutput", dstC1);
+            if (!capturing && !force) {
+              setTimeout(() => doMatch(true), 10);
+            }
           }
-          cv.imshow("canvasOutput", src);
-        } else {
-          // First frame will always be empty
-          cv.imshow("canvasOutput", dstC1);
-          if (!capturing) {
-            setTimeout(doMatch, 100);
-          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
+        setFrames(frames + 1);
       }
-      setFrames(frames + 1);
-    }
-  }, [callback, capturing, frames, videoElement, canvasEl, templateEl]);
+    },
+    [callback, capturing, frames, videoElement, canvasEl, templateEl]
+  );
 
   useEffect(() => {
     async function initVideoStream() {
