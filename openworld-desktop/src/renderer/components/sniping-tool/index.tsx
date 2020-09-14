@@ -8,12 +8,9 @@ import "react-image-crop/lib/ReactCrop.scss";
 export default function SnipingTool() {
   // eslint-disable-next-line global-require
   const { app, remote, nativeImage } = require("electron");
-  const fileName = `${(app || remote.app)
-    .getPath("userData")
-    .replace(/\\/g, "/")}/capture.png`;
-  const output = `${(app || remote.app)
-    .getPath("userData")
-    .replace(/\\/g, "/")}/crop.png`;
+  const userData = (app || remote.app).getPath("userData").replace(/\\/g, "/");
+  const fileName = `${userData}/capture.png`;
+  const output = `${userData}/crop.png`;
   const [crop, setCrop] = useState<any>({});
 
   useEffect(() => {
@@ -27,7 +24,7 @@ export default function SnipingTool() {
       width: crop.width,
       height: crop.height,
     });
-    console.log(image);
+    // console.log(image);
     fs.writeFile(output, image.toPNG(), {}, () => {
       remote.getCurrentWindow().close();
     });
@@ -40,14 +37,14 @@ export default function SnipingTool() {
         crop={crop}
         onChange={(newCrop: any) => setCrop(newCrop)}
       />
-      {crop.x !== 0 && crop.y !== 0 && crop.width !== 0 && crop.height != 0 ? (
+      {crop.x + crop.y + crop.width + crop.height !== 0 ? (
         <ButtonSimple
           width="200px"
           height="24px"
           margin="auto"
           style={{
             position: "absolute",
-            bottom: "32px",
+            bottom: "56px",
             left: "calc(50% - 100px)",
             boxShadow: "0 7px 10px 4px #00000052",
           }}
