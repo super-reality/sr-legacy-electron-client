@@ -22,6 +22,7 @@ function cvResize(image: any, w: number, h: number): any {
 
 export interface CVResult {
   dist: number;
+  sizeFactor: number;
   x: number;
   y: number;
   width: number;
@@ -32,12 +33,14 @@ interface Options {
   maxCanvasSize: number;
   interval: number;
   threshold: number;
+  thresholdFactor: number;
 }
 
 const defaultOptions: Options = {
-  maxCanvasSize: 600,
+  maxCanvasSize: 1024,
   interval: 500,
-  threshold: 0.99,
+  threshold: 0.98,
+  thresholdFactor: 6000,
 };
 
 export default function useCVMatch(
@@ -67,8 +70,12 @@ export default function useCVMatch(
   const doMatch = useCallback(() => {
     const win = window as any;
     const { cv } = win;
-    // console.log(cv.ACCESS_FAST, image, frames);
-    if (cv == undefined || image == "") return;
+    console.log(cv.ACCESS_FAST ? "CV Ok" : "CV Off", image, frames);
+    if (
+      cv == undefined ||
+      (image == "" && templateEl.current?.currentSrc == "")
+    )
+      return;
 
     if (canvasEl.current && videoElement.current && templateEl.current) {
       try {
@@ -103,11 +110,9 @@ export default function useCVMatch(
 
           // Template
           const ogTemplate = cv.imread("templateImage");
-          const templ = cvResize(
-            ogTemplate,
-            ogTemplate.cols / xScale,
-            ogTemplate.rows / yScale
-          );
+          const tw = ogTemplate.cols / xScale;
+          const th = ogTemplate.rows / yScale;
+          const templ = cvResize(ogTemplate, tw, th);
 
           // Do match
           // console.log(src, dst, templ);
@@ -160,10 +165,14 @@ export default function useCVMatch(
             0
           );
 
-          // console.log("Best match rate: ", bestDist);
-          if (bestDist > opt.threshold) {
+          console.log("Best match rate: ", bestDist);
+          const size = Math.sqrt(templ.cols * templ.rows) / opt.thresholdFactor;
+          console.log("Threshold: ", opt.threshold - size);
+
+          if (bestDist > opt.threshold - size) {
             const result: CVResult = {
               dist: bestDist,
+              sizeFactor: size,
               x: Math.round(xScale * bestPoint.x),
               y: Math.round(yScale * bestPoint.y),
               width: Math.round(templ.cols * xScale),
@@ -229,7 +238,7 @@ export default function useCVMatch(
         }}
       >
         <video
-          style={{ width: "400px" }}
+          style={{ width: "300px", height: "210px" }}
           className="video"
           playsInline
           ref={videoElement}
@@ -242,7 +251,7 @@ export default function useCVMatch(
           ref={templateEl}
         />
         <canvas
-          style={{ width: "400px", height: "250px" }}
+          style={{ width: "300px", height: "200px" }}
           id="canvasOutput"
           ref={canvasEl}
           width={opt.maxCanvasSize}

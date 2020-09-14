@@ -42,7 +42,7 @@ export default function StepAuthoring(): JSX.Element {
   const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
 
   const cvShow = useCallback((res: CVResult) => {
-    if (res.dist > 0.99) {
+    if (res.dist > 0.98 - res.sizeFactor) {
       createFindBox(res);
     } else {
       cvNotFound();
