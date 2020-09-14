@@ -15,10 +15,12 @@ export function getCurrentFindWindow() {
   return globalData.cvFindWindow;
 }
 
+export type FindBoxResolve = "Focused" | "Cancelled" | "Moved";
+
 export default function createFindBox(
   pos: Position,
   props: any = {}
-): Promise<void> {
+): Promise<FindBoxResolve> {
   const { remote } = require("electron");
 
   if (globalData.cvFindWindow != null) {
@@ -28,7 +30,7 @@ export default function createFindBox(
       x: pos.x - 32,
       y: pos.y - 32,
     });
-    return new Promise<void>((r) => r());
+    return new Promise<"Moved">((r) => r());
   }
   globalData.cvFindWindow = new remote.BrowserWindow({
     width: pos.width + 64,
@@ -58,7 +60,7 @@ export default function createFindBox(
     })
   );
 
-  return new Promise<void>((resolve) => {
+  return new Promise<FindBoxResolve>((resolve) => {
     const checkInterval = setInterval(() => {
       const mouse = remote.screen.getCursorScreenPoint();
       if (
@@ -72,6 +74,7 @@ export default function createFindBox(
           globalData.cvFindWindow = null;
         }
         clearInterval(checkInterval);
+        resolve("Focused");
       }
     }, 100);
 
@@ -80,7 +83,7 @@ export default function createFindBox(
         globalData.cvFindWindow.destroy();
         globalData.cvFindWindow = null;
       }
-      resolve();
+      resolve("Cancelled");
     });
   });
 }

@@ -42,17 +42,20 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 
-  const stepNow = useMemo(() => data?.totalSteps[currentStep], [currentStep]);
+  const stepNow = useMemo(() => data?.totalSteps[currentStep], [
+    data,
+    currentStep,
+  ]);
 
   const doNext = useCallback(() => {
     if (data == undefined || data?.totalSteps.length <= currentStep + 1) return;
     setCurrentStep(currentStep + 1);
-  }, [currentStep]);
+  }, [data, currentStep]);
 
   const doPrev = useCallback(() => {
     if (data == undefined || currentStep - 1 < 0) return;
     setCurrentStep(currentStep - 1);
-  }, [currentStep]);
+  }, [data, currentStep]);
 
   const openStep = useCallback(
     (i: number) => {
@@ -70,7 +73,7 @@ export default function ViewLesson(props: ViewLessonProps) {
       { width: 350, height: 400 },
       { arg: data, type: "LESSON_VIEW" }
     );
-  }, []);
+  }, [data]);
 
   const cvShow = useCallback(
     (res: any) => {
@@ -81,8 +84,10 @@ export default function ViewLesson(props: ViewLessonProps) {
             : 0,
       };
       if (stepNow?.functions[0] !== InitalFnOptions["Computer vision Off"]) {
-        createFindBox(res, findProps).then(() => {
-          doNext();
+        createFindBox(res, findProps).then((findResult) => {
+          if (findResult == "Focused") {
+            doNext();
+          }
         });
       }
     },
@@ -113,12 +118,7 @@ export default function ViewLesson(props: ViewLessonProps) {
         <>
           <CV />
           {isPlaying == true && (
-            <Collapsible
-              outer
-              expanded
-              detach={detached || !isElectron() ? undefined : clickDetach}
-              title="Step"
-            >
+            <Collapsible outer expanded title="Step">
               <ItemInner>
                 <ContainerTopFace>
                   <TeacherBotLesson />
@@ -159,7 +159,11 @@ export default function ViewLesson(props: ViewLessonProps) {
               </ItemInner>
             </Collapsible>
           )}
-          <Collapsible outer title="Lesson Info">
+          <Collapsible
+            detach={detached || !isElectron() ? undefined : clickDetach}
+            outer
+            title="Lesson Info"
+          >
             <LessonActive id={data?._id || id} compact />
             {isPlaying == false && (
               <ButtonSimple
