@@ -184,13 +184,16 @@ export default function useCVMatch(
         } else {
           // First frame will always be empty
           cv.imshow("canvasOutput", dstC1);
+          if (!capturing) {
+            setTimeout(doMatch, 100);
+          }
         }
       } catch (e) {
         console.error(e);
       }
       setFrames(frames + 1);
     }
-  }, [callback, frames, videoElement, canvasEl, templateEl]);
+  }, [callback, capturing, frames, videoElement, canvasEl, templateEl]);
 
   useEffect(() => {
     async function initVideoStream() {
