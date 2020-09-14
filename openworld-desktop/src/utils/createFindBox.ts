@@ -15,7 +15,10 @@ export function getCurrentFindWindow() {
   return globalData.cvFindWindow;
 }
 
-export default function createFindBox(pos: Position): Promise<void> {
+export default function createFindBox(
+  pos: Position,
+  props: any = {}
+): Promise<void> {
   const { remote } = require("electron");
 
   if (globalData.cvFindWindow != null) {
@@ -41,6 +44,7 @@ export default function createFindBox(pos: Position): Promise<void> {
     webPreferences: {
       nodeIntegration: true,
     },
+    ...props,
   });
 
   const proc: any = process;

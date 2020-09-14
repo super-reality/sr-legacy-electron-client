@@ -72,12 +72,27 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, []);
 
-  const cvShow = useCallback((res: any) => {
-    createFindBox(res);
-  }, []);
+  const cvShow = useCallback(
+    (res: any) => {
+      const findProps = {
+        opacity:
+          stepNow?.functions[0] == InitalFnOptions["Computer vision On"]
+            ? 1
+            : 0,
+      };
+      if (stepNow?.functions[0] !== InitalFnOptions["Computer vision Off"]) {
+        createFindBox(res, findProps).then(() => {
+          doNext();
+        });
+      }
+    },
+    [doNext, stepNow]
+  );
 
   const [CV, isCapturing, startCV, endCv] = useCVMatch(
-    stepNow?.images[0] || "",
+    stepNow && stepNow.functions[0] !== InitalFnOptions["Computer vision Off"]
+      ? stepNow.images[0]
+      : "",
     cvShow
   );
 
