@@ -32,7 +32,7 @@ filter_secrets: false
 jobs:
   include:
     - stage: Tests
-      os: Linux
+      os: Windows
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
