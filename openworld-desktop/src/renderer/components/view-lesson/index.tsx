@@ -25,7 +25,7 @@ import useDataGet from "../../hooks/useDataGet";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
-import { InitalFnOptions } from "../../api/types/step/step";
+import { InitalFnOptions, NextStepOptions } from "../../api/types/step/step";
 import createFindBox from "../../../utils/createFindBox";
 import useCVMatch from "../../hooks/useCVMatch";
 
@@ -77,7 +77,12 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const cvShow = useCallback(
     (res: any) => {
+      if (stepNow?.next == NextStepOptions["On Target Detected"]) {
+        doNext();
+        return;
+      }
       const findProps = {
+        closeOnClick: stepNow?.next == NextStepOptions["On Target Clicked"],
         opacity:
           stepNow?.functions[0] == InitalFnOptions["Computer vision On"]
             ? 1
@@ -85,7 +90,7 @@ export default function ViewLesson(props: ViewLessonProps) {
       };
       if (stepNow?.functions[0] !== InitalFnOptions["Computer vision Off"]) {
         createFindBox(res, findProps).then((findResult) => {
-          if (findResult == "Focused") {
+          if (findResult == "Focused" || findResult == "Clicked") {
             doNext();
           }
         });
