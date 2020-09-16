@@ -3,6 +3,14 @@ module.exports = {
   webpack: {
     configure: {
       target: "electron-renderer",
+      module: {
+        rules: [
+          {
+            test: /\.node$/,
+            use: "native-addon-loader",
+          },
+        ],
+      },
     },
   },
   jest: {

@@ -153,6 +153,7 @@
     "jest": "24.9.0",
     "jest-image-snapshot": "^4.1.0",
     "jest-puppeteer": "^4.4.0",
+    "native-addon-loader": "^2.0.1",
     "prettier": "^2.0.5",
     "puppeteer": "^5.2.1",
     "react-test-renderer": "^16.13.1"
