@@ -76,6 +76,7 @@ module.exports = Object.freeze({
     Press_Next_Step_Button: 1,
     On_Highlight_Clicked: 2,
     On_Text_Reading_Finished: 3,
+    On_Target_Detected: 4,
   },
   Lesson_Sort: {
     Newest: 1,

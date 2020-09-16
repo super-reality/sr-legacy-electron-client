@@ -238,7 +238,7 @@ export default function StepAuthoring(): JSX.Element {
           title="Next Step"
           current={stepData.next}
           options={Object.values(NextStepOptions)}
-          optionFormatter={constantFormat(TriggerOptions)}
+          optionFormatter={constantFormat(NextStepOptions)}
           callback={setCVNextStep}
         />
         <Flex column>

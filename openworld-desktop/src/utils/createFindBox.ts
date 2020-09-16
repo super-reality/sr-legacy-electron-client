@@ -1,8 +1,10 @@
 /* eslint-disable global-require */
 import path from "path";
 import url from "url";
-import jsonRpcRemote from "./jsonRpcSend";
 import globalData from "../renderer/globalData";
+
+// eslint-disable-next-line no-undef
+const mouseEvents = __non_webpack_require__("global-mouse-events");
 
 interface Position {
   x: number;
@@ -15,7 +17,7 @@ export function getCurrentFindWindow() {
   return globalData.cvFindWindow;
 }
 
-export type FindBoxResolve = "Focused" | "Cancelled" | "Moved";
+export type FindBoxResolve = "Clicked" | "Focused" | "Cancelled" | "Moved";
 
 export default function createFindBox(
   pos: Position,
@@ -48,6 +50,8 @@ export default function createFindBox(
     },
     ...props,
   });
+  globalData.cvFindWindow.setIgnoreMouseEvents(true);
+  globalData.cvFindWindow.setFocusable(false);
 
   const proc: any = process;
   globalData.cvFindWindow.loadURL(
@@ -67,7 +71,8 @@ export default function createFindBox(
         mouse.x > pos.x &&
         mouse.y > pos.y &&
         mouse.x < pos.x + pos.width &&
-        mouse.y < pos.y + pos.height
+        mouse.y < pos.y + pos.height &&
+        !props.closeOnClick
       ) {
         if (globalData.cvFindWindow != null) {
           globalData.cvFindWindow.close();
@@ -77,6 +82,27 @@ export default function createFindBox(
         resolve("Focused");
       }
     }, 100);
+
+    if (props.closeOnClick) {
+      mouseEvents.on(
+        "mousedown",
+        (e: { x: number; y: number; button: number }) => {
+          // console.log(e); // { x: 2962, y: 483, button: 1 }
+          if (
+            e.x > pos.x &&
+            e.y > pos.y &&
+            e.x < pos.x + pos.width &&
+            e.y < pos.y + pos.height
+          ) {
+            if (globalData.cvFindWindow != null) {
+              globalData.cvFindWindow.close();
+              globalData.cvFindWindow = null;
+            }
+            resolve("Clicked");
+          }
+        }
+      );
+    }
 
     globalData.cvFindWindow.on("closed", () => {
       if (globalData.cvFindWindow != null) {

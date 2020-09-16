@@ -8,7 +8,8 @@ import React, {
 import _ from "lodash";
 import { captureDesktopStream } from "../../utils/capture";
 import * as cv from "../opencv";
-import createFindBox from "../../utils/createFindBox";
+
+const debugCv = false;
 
 function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
   const img = document.getElementById(id) as HTMLImageElement;
@@ -19,7 +20,7 @@ function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
   canvas.height = h;
   // console.log(w, h);
   const ctx = canvas.getContext("2d");
-  if (ctx) {
+  if (ctx && w !== 0 && h !== 0) {
     ctx.drawImage(img, 0, 0);
     const buff = ctx.getImageData(0, 0, w, h).data;
     const mat = new cv.Mat(Buffer.from(buff), h, w, cv.CV_8UC4);
@@ -27,26 +28,6 @@ function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
     return mat.resize(Math.round(h / yScale), Math.round(w / xScale));
   }
   return new cv.Mat();
-}
-
-function canvasToMat(
-  canvas: HTMLCanvasElement,
-  w?: number,
-  h?: number
-): cv.Mat | undefined {
-  const ctx = canvas.getContext("2d");
-  if (ctx) {
-    const buffer = Buffer.from(
-      ctx.getImageData(0, 0, w || canvas.width, h || canvas.height).data
-    );
-    return new cv.Mat(
-      buffer,
-      w || canvas.width,
-      h || canvas.height,
-      cv.CV_8UC4
-    );
-  }
-  return undefined;
 }
 
 function matToCanvas(mat: cv.Mat, id: string): void {
@@ -88,14 +69,12 @@ interface Options {
   maxCanvasSize: number;
   interval: number;
   threshold: number;
-  thresholdFactor: number;
 }
 
 const defaultOptions: Options = {
-  maxCanvasSize: 1024,
-  interval: 500,
-  threshold: 0.98,
-  thresholdFactor: 6000,
+  maxCanvasSize: 1200,
+  interval: 100,
+  threshold: 0.993,
 };
 
 export default function useCVMatch(
@@ -124,10 +103,14 @@ export default function useCVMatch(
 
   const doMatch = useCallback(
     (force: boolean = false) => {
-      console.log(cv ? "CV Ok" : "CV Error", image, frames);
+      if (debugCv) {
+        // console.log(cv ? "CV Ok" : "CV Error", image, frames);
+      }
       if (
         cv == undefined ||
-        (image == "" && templateEl.current?.currentSrc == "")
+        (image == "" && templateEl.current?.currentSrc == "") ||
+        videoElement.current?.videoWidth == 0 ||
+        videoElement.current?.videoHeight == 0
       )
         return;
 
@@ -179,7 +162,6 @@ export default function useCVMatch(
             new cv.Mat()
           );
 
-          // result.normalize(0, 1, cv.NORM_MINMAX, -1, new cv.Mat());
           const minMax = result.minMaxLoc();
 
           const bestPoint = minMax.maxLoc;
@@ -195,6 +177,7 @@ export default function useCVMatch(
           );
 
           if (bestDist > opt.threshold) {
+            console.log(`Distance: ${bestDist}`);
             const ret: CVResult = {
               dist: bestDist,
               sizeFactor: 0,
@@ -204,14 +187,15 @@ export default function useCVMatch(
               height: Math.round(templateMat.rows * yScale),
             };
             callback(ret);
-          } else {
+          } else if (debugCv) {
             console.log(`not found: ${bestDist}`);
           }
 
-          // matToCanvas(srcMat, "canvasOutput");
+          if (debugCv) {
+            matToCanvas(srcMat, "canvasOutput");
+          }
         } else if (!capturing && !force) {
           setTimeout(() => doMatch(true), 10);
-          // matToCanvas(srcMat, "canvasOutput");
         }
       } else {
         console.error(canvas, ctx, videoElement.current);
@@ -261,7 +245,7 @@ export default function useCVMatch(
     () => () => (
       <div
         style={{
-          display: "none",
+          display: debugCv ? "flex" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}
