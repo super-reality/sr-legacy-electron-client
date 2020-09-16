@@ -122,6 +122,9 @@
       "last 1 safari version"
     ]
   },
+  "opencv4nodejs": {
+    "opencvIncludeDir": "node_modules/opencv-build/opencv/build/include/opencv2"
+  },
   "devDependencies": {
     "@types/expect-puppeteer": "^4.4.3",
     "@types/howler": "^2.2.1",
