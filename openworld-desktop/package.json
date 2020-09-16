@@ -79,7 +79,10 @@
     "win": {
       "target": "NSIS",
       "icon": "public/favicon.ico",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}.${ext}",
+      "extraFiles": {
+        "from": "node_modules/opencv-build/opencv/build/x64/vc15/bin"
+      }
     },
     "mac": {
       "target": "pkg",
