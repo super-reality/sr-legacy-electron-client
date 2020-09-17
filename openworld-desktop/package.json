@@ -124,7 +124,7 @@
     ]
   },
   "opencv4nodejs": {
-    "opencvIncludeDir": "node_modules/opencv-build/opencv/build/include"
+    "opencvIncludeDir": "C:/Users/travis/build/openverse/OpenWorld/openworld-desktop/node_modules/opencv-build/opencv/build/include"
   },
   "devDependencies": {
     "@types/expect-puppeteer": "^4.4.3",
