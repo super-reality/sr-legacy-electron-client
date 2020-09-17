@@ -28,82 +28,106 @@ export default function usePopupImageSource(
   const openDisk = useMediaInsert(call);
   const openSniper = useMediaSniper(call);
 
+  const [WaitingPopup, doWait, closeWait] = usePopup(false);
+
+  const unregister = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    remote.globalShortcut.unregister("Shift+C");
+    doWait();
+  }, []);
+
+  const doWaitStart = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    remote.globalShortcut.register("Shift+C", () => {
+      openSniper();
+      unregister();
+    });
+    doWait();
+  }, [doWait]);
+
   const Element = (
-    <Popup width="300px" height="auto">
-      <div className="popup-regular-title">Choose an image source</div>
-      {mode == "Buttons" ? (
-        <>
-          {disk ? (
+    <>
+      <WaitingPopup width="300px" height="auto">
+        <div className="popup-title">Press Shift + C to capture the screen</div>
+      </WaitingPopup>
+      <Popup width="300px" height="auto">
+        <div className="popup-regular-title">Choose an image source</div>
+        {mode == "Buttons" ? (
+          <>
+            {disk ? (
+              <ButtonSimple
+                margin="8px auto"
+                width="140px"
+                height="16px"
+                onClick={() => {
+                  openDisk();
+                  close();
+                }}
+              >
+                From disk
+              </ButtonSimple>
+            ) : (
+              <></>
+            )}
+            {snip && isElectron() ? (
+              <ButtonSimple
+                margin="8px auto"
+                width="140px"
+                height="16px"
+                onClick={() => {
+                  doWaitStart();
+                  close();
+                }}
+              >
+                Screen area
+              </ButtonSimple>
+            ) : (
+              <></>
+            )}
+            {url ? (
+              <ButtonSimple
+                margin="8px auto"
+                width="140px"
+                height="16px"
+                onClick={() => {
+                  setMode("Input");
+                }}
+              >
+                URL
+              </ButtonSimple>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <React.Fragment key="popup-fragment">
+            <input
+              autoFocus
+              style={{ margin: "8px" }}
+              placeholder="Input media URL"
+              onKeyDown={onChange}
+              onChange={onChange}
+              value={value}
+            />
             <ButtonSimple
               margin="8px auto"
               width="140px"
               height="16px"
               onClick={() => {
-                openDisk();
-                close();
+                if (value !== "") {
+                  call(value);
+                  close();
+                }
               }}
             >
-              From disk
+              Ok
             </ButtonSimple>
-          ) : (
-            <></>
-          )}
-          {snip && isElectron() ? (
-            <ButtonSimple
-              margin="8px auto"
-              width="140px"
-              height="16px"
-              onClick={() => {
-                openSniper();
-                close();
-              }}
-            >
-              Screen area
-            </ButtonSimple>
-          ) : (
-            <></>
-          )}
-          {url ? (
-            <ButtonSimple
-              margin="8px auto"
-              width="140px"
-              height="16px"
-              onClick={() => {
-                setMode("Input");
-              }}
-            >
-              URL
-            </ButtonSimple>
-          ) : (
-            <></>
-          )}
-        </>
-      ) : (
-        <React.Fragment key="popup-fragment">
-          <input
-            autoFocus
-            style={{ margin: "8px" }}
-            placeholder="Input media URL"
-            onKeyDown={onChange}
-            onChange={onChange}
-            value={value}
-          />
-          <ButtonSimple
-            margin="8px auto"
-            width="140px"
-            height="16px"
-            onClick={() => {
-              if (value !== "") {
-                call(value);
-                close();
-              }
-            }}
-          >
-            Ok
-          </ButtonSimple>
-        </React.Fragment>
-      )}
-    </Popup>
+          </React.Fragment>
+        )}
+      </Popup>
+    </>
   );
 
   return [Element, doOpen];
