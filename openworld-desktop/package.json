@@ -51,7 +51,7 @@
     "wait-on": "^5.1.0"
   },
   "engines": {
-    "node": "13.2.0",
+    "node": "12.14.0",
     "npm": ">=6.0.0"
   },
   "scripts": {
@@ -73,7 +73,7 @@
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
     "build": "npm run electron-rebuild && npm run react-build && npm run electron-build",
-    "electron-rebuild": "electron-rebuild -w opencv4nodejs-prebuilt"
+    "electron-rebuild": "electron-rebuild"
   },
   "build": {
     "appId": "com.openworld.desktop",
