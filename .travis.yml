@@ -19,6 +19,7 @@ before_script:
   - export DISPLAY=:99.0
 
 before_install:
+  - export "PATH=C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv-build\opencv\build\include:C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv\build\x64\vc15\bin:$PATH"
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 env:
