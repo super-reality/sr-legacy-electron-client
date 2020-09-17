@@ -23,6 +23,7 @@ before_install:
 
 env:
   global:
+  - OPENCV_INCLUDE_DIR=C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv-build\opencv\build\include
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 cache: npm
