@@ -4,21 +4,17 @@ services:
   - docker
 
 node_js:
-  - '14'
+  - '13.2.0'
 
 addons:
   hostname: localhost
 
 env:
   global:
-  - OPENCV_INCLUDE_DIR=/c/Users/travis/build/openverse/OpenWorld/openworld-desktop/node_modules/opencv-build/opencv/build/include
-  - OPENCV_BIN_DIR=/c/Users/travis/build/openverse/OpenWorld/openworld-desktop/node_modules/opencv-build/opencv/build/x64/vc15/bin
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 cache: npm
 
-before_install:
-  - export "PATH=/c/Users/travis/build/openverse/OpenWorld/openworld-desktop/node_modules/opencv-build/opencv/build/include:%OPENCV_BIN_DIR%:$PATH"
 
 filter_secrets: false
 

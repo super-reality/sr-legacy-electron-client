@@ -49,7 +49,7 @@ export default function StepAuthoring(): JSX.Element {
       cvNotFound();
     }
   }, []);
-  
+
   useEffect(() => {
     return () => {
       closeFindBox();
