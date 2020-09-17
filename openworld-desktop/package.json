@@ -50,6 +50,7 @@
   },
   "scripts": {
     "pre:constants": "copyfiles -u 3 \"../openworld-server/config/constant.js\" src/renderer/api && eslint src/renderer/api/constant.js --fix",
+    "copy-bindings": "copyfiles \"binding.gyp\" \"node_modules/opencv4nodejs\"",
     "start": "npm run pre:constants && nf start -p 3000",
     "react-start": "craco start",
     "react-build": "craco build",

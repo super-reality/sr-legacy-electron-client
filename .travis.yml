@@ -43,6 +43,7 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
+        - npm copy-bindings
         - npm run build:web
         - npm run build
         - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
