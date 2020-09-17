@@ -3,9 +3,6 @@ import path from "path";
 import url from "url";
 import globalData from "../renderer/globalData";
 
-// eslint-disable-next-line no-undef
-const mouseEvents = __non_webpack_require__("global-mouse-events");
-
 interface Position {
   x: number;
   y: number;
@@ -23,6 +20,8 @@ export default function createFindBox(
   pos: Position,
   props: any = {}
 ): Promise<FindBoxResolve> {
+  // eslint-disable-next-line no-undef
+  const mouseEvents = __non_webpack_require__("global-mouse-events");
   const { remote } = require("electron");
 
   if (globalData.cvFindWindow != null) {
