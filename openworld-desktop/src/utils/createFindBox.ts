@@ -2,6 +2,7 @@
 import path from "path";
 import url from "url";
 import globalData from "../renderer/globalData";
+import closeFindBox from "./closeFindBox";
 
 interface Position {
   x: number;
@@ -73,10 +74,7 @@ export default function createFindBox(
         mouse.y < pos.y + pos.height &&
         !props.closeOnClick
       ) {
-        if (globalData.cvFindWindow != null) {
-          globalData.cvFindWindow.close();
-          globalData.cvFindWindow = null;
-        }
+        closeFindBox();
         clearInterval(checkInterval);
         resolve("Focused");
       }
@@ -93,10 +91,7 @@ export default function createFindBox(
             e.x < pos.x + pos.width &&
             e.y < pos.y + pos.height
           ) {
-            if (globalData.cvFindWindow != null) {
-              globalData.cvFindWindow.close();
-              globalData.cvFindWindow = null;
-            }
+            closeFindBox();
             resolve("Clicked");
           }
         }
@@ -104,10 +99,7 @@ export default function createFindBox(
     }
 
     globalData.cvFindWindow.on("closed", () => {
-      if (globalData.cvFindWindow != null) {
-        globalData.cvFindWindow.destroy();
-        globalData.cvFindWindow = null;
-      }
+      closeFindBox();
       resolve("Cancelled");
     });
   });

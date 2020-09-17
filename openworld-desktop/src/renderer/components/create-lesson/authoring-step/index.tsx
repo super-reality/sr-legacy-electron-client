@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import "./index.scss";
 import "../../containers.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +23,7 @@ import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
 import createFindBox from "../../../../utils/createFindBox";
 import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
+import closeFindBox from "../../../../utils/closeFindBox";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -47,6 +48,12 @@ export default function StepAuthoring(): JSX.Element {
     } else {
       cvNotFound();
     }
+  }, []);
+  
+  useEffect(() => {
+    return () => {
+      closeFindBox();
+    };
   }, []);
 
   const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(

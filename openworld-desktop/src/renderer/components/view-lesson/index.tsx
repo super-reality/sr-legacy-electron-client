@@ -28,6 +28,7 @@ import Flex from "../flex";
 import { InitalFnOptions, NextStepOptions } from "../../api/types/step/step";
 import createFindBox from "../../../utils/createFindBox";
 import useCVMatch from "../../hooks/useCVMatch";
+import closeFindBox from "../../../utils/closeFindBox";
 
 interface ViewLessonProps {
   id: string;
@@ -108,6 +109,7 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   useEffect(() => {
     return () => {
+      closeFindBox();
       endCv();
     };
   }, []);
