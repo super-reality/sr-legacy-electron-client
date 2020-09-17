@@ -10,11 +10,11 @@ addons:
   hostname: localhost
 
 before_install:
-  - export "PATH=C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv-build\opencv\build\include:C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv-build\opencv\build\include\opencv2:C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv\build\x64\vc15\bin:$PATH"
+  - export "PATH=C:\\Users\\travis\\build\\openverse\\OpenWorld\\openworld-desktop\\node_modules\\opencv-build\\opencv\\build\\include:C:\\Users\\travis\\build\\openverse\\OpenWorld\\openworld-desktop\\node_modules\\opencv-build\\opencv\\build\\include\\opencv2:C:\\Users\\travis\\build\\openverse\\OpenWorld\\openworld-desktop\\node_modules\\opencv\\build\\x64\\vc15\\bin:$PATH"
 
 env:
   global:
-  - OPENCV_INCLUDE_DIR=C:\Users\travis\build\openverse\OpenWorld\openworld-desktop\node_modules\opencv-build\opencv\build\include
+  - OPENCV_INCLUDE_DIR=C:\\Users\\travis\\build\\openverse\\OpenWorld\\openworld-desktop\\node_modules\\opencv-build\\opencv\\build\\include
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 cache: npm

@@ -125,7 +125,7 @@
     ]
   },
   "opencv4nodejs": {
-    "opencvIncludeDir": "../opencv-build/opencv/build/include"
+    "opencvIncludeDir": "..\\opencv-build\\opencv\\build\\include"
   },
   "devDependencies": {
     "@types/expect-puppeteer": "^4.4.3",
