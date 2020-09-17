@@ -6,6 +6,7 @@
                 ],
                 "include_dirs": [
                     "C:\\Users\\travis\\build\\openverse\\OpenWorld\\openworld-desktop\\node_modules\\opencv-build\\opencv\\build\\include",
+                    "../opencv-build/opencv/build/include",
                     "<!@(node .\\install/parseEnv.js OPENCV4NODEJS_INCLUDES)",
                     "cc",
                     "cc/core",
