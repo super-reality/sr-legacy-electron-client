@@ -19,6 +19,7 @@ addons:
   artifacts:
     s3_region: "us-west-1"
     debug: true
+    working_dir: openworld-desktop/dist
     paths:
       - "$(ls $TRAVIS_BUILD_DIR/openworld-desktop/dist/)"
 
