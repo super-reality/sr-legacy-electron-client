@@ -3,11 +3,12 @@ import path from "path";
 import Axios from "axios";
 import getFileExt from "../getFileExt";
 import getFileSha1 from "../getFileSha1";
-import uploadFileToS3 from "../uploadFileToS3";
 import SignIn from "../../renderer/api/types/auth/signin";
 import { API_URL } from "../../renderer/constants";
 import { ApiError } from "../../renderer/api/types";
 import handleAuthError from "../../renderer/api/handleAuthError";
+import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
+import constantFormat from "../constantFormat";
 
 jest.setTimeout(30000);
 
@@ -21,6 +22,22 @@ test("Can get a file extension", () => {
 
 test("Can get a file sha1 hash", () => {
   expect(getFileSha1(file)).toBe("7b9d27774fa36de33529ff6b2487cef0bee6d75a");
+});
+
+test("Formtas constants", () => {
+  expect(constantFormat(DifficultyOptions)(DifficultyOptions.Intro)).toBe(
+    "Intro"
+  );
+  expect(
+    constantFormat(DifficultyOptions)(DifficultyOptions.Intermediate)
+  ).toBe("Intermediate");
+  expect(constantFormat(DifficultyOptions)(DifficultyOptions.Beginner)).toBe(
+    "Beginner"
+  );
+  expect(constantFormat(DifficultyOptions)(DifficultyOptions.Advanced)).toBe(
+    "Advanced"
+  );
+  expect(constantFormat(DifficultyOptions)(10)).toBe(undefined);
 });
 
 test("Can log in", async (done) => {

@@ -65,6 +65,7 @@
     "jest-server": "http-server ./build -p 3000",
     "jest:watch": "craco test --env=jsdom",
     "jest:ci": "craco test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
+    "jest:ci:watch": "craco test --env=jsdom --testPathIgnorePatterns \"src/__tests__/\"",
     "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
     "test:all": "npm run pre:constants && npm run test:eslint && npm run jest:ci",
     "eject": "react-scripts eject",
