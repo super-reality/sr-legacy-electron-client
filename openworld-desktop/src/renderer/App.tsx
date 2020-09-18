@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect } from "react";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
-import { useTransition, animated } from "react-spring";
 import Test from "./views/test";
-import Auth from "./views/auth";
 import Discover from "./views/discover";
 import Learn from "./views/learn";
-import Teach from "./views/teach";
 import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
