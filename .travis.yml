@@ -12,7 +12,6 @@ env:
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 cache: npm
 
-
 filter_secrets: false
 
 addons:
@@ -21,7 +20,7 @@ addons:
     s3_region: "us-west-1"
     debug: true
     paths:
-      - $(ls /Users/travis/build/openverse/OpenWorld/openworld-desktop/dist/*.exe | tr "\n" ":")
+      - $(ls /c/Users/travis/build/openverse/OpenWorld/openworld-desktop/dist/*.exe | tr "\n" ":")
     target_paths:
       - /$TRAVIS_BRANCH/$TRAVIS_OS_NAME
 
