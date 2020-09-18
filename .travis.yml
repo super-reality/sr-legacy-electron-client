@@ -21,7 +21,7 @@ addons:
     s3_region: "us-west-1"
     debug: true
     paths:
-      - $(ls ./openworld-desktop/dist/*.exe | tr "\n" ":")
+      - $(ls openworld-desktop/dist/*.exe | tr "\n" ":")
 
 jobs:
   include:
@@ -33,5 +33,6 @@ jobs:
         - npm install
         - npm run build:web
         - npm run build
+        - 
         - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
 
