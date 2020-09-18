@@ -74,7 +74,7 @@ interface Options {
 const defaultOptions: Options = {
   maxCanvasSize: 800,
   interval: 50,
-  threshold: 0.993,
+  threshold: 0.97,
 };
 
 export default function useCVMatch(
