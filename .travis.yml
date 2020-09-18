@@ -19,11 +19,8 @@ addons:
   artifacts:
     s3_region: "us-west-1"
     debug: true
-    working_dir: openworld-desktop/dist
     paths:
-      - $(ls *.exe | tr "\n" ":")
-    target_paths:
-      - /$TRAVIS_BRANCH/$TRAVIS_OS_NAME
+      - $(ls C:/Users/travis/build/openverse/OpenWorld/openworld-desktop/dist/*.exe | tr "\n" ":")
 
 jobs:
   include:
