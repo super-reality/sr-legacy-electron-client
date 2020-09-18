@@ -57,11 +57,13 @@ export default function StepAuthoring(): JSX.Element {
     };
   }, []);
 
-  const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
-    stepData.images[0] || "",
-    cvShow,
-    { threshold: 0 }
-  );
+  const [
+    CV,
+    isCapturing,
+    startCV,
+    endCV,
+    singleCV,
+  ] = useCVMatch(stepData.images || [""], cvShow, { threshold: 0 });
 
   const doTest = useCallback(() => {
     // play audio too

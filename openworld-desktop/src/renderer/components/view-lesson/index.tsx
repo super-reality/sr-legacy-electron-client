@@ -102,8 +102,8 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const [CV, isCapturing, startCV, endCv] = useCVMatch(
     stepNow && stepNow.functions[0] !== InitalFnOptions["Computer vision Off"]
-      ? stepNow.images[0]
-      : "",
+      ? stepNow.images
+      : [""],
     cvShow
   );
 

@@ -78,7 +78,7 @@ const defaultOptions: Options = {
 };
 
 export default function useCVMatch(
-  image: string,
+  images: string[],
   callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
@@ -108,7 +108,7 @@ export default function useCVMatch(
       }
       if (
         cv == undefined ||
-        (image == "" && templateEl.current?.currentSrc == "") ||
+        (images[0] == "" && templateEl.current?.currentSrc == "") ||
         videoElement.current?.videoWidth == 0 ||
         videoElement.current?.videoHeight == 0
       )
@@ -143,48 +143,63 @@ export default function useCVMatch(
 
         const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
         let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
-        // srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
+        srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
         srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
 
         if (srcMat) {
           // Template
-          const templateMat = getTemplateMat(
-            "templateImage",
-            xScale,
-            yScale
-          ).cvtColor(cv.COLOR_RGBA2GRAY);
+          const templateMats = images.map((image, index) =>
+            getTemplateMat(`templateImage-${index}`, xScale, yScale).cvtColor(
+              cv.COLOR_RGBA2GRAY
+            )
+          );
 
           // console.log(templateMat);
           // Do match
-          const result = srcMat.matchTemplate(
-            templateMat,
-            cv.TM_CCORR_NORMED,
-            new cv.Mat()
-          );
+          let bestPoint = { x: 0, y: 0 };
+          let bestDist = 0;
+          let bestIndex = 0;
 
-          const minMax = result.minMaxLoc();
+          const results = images.map((image, index) => {
+            const result = srcMat.matchTemplate(
+              templateMats[index],
+              cv.TM_CCORR_NORMED,
+              new cv.Mat()
+            );
 
-          const bestPoint = minMax.maxLoc;
-          const bestDist = minMax.maxVal;
-          srcMat.drawRectangle(
-            minMax.maxLoc,
-            new cv.Point2(
-              bestPoint.x + templateMat.cols,
-              bestPoint.y + templateMat.rows
-            ),
-            new cv.Vec3(0, 255, 0),
-            5
-          );
+            const minMax = result.minMaxLoc();
+
+            const point = minMax.maxLoc;
+            const dist = minMax.maxVal;
+            if (dist > bestDist) {
+              bestPoint = point;
+              bestDist = dist;
+              bestIndex = index;
+            }
+            srcMat.drawRectangle(
+              minMax.maxLoc,
+              new cv.Point2(
+                point.x + templateMats[index].cols,
+                point.y + templateMats[index].rows
+              ),
+              new cv.Vec3(0, 255, 0),
+              5
+            );
+
+            return result;
+          });
 
           if (bestDist > opt.threshold) {
-            console.log(`Distance: ${bestDist}`);
+            console.log(
+              `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
+            );
             const ret: CVResult = {
               dist: bestDist,
               sizeFactor: 0,
               x: Math.round(xScale * bestPoint.x),
               y: Math.round(yScale * bestPoint.y),
-              width: Math.round(templateMat.cols * xScale),
-              height: Math.round(templateMat.rows * yScale),
+              width: Math.round(templateMats[bestIndex].cols * xScale),
+              height: Math.round(templateMats[bestIndex].rows * yScale),
             };
             callback(ret);
           } else if (debugCv) {
@@ -231,7 +246,7 @@ export default function useCVMatch(
 
     load();
     setFrames(0);
-  }, [image]);
+  }, [images]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -256,13 +271,17 @@ export default function useCVMatch(
           playsInline
           ref={videoElement}
         />
-        <img
-          style={{ display: "block" }}
-          id="templateImage"
-          src={image}
-          crossOrigin="anonymous"
-          ref={templateEl}
-        />
+        {images.map((image, index) => (
+          <img
+            // eslint-disable-next-line react/no-array-index-key
+            key={`${image}-${index}`}
+            style={{ display: "block" }}
+            id={`templateImage-${index}`}
+            src={image}
+            crossOrigin="anonymous"
+            ref={templateEl}
+          />
+        ))}
         <canvas
           style={{ width: "300px" }}
           id="canvasOutput"
@@ -272,7 +291,7 @@ export default function useCVMatch(
         />
       </div>
     ),
-    [image]
+    [images]
   );
 
   return [Component, capturing, beginCapture, endCapture, doMatch];
