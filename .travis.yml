@@ -6,9 +6,6 @@ services:
 node_js:
   - '12.14.0'
 
-addons:
-  hostname: localhost
-
 env:
   global:
   - ELECTRON_CACHE=$HOME/.cache/electron
@@ -19,11 +16,12 @@ cache: npm
 filter_secrets: false
 
 addons:
+  hostname: localhost
   artifacts:
     s3_region: "us-west-1"
     debug: true
     paths:
-      - ./dist/*.exe
+      - ./openworld-desktop/dist/*.exe
 
 jobs:
   include:
