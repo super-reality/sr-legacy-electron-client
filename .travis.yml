@@ -21,7 +21,7 @@ addons:
     debug: true
     working_dir: openworld-desktop/dist
     paths:
-      - $(ls :*.* | tr "\n" ":")
+      - $(ls *.exe | tr "\n" ":")
     target_paths:
       - /$TRAVIS_BRANCH/$TRAVIS_OS_NAME
 
