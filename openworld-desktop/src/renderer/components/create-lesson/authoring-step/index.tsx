@@ -27,6 +27,7 @@ import closeFindBox from "../../../../utils/closeFindBox";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
+  const { cvThreshold } = useSelector((state: AppState) => state.settings);
   const stepData = useSelector((state: AppState) => state.createStep);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [thresholdFound, setThreshold] = useState<number>(0);
@@ -46,7 +47,7 @@ export default function StepAuthoring(): JSX.Element {
   const cvShow = useCallback((res: CVResult) => {
     setThreshold(res.dist);
     createFindBox(res);
-    if (res.dist < 0.97) {
+    if (res.dist < cvThreshold / 1000) {
       cvNotFound();
     }
   }, []);
@@ -63,7 +64,7 @@ export default function StepAuthoring(): JSX.Element {
     startCV,
     endCV,
     singleCV,
-  ] = useCVMatch(stepData.images || [""], cvShow, { threshold: 0 });
+  ] = useCVMatch(stepData.images || [""], cvShow, { cvThreshold: 0 });
 
   const doTest = useCallback(() => {
     // play audio too
@@ -162,7 +163,7 @@ export default function StepAuthoring(): JSX.Element {
           <div className="line">
             Distance: {Math.round(thresholdFound * 1000) / 1000}
           </div>
-          <div className="line">Threshold: &gt; 0.970</div>
+          <div className="line">{`Threshold: > ${cvThreshold / 1000}`}</div>
           <ButtonSimple className="button" onClick={closeCvNotFound}>
             Ok
           </ButtonSimple>

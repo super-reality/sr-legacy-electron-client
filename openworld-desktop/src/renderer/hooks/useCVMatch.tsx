@@ -6,8 +6,9 @@ import React, {
   useMemo,
 } from "react";
 import _ from "lodash";
-import { captureDesktopStream } from "../../utils/capture";
+import { useSelector } from "react-redux";
 import * as cv from "../opencv";
+import { AppState } from "../redux/stores/renderer";
 
 const debugCv = false;
 
@@ -66,30 +67,34 @@ export interface CVResult {
 }
 
 interface Options {
-  maxCanvasSize: number;
-  interval: number;
-  threshold: number;
+  cvThreshold: number;
+  cvCanvas: number;
+  cvDelay: number;
 }
-
-const defaultOptions: Options = {
-  maxCanvasSize: 800,
-  interval: 50,
-  threshold: 0.97,
-};
 
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
+  const { cvThreshold, cvCanvas, cvDelay } = useSelector(
+    (state: AppState) => state.settings
+  );
   const [capturing, setCapturing] = useState<boolean>(false);
-  const videoElement = useRef<HTMLVideoElement | null>(null);
-  const canvasEl = useRef<HTMLCanvasElement | null>(null);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
 
+  const videoElement = document.getElementById(
+    "videoOutput"
+  ) as HTMLVideoElement | null;
+  const canvasElement = document.getElementById(
+    "canvasOutput"
+  ) as HTMLCanvasElement | null;
+
   const opt = {
-    ...defaultOptions,
+    cvThreshold,
+    cvCanvas,
+    cvDelay,
     ...options,
   };
 
@@ -109,8 +114,8 @@ export default function useCVMatch(
       if (
         cv == undefined ||
         (images[0] == "" && templateEl.current?.currentSrc == "") ||
-        videoElement.current?.videoWidth == 0 ||
-        videoElement.current?.videoHeight == 0
+        videoElement?.videoWidth == 0 ||
+        videoElement?.videoHeight == 0
       )
         return;
 
@@ -119,27 +124,24 @@ export default function useCVMatch(
         "canvasOutput"
       ) as HTMLCanvasElement;
       const ctx = canvas.getContext("2d");
-      if (canvas && ctx && videoElement.current) {
+      if (canvas && ctx && videoElement) {
         // Convert video size to scaled down canvas size
-        const min = Math.max(
-          videoElement.current.videoWidth,
-          videoElement.current.videoHeight
-        );
+        const min = Math.max(videoElement.videoWidth, videoElement.videoHeight);
         const width = Math.round(
-          (videoElement.current.videoWidth / min) * opt.maxCanvasSize
+          (videoElement.videoWidth / min) * opt.cvCanvas
         );
         const height = Math.round(
-          (videoElement.current.videoHeight / min) * opt.maxCanvasSize
+          (videoElement.videoHeight / min) * opt.cvCanvas
         );
         canvas.width = width;
         canvas.height = height;
         // Metrics
-        const xScale = videoElement.current.videoWidth / width;
-        const yScale = videoElement.current.videoHeight / height;
+        const xScale = videoElement.videoWidth / width;
+        const yScale = videoElement.videoHeight / height;
 
         // Draw video onto a new canvas and get the buffer data to a Mat
 
-        ctx.drawImage(videoElement.current, 0, 0, width, height);
+        ctx.drawImage(videoElement, 0, 0, width, height);
 
         const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
         let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
@@ -189,7 +191,7 @@ export default function useCVMatch(
             return result;
           });
 
-          if (bestDist > opt.threshold) {
+          if (bestDist > opt.cvThreshold / 1000) {
             console.log(
               `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
             );
@@ -203,7 +205,7 @@ export default function useCVMatch(
             };
             callback(ret);
           } else if (debugCv) {
-            console.log(`not found: ${bestDist}`);
+            console.log(`not found: ${bestDist} (${opt.cvThreshold / 1000})`);
           }
 
           if (debugCv) {
@@ -213,45 +215,21 @@ export default function useCVMatch(
           setTimeout(() => doMatch(true), 10);
         }
       } else {
-        console.error(canvas, ctx, videoElement.current);
+        console.error(canvas, ctx, videoElement);
       }
       setFrames(frames + 1);
     },
-    [callback, capturing, frames, videoElement, canvasEl, templateEl]
+    [callback, capturing, frames, videoElement, canvasElement, templateEl]
   );
 
   useEffect(() => {
-    async function initVideoStream() {
-      if (videoElement.current) {
-        videoElement.current.width = opt.maxCanvasSize;
-        videoElement.current.height = opt.maxCanvasSize;
-        videoElement.current.srcObject = await captureDesktopStream();
-
-        return new Promise((resolve) => {
-          if (videoElement.current) {
-            videoElement.current.onloadedmetadata = () => {
-              resolve(videoElement.current);
-            };
-          }
-        });
-      }
-      return Promise.reject();
-    }
-
-    async function load() {
-      const videoLoaded = (await initVideoStream()) as HTMLVideoElement;
-      videoLoaded.play();
-      return videoLoaded;
-    }
-
-    load();
     setFrames(0);
   }, [images]);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (capturing) {
-      const id = setInterval(doMatch, opt.interval);
+      const id = setInterval(doMatch, opt.cvDelay);
       return () => clearInterval(id);
     }
   }, [capturing, frames]);
@@ -265,12 +243,6 @@ export default function useCVMatch(
           alignItems: "center",
         }}
       >
-        <video
-          style={{ width: "300px", height: "210px" }}
-          className="video"
-          playsInline
-          ref={videoElement}
-        />
         {images.map((image, index) => (
           <img
             // eslint-disable-next-line react/no-array-index-key
@@ -282,13 +254,6 @@ export default function useCVMatch(
             ref={templateEl}
           />
         ))}
-        <canvas
-          style={{ width: "300px" }}
-          id="canvasOutput"
-          ref={canvasEl}
-          width={opt.maxCanvasSize}
-          height={opt.maxCanvasSize}
-        />
       </div>
     ),
     [images]
