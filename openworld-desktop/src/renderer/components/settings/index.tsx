@@ -47,7 +47,7 @@ export default function Settings(): JSX.Element {
         />
         <BaseSlider
           title={`CV Canvas: ${cvCanvas}px`}
-          domain={[256, 1280]}
+          domain={[256, 1920]}
           defaultValues={[cvCanvas]}
           ticksNumber={8}
           step={16}
@@ -56,7 +56,7 @@ export default function Settings(): JSX.Element {
         />
         <BaseSlider
           title={`CV Delay: ${cvDelay}ms`}
-          domain={[20, 200]}
+          domain={[1, 200]}
           defaultValues={[cvDelay]}
           ticksNumber={10}
           callback={setDelay}
