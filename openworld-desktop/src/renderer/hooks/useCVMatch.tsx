@@ -6,8 +6,10 @@ import React, {
   useMemo,
 } from "react";
 import _ from "lodash";
+import { useSelector } from "react-redux";
 import { captureDesktopStream } from "../../utils/capture";
 import * as cv from "../opencv";
+import { AppState } from "../redux/stores/renderer";
 
 const debugCv = false;
 
@@ -66,22 +68,19 @@ export interface CVResult {
 }
 
 interface Options {
-  maxCanvasSize: number;
-  interval: number;
-  threshold: number;
+  cvThreshold: number;
+  cvCanvas: number;
+  cvDelay: number;
 }
-
-const defaultOptions: Options = {
-  maxCanvasSize: 800,
-  interval: 50,
-  threshold: 0.97,
-};
 
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
+  const { cvThreshold, cvCanvas, cvDelay } = useSelector(
+    (state: AppState) => state.settings
+  );
   const [capturing, setCapturing] = useState<boolean>(false);
   const videoElement = useRef<HTMLVideoElement | null>(null);
   const canvasEl = useRef<HTMLCanvasElement | null>(null);
@@ -89,7 +88,9 @@ export default function useCVMatch(
   const [frames, setFrames] = useState(0);
 
   const opt = {
-    ...defaultOptions,
+    cvThreshold,
+    cvCanvas,
+    cvDelay,
     ...options,
   };
 
@@ -126,10 +127,10 @@ export default function useCVMatch(
           videoElement.current.videoHeight
         );
         const width = Math.round(
-          (videoElement.current.videoWidth / min) * opt.maxCanvasSize
+          (videoElement.current.videoWidth / min) * opt.cvCanvas
         );
         const height = Math.round(
-          (videoElement.current.videoHeight / min) * opt.maxCanvasSize
+          (videoElement.current.videoHeight / min) * opt.cvCanvas
         );
         canvas.width = width;
         canvas.height = height;
@@ -189,7 +190,7 @@ export default function useCVMatch(
             return result;
           });
 
-          if (bestDist > opt.threshold) {
+          if (bestDist > opt.cvThreshold / 1000) {
             console.log(
               `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
             );
@@ -203,7 +204,7 @@ export default function useCVMatch(
             };
             callback(ret);
           } else if (debugCv) {
-            console.log(`not found: ${bestDist}`);
+            console.log(`not found: ${bestDist} (${opt.cvThreshold / 1000})`);
           }
 
           if (debugCv) {
@@ -223,8 +224,8 @@ export default function useCVMatch(
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        videoElement.current.width = opt.maxCanvasSize;
-        videoElement.current.height = opt.maxCanvasSize;
+        videoElement.current.width = opt.cvCanvas;
+        videoElement.current.height = opt.cvCanvas;
         videoElement.current.srcObject = await captureDesktopStream();
 
         return new Promise((resolve) => {
@@ -251,7 +252,7 @@ export default function useCVMatch(
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (capturing) {
-      const id = setInterval(doMatch, opt.interval);
+      const id = setInterval(doMatch, opt.cvDelay);
       return () => clearInterval(id);
     }
   }, [capturing, frames]);
@@ -286,8 +287,8 @@ export default function useCVMatch(
           style={{ width: "300px" }}
           id="canvasOutput"
           ref={canvasEl}
-          width={opt.maxCanvasSize}
-          height={opt.maxCanvasSize}
+          width={opt.cvCanvas}
+          height={opt.cvCanvas}
         />
       </div>
     ),
