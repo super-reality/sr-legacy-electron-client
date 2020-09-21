@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
-  cvThreshold: 0.99,
+  cvThreshold: 990,
   cvCanvas: 1024,
   cvDelay: 100,
 };
@@ -23,7 +23,7 @@ const settingsSlice = createSlice({
       state: SettingsState,
       action: PayloadAction<Partial<SettingsState>>
     ): void => {
-      state = { ...state, ...action };
+      state = Object.assign(state, action.payload);
     },
   },
 });
