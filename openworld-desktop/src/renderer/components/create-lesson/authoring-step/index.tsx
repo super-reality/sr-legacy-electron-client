@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./index.scss";
 import "../../containers.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,11 +23,13 @@ import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
 import createFindBox from "../../../../utils/createFindBox";
 import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
+import closeFindBox from "../../../../utils/closeFindBox";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const stepData = useSelector((state: AppState) => state.createStep);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [thresholdFound, setThreshold] = useState<number>(0);
 
   const Redux = useCallback(
     (arg: Partial<IStep>) => {
@@ -42,18 +44,26 @@ export default function StepAuthoring(): JSX.Element {
   const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
 
   const cvShow = useCallback((res: CVResult) => {
-    if (res.dist > 0.98 - res.sizeFactor) {
-      createFindBox(res);
-    } else {
+    setThreshold(res.dist);
+    createFindBox(res);
+    if (res.dist < 0.97) {
       cvNotFound();
     }
   }, []);
 
-  const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
-    stepData.images[0] || "",
-    cvShow,
-    { threshold: 0 }
-  );
+  useEffect(() => {
+    return () => {
+      closeFindBox();
+    };
+  }, []);
+
+  const [
+    CV,
+    isCapturing,
+    startCV,
+    endCV,
+    singleCV,
+  ] = useCVMatch(stepData.images || [""], cvShow, { threshold: 0 });
 
   const doTest = useCallback(() => {
     // play audio too
@@ -148,7 +158,11 @@ export default function StepAuthoring(): JSX.Element {
       <CVPopup width="400px" height="auto">
         <div className="validation-popup">
           <div className="title">Not found</div>
-          <div className="line">No CV Targets could be found.</div>
+          <div className="line">No suitable targets could be found.</div>
+          <div className="line">
+            Distance: {Math.round(thresholdFound * 1000) / 1000}
+          </div>
+          <div className="line">Threshold: &gt; 0.970</div>
           <ButtonSimple className="button" onClick={closeCvNotFound}>
             Ok
           </ButtonSimple>

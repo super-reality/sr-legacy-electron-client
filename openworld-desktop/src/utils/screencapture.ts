@@ -3,15 +3,16 @@ import os from "os";
 import fs from "fs";
 import path from "path";
 
-const { remote } = require("electron");
-
-const proc: any = process;
-// freeware nircmd http://www.nirsoft.net/utils/nircmd.html
-const nircmdc = remote.app.isPackaged
-  ? path.join(proc.resourcesPath, "extra", "nircmdc.exe")
-  : path.join(remote.app.getAppPath(), "public", "extra", "nircmdc.exe");
-
 function captureCommand(filePath: string) {
+  // eslint-disable-next-line global-require
+  const { remote } = require("electron");
+
+  const proc: any = process;
+  // freeware nircmd http://www.nirsoft.net/utils/nircmd.html
+  const nircmdc = remote.app.isPackaged
+    ? path.join(proc.resourcesPath, "extra", "nircmdc.exe")
+    : path.join(remote.app.getAppPath(), "public", "extra", "nircmdc.exe");
+
   switch (os.platform()) {
     case "win32":
       return `"${nircmdc}" sendkeypress Ctrl+printscreen & "${nircmdc}" cmdwait 100 clipboard saveimage ${filePath}`;

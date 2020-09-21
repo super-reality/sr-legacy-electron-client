@@ -13,23 +13,25 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@welldone-software/why-did-you-render": "^5.0.0-alpha.2",
+    "autoprefixer": "^9.8.0",
     "axios": "^0.19.2",
+    "colorette": "^1.2.0",
     "concurrently": "^5.3.0",
     "craco": "0.0.3",
     "cross-env": "^7.0.2",
     "crypto": "^1.0.1",
     "electron-devtools-installer": "^3.1.1",
     "electron-is-dev": "^1.2.0",
-    "electron-rebuild": "^2.0.3",
     "global-mouse-events": "^1.0.3",
     "howler": "^2.2.0",
     "json-rpc3": "^0.2.1",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "lodash-move": "^1.1.1",
+    "nan": "^2.14.0",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
-    "opencv4nodejs": "^5.6.0",
+    "opencv4nodejs-prebuilt": "^5.3.0-3",
     "react": "^16.13.1",
     "react-autosuggest": "^10.0.2",
     "react-dom": "^16.13.1",
@@ -48,6 +50,10 @@
     "typescript": "^3.9.7",
     "wait-on": "^5.1.0"
   },
+  "engines": {
+    "node": "12.14.0",
+    "npm": ">=6.0.0"
+  },
   "scripts": {
     "pre:constants": "copyfiles -u 3 \"../openworld-server/config/constant.js\" src/renderer/api && eslint src/renderer/api/constant.js --fix",
     "start": "npm run pre:constants && nf start -p 3000",
@@ -59,6 +65,7 @@
     "jest-server": "http-server ./build -p 3000",
     "jest:watch": "craco test --env=jsdom",
     "jest:ci": "craco test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
+    "jest:ci:watch": "craco test --env=jsdom --testPathIgnorePatterns \"src/__tests__/\"",
     "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
     "test:all": "npm run pre:constants && npm run test:eslint && npm run jest:ci",
     "eject": "react-scripts eject",
@@ -66,8 +73,8 @@
     "electron-start": "node src/start-react",
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
-    "build": "npm run react-build && npm run electron-build",
-    "electron-rebuild": "electron-rebuild -w opencv4nodejs"
+    "build": "npm run electron-rebuild && npm run react-build && npm run electron-build",
+    "electron-rebuild": "electron-rebuild"
   },
   "build": {
     "appId": "com.openworld.desktop",
@@ -80,7 +87,10 @@
     "win": {
       "target": "NSIS",
       "icon": "public/favicon.ico",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}.${ext}",
+      "extraFiles": {
+        "from": "node_modules/opencv-build/opencv/build/x64/vc15/bin"
+      }
     },
     "mac": {
       "target": "pkg",
@@ -120,6 +130,9 @@
       "last 1 safari version"
     ]
   },
+  "opencv4nodejs": {
+    "disableAutoBuild": 1
+  },
   "devDependencies": {
     "@types/expect-puppeteer": "^4.4.3",
     "@types/howler": "^2.2.1",
@@ -138,6 +151,7 @@
     "electron": "^9.3.0",
     "electron-builder": "^22.8.0",
     "electron-packager": "^15.0.0",
+    "electron-rebuild": "^2.0.3",
     "eslint": "6.8.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -153,6 +167,7 @@
     "jest": "24.9.0",
     "jest-image-snapshot": "^4.1.0",
     "jest-puppeteer": "^4.4.0",
+    "native-addon-loader": "^2.0.1",
     "prettier": "^2.0.5",
     "puppeteer": "^5.2.1",
     "react-test-renderer": "^16.13.1"

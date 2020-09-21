@@ -6,6 +6,7 @@ import * as createLessonSlice from "./slices/createLessonSlice";
 import * as createStepSlice from "./slices/createStepSlice";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
+import * as settingsSlice from "./slices/settingsSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -36,6 +37,8 @@ export const actions = {
   USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
   USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,
   USERDATA_TOGGLE_LESSON: userDataSlice.toggleLesson,
+  CLEAR_SETTINGS: settingsSlice.clearsettings,
+  SET_SETTINGS: settingsSlice.setSettings,
 };
 
 export type ActionKeys = keyof typeof actions;

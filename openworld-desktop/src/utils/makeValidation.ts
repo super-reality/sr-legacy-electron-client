@@ -8,16 +8,7 @@ export interface ValidationField {
 export type ValidationFields<T> = {
   [K in keyof T]?: ValidationField;
 };
-/*
-const test = {
-  A: "foo",
-  B: "var",
-};
 
-const d: ValidationFields<typeof test> = {
-  Aa: { name: "A" },
-};
-*/
 export default function makeValidation<D extends Record<string, any>>(
   fields: ValidationFields<D>,
   data: D

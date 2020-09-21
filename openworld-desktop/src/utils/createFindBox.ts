@@ -2,9 +2,7 @@
 import path from "path";
 import url from "url";
 import globalData from "../renderer/globalData";
-
-// eslint-disable-next-line no-undef
-const mouseEvents = __non_webpack_require__("global-mouse-events");
+import closeFindBox from "./closeFindBox";
 
 interface Position {
   x: number;
@@ -23,6 +21,8 @@ export default function createFindBox(
   pos: Position,
   props: any = {}
 ): Promise<FindBoxResolve> {
+  // eslint-disable-next-line no-undef
+  const mouseEvents = __non_webpack_require__("global-mouse-events");
   const { remote } = require("electron");
 
   if (globalData.cvFindWindow != null) {
@@ -74,10 +74,7 @@ export default function createFindBox(
         mouse.y < pos.y + pos.height &&
         !props.closeOnClick
       ) {
-        if (globalData.cvFindWindow != null) {
-          globalData.cvFindWindow.close();
-          globalData.cvFindWindow = null;
-        }
+        closeFindBox();
         clearInterval(checkInterval);
         resolve("Focused");
       }
@@ -94,10 +91,7 @@ export default function createFindBox(
             e.x < pos.x + pos.width &&
             e.y < pos.y + pos.height
           ) {
-            if (globalData.cvFindWindow != null) {
-              globalData.cvFindWindow.close();
-              globalData.cvFindWindow = null;
-            }
+            closeFindBox();
             resolve("Clicked");
           }
         }
@@ -105,10 +99,7 @@ export default function createFindBox(
     }
 
     globalData.cvFindWindow.on("closed", () => {
-      if (globalData.cvFindWindow != null) {
-        globalData.cvFindWindow.destroy();
-        globalData.cvFindWindow = null;
-      }
+      closeFindBox();
       resolve("Cancelled");
     });
   });

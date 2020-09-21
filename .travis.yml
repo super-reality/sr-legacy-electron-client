@@ -4,22 +4,7 @@ services:
   - docker
 
 node_js:
-  - '12'
-
-dist: trusty
-sudo: required
-services:
-  - xvfb
-
-addons:
-  chrome: stable
-  hostname: localhost
-
-before_script:
-  - export DISPLAY=:99.0
-
-before_install:
-  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - '12.14.0'
 
 env:
   global:
@@ -29,15 +14,24 @@ cache: npm
 
 filter_secrets: false
 
+addons:
+  hostname: localhost
+  artifacts:
+    s3_region: "us-west-1"
+    debug: true
+    working_dir: openworld-desktop/dist
+    paths:
+      - "$(ls $TRAVIS_BUILD_DIR/openworld-desktop/dist/)"
+
 jobs:
   include:
     - stage: Tests
-      os: Linux
+      os: Windows
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
         - npm install
         - npm run build:web
-        - npm run react-build
+        - npm run build
         - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
 

@@ -25,12 +25,14 @@ export default function InsertMedia(props: InsertMediaProps): JSX.Element {
         className="insert-media-container"
         style={{
           ...style,
-          backgroundImage: keepSize ? `url(${imgUrl})` : "",
         }}
         onClick={open}
       >
         {imgUrl ? (
-          !keepSize && <img src={imgUrl} />
+          <img
+            style={keepSize ? { margin: "0", height: "100%" } : {}}
+            src={imgUrl}
+          />
         ) : (
           <Add
             style={{ margin: "auto" }}

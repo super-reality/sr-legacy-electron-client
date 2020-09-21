@@ -8,6 +8,7 @@ import createLessonSlice from "../slices/createLessonSlice";
 import createStepSlice from "../slices/createStepSlice";
 import commonPropSlice from "../slices/commonPropSlice";
 import userDataSlice from "../slices/userDataSlice";
+import settingsSlice from "../slices/settingsSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   createStep: createStepSlice.reducer,
   commonProps: commonPropSlice.reducer,
   userData: userDataSlice.reducer,
+  settings: settingsSlice.reducer,
 });
 
 const store = configureStore({

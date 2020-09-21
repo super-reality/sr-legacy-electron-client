@@ -28,6 +28,7 @@ import Flex from "../flex";
 import { InitalFnOptions, NextStepOptions } from "../../api/types/step/step";
 import createFindBox from "../../../utils/createFindBox";
 import useCVMatch from "../../hooks/useCVMatch";
+import closeFindBox from "../../../utils/closeFindBox";
 
 interface ViewLessonProps {
   id: string;
@@ -101,13 +102,14 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const [CV, isCapturing, startCV, endCv] = useCVMatch(
     stepNow && stepNow.functions[0] !== InitalFnOptions["Computer vision Off"]
-      ? stepNow.images[0]
-      : "",
+      ? stepNow.images
+      : [""],
     cvShow
   );
 
   useEffect(() => {
     return () => {
+      closeFindBox();
       endCv();
     };
   }, []);
