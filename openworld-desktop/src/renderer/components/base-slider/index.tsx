@@ -174,7 +174,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
   );
 
   return (
-    <Flex>
+    <Flex style={{ overflow: "hidden" }}>
       <div className="container-with-desc">
         <div>{title}</div>
         <div
