@@ -15,6 +15,7 @@ import Create from "./views/create";
 import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
+import CvComponents from "./components/CvComponents";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -50,6 +51,7 @@ export default function App(): JSX.Element {
 
   return isAuthenticated ? (
     <>
+      <CvComponents />
       <TopSearch />
       <Loading state={isLoading} />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
