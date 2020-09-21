@@ -27,6 +27,7 @@ jobs:
         - npm install
         - npm run build:web
         - npm run build
+        - node run rm-unpacked.js
         - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
       deploy:
         on:
