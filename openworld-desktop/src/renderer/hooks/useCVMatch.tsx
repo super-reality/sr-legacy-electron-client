@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import * as cv from "../opencv";
 import { AppState } from "../redux/stores/renderer";
 
-const debugCv = true;
+const debugCv = false;
 
 function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
   const img = document.getElementById(id) as HTMLImageElement;
