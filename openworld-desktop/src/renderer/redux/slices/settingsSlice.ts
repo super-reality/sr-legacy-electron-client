@@ -5,6 +5,7 @@ const initialState = {
   cvThreshold: 990,
   cvCanvas: 100,
   cvDelay: 100,
+  cvGrayscale: true,
 };
 
 type SettingsState = typeof initialState;

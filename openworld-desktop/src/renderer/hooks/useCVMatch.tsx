@@ -77,7 +77,7 @@ export default function useCVMatch(
   callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
-  const { cvThreshold, cvCanvas, cvDelay } = useSelector(
+  const { cvGrayscale, cvThreshold, cvCanvas, cvDelay } = useSelector(
     (state: AppState) => state.settings
   );
   const [capturing, setCapturing] = useState<boolean>(false);
@@ -147,15 +147,17 @@ export default function useCVMatch(
         const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
         let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
         srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
-        srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
+        if (cvGrayscale) {
+          srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
+        }
 
         if (srcMat) {
           // Template
-          const templateMats = images.map((image, index) =>
-            getTemplateMat(`templateImage-${index}`, xScale, yScale).cvtColor(
-              cv.COLOR_RGBA2GRAY
-            )
-          );
+          const templateMats = images.map((image, index) => {
+            const t = getTemplateMat(`templateImage-${index}`, xScale, yScale);
+            if (cvGrayscale) return t.cvtColor(cv.COLOR_RGBA2GRAY);
+            return t;
+          });
 
           // console.log(templateMat);
           // Do match

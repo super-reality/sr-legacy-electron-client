@@ -7,9 +7,10 @@ import Collapsible from "../collapsible";
 import BaseSlider from "../base-slider";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
+import BaseToggle from "../base-toggle";
 
 export default function CVSettings(): JSX.Element {
-  const { cvThreshold, cvCanvas, cvDelay } = useSelector(
+  const { cvThreshold, cvCanvas, cvDelay, cvGrayscale } = useSelector(
     (state: AppState) => state.settings
   );
 
@@ -31,6 +32,13 @@ export default function CVSettings(): JSX.Element {
     reduxAction(store.dispatch, {
       type: "SET_SETTINGS",
       arg: { cvDelay: n[0] },
+    });
+  }, []);
+
+  const setGrayscale = useCallback((val: boolean) => {
+    reduxAction(store.dispatch, {
+      type: "SET_SETTINGS",
+      arg: { cvGrayscale: val },
     });
   }, []);
 
@@ -62,6 +70,11 @@ export default function CVSettings(): JSX.Element {
         ticksNumber={10}
         callback={setDelay}
         slideCallback={setDelay}
+      />
+      <BaseToggle
+        title="Grayscale"
+        value={cvGrayscale}
+        callback={setGrayscale}
       />
     </Collapsible>
   );
