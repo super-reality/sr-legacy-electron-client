@@ -25,11 +25,16 @@ import createFindBox from "../../../../utils/createFindBox";
 import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
 import closeFindBox from "../../../../utils/closeFindBox";
 import CVSettings from "../../cv-settings";
+import usePopupValidation from "../../../hooks/usePopupValidation";
+import makeValidation, {
+  ValidationFields,
+} from "../../../../utils/makeValidation";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
   const { cvMatchValue } = useSelector((state: AppState) => state.settings);
-  const stepData = useSelector((state: AppState) => state.createStep);
+  const finalData = useSelector((state: AppState) => state.createStep);
+  const [creationState, setCreationState] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [thresholdFound, setThreshold] = useState<number>(0);
 
@@ -59,7 +64,7 @@ export default function StepAuthoring(): JSX.Element {
     startCV,
     endCV,
     singleCV,
-  ] = useCVMatch(stepData.images || [""], cvShow, { cvMatchValue: 0 });
+  ] = useCVMatch(finalData.images || [""], cvShow, { cvMatchValue: 0 });
 
   const doTest = useCallback(() => {
     if (isCapturing) {
@@ -88,70 +93,82 @@ export default function StepAuthoring(): JSX.Element {
 
   const setImageCVFn = useCallback(
     (fn: number, index: number) => {
-      const arr = [...stepData.functions];
+      const arr = [...finalData.functions];
       arr[index] = fn;
       Redux({ functions: arr });
     },
-    [stepData]
+    [finalData]
   );
 
   const insertCVImage = useCallback(
     (image: string, index: number) => {
-      const imgArr = [...stepData.images];
+      const imgArr = [...finalData.images];
       imgArr.splice(index, 1, image);
 
       const defaultFn =
-        stepData.functions[index] ||
+        finalData.functions[index] ||
         (index == 0
           ? Object.values(InitalFnOptions)[0]
           : Object.values(FnOptions)[0]);
-      const fnArr = [...stepData.functions];
+      const fnArr = [...finalData.functions];
       fnArr.splice(index, 1, defaultFn);
 
       Redux({ images: imgArr, functions: fnArr });
     },
-    [stepData]
+    [finalData]
   );
 
   const handleStepnameChange = useCallback(
     (e: InputChangeEv): void => {
       Redux({ name: e.currentTarget.value });
     },
-    [stepData]
+    [finalData]
   );
 
   const handleDescriptionChange = useCallback(
     (e: AreaChangeEv): void => {
       Redux({ description: e.currentTarget.value });
     },
-    [stepData]
+    [finalData]
   );
 
-  const [Popup, open, closePopup] = usePopup(false);
+  const [ValidationPopup, open] = usePopupValidation("step");
+
+  const validateFields = useCallback(() => {
+    const validation: ValidationFields<IStep> = {
+      name: { name: "Name", minLength: 4 },
+      description: { name: "Description", minLength: 4 },
+      images: { name: "Image", minItems: 1 },
+    };
+    return makeValidation<IStep>(validation, finalData);
+  }, [finalData]);
 
   const addStep = useCallback(() => {
-    if (stepData.images.length < 1 || stepData.name.length < 1) {
-      open();
-      return;
-    }
-    if (containerRef.current) {
-      reduxAction(dispatch, {
-        type: "SET_YSCROLL_MOVE",
-        arg: containerRef.current.offsetTop - 150,
-      });
-    }
+    const reasons = validateFields();
+    if (reasons.length == 0) {
+      setCreationState(true);
+      if (containerRef.current) {
+        reduxAction(dispatch, {
+          type: "SET_YSCROLL_MOVE",
+          arg: containerRef.current.offsetTop - 150,
+        });
+      }
 
-    if (stepData.index !== undefined) {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_STEP_REPLACE",
-        arg: { step: stepData, index: stepData.index },
-      });
+      if (finalData.index !== undefined) {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_STEP_REPLACE",
+          arg: { step: finalData, index: finalData.index },
+        });
+      } else {
+        reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: finalData });
+      }
+
+      reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
     } else {
-      reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: stepData });
+      setCreationState(false);
+      open();
     }
-
-    reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
-  }, [dispatch, containerRef, stepData]);
+  }, [dispatch, containerRef, finalData, open]);
 
   const clearStep = useCallback(() => {
     reduxAction(dispatch, { type: "CREATE_STEP_RESET", arg: null });
@@ -162,21 +179,11 @@ export default function StepAuthoring(): JSX.Element {
   return (
     <>
       <CV />
-      <Popup width="400px" height="auto">
-        <div className="validation-popup">
-          <div className="title">Step Creation failed</div>
-          <div className="line">
-            Please insert at least one Image and step name
-          </div>
-          <ButtonSimple className="button" onClick={closePopup}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
+      <ValidationPopup validationFn={validateFields} sucess={creationState} />
       <div className="step-authoring-grid" ref={containerRef}>
         <div>Add CV Target</div>
         <Flex style={{ flexDirection: "column" }}>
-          {[...stepData.images, undefined].map((image, i) => {
+          {[...finalData.images, undefined].map((image, i) => {
             const defaultFn =
               i == 0
                 ? Object.values(InitalFnOptions)[0]
@@ -184,7 +191,7 @@ export default function StepAuthoring(): JSX.Element {
 
             const current = i == 0 ? InitalFnOptions : FnOptions;
             const url = !image || image == "" ? undefined : image;
-            const fn = !image ? defaultFn : stepData.functions[i];
+            const fn = !image ? defaultFn : finalData.functions[i];
 
             return (
               <React.Fragment key={image || "cv-add"}>
@@ -226,12 +233,12 @@ export default function StepAuthoring(): JSX.Element {
         <BaseInput
           title="Step Name"
           placeholder="Step name"
-          value={stepData.name}
+          value={finalData.name}
           onChange={handleStepnameChange}
         />
         <BaseSelect
           title="Step trigger"
-          current={stepData.trigger}
+          current={finalData.trigger}
           options={Object.values(TriggerOptions)}
           optionFormatter={constantFormat(TriggerOptions)}
           callback={setCVTrigger}
@@ -239,12 +246,12 @@ export default function StepAuthoring(): JSX.Element {
         <BaseTextArea
           title="Step Description"
           placeholder=""
-          value={stepData.description}
+          value={finalData.description}
           onChange={handleDescriptionChange}
         />
         <BaseSelect
           title="Next Step"
-          current={stepData.next}
+          current={finalData.next}
           options={Object.values(NextStepOptions)}
           optionFormatter={constantFormat(NextStepOptions)}
           callback={setCVNextStep}
@@ -291,7 +298,7 @@ export default function StepAuthoring(): JSX.Element {
             height="24px"
             onClick={addStep}
           >
-            {stepData.index !== undefined
+            {finalData.index !== undefined
               ? "Save step changes"
               : "Save and add new step"}
           </ButtonSimple>
