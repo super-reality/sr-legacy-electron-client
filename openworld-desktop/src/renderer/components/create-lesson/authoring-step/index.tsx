@@ -53,7 +53,7 @@ export default function StepAuthoring(): JSX.Element {
   const cvShow = useCallback(
     (res: CVResult) => {
       setThreshold(Math.round(res.dist * 1000));
-      cvStepProcess(res, undefined, finalData);
+      cvStepProcess(res, finalData);
       if (res.dist < cvMatchValue / 1000) {
         cvNotFound();
       }
