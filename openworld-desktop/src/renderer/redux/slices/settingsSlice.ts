@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   cvMatchValue: 990,
-  cvCanvas: 100,
+  cvCanvas: 50,
   cvDelay: 100,
   cvGrayscale: true as boolean,
   cvApplyThreshold: false as boolean,
