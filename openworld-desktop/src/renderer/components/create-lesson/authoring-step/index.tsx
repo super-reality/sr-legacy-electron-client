@@ -21,7 +21,6 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
-import createFindBox from "../../../../utils/createFindBox";
 import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
 import closeFindBox from "../../../../utils/closeFindBox";
 import CVSettings from "../../cv-settings";
@@ -29,6 +28,7 @@ import usePopupValidation from "../../../hooks/usePopupValidation";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
+import cvStepProcess from "../../../../utils/cvStepProcess";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -50,13 +50,16 @@ export default function StepAuthoring(): JSX.Element {
 
   const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
 
-  const cvShow = useCallback((res: CVResult) => {
-    setThreshold(Math.round(res.dist * 1000));
-    createFindBox(res);
-    if (res.dist < cvMatchValue / 1000) {
-      cvNotFound();
-    }
-  }, []);
+  const cvShow = useCallback(
+    (res: CVResult) => {
+      setThreshold(Math.round(res.dist * 1000));
+      cvStepProcess(res, undefined, finalData);
+      if (res.dist < cvMatchValue / 1000) {
+        cvNotFound();
+      }
+    },
+    [finalData]
+  );
 
   const [
     CV,

@@ -6,7 +6,7 @@ import {
   IStep,
 } from "../../api/types/step/step";
 
-const initialState: IStep = {
+export const initialState: IStep = {
   index: undefined,
   images: [],
   functions: [],

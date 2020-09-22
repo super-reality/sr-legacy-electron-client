@@ -25,10 +25,11 @@ import useDataGet from "../../hooks/useDataGet";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
-import { InitalFnOptions, NextStepOptions } from "../../api/types/step/step";
-import createFindBox from "../../../utils/createFindBox";
+import { InitalFnOptions } from "../../api/types/step/step";
 import useCVMatch from "../../hooks/useCVMatch";
 import closeFindBox from "../../../utils/closeFindBox";
+import cvStepProcess from "../../../utils/cvStepProcess";
+import { initialState } from "../../redux/slices/createStepSlice";
 
 interface ViewLessonProps {
   id: string;
@@ -78,24 +79,7 @@ export default function ViewLesson(props: ViewLessonProps) {
 
   const cvShow = useCallback(
     (res: any) => {
-      if (stepNow?.next == NextStepOptions["On Target Detected"]) {
-        doNext();
-        return;
-      }
-      const findProps = {
-        closeOnClick: stepNow?.next == NextStepOptions["On Target Clicked"],
-        opacity:
-          stepNow?.functions[0] == InitalFnOptions["Computer vision On"]
-            ? 1
-            : 0,
-      };
-      if (stepNow?.functions[0] !== InitalFnOptions["Computer vision Off"]) {
-        createFindBox(res, findProps).then((findResult) => {
-          if (findResult == "Focused" || findResult == "Clicked") {
-            doNext();
-          }
-        });
-      }
+      cvStepProcess(res, stepNow || initialState, doNext);
     },
     [doNext, stepNow]
   );
