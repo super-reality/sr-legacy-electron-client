@@ -33,6 +33,7 @@ jobs:
         on:
           all_branches: true
         provider: s3
+        edge: true
         access_key_id: $ARTIFACTS_KEY
         secret_access_key: $ARTIFACTS_SECRET
         bucket: "super-reality-builds"
