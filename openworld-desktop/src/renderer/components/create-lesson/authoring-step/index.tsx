@@ -24,10 +24,11 @@ import { AppState } from "../../../redux/stores/renderer";
 import createFindBox from "../../../../utils/createFindBox";
 import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
 import closeFindBox from "../../../../utils/closeFindBox";
+import CVSettings from "../../cv-settings";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { cvThreshold } = useSelector((state: AppState) => state.settings);
+  const { cvMatchValue } = useSelector((state: AppState) => state.settings);
   const stepData = useSelector((state: AppState) => state.createStep);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [thresholdFound, setThreshold] = useState<number>(0);
@@ -45,17 +46,11 @@ export default function StepAuthoring(): JSX.Element {
   const [CVPopup, cvNotFound, closeCvNotFound] = usePopup(false);
 
   const cvShow = useCallback((res: CVResult) => {
-    setThreshold(res.dist);
+    setThreshold(Math.round(res.dist * 1000));
     createFindBox(res);
-    if (res.dist < cvThreshold / 1000) {
+    if (res.dist < cvMatchValue / 1000) {
       cvNotFound();
     }
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      closeFindBox();
-    };
   }, []);
 
   const [
@@ -64,13 +59,24 @@ export default function StepAuthoring(): JSX.Element {
     startCV,
     endCV,
     singleCV,
-  ] = useCVMatch(stepData.images || [""], cvShow, { cvThreshold: 0 });
+  ] = useCVMatch(stepData.images || [""], cvShow, { cvMatchValue: 0 });
 
   const doTest = useCallback(() => {
-    // play audio too
-    // The CV logic for functions and triggers should be abstracted out
-    singleCV();
-  }, [singleCV]);
+    if (isCapturing) {
+      endCV();
+    } else {
+      // play audio too
+      // The CV logic for functions and triggers should be abstracted out
+      startCV();
+    }
+  }, [startCV, endCV, isCapturing]);
+
+  useEffect(() => {
+    return () => {
+      closeFindBox();
+      endCV();
+    };
+  }, [endCV]);
 
   const setCVTrigger = (value: number) => {
     Redux({ trigger: value });
@@ -156,19 +162,6 @@ export default function StepAuthoring(): JSX.Element {
   return (
     <>
       <CV />
-      <CVPopup width="400px" height="auto">
-        <div className="validation-popup">
-          <div className="title">Not found</div>
-          <div className="line">No suitable targets could be found.</div>
-          <div className="line">
-            Distance: {Math.round(thresholdFound * 1000) / 1000}
-          </div>
-          <div className="line">{`Threshold: > ${cvThreshold / 1000}`}</div>
-          <ButtonSimple className="button" onClick={closeCvNotFound}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </CVPopup>
       <Popup width="400px" height="auto">
         <div className="validation-popup">
           <div className="title">Step Creation failed</div>
@@ -257,13 +250,32 @@ export default function StepAuthoring(): JSX.Element {
           callback={setCVNextStep}
         />
         <Flex column>
+          <CVSettings />
+          {isCapturing ? (
+            <canvas
+              id="canvasTestOutput"
+              style={{ width: "200px", margin: "auto" }}
+            />
+          ) : (
+            <></>
+          )}
+          <div
+            style={{
+              textAlign: "center",
+              color: `var(--color-${
+                cvMatchValue > thresholdFound ? "red" : "green"
+              })`,
+            }}
+          >
+            {thresholdFound}
+          </div>
           <ButtonSimple
             margin="8px auto"
             width="180px"
             height="24px"
             onClick={doTest}
           >
-            Test CV
+            {isCapturing ? "Stop CV Test" : "Begin CV Test"}
           </ButtonSimple>
           <ButtonSimple
             margin="8px auto"
