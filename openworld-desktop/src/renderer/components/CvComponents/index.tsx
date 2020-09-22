@@ -13,8 +13,8 @@ export default function CvComponents() {
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        videoElement.current.width = cvCanvas;
-        videoElement.current.height = cvCanvas;
+        videoElement.current.width = window.screen.width;
+        videoElement.current.height = window.screen.height;
         videoElement.current.srcObject = await captureDesktopStream();
 
         return new Promise((resolve) => {

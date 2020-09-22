@@ -126,15 +126,16 @@ export default function useCVMatch(
       const ctx = canvas.getContext("2d");
       if (canvas && ctx && videoElement) {
         // Convert video size to scaled down canvas size
-        const min = Math.max(videoElement.videoWidth, videoElement.videoHeight);
+        // const min = Math.max(videoElement.videoWidth, videoElement.videoHeight);
         const width = Math.round(
-          (videoElement.videoWidth / min) * opt.cvCanvas
+          (videoElement.videoWidth / 100) * opt.cvCanvas
         );
         const height = Math.round(
-          (videoElement.videoHeight / min) * opt.cvCanvas
+          (videoElement.videoHeight / 100) * opt.cvCanvas
         );
         canvas.width = width;
         canvas.height = height;
+        console.log(width, height);
         // Metrics
         const xScale = videoElement.videoWidth / width;
         const yScale = videoElement.videoHeight / height;

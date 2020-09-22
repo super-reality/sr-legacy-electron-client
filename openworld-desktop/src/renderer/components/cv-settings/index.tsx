@@ -45,11 +45,13 @@ export default function CVSettings(): JSX.Element {
         slideCallback={setThreshold}
       />
       <BaseSlider
-        title={`CV Canvas: ${cvCanvas}px`}
-        domain={[256, 1920]}
+        title={`CV Canvas Size: ${cvCanvas}% (${Math.round(
+          (window.screen.width / 100) * cvCanvas
+        )}px)`}
+        domain={[10, 200]}
         defaultValues={[cvCanvas]}
         ticksNumber={8}
-        step={16}
+        step={10}
         callback={setCanvasSize}
         slideCallback={setCanvasSize}
       />
