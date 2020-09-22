@@ -28,7 +28,7 @@ import CVSettings from "../../cv-settings";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { cvThreshold } = useSelector((state: AppState) => state.settings);
+  const { cvMatchValue } = useSelector((state: AppState) => state.settings);
   const stepData = useSelector((state: AppState) => state.createStep);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [thresholdFound, setThreshold] = useState<number>(0);
@@ -48,7 +48,7 @@ export default function StepAuthoring(): JSX.Element {
   const cvShow = useCallback((res: CVResult) => {
     setThreshold(Math.round(res.dist * 1000));
     createFindBox(res);
-    if (res.dist < cvThreshold / 1000) {
+    if (res.dist < cvMatchValue / 1000) {
       cvNotFound();
     }
   }, []);
@@ -59,7 +59,7 @@ export default function StepAuthoring(): JSX.Element {
     startCV,
     endCV,
     singleCV,
-  ] = useCVMatch(stepData.images || [""], cvShow, { cvThreshold: 0 });
+  ] = useCVMatch(stepData.images || [""], cvShow, { cvMatchValue: 0 });
 
   const doTest = useCallback(() => {
     if (isCapturing) {
@@ -251,11 +251,19 @@ export default function StepAuthoring(): JSX.Element {
         />
         <Flex column>
           <CVSettings />
+          {isCapturing ? (
+            <canvas
+              id="canvasTestOutput"
+              style={{ width: "200px", margin: "auto" }}
+            />
+          ) : (
+            <></>
+          )}
           <div
             style={{
               textAlign: "center",
               color: `var(--color-${
-                cvThreshold > thresholdFound ? "red" : "green"
+                cvMatchValue > thresholdFound ? "red" : "green"
               })`,
             }}
           >

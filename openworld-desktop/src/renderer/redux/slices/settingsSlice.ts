@@ -2,10 +2,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
-  cvThreshold: 990,
+  cvMatchValue: 990,
   cvCanvas: 100,
   cvDelay: 100,
-  cvGrayscale: true,
+  cvGrayscale: true as boolean,
+  cvApplyThreshold: false as boolean,
+  cvThreshold: 127,
 };
 
 type SettingsState = typeof initialState;

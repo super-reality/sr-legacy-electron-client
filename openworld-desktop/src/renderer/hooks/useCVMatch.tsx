@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import * as cv from "../opencv";
 import { AppState } from "../redux/stores/renderer";
 
-const debugCv = false;
+const debugCv = true;
 
 function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
   const img = document.getElementById(id) as HTMLImageElement;
@@ -67,7 +67,7 @@ export interface CVResult {
 }
 
 interface Options {
-  cvThreshold: number;
+  cvMatchValue: number;
   cvCanvas: number;
   cvDelay: number;
 }
@@ -77,9 +77,14 @@ export default function useCVMatch(
   callback: (result: CVResult) => void,
   options?: Partial<Options>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
-  const { cvGrayscale, cvThreshold, cvCanvas, cvDelay } = useSelector(
-    (state: AppState) => state.settings
-  );
+  const {
+    cvMatchValue,
+    cvGrayscale,
+    cvCanvas,
+    cvDelay,
+    cvThreshold,
+    cvApplyThreshold,
+  } = useSelector((state: AppState) => state.settings);
   const [capturing, setCapturing] = useState<boolean>(false);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
@@ -92,7 +97,7 @@ export default function useCVMatch(
   ) as HTMLCanvasElement | null;
 
   const opt = {
-    cvThreshold,
+    cvMatchValue,
     cvCanvas,
     cvDelay,
     ...options,
@@ -147,16 +152,30 @@ export default function useCVMatch(
         const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
         let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
         srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
+        // Source Mat and Template mat filters should be applied in the same order!
         if (cvGrayscale) {
           srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
+        }
+        if (cvApplyThreshold) {
+          srcMat = srcMat.threshold(
+            cvThreshold,
+            255,
+            cv.ADAPTIVE_THRESH_MEAN_C
+          );
         }
 
         if (srcMat) {
           // Template
           const templateMats = images.map((image, index) => {
-            const t = getTemplateMat(`templateImage-${index}`, xScale, yScale);
-            if (cvGrayscale) return t.cvtColor(cv.COLOR_RGBA2GRAY);
-            return t;
+            let ret = getTemplateMat(`templateImage-${index}`, xScale, yScale);
+            // Source Mat and Template mat filters should be applied in the same order!
+            if (cvGrayscale) {
+              ret = ret.cvtColor(cv.COLOR_RGBA2GRAY);
+            }
+            if (cvApplyThreshold) {
+              ret = ret.threshold(cvThreshold, 255, cv.ADAPTIVE_THRESH_MEAN_C);
+            }
+            return ret;
           });
 
           // console.log(templateMat);
@@ -194,10 +213,12 @@ export default function useCVMatch(
             return result;
           });
 
-          if (bestDist > opt.cvThreshold / 1000) {
-            console.log(
-              `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
-            );
+          if (bestDist > opt.cvMatchValue / 1000) {
+            if (debugCv) {
+              console.log(
+                `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
+              );
+            }
             const ret: CVResult = {
               dist: bestDist,
               sizeFactor: 0,
@@ -208,12 +229,10 @@ export default function useCVMatch(
             };
             callback(ret);
           } else if (debugCv) {
-            console.log(`not found: ${bestDist} (${opt.cvThreshold / 1000})`);
+            console.log(`not found: ${bestDist} (${opt.cvMatchValue / 1000})`);
           }
 
-          if (debugCv) {
-            matToCanvas(srcMat, "canvasOutput");
-          }
+          matToCanvas(srcMat, "canvasTestOutput");
         } else if (!capturing && !force) {
           setTimeout(() => doMatch(true), 10);
         }

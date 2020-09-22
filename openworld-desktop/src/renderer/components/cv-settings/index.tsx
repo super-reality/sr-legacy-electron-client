@@ -10,14 +10,19 @@ import reduxAction from "../../redux/reduxAction";
 import BaseToggle from "../base-toggle";
 
 export default function CVSettings(): JSX.Element {
-  const { cvThreshold, cvCanvas, cvDelay, cvGrayscale } = useSelector(
-    (state: AppState) => state.settings
-  );
+  const {
+    cvMatchValue,
+    cvThreshold,
+    cvApplyThreshold,
+    cvCanvas,
+    cvDelay,
+    cvGrayscale,
+  } = useSelector((state: AppState) => state.settings);
 
-  const setThreshold = useCallback((n: readonly number[]) => {
+  const setMatchValue = useCallback((n: readonly number[]) => {
     reduxAction(store.dispatch, {
       type: "SET_SETTINGS",
-      arg: { cvThreshold: n[0] },
+      arg: { cvMatchValue: n[0] },
     });
   }, []);
 
@@ -42,18 +47,32 @@ export default function CVSettings(): JSX.Element {
     });
   }, []);
 
+  const setApplyThreshold = useCallback((val: boolean) => {
+    reduxAction(store.dispatch, {
+      type: "SET_SETTINGS",
+      arg: { cvApplyThreshold: val },
+    });
+  }, []);
+
+  const setThreshold = useCallback((n: readonly number[]) => {
+    reduxAction(store.dispatch, {
+      type: "SET_SETTINGS",
+      arg: { cvThreshold: n[0] },
+    });
+  }, []);
+
   return (
     <Collapsible title="CV Setings">
       <BaseSlider
-        title={`CV Threshold: ${cvThreshold}`}
+        title={`Match Value: ${cvMatchValue}`}
         domain={[800, 1000]}
-        defaultValues={[cvThreshold]}
+        defaultValues={[cvMatchValue]}
         ticksNumber={10}
-        callback={setThreshold}
-        slideCallback={setThreshold}
+        callback={setMatchValue}
+        slideCallback={setMatchValue}
       />
       <BaseSlider
-        title={`CV Canvas Size: ${cvCanvas}% (${Math.round(
+        title={`Canvas Size: ${cvCanvas}% (${Math.round(
           (window.screen.width / 100) * cvCanvas
         )}px)`}
         domain={[10, 200]}
@@ -63,18 +82,31 @@ export default function CVSettings(): JSX.Element {
         callback={setCanvasSize}
         slideCallback={setCanvasSize}
       />
+      <BaseToggle
+        title="Grayscale"
+        value={cvGrayscale}
+        callback={setGrayscale}
+      />
+      <BaseToggle
+        title="Apply Threshold"
+        value={cvApplyThreshold}
+        callback={setApplyThreshold}
+      />
       <BaseSlider
-        title={`CV Delay: ${cvDelay}ms`}
+        title={`Threshold: ${cvThreshold}`}
+        domain={[0, 255]}
+        defaultValues={[cvThreshold]}
+        ticksNumber={10}
+        callback={setThreshold}
+        slideCallback={setThreshold}
+      />
+      <BaseSlider
+        title={`Delay: ${cvDelay}ms`}
         domain={[1, 200]}
         defaultValues={[cvDelay]}
         ticksNumber={10}
         callback={setDelay}
         slideCallback={setDelay}
-      />
-      <BaseToggle
-        title="Grayscale"
-        value={cvGrayscale}
-        callback={setGrayscale}
       />
     </Collapsible>
   );

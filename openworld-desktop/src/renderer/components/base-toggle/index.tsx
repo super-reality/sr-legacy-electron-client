@@ -16,7 +16,11 @@ export default function BaseToggle(props: BaseToggleProps): JSX.Element {
     <Flex>
       <div
         className="container-with-desc"
-        style={{ display: "flex", justifyContent: "space-between" }}
+        style={{
+          margin: "4px 0",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
       >
         <div>{title}</div>
         <Toggle value={value} callback={callback} />
