@@ -3,6 +3,11 @@ import path from "path";
 import { AppState } from "../../renderer/redux/stores/renderer";
 import doCvMatch from "../doCVMatch";
 
+jest.mock("../opencv/opencv", () => {
+  // eslint-disable-next-line global-require
+  return require("opencv4nodejs-prebuilt");
+});
+
 describe("Computer Vision", () => {
   const capture = path.join(__dirname, "capture.png");
   const match1 = path.join(__dirname, "match_1.png");
