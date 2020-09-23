@@ -7,84 +7,19 @@ import React, {
 } from "react";
 import _ from "lodash";
 import { useSelector } from "react-redux";
-import * as cv from "../opencv";
 import { AppState } from "../redux/stores/renderer";
-
-const debugCv = false;
-
-function getTemplateMat(id: string, xScale: number, yScale: number): cv.Mat {
-  const img = document.getElementById(id) as HTMLImageElement;
-  const canvas = document.createElement("canvas");
-  const w = img.width;
-  const h = img.height;
-  canvas.width = w;
-  canvas.height = h;
-  // console.log(w, h);
-  const ctx = canvas.getContext("2d");
-  if (ctx && w !== 0 && h !== 0) {
-    ctx.drawImage(img, 0, 0);
-    const buff = ctx.getImageData(0, 0, w, h).data;
-    const mat = new cv.Mat(Buffer.from(buff), h, w, cv.CV_8UC4);
-    // console.log(w / xScale, h / yScale);
-    return mat.resize(Math.round(h / yScale), Math.round(w / xScale));
-  }
-  return new cv.Mat();
-}
-
-function matToCanvas(mat: cv.Mat, id: string): void {
-  // convert your image to rgba color space
-  const matRGBA =
-    mat.channels === 1
-      ? mat.cvtColor(cv.COLOR_GRAY2RGBA)
-      : mat.cvtColor(cv.COLOR_BGRA2RGBA);
-
-  // create new ImageData from raw mat data
-  const imgData = new ImageData(
-    new Uint8ClampedArray(matRGBA.getData()),
-    mat.cols,
-    mat.rows
-  );
-
-  // set canvas dimensions
-  const canvas = document.getElementById(id) as HTMLCanvasElement;
-  if (canvas) {
-    canvas.width = mat.cols;
-    canvas.height = mat.rows;
-  }
-
-  // set image data
-  const ctx = canvas.getContext("2d");
-  if (ctx) ctx.putImageData(imgData, 0, 0);
-}
-
-export interface CVResult {
-  dist: number;
-  sizeFactor: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-interface Options {
-  cvMatchValue: number;
-  cvCanvas: number;
-  cvDelay: number;
-}
+import globalData from "../globalData";
+import doCvMatch from "../../utils/doCVMatch";
+import { CVResult } from "../../types/utils";
 
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
-  options?: Partial<Options>
+  options?: Partial<AppState["settings"]>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
-  const {
-    cvMatchValue,
-    cvGrayscale,
-    cvCanvas,
-    cvDelay,
-    cvThreshold,
-    cvApplyThreshold,
-  } = useSelector((state: AppState) => state.settings);
+  const { cvMatchValue, cvCanvas, cvDelay } = useSelector(
+    (state: AppState) => state.settings
+  );
   const [capturing, setCapturing] = useState<boolean>(false);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
@@ -92,11 +27,8 @@ export default function useCVMatch(
   const videoElement = document.getElementById(
     "videoOutput"
   ) as HTMLVideoElement | null;
-  const canvasElement = document.getElementById(
-    "canvasOutput"
-  ) as HTMLCanvasElement | null;
 
-  const opt = {
+  const opt: Partial<AppState["settings"]> = {
     cvMatchValue,
     cvCanvas,
     cvDelay,
@@ -113,135 +45,18 @@ export default function useCVMatch(
 
   const doMatch = useCallback(
     (force: boolean = false) => {
-      if (debugCv) {
-        // console.log(cv ? "CV Ok" : "CV Error", image, frames);
-      }
-      if (
-        cv == undefined ||
-        (images[0] == "" && templateEl.current?.currentSrc == "") ||
-        videoElement?.videoWidth == 0 ||
-        videoElement?.videoHeight == 0
-      )
-        return;
-
-      // get canvas for the ourput
-      const canvas = document.getElementById(
-        "canvasOutput"
-      ) as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d");
-      if (canvas && ctx && videoElement) {
-        // Convert video size to scaled down canvas size
-        // const min = Math.max(videoElement.videoWidth, videoElement.videoHeight);
-        const width = Math.round(
-          (videoElement.videoWidth / 100) * opt.cvCanvas
-        );
-        const height = Math.round(
-          (videoElement.videoHeight / 100) * opt.cvCanvas
-        );
-        canvas.width = width;
-        canvas.height = height;
-        console.log(width, height);
-        // Metrics
-        const xScale = videoElement.videoWidth / width;
-        const yScale = videoElement.videoHeight / height;
-
-        // Draw video onto a new canvas and get the buffer data to a Mat
-
-        ctx.drawImage(videoElement, 0, 0, width, height);
-
-        const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
-        let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
-        srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
-        // Source Mat and Template mat filters should be applied in the same order!
-        if (cvGrayscale) {
-          srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
-        }
-        if (cvApplyThreshold) {
-          srcMat = srcMat.threshold(
-            cvThreshold,
-            255,
-            cv.ADAPTIVE_THRESH_MEAN_C
-          );
-        }
-
-        if (srcMat) {
-          // Template
-          const templateMats = images.map((image, index) => {
-            let ret = getTemplateMat(`templateImage-${index}`, xScale, yScale);
-            // Source Mat and Template mat filters should be applied in the same order!
-            if (cvGrayscale) {
-              ret = ret.cvtColor(cv.COLOR_RGBA2GRAY);
+      if (videoElement && templateEl.current) {
+        doCvMatch(images, videoElement, templateEl.current, opt)
+          .then(callback)
+          .catch(() => {
+            if (!capturing && !force) {
+              setTimeout(() => doMatch(true), 10);
             }
-            if (cvApplyThreshold) {
-              ret = ret.threshold(cvThreshold, 255, cv.ADAPTIVE_THRESH_MEAN_C);
-            }
-            return ret;
           });
-
-          // console.log(templateMat);
-          // Do match
-          let bestPoint = { x: 0, y: 0 };
-          let bestDist = 0;
-          let bestIndex = 0;
-
-          const results = images.map((image, index) => {
-            const result = srcMat.matchTemplate(
-              templateMats[index],
-              cv.TM_CCORR_NORMED,
-              new cv.Mat()
-            );
-
-            const minMax = result.minMaxLoc();
-
-            const point = minMax.maxLoc;
-            const dist = minMax.maxVal;
-            if (dist > bestDist) {
-              bestPoint = point;
-              bestDist = dist;
-              bestIndex = index;
-            }
-            srcMat.drawRectangle(
-              minMax.maxLoc,
-              new cv.Point2(
-                point.x + templateMats[index].cols,
-                point.y + templateMats[index].rows
-              ),
-              new cv.Vec3(0, 255, 0),
-              5
-            );
-
-            return result;
-          });
-
-          if (bestDist > opt.cvMatchValue / 1000) {
-            if (debugCv) {
-              console.log(
-                `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
-              );
-            }
-            const ret: CVResult = {
-              dist: bestDist,
-              sizeFactor: 0,
-              x: Math.round(xScale * bestPoint.x),
-              y: Math.round(yScale * bestPoint.y),
-              width: Math.round(templateMats[bestIndex].cols * xScale),
-              height: Math.round(templateMats[bestIndex].rows * yScale),
-            };
-            callback(ret);
-          } else if (debugCv) {
-            console.log(`not found: ${bestDist} (${opt.cvMatchValue / 1000})`);
-          }
-
-          matToCanvas(srcMat, "canvasTestOutput");
-        } else if (!capturing && !force) {
-          setTimeout(() => doMatch(true), 10);
-        }
-      } else {
-        console.error(canvas, ctx, videoElement);
       }
       setFrames(frames + 1);
     },
-    [callback, capturing, frames, videoElement, canvasElement, templateEl]
+    [callback, capturing, frames, videoElement, templateEl]
   );
 
   useEffect(() => {
@@ -260,7 +75,7 @@ export default function useCVMatch(
     () => () => (
       <div
         style={{
-          display: debugCv ? "flex" : "none",
+          display: globalData.debugCv ? "flex" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}

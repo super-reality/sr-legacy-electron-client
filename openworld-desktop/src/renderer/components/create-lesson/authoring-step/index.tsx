@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import InsertMedia from "../../insert-media";
 import Flex from "../../flex";
 import Select from "../../select";
-import { InputChangeEv, AreaChangeEv } from "../../../../types/utils";
+import { InputChangeEv, AreaChangeEv, CVResult } from "../../../../types/utils";
 import ButtonSimple from "../../button-simple";
 import reduxAction from "../../../redux/reduxAction";
 import {
@@ -21,7 +21,7 @@ import BaseSelect from "../../base-select";
 import BaseTextArea from "../../base-textarea";
 import usePopup from "../../../hooks/usePopup";
 import { AppState } from "../../../redux/stores/renderer";
-import useCVMatch, { CVResult } from "../../../hooks/useCVMatch";
+import useCVMatch from "../../../hooks/useCVMatch";
 import closeFindBox from "../../../../utils/closeFindBox";
 import CVSettings from "../../cv-settings";
 import usePopupValidation from "../../../hooks/usePopupValidation";
