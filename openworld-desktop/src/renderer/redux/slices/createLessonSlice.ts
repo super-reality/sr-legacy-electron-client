@@ -45,7 +45,7 @@ const createLessonSlice = createSlice({
       action: PayloadAction<{ step: IStep; index: number }>
     ): void => {
       const newSteps = [...state.steps];
-      newSteps[action.payload.index] = action.payload.step;
+      newSteps[action.payload.index] = { ...action.payload.step };
       state.steps = newSteps;
     },
     reset: (state: ILesson, action: PayloadAction<null>): void => {

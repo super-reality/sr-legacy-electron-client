@@ -35,7 +35,7 @@ export default function StepCreate(props: StepProps): JSX.Element {
         index: number,
       },
     });
-  }, [dispatch]);
+  }, [data, dispatch]);
 
   return (
     <ItemInner
