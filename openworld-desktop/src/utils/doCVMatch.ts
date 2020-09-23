@@ -50,7 +50,8 @@ function matToCanvas(mat: cv.Mat, id: string): void {
 
 function getMatFromVideo(
   videoElement: HTMLVideoElement,
-  opt: AppState["settings"]
+  width: number,
+  height: number
 ): cv.Mat | null {
   if (videoElement?.videoWidth == 0 || videoElement?.videoHeight == 0) {
     return null;
@@ -60,8 +61,6 @@ function getMatFromVideo(
   const canvas = document.getElementById("canvasOutput") as HTMLCanvasElement;
   const ctx = canvas.getContext("2d");
   if (ctx) {
-    const width = Math.round((videoElement.videoWidth / 100) * opt.cvCanvas);
-    const height = Math.round((videoElement.videoHeight / 100) * opt.cvCanvas);
     canvas.width = width;
     canvas.height = height;
 
@@ -78,7 +77,7 @@ function getMatFromVideo(
 
 export default function doCvMatch(
   images: string[],
-  videoElement: HTMLVideoElement,
+  sourceElement: string | HTMLVideoElement,
   templateEl: HTMLImageElement,
   options: Partial<AppState["settings"]>
 ): Promise<CVResult> {
@@ -95,12 +94,25 @@ export default function doCvMatch(
     if (cv == undefined || (images[0] == "" && templateEl.currentSrc == ""))
       return;
 
-    const ogMat = getMatFromVideo(videoElement, opt);
-    let srcMat = ogMat || new cv.Mat();
-    const width = Math.round((videoElement.videoWidth / 100) * opt.cvCanvas);
-    const height = Math.round((videoElement.videoHeight / 100) * opt.cvCanvas);
-    const xScale = videoElement.videoWidth / width;
-    const yScale = videoElement.videoHeight / height;
+    let srcMat = new cv.Mat();
+    let width = 1;
+    let height = 1;
+    let xScale = 1;
+    let yScale = 1;
+    if (typeof sourceElement == "string") {
+      srcMat = cv.imread(sourceElement);
+      width = Math.round((srcMat.cols / 100) * opt.cvCanvas);
+      height = Math.round((srcMat.rows / 100) * opt.cvCanvas);
+      xScale = srcMat.cols / width;
+      yScale = srcMat.rows / height;
+    } else {
+      width = Math.round((sourceElement.videoWidth / 100) * opt.cvCanvas);
+      height = Math.round((sourceElement.videoHeight / 100) * opt.cvCanvas);
+      xScale = sourceElement.videoWidth / width;
+      yScale = sourceElement.videoHeight / height;
+      const ogMat = getMatFromVideo(sourceElement, width, height);
+      if (ogMat) srcMat = ogMat;
+    }
 
     // Source Mat and Template mat filters should be applied in the same order!
     if (opt.cvGrayscale && srcMat) {
@@ -114,7 +126,7 @@ export default function doCvMatch(
       );
     }
 
-    if (srcMat && ogMat) {
+    if (srcMat) {
       // Template
       const templateMats = images.map((image, index) => {
         let ret = getTemplateMat(`templateImage-${index}`, xScale, yScale);
