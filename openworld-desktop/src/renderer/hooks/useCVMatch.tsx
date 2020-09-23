@@ -46,7 +46,7 @@ export default function useCVMatch(
   const doMatch = useCallback(
     (force: boolean = false) => {
       if (videoElement && templateEl.current) {
-        doCvMatch(images, videoElement, templateEl.current, opt)
+        doCvMatch(images, videoElement, opt)
           .then(callback)
           .catch(() => {
             if (!capturing && !force) {
