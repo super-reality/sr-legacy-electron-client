@@ -7,8 +7,8 @@ import createFindBox from "./createFindBox";
 
 export default function cvStepProcess(
   res: any,
-  stepNow: IStep
-  doNext?: () => void,
+  stepNow: IStep,
+  doNext?: () => void
 ) {
   if (stepNow?.next == NextStepOptions["On Target Detected"]) {
     if (doNext) {
