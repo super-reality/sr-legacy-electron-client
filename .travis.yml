@@ -24,9 +24,8 @@ jobs:
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
+        - npm install --global windows-build-tools
         - npm install
-        - ls node_modules/opencv4nodejs-prebuilt/build/Release
-        - ls node_modules/opencv4nodejs-prebuilt/build/Release/
         - npm run test:all
         - npm run build:web
         - npm run build
