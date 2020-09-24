@@ -25,7 +25,7 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
-        - npm run test:all
+        #- npm run test:all
         #- npm run build:web
         #- npm run build
         #- node ./rm-unpacked.js
