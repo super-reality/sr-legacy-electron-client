@@ -1,6 +1,5 @@
 /* eslint-env jest */
 import path from "path";
-import globalData from "../../renderer/globalData";
 import { AppState } from "../../renderer/redux/stores/renderer";
 import doCvMatch from "../doCVMatch";
 
@@ -55,7 +54,7 @@ describe("Computer Vision", () => {
 
   test("Can find code", async (done) => {
     await doCvMatch([matchCode], capture, codeOptions)
-      .then(res => {
+      .then((res) => {
         expect(res.dist).toBeGreaterThan(0.99);
         expect(isNear(res.x, 394, 2)).toBeTruthy();
         expect(isNear(res.y, 168, 2)).toBeTruthy();
@@ -66,9 +65,13 @@ describe("Computer Vision", () => {
   });
 
   test("Can find with OR", async (done) => {
-    await doCvMatch([matchGoogle, matchSonic, matchCode, matchColor1], capture, thresholdOptions)
-      .then(res => {
-        expect(res.dist).toBeGreaterThan(0.99)
+    await doCvMatch(
+      [matchGoogle, matchSonic, matchCode, matchColor1],
+      capture,
+      thresholdOptions
+    )
+      .then((res) => {
+        expect(res.dist).toBeGreaterThan(0.99);
       })
       .catch(console.error);
     done();
@@ -76,8 +79,8 @@ describe("Computer Vision", () => {
 
   test("Can find test target with default settings", async (done) => {
     await doCvMatch([matchGoogle], capture, defaultOptions)
-      .then(res => {
-        expect(res.dist).toBeGreaterThan(0.99)
+      .then((res) => {
+        expect(res.dist).toBeGreaterThan(0.99);
         expect(isNear(res.x, 1153, 2)).toBeTruthy();
         expect(isNear(res.y, 793, 2)).toBeTruthy();
       })
@@ -86,4 +89,3 @@ describe("Computer Vision", () => {
     done();
   });
 });
-

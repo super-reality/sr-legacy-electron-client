@@ -119,11 +119,8 @@ export default function doCvMatch(
       if (ogMat) srcMat = ogMat;
     }
 
-
     if (globalData.debugCv) {
-      console.log(
-        `Source: ${width}x${height}, Scaling: ${xScale}/${yScale}`
-      );
+      console.log(`Source: ${width}x${height}, Scaling: ${xScale}/${yScale}`);
     }
 
     // Source Mat and Template mat filters should be applied in the same order!
@@ -148,7 +145,9 @@ export default function doCvMatch(
 
         if (globalData.debugCv) {
           console.log(
-            `Template: ${ret.cols}x${ret.rows} => ${Math.round(ret.cols / xScale)}/${Math.round(ret.rows / yScale)}`
+            `Template: ${ret.cols}x${ret.rows} => ${Math.round(
+              ret.cols / xScale
+            )}/${Math.round(ret.rows / yScale)}`
           );
         }
 
@@ -194,7 +193,9 @@ export default function doCvMatch(
       if (bestDist > opt.cvMatchValue / 1000) {
         if (globalData.debugCv) {
           console.log(
-            `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(xScale * bestPoint.x)},${Math.round(yScale * bestPoint.y)}`
+            `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(
+              xScale * bestPoint.x
+            )},${Math.round(yScale * bestPoint.y)}`
           );
         }
         const ret: CVResult = {
