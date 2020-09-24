@@ -26,9 +26,9 @@ jobs:
         - cd openworld-desktop
         - npm install
         - npm run test:all
-        - npm run build:web
-        - npm run build
-        - node ./rm-unpacked.js
+        #- npm run build:web
+        #- npm run build
+        #- node ./rm-unpacked.js
       deploy:
         on:
           all_branches: true
