@@ -6,7 +6,7 @@ import { ApiError } from "./types";
 
 export default function handleAuthSignin(
   res: AxiosResponse<ApiError | SignIn>
-) {
+): void {
   if (res.status === 200) {
     if (res.data.err_code === 0) {
       window.localStorage.setItem("username", res.data.user.username);
@@ -17,6 +17,11 @@ export default function handleAuthSignin(
         type: "AUTH_SUCCESSFUL",
         arg: res.data,
       });
+      return;
     }
   }
+  reduxAction(store.dispatch, {
+    type: "AUTH_FAILED",
+    arg: null,
+  });
 }

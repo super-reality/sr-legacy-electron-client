@@ -6,7 +6,7 @@ import "../../components/buttons.scss";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
 import { API_URL, timeout } from "../../constants";
-import handleAuthLogin from "../../api/handleAuthSignin";
+import handleAuthSignin from "../../api/handleAuthSignin";
 import handleAuthSingup from "../../api/handleAuthSignup";
 import handleAuthError from "../../api/handleAuthError";
 import { ApiError } from "../../api/types";
@@ -57,7 +57,7 @@ export default function Auth(props: AuthProps): JSX.Element {
           },
         })
         .then((res) => {
-          handleAuthLogin(res);
+          handleAuthSignin(res);
           onAuth();
         })
         .catch(handleAuthError);
@@ -72,7 +72,7 @@ export default function Auth(props: AuthProps): JSX.Element {
           timeout: timeout,
         })
         .then((res) => {
-          handleAuthLogin(res);
+          handleAuthSignin(res);
           onAuth();
         })
         .catch(handleAuthError);
