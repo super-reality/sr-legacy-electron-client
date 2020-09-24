@@ -22,9 +22,9 @@ describe("Computer Vision", () => {
   };
 
   test("Can find test target with default settings", async (ret) => {
-    await doCvMatch([match1], capture, defaultOptions).then((res) =>
-      expect(res.dist).toBeGreaterThan(0.99)
-    );
+    await doCvMatch([match1], capture, defaultOptions)
+      .then((res) => expect(res.dist).toBeGreaterThan(0.99))
+      .catch(console.error);
     return ret;
   });
 });
