@@ -24,7 +24,10 @@ jobs:
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
-        - npm install --global windows-build-tools
+        - node-gyp -v
+        - npm config get msvs_version
+        - npm config get python
+        - cmake --version
         - npm install
         - npm run test:all
         - npm run build:web
