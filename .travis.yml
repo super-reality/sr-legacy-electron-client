@@ -28,7 +28,7 @@ jobs:
         - npm run build:web
         - npm run build
         - node ./rm-unpacked.js
-        - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
+        - npm run test:all
       deploy:
         on:
           all_branches: true
