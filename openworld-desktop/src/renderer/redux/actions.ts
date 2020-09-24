@@ -39,6 +39,7 @@ export const actions = {
   USERDATA_TOGGLE_LESSON: userDataSlice.toggleLesson,
   CLEAR_SETTINGS: settingsSlice.clearsettings,
   SET_SETTINGS: settingsSlice.setSettings,
+  SET_CV_SETTINGS: settingsSlice.setCVSettings,
 };
 
 export type ActionKeys = keyof typeof actions;

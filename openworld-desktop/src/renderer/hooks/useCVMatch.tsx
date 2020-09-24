@@ -84,7 +84,7 @@ export default function useCVMatch(
     cvDelay,
     cvThreshold,
     cvApplyThreshold,
-  } = useSelector((state: AppState) => state.settings);
+  } = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
