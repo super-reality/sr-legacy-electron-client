@@ -74,7 +74,7 @@ export default function StepAuthoring(): JSX.Element {
     if (isCapturing) {
       endCV();
     } else {
-      getTTS(finalData.description);
+      getTTS(finalData.description, true);
       startCV();
     }
   }, [startCV, endCV, isCapturing, finalData]);
