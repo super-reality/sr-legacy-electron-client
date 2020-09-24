@@ -24,6 +24,8 @@ jobs:
       env: YARN_GPG=no
       script:
         - cd openworld-desktop
+        - npm install -g node-gyp
+        - npm config set msvs_version 2017
         - node-gyp -v
         - npm config get msvs_version
         - npm config get python
