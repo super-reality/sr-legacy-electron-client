@@ -88,7 +88,7 @@ export default function doCvMatch(
 
   return new Promise((resolve, reject) => {
     if (globalData.debugCv) {
-      // console.log(cv ? "CV Ok" : "CV Error", image, frames);
+      // console.log(cv ? "CV Ok" : "CV Error", images);
     }
     if (cv == undefined || images[0] == "") return;
 
@@ -100,18 +100,30 @@ export default function doCvMatch(
     let mode: "Local" | "Dom" = "Dom";
     if (typeof sourceElement == "string") {
       srcMat = cv.imread(sourceElement);
-      width = Math.round((srcMat.cols / 100) * opt.cvCanvas);
-      height = Math.round((srcMat.rows / 100) * opt.cvCanvas);
+      width = (srcMat.cols / 100) * opt.cvCanvas;
+      height = (srcMat.rows / 100) * opt.cvCanvas;
       xScale = srcMat.cols / width;
       yScale = srcMat.rows / height;
+      width = Math.round(width);
+      height = Math.round(height);
+      srcMat = srcMat.resize(height, width);
       mode = "Local";
     } else {
-      width = Math.round((sourceElement.videoWidth / 100) * opt.cvCanvas);
-      height = Math.round((sourceElement.videoHeight / 100) * opt.cvCanvas);
+      width = (sourceElement.videoWidth / 100) * opt.cvCanvas;
+      height = (sourceElement.videoHeight / 100) * opt.cvCanvas;
       xScale = sourceElement.videoWidth / width;
       yScale = sourceElement.videoHeight / height;
+      width = Math.round(width);
+      height = Math.round(height);
       const ogMat = getMatFromVideo(sourceElement, width, height);
       if (ogMat) srcMat = ogMat;
+    }
+
+
+    if (globalData.debugCv) {
+      console.log(
+        `Source: ${width}x${height}, Scaling: ${xScale}/${yScale}`
+      );
     }
 
     // Source Mat and Template mat filters should be applied in the same order!
@@ -133,6 +145,12 @@ export default function doCvMatch(
           mode == "Dom"
             ? getTemplateMat(`templateImage-${index}`)
             : cv.imread(image);
+
+        if (globalData.debugCv) {
+          console.log(
+            `Template: ${ret.cols}x${ret.rows} => ${Math.round(ret.cols / xScale)}/${Math.round(ret.rows / yScale)}`
+          );
+        }
 
         ret = ret.resize(
           Math.round(ret.rows / yScale),
@@ -176,7 +194,7 @@ export default function doCvMatch(
       if (bestDist > opt.cvMatchValue / 1000) {
         if (globalData.debugCv) {
           console.log(
-            `Distance: ${bestDist}, index: ${bestIndex}, point: ${bestPoint.x},${bestPoint.y}`
+            `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(xScale * bestPoint.x)},${Math.round(yScale * bestPoint.y)}`
           );
         }
         const ret: CVResult = {
