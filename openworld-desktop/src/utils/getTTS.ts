@@ -1,6 +1,6 @@
 import Axios from "axios";
-import fileDownload from "js-file-download";
 import fs from "fs";
+import fileDownload from "js-file-download";
 import handleGetTTS from "../renderer/api/handleGetTTS";
 import setLoading from "../renderer/redux/utils/setLoading";
 import sha1 from "./sha1";
