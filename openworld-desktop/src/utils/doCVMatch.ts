@@ -78,11 +78,11 @@ function getMatFromVideo(
 export default function doCvMatch(
   images: string[],
   sourceElement: string | HTMLVideoElement,
-  options: Partial<AppState["settings"]>
+  options: Partial<AppState["settings"]["cv"]>
 ): Promise<CVResult> {
   // Feed default settings from redux store + passed settings
-  const opt: AppState["settings"] = {
-    ...store.getState().settings,
+  const opt: AppState["settings"]["cv"] = {
+    ...store.getState().settings.cv,
     ...options,
   };
 
