@@ -28,10 +28,6 @@ export default function useCVMatch(
   ) as HTMLVideoElement | null;
 
   const opt: typeof initialCVSettings = useMemo(() => {
-    console.log(
-      "initialCVSettings",
-      _.pick(options, Object.keys(initialCVSettings))
-    );
     return {
       ...settings,
       ..._.pick(options, Object.keys(initialCVSettings)),
@@ -48,6 +44,7 @@ export default function useCVMatch(
 
   const doMatch = useCallback(
     (force: boolean = false) => {
+      // console.log(opt);
       if (videoElement && templateEl.current) {
         doCvMatch(images, videoElement, opt)
           .then(callback)
