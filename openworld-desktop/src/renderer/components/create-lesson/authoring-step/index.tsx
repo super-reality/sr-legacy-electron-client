@@ -29,6 +29,7 @@ import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
 import cvStepProcess from "../../../../utils/cvStepProcess";
+import getTTS from "../../../../utils/getTTS";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
@@ -73,11 +74,10 @@ export default function StepAuthoring(): JSX.Element {
     if (isCapturing) {
       endCV();
     } else {
-      // play audio too
-      // The CV logic for functions and triggers should be abstracted out
+      getTTS(finalData.description, true);
       startCV();
     }
-  }, [startCV, endCV, isCapturing]);
+  }, [startCV, endCV, isCapturing, finalData]);
 
   useEffect(() => {
     return () => {
