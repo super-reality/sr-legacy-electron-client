@@ -33,7 +33,7 @@ import getTTS from "../../../../utils/getTTS";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { cvMatchValue } = useSelector((state: AppState) => state.settings);
+  const settings = useSelector((state: AppState) => state.settings.cv);
   const finalData = useSelector((state: AppState) => state.createStep);
   const [creationState, setCreationState] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -55,7 +55,7 @@ export default function StepAuthoring(): JSX.Element {
     (res: CVResult) => {
       setThreshold(Math.round(res.dist * 1000));
       cvStepProcess(res, finalData);
-      if (res.dist < cvMatchValue / 1000) {
+      if (res.dist < settings.cvMatchValue / 1000) {
         cvNotFound();
       }
     },
@@ -160,7 +160,10 @@ export default function StepAuthoring(): JSX.Element {
       if (finalData.index !== undefined) {
         reduxAction(dispatch, {
           type: "CREATE_LESSON_STEP_REPLACE",
-          arg: { step: finalData, index: finalData.index },
+          arg: {
+            step: finalData,
+            index: finalData.index,
+          },
         });
       } else {
         reduxAction(dispatch, { type: "CREATE_LESSON_STEP", arg: finalData });
@@ -273,7 +276,7 @@ export default function StepAuthoring(): JSX.Element {
             style={{
               textAlign: "center",
               color: `var(--color-${
-                cvMatchValue > thresholdFound ? "red" : "green"
+                settings.cvMatchValue > thresholdFound ? "red" : "green"
               })`,
             }}
           >

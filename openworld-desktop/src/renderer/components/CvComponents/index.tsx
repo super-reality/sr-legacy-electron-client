@@ -4,9 +4,7 @@ import { captureDesktopStream } from "../../../utils/capture";
 import { AppState } from "../../redux/stores/renderer";
 
 export default function CvComponents() {
-  const { cvThreshold, cvCanvas, cvDelay } = useSelector(
-    (state: AppState) => state.settings
-  );
+  const { cvCanvas } = useSelector((state: AppState) => state.settings.cv);
   const videoElement = useRef<HTMLVideoElement | null>(null);
   const canvasEl = useRef<HTMLCanvasElement | null>(null);
 

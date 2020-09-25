@@ -17,9 +17,7 @@ export default function useCVMatch(
   callback: (result: CVResult) => void,
   options?: Partial<AppState["settings"]>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
-  const { cvMatchValue, cvCanvas, cvDelay } = useSelector(
-    (state: AppState) => state.settings
-  );
+  const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
   const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
@@ -28,10 +26,8 @@ export default function useCVMatch(
     "videoOutput"
   ) as HTMLVideoElement | null;
 
-  const opt: Partial<AppState["settings"]> = {
-    cvMatchValue,
-    cvCanvas,
-    cvDelay,
+  const opt: Partial<AppState["settings"]["cv"]> = {
+    ...settings,
     ...options,
   };
 

@@ -14,6 +14,12 @@ export const initialState: IStep = {
   trigger: Object.values(TriggerOptions)[0],
   description: "",
   next: Object.values(NextStepOptions)[0],
+  cvMatchValue: 990,
+  cvCanvas: 50,
+  cvDelay: 100,
+  cvGrayscale: true,
+  cvApplyThreshold: false,
+  cvThreshold: 127,
 };
 
 const createStepSlice = createSlice({

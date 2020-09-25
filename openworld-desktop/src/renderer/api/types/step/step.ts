@@ -36,4 +36,10 @@ export interface IStep {
   trigger: number;
   description: string;
   next: number;
+  cvMatchValue: number;
+  cvCanvas: number;
+  cvDelay: number;
+  cvGrayscale: boolean;
+  cvApplyThreshold: boolean;
+  cvThreshold: number;
 }
