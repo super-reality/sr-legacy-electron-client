@@ -23,7 +23,7 @@ describe("Computer Vision", () => {
   const matchCode = path.join(__dirname, "images", "match_code.png");
   const matchColor1 = path.join(__dirname, "images", "match_color_1.png");
 
-  const thresholdOptions: AppState["settings"] = {
+  const thresholdOptions: AppState["settings"]["cv"] = {
     cvMatchValue: 0,
     cvCanvas: 50,
     cvDelay: 100,
@@ -32,7 +32,7 @@ describe("Computer Vision", () => {
     cvThreshold: 100,
   };
 
-  const codeOptions: AppState["settings"] = {
+  const codeOptions: AppState["settings"]["cv"] = {
     cvMatchValue: 0,
     cvCanvas: 100,
     cvDelay: 100,
@@ -41,7 +41,7 @@ describe("Computer Vision", () => {
     cvThreshold: 127,
   };
 
-  const defaultOptions: AppState["settings"] = {
+  const defaultOptions: AppState["settings"]["cv"] = {
     cvMatchValue: 0,
     cvCanvas: 50,
     cvDelay: 100,
@@ -49,8 +49,6 @@ describe("Computer Vision", () => {
     cvApplyThreshold: false,
     cvThreshold: 127,
   };
-
-  // globalData.debugCv = true;
 
   test("Can find code", async (done) => {
     await doCvMatch([matchCode], capture, codeOptions)
