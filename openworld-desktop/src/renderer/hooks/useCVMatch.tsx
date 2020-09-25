@@ -15,7 +15,7 @@ import { CVResult } from "../../types/utils";
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
-  options?: Partial<AppState["settings"]>
+  options?: Partial<AppState["settings"]["cv"]>
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);

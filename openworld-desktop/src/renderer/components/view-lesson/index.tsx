@@ -30,6 +30,7 @@ import useCVMatch from "../../hooks/useCVMatch";
 import closeFindBox from "../../../utils/closeFindBox";
 import cvStepProcess from "../../../utils/cvStepProcess";
 import { initialState } from "../../redux/slices/createStepSlice";
+import getTTS from "../../../utils/getTTS";
 
 interface ViewLessonProps {
   id: string;
@@ -52,7 +53,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   const doNext = useCallback(() => {
     if (data == undefined || data?.totalSteps.length <= currentStep + 1) return;
     setCurrentStep(currentStep + 1);
-  }, [data, currentStep]);
+  }, [data, currentStep, stepNow]);
 
   const doPrev = useCallback(() => {
     if (data == undefined || currentStep - 1 < 0) return;
@@ -97,6 +98,10 @@ export default function ViewLesson(props: ViewLessonProps) {
       endCv();
     };
   }, []);
+
+  useEffect(() => {
+    if (stepNow && isPlaying) getTTS(stepNow.description, true);
+  }, [stepNow, isPlaying]);
 
   const doStart = useCallback(() => {
     startCV();
