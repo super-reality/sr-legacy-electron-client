@@ -10,7 +10,6 @@ env:
   global:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-  - PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 cache: npm
 
@@ -18,9 +17,6 @@ filter_secrets: false
 
 addons:
   hostname: localhost
-
-before_install:
-  choco install python vcredist-all
 
 jobs:
   include:
