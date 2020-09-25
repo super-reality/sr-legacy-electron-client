@@ -25,10 +25,10 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
-        #- npm run test:all
-        #- npm run build:web
-        #- npm run build
-        #- node ./rm-unpacked.js
+        - npm run test:all
+        - npm run build:web
+        - npm run build
+        - node ./rm-unpacked.js
       deploy:
         on:
           all_branches: true
@@ -40,4 +40,4 @@ jobs:
         skip_cleanup: true
         region: "us-west-1"
         acl: public_read
-        local_dir: node_modules/opencv4nodejs-prebuilt/build/Release
+        local_dir: dist
