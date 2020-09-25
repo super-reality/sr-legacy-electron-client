@@ -10,6 +10,7 @@ env:
   global:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
 cache: npm
 
 filter_secrets: false
@@ -25,10 +26,10 @@ jobs:
       script:
         - cd openworld-desktop
         - npm install
+        - npm run test:all
         - npm run build:web
         - npm run build
         - node ./rm-unpacked.js
-        - 'npm run test:all || (node ./upload-vrt.js && exit 1)'
       deploy:
         on:
           all_branches: true
