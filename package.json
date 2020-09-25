@@ -56,8 +56,7 @@
     "npm": ">=6.0.0"
   },
   "scripts": {
-    "pre:constants": "copyfiles -u 3 \"../openworld-server/config/constant.js\" src/renderer/api && eslint src/renderer/api/constant.js --fix",
-    "start": "npm run pre:constants && nf start -p 3000",
+    "start": "nf start -p 3000",
     "react-start": "craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
@@ -68,7 +67,7 @@
     "jest:ci": "craco test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
     "jest:ci:watch": "craco test --env=jsdom --testPathIgnorePatterns \"src/__tests__/\"",
     "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
-    "test:all": "npm run pre:constants && npm run test:eslint && npm run jest:ci",
+    "test:all": "npm run test:eslint && npm run jest:ci",
     "eject": "react-scripts eject",
     "electron": "electron .",
     "electron-start": "node src/start-react",
@@ -164,7 +163,6 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "expect-puppeteer": "^4.4.0",
     "glob": "^7.1.6",
-    "imgur": "^0.3.1",
     "jest": "24.9.0",
     "jest-image-snapshot": "^4.1.0",
     "jest-puppeteer": "^4.4.0",

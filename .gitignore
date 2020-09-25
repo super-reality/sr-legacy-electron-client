@@ -7,11 +7,11 @@
 
 # testing
 /coverage
+/src/__tests__/__image_snapshots__/__diff_output__/*
 
 # production
 /dist
 /build
-/public/main.exe
 
 # misc
 .DS_Store
