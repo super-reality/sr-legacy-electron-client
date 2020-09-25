@@ -7,6 +7,7 @@ import { ItemInner, Title, Text } from "../item-inner";
 import { IStep } from "../../api/types/step/step";
 import EditButton from "../edit-button";
 import reduxAction from "../../redux/reduxAction";
+import { initialCVSettings } from "../../redux/static";
 
 interface StepProps {
   data: IStep;
@@ -23,15 +24,15 @@ export default function StepCreate(props: StepProps): JSX.Element {
     reduxAction(dispatch, {
       type: "CREATE_STEP_DATA",
       arg: {
-        ..._.pick(
-          data,
+        ..._.pick(data, [
           "images",
           "functions",
           "name",
           "trigger",
           "description",
-          "next"
-        ),
+          "next",
+          ...Object.keys(initialCVSettings),
+        ]),
         index: number,
       },
     });

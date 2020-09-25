@@ -102,8 +102,14 @@ export default function ViewLesson(props: ViewLessonProps) {
   }, []);
 
   useEffect(() => {
-    if (stepNow && isPlaying) getTTS(stepNow.description, true);
-  }, [stepNow, isPlaying]);
+    if (stepNow && isPlaying) {
+      reduxAction(dispatch, {
+        type: "SET_CV_SETTINGS",
+        arg: _.pick(stepNow, Object.keys(initialCVSettings)),
+      });
+      getTTS(stepNow.description, true);
+    }
+  }, [stepNow, isPlaying, dispatch]);
 
   const doStart = useCallback(() => {
     startCV();
