@@ -52,6 +52,7 @@ const selectOptionsByTab: Record<
     "Create Anything": Category.All,
     "Create Project": Category.Project,
     "Create Collection": Category.Collection,
+    "Create Subject": Category.Subject,
     "Create Lesson": Category.Lesson,
     "Create Portfolio Piece": Category.Portfolio,
     "Create Resource": Category.Resource,

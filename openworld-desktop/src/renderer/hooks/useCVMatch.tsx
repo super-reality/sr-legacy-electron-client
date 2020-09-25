@@ -11,11 +11,12 @@ import { AppState } from "../redux/stores/renderer";
 import globalData from "../globalData";
 import doCvMatch from "../../utils/doCVMatch";
 import { CVResult } from "../../types/utils";
+import { initialCVSettings } from "../redux/static";
 
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
-  options?: Partial<AppState["settings"]["cv"]>
+  options?: typeof initialCVSettings
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
@@ -26,10 +27,16 @@ export default function useCVMatch(
     "videoOutput"
   ) as HTMLVideoElement | null;
 
-  const opt: Partial<AppState["settings"]["cv"]> = {
-    ...settings,
-    ...options,
-  };
+  const opt: typeof initialCVSettings = useMemo(() => {
+    console.log(
+      "initialCVSettings",
+      _.pick(options, Object.keys(initialCVSettings))
+    );
+    return {
+      ...settings,
+      ..._.pick(options, Object.keys(initialCVSettings)),
+    };
+  }, [options]);
 
   const beginCapture = useCallback(() => {
     setCapturing(true);
@@ -52,7 +59,7 @@ export default function useCVMatch(
       }
       setFrames(frames + 1);
     },
-    [callback, capturing, frames, videoElement, templateEl]
+    [callback, capturing, frames, videoElement, templateEl, opt]
   );
 
   useEffect(() => {
@@ -65,7 +72,7 @@ export default function useCVMatch(
       const id = setInterval(doMatch, opt.cvDelay);
       return () => clearInterval(id);
     }
-  }, [capturing, frames]);
+  }, [capturing, frames, opt]);
 
   const Component = useMemo(
     () => () => (

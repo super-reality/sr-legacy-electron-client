@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
+import _ from "lodash";
 import "./index.scss";
 import "../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -31,6 +32,7 @@ import closeFindBox from "../../../utils/closeFindBox";
 import cvStepProcess from "../../../utils/cvStepProcess";
 import { initialState } from "../../redux/slices/createStepSlice";
 import getTTS from "../../../utils/getTTS";
+import { initialCVSettings } from "../../redux/static";
 
 interface ViewLessonProps {
   id: string;

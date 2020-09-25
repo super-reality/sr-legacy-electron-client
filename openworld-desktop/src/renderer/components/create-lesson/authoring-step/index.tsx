@@ -33,7 +33,6 @@ import getTTS from "../../../../utils/getTTS";
 
 export default function StepAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const settings = useSelector((state: AppState) => state.settings.cv);
   const finalData = useSelector((state: AppState) => state.createStep);
   const [creationState, setCreationState] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -55,20 +54,21 @@ export default function StepAuthoring(): JSX.Element {
     (res: CVResult) => {
       setThreshold(Math.round(res.dist * 1000));
       cvStepProcess(res, finalData);
-      if (res.dist < settings.cvMatchValue / 1000) {
+      if (res.dist < finalData.cvMatchValue / 1000) {
         cvNotFound();
       }
     },
     [finalData]
   );
 
-  const [
-    CV,
-    isCapturing,
-    startCV,
-    endCV,
-    singleCV,
-  ] = useCVMatch(finalData.images || [""], cvShow, { cvMatchValue: 0 });
+  const [CV, isCapturing, startCV, endCV, singleCV] = useCVMatch(
+    finalData.images || [""],
+    cvShow,
+    {
+      ...finalData,
+      cvMatchValue: 0,
+    }
+  );
 
   const doTest = useCallback(() => {
     if (isCapturing) {
@@ -276,7 +276,7 @@ export default function StepAuthoring(): JSX.Element {
             style={{
               textAlign: "center",
               color: `var(--color-${
-                settings.cvMatchValue > thresholdFound ? "red" : "green"
+                finalData.cvMatchValue > thresholdFound ? "red" : "green"
               })`,
             }}
           >
