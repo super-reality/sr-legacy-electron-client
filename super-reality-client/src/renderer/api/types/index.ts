@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-// import constants from "../../../../../openworld-server/config/constant";
 
 import CollectionGet, { ICollectionGet } from "./collection/get";
 import SubjectGet, { ISubjectGet } from "./subject/get";
