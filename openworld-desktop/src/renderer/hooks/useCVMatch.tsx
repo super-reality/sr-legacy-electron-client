@@ -32,7 +32,7 @@ export default function useCVMatch(
       ...settings,
       ..._.pick(options, Object.keys(initialCVSettings)),
     };
-  }, [options]);
+  }, [settings, options]);
 
   const beginCapture = useCallback(() => {
     setCapturing(true);
