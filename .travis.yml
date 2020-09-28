@@ -21,10 +21,10 @@ addons:
 jobs:
   include:
     - stage: Tests
-      os: Windows
+      os: windows
       env: YARN_GPG=no
       script:
-        - cd openworld-desktop
+        - cd super-reality-client
         - npm install
         - npm run test:all
         - npm run build:web
