@@ -1,72 +1,45 @@
-# OpenWorld
+# Super Reality Client
 
-## Environment setup
+## Installing
 
-### Server dev setup
+1. `npm install`
 
-1. `cd openworld-desktop`
+2. if not installed; `npm install foreman -g`
 
-2. *(optional)* `nodenv install`
 
-3. `npm run docker:up`
+## Run from source
 
-4. `npm run serve`
+If this is the first time after installing:
 
-#### Environment variables
+`npm run electron-build` or `npm run build`
 
-Stored in `/openworld-server/.env`, will not be committed.
+Once finished simply do `npm run start`
 
-- `ROOT_USERNAME`: bootstrapping username, **disable account after admin made**
-- `ROOT_PASSWORD`: bootstrapping password, **disable account after admin made**
-- `PORT`: server listening port
-- `MONGO_URL`: mongodb url, probably `mongodb://localhost:27017` in docker
-- `JWT_ISSUER`: issuer of the jwt
-- `JWT_AUDIENCE`: intended audience for the jwt
-- `JWT_EXPIRATION`: expiration offset for the jwt
-- `JWT_SECRET`: secret for jwt hashing
-
-Example .env file (FOR DEVELOPMENT ONLY)
-
-```
-ROOT_USERNAME=root
-ROOT_PASSWORD=password
-PORT=8000
-MONGO_URL=mongodb://localhost:27017
-JWT_ISSUER=com.gamegen.openworld-server
-JWT_AUDIENCE=openworld-server
-JWT_EXPIRATION=7d
-JWT_SECRET=dont-use-this-secret-in-production
-```
-
-### Desktop dev setup (requires server to be running)
-
-1. `cd openworld-desktop`
-
-2. *(optional)* `nodenv install`
-
-3. `npm install` or `npm run install:wsl` if using WSL (haven't tested with WSL 2)
-
-4. `npm run start` to start parcel and electron
 
 ## Building
 
-### Server builds
+- `npm run build` for desktop
 
-1. steps 1-2 in server dev
+- `npm run build:web` for web
 
-2. `npm run docker:build`
 
-### Desktop builds
+## Testing
 
-1. steps 1-3 in desktop dev
+`npm run jest:ci:watch` opens jest watcher with common CI tests
 
-2. `npm run electron:build` for uncompressed, `npm run electron:dist` for compressed with installer
+`npm run test:all` Runs a single pass of lint + jest
 
-## Contributing
+To run or develop visual tests;
 
-Put additional components or microservices in root-level folders. For example, `/openworld-cv` or `/openworld-xrengine`.
+- Build for web: `npm run build:web`
+- Start Jest server: `npm run jest-server`
+- Start Jest server: `npm run jest-server` (dont close it)
+- Start Jest watcher: `npm run jest:watch`
 
-### Making changes
+All visual tests are declared in `src/__tests__/electron.ts` and the code for the test component is in `src/renderer/views/tests/index.tsx`
+
+
+## Making changes
 
 1. Branch from `develop`
 
@@ -74,3 +47,4 @@ Put additional components or microservices in root-level folders. For example, `
 
 Try to keep `develop` in a buildable and runnable state.
 
+Merging to `master` triggers automatic version bump.
