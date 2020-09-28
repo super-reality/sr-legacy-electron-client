@@ -1,6 +1,10 @@
 /* eslint-disable camelcase */
 // import constants from "../../../../../openworld-server/config/constant";
 
+import CollectionGet, { ICollectionGet } from "./collection/get";
+import SubjectGet, { ISubjectGet } from "./subject/get";
+import LessonGet, { ILessonGet } from "./lesson/get";
+
 export type CategoryAll = 0;
 export type CategoryLesson = 1;
 export type CategorySubject = 2;
@@ -76,3 +80,32 @@ export interface ApiError {
   hash?: string;
   msg: string;
 }
+
+export interface ApiSucess {
+  err_code: CodeSuccess;
+}
+
+export interface ApiOk {
+  err_code: CodeSuccess;
+  msg: string;
+}
+
+interface CollectionApi {
+  type: "collection";
+  data?: ICollectionGet;
+  api?: CollectionGet;
+}
+
+interface SubjectApi {
+  type: "subject";
+  data?: ISubjectGet;
+  api?: SubjectGet;
+}
+
+interface LessonApi {
+  type: "lesson";
+  data?: ILessonGet;
+  api?: LessonGet;
+}
+
+export type ApiJoin = CollectionApi | SubjectApi | LessonApi;

@@ -22,22 +22,24 @@ export const TriggerOptions = {
 };
 
 export const NextStepOptions = {
-  "Press Next Step": constant.Next_Step.Press_Next_Step_Button,
-  "On Highlight Clicked": constant.Next_Step.On_Highlight_Clicked,
-  "On text reading finished": constant.Next_Step.On_Text_Reading_Finished,
+  "Press Next": constant.Next_Step.Press_Next_Step_Button,
+  "On Target Clicked": constant.Next_Step.On_Highlight_Clicked,
+  "On Target Detected": constant.Next_Step.On_Target_Detected,
+  "On Text reading finished": constant.Next_Step.On_Text_Reading_Finished,
 };
 
-export interface ICVFn {
-  image: string;
-  function: number;
-}
-
 export interface IStep {
-  image: string;
-  imageFunction: number;
-  additionalFunctions: ICVFn[];
+  index?: number;
+  images: string[];
+  functions: number[];
   name: string;
   trigger: number;
   description: string;
   next: number;
+  cvMatchValue: number;
+  cvCanvas: number;
+  cvDelay: number;
+  cvGrayscale: boolean;
+  cvApplyThreshold: boolean;
+  cvThreshold: number;
 }

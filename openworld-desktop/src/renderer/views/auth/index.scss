@@ -2,23 +2,27 @@
 
 .auth-container {
   display: flex;
+  border-radius: 5px;
+  overflow: auto;
   flex-direction: column;
-  width: -webkit-fill-available;
+  width: calc(100% - 24px);
   max-width: 400px;
   max-height: 100%;
   margin: auto;
   font-size: 18px;
-  @include soft-shadow;
+  @include hard-shadow;
 
   fieldset {
     background-color: var(--color-section);
-    border: 1px solid rgba(0, 0, 0, 0.52);
-    border-radius: 8px;
+    border: 0;
     padding-block-end: 8px;
     padding-block-start: 16px;
     padding-inline-start: 16px;
     padding-inline-end: 16px;
     padding-bottom: 16px;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    min-inline-size: 0;
   }
 
   .input-container {

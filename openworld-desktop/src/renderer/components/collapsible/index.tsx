@@ -8,10 +8,12 @@ import "./index.scss";
 import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";
 import { ReactComponent as DropArrow } from "../../../assets/svg/drop.svg";
+import { ReactComponent as DetachIcon } from "../../../assets/svg/detach.svg";
 
 interface CollapsibleProps {
   title: string;
   outer?: boolean;
+  detach?: () => void;
   id?: string;
   expanded?: boolean;
 }
@@ -19,7 +21,7 @@ interface CollapsibleProps {
 export default function Collapsible(
   props: PropsWithChildren<CollapsibleProps>
 ): JSX.Element {
-  const { id, outer, title, children } = props;
+  const { id, outer, title, children, detach } = props;
   let { expanded } = props;
 
   const localId = `collapsible-${id || title}`;
@@ -68,6 +70,22 @@ export default function Collapsible(
           <DropArrow width="12.4px" height="8px" fill="var(--color-icon)" />
         </div>
         <div style={{ marginLeft: "8px" }}>{title}</div>
+        {detach ? (
+          <div
+            className="icon-detach"
+            onClick={(e) => {
+              e.stopPropagation();
+              detach();
+            }}
+          >
+            <DetachIcon
+              style={{ margin: "auto", width: "14px", height: "14px" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       <animated.div
         style={{ ...expand, overflow }}

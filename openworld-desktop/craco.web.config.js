@@ -5,4 +5,11 @@ module.exports = {
       target: "web",
     },
   },
+  eslint: {
+    configure: {
+      rules: {
+        "no-underscore-dangle": "off",
+      },
+    },
+  },
 };

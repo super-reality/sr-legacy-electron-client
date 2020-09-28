@@ -20,6 +20,7 @@
     "jsx": "react"
   },
   "include": [
-    "src", "public/start.js"
+    "src",
+    "public/start.js"
   ]
 }

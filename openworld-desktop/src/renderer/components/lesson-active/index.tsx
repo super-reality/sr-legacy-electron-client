@@ -1,36 +1,92 @@
-import React, { useCallback, useState } from "react";
-import "./index.scss";
-import "../popups.scss";
-import { ItemInner, Icon, Title, Social, ContainerTop } from "../item-inner";
-import { ILessonData } from "../../../types/api";
-import usePopupModal from "../../hooks/usePopupModal";
+/* eslint-disable react/no-array-index-key */
+
+import React from "react";
+
+import { useSelector } from "react-redux";
+import {
+  ItemInner,
+  Icon,
+  Points,
+  Title,
+  Text,
+  Image,
+  ContainerTop,
+  ContainerFlex,
+  ContainerBottom,
+  ItemInnerLoader,
+} from "../item-inner";
 import CheckButton from "../check-button";
+import ShareButton from "../share-button";
+import { AppState } from "../../redux/stores/renderer";
+import usePopupAdd from "../../hooks/usePopupAdd";
+import Collapsible from "../collapsible";
+import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
+import Step from "../step";
+import useDataGet from "../../hooks/useDataGet";
+import useTrashButton from "../../hooks/useTrashButton";
+import Flex from "../flex";
 
 interface LessonActiveProps {
-  data: ILessonData;
+  id: string;
+  compact?: boolean;
 }
 
-export default function LessonActive(props: LessonActiveProps) {
-  const { data } = props;
+export default function LessonActive(props: LessonActiveProps): JSX.Element {
+  const { id, compact } = props;
+  const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
+  const checked = useSelector((state: AppState) =>
+    state.userData.lessons.includes(id)
+  );
 
-  const clickYes = useCallback(() => {
-    console.log("You clicked yes!");
-  }, []);
+  const [PopupAdd, open] = usePopupAdd(checked, "lesson", id);
 
-  const [PopupModal, open] = usePopupModal("Add to your lessons?", clickYes);
+  const [Trash, deleted] = useTrashButton("collection", id);
+  if (deleted) return <></>;
 
-  return (
-    <ItemInner>
-      <PopupModal />
-      <ContainerTop>
-        <Icon url={data.avatarUrl} />
-        <Title title={data.name} sub={data.creator} />
-        <CheckButton
-          style={{ margin: "auto 4px auto auto" }}
-          checked
-          callback={open}
-        />
-      </ContainerTop>
-    </ItemInner>
+  return data ? (
+    <>
+      <ItemInner text>
+        <PopupAdd />
+        <ContainerTop>
+          <Icon url={data.icon} />
+          <Points points={0} />
+          <Title title={data.name} sub={`${data.totalSteps.length} Steps`} />
+        </ContainerTop>
+        <ContainerFlex>
+          <Text>{data.description}</Text>
+        </ContainerFlex>
+        <Flex column>
+          {data.medias.map((url) => (
+            <Image key={`url-image-${url}`} src={url} />
+          ))}
+        </Flex>
+        <ContainerBottom>
+          <CheckButton
+            style={{ margin: "auto" }}
+            checked={checked}
+            callback={open}
+          />
+          <div />
+          <Trash />
+          <ShareButton style={{ margin: "auto" }} />
+        </ContainerBottom>
+      </ItemInner>
+      {compact ? (
+        <></>
+      ) : (
+        <Collapsible expanded outer title="Subjects">
+          {data.totalSteps.map((step, i: number) => (
+            <Step
+              key={`step-${i}`}
+              number={i + 1}
+              data={step}
+              style={{ margin: "5px 10px", height: "auto" }}
+            />
+          ))}
+        </Collapsible>
+      )}
+    </>
+  ) : (
+    <ItemInnerLoader style={{ height: "400px" }} />
   );
 }

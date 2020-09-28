@@ -7,6 +7,8 @@ const installDevTools = require("./devtools");
 
 let mainWindow;
 
+app.allowRendererProcessReuse = false;
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     backgroundColor: "#242526",

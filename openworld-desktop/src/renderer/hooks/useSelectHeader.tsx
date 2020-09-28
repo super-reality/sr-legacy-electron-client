@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import "./index.scss";
 import { useRouteMatch } from "react-router-dom";
-import { useWindowSize } from "react-use";
+import { useWindowSize, useMeasure } from "react-use";
 import { useSelector } from "react-redux";
 import Category from "../../types/collections";
 import { tabNames } from "../redux/slices/renderSlice";
@@ -52,6 +52,7 @@ const selectOptionsByTab: Record<
     "Create Anything": Category.All,
     "Create Project": Category.Project,
     "Create Collection": Category.Collection,
+    "Create Subject": Category.Subject,
     "Create Lesson": Category.Lesson,
     "Create Portfolio Piece": Category.Portfolio,
     "Create Resource": Category.Resource,
@@ -61,7 +62,8 @@ const selectOptionsByTab: Record<
 
 export default function useSelectHeader(
   title: tabNames | null,
-  onSelect: (route: string, selected: string | Category) => void
+  onSelect: (route: string, selected: string | Category) => void,
+  containerRef: React.MutableRefObject<HTMLDivElement | null>
 ): [() => JSX.Element, React.MutableRefObject<HTMLDivElement | null>] {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -75,15 +77,19 @@ export default function useSelectHeader(
     category: string;
   }>("/:any/:category");
 
-  const { width } = useWindowSize();
+  const windowWidth = useWindowSize().width;
 
-  const leftOffset = 16;
-  const buttonSize = (width - leftOffset - leftOffset) / 4 - 24 + 16;
+  const { offsetWidth, offsetLeft } = containerRef.current || {
+    offsetWidth: 0,
+    offsetLeft: 0,
+  };
+
+  const buttonSize = offsetWidth / 4 - 8;
   const centers: Record<tabNames, number> = {
-    Discover: 16 + 8 * 0 + buttonSize * 0.5,
-    Learn: 16 + 8 * 1 + buttonSize * 1.5,
-    Teach: 16 + 8 * 2 + buttonSize * 2.5,
-    Create: 16 + 8 * 3 + buttonSize * 3.5,
+    Discover: offsetLeft + 8 * 0 + buttonSize * 0.5,
+    Learn: offsetLeft + 8 * 1 + buttonSize * 1.5,
+    Teach: offsetLeft + 8 * 2 + buttonSize * 2.5,
+    Create: offsetLeft + 8 * 3 + buttonSize * 3.5,
   };
 
   const titleToRoute: Record<tabNames, string> = {
@@ -94,7 +100,10 @@ export default function useSelectHeader(
   };
 
   if (title) {
-    const left = Math.min(Math.max(8, centers[title] - 104), width - 208 - 8);
+    const left = Math.min(
+      Math.max(8, centers[title] - 104),
+      windowWidth - 208 - 8
+    );
     const currentOptions = selectOptionsByTab[title];
     const Dropdown = () => (
       <div

@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import { useCallback } from "react";
 
-export default function useMediaSniper(
+export default function useMediaInsert(
   onFinish: (url: string) => void
 ): () => void {
   const open = useCallback(() => {
@@ -9,12 +9,20 @@ export default function useMediaSniper(
     remote.dialog
       .showOpenDialog(remote.getCurrentWindow(), {
         properties: ["openFile"],
-        filters: [{ name: "Images", extensions: ["png", "jpg", "jpeg"] }],
+        filters: [
+          {
+            name: "Images",
+            extensions: ["bmp", "png", "jpg", "jpeg", "ico", "webm"],
+          },
+          {
+            name: "Any",
+            extensions: ["*"],
+          },
+        ],
       })
       .then((ret: any) => {
         // onFinish(ret.filePaths[0]);
-        if (!ret.canceled)
-          onFinish(`"${ret.filePaths[0].replace(/\\/g, "/")}"`);
+        if (!ret.canceled) onFinish(ret.filePaths[0].replace(/\\/g, "/"));
       });
   }, [onFinish]);
 

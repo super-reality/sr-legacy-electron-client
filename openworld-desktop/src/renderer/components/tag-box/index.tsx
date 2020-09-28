@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { ReactComponent as AddIcon } from "../../../assets/svg/add.svg";
 import "./index.scss";
 import "../tag/index.scss";
 import Tag from "../tag";
 import { InputChangeEv } from "../../../types/utils";
 
-interface ITag {
+export interface ITag {
   name: string;
   id: string;
 }
@@ -61,30 +61,19 @@ function AddTag(props: AddTagProps): JSX.Element {
 
 export default function useTagsBox(
   initialTags: ITag[],
+  addTagFn: (tag: ITag) => void,
+  removeTagFn: (i: number) => void,
   input?: boolean
-): [() => JSX.Element, (toAdd: ITag) => void, () => ITag[]] {
-  const [tags, setTags] = useState<ITag[]>(initialTags);
+): JSX.Element {
+  const [tags, setTagsfn] = useState<ITag[]>([]);
 
-  const addTag = useCallback(
-    (toAdd: ITag) => {
-      if (tags.filter((t) => t.id == toAdd.id).length == 0)
-        setTags([...tags, toAdd]);
-    },
-    [tags]
-  );
+  useEffect(() => setTagsfn(initialTags), [initialTags]);
 
-  const removeTag = useCallback(
-    (index: number) => {
-      const newArr = [...tags];
-      newArr.splice(index, 1);
-      setTags(newArr);
-    },
-    [tags]
-  );
+  const addTag = useCallback((toAdd: ITag) => addTagFn(toAdd), [addTagFn]);
 
-  const getTags = useCallback(() => tags, [tags]);
+  const removeTag = useCallback((i: number) => removeTagFn(i), [removeTagFn]);
 
-  const Container = () => (
+  return (
     <div className="tags-container">
       {tags.map((tag, i) => (
         <Tag
@@ -97,6 +86,4 @@ export default function useTagsBox(
       {input ? <AddTag callback={addTag} /> : <></>}
     </div>
   );
-
-  return [Container, addTag, getTags];
 }

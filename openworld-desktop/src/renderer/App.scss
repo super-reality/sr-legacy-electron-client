@@ -1,3 +1,5 @@
+@import "./components/misc.scss";
+
 :root {
   --color-background: #202225;
   --color-section: #2F3136;
@@ -82,6 +84,21 @@ a:focus, a:hover, a:visited, a:link, a:active {
   height: calc(100vh - 45px);
 }
 
+.content-detached {
+  overflow: auto;
+  height: 100vh;
+}
+
+.content-wrapper {
+  @include media-screen-max($break-wrapper) {
+    width: auto;
+  }
+  @include media-screen-min($break-wrapper) {
+    width: $break-wrapper;
+    margin: auto;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -101,4 +118,17 @@ a:focus, a:hover, a:visited, a:link, a:active {
   &:hover {
     background: #4f5152;
   }
+}
+
+.animation-container{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.animation-el{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
 }

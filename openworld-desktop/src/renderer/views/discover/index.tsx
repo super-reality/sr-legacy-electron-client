@@ -5,6 +5,9 @@ import { useRouteMatch } from "react-router-dom";
 import Collapsible from "../../components/collapsible";
 import Category from "../../../types/collections";
 import DiscoverFinder from "../../components/discover-finder";
+import CollectionActive from "../../components/collection-active";
+import SubjectActive from "../../components/subject-active";
+import LessonActive from "../../components/lesson-active";
 
 export default function Discover(): JSX.Element {
   const catMatch = useRouteMatch<{
@@ -12,6 +15,24 @@ export default function Discover(): JSX.Element {
     category: string;
   }>("/discover/:category");
   const current = (catMatch?.params.category || Category.All) as Category;
+
+  const typeMatch = useRouteMatch<{
+    type: string;
+    id: string;
+  }>("/discover/:type/:id");
+
+  const currentType: string | null = typeMatch?.params.type || null;
+  const currentId: string | null = typeMatch?.params.id || null;
+
+  if (currentType && currentId) {
+    return (
+      <>
+        {currentType == "collection" && <CollectionActive id={currentId} />}
+        {currentType == "subject" && <SubjectActive id={currentId} />}
+        {currentType == "lesson" && <LessonActive id={currentId} />}
+      </>
+    );
+  }
 
   return (
     <>
@@ -23,11 +44,9 @@ export default function Discover(): JSX.Element {
         <></>
       )}
       {current == Category.Subject || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Subjects"
-        />
+        <Collapsible outer expanded={current !== Category.All} title="Subjects">
+          <DiscoverFinder category={Category.Subject} />
+        </Collapsible>
       ) : (
         <></>
       )}

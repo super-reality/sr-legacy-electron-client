@@ -9,7 +9,11 @@ const collectionController  = require('../../../controllers/collectionController
 const subjectController     = require('../../../controllers/subjectController')
 const lessonController      = require('../../../controllers/lessonController')
 const stepController        = require('../../../controllers/stepController')
-const tagController        = require('../../../controllers/tagController')
+const tagController         = require('../../../controllers/tagController')
+const fileController        = require('../../../controllers/fileController')
+
+const multer  = require('multer');
+const fileParser  = multer({ storage: multer.memoryStorage() });
 
 // full route "/v1/api"
 router.get('/', function (req, res) {
@@ -27,6 +31,13 @@ router.group("/auth", (router) => {
     router.post("/verify", auth(), authController.verify)
 })
 
+// user routes
+router.group("/user", (router) => {
+
+    // book lesson
+    router.post("/book-lesson", auth(), userController.bookLesson)
+})
+
 // find
 router.get("/find", collectionController.find)
 
@@ -34,24 +45,43 @@ router.get("/find", collectionController.find)
 router.group("/collection", (router) => {
     router.post("/create", auth(), collectionController.create)
     router.get("/list", auth(), collectionController.list)
+    router.post("/search", auth(), collectionController.search)
+    router.get("/:id", auth(), collectionController.detail)
+    router.put("/update", auth(), collectionController.update)
+    router.delete("/:id", auth(), collectionController.deleteOne)
 })
 
 // subject routes
 router.group("/subject", (router) => {
     router.post("/create", auth(), subjectController.create)
-    // router.put("/update/:lesson_id", auth(), lessonController.list)
+    router.get("/search-parent/:query", auth(), subjectController.searchParent)
+    router.post("/search", auth(), subjectController.search)
+    router.get("/:id", auth(), subjectController.detail)
+    router.put("/update", auth(), subjectController.update)
+    router.delete("/:id", auth(), subjectController.deleteOne)
 })
 
 // lessons routes
 router.group("/lesson", (router) => {
     router.post("/create", auth(), lessonController.create)
+    router.post("/createWithForm", [auth(), fileParser.any()], lessonController.createWithForm)
     router.get("/search-parent/:query", auth(), lessonController.searchParent)
+
+    router.post("/search", auth(), lessonController.search)
+    router.get("/:id", auth(), lessonController.detail)
+    router.put("/update", auth(), lessonController.update)
+    router.delete("/:id", auth(), lessonController.deleteOne)
     // router.put("/update/:lesson_id", auth(), lessonController.list)
 })
 
 // tag routes
 router.group("/tag", (router) => {
     router.get("/search/:query", auth(), tagController.search)
+})
+
+// file routes
+router.group("/file", (router) => {
+    router.post("/upload", [auth(), fileParser.any()], fileController.upload)
 })
 
 module.exports = router

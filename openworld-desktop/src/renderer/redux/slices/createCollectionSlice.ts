@@ -2,15 +2,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ICollection } from "../../api/types/collection/collection";
 import { EntryOptions } from "../../api/types/lesson/lesson";
+import { ITag } from "../../components/tag-box";
 
 const initialState: ICollection = {
+  _id: undefined,
   icon: "",
   name: "",
   shortDescription: "",
   description: "",
   medias: [],
   tags: [],
-  visibility: "",
+  visibility: [],
   entry: EntryOptions.Open,
 };
 
@@ -24,11 +26,14 @@ const createCollectionSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    addTag: (state: ICollection, action: PayloadAction<string>): void => {
+    addTag: (state: ICollection, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
     reset: (state: ICollection, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
+      state.medias = [];
+      state.tags = [];
+      state.visibility = [];
     },
   },
 });

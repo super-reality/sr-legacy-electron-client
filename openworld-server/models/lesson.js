@@ -11,7 +11,6 @@ const lessonSchema = new Schema({
     // lesson icon url
     icon: { 
         type: String,
-        required: true, 
     },
     // lesson name
     name: { 

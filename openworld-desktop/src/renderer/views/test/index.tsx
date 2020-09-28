@@ -1,30 +1,20 @@
 import React, { useCallback } from "react";
 import "./index.scss";
-import usePopup from "../../hooks/usePopup";
+import ButtonSimple from "../../components/button-simple";
+import createFindBox from "../../../utils/createFindBox";
 
 export default function Test(): JSX.Element {
-  const closePopup = useCallback(() => console.log("popup closed"), []);
+  const onCLose = useCallback(() => console.log("Closed!"), []);
 
-  const [Popup, open] = usePopup(false, closePopup);
+  const onClick = useCallback(() => {
+    createFindBox({ x: 100, y: 100, width: 200, height: 100 }).then(onCLose);
+  }, []);
 
   return (
     <div className="mid">
-      <Popup width="400px" height="300px">
-        <div style={{ margin: "auto" }}>Popup test!</div>
-      </Popup>
-      <div
-        style={{
-          cursor: "pointer",
-          backgroundColor: "#C0C0C0",
-          textAlign: "center",
-          color: "#000",
-          width: "200px",
-          height: "32px",
-        }}
-        onClick={open}
-      >
+      <ButtonSimple width="200px" height="24px" margin="auto" onClick={onClick}>
         Click me!
-      </div>
+      </ButtonSimple>
     </div>
   );
 }

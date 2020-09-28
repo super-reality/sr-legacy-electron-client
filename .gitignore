@@ -152,3 +152,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 openworld-desktop/.vscode/launch.json
 openworld-desktop/package-lock.json
+openworld-desktop/.env

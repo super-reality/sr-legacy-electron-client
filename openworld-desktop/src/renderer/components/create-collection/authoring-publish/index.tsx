@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,20 +8,50 @@ import ButtonSimple from "../../button-simple";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { API_URL } from "../../../constants";
-import { ApiError } from "../../../api/types";
 import handleGenericError from "../../../api/handleGenericError";
-import useTagsBox from "../../tag-box";
-import usePopup from "../../../hooks/usePopup";
-import CollectionCreate from "../../../api/types/collection/create";
+import useTagsBox, { ITag } from "../../tag-box";
 import handleCollectionCreate from "../../../api/handleCollectionCreate";
 import { EntryOptions } from "../../../api/types/lesson/lesson";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
+import { ICollection } from "../../../api/types/collection/collection";
+import setLoading from "../../../redux/utils/setLoading";
+import usePopupValidation from "../../../hooks/usePopupValidation";
+import uploadMany from "../../../../utils/uploadMany";
+import makeValidation, {
+  ValidationFields,
+} from "../../../../utils/makeValidation";
+import ITagToString from "../../../../utils/ITagToString";
+
+const uploadArtifacts = (original: ICollection) => {
+  const fileNames = [];
+  fileNames.push(original.icon);
+  original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
+  return uploadMany(fileNames);
+};
+
+const preprocessDataBeforePost = (
+  postData: ICollection,
+  artifacts: Record<string, string>
+): any => {
+  return {
+    ...postData,
+    icon: artifacts[postData.icon],
+    tags: ITagToString(postData.tags),
+    medias: postData.medias.map((item: string) => {
+      return artifacts[item];
+    }),
+  };
+};
 
 export default function PublishAuthoring(): JSX.Element {
   const dispatch = useDispatch();
-  const { entry } = useSelector((state: AppState) => state.createCollection);
+  const entry = useSelector((state: AppState) => state.createCollection.entry);
+  const tags = useSelector((state: AppState) => state.createCollection.tags);
   const finalData = useSelector((state: AppState) => state.createCollection);
+  const [creationState, setCreationState] = useState(true);
+
+  const isEditing = finalData._id !== undefined;
 
   const setEntry = useCallback(
     (_entry: number) => {
@@ -33,69 +63,81 @@ export default function PublishAuthoring(): JSX.Element {
     [dispatch]
   );
 
-  const [Popup, open, closePopup] = usePopup(false);
+  const [ValidationPopup, open] = usePopupValidation("collection");
 
   const validateFields = useCallback(() => {
-    const reasons: string[] = [];
-    if (finalData.name.length == 0) reasons.push("Title is required");
-    else if (finalData.name.length < 4) reasons.push("Title is too short");
-
-    if (finalData.description.length == 0)
-      reasons.push("Description is required");
-    else if (finalData.description.length < 10)
-      reasons.push("Description is too short");
-
-    if (finalData.shortDescription.length == 0)
-      reasons.push("Short description is required");
-    else if (finalData.shortDescription.length < 5)
-      reasons.push("Short description is too short");
-
-    if (finalData.icon == "") reasons.push("Icon is required");
-    if (finalData.medias.length == 0) reasons.push("Media is required");
-
-    return reasons;
+    const validation: ValidationFields<ICollection> = {
+      name: { name: "Title", minLength: 4 },
+      description: { name: "Description", minLength: 4 },
+      shortDescription: { name: "Short description", minLength: 4 },
+      icon: { name: "Icon", minLength: 4 },
+      medias: { name: "Media", minItems: 0 },
+    };
+    return makeValidation<ICollection>(validation, finalData);
   }, [finalData]);
 
-  const lessonPublish = useCallback(() => {
+  const doPublish = useCallback(() => {
     const reasons = validateFields();
+    setLoading(true);
     if (reasons.length == 0) {
-      axios
-        .post<CollectionCreate | ApiError>(
-          `${API_URL}collection/create`,
-          finalData
+      uploadArtifacts(finalData)
+        .then((artifacts) =>
+          axios({
+            method: isEditing ? "PUT" : "POST",
+            url: `${API_URL}collection/${isEditing ? "update" : "create"}`,
+            data: preprocessDataBeforePost(finalData, artifacts),
+          })
         )
         .then(handleCollectionCreate)
-        .catch(handleGenericError);
+        .then(() => {
+          setLoading(false);
+          setCreationState(true);
+          open();
+        })
+        .catch((err) => {
+          setLoading(false);
+          setCreationState(false);
+          open();
+          handleGenericError(err);
+        });
     } else {
+      setLoading(false);
+      setCreationState(false);
       open();
     }
   }, [open, finalData]);
 
-  const [TagsBox, addTag, getTags] = useTagsBox([], true);
+  const addTag = useCallback(
+    (tag: ITag) => {
+      reduxAction(dispatch, {
+        type: "CREATE_COLLECTION_DATA",
+        arg: { tags: [...tags, tag] },
+      });
+    },
+    [dispatch, tags]
+  );
 
-  useEffect(() => {
-    const tagsList: string[] = getTags().map((t) => t.name);
-    reduxAction(dispatch, {
-      type: "CREATE_COLLECTION_DATA",
-      arg: { tags: tagsList },
-    });
-  }, [getTags]);
+  const removeTag = useCallback(
+    (index: number) => {
+      const newArr = [...tags];
+      newArr.splice(index, 1);
+      reduxAction(dispatch, {
+        type: "CREATE_COLLECTION_DATA",
+        arg: { tags: newArr },
+      });
+    },
+    [dispatch, tags]
+  );
+
+  const TagsBox = useTagsBox(tags, addTag, removeTag, true);
 
   return (
     <>
-      <Popup width="400px" height="auto">
-        <div className="validation-popup">
-          <div className="title">Please review before publishing:</div>
-          {validateFields().map((r) => (
-            <div className="line" key={r}>
-              {r}
-            </div>
-          ))}
-          <ButtonSimple className="button" onClick={closePopup}>
-            Ok
-          </ButtonSimple>
-        </div>
-      </Popup>
+      <ValidationPopup
+        sucess={creationState}
+        validationFn={validateFields}
+        edit={isEditing}
+      />
       <BaseSelect
         title="Entry"
         current={entry}
@@ -106,7 +148,7 @@ export default function PublishAuthoring(): JSX.Element {
       <Flex>
         <div className="container-with-desc">
           <div>Tags</div>
-          <TagsBox />
+          {TagsBox}
         </div>
       </Flex>
       <Flex style={{ marginTop: "8px" }}>
@@ -114,9 +156,9 @@ export default function PublishAuthoring(): JSX.Element {
           margin="8px auto"
           width="200px"
           height="24px"
-          onClick={lessonPublish}
+          onClick={doPublish}
         >
-          Publish
+          {isEditing ? "Edit" : "Publish"}
         </ButtonSimple>
       </Flex>
     </>

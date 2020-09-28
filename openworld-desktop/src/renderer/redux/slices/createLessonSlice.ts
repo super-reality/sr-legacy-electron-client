@@ -6,8 +6,10 @@ import {
   EntryOptions,
   DifficultyOptions,
 } from "../../api/types/lesson/lesson";
+import { ITag } from "../../components/tag-box";
 
 const initialState: ILesson = {
+  _id: undefined,
   parent: [],
   difficulty: DifficultyOptions.Intermediate,
   ownership: [],
@@ -32,18 +34,38 @@ const createLessonSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    addTag: (state: ILesson, action: PayloadAction<string>): void => {
+    addTag: (state: ILesson, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
     addStep: (state: ILesson, action: PayloadAction<IStep>): void => {
       state.steps = [...state.steps, action.payload];
     },
+    replaceStep: (
+      state: ILesson,
+      action: PayloadAction<{ step: IStep; index: number }>
+    ): void => {
+      const newSteps = [...state.steps];
+      newSteps[action.payload.index] = { ...action.payload.step };
+      state.steps = newSteps;
+    },
     reset: (state: ILesson, action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
+      state.parent = [];
+      state.ownership = [];
+      state.tags = [];
+      state.medias = [];
+      state.visibility = [];
+      state.steps = [];
     },
   },
 });
 
-export const { setData, addTag, addStep, reset } = createLessonSlice.actions;
+export const {
+  setData,
+  addTag,
+  addStep,
+  replaceStep,
+  reset,
+} = createLessonSlice.actions;
 
 export default createLessonSlice;

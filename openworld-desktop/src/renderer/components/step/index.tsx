@@ -1,40 +1,43 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 
 import "./index.scss";
-import {
-  ItemInner,
-  Icon,
-  Title,
-  Text,
-  ContainerTop,
-  ContainerFlex,
-} from "../item-inner";
+import { ItemInner, Title, Text } from "../item-inner";
 import { IStep } from "../../api/types/step/step";
 
 interface StepProps {
   data: IStep;
   number: number;
+  onClick?: () => void;
+  style?: CSSProperties;
 }
 
 export default function Step(props: StepProps): JSX.Element {
-  const { data, number } = props;
+  const { data, onClick, style, number } = props;
 
   return (
     <ItemInner
       style={{
-        margin: "0",
+        margin: "8px",
         width: "-webkit-fill-available",
-        height: "-webkit-fill-available",
+        ...style,
       }}
-      drag
+      onClick={onClick}
       text
     >
-      <ContainerFlex>
-        <Title title={data.name} sub={`Step ${number}`} />
-      </ContainerFlex>
-      <ContainerFlex>
-        <Text>{data.description}</Text>
-      </ContainerFlex>
+      <div className="container-step-edit">
+        <Title title={data.name} sub={`Step ${number + 1}`} />
+        <div />
+        <div />
+        <Text
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "pre",
+          }}
+        >
+          {data.description}
+        </Text>
+      </div>
     </ItemInner>
   );
 }

@@ -1,10 +1,18 @@
+// import "./wdyr";
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { HashRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import App from "./renderer/App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
+import handleIpc from "./utils/handleIpc";
+import isElectron from "./utils/isElectron";
+
+if (isElectron()) {
+  handleIpc();
+}
 
 ReactDOM.render(
   <React.StrictMode>

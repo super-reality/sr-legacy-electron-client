@@ -28,12 +28,81 @@ export function ItemInner(
   );
 }
 
+export function ItemInnerLoader(
+  props: PropsWithChildren<InnerItemProps>
+): JSX.Element {
+  const { style } = props;
+  return (
+    <div className="item-container loader" style={{ ...style }}>
+      <div
+        className="item-icon"
+        style={{
+          ...style,
+          width: "100%",
+          height: "100%",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "icon",
+        }}
+      />
+      <div
+        style={{
+          width: "60%",
+          height: "10px",
+          borderRadius: "4px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "titleup",
+        }}
+      />
+      <div
+        style={{
+          width: "40%",
+          height: "10px",
+          borderRadius: "4px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "titlebot",
+        }}
+      />
+      <div
+        style={{
+          width: "100%",
+          height: "32px",
+          borderRadius: "5px",
+          backgroundColor: "var(--color-section-inner-hover)",
+          gridArea: "score",
+        }}
+      />
+    </div>
+  );
+}
+
+export function ContainerTopFace(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-topface" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
 export function ContainerTop(
   props: PropsWithChildren<{ style?: CSSProperties }>
 ): JSX.Element {
   const { children, style } = props;
   return (
     <div className="container-top" style={{ ...style }}>
+      {children}
+    </div>
+  );
+}
+
+export function ContainerTopBig(
+  props: PropsWithChildren<{ style?: CSSProperties }>
+): JSX.Element {
+  const { children, style } = props;
+  return (
+    <div className="container-top-big" style={{ ...style }}>
       {children}
     </div>
   );
@@ -171,12 +240,18 @@ interface ImageProps {
   src: string;
   style?: CSSProperties;
   area?: string;
+  onClick?: any;
 }
 
 export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
-  const { src, style, area, children } = props;
+  const { src, style, area, children, onClick } = props;
+
   return (
-    <div className="item-image" style={{ ...style, gridArea: area }}>
+    <div
+      className="item-image"
+      style={{ ...style, gridArea: area }}
+      onClick={onClick}
+    >
       <img src={src} />
     </div>
   );
