@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { CSSProperties, useCallback, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import { isEqual } from "lodash";
 import {
   Slider,
   Rail,
@@ -149,29 +150,13 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
     ticksNumber,
     style,
   } = props;
-  const [state, setState] = useState<{
-    values: readonly number[];
-    update: readonly number[];
-  }>({
-    values: defaultValues.slice(),
-    update: defaultValues.slice(),
-  });
+  const [state, setState] = useState<readonly number[]>(defaultValues.slice());
 
-  const onUpdate = useCallback(
-    (update: readonly number[]) => {
-      if (slideCallback) slideCallback(update);
-      setState({ values: state.values, update: update });
-    },
-    [state.values]
-  );
-
-  const onChange = useCallback(
-    (values: readonly number[]) => {
-      if (callback) callback(values);
-      setState({ values: values, update: state.update });
-    },
-    [state.update]
-  );
+  useEffect(() => {
+    if (!isEqual(state, defaultValues)) {
+      setState(defaultValues);
+    }
+  }, [state, defaultValues]);
 
   return (
     <Flex style={{ overflow: "hidden" }}>
@@ -194,9 +179,9 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
             disabled={disabled}
             domain={domain}
             rootStyle={sliderStyle}
-            onUpdate={onUpdate}
-            onChange={onChange}
-            values={state.values}
+            onUpdate={slideCallback}
+            onChange={callback}
+            values={state}
           >
             <Rail>
               {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
