@@ -1,13 +1,13 @@
 import React, { useCallback } from "react";
 import "./index.scss";
 import ButtonSimple from "../../components/button-simple";
-import createFindBox from "../../../utils/createFindBox";
+import createLessonInterface from "../../../utils/createLessonInterface";
 
 export default function Test(): JSX.Element {
   const onCLose = useCallback(() => console.log("Closed!"), []);
 
   const onClick = useCallback(() => {
-    createFindBox({ x: 100, y: 100, width: 200, height: 100 }).then(onCLose);
+    createLessonInterface({}).then(onCLose);
   }, []);
 
   return (

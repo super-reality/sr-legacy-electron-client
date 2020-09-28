@@ -8,6 +8,7 @@ const initialState = {
   yScrollMoveTo: undefined as number | undefined,
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
+  overlayTransparent: false as boolean,
 };
 
 type RenderState = typeof initialState;
@@ -19,6 +20,12 @@ const renderSlice = createSlice({
     setYScroll: (state: RenderState, action: PayloadAction<number>): void => {
       state.yScrollDelta = state.yScroll - action.payload;
       state.yScroll = action.payload;
+    },
+    setOverlayTransparent: (
+      state: RenderState,
+      action: PayloadAction<boolean>
+    ): void => {
+      state.overlayTransparent = action.payload;
     },
     setYScrollMoveTo: (
       state: RenderState,
@@ -41,6 +48,7 @@ const renderSlice = createSlice({
 
 export const {
   setYScroll,
+  setOverlayTransparent,
   setYScrollMoveTo,
   setTopInput,
 } = renderSlice.actions;

@@ -18,6 +18,7 @@ export const actions = {
   SET_YSCROLL: renderSlice.setYScroll,
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
+  SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
