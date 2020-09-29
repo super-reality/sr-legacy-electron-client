@@ -16,14 +16,12 @@ export default function createLessonInterface(
   }
   const { remote } = require("electron");
   const newWindow = new remote.BrowserWindow({
-    // frame: true,
-    resizable: true,
     transparent: true,
+    resizable: false,
+    fullscreen: true,
     alwaysOnTop: true,
     show: false,
     frame: false,
-    opacity: 1,
-    paintWhenInitiallyHidden: true,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -34,16 +32,18 @@ export default function createLessonInterface(
   newWindow.removeMenu();
 
   remote.globalShortcut.register("Alt+Shift+S", function () {
+    newWindow.setIgnoreMouseEvents(true, { forward: true });
+    /*
     const transparent = store.getState().render.overlayTransparent;
     reduxAction(store.dispatch, {
       type: "SET_OVERLAY_TRANSPARENT",
       arg: !transparent,
     });
+    newWindow.setIgnoreMouseEvents(false);
     if (transparent) {
       newWindow.setIgnoreMouseEvents(true, { forward: true });
-    } else {
-      newWindow.setIgnoreMouseEvents(false);
     }
+    */
   });
 
   const proc: any = process;
