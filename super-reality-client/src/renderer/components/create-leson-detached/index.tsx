@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import interact from "interactjs";
-import TransparencyFix from "./electron-transparency-mouse-fix";
 import "./index.scss";
 
 const restrictMinSize =
@@ -95,10 +94,27 @@ function Windowlet() {
 export default function CreateLessonDetached(): JSX.Element {
   useEffect(() => {
     document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    // eslint-disable-next-line no-new
-    new TransparencyFix({
-      log: false,
-      fixPointerEvents: "auto",
+  }, []);
+
+  useLayoutEffect(() => {
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    const { setIgnoreMouseEvents } = remote.getCurrentWindow();
+
+    let t: NodeJS.Timeout;
+
+    window.addEventListener("mousemove", (event) => {
+      const target = event.target as HTMLElement;
+      if (
+        target?.classList?.contains("click-through") ||
+        target?.id == "root"
+      ) {
+        setIgnoreMouseEvents(true, { forward: true });
+        if (t) clearTimeout(t);
+        t = setTimeout(() => {
+          setIgnoreMouseEvents(false);
+        }, 150);
+      } else setIgnoreMouseEvents(false);
     });
   }, []);
 

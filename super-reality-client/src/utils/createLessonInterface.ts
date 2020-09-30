@@ -2,7 +2,6 @@
 /* eslint-disable global-require */
 import path from "path";
 import url from "url";
-import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
 import isElectron from "./isElectron";
 
@@ -19,9 +18,11 @@ export default function createLessonInterface(
     transparent: true,
     resizable: false,
     fullscreen: true,
-    alwaysOnTop: true,
     show: false,
     frame: false,
+    alwaysOnTop: true,
+    acceptFirstMouse: true,
+    focusable: false,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -30,9 +31,9 @@ export default function createLessonInterface(
   });
 
   newWindow.removeMenu();
+  // newWindow.setIgnoreMouseEvents(true, { forward: true });
 
   remote.globalShortcut.register("Alt+Shift+S", function () {
-    newWindow.setIgnoreMouseEvents(true, { forward: true });
     /*
     const transparent = store.getState().render.overlayTransparent;
     reduxAction(store.dispatch, {
@@ -63,7 +64,7 @@ export default function createLessonInterface(
   );
 
   return new Promise<void>((resolve) => {
-    newWindow.webContents.openDevTools();
+    newWindow.webContents.openDevTools({ mode: "undocked" });
     newWindow.webContents.once("dom-ready", () => {
       newWindow.webContents.send("token", store.getState().auth.token);
       newWindow.webContents.send("detached", {
