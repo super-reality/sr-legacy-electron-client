@@ -15,6 +15,7 @@ import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
 import ButtonSimple from "../button-simple";
+import setFocusable from "../../../utils/setFocusable";
 
 const restrictMinSize =
   interact.modifiers &&
@@ -142,18 +143,20 @@ export default function CreateLessonDetached(): JSX.Element {
         interact(resizeContainer.current as HTMLDivElement).unset();
     }
     return () => {};
-  }, []);
+  }, [resizeContainer]);
 
   const setTransparent = useCallback(() => {
     reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
     setTopMost(true);
     setMaximize(true);
+    setFocusable(false);
   }, [dispatch]);
 
   const setSolid = useCallback(() => {
     reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: false });
     setTopMost(false);
     setMaximize(false);
+    setFocusable(true);
   }, [dispatch]);
 
   return overlayTransparent ? (

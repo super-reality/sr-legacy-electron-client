@@ -29,20 +29,7 @@ export default function createLessonInterface(
   });
 
   newWindow.removeMenu();
-
-  remote.globalShortcut.register("Alt+Shift+S", function () {
-    /*
-    const transparent = store.getState().render.overlayTransparent;
-    reduxAction(store.dispatch, {
-      type: "SET_OVERLAY_TRANSPARENT",
-      arg: !transparent,
-    });
-    newWindow.setIgnoreMouseEvents(false);
-    if (transparent) {
-      newWindow.setIgnoreMouseEvents(true, { forward: true });
-    }
-    */
-  });
+  newWindow.setVisibleOnAllWorkspaces(true);
 
   const proc: any = process;
   newWindow.loadURL(
@@ -75,7 +62,6 @@ export default function createLessonInterface(
     });
 
     newWindow.on("closed", () => {
-      remote.globalShortcut.unregister("Alt+Shift+S");
       newWindow.destroy();
       if (callback) callback();
       resolve();
