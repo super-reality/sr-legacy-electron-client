@@ -3,7 +3,6 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useRef,
 } from "react";
 import interact from "interactjs";
@@ -16,6 +15,7 @@ import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
 import ButtonSimple from "../button-simple";
 import setFocusable from "../../../utils/setFocusable";
+import setResizable from "../../../utils/setResizable";
 
 const restrictMinSize =
   interact.modifiers &&
@@ -139,17 +139,19 @@ export default function CreateLessonDetached(): JSX.Element {
           target.style.width = `${event.rect.width - 4}px`;
         });
 
-      return (): void =>
-        interact(resizeContainer.current as HTMLDivElement).unset();
+      return (): void => {
+        if (resizeContainer.current) interact(resizeContainer.current).unset();
+      };
     }
     return () => {};
-  }, [resizeContainer]);
+  }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {
     reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
     setFocusable(false);
     setTopMost(true);
     setMaximize(true);
+    setResizable(false);
   }, [dispatch]);
 
   const setSolid = useCallback(() => {
@@ -157,6 +159,7 @@ export default function CreateLessonDetached(): JSX.Element {
     setFocusable(true);
     setTopMost(false);
     setMaximize(false);
+    setResizable(true);
   }, [dispatch]);
 
   return overlayTransparent ? (
