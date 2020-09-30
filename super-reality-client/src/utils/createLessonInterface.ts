@@ -16,13 +16,11 @@ export default function createLessonInterface(
   const { remote } = require("electron");
   const newWindow = new remote.BrowserWindow({
     transparent: true,
-    resizable: false,
-    fullscreen: true,
+    resizable: true,
+    fullscreen: false,
     show: false,
     frame: false,
-    alwaysOnTop: true,
     acceptFirstMouse: true,
-    focusable: false,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -72,6 +70,7 @@ export default function createLessonInterface(
       });
       setTimeout(function () {
         newWindow.show();
+        newWindow.focus();
       }, 1000);
     });
 

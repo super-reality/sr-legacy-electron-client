@@ -1,6 +1,20 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react";
+import React, {
+  CSSProperties,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import interact from "interactjs";
 import "./index.scss";
+import { useSelector, useDispatch } from "react-redux";
+import useTransparentFix from "../../hooks/useTransparentFix";
+import { AppState } from "../../redux/stores/renderer";
+import reduxAction from "../../redux/reduxAction";
+import setTopMost from "../../../utils/setTopMost";
+import setMaximize from "../../../utils/setMaximize";
+import ButtonSimple from "../button-simple";
 
 const restrictMinSize =
   interact.modifiers &&
@@ -24,7 +38,12 @@ const cursorChecker: any = (
   }
 };
 
-function Windowlet() {
+interface WindowletProps {
+  style?: CSSProperties;
+}
+
+function Windowlet(props: PropsWithChildren<WindowletProps>) {
+  const { children } = props;
   const dragContainer = useRef<HTMLDivElement>(null);
   const resizeContainer = useRef<HTMLDivElement>(null);
 
@@ -87,40 +106,87 @@ function Windowlet() {
       }}
     >
       <div ref={dragContainer} className="title-bar" />
+      {children}
     </div>
   );
 }
 
+function TopBar() {
+  return <div className="top-bar">Super Reality</div>;
+}
+
 export default function CreateLessonDetached(): JSX.Element {
+  const resizeContainer = useRef<HTMLDivElement>(null);
+  const { overlayTransparent } = useSelector((state: AppState) => state.render);
+  const dispatch = useDispatch();
+  useTransparentFix(false);
+
   useEffect(() => {
     document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
   }, []);
 
-  useLayoutEffect(() => {
-    // eslint-disable-next-line global-require
-    const { remote } = require("electron");
-    const { setIgnoreMouseEvents } = remote.getCurrentWindow();
+  useEffect(() => {
+    if (resizeContainer.current) {
+      interact(resizeContainer.current)
+        .resizable({
+          edges: { left: false, right: true, bottom: false, top: false },
+          modifiers: [restrictMinSize],
+          inertia: true,
+        } as any)
+        .on("resizemove", (event) => {
+          const { target } = event;
+          target.style.width = `${event.rect.width - 4}px`;
+        });
 
-    let t: NodeJS.Timeout;
-
-    window.addEventListener("mousemove", (event) => {
-      const target = event.target as HTMLElement;
-      if (
-        target?.classList?.contains("click-through") ||
-        target?.id == "root"
-      ) {
-        setIgnoreMouseEvents(true, { forward: true });
-        if (t) clearTimeout(t);
-        t = setTimeout(() => {
-          setIgnoreMouseEvents(false);
-        }, 300);
-      } else setIgnoreMouseEvents(false);
-    });
+      return (): void =>
+        interact(resizeContainer.current as HTMLDivElement).unset();
+    }
+    return () => {};
   }, []);
 
-  return (
+  const setTransparent = useCallback(() => {
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
+    setTopMost(true);
+    setMaximize(true);
+  }, [dispatch]);
+
+  const setSolid = useCallback(() => {
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: false });
+    setTopMost(false);
+    setMaximize(false);
+  }, [dispatch]);
+
+  return overlayTransparent ? (
     <div className="transparent-container click-through">
-      <Windowlet />
+      <Windowlet>
+        <ButtonSimple
+          margin="auto"
+          width="200px"
+          height="24px"
+          onClick={setSolid}
+        >
+          Set Solid
+        </ButtonSimple>
+      </Windowlet>
+    </div>
+  ) : (
+    <div className="solid-container">
+      <TopBar />
+      <div className="main-container">
+        <div className="edit">
+          <div
+            className="creator"
+            style={{ width: "300px" }}
+            ref={resizeContainer}
+          >
+            <ButtonSimple width="200px" height="24px" onClick={setTransparent}>
+              Set Transparent
+            </ButtonSimple>
+          </div>
+          <div className="preview" />
+        </div>
+        <div className="nav" />
+      </div>
     </div>
   );
 }
