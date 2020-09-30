@@ -31,7 +31,6 @@ export default function createLessonInterface(
   });
 
   newWindow.removeMenu();
-  // newWindow.setIgnoreMouseEvents(true, { forward: true });
 
   remote.globalShortcut.register("Alt+Shift+S", function () {
     /*

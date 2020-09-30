@@ -77,7 +77,7 @@ function Windowlet() {
       className="window-container click-on"
       ref={resizeContainer}
       style={{
-        border: `1px solid rgba(128, 128, 128, 0.5)`,
+        border: `1px solid rgba(128, 128, 128, 0.3)`,
         opacity: "1",
         visibility: "visible",
         height: `${0}px`,
@@ -113,7 +113,7 @@ export default function CreateLessonDetached(): JSX.Element {
         if (t) clearTimeout(t);
         t = setTimeout(() => {
           setIgnoreMouseEvents(false);
-        }, 150);
+        }, 300);
       } else setIgnoreMouseEvents(false);
     });
   }, []);
