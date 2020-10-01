@@ -25,6 +25,7 @@
     "electron-log": "^4.2.4",
     "global-mouse-events": "^1.0.3",
     "howler": "^2.2.0",
+    "interactjs": "^1.9.22",
     "json-rpc3": "^0.2.1",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
