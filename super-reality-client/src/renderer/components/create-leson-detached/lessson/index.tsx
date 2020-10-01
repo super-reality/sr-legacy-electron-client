@@ -4,12 +4,12 @@ import ModalButtons from "../modal-buttons";
 import "../../containers.scss";
 import "./index.scss";
 import ButtonRound from "../../button-round";
+import LessonTree from "../lesson-tree";
 import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev.svg";
 import { ReactComponent as ButtonNext } from "../../../../assets/svg/next.svg";
 import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
 import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.svg";
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
-import { ReactComponent as ButtonAnchor } from "../../../../assets/svg/anchor.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
 
@@ -25,7 +25,7 @@ export default function Lesson(): JSX.Element {
       <div className="mid-tight">Lesson Name</div>
       <div className="create-leson-main-container mid-tight">
         <ModalButtons buttons={sections} initial={view} callback={setView} />
-        {view}
+        <LessonTree />
         <Flex style={{ marginTop: "auto" }}>
           <ButtonRound
             width="36px"
@@ -61,13 +61,6 @@ export default function Lesson(): JSX.Element {
             height="36px"
             onClick={() => {}}
             svg={ButtonCopy}
-            style={{ marginLeft: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonAnchor}
             style={{ marginLeft: "8px" }}
           />
           <ButtonRound

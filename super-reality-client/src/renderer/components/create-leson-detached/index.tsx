@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import React, {
   CSSProperties,
   PropsWithChildren,
@@ -9,7 +10,7 @@ import interact from "interactjs";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
-import { AppState } from "../../redux/stores/renderer";
+import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
@@ -17,6 +18,84 @@ import ButtonSimple from "../button-simple";
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
+import globalData from "../../globalData";
+
+function setMocks() {
+  const lesson = {
+    _id: "string",
+    cost: 0,
+    status: 1,
+    description: "",
+    entry: 2,
+    skills: ["skill"],
+    difficulty: 2,
+    media: [],
+    location: {},
+    chapters: [
+      { _id: "001", name: "Chapter One" },
+      { _id: "002", name: "Chapter Two" },
+    ],
+    setupScreenshots: [],
+    setupInstructions: "",
+    setupFiles: [],
+  };
+  reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
+  globalData.chapters["001"] = {
+    _id: "001",
+    name: "Chapter One",
+    steps: ["step01"],
+  };
+  globalData.chapters["002"] = {
+    _id: "002",
+    name: "Chapter Two",
+    steps: ["step01"],
+  };
+  globalData.steps["step01"] = {
+    _id: "step01",
+    name: "Step one",
+    items: ["item01", "item02"],
+  };
+  globalData.items["001"] = {
+    _id: "001",
+    type: "focus_highlight",
+    anchor: "001",
+    relativePos: {
+      x: 0,
+      y: 0,
+    },
+    trigger: 0,
+    destination: "",
+    transition: 0,
+    focus: "Rectangle",
+  };
+  globalData.items["002"] = {
+    _id: "002",
+    type: "image",
+    anchor: undefined,
+    relativePos: {
+      x: 0,
+      y: 0,
+    },
+    trigger: 0,
+    destination: "",
+    transition: 0,
+    url: "",
+  };
+
+  globalData.anchors["001"] = {
+    _id: "001",
+    name: "Anchor",
+    type: "crop",
+    templates: [],
+    function: "or",
+    cvMatchValue: 990,
+    cvCanvas: 100,
+    cvDelay: 100,
+    cvGrayscale: true,
+    cvApplyThreshold: false,
+    cvThreshold: 0,
+  };
+}
 
 const restrictMinSize =
   interact.modifiers &&
@@ -124,6 +203,7 @@ export default function CreateLessonDetached(): JSX.Element {
   useTransparentFix(false);
 
   useEffect(() => {
+    setMocks();
     document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
   }, []);
 

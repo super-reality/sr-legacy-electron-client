@@ -3,6 +3,7 @@ import * as renderSlice from "./slices/renderSlice";
 import * as createCollectionSlice from "./slices/createCollectionSlice";
 import * as createSubjectSlice from "./slices/createSubjectSlice";
 import * as createLessonSlice from "./slices/createLessonSlice";
+import * as createLessonSliceV2 from "./slices/createLessonSliceV2";
 import * as createStepSlice from "./slices/createStepSlice";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
@@ -19,6 +20,7 @@ export const actions = {
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
   SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
+  CREATE_LESSON_V2_DATA: createLessonSliceV2.setData,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
