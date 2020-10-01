@@ -23,7 +23,7 @@
 .button-round {
   cursor: pointer;
   background-color: var(--color-button);
-  border-radius: 5px;
+  border-radius: 4px;
   display: flex;
   @include animated;
   @include disable-select;
@@ -47,7 +47,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--color-button);
-  border-radius: 5px;
+  border-radius: 4px;
   padding: 8px;
   color: var(--color-text);
   @include animated;

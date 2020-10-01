@@ -16,6 +16,7 @@ import setMaximize from "../../../utils/setMaximize";
 import ButtonSimple from "../button-simple";
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
+import Lesson from "./lessson";
 
 const restrictMinSize =
   interact.modifiers &&
@@ -182,12 +183,10 @@ export default function CreateLessonDetached(): JSX.Element {
         <div className="edit">
           <div
             className="creator"
-            style={{ width: "300px" }}
+            style={{ width: "400px" }}
             ref={resizeContainer}
           >
-            <ButtonSimple width="200px" height="24px" onClick={setTransparent}>
-              Set Transparent
-            </ButtonSimple>
+            <Lesson />
           </div>
           <div className="preview" />
         </div>

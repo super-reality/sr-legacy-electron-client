@@ -2,7 +2,7 @@
 
 .top-search-container {
   width: calc(100% - 32px);
-  border-radius: 5px;
+  border-radius: 4px;
   margin: 8px;
   padding: 8px;
   flex-direction: column;
@@ -79,7 +79,7 @@
 
   background: var(--color-background);
   border: 1px solid var(--color-background);
-  border-radius: 5px;
+  border-radius: 4px;
   width: -webkit-fill-available;
   margin: auto;
   color: var(--color-text);
