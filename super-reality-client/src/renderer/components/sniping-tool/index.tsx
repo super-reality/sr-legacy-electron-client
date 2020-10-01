@@ -4,6 +4,7 @@ import fs from "fs";
 import ReactCrop from "react-image-crop";
 import ButtonSimple from "../button-simple";
 import "react-image-crop/lib/ReactCrop.scss";
+import logger from "../../../utils/logger";
 
 export default function SnipingTool() {
   // eslint-disable-next-line global-require
@@ -15,9 +16,17 @@ export default function SnipingTool() {
 
   useEffect(() => {
     fs.unlink(output, () => {});
+    logger(
+      "info",
+      remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds()
+    );
   }, []);
 
   const doClick = useCallback(async () => {
+    logger(
+      "info",
+      `image crop: x: ${crop.x}, y: ${crop.y}, w:${crop.width}, h:${crop.height}`
+    );
     const image = nativeImage.createFromPath(fileName).crop({
       x: crop.x,
       y: crop.y,
