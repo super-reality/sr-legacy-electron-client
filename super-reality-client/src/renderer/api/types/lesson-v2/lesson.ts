@@ -53,6 +53,7 @@ export interface IStepGet {
 
 export interface ILessonV2 {
   _id: string;
+  name: string;
   cost: number;
   status: ValueOf<typeof StatusOptions>;
   description: string;

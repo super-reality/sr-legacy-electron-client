@@ -8,17 +8,19 @@ interface ModalButtonsProps<T> {
   callback: (button: T) => void;
   height?: string;
   style?: CSSProperties;
+  icons?: React.FunctionComponent<any>[];
 }
 
 export default function ModalButtons<T extends string>(
   props: ModalButtonsProps<T>
 ): JSX.Element {
-  const { buttons, initial, callback, height, style } = props;
+  const { buttons, initial, callback, height, style, icons } = props;
   const [value, setValue] = useState<T>(initial);
 
   return (
     <Flex style={{ justifyContent: "space-between", ...style }}>
-      {buttons.map((str) => {
+      {buttons.map((str, i) => {
+        const Icon = icons ? icons[i] : undefined;
         return (
           <ButtonSimple
             key={str}
@@ -39,7 +41,17 @@ export default function ModalButtons<T extends string>(
               callback(str);
             }}
           >
-            {str}
+            {Icon ? (
+              <Icon
+                fill={
+                  value == str
+                    ? "var(--color-text-active)"
+                    : "var(--color-icon)"
+                }
+              />
+            ) : (
+              str
+            )}
           </ButtonSimple>
         );
       })}

@@ -21,7 +21,37 @@
   -webkit-app-region: drag;
   font-size: 14px;
   line-height: 24px;
-  padding-left: 8px;
+  display: flex;
+
+  .name {
+    padding-left: 8px;
+    margin-right: auto;
+  }
+
+  .buttons {
+    display: flex;
+    -webkit-app-region: no-drag;
+    text-align: center;
+    line-height: 24px;
+    .minimize {
+      width: 34px;
+      height: 100%;
+    }
+    .maximize {
+      width: 34px;
+      height: 100%;
+    }
+    .close {
+      width: 34px;
+      height: 100%;
+    }
+
+    .minimize:hover,
+    .maximize:hover,
+    .close:hover {
+      background-color: var(--color-red);
+    }
+  }
 }
 
 .main-container {
@@ -70,17 +100,37 @@
 }
 */
 
+.name {
+  padding-left: 8px;
+  margin-right: auto;
+}
+
 .window-container {
   position: absolute;
-  min-width: 300px;
-  min-height: 400px;
+  min-width: 100px;
+  min-height: 100px;
   background-color: var(--color-background);
   display: flex;
   flex-direction: column;
 
   .title-bar {
+    font-size: 14px;
+    line-height: 24px;
+    padding-left: 8px;
     height: 24px;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+
+    .close {
+      margin-left: auto;
+      display: flex;
+      width: 24px;
+      height: 100%;
+      cursor: auto;
+    }
+
+    .close:hover {
+      background-color: var(--color-red);
+    }
   }
 }

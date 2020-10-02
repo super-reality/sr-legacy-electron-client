@@ -1,33 +1,38 @@
 @import "../../misc.scss";
 
 .tree-folder-container {
-  border-left: 1px solid var(--color-separator);
   display: flex;
   flex-direction: column;
-  margin-left: 8px;
-  padding-left: 4px;
   height: 16px;
   overflow: hidden;
   -webkit-transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
   @include animated;
+  @include disable-select;
 }
 
 .tree-folder {
   display: flex;
   height: 18px;
   cursor: pointer;
-  padding: 2px 0;
+  padding: 2px 0px 2px 2px;
   @include animated;
+  @include disable-select;
+
+  &.selected {
+    background-color: var(--color-section-hover);
+  }
+
+  &.open {
+    color: var(--color-green);
+  }
 
   .folder-drop {
     width: 16px;
-    height: 7px;
-    background-repeat: no-repeat;
-    background-image: url("../../../../assets/images/icon_show.png");
+    height: 16px;
     transform: rotate(-90deg);
-    background-position: center;
-    margin: auto 0;
+    display: flex;
     @include animated;
+    @include disable-select;
 
     &.open {
       transform: rotate(0deg);
@@ -35,7 +40,7 @@
   }
 
   .folder-name {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 18px;
     margin-left: 4px;
   }
@@ -45,8 +50,17 @@
   display: flex;
   height: 18px;
   cursor: pointer;
-  padding: 2px 0;
+  padding: 2px 0px 2px 2px;
   @include animated;
+  @include disable-select;
+
+  &.selected {
+    background-color: var(--color-section-hover);
+  }
+
+  &.open {
+    color: var(--color-text-active);
+  }
 
   .item-icon {
     width: 16px;
@@ -54,7 +68,7 @@
   }
 
   .item-name {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 18px;
     margin-left: 4px;
   }
@@ -65,6 +79,7 @@
   }
 }
 
-.tree-folder:hover, .tree-item-container:hover {
+.tree-folder:hover,
+.tree-item-container:hover {
   background-color: var(--color-section-hover);
 }

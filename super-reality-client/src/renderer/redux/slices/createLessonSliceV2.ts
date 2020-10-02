@@ -3,8 +3,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EntryOptions, DifficultyOptions } from "../../api/types/lesson/lesson";
 import { ILessonV2, StatusOptions } from "../../api/types/lesson-v2/lesson";
 
-const initialState: ILessonV2 = {
+export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
+
+type InitialState = ILessonV2 & {
+  treeCurrentType: TreeTypes;
+  treeCurrentId: string;
+  toggleSelects: number;
+};
+
+const initialState: InitialState = {
   _id: "string",
+  name: "",
   cost: 0,
   status: StatusOptions.Draft,
   description: "",
@@ -17,6 +26,9 @@ const initialState: ILessonV2 = {
   setupScreenshots: [],
   setupInstructions: "",
   setupFiles: [],
+  treeCurrentType: "none",
+  treeCurrentId: "",
+  toggleSelects: 0,
 };
 
 const createLessonSlice = createSlice({
@@ -24,14 +36,27 @@ const createLessonSlice = createSlice({
   initialState,
   reducers: {
     setData: (
-      state: ILessonV2,
+      state: InitialState,
       action: PayloadAction<Partial<ILessonV2>>
     ): void => {
       state = Object.assign(state, action.payload);
     },
+    setOpenTree: (
+      state: InitialState,
+      action: PayloadAction<{ type: TreeTypes; id: string }>
+    ): void => {
+      state.treeCurrentType = action.payload.type;
+      state.treeCurrentId = action.payload.id;
+      // eslint-disable-next-line operator-assignment
+      state.toggleSelects = state.toggleSelects + 1;
+    },
+    selectEvent: (state: InitialState, action: PayloadAction<null>): void => {
+      // eslint-disable-next-line operator-assignment
+      state.toggleSelects = state.toggleSelects + 1;
+    },
   },
 });
 
-export const { setData } = createLessonSlice.actions;
+export const { setData, setOpenTree, selectEvent } = createLessonSlice.actions;
 
 export default createLessonSlice;
