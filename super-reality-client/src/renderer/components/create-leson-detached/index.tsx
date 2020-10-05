@@ -196,7 +196,7 @@ export default function CreateLessonDetached(): JSX.Element {
         <div className="edit">
           <div
             className="creator"
-            style={{ width: "400px" }}
+            style={{ width: "340px" }}
             ref={resizeContainer}
           >
             <Lesson />

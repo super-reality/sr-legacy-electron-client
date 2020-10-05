@@ -20,6 +20,8 @@ export default function createLessonInterface(
     fullscreen: false,
     show: false,
     frame: false,
+    width: 1024,
+    height: 768,
     acceptFirstMouse: true,
     webPreferences: {
       webSecurity: false,
