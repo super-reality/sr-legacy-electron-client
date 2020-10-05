@@ -8,6 +8,7 @@ export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 type InitialState = ILessonV2 & {
   treeCurrentType: TreeTypes;
   treeCurrentId: string;
+  treeCurrentParentId: string;
   toggleSelects: number;
 };
 
@@ -28,6 +29,7 @@ const initialState: InitialState = {
   setupFiles: [],
   treeCurrentType: "none",
   treeCurrentId: "",
+  treeCurrentParentId: "",
   toggleSelects: 0,
 };
 
@@ -43,10 +45,11 @@ const createLessonSlice = createSlice({
     },
     setOpenTree: (
       state: InitialState,
-      action: PayloadAction<{ type: TreeTypes; id: string }>
+      action: PayloadAction<{ type: TreeTypes; parentId: string; id: string }>
     ): void => {
       state.treeCurrentType = action.payload.type;
       state.treeCurrentId = action.payload.id;
+      state.treeCurrentParentId = action.payload.parentId;
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },

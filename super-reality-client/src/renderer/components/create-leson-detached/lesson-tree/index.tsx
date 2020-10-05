@@ -8,12 +8,13 @@ import reduxAction from "../../../redux/reduxAction";
 
 interface TreeFolderProps {
   id: string;
+  parentId: string;
   name: string;
   type: "lesson" | "chapter" | "step";
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, name, type } = props;
+  const { id, parentId, name, type } = props;
   const dispatch = useDispatch();
   const { toggleSelects, treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -31,7 +32,10 @@ function TreeFolder(props: TreeFolderProps) {
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
-    if (lesson.treeCurrentId !== id || lesson.treeCurrentType !== type) {
+    if (
+      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentType !== type
+    ) {
       setSelected(false);
     }
   }, [toggleSelects]);
@@ -60,7 +64,7 @@ function TreeFolder(props: TreeFolderProps) {
     }
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
-      arg: { type, id },
+      arg: { type, parentId, id },
     });
     setOpen(!open);
     setSelected(true);
@@ -93,9 +97,20 @@ function TreeFolder(props: TreeFolderProps) {
       >
         {children.map((ch) => {
           return type == "chapter" ? (
-            <TreeFolder key={ch._id} id={ch._id} name={ch.name} type="step" />
+            <TreeFolder
+              parentId={`${parentId}.${ch._id}`}
+              key={ch._id}
+              id={ch._id}
+              name={ch.name}
+              type="step"
+            />
           ) : (
-            <TreeItem key={ch._id} id={ch._id} name={ch.name} />
+            <TreeItem
+              parentId={`${parentId}.${ch._id}`}
+              key={ch._id}
+              id={ch._id}
+              name={ch.name}
+            />
           );
         })}
       </div>
@@ -105,11 +120,12 @@ function TreeFolder(props: TreeFolderProps) {
 
 interface TreeItemProps {
   id: string;
+  parentId: string;
   name: string;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, name } = props;
+  const { id, parentId, name } = props;
   const dispatch = useDispatch();
   const { toggleSelects, treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -120,14 +136,17 @@ function TreeItem(props: TreeItemProps) {
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
-      arg: { type: "item", id },
+      arg: { type: "item", parentId, id },
     });
     setSelected(true);
   }, [dispatch]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
-    if (lesson.treeCurrentId !== id || lesson.treeCurrentType !== "item") {
+    if (
+      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentType !== "item"
+    ) {
       setSelected(false);
     }
   }, [toggleSelects]);
@@ -152,12 +171,20 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { chapters } = useSelector((state: AppState) => state.createLessonV2);
+  const { chapters, _id } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
 
   return (
     <div style={{ margin: "8px 0px" }}>
       {chapters.map((ch) => (
-        <TreeFolder key={ch._id} id={ch._id} name={ch.name} type="chapter" />
+        <TreeFolder
+          parentId={`${_id}.${ch._id}`}
+          key={ch._id}
+          id={ch._id}
+          name={ch.name}
+          type="chapter"
+        />
       ))}
     </div>
   );
