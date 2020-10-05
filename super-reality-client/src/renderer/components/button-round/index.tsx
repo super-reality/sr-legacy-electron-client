@@ -8,6 +8,7 @@ interface ButtonRoundProps {
     }
   >;
   style?: CSSProperties;
+  svgStyle?: CSSProperties;
   iconFill?: string;
   height: string;
   width: string;
@@ -15,7 +16,7 @@ interface ButtonRoundProps {
 }
 
 export default function ButtonRound(props: ButtonRoundProps): JSX.Element {
-  const { onClick, svg, style, height, width, iconFill } = props;
+  const { onClick, svg, style, svgStyle, height, width, iconFill } = props;
   const SvgElement = svg;
   return (
     <div
@@ -23,7 +24,11 @@ export default function ButtonRound(props: ButtonRoundProps): JSX.Element {
       className="button-round"
       style={{ ...style, width, height }}
     >
-      <SvgElement className="svg-icon" fill={iconFill || "var(--color-icon)"} />
+      <SvgElement
+        className="svg-icon"
+        style={svgStyle}
+        fill={iconFill || "var(--color-icon)"}
+      />
     </div>
   );
 }

@@ -9,6 +9,10 @@ import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
 import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
+import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
+import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
+import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
+
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
@@ -105,9 +109,15 @@ function TopBar() {
     <div className="top-bar">
       <div className="name">Super Reality</div>
       <div className="buttons">
-        <div className="minimize">_</div>
-        <div className="maximize">O</div>
-        <div className="close">X</div>
+        <div className="minimize">
+          <ButtonMinimize style={{ margin: "auto" }} />
+        </div>
+        <div className="maximize">
+          <ButtonMaximize style={{ margin: "auto" }} />
+        </div>
+        <div className="close">
+          <ButtonClose style={{ margin: "auto" }} />
+        </div>
       </div>
     </div>
   );

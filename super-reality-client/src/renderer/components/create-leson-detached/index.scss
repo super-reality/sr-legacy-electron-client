@@ -33,21 +33,30 @@
     -webkit-app-region: no-drag;
     text-align: center;
     line-height: 24px;
+
     .minimize {
       width: 34px;
       height: 100%;
+      display: flex;
     }
+
     .maximize {
       width: 34px;
       height: 100%;
+      display: flex;
     }
+
     .close {
       width: 34px;
       height: 100%;
+      display: flex;
     }
 
     .minimize:hover,
-    .maximize:hover,
+    .maximize:hover {
+      background-color: var(--color-button);
+    }
+
     .close:hover {
       background-color: var(--color-red);
     }

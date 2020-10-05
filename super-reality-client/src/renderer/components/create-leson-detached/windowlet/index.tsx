@@ -116,7 +116,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
           <CloseIcon style={{ margin: "auto" }} fill="var(--color-icon" />
         </div>
       </div>
-      {children}
+      <div style={{ height: "calc(100% - 24px)" }}>{children}</div>
     </div>
   );
 }

@@ -63,19 +63,16 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   return (
     <>
       {count > -1 && !recording ? (
-        <div
-          style={{
-            fontSize: "20px",
-            minWidth: "400px",
-            textAlign: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.75)",
-            borderRadius: "10px",
-            padding: "16px",
-            margin: "16px auto auto auto",
-            color: "var(--color-red)",
-            fontWeight: 500,
-          }}
-        >{`Recording will start in ${count} seconds`}</div>
+        <Windowlet
+          title="Super Reality Recorder"
+          width={298}
+          height={320}
+          onClose={onFinish}
+        >
+          <video muted autoPlay style={{ width: "100%", height: "100%" }}>
+            <source src="countdown.mp4" type="video/mp4" />
+          </video>
+        </Windowlet>
       ) : (
         <></>
       )}
@@ -87,13 +84,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           onClose={onFinish}
         >
           <Flex column style={{ height: "100%" }}>
-            <Flex style={{ margin: "auto auto 4px auto" }}>
-              <RecordIcon
-                style={{ cursor: "pointer", marginRight: "16px" }}
-                width="64px"
-                height="64px"
-                onClick={() => setCount(3)}
-              />
+            <Flex
+              style={{ margin: "auto 16px", justifyContent: "space-between" }}
+            >
               <ReactSelect
                 style={{ width: "200px" }}
                 options={Object.keys(sources)}
@@ -101,6 +94,16 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 callback={(name) => {
                   setCurrentSource(sources[name]);
                 }}
+              />
+              <ButtonRound
+                svg={RecordIcon}
+                svgStyle={{
+                  width: "36px",
+                  height: "36px",
+                }}
+                width="48px"
+                height="48px"
+                onClick={() => setCount(3)}
               />
             </Flex>
             <div style={{ margin: "4px auto auto auto" }}>
