@@ -1,32 +1,32 @@
 import { ValueOf } from "../../../../types/utils";
 
-const ItemFocusTriggers = {
+export const ItemFocusTriggers = {
   "Click target": 1,
   "Hover target": 2,
   "Click Next button": 3,
   None: null,
 };
 
-const ItemAudioTriggers = {
+export const ItemAudioTriggers = {
   "Audio finish": 1,
   "Click Next button": 2,
   None: null,
 };
 
-const ItemImageTriggers = {
+export const ItemImageTriggers = {
   "Click Ok button": 1,
   "Click Next button": 2,
   None: null,
 };
 
-const ItemVideoTriggers = {
+export const ItemVideoTriggers = {
   "Click Ok button": 1,
   "On video end": 2,
   "Click Next button": 3,
   None: null,
 };
 
-const ItemDialogTriggers = {
+export const ItemDialogTriggers = {
   "Click Ok button": 1,
   "On video end": 2,
   "Click Next button": 3,
@@ -42,6 +42,7 @@ export interface IAbsolutePos {
 
 export interface BaseItem {
   _id: string;
+  name: string;
   type: "focus_highlight" | "audio" | "video" | "image" | "dialog";
   anchor?: string;
   relativePos: IAbsolutePos;

@@ -3,8 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import globalData from "../../../globalData";
 import store, { AppState } from "../../../redux/stores/renderer";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
+import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
+import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
+import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
+import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
+import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
+import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
+import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
+import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
+import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
+import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
 import "./index.scss";
 import reduxAction from "../../../redux/reduxAction";
+import ButtonRound from "../../button-round";
+import Flex from "../../flex";
+import { Item } from "../../../api/types/lesson-v2/item";
 
 interface TreeFolderProps {
   id: string;
@@ -44,21 +57,21 @@ function TreeFolder(props: TreeFolderProps) {
     if (type == "lesson") {
       setChildren(
         globalData.lessonsv2[id].chapters.map((d) => {
-          return { _id: d, name: d };
+          return { _id: d._id, name: d.name };
         })
       );
     }
     if (type == "chapter") {
       setChildren(
         globalData.chapters[id].steps.map((d) => {
-          return { _id: d, name: d };
+          return { _id: d._id, name: d.name };
         })
       );
     }
     if (type == "step") {
       setChildren(
         globalData.steps[id].items.map((d) => {
-          return { _id: d, name: d };
+          return { _id: d._id, name: d.name };
         })
       );
     }
@@ -74,6 +87,10 @@ function TreeFolder(props: TreeFolderProps) {
     setIsOpen(treeCurrentId == id && treeCurrentType == type);
   }, [treeCurrentType, treeCurrentId]);
 
+  let padding = "0px";
+  if (type == "chapter") padding = "18px";
+  if (type == "step") padding = "36px";
+
   return (
     <>
       <div
@@ -81,7 +98,7 @@ function TreeFolder(props: TreeFolderProps) {
           isOpen ? "open" : ""
         }`}
         onClick={doOpen}
-        style={{ paddingLeft: type == "step" ? "18px" : "" }}
+        style={{ paddingLeft: padding }}
       >
         <div className={`folder-drop ${open ? "open" : ""}`}>
           <IconTreeTop
@@ -96,13 +113,13 @@ function TreeFolder(props: TreeFolderProps) {
         style={{ height: open ? "auto" : "0px" }}
       >
         {children.map((ch) => {
-          return type == "chapter" ? (
+          return type == "lesson" || type == "chapter" ? (
             <TreeFolder
               parentId={`${parentId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
-              type="step"
+              type={type == "lesson" ? "chapter" : "step"}
             />
           ) : (
             <TreeItem
@@ -133,6 +150,8 @@ function TreeItem(props: TreeItemProps) {
   const [selected, setSelected] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const itemData: Item | null = globalData.items[id] || null;
+
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
@@ -155,37 +174,134 @@ function TreeItem(props: TreeItemProps) {
     setIsOpen(treeCurrentId == id && treeCurrentType == "item");
   }, [treeCurrentType, treeCurrentId]);
 
+  let Icon = IconAddFocus;
+  if (itemData) {
+    switch (itemData.type) {
+      case "audio":
+        Icon = IconAddAudio;
+        break;
+      case "dialog":
+        Icon = IconAddClip;
+        break;
+      case "image":
+        Icon = IconAddImage;
+        break;
+      case "video":
+        Icon = IconAddVideo;
+        break;
+      default:
+        Icon = IconAddFocus;
+    }
+  }
+
   return (
     <div
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
       }`}
       onClick={doOpen}
-      style={{ paddingLeft: "18px" }}
+      style={{ paddingLeft: "36px" }}
     >
-      <div className="item-icon" />
+      <div className="item-icon-tree">
+        <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />
+      </div>
       <div className="item-name">{name}</div>
-      <div className="item-trigger" />
+      <div className="item-trigger">
+        {itemData && itemData.trigger && (
+          <TriggerIcon width="14px" height="14px" fill="var(--color-icon)" />
+        )}
+      </div>
     </div>
   );
 }
 
 export default function LessonTree() {
-  const { chapters, _id } = useSelector(
+  const { name, treeCurrentType, _id } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
+  const doAddFolder = useCallback(() => {
+    //
+  }, []);
+
+  const doAddFocus = useCallback(() => {
+    //
+  }, []);
+
   return (
-    <div style={{ margin: "8px 0px" }}>
-      {chapters.map((ch) => (
-        <TreeFolder
-          parentId={`${_id}.${ch._id}`}
-          key={ch._id}
-          id={ch._id}
-          name={ch.name}
-          type="chapter"
-        />
-      ))}
-    </div>
+    <>
+      <Flex style={{ margin: "8px 0" }}>
+        {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
+          <ButtonRound
+            onClick={doAddFolder}
+            svg={IconAddFolder}
+            width="32px"
+            height="32px"
+          />
+        ) : (
+          <>
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddFocus}
+              width="32px"
+              height="32px"
+              style={{ margin: "0px 4px 0 0" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddTTS}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddImage}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddVideo}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddTeach}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddAudio}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddClip}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 4px" }}
+            />
+            <ButtonRound
+              onClick={doAddFocus}
+              svg={IconAddShare}
+              width="32px"
+              height="32px"
+              style={{ margin: "0 0 0 4px" }}
+            />
+          </>
+        )}
+      </Flex>
+      <Flex column style={{ overflow: "auto" }}>
+        <TreeFolder parentId={`${_id}`} id={_id} name={name} type="lesson" />
+      </Flex>
+    </>
   );
 }

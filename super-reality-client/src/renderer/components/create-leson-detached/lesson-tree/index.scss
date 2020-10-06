@@ -62,9 +62,10 @@
     color: var(--color-text-active);
   }
 
-  .item-icon {
+  .item-icon-tree {
     width: 16px;
     height: 16px;
+    display: flex;
   }
 
   .item-name {
@@ -74,8 +75,10 @@
   }
 
   .item-trigger {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
+    margin: auto 4px auto auto;
+    display: flex;
   }
 }
 

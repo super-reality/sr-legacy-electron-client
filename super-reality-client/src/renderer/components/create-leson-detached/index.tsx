@@ -19,6 +19,9 @@ import Lesson from "./lessson";
 import globalData from "../../globalData";
 import ButtonRound from "../button-round";
 import Recorder from "./recorder";
+import minimizeWindow from "../../../utils/minimizeWindow";
+import closeWindow from "../../../utils/closeWindow";
+import toggleMaximize from "../../../utils/toggleMaximize";
 
 function setMocks() {
   const lesson = {
@@ -41,43 +44,49 @@ function setMocks() {
     setupFiles: [],
   };
   reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
+  globalData.lessonsv2["string"] = lesson;
   globalData.chapters["001"] = {
     _id: "001",
     name: "Chapter One",
-    steps: ["step01"],
+    steps: [{ _id: "step01", name: "Step one" }],
   };
   globalData.chapters["002"] = {
     _id: "002",
     name: "Chapter Two",
-    steps: ["step01"],
+    steps: [{ _id: "step01", name: "Step one" }],
   };
   globalData.steps["step01"] = {
     _id: "step01",
     name: "Step one",
-    items: ["item01", "item02"],
+    items: [
+      { _id: "001", name: "Focus Highlight" },
+      { _id: "002", name: "Image" },
+    ],
   };
   globalData.items["001"] = {
     _id: "001",
+    name: "Focus Highlight",
     type: "focus_highlight",
     anchor: "001",
     relativePos: {
       x: 0,
       y: 0,
     },
-    trigger: 0,
+    trigger: null,
     destination: "",
     transition: 0,
     focus: "Rectangle",
   };
   globalData.items["002"] = {
     _id: "002",
+    name: "Image",
     type: "image",
     anchor: undefined,
     relativePos: {
       x: 0,
       y: 0,
     },
-    trigger: 0,
+    trigger: 2,
     destination: "",
     transition: 0,
     url: "",
@@ -105,17 +114,29 @@ const restrictMinSize =
   });
 
 function TopBar() {
+  const onMinimize = useCallback(() => {
+    minimizeWindow();
+  }, []);
+
+  const onMaximize = useCallback(() => {
+    toggleMaximize();
+  }, []);
+
+  const onCLose = useCallback(() => {
+    closeWindow();
+  }, []);
+
   return (
     <div className="top-bar">
       <div className="name">Super Reality</div>
       <div className="buttons">
-        <div className="minimize">
+        <div className="minimize" onClick={onMinimize}>
           <ButtonMinimize style={{ margin: "auto" }} />
         </div>
-        <div className="maximize">
+        <div className="maximize" onClick={onMaximize}>
           <ButtonMaximize style={{ margin: "auto" }} />
         </div>
-        <div className="close">
+        <div className="close" onClick={onCLose}>
           <ButtonClose style={{ margin: "auto" }} />
         </div>
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import Flex from "../../flex";
 import ModalButtons from "../modal-buttons";
 import "../../containers.scss";
@@ -12,53 +13,27 @@ import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.sv
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
-
-import { ReactComponent as ItemArea } from "../../../../assets/svg/item-area.svg";
-import { ReactComponent as ItemAnchor } from "../../../../assets/svg/item-anchor.svg";
-import { ReactComponent as ItemTrigger } from "../../../../assets/svg/item-trigger.svg";
+import { AppState } from "../../../redux/stores/renderer";
+import OpenItem from "../open-item";
 
 type Sections = "Chapters" | "Anchors" | "Info";
 const sections: Sections[] = ["Chapters", "Anchors", "Info"];
 
-type ItemModalOptions = "settings" | "anchors" | "trigger";
-const itemModalOptions: ItemModalOptions[] = ["settings", "anchors", "trigger"];
-
-function OpenItem() {
-  const [view, setView] = useState<string>(itemModalOptions[0]);
-
-  return (
-    <Flex
-      column
-      style={{
-        width: "auto",
-        height: "200px",
-        borderRadius: "4px",
-      }}
-    >
-      <ModalButtons
-        buttons={sections}
-        initial={view}
-        callback={setView}
-        style={{ width: "-webkit-fill-available", height: "41px" }}
-        icons={[ItemArea, ItemAnchor, ItemTrigger]}
-      />
-      <Flex column style={{ overflow: "auto" }} />
-    </Flex>
-  );
-}
-
 export default function Lesson(): JSX.Element {
   const [view, setView] = useState<Sections>(sections[0]);
+  const { treeCurrentType, treeCurrentId } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
 
   return (
-    <Flex column style={{ height: "100%", width: "-webkit-fill-available" }}>
+    <>
       <div className="mid-tight">Lesson Name</div>
       <div className="create-lesson-main-container mid-tight">
         <ModalButtons buttons={sections} initial={view} callback={setView} />
         <LessonTree />
       </div>
       <div className="create-lesson-item-container mid-tight">
-        <OpenItem />
+        {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
         <Flex style={{ marginTop: "auto" }}>
           <ButtonRound
             width="36px"
@@ -112,6 +87,6 @@ export default function Lesson(): JSX.Element {
           />
         </Flex>
       </div>
-    </Flex>
+    </>
   );
 }
