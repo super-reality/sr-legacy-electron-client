@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IStep } from "../../api/types/step/step";
+import { IStep } from "../../api/types/step-old/step";
 import {
   ILesson,
   EntryOptions,

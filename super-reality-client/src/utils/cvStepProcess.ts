@@ -2,7 +2,7 @@ import {
   InitalFnOptions,
   IStep,
   NextStepOptions,
-} from "../renderer/api/types/step/step";
+} from "../renderer/api/types/step-old/step";
 import createFindBox from "./createFindBox";
 
 export default function cvStepProcess(

@@ -26,7 +26,7 @@ import useDataGet from "../../hooks/useDataGet";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
-import { InitalFnOptions } from "../../api/types/step/step";
+import { InitalFnOptions } from "../../api/types/step-old/step";
 import useCVMatch from "../../hooks/useCVMatch";
 import closeFindBox from "../../../utils/closeFindBox";
 import cvStepProcess from "../../../utils/cvStepProcess";

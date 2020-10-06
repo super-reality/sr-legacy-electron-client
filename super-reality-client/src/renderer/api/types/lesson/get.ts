@@ -1,5 +1,5 @@
 import { CodeSuccess, ApiSucess } from "..";
-import { IStep } from "../step/step";
+import { IStep } from "../step-old/step";
 import Link from "../link/link";
 import { Subject } from "./search-parent";
 

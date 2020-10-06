@@ -1,7 +1,7 @@
 import { IDName } from "..";
 
-export interface IStep {
+export interface IChapter {
   _id: string;
   name: string;
-  items: IDName[];
+  steps: IDName[];
 }

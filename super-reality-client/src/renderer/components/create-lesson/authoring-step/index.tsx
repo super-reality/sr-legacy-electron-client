@@ -14,7 +14,7 @@ import {
   InitalFnOptions,
   FnOptions,
   IStep,
-} from "../../../api/types/step/step";
+} from "../../../api/types/step-old/step";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseInput from "../../base-input";
 import BaseSelect from "../../base-select";

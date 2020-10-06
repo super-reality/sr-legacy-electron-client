@@ -17,7 +17,7 @@ import "./index.scss";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
-import { Item } from "../../../api/types/lesson-v2/item";
+import { Item } from "../../../api/types/item/item";
 
 interface TreeFolderProps {
   id: string;

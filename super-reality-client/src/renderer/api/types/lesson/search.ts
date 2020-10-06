@@ -1,6 +1,6 @@
 import { CodeSuccess } from "..";
 import constant from "../../constant";
-import { IStep } from "../step/step";
+import { IStep } from "../step-old/step";
 
 export const LessonSortOptions = {
   Newest: constant.Lesson_Sort.Newest,

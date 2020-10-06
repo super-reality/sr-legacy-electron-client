@@ -107,4 +107,9 @@ interface LessonApi {
   api?: LessonGet;
 }
 
+export interface IDName {
+  _id: string;
+  name: string;
+}
+
 export type ApiJoin = CollectionApi | SubjectApi | LessonApi;

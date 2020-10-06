@@ -40,10 +40,17 @@ export interface IAbsolutePos {
   y: number;
 }
 
+export type BaseItemType =
+  | "focus_highlight"
+  | "audio"
+  | "video"
+  | "image"
+  | "dialog";
+
 export interface BaseItem {
   _id: string;
   name: string;
-  type: "focus_highlight" | "audio" | "video" | "image" | "dialog";
+  type: BaseItemType;
   anchor?: string;
   relativePos: IAbsolutePos;
   trigger: number | null;

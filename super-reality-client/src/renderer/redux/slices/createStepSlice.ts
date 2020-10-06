@@ -4,7 +4,7 @@ import {
   TriggerOptions,
   NextStepOptions,
   IStep,
-} from "../../api/types/step/step";
+} from "../../api/types/step-old/step";
 
 export const initialState: IStep = {
   index: undefined,

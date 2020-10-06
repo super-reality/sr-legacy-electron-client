@@ -1,13 +1,11 @@
 import { ILessonGet } from "./api/types/lesson/get";
 import { ISubjectGet } from "./api/types/subject/get";
 import { ICollectionGet } from "./api/types/collection/get";
-import {
-  IAnchor,
-  IChapter,
-  ILessonV2,
-  IStep,
-} from "./api/types/lesson-v2/lesson";
-import { Item } from "./api/types/lesson-v2/item";
+import { ILessonV2 } from "./api/types/lesson-v2/lesson";
+import { Item } from "./api/types/item/item";
+import { IChapter } from "./api/types/chapter/chapter";
+import { IAnchor } from "./api/types/anchor/anchor";
+import { IStep } from "./api/types/step/step";
 
 const globalData = {
   collections: {} as Record<string, ICollectionGet>,

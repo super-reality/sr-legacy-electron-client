@@ -1,4 +1,4 @@
-import { IStep } from "../step/step";
+import { IStep } from "../step-old/step";
 import Link from "../link/link";
 
 import constant from "../../constant";

@@ -2,7 +2,7 @@ import React, { CSSProperties } from "react";
 
 import "./index.scss";
 import { ItemInner, Title, Text } from "../item-inner";
-import { IStep } from "../../api/types/step/step";
+import { IStep } from "../../api/types/step-old/step";
 
 interface StepProps {
   data: IStep;

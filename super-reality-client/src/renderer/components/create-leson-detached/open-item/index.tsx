@@ -11,7 +11,7 @@ import {
   ItemVideoTriggers,
   ItemDialogTriggers,
   Item,
-} from "../../../api/types/lesson-v2/item";
+} from "../../../api/types/item/item";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import ModalButtons from "../modal-buttons";

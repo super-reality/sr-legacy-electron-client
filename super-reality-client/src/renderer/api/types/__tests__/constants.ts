@@ -6,7 +6,7 @@ import {
   FnOptions,
   NextStepOptions,
   TriggerOptions,
-} from "../step/step";
+} from "../step-old/step";
 import { LessonSortOptions } from "../lesson/search";
 import { SubjectSortOptions } from "../subject/search";
 

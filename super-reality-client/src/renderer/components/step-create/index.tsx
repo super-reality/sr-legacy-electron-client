@@ -4,7 +4,7 @@ import _ from "lodash";
 import "./index.scss";
 import { useDispatch } from "react-redux";
 import { ItemInner, Title, Text } from "../item-inner";
-import { IStep } from "../../api/types/step/step";
+import { IStep } from "../../api/types/step-old/step";
 import EditButton from "../edit-button";
 import reduxAction from "../../redux/reduxAction";
 import { initialCVSettings } from "../../redux/static";
