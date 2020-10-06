@@ -2,6 +2,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EntryOptions, DifficultyOptions } from "../../api/types/lesson/lesson";
 import { ILessonV2, StatusOptions } from "../../api/types/lesson-v2/lesson";
+import { IChapter } from "../../api/types/chapter/chapter";
+import { IStep } from "../../api/types/step/step";
+import { Item } from "../../api/types/item/item";
+import { IAnchor } from "../../api/types/anchor/anchor";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
@@ -10,6 +14,10 @@ type InitialState = ILessonV2 & {
   treeCurrentId: string;
   treeCurrentParentId: string;
   toggleSelects: number;
+  treeChapters: Record<string, IChapter>;
+  treeSteps: Record<string, IStep>;
+  treeItems: Record<string, Item>;
+  treeAnchors: Record<string, IAnchor>;
 };
 
 const initialState: InitialState = {
@@ -31,6 +39,10 @@ const initialState: InitialState = {
   treeCurrentId: "",
   treeCurrentParentId: "",
   toggleSelects: 0,
+  treeChapters: {},
+  treeSteps: {},
+  treeItems: {},
+  treeAnchors: {},
 };
 
 const createLessonSlice = createSlice({
@@ -42,6 +54,33 @@ const createLessonSlice = createSlice({
       action: PayloadAction<Partial<ILessonV2>>
     ): void => {
       state = Object.assign(state, action.payload);
+    },
+    setChapter: (
+      state: InitialState,
+      action: PayloadAction<IChapter>
+    ): void => {
+      state.treeChapters = {
+        ...state.treeChapters,
+        [action.payload._id]: action.payload,
+      };
+    },
+    setStep: (state: InitialState, action: PayloadAction<IStep>): void => {
+      state.treeSteps = {
+        ...state.treeSteps,
+        [action.payload._id]: action.payload,
+      };
+    },
+    setItem: (state: InitialState, action: PayloadAction<Item>): void => {
+      state.treeItems = {
+        ...state.treeItems,
+        [action.payload._id]: action.payload,
+      };
+    },
+    setAnchor: (state: InitialState, action: PayloadAction<IAnchor>): void => {
+      state.treeAnchors = {
+        ...state.treeAnchors,
+        [action.payload._id]: action.payload,
+      };
     },
     setOpenTree: (
       state: InitialState,
@@ -60,6 +99,14 @@ const createLessonSlice = createSlice({
   },
 });
 
-export const { setData, setOpenTree, selectEvent } = createLessonSlice.actions;
+export const {
+  setData,
+  setChapter,
+  setStep,
+  setItem,
+  setAnchor,
+  setOpenTree,
+  selectEvent,
+} = createLessonSlice.actions;
 
 export default createLessonSlice;

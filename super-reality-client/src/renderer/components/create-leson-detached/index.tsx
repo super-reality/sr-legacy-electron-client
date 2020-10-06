@@ -16,7 +16,6 @@ import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
-import globalData from "../../globalData";
 import ButtonRound from "../button-round";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
@@ -44,67 +43,86 @@ function setMocks() {
     setupFiles: [],
   };
   reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
-  globalData.lessonsv2["string"] = lesson;
-  globalData.chapters["001"] = {
-    _id: "001",
-    name: "Chapter One",
-    steps: [{ _id: "step01", name: "Step one" }],
-  };
-  globalData.chapters["002"] = {
-    _id: "002",
-    name: "Chapter Two",
-    steps: [{ _id: "step01", name: "Step one" }],
-  };
-  globalData.steps["step01"] = {
-    _id: "step01",
-    name: "Step one",
-    items: [
-      { _id: "001", name: "Focus Highlight" },
-      { _id: "002", name: "Image" },
-    ],
-  };
-  globalData.items["001"] = {
-    _id: "001",
-    name: "Focus Highlight",
-    type: "focus_highlight",
-    anchor: "001",
-    relativePos: {
-      x: 0,
-      y: 0,
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETCHAPTER",
+    arg: {
+      _id: "001",
+      name: "Chapter One",
+      steps: [{ _id: "step01", name: "Step one" }],
     },
-    trigger: null,
-    destination: "",
-    transition: 0,
-    focus: "Rectangle",
-  };
-  globalData.items["002"] = {
-    _id: "002",
-    name: "Image",
-    type: "image",
-    anchor: undefined,
-    relativePos: {
-      x: 0,
-      y: 0,
+  });
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETCHAPTER",
+    arg: {
+      _id: "002",
+      name: "Chapter Two",
+      steps: [{ _id: "step01", name: "Step one" }],
     },
-    trigger: 2,
-    destination: "",
-    transition: 0,
-    url: "",
-  };
+  });
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETSTEP",
+    arg: {
+      _id: "step01",
+      name: "Step one",
+      items: [
+        { _id: "001", name: "Focus Highlight" },
+        { _id: "002", name: "Image" },
+      ],
+    },
+  });
 
-  globalData.anchors["001"] = {
-    _id: "001",
-    name: "Anchor",
-    type: "crop",
-    templates: [],
-    function: "or",
-    cvMatchValue: 990,
-    cvCanvas: 100,
-    cvDelay: 100,
-    cvGrayscale: true,
-    cvApplyThreshold: false,
-    cvThreshold: 0,
-  };
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETITEM",
+    arg: {
+      _id: "001",
+      name: "Focus Highlight",
+      type: "focus_highlight",
+      anchor: "001",
+      relativePos: {
+        x: 0,
+        y: 0,
+      },
+      trigger: null,
+      destination: "",
+      transition: 0,
+      focus: "Rectangle",
+    },
+  });
+
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETITEM",
+    arg: {
+      _id: "002",
+      name: "Image",
+      type: "image",
+      anchor: undefined,
+      relativePos: {
+        x: 0,
+        y: 0,
+      },
+      trigger: 2,
+      destination: "",
+      transition: 0,
+      url: "",
+    },
+  });
+
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETANCHOR",
+    arg: {
+      _id: "001",
+      name: "Anchor",
+      type: "crop",
+      templates: [],
+      function: "or",
+      cvMatchValue: 990,
+      cvCanvas: 100,
+      cvDelay: 100,
+      cvGrayscale: true,
+      cvApplyThreshold: false,
+      cvThreshold: 0,
+    },
+  });
 }
 
 const restrictMinSize =

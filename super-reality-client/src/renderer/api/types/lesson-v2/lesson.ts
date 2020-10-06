@@ -1,3 +1,4 @@
+import { IDName } from "..";
 import { ValueOf } from "../../../../types/utils";
 import { EntryOptions } from "../lesson/lesson";
 
@@ -17,10 +18,7 @@ export interface ILessonV2 {
   difficulty: number;
   media: string[];
   location: any; // parent
-  chapters: {
-    _id: string;
-    name: string;
-  }[];
+  chapters: IDName[];
   setupScreenshots: string[];
   setupInstructions: string;
   setupFiles: string[];

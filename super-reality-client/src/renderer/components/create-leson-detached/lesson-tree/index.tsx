@@ -18,6 +18,7 @@ import reduxAction from "../../../redux/reduxAction";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import { Item } from "../../../api/types/item/item";
+import { IDName } from "../../../api/types";
 
 interface TreeFolderProps {
   id: string;
@@ -29,19 +30,20 @@ interface TreeFolderProps {
 function TreeFolder(props: TreeFolderProps) {
   const { id, parentId, name, type } = props;
   const dispatch = useDispatch();
-  const { toggleSelects, treeCurrentType, treeCurrentId } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    toggleSelects,
+    treeCurrentType,
+    treeCurrentId,
+    chapters,
+    treeChapters,
+    treeItems,
+    treeSteps,
+  } = useSelector((state: AppState) => state.createLessonV2);
 
   const [open, setOpen] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
-  const [children, setChildren] = useState<
-    {
-      _id: string;
-      name: string;
-    }[]
-  >([]);
+  const [children, setChildren] = useState<IDName[]>([]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -55,25 +57,13 @@ function TreeFolder(props: TreeFolderProps) {
 
   const doOpen = useCallback(() => {
     if (type == "lesson") {
-      setChildren(
-        globalData.lessonsv2[id].chapters.map((d) => {
-          return { _id: d._id, name: d.name };
-        })
-      );
+      setChildren(chapters);
     }
     if (type == "chapter") {
-      setChildren(
-        globalData.chapters[id].steps.map((d) => {
-          return { _id: d._id, name: d.name };
-        })
-      );
+      setChildren(treeChapters[id].steps);
     }
     if (type == "step") {
-      setChildren(
-        globalData.steps[id].items.map((d) => {
-          return { _id: d._id, name: d.name };
-        })
-      );
+      setChildren(treeSteps[id].items);
     }
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
@@ -144,13 +134,16 @@ interface TreeItemProps {
 function TreeItem(props: TreeItemProps) {
   const { id, parentId, name } = props;
   const dispatch = useDispatch();
-  const { toggleSelects, treeCurrentType, treeCurrentId } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    toggleSelects,
+    treeCurrentType,
+    treeCurrentId,
+    treeItems,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const itemData: Item | null = globalData.items[id] || null;
+  const itemData: Item | null = treeItems[id] || null;
 
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
