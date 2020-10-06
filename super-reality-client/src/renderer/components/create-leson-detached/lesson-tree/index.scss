@@ -51,11 +51,12 @@
   height: 18px;
   cursor: pointer;
   padding: 2px 0px 2px 2px;
+  border-radius: 2px;
   @include animated;
   @include disable-select;
 
   &.selected {
-    background-color: var(--color-section-hover);
+    background-color: var(--color-button);
   }
 
   &.open {
@@ -84,5 +85,5 @@
 
 .tree-folder:hover,
 .tree-item-container:hover {
-  background-color: var(--color-section-hover);
+  background-color: var(--color-button);
 }
