@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Axios from "axios";
 import interact from "interactjs";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,124 +22,20 @@ import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
+import handleLessonGet from "../../api/handleLessonV2Get";
+import LessonGet from "../../api/types/lesson-v2/get";
+import { ApiError } from "../../api/types";
+import { API_URL } from "../../constants";
 
 function setMocks() {
-  const lesson = {
-    _id: "lessonId00",
-    name: "Test Lesson",
-    cost: 0,
-    status: 1,
-    description: "",
-    entry: 2,
-    skills: ["skill"],
-    difficulty: 2,
-    media: [],
-    location: {},
-    chapters: [],
-    setupScreenshots: [],
-    setupInstructions: "",
-    setupFiles: [],
-  };
-  reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
-    arg: {
-      _id: "001",
-      name: "Chapter One",
-      steps: [],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
-    arg: {
-      _id: "002",
-      name: "Chapter Two",
-      steps: [],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETSTEP",
-    arg: {
-      chapter: "001",
-      step: {
-        _id: "step01",
-        name: "Step one",
-        items: [],
-      },
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETSTEP",
-    arg: {
-      chapter: "002",
-      step: {
-        _id: "step01",
-        name: "Step one",
-        items: [],
-      },
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      step: "step01",
-      item: {
-        _id: "001",
-        name: "Focus Highlight",
-        type: "focus_highlight",
-        anchor: undefined,
-        relativePos: {
-          x: 0,
-          y: 0,
-        },
-        trigger: null,
-        destination: "",
-        transition: 0,
-        focus: "Rectangle",
-      },
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      step: "step01",
-      item: {
-        _id: "002",
-        name: "Image",
-        type: "image",
-        anchor: undefined,
-        relativePos: {
-          x: 0,
-          y: 0,
-        },
-        trigger: 2,
-        destination: "",
-        transition: 0,
-        url: "",
-      },
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETANCHOR",
-    arg: {
-      anchor: {
-        _id: "001",
-        name: "Anchor",
-        type: "crop",
-        templates: [],
-        function: "or",
-        cvMatchValue: 990,
-        cvCanvas: 100,
-        cvDelay: 100,
-        cvGrayscale: true,
-        cvApplyThreshold: false,
-        cvThreshold: 0,
-      },
-    },
-  });
+  Axios.get<LessonGet | ApiError>(`${API_URL}lesson/5f7e0b2bf658117398cb4aca`)
+    .then(handleLessonGet)
+    .then((lesson) => {
+      reduxAction(store.dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: lesson,
+      });
+    });
 }
 
 const restrictMinSize =

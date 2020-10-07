@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Axios from "axios";
-import globalData from "../../../globalData";
 import store, { AppState } from "../../../redux/stores/renderer";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
@@ -27,6 +26,82 @@ import handleChapterCreate from "../../../api/handleChapterCreate";
 import handleStepCreate from "../../../api/handleStepCreate";
 import StepCreate from "../../../api/types/step/create";
 import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
+import LessonUpdate from "../../../api/types/lesson-v2/update";
+import ChapterUpdate from "../../../api/types/chapter/update";
+import handleChapterUpdate from "../../../api/handleChapterUpdate";
+import handleLessonUpdate from "../../../api/handleLessonV2update";
+import { ChapterGet } from "../../../api/types/chapter/get";
+import handleChapterGet from "../../../api/handleChapterGet";
+import { IChapter } from "../../../api/types/chapter/chapter";
+import { StepGet } from "../../../api/types/step/get";
+import { IStep } from "../../../api/types/step/step";
+import handleStepGet from "../../../api/handleStepGet";
+
+function newChapter(name: string): void {
+  const payload = {
+    name,
+  };
+  Axios.post<ChapterCreate | ApiError>(`${API_URL}chapter/create`, payload)
+    .then(handleChapterCreate)
+    .then((data) => {
+      reduxAction(store.dispatch, {
+        type: "CREATE_LESSON_V2_SETCHAPTER",
+        arg: data,
+      });
+      const updatedLesson = {
+        lesson_id: store.getState().createLessonV2._id,
+        chapters: store.getState().createLessonV2.chapters,
+      };
+      Axios.put<LessonUpdate | ApiError>(`${API_URL}lesson`, updatedLesson)
+        .then(handleLessonUpdate)
+        .catch(console.error);
+    })
+    .catch(console.error);
+}
+
+function getChapter(id: string): Promise<IChapter> {
+  return new Promise((resolve, reject) => {
+    Axios.get<ChapterGet | ApiError>(`${API_URL}chapter/${id}`)
+      .then(handleChapterGet)
+      .then(resolve)
+      .catch(reject);
+  });
+}
+
+function newStep(name: string, chapter?: string): void {
+  const payload = {
+    name,
+  };
+  Axios.post<StepCreate | ApiError>(`${API_URL}step/create`, payload)
+    .then(handleStepCreate)
+    .then((data) => {
+      reduxAction(store.dispatch, {
+        type: "CREATE_LESSON_V2_SETSTEP",
+        arg: { step: data, chapter },
+      });
+      if (chapter) {
+        const updatedChapter = store.getState().createLessonV2.treeChapters[
+          chapter
+        ];
+        Axios.put<ChapterUpdate | ApiError>(`${API_URL}chapter`, {
+          chapter_id: updatedChapter._id,
+          steps: updatedChapter.steps,
+        })
+          .then(handleChapterUpdate)
+          .catch(console.error);
+      }
+    })
+    .catch(console.error);
+}
+
+function getStep(id: string): Promise<IStep> {
+  return new Promise((resolve, reject) => {
+    Axios.get<StepGet | ApiError>(`${API_URL}step/${id}`)
+      .then(handleStepGet)
+      .then(resolve)
+      .catch(reject);
+  });
+}
 
 interface TreeFolderProps {
   id: string;
@@ -54,14 +129,36 @@ function TreeFolder(props: TreeFolderProps) {
 
   let children: IDName[] = [];
   if (type == "lesson") {
-    children = chapters;
+    children = chapters || [];
   }
   if (type == "chapter") {
-    children = treeChapters[id].steps;
+    children = treeChapters[id]?.steps || [];
   }
   if (type == "step") {
-    children = treeSteps[id].items;
+    children = treeSteps[id]?.items || [];
   }
+
+  useEffect(() => {
+    if (type == "lesson") {
+      // getLesson(id)
+    }
+    if (type == "chapter" && treeChapters[id] == undefined) {
+      getChapter(id).then((data) =>
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETCHAPTER",
+          arg: data,
+        })
+      );
+    }
+    if (type == "step" && treeSteps[id] == undefined) {
+      getStep(id).then((data) =>
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETSTEP",
+          arg: { step: data },
+        })
+      );
+    }
+  }, [dispatch, id]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -250,36 +347,11 @@ export function LessonTreeControls() {
     (name: string) => {
       // Create chapter
       if (childType == "chapter") {
-        const payload = {
-          name,
-        };
-        Axios.post<ChapterCreate | ApiError>(
-          `${API_URL}chapter/create`,
-          payload
-        )
-          .then(handleChapterCreate)
-          .then((data) => {
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SETCHAPTER",
-              arg: data,
-            });
-          })
-          .catch(console.error);
+        newChapter(name);
       }
       // Create step
       if (childType == "step") {
-        const payload = {
-          name,
-        };
-        Axios.post<StepCreate | ApiError>(`${API_URL}step/create`, payload)
-          .then(handleStepCreate)
-          .then((data) => {
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SETSTEP",
-              arg: { step: data, chapter: treeCurrentId },
-            });
-          })
-          .catch(console.error);
+        newStep(name, treeCurrentId);
       }
     },
     [treeCurrentType, treeCurrentId, dispatch]

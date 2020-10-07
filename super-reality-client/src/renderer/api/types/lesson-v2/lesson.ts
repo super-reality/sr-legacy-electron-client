@@ -1,6 +1,10 @@
 import { IDName } from "..";
 import { ValueOf } from "../../../../types/utils";
-import { EntryOptions } from "../lesson/lesson";
+
+export const EntryOptions = {
+  Open: 1,
+  Invite: 2,
+};
 
 export const StatusOptions = {
   Published: 1,
@@ -17,24 +21,8 @@ export interface ILessonV2 {
   skills: string[];
   difficulty: number;
   media: string[];
-  location: any; // parent
+  location: any;
   chapters: IDName[];
-  setupScreenshots: string[];
-  setupInstructions: string;
-  setupFiles: string[];
-}
-
-export interface ILessonV2Get {
-  _id: string;
-  cost: number;
-  status: ValueOf<typeof StatusOptions>;
-  description: string;
-  entry: ValueOf<typeof EntryOptions>;
-  skills: string[];
-  difficulty: number;
-  media: string[];
-  location: any; // parent
-  chapters: string[];
   setupScreenshots: string[];
   setupInstructions: string;
   setupFiles: string[];
