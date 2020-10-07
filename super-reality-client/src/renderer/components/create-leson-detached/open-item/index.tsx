@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as ItemArea } from "../../../../assets/svg/item-area.svg";
-import { ReactComponent as ItemAnchor } from "../../../../assets/svg/item-anchor.svg";
-import { ReactComponent as ItemTrigger } from "../../../../assets/svg/item-trigger.svg";
 import {
   ItemFocusTriggers,
   ItemAudioTriggers,
@@ -60,7 +57,7 @@ export default function OpenItem(props: OpenItemProps) {
     (value: number | null) => {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
-        arg: { ...treeItems[id], trigger: value },
+        arg: { item: { ...treeItems[id], trigger: value } },
       });
     },
     [id, dispatch]

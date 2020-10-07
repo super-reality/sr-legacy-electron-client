@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Axios from "axios";
 import globalData from "../../../globalData";
 import store, { AppState } from "../../../redux/stores/renderer";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
@@ -18,17 +19,25 @@ import reduxAction from "../../../redux/reduxAction";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import { Item } from "../../../api/types/item/item";
-import { IDName } from "../../../api/types";
+import { ApiError, IDName } from "../../../api/types";
+import usePopupInput from "../../../hooks/usePopupInput";
+import ChapterCreate from "../../../api/types/chapter/create";
+import { API_URL } from "../../../constants";
+import handleChapterCreate from "../../../api/handleChapterCreate";
+import handleStepCreate from "../../../api/handleStepCreate";
+import StepCreate from "../../../api/types/step/create";
+import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
 
 interface TreeFolderProps {
   id: string;
   parentId: string;
   name: string;
   type: "lesson" | "chapter" | "step";
+  expanded?: boolean;
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, parentId, name, type } = props;
+  const { id, parentId, name, type, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -36,14 +45,23 @@ function TreeFolder(props: TreeFolderProps) {
     treeCurrentId,
     chapters,
     treeChapters,
-    treeItems,
     treeSteps,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const [open, setOpen] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
   const [selected, setSelected] = useState<boolean>(false);
-  const [children, setChildren] = useState<IDName[]>([]);
+
+  let children: IDName[] = [];
+  if (type == "lesson") {
+    children = chapters;
+  }
+  if (type == "chapter") {
+    children = treeChapters[id].steps;
+  }
+  if (type == "step") {
+    children = treeSteps[id].items;
+  }
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -56,15 +74,6 @@ function TreeFolder(props: TreeFolderProps) {
   }, [toggleSelects]);
 
   const doOpen = useCallback(() => {
-    if (type == "lesson") {
-      setChildren(chapters);
-    }
-    if (type == "chapter") {
-      setChildren(treeChapters[id].steps);
-    }
-    if (type == "step") {
-      setChildren(treeSteps[id].items);
-    }
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
       arg: { type, parentId, id },
@@ -129,10 +138,11 @@ interface TreeItemProps {
   id: string;
   parentId: string;
   name: string;
+  expanded?: boolean;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, name } = props;
+  const { id, parentId, name, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -141,7 +151,7 @@ function TreeItem(props: TreeItemProps) {
     treeItems,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
 
   const itemData: Item | null = treeItems[id] || null;
 
@@ -209,33 +219,87 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { name, _id } = useSelector((state: AppState) => state.createLessonV2);
+  const { name, chapters, _id } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
 
   return (
     <Flex column style={{ overflow: "auto" }}>
-      <TreeFolder parentId={`${_id}`} id={_id} name={name} type="lesson" />
+      <TreeFolder
+        parentId={`${_id}`}
+        id={_id}
+        name={name}
+        expanded
+        type="lesson"
+      />
     </Flex>
   );
 }
 
 export function LessonTreeControls() {
-  const { treeCurrentType } = useSelector(
+  const dispatch = useDispatch();
+  const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
-  const doAddFolder = useCallback(() => {
-    //
-  }, []);
+  let childType: TreeTypes = "chapter";
+  if (treeCurrentType == "chapter") childType = "step";
+  if (treeCurrentType == "step") childType = "item";
+
+  const doAddFolder = useCallback(
+    (name: string) => {
+      // Create chapter
+      if (childType == "chapter") {
+        const payload = {
+          name,
+        };
+        Axios.post<ChapterCreate | ApiError>(
+          `${API_URL}chapter/create`,
+          payload
+        )
+          .then(handleChapterCreate)
+          .then((data) => {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETCHAPTER",
+              arg: data,
+            });
+          })
+          .catch(console.error);
+      }
+      // Create step
+      if (childType == "step") {
+        const payload = {
+          name,
+        };
+        Axios.post<StepCreate | ApiError>(`${API_URL}step/create`, payload)
+          .then(handleStepCreate)
+          .then((data) => {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETSTEP",
+              arg: { step: data, chapter: treeCurrentId },
+            });
+          })
+          .catch(console.error);
+      }
+    },
+    [treeCurrentType, treeCurrentId, dispatch]
+  );
 
   const doAddFocus = useCallback(() => {
     //
-  }, []);
+  }, [treeCurrentType]);
+
+  const [FolderInput, openNewFolderInput] = usePopupInput(
+    `Enter new ${childType} name:`,
+    doAddFolder
+  );
 
   return (
     <Flex style={{ margin: "8px 0" }}>
+      <FolderInput />
       {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
         <ButtonRound
-          onClick={doAddFolder}
+          onClick={openNewFolderInput}
           svg={IconAddFolder}
           width="32px"
           height="32px"
@@ -247,7 +311,7 @@ export function LessonTreeControls() {
             svg={IconAddFocus}
             width="32px"
             height="32px"
-            style={{ margin: "0px 4px 0 0" }}
+            style={{ margin: "0 4px" }}
           />
           <ButtonRound
             onClick={doAddFocus}

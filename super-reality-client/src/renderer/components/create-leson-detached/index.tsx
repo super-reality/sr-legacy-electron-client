@@ -24,8 +24,8 @@ import toggleMaximize from "../../../utils/toggleMaximize";
 
 function setMocks() {
   const lesson = {
-    _id: "string",
-    name: "test",
+    _id: "lessonId00",
+    name: "Test Lesson",
     cost: 0,
     status: 1,
     description: "",
@@ -34,10 +34,7 @@ function setMocks() {
     difficulty: 2,
     media: [],
     location: {},
-    chapters: [
-      { _id: "001", name: "Chapter One" },
-      { _id: "002", name: "Chapter Two" },
-    ],
+    chapters: [],
     setupScreenshots: [],
     setupInstructions: "",
     setupFiles: [],
@@ -48,7 +45,7 @@ function setMocks() {
     arg: {
       _id: "001",
       name: "Chapter One",
-      steps: [{ _id: "step01", name: "Step one" }],
+      steps: [],
     },
   });
   reduxAction(store.dispatch, {
@@ -56,71 +53,90 @@ function setMocks() {
     arg: {
       _id: "002",
       name: "Chapter Two",
-      steps: [{ _id: "step01", name: "Step one" }],
+      steps: [],
     },
   });
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_SETSTEP",
     arg: {
-      _id: "step01",
-      name: "Step one",
-      items: [
-        { _id: "001", name: "Focus Highlight" },
-        { _id: "002", name: "Image" },
-      ],
+      chapter: "001",
+      step: {
+        _id: "step01",
+        name: "Step one",
+        items: [],
+      },
+    },
+  });
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_SETSTEP",
+    arg: {
+      chapter: "002",
+      step: {
+        _id: "step01",
+        name: "Step one",
+        items: [],
+      },
     },
   });
 
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_SETITEM",
     arg: {
-      _id: "001",
-      name: "Focus Highlight",
-      type: "focus_highlight",
-      anchor: "001",
-      relativePos: {
-        x: 0,
-        y: 0,
+      step: "step01",
+      item: {
+        _id: "001",
+        name: "Focus Highlight",
+        type: "focus_highlight",
+        anchor: undefined,
+        relativePos: {
+          x: 0,
+          y: 0,
+        },
+        trigger: null,
+        destination: "",
+        transition: 0,
+        focus: "Rectangle",
       },
-      trigger: null,
-      destination: "",
-      transition: 0,
-      focus: "Rectangle",
     },
   });
 
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_SETITEM",
     arg: {
-      _id: "002",
-      name: "Image",
-      type: "image",
-      anchor: undefined,
-      relativePos: {
-        x: 0,
-        y: 0,
+      step: "step01",
+      item: {
+        _id: "002",
+        name: "Image",
+        type: "image",
+        anchor: undefined,
+        relativePos: {
+          x: 0,
+          y: 0,
+        },
+        trigger: 2,
+        destination: "",
+        transition: 0,
+        url: "",
       },
-      trigger: 2,
-      destination: "",
-      transition: 0,
-      url: "",
     },
   });
 
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_SETANCHOR",
     arg: {
-      _id: "001",
-      name: "Anchor",
-      type: "crop",
-      templates: [],
-      function: "or",
-      cvMatchValue: 990,
-      cvCanvas: 100,
-      cvDelay: 100,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 0,
+      anchor: {
+        _id: "001",
+        name: "Anchor",
+        type: "crop",
+        templates: [],
+        function: "or",
+        cvMatchValue: 990,
+        cvCanvas: 100,
+        cvDelay: 100,
+        cvGrayscale: true,
+        cvApplyThreshold: false,
+        cvThreshold: 0,
+      },
     },
   });
 }
