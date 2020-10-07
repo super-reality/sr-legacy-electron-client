@@ -76,6 +76,7 @@
   .edit {
     display: flex;
     grid-area: edit;
+    overflow: auto;
 
     .creator {
       min-width: 340px;

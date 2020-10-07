@@ -7,7 +7,7 @@
 }
 
 .mid {
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: var(--color-section);
   padding: 10px;
   margin: 10px;
@@ -15,9 +15,9 @@
 }
 
 .mid-tight {
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: var(--color-section);
-  padding: 10px;
+  padding: 5px;
   margin: 5px;
   @include soft-shadow;
 }

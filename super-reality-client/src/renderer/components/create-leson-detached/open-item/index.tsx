@@ -14,10 +14,10 @@ import {
 } from "../../../api/types/item/item";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
-import ModalButtons from "../modal-buttons";
 import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
+import { Tabs, TabsContainer } from "../../tabs";
 
 interface OpenItemProps {
   id: string;
@@ -67,22 +67,14 @@ export default function OpenItem(props: OpenItemProps) {
   );
 
   return (
-    <Flex
-      column
-      style={{
-        width: "auto",
-        height: "200px",
-        borderRadius: "4px",
-      }}
-    >
-      <ModalButtons
+    <>
+      <Tabs
         buttons={itemModalOptions}
         initial={view}
         callback={setView}
-        style={{ width: "-webkit-fill-available", height: "41px" }}
-        icons={[ItemArea, ItemAnchor, ItemTrigger]}
+        style={{ width: "-webkit-fill-available", height: "42px" }}
       />
-      <Flex style={{ height: "calc(100% - 41px)", overflow: "auto" }}>
+      <TabsContainer style={{ height: "200px", overflow: "auto" }}>
         {view === "settings" && <Flex column />}
         {view === "anchors" && <Flex column />}
         {view === "trigger" && (
@@ -96,7 +88,7 @@ export default function OpenItem(props: OpenItemProps) {
             />
           </Flex>
         )}
-      </Flex>
-    </Flex>
+      </TabsContainer>
+    </>
   );
 }

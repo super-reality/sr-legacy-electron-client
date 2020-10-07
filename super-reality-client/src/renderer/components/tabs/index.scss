@@ -1,0 +1,37 @@
+@import "../misc.scss";
+
+.tabs-content-container {
+  border-radius: 0 0 8px 8px;
+  background-color: var(--color-section);
+  padding: 10px;
+  margin: 0 5px 5px 5px;
+  border-top: 2px solid var(--color-button);
+  @include soft-shadow;
+}
+
+.tabs-tab-container {
+  justify-content: space-between;
+  display: flex;
+  margin: 0 5px 0 5px;
+}
+
+@mixin tabs-tab {
+  text-align: center;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+}
+
+.tabs-tab {
+  background-color: var(--color-background-dark);
+  @include tabs-tab;
+}
+
+.tabs-tab:hover {
+  background-color: var(--color-background-hover);
+}
+
+.tabs-tab-selected {
+  background-color: var(--color-section);
+  color: var(--color-text-active);
+  @include tabs-tab;
+}

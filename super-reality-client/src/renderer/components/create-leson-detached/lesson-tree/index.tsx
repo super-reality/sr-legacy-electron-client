@@ -209,7 +209,17 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { name, treeCurrentType, _id } = useSelector(
+  const { name, _id } = useSelector((state: AppState) => state.createLessonV2);
+
+  return (
+    <Flex column style={{ overflow: "auto" }}>
+      <TreeFolder parentId={`${_id}`} id={_id} name={name} type="lesson" />
+    </Flex>
+  );
+}
+
+export function LessonTreeControls() {
+  const { treeCurrentType } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
@@ -222,79 +232,74 @@ export default function LessonTree() {
   }, []);
 
   return (
-    <>
-      <Flex style={{ margin: "8px 0" }}>
-        {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
+    <Flex style={{ margin: "8px 0" }}>
+      {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
+        <ButtonRound
+          onClick={doAddFolder}
+          svg={IconAddFolder}
+          width="32px"
+          height="32px"
+        />
+      ) : (
+        <>
           <ButtonRound
-            onClick={doAddFolder}
-            svg={IconAddFolder}
+            onClick={doAddFocus}
+            svg={IconAddFocus}
             width="32px"
             height="32px"
+            style={{ margin: "0px 4px 0 0" }}
           />
-        ) : (
-          <>
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddFocus}
-              width="32px"
-              height="32px"
-              style={{ margin: "0px 4px 0 0" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddTTS}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddImage}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddVideo}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddTeach}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddAudio}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddClip}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 4px" }}
-            />
-            <ButtonRound
-              onClick={doAddFocus}
-              svg={IconAddShare}
-              width="32px"
-              height="32px"
-              style={{ margin: "0 0 0 4px" }}
-            />
-          </>
-        )}
-      </Flex>
-      <Flex column style={{ overflow: "auto" }}>
-        <TreeFolder parentId={`${_id}`} id={_id} name={name} type="lesson" />
-      </Flex>
-    </>
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddTTS}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddImage}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddVideo}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddTeach}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddAudio}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddClip}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
+            onClick={doAddFocus}
+            svg={IconAddShare}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 0 0 4px" }}
+          />
+        </>
+      )}
+    </Flex>
   );
 }
