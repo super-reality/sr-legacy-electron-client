@@ -10,41 +10,20 @@ import { IDName } from "../../api/types";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
-type InitialState = ILessonV2 & {
-  treeCurrentType: TreeTypes;
-  treeCurrentId: string;
-  treeCurrentParentId: string;
-  toggleSelects: number;
-  treeChapters: Record<string, IChapter>;
-  treeSteps: Record<string, IStep>;
-  treeItems: Record<string, Item>;
-  treeAnchors: Record<string, IAnchor>;
-};
-
-const initialState: InitialState = {
-  _id: "string",
-  name: "",
-  cost: 0,
-  status: StatusOptions.Draft,
-  description: "",
-  entry: EntryOptions.Open,
-  skills: [],
-  difficulty: DifficultyOptions.Beginner,
-  media: [],
-  location: {}, // parent
-  chapters: [],
-  setupScreenshots: [],
-  setupInstructions: "",
-  setupFiles: [],
-  treeCurrentType: "none",
+const initialState = {
+  toggleSelects: 0 as number,
+  treeCurrentType: "none" as TreeTypes,
   treeCurrentId: "",
   treeCurrentParentId: "",
-  toggleSelects: 0,
-  treeChapters: {},
-  treeSteps: {},
-  treeItems: {},
-  treeAnchors: {},
+  lessons: [] as IDName[],
+  treeLessons: {} as Record<string, ILessonV2>,
+  treeChapters: {} as Record<string, IChapter>,
+  treeSteps: {} as Record<string, IStep>,
+  treeItems: {} as Record<string, Item>,
+  treeAnchors: {} as Record<string, IAnchor>,
 };
+
+type InitialState = typeof initialState;
 
 function idInIdName(arr: IDName[], id: string): boolean {
   return arr.filter((d) => d._id == id).length > 0;
@@ -56,24 +35,45 @@ const createLessonSlice = createSlice({
   reducers: {
     setData: (
       state: InitialState,
-      action: PayloadAction<Partial<ILessonV2>>
+      action: PayloadAction<Partial<InitialState>>
     ): void => {
       state = Object.assign(state, action.payload);
     },
+    setLesson: (
+      state: InitialState,
+      action: PayloadAction<ILessonV2>
+    ): void => {
+      const lesson = action.payload;
+      if (lesson && !idInIdName(state.lessons, lesson._id)) {
+        state.lessons = [
+          ...state.lessons,
+          { name: lesson.name, _id: lesson._id },
+        ];
+      }
+
+      state.treeLessons = {
+        ...state.treeLessons,
+        [lesson._id]: lesson,
+      };
+    },
     setChapter: (
       state: InitialState,
-      action: PayloadAction<IChapter>
+      action: PayloadAction<{ chapter: IChapter; lesson?: string }>
     ): void => {
-      if (!idInIdName(state.chapters, action.payload._id)) {
-        state.chapters = [
-          ...state.chapters,
-          { name: action.payload.name, _id: action.payload._id },
+      const { chapter, lesson } = action.payload;
+      if (
+        lesson &&
+        !idInIdName(state.treeLessons[lesson].chapters, chapter._id)
+      ) {
+        state.treeLessons[lesson].chapters = [
+          ...state.treeLessons[lesson].chapters,
+          { name: chapter.name, _id: chapter._id },
         ];
       }
 
       state.treeChapters = {
         ...state.treeChapters,
-        [action.payload._id]: action.payload,
+        [chapter._id]: action.payload.chapter,
       };
     },
     setStep: (
@@ -146,6 +146,7 @@ const createLessonSlice = createSlice({
 
 export const {
   setData,
+  setLesson,
   setChapter,
   setStep,
   setItem,

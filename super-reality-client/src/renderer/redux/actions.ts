@@ -23,6 +23,7 @@ export const actions = {
   CREATE_LESSON_V2_DATA: createLessonSliceV2.setData,
   CREATE_LESSON_V2_TREE: createLessonSliceV2.setOpenTree,
   CREATE_LESSON_V2_SELECT: createLessonSliceV2.selectEvent,
+  CREATE_LESSON_V2_SETLESSON: createLessonSliceV2.setLesson,
   CREATE_LESSON_V2_SETCHAPTER: createLessonSliceV2.setChapter,
   CREATE_LESSON_V2_SETSTEP: createLessonSliceV2.setStep,
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,

@@ -26,7 +26,9 @@ import toggleMaximize from "../../../utils/toggleMaximize";
 function setMocks() {
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_DATA",
-    arg: { _id: "5f7e0b2bf658117398cb4aca" },
+    arg: {
+      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }],
+    },
   });
 }
 

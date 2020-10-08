@@ -49,7 +49,7 @@ function getLesson(id: string): Promise<ILessonV2> {
   });
 }
 
-function newChapter(name: string): void {
+function newChapter(name: string, lesson?: string): void {
   const payload = {
     name,
   };
@@ -58,15 +58,19 @@ function newChapter(name: string): void {
     .then((data) => {
       reduxAction(store.dispatch, {
         type: "CREATE_LESSON_V2_SETCHAPTER",
-        arg: data,
+        arg: { chapter: data, lesson },
       });
-      const updatedLesson = {
-        lesson_id: store.getState().createLessonV2._id,
-        chapters: store.getState().createLessonV2.chapters,
-      };
-      Axios.put<LessonUpdate | ApiError>(`${API_URL}lesson`, updatedLesson)
-        .then(handleLessonUpdate)
-        .catch(console.error);
+      if (lesson) {
+        const updatedLesson = store.getState().createLessonV2.treeLessons[
+          lesson
+        ];
+        Axios.put<LessonUpdate | ApiError>(`${API_URL}lesson`, {
+          lesson_id: updatedLesson._id,
+          chapters: updatedLesson.chapters,
+        })
+          .then(handleLessonUpdate)
+          .catch(console.error);
+      }
     })
     .catch(console.error);
 }
@@ -143,7 +147,7 @@ function TreeFolder(props: TreeFolderProps) {
     toggleSelects,
     treeCurrentType,
     treeCurrentId,
-    chapters,
+    treeLessons,
     treeChapters,
     treeSteps,
   } = useSelector((state: AppState) => state.createLessonV2);
@@ -155,7 +159,7 @@ function TreeFolder(props: TreeFolderProps) {
 
   let children: IDName[] = [];
   if (type == "lesson") {
-    children = chapters || [];
+    children = treeLessons[id]?.chapters || [];
   }
   if (type == "chapter") {
     children = treeChapters[id]?.steps || [];
@@ -170,7 +174,7 @@ function TreeFolder(props: TreeFolderProps) {
       getLesson(id)
         .then((data) => {
           reduxAction(store.dispatch, {
-            type: "CREATE_LESSON_V2_DATA",
+            type: "CREATE_LESSON_V2_SETLESSON",
             arg: data,
           });
           setState(STATE_OK);
@@ -183,7 +187,7 @@ function TreeFolder(props: TreeFolderProps) {
         .then((data) => {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETCHAPTER",
-            arg: data,
+            arg: { chapter: data },
           });
           setState(STATE_OK);
         })
@@ -264,7 +268,9 @@ function TreeFolder(props: TreeFolderProps) {
           />
         </div>
         <div
-          className={`folder-name ${state == STATE_LOADING ? "loading" : ""}`}
+          className={`folder-name ${
+            state == STATE_LOADING ? "tree-loading" : ""
+          }`}
         >
           {name}
         </div>
@@ -314,6 +320,7 @@ function TreeItem(props: TreeItemProps) {
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
+  const [state, setState] = useState<STATES>(STATE_IDLE);
 
   const itemData: Item | null = treeItems[id] || null;
 
@@ -370,7 +377,11 @@ function TreeItem(props: TreeItemProps) {
       <div className="item-icon-tree">
         <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />
       </div>
-      <div className="item-name">{name}</div>
+      <div
+        className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
+      >
+        {name}
+      </div>
       <div className="item-trigger">
         {itemData && itemData.trigger && (
           <TriggerIcon width="14px" height="14px" fill="var(--color-icon)" />
@@ -381,17 +392,20 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { name, _id } = useSelector((state: AppState) => state.createLessonV2);
+  const { lessons } = useSelector((state: AppState) => state.createLessonV2);
 
   return (
     <Flex column style={{ overflow: "auto" }}>
-      <TreeFolder
-        parentId={`${_id}`}
-        id={_id}
-        name={name}
-        expanded
-        type="lesson"
-      />
+      {lessons.map((d) => (
+        <TreeFolder
+          parentId={`${d._id}`}
+          key={`${d._id}`}
+          id={d._id}
+          name={d.name}
+          expanded
+          type="lesson"
+        />
+      ))}
     </Flex>
   );
 }
