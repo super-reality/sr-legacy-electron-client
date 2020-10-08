@@ -16,8 +16,8 @@ import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
 
-type Sections = "Chapters" | "Anchors" | "Info";
-const sections: Sections[] = ["Chapters", "Anchors", "Info"];
+type Sections = "Lessons" | "Anchors" | "Info";
+const sections: Sections[] = ["Lessons", "Anchors", "Info"];
 
 export default function Lesson(): JSX.Element {
   const [view, setView] = useState<Sections>(sections[0]);
@@ -35,7 +35,7 @@ export default function Lesson(): JSX.Element {
           overflow: "auto",
         }}
       >
-        <LessonTree />
+        {view == "Lessons" && <LessonTree />}
       </TabsContainer>
       <div className="create-lesson-item-container mid-tight">
         <LessonTreeControls />

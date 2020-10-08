@@ -22,20 +22,12 @@ import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
-import handleLessonGet from "../../api/handleLessonV2Get";
-import LessonGet from "../../api/types/lesson-v2/get";
-import { ApiError } from "../../api/types";
-import { API_URL } from "../../constants";
 
 function setMocks() {
-  Axios.get<LessonGet | ApiError>(`${API_URL}lesson/5f7e0b2bf658117398cb4aca`)
-    .then(handleLessonGet)
-    .then((lesson) => {
-      reduxAction(store.dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: lesson,
-      });
-    });
+  reduxAction(store.dispatch, {
+    type: "CREATE_LESSON_V2_DATA",
+    arg: { _id: "5f7e0b2bf658117398cb4aca" },
+  });
 }
 
 const restrictMinSize =

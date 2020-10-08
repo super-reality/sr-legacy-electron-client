@@ -36,6 +36,18 @@ import { IChapter } from "../../../api/types/chapter/chapter";
 import { StepGet } from "../../../api/types/step/get";
 import { IStep } from "../../../api/types/step/step";
 import handleStepGet from "../../../api/handleStepGet";
+import handleLessonGet from "../../../api/handleLessonV2Get";
+import LessonGet from "../../../api/types/lesson-v2/get";
+import { ILessonV2 } from "../../../api/types/lesson-v2/lesson";
+
+function getLesson(id: string): Promise<ILessonV2> {
+  return new Promise((resolve, reject) => {
+    Axios.get<LessonGet | ApiError>(`${API_URL}lesson/${id}`)
+      .then(handleLessonGet)
+      .then(resolve)
+      .catch(reject);
+  });
+}
 
 function newChapter(name: string): void {
   const payload = {
@@ -103,6 +115,19 @@ function getStep(id: string): Promise<IStep> {
   });
 }
 
+const STATE_ERR = -1;
+const STATE_IDLE = 0;
+const STATE_LOADING = 1;
+const STATE_OK = 2;
+const STATE_CUT = 3;
+
+type STATES =
+  | typeof STATE_ERR
+  | typeof STATE_IDLE
+  | typeof STATE_LOADING
+  | typeof STATE_OK
+  | typeof STATE_CUT;
+
 interface TreeFolderProps {
   id: string;
   parentId: string;
@@ -124,6 +149,7 @@ function TreeFolder(props: TreeFolderProps) {
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const [open, setOpen] = useState<boolean>(false);
+  const [state, setState] = useState<STATES>(STATE_IDLE);
   const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
   const [selected, setSelected] = useState<boolean>(false);
 
@@ -140,25 +166,54 @@ function TreeFolder(props: TreeFolderProps) {
 
   useEffect(() => {
     if (type == "lesson") {
-      // getLesson(id)
+      setState(STATE_LOADING);
+      getLesson(id)
+        .then((data) => {
+          reduxAction(store.dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: data,
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
     }
     if (type == "chapter" && treeChapters[id] == undefined) {
-      getChapter(id).then((data) =>
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETCHAPTER",
-          arg: data,
+      setState(STATE_OK);
+      getChapter(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETCHAPTER",
+            arg: data,
+          });
+          setState(STATE_OK);
         })
-      );
+        .catch((e) => setState(STATE_ERR));
     }
     if (type == "step" && treeSteps[id] == undefined) {
-      getStep(id).then((data) =>
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETSTEP",
-          arg: { step: data },
+      setState(STATE_OK);
+      getStep(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETSTEP",
+            arg: { step: data },
+          });
+          setState(STATE_OK);
         })
-      );
+        .catch((e) => setState(STATE_ERR));
     }
   }, [dispatch, id]);
+
+  const keyListeners = useCallback((e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key === "c") {
+      console.log(`copied ${id}`);
+    }
+    if (e.ctrlKey && e.key === "x") {
+      console.log(`cut ${id}`);
+    }
+    if (e.ctrlKey && e.key === "v") {
+      console.log(`paste on ${id}`);
+    }
+  }, []);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -170,14 +225,20 @@ function TreeFolder(props: TreeFolderProps) {
     }
   }, [toggleSelects]);
 
-  const doOpen = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_TREE",
-      arg: { type, parentId, id },
-    });
-    setOpen(!open);
-    setSelected(true);
-  }, [dispatch, open]);
+  const doOpen = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (!e.ctrlKey) {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_TREE",
+          arg: { type, parentId, id },
+        });
+        setOpen(!open);
+      }
+      document.onkeydown = keyListeners;
+      setSelected(true);
+    },
+    [dispatch, open]
+  );
 
   useEffect(() => {
     setIsOpen(treeCurrentId == id && treeCurrentType == type);
@@ -202,7 +263,11 @@ function TreeFolder(props: TreeFolderProps) {
             fill={`var(--color-${isOpen ? "green" : "icon"})`}
           />
         </div>
-        <div className="folder-name">{name}</div>
+        <div
+          className={`folder-name ${state == STATE_LOADING ? "loading" : ""}`}
+        >
+          {name}
+        </div>
       </div>
       <div
         className="tree-folder-container"
@@ -316,9 +381,7 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { name, chapters, _id } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const { name, _id } = useSelector((state: AppState) => state.createLessonV2);
 
   return (
     <Flex column style={{ overflow: "auto" }}>
