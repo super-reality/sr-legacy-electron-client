@@ -153,6 +153,31 @@ const createLessonSlice = createSlice({
         });
       }
     },
+    doDelete: (
+      state: InitialState,
+      action: PayloadAction<{
+        type: TreeTypes;
+        id: string;
+        parentId: string;
+      }>
+    ): void => {
+      const { type, id, parentId } = action.payload;
+      if (type == "chapter") {
+        // parent is lesson
+        const sourcePos = idNamePos(state.treeLessons[parentId].chapters, id);
+        state.treeLessons[parentId].chapters.splice(sourcePos, 1);
+      }
+      if (type == "step") {
+        // parent is chapter
+        const sourcePos = idNamePos(state.treeChapters[parentId].steps, id);
+        state.treeChapters[parentId].steps.splice(sourcePos, 1);
+      }
+      if (type == "item") {
+        // parent is step
+        const sourcePos = idNamePos(state.treeSteps[parentId].items, id);
+        state.treeSteps[parentId].items.splice(sourcePos, 1);
+      }
+    },
     setLesson: (
       state: InitialState,
       action: PayloadAction<ILessonV2>
@@ -264,6 +289,7 @@ export const {
   setDragOver,
   doMove,
   doCut,
+  doDelete,
   setLesson,
   setChapter,
   setStep,

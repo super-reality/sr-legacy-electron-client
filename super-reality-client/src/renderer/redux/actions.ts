@@ -26,6 +26,7 @@ export const actions = {
   CREATE_LESSON_V2_DRAGOVER: createLessonSliceV2.setDragOver,
   CREATE_LESSON_V2_MOVE: createLessonSliceV2.doMove,
   CREATE_LESSON_V2_CUT: createLessonSliceV2.doCut,
+  CREATE_LESSON_V2_DELETE: createLessonSliceV2.doDelete,
   CREATE_LESSON_V2_SELECT: createLessonSliceV2.selectEvent,
   CREATE_LESSON_V2_SETLESSON: createLessonSliceV2.setLesson,
   CREATE_LESSON_V2_SETCHAPTER: createLessonSliceV2.setChapter,
