@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
+import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import ReactSelect from "../../top-select";
+import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
 interface RecorderProps {
