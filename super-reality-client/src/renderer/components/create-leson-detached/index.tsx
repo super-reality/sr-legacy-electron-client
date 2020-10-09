@@ -22,6 +22,7 @@ import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
+import VideoNavigation from "./video-navigation";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -75,6 +76,12 @@ export default function CreateLessonDetached(): JSX.Element {
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  const [videoNav, setVideoNav] = useState([100, 150, 200]);
+
+  const setVideoNavPos = useCallback((n: readonly number[]) => {
+    setVideoNav([...n]);
+  }, []);
 
   useEffect(() => {
     setMocks();
@@ -150,11 +157,12 @@ export default function CreateLessonDetached(): JSX.Element {
           <div className="preview" />
         </div>
         <div className="nav">
-          <ButtonRound
-            width="64px"
-            height="64px"
-            svg={RecordIcon}
-            onClick={createRecorder}
+          <VideoNavigation
+            domain={[0, 1000]}
+            defaultValues={videoNav}
+            ticksNumber={100}
+            callback={setVideoNavPos}
+            slideCallback={setVideoNavPos}
           />
         </div>
       </div>

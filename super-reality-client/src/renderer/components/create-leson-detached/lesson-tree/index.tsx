@@ -118,7 +118,7 @@ function TreeFolder(props: TreeFolderProps) {
       onDelete(type, id, parentId);
     }
     if (e.ctrlKey && e.key === "c") {
-      console.log(`copied ${id}`);
+      console.log(`copy ${id}`);
     }
     if (e.ctrlKey && e.key === "x") {
       console.log(`cut ${id}`);
