@@ -21,7 +21,6 @@ export default class CVRecorder {
   _pausedValue = null;
   _videoElement = null;
   _mediaRecorder = null; // _MediaRecorder instance to capture footage
-  _videoSelectSources = null;
   _differenceValue = 0;
   _stoppedDuration = 0;
   _pixelOffset = 2;
@@ -50,12 +49,6 @@ export default class CVRecorder {
 
   get videoElement() {
     return this._videoElement;
-  }
-
-  set videoElement(element) {
-    if (!element) throw new Error("video element not defined");
-
-    this._videoElement = element;
   }
 
   get pixelOffset() {
@@ -363,6 +356,7 @@ export default class CVRecorder {
     this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     // Preview the source in a video element
+    this._videoElement = document.createElement("video");
     this._videoElement.srcObject = this.stream;
     this._videoElement.play();
 
