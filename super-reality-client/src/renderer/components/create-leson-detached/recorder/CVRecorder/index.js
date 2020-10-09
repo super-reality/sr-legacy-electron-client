@@ -1,4 +1,7 @@
 /* eslint-disable lines-between-class-members */
+
+import { captureDesktopStream } from "../../../../../utils/capture";
+
 /* eslint-disable radix */
 const { desktopCapturer, remote } = require("electron");
 const fs = require("fs");
@@ -342,31 +345,26 @@ export default class CVRecorder {
 
   // Change the videoSource window to record
   async selectSource(source) {
-    const constraints = {
-      audio: false,
-      video: {
-        mandatory: {
-          chromeMediaSource: "desktop",
-          chromeMediaSourceId: source.id,
-        },
-      },
-    };
+    try {
+      // Create a Stream
+      // Cant pass the ID to choose the source (I get an exception)
+      this.stream = await captureDesktopStream(); // source.id
 
-    // Create a Stream
-    this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+      // Preview the source in a video element
+      this._videoElement = document.createElement("video");
+      this._videoElement.srcObject = this.stream;
+      this._videoElement.onloadedmetadata = (e) => this._videoElement.play();
 
-    // Preview the source in a video element
-    this._videoElement = document.createElement("video");
-    this._videoElement.srcObject = this.stream;
-    this._videoElement.play();
+      // Create the Media Recorder
+      const options = { mimeType: "video/webm; codecs=vp9" };
+      this._mediaRecorder = new MediaRecorder(this.stream, options);
 
-    // Create the Media Recorder
-    const options = { mimeType: "video/webm; codecs=vp9" };
-    this._mediaRecorder = new MediaRecorder(this.stream, options);
-
-    // Register Event Handlers
-    this._mediaRecorder.ondataavailable = this.handleDataAvailable;
-    this._mediaRecorder.onstop = this.handleStop;
+      // Register Event Handlers
+      this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+      this._mediaRecorder.onstop = this.handleStop;
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   clockRunning() {
