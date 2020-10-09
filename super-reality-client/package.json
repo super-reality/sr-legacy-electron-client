@@ -24,6 +24,7 @@
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.2.4",
     "global-mouse-events": "^1.0.3",
+    "handbrake-js": "^5.0.0",
     "howler": "^2.2.0",
     "interactjs": "^1.9.22",
     "json-rpc3": "^0.2.1",
