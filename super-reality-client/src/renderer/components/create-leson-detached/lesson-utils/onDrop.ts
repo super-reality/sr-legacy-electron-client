@@ -1,6 +1,9 @@
 import reduxAction from "../../../redux/reduxAction";
 import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
 import store from "../../../redux/stores/renderer";
+import updateChapter from "./updateChapter";
+import updateLesson from "./updateLesson";
+import updateStep from "./updateStep";
 
 export default function onDrop(
   event: React.DragEvent<HTMLDivElement>,
@@ -50,6 +53,16 @@ export default function onDrop(
       });
     }
   }
+
+  if (type == "chapter") updateLesson({}, parentId);
+  if (type == "step") updateChapter({}, parentId);
+  if (type == "item") updateStep({}, parentId);
+  if (sourceParentId !== parentId) {
+    if (type == "chapter") updateLesson({}, sourceParentId);
+    if (type == "step") updateChapter({}, sourceParentId);
+    if (type == "item") updateStep({}, sourceParentId);
+  }
+
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_DRAG",
     arg: { type: "none", id: "", parentId: "" },
