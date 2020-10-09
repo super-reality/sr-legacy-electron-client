@@ -3,7 +3,7 @@
 import { captureDesktopStream } from "../../../../../utils/capture";
 
 /* eslint-disable radix */
-const { desktopCapturer, remote } = require("electron");
+const { remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
@@ -12,28 +12,51 @@ const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
-  _clickEventDetails = [];
-  _recordedChunks = [];
-  _recordingPath = `${remote.app.getAppPath()}/step/media/`;
-  _stepSnapshotPath = `${remote.app.getAppPath()}/step/snapshots/`;
-  _recordingStarted = false;
-  _clickEventTriggered = false;
-  _timeBegan = null;
-  _timeStopped = null;
-  _started = null;
-  _pausedValue = null;
-  _videoElement = null;
-  _mediaRecorder = null; // _MediaRecorder instance to capture footage
-  _differenceValue = 0;
-  _stoppedDuration = 0;
-  _pixelOffset = 2;
-  _maxPixelStepLimit = 30;
-  _currentTimer = "";
-  _stepRecordingName = "";
-  _recordingFullPath = "";
+  constructor() {
+    this._clickEventDetails = [];
+    this._recordedChunks = [];
+    this._recordingPath = `${remote.app.getAppPath()}/step/media/`;
+    this._stepSnapshotPath = `${remote.app.getAppPath()}/step/snapshots/`;
+    this._recordingStarted = false;
+    this._clickEventTriggered = false;
+    this._timeBegan = null;
+    this._timeStopped = null;
+    this._started = null;
+    this._pausedValue = null;
+    this._videoElement = null;
+    this._mediaRecorder = null; // _MediaRecorder instance to capture footage
+    this._differenceValue = 0;
+    this._stoppedDuration = 0;
+    this._pixelOffset = 2;
+    this._maxPixelStepLimit = 30;
+    this._currentTimer = "";
+    this._stepRecordingName = "";
+    this._recordingFullPath = "";
+
+    this.start = this.start.bind(this);
+    this.extractClickedImages = this.extractClickedImages.bind(this);
+    this.convertRawVideoFormat = this.convertRawVideoFormat.bind(this);
+    this.handleStop = this.handleStop.bind(this);
+    this.handleDataAvailable = this.handleDataAvailable.bind(this);
+    this.selectSource = this.selectSource.bind(this);
+    this.clockRunning = this.clockRunning.bind(this);
+    this.startTimer = this.startTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
+    this.start = this.start.bind(this);
+    this.pauseTimer = this.pauseTimer.bind(this);
+    this.resumeTimer = this.resumeTimer.bind(this);
+    this.resetTimer = this.resetTimer.bind(this);
+    this.pause = this.pause.bind(this);
+    this.resume = this.resume.bind(this);
+    this.stop = this.stop.bind(this);
+  }
 
   get clickEventDetails() {
     return this._clickEventDetails;
+  }
+
+  get recordedChunks() {
+    return this._recordedChunks;
   }
 
   set clickEventDetails(arr) {
@@ -314,32 +337,36 @@ export default class CVRecorder {
   }
 
   // Saves the video file on stop
-  async handleStop(e) {
+  handleStop(e) {
+    console.log("handleStop", this._recordedChunks);
     const blob = new Blob(this._recordedChunks, {
       type: "video/webm; codecs=vp9",
     });
 
-    const buffer = Buffer.from(await blob.arrayBuffer());
-    this._stepRecordingName = `vid-${Date.now()}.webm`;
-    // console.log("stop")
-    this._recordingFullPath = this._recordingPath + this._stepRecordingName;
+    blob.arrayBuffer().then((arrayBuffer) => {
+      const buffer = Buffer.from(arrayBuffer);
+      this._stepRecordingName = `vid-${Date.now()}.webm`;
+      // console.log("stop")
+      this._recordingFullPath = this._recordingPath + this._stepRecordingName;
 
-    const fileNameAndExtension = this._recordingFullPath.split(".");
-    const pathToConvertedFile = `${fileNameAndExtension[0]}.m4v`;
+      const fileNameAndExtension = this._recordingFullPath.split(".");
+      const pathToConvertedFile = `${fileNameAndExtension[0]}.m4v`;
 
-    console.log("_recordingPath == >", this._recordingFullPath);
-    if (this._recordingFullPath) {
-      fs.writeFile(this._recordingFullPath, buffer, () => {
-        this.convertRawVideoFormat(
-          this._recordingFullPath,
-          pathToConvertedFile
-        );
-      });
-    }
+      console.log("_recordingPath == >", this._recordingFullPath);
+      if (this._recordingFullPath) {
+        fs.writeFile(this._recordingFullPath, buffer, () => {
+          this.convertRawVideoFormat(
+            this._recordingFullPath,
+            pathToConvertedFile
+          );
+        });
+      }
+    });
   }
 
   // Captures all recorded chunks
   handleDataAvailable(e) {
+    console.log(this._recordedChunks, e);
     this._recordedChunks.push(e.data);
   }
 

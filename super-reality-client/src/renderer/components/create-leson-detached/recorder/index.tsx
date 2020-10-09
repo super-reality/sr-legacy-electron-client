@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
@@ -25,10 +19,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     name: "Entire Screen",
   });
 
-  const recorder: any = useMemo(() => {
-    const rec = new CVRecorder();
-    return rec;
-  }, []);
+  const recorder: any = useMemo(() => new CVRecorder(), []);
 
   useEffect(() => {
     const get = async () => {
