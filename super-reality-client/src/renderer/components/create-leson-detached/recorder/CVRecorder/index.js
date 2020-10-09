@@ -7,7 +7,8 @@ const { app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
-const hbjs = require("handbrake-js");
+// eslint-disable-next-line no-undef
+const hbjs = __non_webpack_require__("handbrake-js");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
@@ -39,15 +40,19 @@ export default class CVRecorder {
     this._recordingFullPath = "";
 
     if (!fs.existsSync(this._stepPath)) {
-      fs.mkdir(this._stepPath, (err, result) => {
+      fs.mkdir(this._stepPath, (err) => {
         if (err) console.log("error", err);
       });
     }
     if (!fs.existsSync(this._recordingPath)) {
-      fs.mkdir(this._recordingPath);
+      fs.mkdir(this._recordingPath, (err) => {
+        if (err) console.log("error", err);
+      });
     }
     if (!fs.existsSync(this._stepSnapshotPath)) {
-      fs.mkdir(this._stepSnapshotPath);
+      fs.mkdir(this._stepSnapshotPath, (err) => {
+        if (err) console.log("error", err);
+      });
     }
 
     this.start = this.start.bind(this);
@@ -315,7 +320,7 @@ export default class CVRecorder {
     });
     const json = JSON.stringify(jsonMetaData, null, "  ");
     fs.writeFile(
-      `${this._stepSnapshotPath}/${this._stepRecordingName}/${this._stepRecordingName}.json`,
+      `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
       json,
       "utf8",
       (err) => {
@@ -329,6 +334,7 @@ export default class CVRecorder {
     hbjs
       .spawn({ input: pathtoRawFile, output: pathToConvertedFile })
       .on("error", (err) => {
+        console.error(err);
         // invalid user input, no video found etc
       })
       .on("progress", (progress) => {
@@ -339,7 +345,7 @@ export default class CVRecorder {
         );
       })
       .on("complete", (complete) => {
-        // extractClickedImages.apply(this,pathToConvertedFile);
+        console.log("complete");
         this.extractClickedImages(pathToConvertedFile);
       });
   }
@@ -360,6 +366,7 @@ export default class CVRecorder {
       const pathToConvertedFile = `${fileNameAndExtension[0]}.m4v`;
 
       console.log("_recordingPath == >", this._recordingFullPath);
+      console.log("pathToConvertedFile == >", pathToConvertedFile);
       if (this._recordingFullPath) {
         fs.writeFile(this._recordingFullPath, buffer, () => {
           this.convertRawVideoFormat(
