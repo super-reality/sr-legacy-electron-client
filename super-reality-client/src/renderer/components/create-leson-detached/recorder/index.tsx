@@ -28,9 +28,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   const recorder: any = useMemo(() => {
     const rec = new CVRecorder();
-    rec.videoElement = videoElement.current;
     return rec;
-  }, [videoElement]);
+  }, []);
 
   useEffect(() => {
     const get = async () => {
@@ -61,11 +60,12 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const startRecord = useCallback(() => {
     setCount(-1);
     setRecording(true);
+    recorder.videoElement = videoElement.current;
     recorder.start(currentSource);
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.register("F10", stopRecord);
-  }, []);
+  }, [videoElement]);
 
   useEffect(() => {
     if (count > 0) {
