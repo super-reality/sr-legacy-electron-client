@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
@@ -12,6 +18,7 @@ interface RecorderProps {
 
 export default function Recorder(props: RecorderProps): JSX.Element {
   const { onFinish } = props;
+  const videoElement = useRef<HTMLVideoElement>(null);
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
@@ -19,7 +26,11 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     name: "Entire Screen",
   });
 
-  const recorder = useMemo(() => CVRecorder(), []);
+  const recorder: any = useMemo(() => {
+    const rec = new CVRecorder();
+    rec.videoElement = videoElement.current;
+    return rec;
+  }, [videoElement]);
 
   useEffect(() => {
     const get = async () => {
@@ -42,6 +53,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.unregister("F10");
+    recorder.stop();
     // setRecording(false);
     onFinish();
   }, [onFinish]);
@@ -49,6 +61,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const startRecord = useCallback(() => {
     setCount(-1);
     setRecording(true);
+    recorder.start(currentSource);
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.register("F10", stopRecord);
@@ -65,6 +78,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   return (
     <>
+      <video ref={videoElement} />
       {count > -1 && !recording ? (
         <Windowlet
           title="Super Reality Recorder"

@@ -8,7 +8,7 @@ import logger from "../../../utils/logger";
 
 export default function SnipingTool() {
   // eslint-disable-next-line global-require
-  const { app, remote, nativeImage } = require("electron");
+  const { app, remote, nativeImage } = require("electron") as any;
   const userData = (app || remote.app).getPath("userData").replace(/\\/g, "/");
   const fileName = `${userData}/capture.png`;
   const output = `${userData}/crop.png`;

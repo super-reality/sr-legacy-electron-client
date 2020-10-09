@@ -1,87 +1,85 @@
+/* eslint-disable lines-between-class-members */
 /* eslint-disable radix */
 const { desktopCapturer, remote } = require("electron");
 const fs = require("fs");
-const mouseEvents = require("global-mouse-events");
+// eslint-disable-next-line no-undef
+const mouseEvents = __non_webpack_require__("global-mouse-events");
 const hbjs = require("handbrake-js");
-const cv = require("opencv4nodejs-prebuilt");
 const _ = require("lodash"); // allows fast array transformations in javascript
+const cv = require("../../../../../utils/opencv/opencv");
 
-export default function CVRecorder() {
-  let clickEventDetails = [];
-  const recordedChunks = [];
-  const recordingPath = `${remote.app.getAppPath()}/step/media/`;
-  const stepSnapshotPath = `${remote.app.getAppPath()}/step/snapshots/`;
-  let recordingStarted = false;
-  this.clickEventTriggered = false;
-  let timeBegan = null;
-  let timeStopped = null;
-  let started = null;
-  let pausedValue = null;
-  let videoElement = null;
-  let mediaRecorder = null; // MediaRecorder instance to capture footage
-  const videoSelectSources = null;
-  let differenceValue = 0;
-  let stoppedDuration = 0;
-  let pixelOffset = 2;
-  let maxPixelStepLimit = 30;
-  let currentTimer = "";
-  let stepRecordingName = "";
-  let recordingFullPath = "";
+export default class CVRecorder {
+  _clickEventDetails = [];
+  _recordedChunks = [];
+  _recordingPath = `${remote.app.getAppPath()}/step/media/`;
+  _stepSnapshotPath = `${remote.app.getAppPath()}/step/snapshots/`;
+  _recordingStarted = false;
+  _clickEventTriggered = false;
+  _timeBegan = null;
+  _timeStopped = null;
+  _started = null;
+  _pausedValue = null;
+  _videoElement = null;
+  _mediaRecorder = null; // _MediaRecorder instance to capture footage
+  _videoSelectSources = null;
+  _differenceValue = 0;
+  _stoppedDuration = 0;
+  _pixelOffset = 2;
+  _maxPixelStepLimit = 30;
+  _currentTimer = "";
+  _stepRecordingName = "";
+  _recordingFullPath = "";
 
-  Object.defineProperty(this, "clickEventDetails", {
-    get: () => {
-      return clickEventDetails;
-    },
-    set: (arr) => {
-      if (!arr) throw new Error("Exception");
+  get clickEventDetails() {
+    return this._clickEventDetails;
+  }
 
-      clickEventDetails.push(arr);
-    },
-  });
-  Object.defineProperty(this, "recordingStarted", {
-    get: () => {
-      return recordingStarted;
-    },
-  });
-  Object.defineProperty(this, "currentTimer", {
-    get: () => {
-      return currentTimer;
-    },
-  });
-  Object.defineProperty(this, "videoElement", {
-    get: () => {
-      return videoElement;
-    },
-    set: (element) => {
-      if (!element) throw new Error("video element not defined");
+  set clickEventDetails(arr) {
+    if (!arr) throw new Error("Exception");
 
-      videoElement = element;
-    },
-  });
-  Object.defineProperty(this, "pixelOffset", {
-    get: () => {
-      return pixelOffset;
-    },
-    set: (value) => {
-      if (!Number.isInteger(value))
-        throw new Error("pixelOffset should be an integer");
+    this._clickEventDetails.push(arr);
+  }
 
-      pixelOffset = value;
-    },
-  });
-  Object.defineProperty(this, "maxPixelStepLimit", {
-    get: () => {
-      return maxPixelStepLimit;
-    },
-    set: (value) => {
-      if (!Number.isInteger(value))
-        throw new Error("max pixel limit should be an integer ");
+  get recordingStarted() {
+    return this._recordingStarted;
+  }
 
-      maxPixelStepLimit = value;
-    },
-  });
+  get currentTimer() {
+    return this._currentTimer;
+  }
 
-  function getWindowsNearestBorderPoint(startX, startY, img, direction) {
+  get videoElement() {
+    return this._videoElement;
+  }
+
+  set videoElement(element) {
+    if (!element) throw new Error("video element not defined");
+
+    this._videoElement = element;
+  }
+
+  get pixelOffset() {
+    return this._pixelOffset;
+  }
+
+  set pixelOffset(value) {
+    if (!Number.isInteger(value))
+      throw new Error("_pixelOffset should be an integer");
+
+    this._pixelOffset = value;
+  }
+
+  get maxPixelStepLimit() {
+    return this._maxPixelStepLimit;
+  }
+  set maxPixelStepLimit(value) {
+    if (!Number.isInteger(value))
+      throw new Error("max pixel limit should be an integer ");
+
+    this._maxPixelStepLimit = value;
+  }
+
+  getWindowsNearestBorderPoint(startX, startY, img, direction) {
     let move = true;
     let step = 0;
     let startXCordinate = startX;
@@ -89,18 +87,18 @@ export default function CVRecorder() {
     const startXPoint = startXCordinate;
     const startYPoint = startYCordinate;
     while (move) {
-      if (step >= maxPixelStepLimit) {
+      if (step >= this._maxPixelStepLimit) {
         if (direction == "right") {
-          return [startXPoint + maxPixelStepLimit, startYPoint];
+          return [startXPoint + this._maxPixelStepLimit, startYPoint];
         }
         if (direction == "left") {
-          return [startXPoint - maxPixelStepLimit, startYPoint];
+          return [startXPoint - this._maxPixelStepLimit, startYPoint];
         }
         if (direction == "top") {
-          return [startXPoint, startYPoint - maxPixelStepLimit];
+          return [startXPoint, startYPoint - this._maxPixelStepLimit];
         }
         if (direction == "bottom") {
-          return [startXPoint, startYPoint + maxPixelStepLimit];
+          return [startXPoint, startYPoint + this._maxPixelStepLimit];
         }
       }
       try {
@@ -125,16 +123,16 @@ export default function CVRecorder() {
       } catch (err) {
         console.log(`Exception clicked near ${direction} edge of frame`);
         if (direction == "right") {
-          return [startXPoint + maxPixelStepLimit, startYPoint];
+          return [startXPoint + this._maxPixelStepLimit, startYPoint];
         }
         if (direction == "left") {
-          return [startXPoint - maxPixelStepLimit, startYPoint];
+          return [startXPoint - this._maxPixelStepLimit, startYPoint];
         }
         if (direction == "top") {
-          return [startXPoint, startYPoint - maxPixelStepLimit];
+          return [startXPoint, startYPoint - this._maxPixelStepLimit];
         }
         if (direction == "bottom") {
-          return [startXPoint, startYPoint + maxPixelStepLimit];
+          return [startXPoint, startYPoint + this._maxPixelStepLimit];
         }
       }
     }
@@ -143,7 +141,7 @@ export default function CVRecorder() {
     return [];
   }
 
-  const extractClickedImages = async (pathToConvertedFile) => {
+  async extractClickedImages(pathToConvertedFile) {
     const cap = new cv.VideoCapture(pathToConvertedFile);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
     const mainImage = cap.read();
@@ -154,7 +152,7 @@ export default function CVRecorder() {
     };
 
     // const jsonMetaData = new Dictionary()
-    clickEventDetails.forEach(async (arr) => {
+    this._clickEventDetails.forEach(async (arr) => {
       const timestamp = arr[2];
       const yCordinate = arr[1];
       const xCordinate = arr[0];
@@ -181,27 +179,27 @@ export default function CVRecorder() {
 
       const cannyEdges2D = cannyEdges.getDataAsArray();
 
-      const rightBorderCordiates = getWindowsNearestBorderPoint(
-        xCordinate - pixelOffset,
-        yCordinate - pixelOffset,
+      const rightBorderCordiates = this.getWindowsNearestBorderPoint(
+        xCordinate - this._pixelOffset,
+        yCordinate - this._pixelOffset,
         cannyEdges2D,
         "right"
       );
-      const leftBorderCordinates = getWindowsNearestBorderPoint(
-        xCordinate - pixelOffset,
-        yCordinate - pixelOffset,
+      const leftBorderCordinates = this.getWindowsNearestBorderPoint(
+        xCordinate - this._pixelOffset,
+        yCordinate - this._pixelOffset,
         cannyEdges2D,
         "left"
       );
-      const topBorderCordinates = getWindowsNearestBorderPoint(
-        xCordinate - pixelOffset,
-        yCordinate - pixelOffset,
+      const topBorderCordinates = this.getWindowsNearestBorderPoint(
+        xCordinate - this._pixelOffset,
+        yCordinate - this._pixelOffset,
         cannyEdges2D,
         "top"
       );
-      const bottomBorderCordinates = getWindowsNearestBorderPoint(
-        xCordinate - pixelOffset,
-        yCordinate - pixelOffset,
+      const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
+        xCordinate - this._pixelOffset,
+        yCordinate - this._pixelOffset,
         cannyEdges2D,
         "bottom"
       );
@@ -217,20 +215,20 @@ export default function CVRecorder() {
       const snipWindowWidth = rightBorderX - leftBorderX;
 
       const topLeftCornerX =
-        topBorderX - (topBorderX - leftBorderX) - pixelOffset;
-      const topLeftCornerY = topBorderY - pixelOffset;
+        topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+      const topLeftCornerY = topBorderY - this._pixelOffset;
 
-      const topRightCornerX = rightBorderX + pixelOffset;
+      const topRightCornerX = rightBorderX + this._pixelOffset;
       const topRightCornerY =
-        rightBorderY - (rightBorderY - topBorderY) - pixelOffset;
+        rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
 
-      const bottomLeftCornerX = leftBorderX - pixelOffset;
+      const bottomLeftCornerX = leftBorderX - this._pixelOffset;
       const bottomLeftCornerY =
-        leftBorderY + (bottomBorderY - leftBorderY) + pixelOffset;
+        leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
 
       const bottomRightCornerX =
-        bottomBorderX + (rightBorderX - bottomBorderX) + pixelOffset;
-      const bottomRightCornerY = bottomBorderY + pixelOffset;
+        bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
+      const bottomRightCornerY = bottomBorderY + this._pixelOffset;
 
       const cornerPointsArr = new Array(4);
       cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
@@ -262,17 +260,22 @@ export default function CVRecorder() {
         cv.INTER_LINEAR,
         cv.BORDER_CONSTANT
       );
-      if (!fs.existsSync(`${stepSnapshotPath}/${stepRecordingName}`)) {
-        fs.mkdir(`${stepSnapshotPath}/${stepRecordingName}`, (err, result) => {
-          if (err) console.log("error", err);
-        });
+      if (
+        !fs.existsSync(`${this._stepSnapshotPath}/${this._stepRecordingName}`)
+      ) {
+        fs.mkdir(
+          `${this._stepSnapshotPath}/${this._stepRecordingName}`,
+          (err, result) => {
+            if (err) console.log("error", err);
+          }
+        );
       }
       const snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
         /:/g,
         "-"
       )}.jpeg`;
       cv.imwrite(
-        `${stepSnapshotPath}/${stepRecordingName}/${snippedImageName}`,
+        `${this._stepSnapshotPath}/${this._stepRecordingName}/${snippedImageName}`,
         outputImg,
         [parseInt(cv.IMWRITE_JPEG_QUALITY)]
       );
@@ -285,17 +288,17 @@ export default function CVRecorder() {
     });
     const json = JSON.stringify(jsonMetaData, null, "  ");
     fs.writeFile(
-      `${stepSnapshotPath}/${stepRecordingName}/${stepRecordingName}.json`,
+      `${this._stepSnapshotPath}/${this._stepRecordingName}/${this._stepRecordingName}.json`,
       json,
       "utf8",
       (err) => {
         if (err) throw err;
       }
     );
-    clickEventDetails = [];
-  };
+    this._clickEventDetails = [];
+  }
 
-  const convertRawVideoFormat = (pathtoRawFile, pathToConvertedFile) => {
+  convertRawVideoFormat(pathtoRawFile, pathToConvertedFile) {
     hbjs
       .spawn({ input: pathtoRawFile, output: pathToConvertedFile })
       .on("error", (err) => {
@@ -310,39 +313,42 @@ export default function CVRecorder() {
       })
       .on("complete", (complete) => {
         // extractClickedImages.apply(this,pathToConvertedFile);
-        extractClickedImages(pathToConvertedFile);
+        this.extractClickedImages(pathToConvertedFile);
       });
-  };
+  }
 
   // Saves the video file on stop
-  const handleStop = async (e) => {
-    const blob = new Blob(recordedChunks, {
+  async handleStop(e) {
+    const blob = new Blob(this._recordedChunks, {
       type: "video/webm; codecs=vp9",
     });
 
     const buffer = Buffer.from(await blob.arrayBuffer());
-    stepRecordingName = `vid-${Date.now()}.webm`;
+    this._stepRecordingName = `vid-${Date.now()}.webm`;
     // console.log("stop")
-    recordingFullPath = recordingPath + stepRecordingName;
+    this._recordingFullPath = this._recordingPath + this._stepRecordingName;
 
-    const fileNameAndExtension = recordingFullPath.split(".");
+    const fileNameAndExtension = this._recordingFullPath.split(".");
     const pathToConvertedFile = `${fileNameAndExtension[0]}.m4v`;
 
-    console.log("recordingPath == >", recordingFullPath);
-    if (recordingFullPath) {
-      fs.writeFile(recordingFullPath, buffer, () => {
-        convertRawVideoFormat(recordingFullPath, pathToConvertedFile);
+    console.log("_recordingPath == >", this._recordingFullPath);
+    if (this._recordingFullPath) {
+      fs.writeFile(this._recordingFullPath, buffer, () => {
+        this.convertRawVideoFormat(
+          this._recordingFullPath,
+          pathToConvertedFile
+        );
       });
     }
-  };
+  }
 
   // Captures all recorded chunks
-  const handleDataAvailable = (e) => {
-    recordedChunks.push(e.data);
-  };
+  handleDataAvailable(e) {
+    this._recordedChunks.push(e.data);
+  }
 
   // Change the videoSource window to record
-  const selectSource = async (source) => {
+  async selectSource(source) {
     const constraints = {
       audio: false,
       video: {
@@ -357,94 +363,96 @@ export default function CVRecorder() {
     this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 
     // Preview the source in a video element
-    this.videoElement.srcObject = this.stream;
-    this.videoElement.play();
+    this._videoElement.srcObject = this.stream;
+    this._videoElement.play();
 
     // Create the Media Recorder
     const options = { mimeType: "video/webm; codecs=vp9" };
-    mediaRecorder = new MediaRecorder(this.stream, options);
+    this._mediaRecorder = new MediaRecorder(this.stream, options);
 
     // Register Event Handlers
-    mediaRecorder.ondataavailable = handleDataAvailable;
-    mediaRecorder.onstop = handleStop;
-  };
+    this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+    this._mediaRecorder.onstop = this.handleStop;
+  }
 
-  const clockRunning = () => {
-    const currentTime = new Date() - differenceValue;
-    const timeElapsed = new Date(currentTime - timeBegan - stoppedDuration);
+  clockRunning() {
+    const currentTime = new Date() - this._differenceValue;
+    const timeElapsed = new Date(
+      currentTime - this._timeBegan - this._stoppedDuration
+    );
     const hour = timeElapsed.getUTCHours();
     const min = timeElapsed.getUTCMinutes();
     const sec = timeElapsed.getUTCSeconds();
     const ms = timeElapsed.getUTCMilliseconds();
 
-    currentTimer = `${hour > 9 ? hour : `0${hour}`}:${
+    this._currentTimer = `${hour > 9 ? hour : `0${hour}`}:${
       min > 9 ? min : `0${min}`
     }:${sec > 9 ? sec : `0${sec}`}:${
       // eslint-disable-next-line no-nested-ternary
       ms > 99 ? ms : ms > 9 ? `0${ms}` : `00${ms}`
     }`;
-  };
+  }
 
-  const startTimer = () => {
-    if (timeBegan === null) {
-      timeBegan = new Date();
+  startTimer() {
+    if (this._timeBegan === null) {
+      this._timeBegan = new Date();
     }
 
-    if (timeStopped !== null) {
-      timeBegan = new Date();
+    if (this._timeStopped !== null) {
+      this._timeBegan = new Date();
     }
 
-    started = setInterval(clockRunning.bind(this), 10);
-  };
+    this._started = setInterval(this.clockRunning.bind(this), 10);
+  }
 
-  const stopTimer = () => {
-    // timeStopped = new Date();
-    differenceValue = 0;
-    clearInterval(started);
-  };
+  stopTimer() {
+    // _timeStopped = new Date();
+    this._differenceValue = 0;
+    clearInterval(this._started);
+  }
 
-  this.start = (source) => {
-    selectSource(source).then(() => {
-      mediaRecorder.start();
-      recordingStarted = true;
-      startTimer();
+  start(source) {
+    this.selectSource(source).then(() => {
+      this._mediaRecorder.start();
+      this._recordingStarted = true;
+      this.startTimer();
     });
-  };
+  }
 
-  const pauseTimer = () => {
-    pausedValue = new Date(new Date() - differenceValue);
-    clearInterval(started);
-  };
+  pauseTimer() {
+    this._pausedValue = new Date(new Date() - this._differenceValue);
+    clearInterval(this._started);
+  }
 
-  const resumeTimer = () => {
-    differenceValue = new Date(new Date() - pausedValue);
-    startTimer();
-  };
+  resumeTimer() {
+    this._differenceValue = new Date(new Date() - this._pausedValue);
+    this.startTimer();
+  }
 
-  const resetTimer = () => {
-    clearInterval(started);
-    stoppedDuration = 0;
-    differenceValue = 0;
-    timeBegan = null;
-    timeStopped = null;
-  };
+  resetTimer() {
+    clearInterval(this._started);
+    this._stoppedDuration = 0;
+    this._differenceValue = 0;
+    this._timeBegan = null;
+    this._timeStopped = null;
+  }
 
-  this.pause = () => {
-    recordingStarted = false;
-    pauseTimer();
-    mediaRecorder.pause();
-  };
+  pause() {
+    this._recordingStarted = false;
+    this.pauseTimer();
+    this._mediaRecorder.pause();
+  }
 
-  this.resume = () => {
-    recordingStarted = true;
-    resumeTimer();
-    mediaRecorder.resume();
-  };
+  resume() {
+    this._recordingStarted = true;
+    this.resumeTimer();
+    this._mediaRecorder.resume();
+  }
 
-  this.stop = () => {
-    recordingStarted = false;
-    stopTimer();
-    resetTimer();
-    mediaRecorder.stop();
-  };
+  stop() {
+    this._recordingStarted = false;
+    this.stopTimer();
+    this.resetTimer();
+    this._mediaRecorder.stop();
+  }
 }
