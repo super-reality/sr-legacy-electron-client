@@ -3,7 +3,7 @@
 import { captureDesktopStream } from "../../../../../utils/capture";
 
 /* eslint-disable radix */
-const { remote } = require("electron");
+const { app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
@@ -13,10 +13,15 @@ const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
   constructor() {
+    const userData = (app || remote.app)
+      .getPath("userData")
+      .replace(/\\/g, "/");
+
     this._clickEventDetails = [];
     this._recordedChunks = [];
-    this._recordingPath = `${remote.app.getAppPath()}/step/media/`;
-    this._stepSnapshotPath = `${remote.app.getAppPath()}/step/snapshots/`;
+    this._stepPath = `${userData}/step/`;
+    this._recordingPath = `${userData}/step/media/`;
+    this._stepSnapshotPath = `${userData}/step/snapshots/`;
     this._recordingStarted = false;
     this._clickEventTriggered = false;
     this._timeBegan = null;
@@ -32,6 +37,18 @@ export default class CVRecorder {
     this._currentTimer = "";
     this._stepRecordingName = "";
     this._recordingFullPath = "";
+
+    if (!fs.existsSync(this._stepPath)) {
+      fs.mkdir(this._stepPath, (err, result) => {
+        if (err) console.log("error", err);
+      });
+    }
+    if (!fs.existsSync(this._recordingPath)) {
+      fs.mkdir(this._recordingPath);
+    }
+    if (!fs.existsSync(this._stepSnapshotPath)) {
+      fs.mkdir(this._stepSnapshotPath);
+    }
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
@@ -279,16 +296,7 @@ export default class CVRecorder {
         cv.INTER_LINEAR,
         cv.BORDER_CONSTANT
       );
-      if (
-        !fs.existsSync(`${this._stepSnapshotPath}/${this._stepRecordingName}`)
-      ) {
-        fs.mkdir(
-          `${this._stepSnapshotPath}/${this._stepRecordingName}`,
-          (err, result) => {
-            if (err) console.log("error", err);
-          }
-        );
-      }
+
       const snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
         /:/g,
         "-"
@@ -338,7 +346,6 @@ export default class CVRecorder {
 
   // Saves the video file on stop
   handleStop(e) {
-    console.log("handleStop", this._recordedChunks);
     const blob = new Blob(this._recordedChunks, {
       type: "video/webm; codecs=vp9",
     });
@@ -366,7 +373,6 @@ export default class CVRecorder {
 
   // Captures all recorded chunks
   handleDataAvailable(e) {
-    console.log(this._recordedChunks, e);
     this._recordedChunks.push(e.data);
   }
 
