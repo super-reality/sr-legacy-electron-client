@@ -11,7 +11,7 @@ export default function updateStep(data: Partial<IStep>, id: string) {
   const newData = {
     items: updated.items,
     ...data,
-    Step_id: id,
+    step_id: id,
   };
 
   Axios.put<StepUpdate | ApiError>(`${API_URL}Step`, newData)

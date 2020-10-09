@@ -12,7 +12,7 @@ export default function updateChapter(
 ): void {
   const updated = store.getState().createLessonV2.treeChapters[id];
   const newData = {
-    chapters: updated.steps,
+    steps: updated.steps,
     ...data,
     chapter_id: id,
   };
