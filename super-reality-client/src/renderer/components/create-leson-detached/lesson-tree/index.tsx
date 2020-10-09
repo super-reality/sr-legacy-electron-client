@@ -1,123 +1,26 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Axios from "axios";
 import store, { AppState } from "../../../redux/stores/renderer";
+import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
+import reduxAction from "../../../redux/reduxAction";
+import { Item } from "../../../api/types/item/item";
+import { IDName } from "../../../api/types";
+import Flex from "../../flex";
+import onDrag from "../lesson-utils/onDrag";
+import onDrop from "../lesson-utils/onDrop";
+import getLesson from "../lesson-utils/getLesson";
+import getChapter from "../lesson-utils/getChapter";
+import getStep from "../lesson-utils/getStep";
+
+import "./index.scss";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
 import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
-import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
-import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
-import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
-import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
-import "./index.scss";
-import reduxAction from "../../../redux/reduxAction";
-import ButtonRound from "../../button-round";
-import Flex from "../../flex";
-import { Item } from "../../../api/types/item/item";
-import { ApiError, IDName } from "../../../api/types";
-import usePopupInput from "../../../hooks/usePopupInput";
-import ChapterCreate from "../../../api/types/chapter/create";
-import { API_URL } from "../../../constants";
-import handleChapterCreate from "../../../api/handleChapterCreate";
-import handleStepCreate from "../../../api/handleStepCreate";
-import StepCreate from "../../../api/types/step/create";
-import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
-import LessonUpdate from "../../../api/types/lesson-v2/update";
-import ChapterUpdate from "../../../api/types/chapter/update";
-import handleChapterUpdate from "../../../api/handleChapterUpdate";
-import handleLessonUpdate from "../../../api/handleLessonV2update";
-import { ChapterGet } from "../../../api/types/chapter/get";
-import handleChapterGet from "../../../api/handleChapterGet";
-import { IChapter } from "../../../api/types/chapter/chapter";
-import { StepGet } from "../../../api/types/step/get";
-import { IStep } from "../../../api/types/step/step";
-import handleStepGet from "../../../api/handleStepGet";
-import handleLessonGet from "../../../api/handleLessonV2Get";
-import LessonGet from "../../../api/types/lesson-v2/get";
-import { ILessonV2 } from "../../../api/types/lesson-v2/lesson";
-
-function getLesson(id: string): Promise<ILessonV2> {
-  return new Promise((resolve, reject) => {
-    Axios.get<LessonGet | ApiError>(`${API_URL}lesson/${id}`)
-      .then(handleLessonGet)
-      .then(resolve)
-      .catch(reject);
-  });
-}
-
-function newChapter(name: string, lesson?: string): void {
-  const payload = {
-    name,
-  };
-  Axios.post<ChapterCreate | ApiError>(`${API_URL}chapter/create`, payload)
-    .then(handleChapterCreate)
-    .then((data) => {
-      reduxAction(store.dispatch, {
-        type: "CREATE_LESSON_V2_SETCHAPTER",
-        arg: { chapter: data, lesson },
-      });
-      if (lesson) {
-        const updatedLesson = store.getState().createLessonV2.treeLessons[
-          lesson
-        ];
-        Axios.put<LessonUpdate | ApiError>(`${API_URL}lesson`, {
-          lesson_id: updatedLesson._id,
-          chapters: updatedLesson.chapters,
-        })
-          .then(handleLessonUpdate)
-          .catch(console.error);
-      }
-    })
-    .catch(console.error);
-}
-
-function getChapter(id: string): Promise<IChapter> {
-  return new Promise((resolve, reject) => {
-    Axios.get<ChapterGet | ApiError>(`${API_URL}chapter/${id}`)
-      .then(handleChapterGet)
-      .then(resolve)
-      .catch(reject);
-  });
-}
-
-function newStep(name: string, chapter?: string): void {
-  const payload = {
-    name,
-  };
-  Axios.post<StepCreate | ApiError>(`${API_URL}step/create`, payload)
-    .then(handleStepCreate)
-    .then((data) => {
-      reduxAction(store.dispatch, {
-        type: "CREATE_LESSON_V2_SETSTEP",
-        arg: { step: data, chapter },
-      });
-      if (chapter) {
-        const updatedChapter = store.getState().createLessonV2.treeChapters[
-          chapter
-        ];
-        Axios.put<ChapterUpdate | ApiError>(`${API_URL}chapter`, {
-          chapter_id: updatedChapter._id,
-          steps: updatedChapter.steps,
-        })
-          .then(handleChapterUpdate)
-          .catch(console.error);
-      }
-    })
-    .catch(console.error);
-}
-
-function getStep(id: string): Promise<IStep> {
-  return new Promise((resolve, reject) => {
-    Axios.get<StepGet | ApiError>(`${API_URL}step/${id}`)
-      .then(handleStepGet)
-      .then(resolve)
-      .catch(reject);
-  });
-}
+import onDragOver from "../lesson-utils/onDragOver";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -135,13 +38,14 @@ type STATES =
 interface TreeFolderProps {
   id: string;
   parentId: string;
+  uniqueId: string;
   name: string;
   type: "lesson" | "chapter" | "step";
   expanded?: boolean;
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, parentId, name, type, expanded } = props;
+  const { id, parentId, uniqueId, name, type, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -150,6 +54,7 @@ function TreeFolder(props: TreeFolderProps) {
     treeLessons,
     treeChapters,
     treeSteps,
+    dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const [open, setOpen] = useState<boolean>(false);
@@ -222,7 +127,7 @@ function TreeFolder(props: TreeFolderProps) {
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
     if (
-      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentUniqueId !== uniqueId ||
       lesson.treeCurrentType !== type
     ) {
       setSelected(false);
@@ -234,7 +139,7 @@ function TreeFolder(props: TreeFolderProps) {
       if (!e.ctrlKey) {
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_TREE",
-          arg: { type, parentId, id },
+          arg: { type, uniqueId, id },
         });
         setOpen(!open);
       }
@@ -255,9 +160,13 @@ function TreeFolder(props: TreeFolderProps) {
   return (
     <>
       <div
+        draggable
+        onDrag={(e) => onDrag(e, type, id, parentId)}
+        onDrop={(e) => onDrop(e, type, id, parentId)}
+        onDragOver={(e) => onDragOver(e, uniqueId)}
         className={`tree-folder ${selected ? "selected" : ""} ${
           isOpen ? "open" : ""
-        }`}
+        } ${dragOver == uniqueId ? "drag-target" : ""}`}
         onClick={doOpen}
         style={{ paddingLeft: padding }}
       >
@@ -282,7 +191,8 @@ function TreeFolder(props: TreeFolderProps) {
         {children.map((ch) => {
           return type == "lesson" || type == "chapter" ? (
             <TreeFolder
-              parentId={`${parentId}.${ch._id}`}
+              parentId={id}
+              uniqueId={`${uniqueId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -290,7 +200,8 @@ function TreeFolder(props: TreeFolderProps) {
             />
           ) : (
             <TreeItem
-              parentId={`${parentId}.${ch._id}`}
+              parentId={id}
+              uniqueId={`${parentId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -305,18 +216,20 @@ function TreeFolder(props: TreeFolderProps) {
 interface TreeItemProps {
   id: string;
   parentId: string;
+  uniqueId: string;
   name: string;
   expanded?: boolean;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, name, expanded } = props;
+  const { id, parentId, uniqueId, name, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
     treeCurrentType,
     treeCurrentId,
     treeItems,
+    dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
@@ -327,7 +240,7 @@ function TreeItem(props: TreeItemProps) {
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
-      arg: { type: "item", parentId, id },
+      arg: { type: "item", uniqueId, id },
     });
     setSelected(true);
   }, [dispatch]);
@@ -335,7 +248,7 @@ function TreeItem(props: TreeItemProps) {
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
     if (
-      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentUniqueId !== uniqueId ||
       lesson.treeCurrentType !== "item"
     ) {
       setSelected(false);
@@ -368,9 +281,12 @@ function TreeItem(props: TreeItemProps) {
 
   return (
     <div
+      onDrag={(e) => onDrag(e, "item", id, parentId)}
+      onDrop={(e) => onDrop(e, "item", id, parentId)}
+      onDragOver={(e) => onDragOver(e, uniqueId)}
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
-      }`}
+      } ${dragOver == uniqueId ? "drag-target" : ""}`}
       onClick={doOpen}
       style={{ paddingLeft: "36px" }}
     >
@@ -398,7 +314,8 @@ export default function LessonTree() {
     <Flex column style={{ overflow: "auto" }}>
       {lessons.map((d) => (
         <TreeFolder
-          parentId={`${d._id}`}
+          uniqueId={`${d._id}`}
+          parentId=""
           key={`${d._id}`}
           id={d._id}
           name={d.name}
@@ -406,113 +323,6 @@ export default function LessonTree() {
           type="lesson"
         />
       ))}
-    </Flex>
-  );
-}
-
-export function LessonTreeControls() {
-  const dispatch = useDispatch();
-  const { treeCurrentType, treeCurrentId } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  let childType: TreeTypes = "chapter";
-  if (treeCurrentType == "chapter") childType = "step";
-  if (treeCurrentType == "step") childType = "item";
-
-  const doAddFolder = useCallback(
-    (name: string) => {
-      // Create chapter
-      if (childType == "chapter") {
-        newChapter(name);
-      }
-      // Create step
-      if (childType == "step") {
-        newStep(name, treeCurrentId);
-      }
-    },
-    [treeCurrentType, treeCurrentId, dispatch]
-  );
-
-  const doAddFocus = useCallback(() => {
-    //
-  }, [treeCurrentType]);
-
-  const [FolderInput, openNewFolderInput] = usePopupInput(
-    `Enter new ${childType} name:`,
-    doAddFolder
-  );
-
-  return (
-    <Flex style={{ margin: "8px 0" }}>
-      <FolderInput />
-      {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
-        <ButtonRound
-          onClick={openNewFolderInput}
-          svg={IconAddFolder}
-          width="32px"
-          height="32px"
-        />
-      ) : (
-        <>
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddFocus}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddTTS}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddImage}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddVideo}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddTeach}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddAudio}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddClip}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddShare}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 0 0 4px" }}
-          />
-        </>
-      )}
     </Flex>
   );
 }

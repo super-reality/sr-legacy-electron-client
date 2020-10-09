@@ -4,7 +4,7 @@ import Flex from "../../flex";
 import "../../containers.scss";
 import "./index.scss";
 import ButtonRound from "../../button-round";
-import LessonTree, { LessonTreeControls } from "../lesson-tree";
+import LessonTree from "../lesson-tree";
 import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev.svg";
 import { ReactComponent as ButtonNext } from "../../../../assets/svg/next.svg";
 import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
@@ -15,6 +15,7 @@ import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
 import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
+import LessonTreeControls from "../lesson-tree-controls";
 
 type Sections = "Lessons" | "Anchors" | "Info";
 const sections: Sections[] = ["Lessons", "Anchors", "Info"];

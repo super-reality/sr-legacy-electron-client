@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EntryOptions, DifficultyOptions } from "../../api/types/lesson/lesson";
-import { ILessonV2, StatusOptions } from "../../api/types/lesson-v2/lesson";
+import { ILessonV2 } from "../../api/types/lesson-v2/lesson";
 import { IChapter } from "../../api/types/chapter/chapter";
 import { IStep } from "../../api/types/step/step";
 import { Item } from "../../api/types/item/item";
@@ -14,7 +13,11 @@ const initialState = {
   toggleSelects: 0 as number,
   treeCurrentType: "none" as TreeTypes,
   treeCurrentId: "",
-  treeCurrentParentId: "",
+  treeCurrentUniqueId: "",
+  dragType: "none" as TreeTypes,
+  dragId: "",
+  dragParent: "",
+  dragOver: "",
   lessons: [] as IDName[],
   treeLessons: {} as Record<string, ILessonV2>,
   treeChapters: {} as Record<string, IChapter>,
@@ -29,6 +32,14 @@ function idInIdName(arr: IDName[], id: string): boolean {
   return arr.filter((d) => d._id == id).length > 0;
 }
 
+function idNamePos(arr: IDName[], id: string): number {
+  let ret = -1;
+  arr.forEach((d, i) => {
+    if (d._id == id) ret = i;
+  });
+  return ret;
+}
+
 const createLessonSlice = createSlice({
   name: "createLessonV2",
   initialState,
@@ -38,6 +49,109 @@ const createLessonSlice = createSlice({
       action: PayloadAction<Partial<InitialState>>
     ): void => {
       state = Object.assign(state, action.payload);
+    },
+    setDrag: (
+      state: InitialState,
+      action: PayloadAction<{ type: TreeTypes; id: string; parentId: string }>
+    ): void => {
+      state.dragType = action.payload.type;
+      state.dragId = action.payload.id;
+      state.dragParent = action.payload.parentId;
+      if (action.payload.id == "") state.dragOver = "";
+    },
+    setDragOver: (state: InitialState, action: PayloadAction<string>): void => {
+      state.dragOver = action.payload;
+    },
+    doMove: (
+      state: InitialState,
+      action: PayloadAction<{
+        type: TreeTypes;
+        idFrom: string;
+        idTo: string;
+        parentId: string;
+      }>
+    ): void => {
+      const { type, idFrom, idTo, parentId } = action.payload;
+      if (type == "lesson") {
+        const sourcePos = idNamePos(state.lessons, idFrom);
+        state.lessons.splice(sourcePos, 1);
+        const destPos = idNamePos(state.lessons, idTo);
+        state.lessons.splice(destPos, 0, {
+          _id: idFrom,
+          name: state.treeLessons[idFrom].name,
+        });
+      }
+      if (type == "chapter") {
+        const sourcePos = idNamePos(
+          state.treeLessons[parentId].chapters,
+          idFrom
+        );
+        state.treeLessons[parentId].chapters.splice(sourcePos, 1);
+        const destPos = idNamePos(state.treeLessons[parentId].chapters, idTo);
+        state.treeLessons[parentId].chapters.splice(destPos, 0, {
+          _id: idFrom,
+          name: state.treeChapters[idFrom].name,
+        });
+      }
+      if (type == "step") {
+        const sourcePos = idNamePos(state.treeChapters[parentId].steps, idFrom);
+        state.treeChapters[parentId].steps.splice(sourcePos, 1);
+        const destPos = idNamePos(state.treeChapters[parentId].steps, idTo);
+        state.treeChapters[parentId].steps.splice(destPos, 0, {
+          _id: idFrom,
+          name: state.treeSteps[idFrom].name,
+        });
+      }
+      if (type == "item") {
+        const sourcePos = idNamePos(state.treeSteps[parentId].items, idFrom);
+        state.treeSteps[parentId].items.splice(sourcePos, 1);
+        const destPos = idNamePos(state.treeSteps[parentId].items, idTo);
+        state.treeSteps[parentId].items.splice(destPos, 0, {
+          _id: idFrom,
+          name: state.treeItems[idFrom].name,
+        });
+      }
+    },
+    doCut: (
+      state: InitialState,
+      action: PayloadAction<{
+        type: TreeTypes;
+        id: string;
+        sourceParent: string;
+        destParent: string;
+      }>
+    ): void => {
+      const { type, id, sourceParent, destParent } = action.payload;
+      if (type == "chapter") {
+        // parent is lesson
+        const sourcePos = idNamePos(
+          state.treeLessons[sourceParent].chapters,
+          id
+        );
+        state.treeLessons[sourceParent].chapters.splice(sourcePos, 1);
+        state.treeLessons[destParent].chapters.push({
+          _id: id,
+          name: state.treeChapters[id].name,
+        });
+      }
+      if (type == "step") {
+        // parent is chapter
+        const sourcePos = idNamePos(state.treeChapters[sourceParent].steps, id);
+        state.treeChapters[sourceParent].steps.splice(sourcePos, 1);
+        state.treeChapters[destParent].steps.push({
+          _id: id,
+          name: state.treeSteps[id].name,
+        });
+      }
+      if (type == "item") {
+        // parent is step
+        const sourcePos = idNamePos(state.treeSteps[sourceParent].items, id);
+        state.treeSteps[sourceParent].items.splice(sourcePos, 1);
+        state.treeSteps[destParent].items.push({
+          _id: id,
+          name: state.treeItems[id].name,
+        });
+      }
     },
     setLesson: (
       state: InitialState,
@@ -129,11 +243,11 @@ const createLessonSlice = createSlice({
     },
     setOpenTree: (
       state: InitialState,
-      action: PayloadAction<{ type: TreeTypes; parentId: string; id: string }>
+      action: PayloadAction<{ type: TreeTypes; uniqueId: string; id: string }>
     ): void => {
       state.treeCurrentType = action.payload.type;
       state.treeCurrentId = action.payload.id;
-      state.treeCurrentParentId = action.payload.parentId;
+      state.treeCurrentUniqueId = action.payload.uniqueId;
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },
@@ -146,6 +260,10 @@ const createLessonSlice = createSlice({
 
 export const {
   setData,
+  setDrag,
+  setDragOver,
+  doMove,
+  doCut,
   setLesson,
   setChapter,
   setStep,
