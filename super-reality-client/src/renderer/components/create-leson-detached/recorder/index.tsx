@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
+import CVRecorder from "./CVRecorder";
 
 interface RecorderProps {
   onFinish: () => void;
@@ -17,6 +18,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [currentSource, setCurrentSource] = useState<any>({
     name: "Entire Screen",
   });
+
+  const recorder: any = useMemo(() => new CVRecorder(), []);
 
   useEffect(() => {
     const get = async () => {
@@ -39,6 +42,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.unregister("F10");
+    recorder.stop();
     // setRecording(false);
     onFinish();
   }, [onFinish]);
@@ -46,6 +50,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const startRecord = useCallback(() => {
     setCount(-1);
     setRecording(true);
+    recorder.start(currentSource);
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.register("F10", stopRecord);
