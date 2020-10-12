@@ -112,20 +112,24 @@ function TreeFolder(props: TreeFolderProps) {
     }
   }, [dispatch, id]);
 
-  const keyListeners = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Delete") {
-      onDelete(type, id, parentId);
-    }
-    if (e.ctrlKey && e.key === "c") {
-      console.log(`copy ${id}`);
-    }
-    if (e.ctrlKey && e.key === "x") {
-      console.log(`cut ${id}`);
-    }
-    if (e.ctrlKey && e.key === "v") {
-      console.log(`paste on ${id}`);
-    }
-  }, []);
+  const keyListeners = useCallback(
+    (e: KeyboardEvent) => {
+      if (!selected) return;
+      if (e.key === "Delete") {
+        onDelete(type, id, parentId);
+      }
+      if (e.ctrlKey && e.key === "c") {
+        console.log(`copy ${id}`);
+      }
+      if (e.ctrlKey && e.key === "x") {
+        console.log(`cut ${id}`);
+      }
+      if (e.ctrlKey && e.key === "v") {
+        console.log(`paste on ${id}`);
+      }
+    },
+    [selected]
+  );
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -240,11 +244,31 @@ function TreeItem(props: TreeItemProps) {
 
   const itemData: Item | null = treeItems[id] || null;
 
+  const keyListeners = useCallback(
+    (e: KeyboardEvent) => {
+      if (!selected) return;
+      if (e.key === "Delete") {
+        onDelete("item", id, parentId);
+      }
+      if (e.ctrlKey && e.key === "c") {
+        console.log(`copy ${id}`);
+      }
+      if (e.ctrlKey && e.key === "x") {
+        console.log(`cut ${id}`);
+      }
+      if (e.ctrlKey && e.key === "v") {
+        console.log(`paste on ${id}`);
+      }
+    },
+    [selected]
+  );
+
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
       arg: { type: "item", uniqueId, id },
     });
+    document.onkeydown = keyListeners;
     setSelected(true);
   }, [dispatch]);
 

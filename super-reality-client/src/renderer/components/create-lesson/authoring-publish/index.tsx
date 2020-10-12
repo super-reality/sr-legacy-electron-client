@@ -161,10 +161,8 @@ export default function PublishAuthoring(): JSX.Element {
         .get<LessonSearchParent | ApiError>(
           `${API_URL}lesson/search-parent/${encodeURIComponent(value)}`
         )
-        .then((response) => {
-          const values = handleLessonSearchParent(response);
-          if (values) setSuggestions(values);
-        })
+        .then(handleLessonSearchParent)
+        .then(setSuggestions)
         .catch(handleGenericError);
     }
   }, []);

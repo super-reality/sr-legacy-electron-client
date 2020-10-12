@@ -17,6 +17,8 @@ import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.s
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
+import { BaseItemType } from "../../../api/types/item/item";
+import newItem from "../lesson-utils/newItem";
 
 export default function LessonTreeControls() {
   const dispatch = useDispatch();
@@ -42,9 +44,14 @@ export default function LessonTreeControls() {
     [treeCurrentType, treeCurrentId, dispatch]
   );
 
-  const doAddFocus = useCallback(() => {
-    //
-  }, [treeCurrentType]);
+  const doAddItem = useCallback(
+    (type: BaseItemType) => {
+      if (treeCurrentType == "step") {
+        newItem(type, treeCurrentId);
+      }
+    },
+    [treeCurrentType, treeCurrentId]
+  );
 
   const [FolderInput, openNewFolderInput] = usePopupInput(
     `Enter new ${childType} name:`,
@@ -64,56 +71,56 @@ export default function LessonTreeControls() {
       ) : (
         <>
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("focus_highlight")}
             svg={IconAddFocus}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("audio")}
             svg={IconAddTTS}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("image")}
             svg={IconAddImage}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("video")}
             svg={IconAddVideo}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("focus_highlight")}
             svg={IconAddTeach}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("audio")}
             svg={IconAddAudio}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("focus_highlight")}
             svg={IconAddClip}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={doAddFocus}
+            onClick={() => doAddItem("focus_highlight")}
             svg={IconAddShare}
             width="32px"
             height="32px"

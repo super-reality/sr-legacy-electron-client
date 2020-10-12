@@ -1,25 +1,26 @@
 import Axios from "axios";
-import handleChapterCreate from "../../../api/handleChapterCreate";
+import handleItemCreate from "../../../api/handleItemCreate";
 import { ApiError } from "../../../api/types";
-import ChapterCreate from "../../../api/types/chapter/create";
+import ItemCreate from "../../../api/types/item/create";
+import { BaseItemType } from "../../../api/types/item/item";
 import { API_URL } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
-import updateLesson from "./updateLesson";
+import updateStep from "./updateStep";
 
-export default function newChapter(name: string, lesson?: string): void {
+export default function newItem(type: BaseItemType, step?: string): void {
   const payload = {
-    name,
+    type,
   };
-  Axios.post<ChapterCreate | ApiError>(`${API_URL}chapter/create`, payload)
-    .then(handleChapterCreate)
+  Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
+    .then(handleItemCreate)
     .then((data) => {
       reduxAction(store.dispatch, {
-        type: "CREATE_LESSON_V2_SETCHAPTER",
-        arg: { chapter: data, lesson },
+        type: "CREATE_LESSON_V2_SETITEM",
+        arg: { item: data, step },
       });
-      if (lesson) {
-        updateLesson({}, lesson);
+      if (step) {
+        updateStep({}, step);
       }
     })
     .catch(console.error);
