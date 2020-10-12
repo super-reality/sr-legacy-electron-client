@@ -1,19 +1,14 @@
 import { AxiosResponse } from "axios";
+import apiErrorHandler from "./apiErrorHandler";
 import { ApiError, ApiSucess } from "./types";
 
 /* eslint-disable camelcase */
 export default function handleGenericGet<T extends ApiSucess>(
-  res: AxiosResponse<ApiError | T>
+  res: AxiosResponse<T | ApiError>
 ): Promise<T> {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
-      if (res.data.err_code == 0) {
-        resolve(res.data);
-      } else {
-        reject();
-      }
-    } else {
-      reject();
-    }
+    apiErrorHandler<T>(res)
+      .then((d) => resolve(d))
+      .catch(reject);
   });
 }

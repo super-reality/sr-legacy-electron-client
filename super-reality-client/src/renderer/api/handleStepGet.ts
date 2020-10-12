@@ -13,6 +13,4 @@ export default function handleStepGet(
       .then((d) => resolve(d.steps))
       .catch(reject);
   });
-
-  // res.data.steps
 }
