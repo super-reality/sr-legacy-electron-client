@@ -69,7 +69,7 @@
     "jest:watch": "craco test --env=jsdom",
     "jest:ci": "react-scripts test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
     "jest:ci:watch": "react-scripts test --env=jsdom --testPathIgnorePatterns \"src/__tests__/\"",
-    "test:eslint": "eslint src/* --ext tsx --no-error-on-unmatched-pattern",
+    "test:eslint": "eslint src/**",
     "test:all": "npm run test:eslint && npm run jest:ci",
     "eject": "react-scripts eject",
     "electron": "electron .",

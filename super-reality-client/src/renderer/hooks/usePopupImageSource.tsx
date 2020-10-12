@@ -29,7 +29,7 @@ export default function usePopupImageSource(
   const openDisk = useMediaInsert(call);
   const openSniper = useMediaSniper(call);
 
-  const [WaitingPopup, doWait, closeWait] = usePopup(false);
+  const [WaitingPopup, doWait] = usePopup(false);
 
   const unregister = useCallback(() => {
     // eslint-disable-next-line global-require

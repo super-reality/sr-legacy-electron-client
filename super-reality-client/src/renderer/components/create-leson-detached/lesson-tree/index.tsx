@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useEffect, useState } from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Item } from "../../../api/types/item/item";
@@ -20,7 +20,6 @@ import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
 import onDragOver from "../lesson-utils/onDragOver";
-import deleteGeneric from "../lesson-utils/deleteGeneric";
 import onDelete from "../lesson-utils/onDelete";
 
 const STATE_ERR = -1;
