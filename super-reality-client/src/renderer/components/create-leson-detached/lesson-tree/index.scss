@@ -89,7 +89,7 @@
   @include disable-select;
 
   &.selected {
-    background-color: var(--color-button) !important;
+    background-color: var(--color-section-hover) !important;
   }
 
   &.open {

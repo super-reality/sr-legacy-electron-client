@@ -21,6 +21,7 @@ import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
 import onDragOver from "../lesson-utils/onDragOver";
 import onDelete from "../lesson-utils/onDelete";
+import getItem from "../lesson-utils/getItem";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -240,6 +241,19 @@ function TreeItem(props: TreeItemProps) {
 
   const itemData: Item | null = treeItems[id] || null;
 
+  useEffect(() => {
+    setState(STATE_LOADING);
+    getItem(id)
+      .then((data) => {
+        reduxAction(store.dispatch, {
+          type: "CREATE_LESSON_V2_SETITEM",
+          arg: { item: data },
+        });
+        setState(STATE_OK);
+      })
+      .catch((e) => setState(STATE_ERR));
+  }, [dispatch, id]);
+
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
       onDelete("item", id, parentId);
@@ -315,7 +329,7 @@ function TreeItem(props: TreeItemProps) {
       <div
         className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
       >
-        {name}
+        {itemData.name || itemData.type || name}
       </div>
       <div className="item-trigger">
         {itemData && itemData.trigger && (
