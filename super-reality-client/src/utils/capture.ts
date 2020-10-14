@@ -6,7 +6,7 @@ export function captureDesktopStream(sourceId): Promise<MediaStream> {
     desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: false,
+          audio: true,
           video: {
             mandatory: {
               chromeMediaSource: "desktop",
