@@ -388,7 +388,7 @@ export default class CVRecorder {
     try {
       // Create a Stream
       // Cant pass the ID to choose the source (I get an exception)
-      this.stream = await captureDesktopStream(); // source.id
+      this.stream = await this.captureDesktopStream(source.id); // source.id
 
       // Preview the source in a video element
       this._videoElement = document.createElement("video");

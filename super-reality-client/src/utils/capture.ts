@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 
-export function captureDesktopStream(): Promise<MediaStream> {
+export function captureDesktopStream(sourceId): Promise<MediaStream> {
   const { desktopCapturer } = require("electron");
   return new Promise((resolve, reject) => {
     desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
@@ -10,6 +10,7 @@ export function captureDesktopStream(): Promise<MediaStream> {
           video: {
             mandatory: {
               chromeMediaSource: "desktop",
+              chromeMediaSourceId: sourceId
             },
           } as any,
         });
