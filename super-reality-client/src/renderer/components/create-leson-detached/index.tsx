@@ -23,6 +23,7 @@ import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
 import VideoNavigation from "./video-navigation";
+import VideoPreview from "./video-preview";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -154,9 +155,12 @@ export default function CreateLessonDetached(): JSX.Element {
           >
             <Lesson />
           </div>
-          <div className="preview" />
+          <div className="preview">
+            <VideoPreview />
+          </div>
         </div>
         <div className="nav">
+          {/*
           <VideoNavigation
             domain={[0, 1000]}
             defaultValues={videoNav}
@@ -164,6 +168,7 @@ export default function CreateLessonDetached(): JSX.Element {
             callback={setVideoNavPos}
             slideCallback={setVideoNavPos}
           />
+          */}
         </div>
       </div>
     </div>

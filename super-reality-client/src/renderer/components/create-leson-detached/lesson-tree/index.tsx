@@ -274,9 +274,15 @@ function TreeItem(props: TreeItemProps) {
       type: "CREATE_LESSON_V2_TREE",
       arg: { type: "item", uniqueId, id },
     });
+    if (id) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { currentItem: id },
+      });
+    }
     document.onkeydown = keyListeners;
     setSelected(true);
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -329,7 +335,7 @@ function TreeItem(props: TreeItemProps) {
       <div
         className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
       >
-        {itemData.name || itemData.type || name}
+        {itemData?.name || itemData?.type || name}
       </div>
       <div className="item-trigger">
         {itemData && itemData.trigger && (

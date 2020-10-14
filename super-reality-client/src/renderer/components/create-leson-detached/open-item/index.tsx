@@ -20,8 +20,8 @@ interface OpenItemProps {
   id: string;
 }
 
-type ItemModalOptions = "settings" | "anchors" | "trigger";
-const itemModalOptions: ItemModalOptions[] = ["settings", "anchors", "trigger"];
+type ItemModalOptions = "Settings" | "Anchor" | "Trigger";
+const itemModalOptions: ItemModalOptions[] = ["Settings", "Anchor", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
@@ -72,9 +72,9 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        {view === "settings" && <Flex column />}
-        {view === "anchors" && <Flex column />}
-        {view === "trigger" && (
+        {view === "Settings" && <Flex column />}
+        {view === "Anchor" && <Flex column />}
+        {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>
             <BaseSelect
               title="Trigger"

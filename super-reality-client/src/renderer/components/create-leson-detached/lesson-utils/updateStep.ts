@@ -14,7 +14,7 @@ export default function updateStep(data: Partial<IStep>, id: string) {
     step_id: id,
   };
 
-  Axios.put<StepUpdate | ApiError>(`${API_URL}Step`, newData)
+  Axios.put<StepUpdate | ApiError>(`${API_URL}itep`, newData)
     .then(handleStepUpdate)
     .catch(console.error);
 }
