@@ -33,6 +33,8 @@ export default function VideoPreview(): JSX.Element {
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatcher = useDispatch();
   const dragContainer = useRef<HTMLDivElement>(null);
+  const horPor = useRef<HTMLDivElement>(null);
+  const vertPos = useRef<HTMLDivElement>(null);
 
   const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
 
@@ -72,6 +74,19 @@ export default function VideoPreview(): JSX.Element {
             startY = Math.min(Math.max(startY, 0), 100);
             dragContainer.current.style.left = `calc((100% - ${itemWidth}px) / 100 * ${startX})`;
             dragContainer.current.style.top = `calc((100% - ${itemHeight}px) / 100 * ${startY})`;
+
+            if (horPor.current) {
+              horPor.current.style.display = "block";
+              horPor.current.style.top = `calc((100% - ${itemHeight}px) / 100 * ${startY} + ${
+                itemHeight / 2
+              }px)`;
+            }
+            if (vertPos.current) {
+              vertPos.current.style.display = "block";
+              vertPos.current.style.left = `calc((100% - ${itemWidth}px) / 100 * ${startX} + ${
+                itemWidth / 2
+              }px)`;
+            }
           }
         })
         .on("dragend", () => {
@@ -96,7 +111,7 @@ export default function VideoPreview(): JSX.Element {
         interact(dragContainer.current as HTMLDivElement).unset();
     }
     return () => {};
-  }, [item, width, height, dispatcher, dragContainer]);
+  }, [item, width, height, dispatcher, dragContainer, horPor, vertPos]);
 
   return (
     <div ref={containerRef} className="video-preview-container">
@@ -105,6 +120,16 @@ export default function VideoPreview(): JSX.Element {
           Select a recording to preview
         </div>
       )}
+      <div
+        key={`hor-${item?._id}` || ""}
+        ref={horPor}
+        className="horizontal-pos"
+      />
+      <div
+        key={`ver-${item?._id}` || ""}
+        ref={vertPos}
+        className="vertical-pos"
+      />
       {item && drawItemAbsolute ? (
         <div
           ref={dragContainer}
