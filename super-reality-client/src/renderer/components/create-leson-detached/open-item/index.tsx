@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -20,6 +20,7 @@ import ButtonRound from "../../button-round";
 import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
+import ModalList from "../modal-list";
 
 interface OpenItemProps {
   id: string;
@@ -36,7 +37,10 @@ export default function OpenItem(props: OpenItemProps) {
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
-  const item: Item | null = treeItems[id] || null;
+  const item: Item | null = useMemo(() => treeItems[id] || null, [
+    id,
+    treeItems,
+  ]);
   let triggers: Record<string, number | null> = { None: null };
   if (item) {
     switch (item.type) {
@@ -65,6 +69,16 @@ export default function OpenItem(props: OpenItemProps) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
         arg: { item: { ...treeItems[id], trigger: value } },
+      });
+    },
+    [id, dispatch]
+  );
+
+  const setAnchor = useCallback(
+    (anchor: string) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_SETITEM",
+        arg: { item: { ...treeItems[id], anchor } },
       });
     },
     [id, dispatch]
@@ -107,12 +121,11 @@ export default function OpenItem(props: OpenItemProps) {
         {view === "Anchor" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>
             <div>
-              {Object.keys(treeAnchors).map((aid) => {
-                const anchor = treeAnchors[aid];
-                return (
-                  <div key={`anchor-list-${anchor._id}`}>{anchor.name}</div>
-                );
-              })}
+              <ModalList
+                options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
+                current={item?.anchor || ""}
+                setCurrent={setAnchor}
+              />
             </div>
             <div>
               <ButtonRound
