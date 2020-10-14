@@ -22,6 +22,7 @@ import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigg
 import onDragOver from "../lesson-utils/onDragOver";
 import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
+import getAnchor from "../lesson-utils/getAnchor";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -249,6 +250,14 @@ function TreeItem(props: TreeItemProps) {
           type: "CREATE_LESSON_V2_SETITEM",
           arg: { item: data },
         });
+        if (data.anchor) {
+          getAnchor(data.anchor).then((anchor) => {
+            reduxAction(store.dispatch, {
+              type: "CREATE_LESSON_V2_SETANCHOR",
+              arg: { anchor: anchor },
+            });
+          });
+        }
         setState(STATE_OK);
       })
       .catch((e) => setState(STATE_ERR));

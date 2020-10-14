@@ -107,11 +107,12 @@ export default function VideoPreview(): JSX.Element {
           updateItem({ relativePos: newRelativePos }, item._id);
         });
 
-      return (): void =>
-        interact(dragContainer.current as HTMLDivElement).unset();
+      return (): void => {
+        if (dragContainer.current) interact(dragContainer.current).unset();
+      };
     }
     return () => {};
-  }, [item, width, height, dispatcher, dragContainer, horPor, vertPos]);
+  }, [item, width, height, dispatcher]);
 
   return (
     <div ref={containerRef} className="video-preview-container">

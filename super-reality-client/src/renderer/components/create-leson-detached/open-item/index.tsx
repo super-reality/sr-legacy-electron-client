@@ -15,6 +15,11 @@ import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
+import ButtonRound from "../../button-round";
+
+import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
+import usePopupImageSource from "../../../hooks/usePopupImageSource";
+import newAnchor from "../lesson-utils/newAnchor";
 
 interface OpenItemProps {
   id: string;
@@ -25,7 +30,9 @@ const itemModalOptions: ItemModalOptions[] = ["Settings", "Anchor", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeItems, treeAnchors } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
@@ -63,8 +70,32 @@ export default function OpenItem(props: OpenItemProps) {
     [id, dispatch]
   );
 
+  const callback = useCallback(
+    (e) => {
+      newAnchor(
+        {
+          name: "New Anchor",
+          type: "crop",
+          templates: [e],
+          anchorFunction: "or",
+          cvMatchValue: 0,
+          cvCanvas: 50,
+          cvDelay: 100,
+          cvGrayscale: true,
+          cvApplyThreshold: false,
+          cvThreshold: 127,
+        },
+        id
+      );
+    },
+    [id]
+  );
+
+  const [Popup, open] = usePopupImageSource(callback, true, true, true);
+
   return (
     <>
+      {Popup}
       <Tabs
         buttons={itemModalOptions}
         initial={view}
@@ -73,7 +104,27 @@ export default function OpenItem(props: OpenItemProps) {
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
         {view === "Settings" && <Flex column />}
-        {view === "Anchor" && <Flex column />}
+        {view === "Anchor" && (
+          <Flex column style={{ width: "-webkit-fill-available" }}>
+            <div>
+              {Object.keys(treeAnchors).map((aid) => {
+                const anchor = treeAnchors[aid];
+                return (
+                  <div key={`anchor-list-${anchor._id}`}>{anchor.name}</div>
+                );
+              })}
+            </div>
+            <div>
+              <ButtonRound
+                width="24px"
+                height="24px"
+                svg={IconAdd}
+                svgStyle={{ width: "16px", height: "16px" }}
+                onClick={open}
+              />
+            </div>
+          </Flex>
+        )}
         {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>
             <BaseSelect
