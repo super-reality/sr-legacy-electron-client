@@ -1,4 +1,5 @@
 import Axios from "axios";
+import _ from "lodash";
 import handleItemUpdate from "../../../api/handleItemUpdate";
 import { ApiError } from "../../../api/types";
 import { Item } from "../../../api/types/item/item";
@@ -11,7 +12,10 @@ export default function updateItem(data: Partial<Item>, id: string) {
     item_id: id,
   };
 
-  Axios.put<ItemUpdate | ApiError>(`${API_URL}item`, newData)
+  Axios.put<ItemUpdate | ApiError>(
+    `${API_URL}item`,
+    _.omit(newData, ["_id", "__v"])
+  )
     .then(handleItemUpdate)
     .catch(console.error);
 }

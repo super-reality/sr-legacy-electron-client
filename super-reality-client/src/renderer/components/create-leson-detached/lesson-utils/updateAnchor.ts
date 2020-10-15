@@ -1,4 +1,5 @@
 import Axios from "axios";
+import _ from "lodash";
 import handleAnchorUpdate from "../../../api/handleAnchorUpdate";
 import { ApiError } from "../../../api/types";
 import { IAnchor } from "../../../api/types/anchor/anchor";
@@ -11,7 +12,10 @@ export default function updateAnchor(data: Partial<IAnchor>, id: string) {
     anchor_id: id,
   };
 
-  Axios.put<AnchorUpdate | ApiError>(`${API_URL}anchor`, newData)
+  Axios.put<AnchorUpdate | ApiError>(
+    `${API_URL}anchor`,
+    _.omit(newData, ["_id", "__v"])
+  )
     .then(handleAnchorUpdate)
     .catch(console.error);
 }

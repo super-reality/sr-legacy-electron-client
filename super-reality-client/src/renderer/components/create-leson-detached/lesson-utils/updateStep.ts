@@ -1,4 +1,5 @@
 import Axios from "axios";
+import _ from "lodash";
 import handleStepUpdate from "../../../api/handleStepUpdate";
 import { ApiError } from "../../../api/types";
 import { IStep } from "../../../api/types/step/step";
@@ -14,7 +15,10 @@ export default function updateStep(data: Partial<IStep>, id: string) {
     step_id: id,
   };
 
-  Axios.put<StepUpdate | ApiError>(`${API_URL}step`, newData)
+  Axios.put<StepUpdate | ApiError>(
+    `${API_URL}step`,
+    _.omit(newData, ["_id", "__v"])
+  )
     .then(handleStepUpdate)
     .catch(console.error);
 }

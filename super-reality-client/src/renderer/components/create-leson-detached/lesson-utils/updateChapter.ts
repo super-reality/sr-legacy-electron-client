@@ -1,4 +1,5 @@
 import Axios from "axios";
+import _ from "lodash";
 import handleChapterUpdate from "../../../api/handleChapterUpdate";
 import { ApiError } from "../../../api/types";
 import { IChapter } from "../../../api/types/chapter/chapter";
@@ -17,7 +18,10 @@ export default function updateChapter(
     chapter_id: id,
   };
 
-  Axios.put<ChapterUpdate | ApiError>(`${API_URL}chapter`, newData)
+  Axios.put<ChapterUpdate | ApiError>(
+    `${API_URL}chapter`,
+    _.omit(newData, ["_id", "__v"])
+  )
     .then(handleChapterUpdate)
     .catch(console.error);
 }

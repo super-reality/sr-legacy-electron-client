@@ -40,7 +40,7 @@ export default function VideoPreview(): JSX.Element {
 
   const item = useMemo(
     () => (currentItem ? treeItems[currentItem] : undefined),
-    [currentItem]
+    [currentItem, treeItems]
   );
 
   // Get item's anchor or just the one in use

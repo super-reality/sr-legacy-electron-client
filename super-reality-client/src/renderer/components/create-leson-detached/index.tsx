@@ -160,7 +160,7 @@ export default function CreateLessonDetached(): JSX.Element {
           >
             <Lesson />
           </div>
-          {currentAnchor !== "" ? (
+          {currentAnchor !== undefined ? (
             <div
               className="anchor"
               style={{ width: "340px" }}

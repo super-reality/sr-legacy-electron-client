@@ -1,4 +1,5 @@
 import Axios from "axios";
+import _ from "lodash";
 import handleLessonUpdate from "../../../api/handleLessonV2update";
 import { ApiError } from "../../../api/types";
 import { ILessonV2 } from "../../../api/types/lesson-v2/lesson";
@@ -14,7 +15,10 @@ export default function updateLesson(data: Partial<ILessonV2>, id: string) {
     lesson_id: id,
   };
 
-  Axios.put<LessonUpdate | ApiError>(`${API_URL}lesson`, newData)
+  Axios.put<LessonUpdate | ApiError>(
+    `${API_URL}lesson`,
+    _.omit(newData, ["_id", "__v"])
+  )
     .then(handleLessonUpdate)
     .catch(console.error);
 }

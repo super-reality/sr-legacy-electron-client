@@ -17,8 +17,8 @@ import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
 
-type Sections = "Lessons" | "Anchors" | "Info";
-const sections: Sections[] = ["Lessons", "Anchors", "Info"];
+type Sections = "Lessons" | "Info";
+const sections: Sections[] = ["Lessons", "Info"];
 
 export default function Lesson(): JSX.Element {
   const [view, setView] = useState<Sections>(sections[0]);

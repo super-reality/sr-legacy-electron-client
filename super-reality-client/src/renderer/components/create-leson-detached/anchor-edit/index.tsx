@@ -22,7 +22,7 @@ export default function AnchorEdit(): JSX.Element {
   const closeAnchorEdit = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { currentAnchor: "" },
+      arg: { currentAnchor: undefined },
     });
   }, [dispatch]);
 
@@ -101,7 +101,15 @@ export default function AnchorEdit(): JSX.Element {
   const datekey = new Date().getTime();
 
   return (
-    <div className="mid-tight" style={{ padding: "10px", marginTop: "0" }}>
+    <div
+      className="mid-tight"
+      style={{
+        height: "100%",
+        overflow: "auto",
+        padding: "10px",
+        marginTop: "0",
+      }}
+    >
       <Flex style={{ marginBottom: "16px" }}>
         <div>Edit Anchor</div>
         <div className="container-close" onClick={closeAnchorEdit}>
