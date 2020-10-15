@@ -215,7 +215,7 @@ const createLessonSlice = createSlice({
 
       state.treeChapters = {
         ...state.treeChapters,
-        [chapter._id]: action.payload.chapter,
+        [chapter._id]: chapter,
       };
     },
     setStep: (
@@ -233,7 +233,7 @@ const createLessonSlice = createSlice({
 
       state.treeSteps = {
         ...state.treeSteps,
-        [step._id]: action.payload.step,
+        [step._id]: step,
       };
     },
     setItem: (
@@ -251,7 +251,7 @@ const createLessonSlice = createSlice({
 
       state.treeItems = {
         ...state.treeItems,
-        [action.payload.item._id]: action.payload.item,
+        [item._id]: item,
       };
     },
     setAnchor: (
@@ -266,7 +266,7 @@ const createLessonSlice = createSlice({
 
       state.treeAnchors = {
         ...state.treeAnchors,
-        [action.payload.anchor._id]: action.payload.anchor,
+        [anchor._id]: anchor,
       };
     },
     setOpenTree: (

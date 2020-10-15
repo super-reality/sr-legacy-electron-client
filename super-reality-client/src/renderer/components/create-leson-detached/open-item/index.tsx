@@ -21,6 +21,7 @@ import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
 import ModalList from "../modal-list";
+import updateItem from "../lesson-utils/updateItem";
 
 interface OpenItemProps {
   id: string;
@@ -31,7 +32,7 @@ const itemModalOptions: ItemModalOptions[] = ["Settings", "Anchor", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems, treeAnchors } = useSelector(
+  const { treeItems, treeAnchors, currentAnchor } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
@@ -66,20 +67,24 @@ export default function OpenItem(props: OpenItemProps) {
 
   const setTrigger = useCallback(
     (value: number | null) => {
+      const update = { ...treeItems[id], trigger: value };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
-        arg: { item: { ...treeItems[id], trigger: value } },
+        arg: { item: update },
       });
+      updateItem(update, id);
     },
     [id, dispatch]
   );
 
   const setAnchor = useCallback(
-    (anchor: string) => {
+    (value: string | null) => {
+      const update = { ...treeItems[id], anchor: value };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
-        arg: { item: { ...treeItems[id], anchor } },
+        arg: { item: update },
       });
+      updateItem(update, id);
     },
     [id, dispatch]
   );
@@ -105,6 +110,16 @@ export default function OpenItem(props: OpenItemProps) {
     [id]
   );
 
+  const openAnchor = useCallback(
+    (e) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { currentAnchor: e },
+      });
+    },
+    [id]
+  );
+
   const [Popup, open] = usePopupImageSource(callback, true, true, true);
 
   return (
@@ -119,14 +134,19 @@ export default function OpenItem(props: OpenItemProps) {
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
         {view === "Settings" && <Flex column />}
         {view === "Anchor" && (
-          <Flex column style={{ width: "-webkit-fill-available" }}>
-            <div>
+          <>
+            <Flex
+              column
+              style={{ height: "calc(100% - 24px)", overflow: "auto" }}
+            >
               <ModalList
                 options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
                 current={item?.anchor || ""}
+                selected={currentAnchor || ""}
                 setCurrent={setAnchor}
+                open={openAnchor}
               />
-            </div>
+            </Flex>
             <div>
               <ButtonRound
                 width="24px"
@@ -136,7 +156,7 @@ export default function OpenItem(props: OpenItemProps) {
                 onClick={open}
               />
             </div>
-          </Flex>
+          </>
         )}
         {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>

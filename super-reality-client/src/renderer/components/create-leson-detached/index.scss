@@ -79,7 +79,15 @@
     overflow: auto;
 
     .creator {
-      min-width: 340px;
+      min-width: 300px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--color-section);
+    }
+
+    .anchor {
+      min-width: 300px;
       overflow: hidden;
       display: flex;
       flex-direction: column;

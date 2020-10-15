@@ -4,23 +4,30 @@ import { ReactComponent as Icon } from "../../../../assets/svg/modal-list.svg";
 
 interface ModalItemProps {
   selected: boolean;
+  checked: boolean;
   name: string;
   id: string;
-  callback: (id: string) => void;
+  checkCallback: (id: string | null) => void;
+  clickCallback?: (id: string | null) => void;
 }
 
 function ModalItem(props: ModalItemProps): JSX.Element {
-  const { selected, name, id, callback } = props;
+  const { selected, checked, name, id, checkCallback, clickCallback } = props;
 
   const style = { width: "14px", height: "14px", margin: "auto" };
 
   return (
-    <div className="tree-item-container">
+    <div
+      className={`tree-item-container ${selected ? "selected" : ""}`}
+      onClick={() => {
+        if (clickCallback) clickCallback(id);
+      }}
+    >
       <div
         className="item-icon-tree"
-        onClick={() => callback(selected ? "" : id)}
+        onClick={() => checkCallback(checked ? null : id)}
       >
-        {selected ? <IconSelected style={style} /> : <Icon style={style} />}
+        {checked ? <IconSelected style={style} /> : <Icon style={style} />}
       </div>
       <div className="item-name">{name}</div>
     </div>
@@ -35,23 +42,27 @@ interface baseOption {
 interface ModalListProps<T> {
   options: T[];
   current: string;
-  setCurrent: (id: string) => void;
+  selected: string;
+  setCurrent: (id: string | null) => void;
+  open?: (id: string | null) => void;
 }
 
 export default function ModalList<T extends baseOption>(
   props: ModalListProps<T>
 ): JSX.Element {
-  const { options, current, setCurrent } = props;
+  const { options, current, selected, setCurrent, open } = props;
 
   return (
     <>
       {options.map((obj) => {
         return (
           <ModalItem
-            callback={setCurrent}
+            checkCallback={setCurrent}
+            clickCallback={open}
             name={obj.name}
             id={obj._id}
-            selected={current == obj._id}
+            checked={current == obj._id}
+            selected={selected == obj._id}
             key={`modal-item-${obj._id}`}
           />
         );

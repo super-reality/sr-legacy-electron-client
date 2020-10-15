@@ -24,6 +24,7 @@ import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
+import AnchorEdit from "./anchor-edit";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -73,7 +74,11 @@ function TopBar() {
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
+  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
+  const { currentAnchor } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
@@ -155,6 +160,17 @@ export default function CreateLessonDetached(): JSX.Element {
           >
             <Lesson />
           </div>
+          {currentAnchor !== "" ? (
+            <div
+              className="anchor"
+              style={{ width: "340px" }}
+              ref={resizeContainerAnchor}
+            >
+              <AnchorEdit />
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="preview">
             <VideoPreview />
           </div>
