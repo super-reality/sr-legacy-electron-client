@@ -1,5 +1,4 @@
 /* eslint-disable lines-between-class-members */
-
 import { captureDesktopStream } from "../../../../../utils/capture";
 
 /* eslint-disable radix */
@@ -435,7 +434,7 @@ export default class CVRecorder {
     try {
       // Create a Stream
       // accepts source id now
-      this.stream = await this.captureDesktopStream(source.id);
+      this.stream = await captureDesktopStream(source.id);
 
       // Preview the source in a video element
       this._videoElement = document.createElement("video");
