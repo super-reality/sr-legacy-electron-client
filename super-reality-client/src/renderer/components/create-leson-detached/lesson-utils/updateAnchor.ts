@@ -14,7 +14,7 @@ export default function updateAnchor(data: Partial<IAnchor>, id: string) {
 
   Axios.put<AnchorUpdate | ApiError>(
     `${API_URL}anchor`,
-    _.omit(newData, ["_id", "__v"])
+    _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleAnchorUpdate)
     .catch(console.error);

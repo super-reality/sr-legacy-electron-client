@@ -17,7 +17,7 @@ export default function updateLesson(data: Partial<ILessonV2>, id: string) {
 
   Axios.put<LessonUpdate | ApiError>(
     `${API_URL}lesson`,
-    _.omit(newData, ["_id", "__v"])
+    _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleLessonUpdate)
     .catch(console.error);

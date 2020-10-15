@@ -20,7 +20,7 @@ export default function updateChapter(
 
   Axios.put<ChapterUpdate | ApiError>(
     `${API_URL}chapter`,
-    _.omit(newData, ["_id", "__v"])
+    _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleChapterUpdate)
     .catch(console.error);

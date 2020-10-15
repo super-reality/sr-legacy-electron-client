@@ -14,7 +14,7 @@ export default function updateItem(data: Partial<Item>, id: string) {
 
   Axios.put<ItemUpdate | ApiError>(
     `${API_URL}item`,
-    _.omit(newData, ["_id", "__v"])
+    _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleItemUpdate)
     .catch(console.error);
