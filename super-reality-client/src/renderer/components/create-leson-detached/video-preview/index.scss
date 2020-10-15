@@ -1,8 +1,11 @@
+@import "../../misc.scss";
+
 .video-preview-container {
   width: 100%;
   height: 100%;
   display: flex;
   position: relative;
+  @include disable-select;
 
   .horizontal-pos {
     width: 100%;
