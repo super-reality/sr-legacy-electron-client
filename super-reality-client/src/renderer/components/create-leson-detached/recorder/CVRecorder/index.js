@@ -1,6 +1,4 @@
 /* eslint-disable lines-between-class-members */
-import { captureDesktopStream } from "../../../../../utils/capture";
-
 /* eslint-disable radix */
 const { app, remote } = require("electron");
 const fs = require("fs");
@@ -430,39 +428,40 @@ export default class CVRecorder {
   }
 
   // Change the videoSource window to record
-  selectSource(source) {
+  selectSource(stream) {
     return new Promise((resolve, reject) => {
-      captureDesktopStream(source)
-        .then((s) => {
-          this.stream = s;
-          this._videoElement = document.createElement("video");
-          this._videoElement.srcObject = this.stream;
-          this._videoElement.onloadedmetadata = (e) => {
-            console.log(e);
-            this._videoElement.play();
-            // this._videoElement.muted = true;
+      try {
+        this.stream = stream;
+        this._videoElement = document.createElement("video");
+        this._videoElement.srcObject = this.stream;
+        this._videoElement.onloadedmetadata = (e) => {
+          console.log(e);
+          this._videoElement.play();
+          // this._videoElement.muted = true;
 
-            // Create the Media Recorder
-            const options = { mimeType: "video/webm; codecs=vp9" };
-            this._mediaRecorder = new MediaRecorder(this.stream, options);
+          // Create the Media Recorder
+          const options = { mimeType: "video/webm; codecs=vp9" };
+          this._mediaRecorder = new MediaRecorder(this.stream, options);
 
-            // Create the Media Recorder
-            const audioOptions = { mimeType: "audio/webm" };
-            this._audioMediaRecorder = new MediaRecorder(
-              this._audioStream,
-              audioOptions
-            );
+          // Create the Media Recorder
+          const audioOptions = { mimeType: "audio/webm" };
+          this._audioMediaRecorder = new MediaRecorder(
+            this._audioStream,
+            audioOptions
+          );
 
-            // Register Event Handlers
-            this._mediaRecorder.ondataavailable = this.handleDataAvailable;
-            this._mediaRecorder.onstop = this.handleStop;
+          // Register Event Handlers
+          this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+          this._mediaRecorder.onstop = this.handleStop;
 
-            this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
-            this._audioMediaRecorder.onstop = this.handleAudioStop;
-            resolve();
-          };
-        })
-        .catch(reject);
+          this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
+          this._audioMediaRecorder.onstop = this.handleAudioStop;
+          resolve();
+        };
+      } catch (e) {
+        console.log(e);
+        reject(e);
+      }
     });
   }
 
@@ -502,8 +501,9 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  start(source) {
-    this.selectSource(source).then(() => {
+  start(stream) {
+    console.log("dostart");
+    return this.selectSource(stream).then(() => {
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;

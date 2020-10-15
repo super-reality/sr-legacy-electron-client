@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
+import { captureDesktopStream } from "../../../../utils/capture";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import ReactSelect from "../../top-select";
@@ -45,16 +46,17 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     recorder.stop();
     // setRecording(false);
     onFinish();
-  }, [onFinish]);
+  }, [recorder, onFinish]);
 
   const startRecord = useCallback(() => {
     setCount(-1);
     setRecording(true);
-    recorder.start(currentSource);
+    captureDesktopStream(sources).then(recorder.start).catch(stopRecord);
+
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.register("F10", stopRecord);
-  }, []);
+  }, [sources, recorder]);
 
   useEffect(() => {
     if (count > 0) {

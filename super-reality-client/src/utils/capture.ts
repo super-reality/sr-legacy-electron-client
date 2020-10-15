@@ -14,8 +14,10 @@ export function captureDesktopStream(sourceId?: any): Promise<MediaStream> {
             },
           } as any,
         });
+        console.log(stream);
         resolve(stream);
       } catch (e) {
+        console.error(e);
         reject(e);
       }
     });
