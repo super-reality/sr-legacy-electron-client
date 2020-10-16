@@ -12,7 +12,7 @@ interface ButtonRoundProps {
   iconFill?: string;
   height: string;
   width: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export default function ButtonRound(props: ButtonRoundProps): JSX.Element {

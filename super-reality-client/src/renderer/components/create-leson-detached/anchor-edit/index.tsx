@@ -5,12 +5,11 @@ import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 import BaseSlider from "../../base-slider";
 import BaseToggle from "../../base-toggle";
-import ButtonSimple from "../../button-simple";
 import Flex from "../../flex";
-import InsertMedia from "../../insert-media";
 import updateAnchor from "../lesson-utils/updateAnchor";
 
 import { ReactComponent as CloseButton } from "../../../../assets/svg/win-close.svg";
+import TemplatesList from "../templates-list";
 
 export default function AnchorEdit(): JSX.Element {
   const updateTImeout = useRef<NodeJS.Timeout | null>(null);
@@ -116,32 +115,7 @@ export default function AnchorEdit(): JSX.Element {
           <CloseButton style={{ margin: "auto" }} />
         </div>
       </Flex>
-      <div className="container-with-desc">
-        <div>Add CV Targets</div>
-        <Flex style={{ flexDirection: "column" }}>
-          {[...anchor.templates, undefined].map((image, i) => {
-            return (
-              <React.Fragment key={image || "cv-add"}>
-                <InsertMedia
-                  url
-                  disk
-                  snip
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`insert-media-${datekey}-${i}`}
-                  imgUrl={image}
-                  style={{
-                    marginBottom: "8px",
-                    width: "100%",
-                  }}
-                  callback={(str) => {
-                    insertCVImage(str, i);
-                  }}
-                />
-              </React.Fragment>
-            );
-          })}
-        </Flex>
-      </div>
+      <TemplatesList templates={anchor.templates} />
       <BaseSlider
         title={`Match Value: ${anchor.cvMatchValue}`}
         domain={[800, 1000]}
