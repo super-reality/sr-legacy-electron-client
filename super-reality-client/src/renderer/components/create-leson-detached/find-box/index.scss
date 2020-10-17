@@ -1,0 +1,7 @@
+.find-box {
+  position: absolute;
+
+  &.anchor {
+    border: dotted var(--color-red) 3px;
+  }
+}

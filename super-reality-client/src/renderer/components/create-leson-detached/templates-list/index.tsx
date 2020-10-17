@@ -17,6 +17,10 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
   const [temp, setTemp] = useState(templates);
   const [editIndex, setEditIndex] = useState(-1);
 
+  useEffect(() => {
+    setTemp(templates);
+  }, [templates]);
+
   const insertImage = useCallback(
     (image: string) => {
       const images = [...temp];
