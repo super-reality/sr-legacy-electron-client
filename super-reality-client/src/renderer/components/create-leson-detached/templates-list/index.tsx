@@ -1,18 +1,19 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./index.scss";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import ButtonRound from "../../button-round";
-import Flex from "../../flex";
 import { ReactComponent as TrashButton } from "../../../../assets/svg/trash.svg";
 import { ReactComponent as EditButton } from "../../../../assets/svg/edit.svg";
 import usePopupImage from "../../../hooks/usePopupImage";
+import { IAnchor } from "../../../api/types/anchor/anchor";
 
 interface TemplatesListProps {
   templates: string[];
+  update: (data: Partial<IAnchor>) => void;
 }
 
 export default function TemplatesList(props: TemplatesListProps): JSX.Element {
-  const { templates } = props;
+  const { templates, update } = props;
   const [temp, setTemp] = useState(templates);
   const [editIndex, setEditIndex] = useState(-1);
 
@@ -33,6 +34,10 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
     },
     [temp]
   );
+
+  useEffect(() => {
+    update({ templates: temp });
+  }, [temp]);
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
   const [Image, openImage] = usePopupImage();

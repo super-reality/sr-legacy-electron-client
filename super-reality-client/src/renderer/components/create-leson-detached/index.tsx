@@ -25,6 +25,8 @@ import toggleMaximize from "../../../utils/toggleMaximize";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
+import AnchorTester from "./anchor-tester";
+import CvComponents from "../CvComponents";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -76,7 +78,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
-  const { currentAnchor } = useSelector(
+  const { currentAnchor, anchorTestView } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
@@ -137,15 +139,23 @@ export default function CreateLessonDetached(): JSX.Element {
 
   return overlayTransparent ? (
     <div className="transparent-container click-through">
-      {openRecorder ? (
+      {openRecorder && (
         <Recorder
           onFinish={() => {
             setOpenRecorder(false);
             setSolid();
           }}
         />
-      ) : (
-        <></>
+      )}
+      {anchorTestView && (
+        <>
+          <CvComponents />
+          <AnchorTester
+            onFinish={() => {
+              setSolid();
+            }}
+          />
+        </>
       )}
     </div>
   ) : (
@@ -166,7 +176,7 @@ export default function CreateLessonDetached(): JSX.Element {
               style={{ width: "340px" }}
               ref={resizeContainerAnchor}
             >
-              <AnchorEdit />
+              <AnchorEdit setTransparent={setTransparent} />
             </div>
           ) : (
             <></>

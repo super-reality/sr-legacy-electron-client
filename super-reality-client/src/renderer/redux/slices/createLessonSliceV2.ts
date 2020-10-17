@@ -27,6 +27,7 @@ const initialState = {
   currentRecording: undefined as undefined | string,
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
+  anchorTestView: false as boolean,
 };
 
 type InitialState = typeof initialState;

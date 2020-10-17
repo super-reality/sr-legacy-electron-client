@@ -75,7 +75,7 @@ export default function useCVMatch(
     () => () => (
       <div
         style={{
-          display: globalData.debugCv ? "flex" : "none",
+          display: globalData.debugCv ? "none" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}

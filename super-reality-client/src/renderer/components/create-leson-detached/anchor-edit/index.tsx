@@ -9,9 +9,19 @@ import Flex from "../../flex";
 import updateAnchor from "../lesson-utils/updateAnchor";
 
 import { ReactComponent as CloseButton } from "../../../../assets/svg/win-close.svg";
+import { ReactComponent as ImageButton } from "../../../../assets/svg/add-image.svg";
+import { ReactComponent as RecordButton } from "../../../../assets/svg/add-video.svg";
 import TemplatesList from "../templates-list";
+import ButtonSimple from "../../button-simple";
+import ButtonRound from "../../button-round";
+import usePopupImageSource from "../../../hooks/usePopupImageSource";
 
-export default function AnchorEdit(): JSX.Element {
+interface AnchorEditProps {
+  setTransparent: () => void;
+}
+
+export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
+  const { setTransparent } = props;
   const updateTImeout = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useDispatch();
   const { currentAnchor, treeAnchors } = useSelector(
@@ -87,17 +97,25 @@ export default function AnchorEdit(): JSX.Element {
     [update]
   );
 
-  const insertCVImage = useCallback(
-    (image: string, index: number) => {
-      const imgArr = [...anchor.templates];
-      imgArr.splice(index, 1, image);
+  const insertImage = useCallback(
+    (image: string) => {
+      const imgArr = [...anchor.templates, image];
       update({ templates: imgArr });
     },
     [anchor]
   );
 
+  const doTest = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { anchorTestView: true },
+    });
+    setTransparent();
+  }, [dispatch, setTransparent]);
+
+  const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
+
   if (anchor === null) return <></>;
-  const datekey = new Date().getTime();
 
   return (
     <div
@@ -109,13 +127,32 @@ export default function AnchorEdit(): JSX.Element {
         marginTop: "0",
       }}
     >
+      {Popup}
       <Flex style={{ marginBottom: "16px" }}>
         <div>Edit Anchor</div>
         <div className="container-close" onClick={closeAnchorEdit}>
           <CloseButton style={{ margin: "auto" }} />
         </div>
       </Flex>
-      <TemplatesList templates={anchor.templates} />
+      <Flex style={{ marginBottom: "8px" }}>
+        <ButtonRound
+          svg={ImageButton}
+          width="28px"
+          height="28px"
+          style={{ marginRight: "8px" }}
+          onClick={open}
+        />
+        <ButtonRound
+          svg={RecordButton}
+          width="28px"
+          height="28px"
+          onClick={open}
+        />
+      </Flex>
+      <TemplatesList update={update} templates={anchor.templates} />
+      <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
+        Test Anchor
+      </ButtonSimple>
       <BaseSlider
         title={`Match Value: ${anchor.cvMatchValue}`}
         domain={[800, 1000]}
