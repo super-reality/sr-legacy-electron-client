@@ -12,7 +12,6 @@ export default function Test(): JSX.Element {
   }, []);
 
   const pythonTest = useCallback(() => {
-    console.log(globalData.backgroundProcess.webContents);
     globalData.backgroundProcess.webContents.send("pythonExec", [
       "Test",
       "Argument",

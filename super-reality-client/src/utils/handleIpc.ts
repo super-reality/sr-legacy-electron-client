@@ -39,4 +39,8 @@ export default function handleIpc(): void {
   ipcRenderer.on("token", (e: any, arg: string) => {
     reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
   });
+
+  ipcRenderer.on("pythonResult", (e: any, arg: any) => {
+    console.log("pythonResult", arg);
+  });
 }
