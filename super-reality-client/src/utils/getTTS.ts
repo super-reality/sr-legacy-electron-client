@@ -24,7 +24,7 @@ export default function getTTS(text: string, play?: boolean): void {
     lesson: text,
   };
 
-  Axios.post<string>(`http://54.215.241.77:5000/text_to_speech`, payload, {
+  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech`, payload, {
     headers: {
       "Content-Type": "application/json",
     },
