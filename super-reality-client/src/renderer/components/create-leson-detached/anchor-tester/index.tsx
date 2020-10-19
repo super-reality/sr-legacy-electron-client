@@ -76,16 +76,17 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
       <Windowlet title="Super Reality" width={300} height={300} onClose={done}>
         <div className="anchor-tester-container">
           <Flex style={{ marginTop: "16px", justifyContent: "center" }}>
-            <div className="anchor-tester-match">{"Match: "}</div>
+            <div className="anchor-tester-match">Match:</div>
             <div
               className="anchor-tester-match"
               style={{
+                marginLeft: "4px",
                 color: `var(--color-${
                   anchor.cvMatchValue > threshold ? "red" : "green"
                 })`,
               }}
             >
-              {threshold / 10}
+              {threshold / 10}%
             </div>
           </Flex>
           <Flex
@@ -93,7 +94,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
             style={{
               maxWidth: "370px",
               display: "flex",
-              justifyContent: "center",
+              margin: "auto",
               padding: "8px",
             }}
           >

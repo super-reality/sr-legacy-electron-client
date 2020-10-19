@@ -1,4 +1,6 @@
 import React from "react";
+import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+
 import "./index.scss";
 
 interface FindBoxProps {
@@ -17,6 +19,8 @@ export default function FindBox(props: FindBoxProps): JSX.Element {
         width: `${pos.width}px`,
         height: `${pos.height}px`,
       }}
-    />
+    >
+      <AnchorIcon fill="var(--color-red)" style={{ margin: "auto" }} />
+    </div>
   );
 }

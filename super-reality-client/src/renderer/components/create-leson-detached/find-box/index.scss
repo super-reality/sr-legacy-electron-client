@@ -1,7 +1,9 @@
 .find-box {
   position: absolute;
+  display: flex;
 
   &.anchor {
+    background-color: #f047470d;
     border: dotted var(--color-red) 3px;
   }
 }

@@ -45,9 +45,19 @@ export default function useCVMatch(
   const doMatch = useCallback(
     (force: boolean = false) => {
       // console.log(opt);
+      const dateStart = new Date().getTime();
       if (videoElement && templateEl.current) {
         doCvMatch(images, videoElement, opt)
-          .then(callback)
+          .then((res) => {
+            callback(res);
+            if (globalData.debugCv) {
+              console.log(
+                `${`CV match time taken - ${
+                  new Date().getTime() - dateStart
+                }`}ms`
+              );
+            }
+          })
           .catch(() => {
             if (!capturing && !force) {
               setTimeout(() => doMatch(true), 10);
