@@ -186,6 +186,12 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
+          <ButtonRound
+            svg={RecordIcon}
+            width="48px"
+            height="48px"
+            onClick={createRecorder}
+          />
           {/*
           <VideoNavigation
             domain={[0, 1000]}
