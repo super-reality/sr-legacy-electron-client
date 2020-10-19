@@ -16,12 +16,13 @@ import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import CvComponents from "./components/CvComponents";
+import BackgroundController from "./BackgroundController";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
 
-  const { isLoading, detached } = useSelector(
+  const { isLoading, detached, background } = useSelector(
     (state: AppState) => state.commonProps
   );
   const yScrollMoveTo = useSelector(
@@ -47,6 +48,9 @@ export default function App(): JSX.Element {
 
   if (detached) {
     return <DetachController />;
+  }
+  if (background) {
+    return <BackgroundController />;
   }
 
   return isAuthenticated ? (
