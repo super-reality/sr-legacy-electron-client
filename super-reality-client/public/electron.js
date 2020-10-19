@@ -39,7 +39,7 @@ function createWindow() {
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
 
   mainWindow.on("closed", () => {
-    mainWindow = null;
+    app.quit();
   });
 
   mainWindow.webContents.once("dom-ready", () => {
