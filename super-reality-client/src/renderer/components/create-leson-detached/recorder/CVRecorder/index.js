@@ -3,8 +3,6 @@
 const { desktopCapturer, app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
-const mouseEvents = __non_webpack_require__("global-mouse-events");
-// eslint-disable-next-line no-undef
 const hbjs = __non_webpack_require__("handbrake-js");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
