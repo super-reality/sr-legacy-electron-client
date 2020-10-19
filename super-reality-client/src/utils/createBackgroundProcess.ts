@@ -43,7 +43,7 @@ export default function createBackgroundProcess(): Promise<void> {
   );
 
   return new Promise<void>((resolve) => {
-    globalData.backgroundProcess.webContents.openDevTools();
+    // globalData.backgroundProcess.webContents.openDevTools();
     globalData.backgroundProcess.webContents.once("dom-ready", () => {
       console.log("Background process init OK");
       globalData.backgroundProcess.webContents.send("background", true);
