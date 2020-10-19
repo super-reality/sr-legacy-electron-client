@@ -73,37 +73,33 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
     <>
       <CV />
       {previewPos && <FindBox pos={previewPos} />}
-      <Windowlet
-        style={{ overflow: "auto" }}
-        title="Super Reality"
-        width={240}
-        height={400}
-        onClose={done}
-      >
+      <Windowlet title="Super Reality" width={300} height={300} onClose={done}>
         <div className="anchor-tester-container">
-          <div className="anchor-tester-match">{"Match: "}</div>
-          <div
-            className="anchor-tester-match"
+          <Flex style={{ marginTop: "16px", justifyContent: "center" }}>
+            <div className="anchor-tester-match">{"Match: "}</div>
+            <div
+              className="anchor-tester-match"
+              style={{
+                color: `var(--color-${
+                  anchor.cvMatchValue > threshold ? "red" : "green"
+                })`,
+              }}
+            >
+              {threshold / 10}
+            </div>
+          </Flex>
+          <Flex
+            column
             style={{
-              color: `var(--color-${
-                anchor.cvMatchValue > threshold ? "red" : "green"
-              })`,
+              maxWidth: "370px",
+              display: "flex",
+              justifyContent: "center",
+              padding: "8px",
             }}
           >
-            {threshold / 10}
-          </div>
+            <AnchorEditSliders update={update} />
+          </Flex>
         </div>
-        <Flex
-          column
-          style={{
-            maxWidth: "370px",
-            display: "flex",
-            margin: "auto",
-            padding: "8px",
-          }}
-        >
-          <AnchorEditSliders update={update} />
-        </Flex>
       </Windowlet>
     </>
   );

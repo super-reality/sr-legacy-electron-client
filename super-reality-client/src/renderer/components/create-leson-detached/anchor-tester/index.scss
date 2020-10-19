@@ -1,7 +1,7 @@
 .anchor-tester-container {
-  display: flex;
-  justify-content: center;
-  margin: 8px 0;
+  overflow: auto;
+  display: block;
+  height: 100%;
 
   .anchor-tester-match {
     font-size: 24px;
