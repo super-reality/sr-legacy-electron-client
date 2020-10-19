@@ -16,9 +16,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
-  const [currentSource, setCurrentSource] = useState<any>({
-    name: "Entire Screen",
-  });
+  const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
@@ -49,12 +47,20 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   }, [recorder, onFinish]);
 
   const startRecord = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote, desktopCapturer } = require("electron");
     setCount(-1);
     setRecording(true);
-    captureDesktopStream(sources).then(recorder.start).catch(stopRecord);
 
-    // eslint-disable-next-line global-require
-    const { remote } = require("electron");
+    desktopCapturer
+      .getSources({
+        types: ["window", "screen"],
+      })
+      .then((all) => {
+        const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
+        recorder.start(s);
+      });
+
     remote.globalShortcut.register("F10", stopRecord);
   }, [sources, recorder]);
 
@@ -97,9 +103,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               <ReactSelect
                 style={{ width: "200px" }}
                 options={Object.keys(sources)}
-                current={currentSource.name}
+                current={currentSource}
                 callback={(name) => {
-                  setCurrentSource(sources[name]);
+                  setCurrentSource(name);
                 }}
               />
               <ButtonRound

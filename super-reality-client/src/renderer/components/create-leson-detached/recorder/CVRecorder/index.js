@@ -1,6 +1,6 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable radix */
-const { app, remote } = require("electron");
+const { desktopCapturer, app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
@@ -427,41 +427,72 @@ export default class CVRecorder {
     this._audioRecordedChunks.push(e.data);
   }
 
-  // Change the videoSource window to record
-  selectSource(stream) {
+  async captureDesktopStream(sourceId) {
     return new Promise((resolve, reject) => {
-      try {
-        this.stream = stream;
-        this._videoElement = document.createElement("video");
-        this._videoElement.srcObject = this.stream;
-        this._videoElement.onloadedmetadata = (e) => {
-          console.log(e);
-          this._videoElement.play();
-          // this._videoElement.muted = true;
-
-          // Create the Media Recorder
-          const options = { mimeType: "video/webm; codecs=vp9" };
-          this._mediaRecorder = new MediaRecorder(this.stream, options);
-
-          // Create the Media Recorder
-          const audioOptions = { mimeType: "audio/webm" };
-          this._audioMediaRecorder = new MediaRecorder(
-            this._audioStream,
-            audioOptions
+      desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: sourceId,
+              },
+            },
+          });
+          const constraintsAudio = { audio: true };
+          this._audioStream = await navigator.mediaDevices.getUserMedia(
+            constraintsAudio
           );
+          const combinedStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            ...this._audioStream.getAudioTracks(),
+          ]);
+          resolve(combinedStream);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+  }
 
-          // Register Event Handlers
-          this._mediaRecorder.ondataavailable = this.handleDataAvailable;
-          this._mediaRecorder.onstop = this.handleStop;
+  // Change the videoSource window to record
+  selectSource(source) {
+    return this.captureDesktopStream(source.id).then((newStream) => {
+      return new Promise((resolve, reject) => {
+        try {
+          this.stream = newStream;
+          this._videoElement = document.createElement("video");
+          this._videoElement.srcObject = this.stream;
+          this._videoElement.onloadedmetadata = (e) => {
+            console.log(e);
+            this._videoElement.play();
+            // this._videoElement.muted = true;
 
-          this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
-          this._audioMediaRecorder.onstop = this.handleAudioStop;
-          resolve();
-        };
-      } catch (e) {
-        console.log(e);
-        reject(e);
-      }
+            // Create the Media Recorder
+            const options = { mimeType: "video/webm; codecs=vp9" };
+            this._mediaRecorder = new MediaRecorder(this.stream, options);
+
+            // Create the Media Recorder
+            const audioOptions = { mimeType: "audio/webm" };
+            this._audioMediaRecorder = new MediaRecorder(
+              this._audioStream,
+              audioOptions
+            );
+
+            // Register Event Handlers
+            this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+            this._mediaRecorder.onstop = this.handleStop;
+
+            this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
+            this._audioMediaRecorder.onstop = this.handleAudioStop;
+            resolve();
+          };
+        } catch (e) {
+          console.log(e);
+          reject(e);
+        }
+      });
     });
   }
 
