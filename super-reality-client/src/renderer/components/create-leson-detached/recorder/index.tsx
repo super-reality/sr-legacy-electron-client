@@ -6,6 +6,9 @@ import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
+// eslint-disable-next-line no-undef
+const mouseEvents = __non_webpack_require__("global-mouse-events");
+
 interface RecorderProps {
   onFinish: () => void;
 }
@@ -15,9 +18,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
-  const [currentSource, setCurrentSource] = useState<any>({
-    name: "Entire Screen",
-  });
+  const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
@@ -36,7 +37,20 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     };
 
     get();
-  }, []);
+
+    mouseEvents.on("mousedown", (event: any) => {
+      if (recorder.recordingStarted) {
+        // clickEventTriggered = true;
+        // rec.pixelCordinates.x = event.x
+        // rec.pixelCordinates.y = event.y
+        recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer];
+        console.log("click registered ==>", recorder.currentTimer);
+      } else {
+        // console.log(rec.clickEventDetails)
+        // console.log(rec.currentTimer);
+      }
+    });
+  }, [recorder]);
 
   const stopRecord = useCallback(() => {
     // eslint-disable-next-line global-require
@@ -45,16 +59,25 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     recorder.stop();
     // setRecording(false);
     onFinish();
-  }, [onFinish]);
+  }, [recorder, onFinish]);
 
   const startRecord = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote, desktopCapturer } = require("electron");
     setCount(-1);
     setRecording(true);
-    recorder.start(currentSource);
-    // eslint-disable-next-line global-require
-    const { remote } = require("electron");
+
+    desktopCapturer
+      .getSources({
+        types: ["window", "screen"],
+      })
+      .then((all) => {
+        const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
+        recorder.start(s);
+      });
+
     remote.globalShortcut.register("F10", stopRecord);
-  }, []);
+  }, [sources, recorder]);
 
   useEffect(() => {
     if (count > 0) {
@@ -95,9 +118,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               <ReactSelect
                 style={{ width: "200px" }}
                 options={Object.keys(sources)}
-                current={currentSource.name}
+                current={currentSource}
                 callback={(name) => {
-                  setCurrentSource(sources[name]);
+                  setCurrentSource(name);
                 }}
               />
               <ButtonRound
