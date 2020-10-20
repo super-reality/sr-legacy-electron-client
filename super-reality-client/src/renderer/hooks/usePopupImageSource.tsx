@@ -29,14 +29,14 @@ export default function usePopupImageSource(
   const openDisk = useMediaInsert(call);
   const openSniper = useMediaSniper(call);
 
-  const [WaitingPopup, doWait] = usePopup(false);
+  const [WaitingPopup, doWait, closeWait] = usePopup(false);
 
   const unregister = useCallback(() => {
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.unregister("Shift+C");
-    doWait();
-  }, []);
+    closeWait();
+  }, [closeWait]);
 
   const doWaitStart = useCallback(() => {
     // eslint-disable-next-line global-require
