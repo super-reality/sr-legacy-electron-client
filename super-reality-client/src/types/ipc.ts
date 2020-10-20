@@ -1,8 +1,9 @@
-type IpcMethods = "popup" | "test";
+type IpcMethods = "popup" | "pythonExec" | "pythonResponse";
 
 interface IpcMsg {
   method: IpcMethods;
   arg: any;
+  to: string;
 }
 
 interface IpcMsgPopup extends IpcMsg {
@@ -10,9 +11,14 @@ interface IpcMsgPopup extends IpcMsg {
   arg: string;
 }
 
-interface IpcMsgTest extends IpcMsg {
-  method: "test";
-  arg: { foo: number };
+interface IpcMgsPythocExec extends IpcMsg {
+  method: "pythonExec";
+  arg: string;
 }
 
-export type IpcArgument = IpcMsgPopup | IpcMsgTest;
+interface IpcMgsPythocResponse extends IpcMsg {
+  method: "pythonResponse";
+  arg: string;
+}
+
+export type IpcArgument = IpcMsgPopup | IpcMgsPythocExec;

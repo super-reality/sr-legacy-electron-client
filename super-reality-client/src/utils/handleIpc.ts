@@ -1,6 +1,8 @@
+import pythonExecute from "../background/pythonExecute";
 import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
 import createBackgroundProcess from "./createBackgroundProcess";
+import getWindowId from "./getWindowId";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -25,6 +27,7 @@ export default function handleIpc(): void {
   const { ipcRenderer } = require("electron");
 
   ipcRenderer.on("rendererInit", () => {
+    ipcRenderer.send("ipc_register", "renderer", getWindowId());
     createBackgroundProcess();
   });
 
@@ -36,11 +39,15 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_BACKGROUND", arg });
   });
 
-  ipcRenderer.on("token", (e: any, arg: string) => {
-    reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
+  ipcRenderer.on("pythonExec", (e: any, arg: any) => {
+    pythonExecute(arg);
   });
 
-  ipcRenderer.on("pythonResult", (e: any, arg: any) => {
-    console.log("pythonResult", arg);
+  ipcRenderer.on("pythonResponse", (e: any, arg: any) => {
+    console.log("pythonResponse", arg);
+  });
+
+  ipcRenderer.on("token", (e: any, arg: string) => {
+    reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
   });
 }

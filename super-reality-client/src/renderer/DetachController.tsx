@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
 import { useSelector } from "react-redux";
 import { AppState } from "./redux/stores/renderer";
 import ViewLesson from "./components/view-lesson";
 import SnipingTool from "./components/sniping-tool";
 import CreateLessonDetached from "./components/create-leson-detached";
+import getWindowId from "../utils/getWindowId";
 
 export default function DetachController(): JSX.Element {
   const { detached } = useSelector((state: AppState) => state.commonProps);
+
+  useEffect(() => {
+    // eslint-disable-next-line global-require
+    const { ipcRenderer } = require("electron");
+    ipcRenderer.send("ipc_register", detached?.type, getWindowId());
+  }, [detached]);
 
   return (
     <>
