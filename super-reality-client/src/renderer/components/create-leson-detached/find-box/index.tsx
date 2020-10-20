@@ -16,8 +16,8 @@ export default function FindBox(props: FindBoxProps): JSX.Element {
       style={{
         left: `${pos.x}px`,
         top: `${pos.y}px`,
-        width: `${pos.width}px`,
-        height: `${pos.height}px`,
+        width: `${pos.width - 6}px`,
+        height: `${pos.height - 6}px`,
       }}
     >
       <AnchorIcon fill="var(--color-red)" style={{ margin: "auto" }} />

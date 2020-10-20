@@ -15,13 +15,12 @@ export default function createBackgroundProcess(): Promise<void> {
     return new Promise((r) => r());
   }
   globalData.backgroundProcess = new remote.BrowserWindow({
-    width: 100,
-    height: 100,
-    frame: false,
+    width: 400,
+    height: 400,
     show: false,
-    alwaysOnTop: false,
     resizable: true,
     webPreferences: {
+      webSecurity: false,
       nodeIntegration: true,
     },
   });
@@ -42,8 +41,11 @@ export default function createBackgroundProcess(): Promise<void> {
       : "http://localhost:3000"
   );
 
-  return new Promise<void>((resolve) => {
+  remote.globalShortcut.register("Alt+Shift+F", () => {
     globalData.backgroundProcess.webContents.openDevTools();
+  });
+
+  return new Promise<void>((resolve) => {
     globalData.backgroundProcess.webContents.once("dom-ready", () => {
       console.log("Background process init OK");
       globalData.backgroundProcess.webContents.send("background", true);
@@ -52,6 +54,7 @@ export default function createBackgroundProcess(): Promise<void> {
     globalData.backgroundProcess.on("closed", () => {
       console.log("Background process closed unexpectedly!");
       globalData.backgroundProcess = null;
+      remote.globalShortcut.unregister("Alt+Shift+F");
       resolve();
     });
   });

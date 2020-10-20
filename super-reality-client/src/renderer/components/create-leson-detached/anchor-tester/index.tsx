@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { CVResult } from "../../../../types/utils";
-import useCVMatch from "../../../hooks/useCVMatch";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 import Windowlet from "../windowlet";
@@ -10,6 +8,7 @@ import Flex from "../../flex";
 import AnchorEditSliders from "../anchor-edit-sliders";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import FindBox from "../find-box";
+import ipcSend from "../../../../utils/ipcSend";
 
 interface AnchorTesterProps {
   onFinish: () => void;
@@ -21,6 +20,9 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   const { currentAnchor, treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+
+  const { cvResult } = useSelector((state: AppState) => state.render);
+
   const [threshold, setThreshold] = useState(0);
   const [previewPos, setPreviewPos] = useState<{
     x: number;
@@ -33,30 +35,37 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
     return treeAnchors[currentAnchor || ""] || null;
   }, [treeAnchors, currentAnchor]);
 
-  const cvCallback = useCallback((res: CVResult) => {
-    setThreshold(Math.round(res.dist * 1000));
-    setPreviewPos(res);
-  }, []);
-
-  const [CV, isCapturing, startCV, endCV] = useCVMatch(
-    anchor.templates,
-    cvCallback,
-    { ...anchor, cvMatchValue: 0 }
-  );
+  useEffect(() => {
+    console.log("cvResult", cvResult);
+    setThreshold(Math.round(cvResult.dist * 1000));
+    setPreviewPos(cvResult);
+  }, [cvResult]);
 
   const done = useCallback(() => {
     onFinish();
-    endCV();
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: { anchorTestView: false },
     });
-  }, [dispatch, endCV]);
+  }, [dispatch]);
 
   useEffect(() => {
-    console.log("Start CV capture");
-    startCV();
-  }, []);
+    console.log("Start CV captures");
+    const interval = setInterval(() => {
+      console.log("request CV capture");
+      ipcSend({
+        method: "cv",
+        arg: {
+          ...anchor,
+          cvTemplates: anchor.templates,
+          cvTo: "LESSON_CREATE",
+        },
+        to: "background",
+      });
+    }, anchor.cvDelay);
+
+    return () => clearInterval(interval);
+  }, [anchor]);
 
   const update = useCallback(
     (data: Partial<IAnchor>) => {
@@ -71,7 +80,6 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
 
   return (
     <>
-      <CV />
       {previewPos && <FindBox pos={previewPos} />}
       <Windowlet title="Super Reality" width={300} height={300} onClose={done}>
         <div className="anchor-tester-container">

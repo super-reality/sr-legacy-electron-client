@@ -149,7 +149,6 @@ export default function CreateLessonDetached(): JSX.Element {
       )}
       {anchorTestView && (
         <>
-          <CvComponents />
           <AnchorTester
             onFinish={() => {
               setSolid();

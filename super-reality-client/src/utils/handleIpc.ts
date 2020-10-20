@@ -1,6 +1,13 @@
 import pythonExecute from "../background/pythonExecute";
 import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
+import {
+  IpcMsg,
+  ipcMsgCv,
+  ipcMsgCvResult,
+  IpcMsgPythocExec,
+  IpcMsgPythocResponse,
+} from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
 import getWindowId from "./getWindowId";
 
@@ -20,6 +27,21 @@ interface DetachSniping {
 }
 
 export type DetachArg = DetachLesson | DetachSniping | CreateLesson;
+
+/**
+ * Utility function to create an ipc listener, removing previous listeners on the same channel, type aware.
+ * @param channel IPC channel to listen.
+ * @param fn function to execute.
+ */
+function makeIpcListener<T extends IpcMsg>(
+  channel: T["method"],
+  fn: (e: Electron.IpcRendererEvent, arg: T["arg"]) => void
+): void {
+  // eslint-disable-next-line global-require
+  const { ipcRenderer } = require("electron");
+  ipcRenderer.removeAllListeners(channel);
+  ipcRenderer.on(channel, fn);
+}
 
 export default function handleIpc(): void {
   console.log("Initialize IPC handlers");
@@ -48,19 +70,29 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_BACKGROUND", arg });
   });
 
-  ipcRenderer.removeAllListeners("pythonExec");
-  ipcRenderer.on("pythonExec", (e: any, arg: any) => {
+  ipcRenderer.removeAllListeners("token");
+  ipcRenderer.on("token", (e: any, arg: string) => {
+    reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
+  });
+
+  makeIpcListener<IpcMsgPythocExec>("pythonExec", (e, arg) => {
     console.log("pythonExec", arg);
     pythonExecute(arg);
   });
 
-  ipcRenderer.removeAllListeners("pythonResponse");
-  ipcRenderer.on("pythonResponse", (e: any, arg: any) => {
+  makeIpcListener<IpcMsgPythocResponse>("pythonResponse", (e, arg) => {
     console.log("pythonResponse", arg);
   });
 
-  ipcRenderer.removeAllListeners("token");
-  ipcRenderer.on("token", (e: any, arg: string) => {
-    reduxAction(store.dispatch, { type: "AUTH_TOKEN", arg });
+  makeIpcListener<ipcMsgCv>("cv", (e, arg) => {
+    reduxAction(store.dispatch, {
+      type: "SET_BACK",
+      arg: { cvTemplates: arg.cvTemplates, cvTo: arg.cvTo },
+    });
+    reduxAction(store.dispatch, { type: "SET_CV_SETTINGS", arg });
+  });
+
+  makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
   });
 }

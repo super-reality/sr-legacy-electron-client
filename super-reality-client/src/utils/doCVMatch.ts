@@ -3,23 +3,47 @@ import store, { AppState } from "../renderer/redux/stores/renderer";
 import { CVResult } from "../types/utils";
 import * as cv from "./opencv/opencv";
 
-function getTemplateMat(id: string): cv.Mat {
-  const img = document.getElementById(id) as HTMLImageElement;
-  const canvas = document.createElement("canvas");
-  const w = img.width;
-  const h = img.height;
-  canvas.width = w;
-  canvas.height = h;
-  // console.log(w, h);
-  const ctx = canvas.getContext("2d");
-  if (ctx && w !== 0 && h !== 0) {
-    ctx.drawImage(img, 0, 0);
-    const buff = ctx.getImageData(0, 0, w, h).data;
-    const mat = new cv.Mat(Buffer.from(buff), h, w, cv.CV_8UC4);
-    // console.log(w / xScale, h / yScale);
-    return mat;
-  }
-  return new cv.Mat();
+function getImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+function getLocalMat(image: string): Promise<cv.Mat> {
+  return new Promise((resolve, reject) => {
+    try {
+      const mat = cv.imread(image);
+      resolve(mat);
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function getUrlMat(image: string): Promise<cv.Mat> {
+  return new Promise((resolve, reject) => {
+    getImage(image).then((img) => {
+      const canvas = document.createElement("canvas");
+      const w = img.width;
+      const h = img.height;
+      canvas.width = w;
+      canvas.height = h;
+      // console.log(w, h);
+      const ctx = canvas.getContext("2d");
+      if (ctx && w !== 0 && h !== 0) {
+        ctx.drawImage(img, 0, 0);
+        const buff = ctx.getImageData(0, 0, w, h).data;
+        const mat = new cv.Mat(Buffer.from(buff), h, w, cv.CV_8UC4);
+        // console.log(w / xScale, h / yScale);
+        resolve(mat);
+      } else {
+        resolve(new cv.Mat());
+      }
+    });
+  });
 }
 
 function matToCanvas(mat: cv.Mat, id: string): void {
@@ -135,85 +159,91 @@ export default function doCvMatch(
       );
     }
 
-    if (srcMat) {
-      // Template
-      const templateMats = images.map((image, index) => {
-        let ret =
-          mode == "Dom"
-            ? getTemplateMat(`templateImage-${index}`)
-            : cv.imread(image);
-
-        if (globalData.debugCv) {
-          console.log(
-            `Template: ${ret.cols}x${ret.rows} => ${Math.round(
-              ret.cols / xScale
-            )}/${Math.round(ret.rows / yScale)}`
-          );
-        }
-
-        ret = ret.resize(
-          Math.round(ret.rows / yScale),
-          Math.round(ret.cols / xScale)
+    function adjustMat(mat: cv.Mat): cv.Mat {
+      let ret = mat;
+      if (globalData.debugCv) {
+        console.log(
+          `Template: ${ret.cols}x${ret.rows} => ${Math.round(
+            ret.cols / xScale
+          )}/${Math.round(ret.rows / yScale)}`
         );
-        // Source Mat and Template mat filters should be applied in the same order!
-        if (opt.cvGrayscale) {
-          ret = ret.cvtColor(cv.COLOR_RGBA2GRAY);
-        }
-        if (opt.cvApplyThreshold) {
-          ret = ret.threshold(opt.cvThreshold, 255, cv.ADAPTIVE_THRESH_MEAN_C);
-        }
-        return ret;
-      });
-
-      // console.log(templateMat);
-      let bestPoint = { x: 0, y: 0 };
-      let bestDist = 0;
-      let bestIndex = 0;
-
-      images.map((image, index) => {
-        const result = srcMat.matchTemplate(
-          templateMats[index],
-          cv.TM_CCORR_NORMED,
-          new cv.Mat()
-        );
-
-        const minMax = result.minMaxLoc();
-
-        const point = minMax.maxLoc;
-        const dist = minMax.maxVal;
-        if (dist > bestDist) {
-          bestPoint = point;
-          bestDist = dist;
-          bestIndex = index;
-        }
-
-        return result;
-      });
-
-      if (bestDist > opt.cvMatchValue / 1000) {
-        if (globalData.debugCv) {
-          console.log(
-            `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(
-              xScale * bestPoint.x
-            )},${Math.round(yScale * bestPoint.y)}`
-          );
-        }
-        const ret: CVResult = {
-          dist: bestDist,
-          sizeFactor: 0,
-          x: Math.round(xScale * bestPoint.x),
-          y: Math.round(yScale * bestPoint.y),
-          width: Math.round(templateMats[bestIndex].cols * xScale),
-          height: Math.round(templateMats[bestIndex].rows * yScale),
-        };
-        resolve(ret);
-      } else {
-        if (globalData.debugCv) {
-          console.log(`not found: ${bestDist} (${opt.cvMatchValue / 1000})`);
-        }
-        reject();
       }
-      matToCanvas(srcMat, "canvasTestOutput");
+
+      ret = ret.resize(
+        Math.round(ret.rows / yScale),
+        Math.round(ret.cols / xScale)
+      );
+      // Source Mat and Template mat filters should be applied in the same order!
+      if (opt.cvGrayscale) {
+        ret = ret.cvtColor(cv.COLOR_RGBA2GRAY);
+      }
+      if (opt.cvApplyThreshold) {
+        ret = ret.threshold(opt.cvThreshold, 255, cv.ADAPTIVE_THRESH_MEAN_C);
+      }
+      return ret;
+    }
+
+    if (srcMat) {
+      // Get Templates
+      Promise.all(
+        images.map((image) =>
+          mode == "Dom" ? getUrlMat(image) : getLocalMat(image)
+        )
+      )
+        .then((templateMats) => {
+          const templates = templateMats.map(adjustMat);
+          let bestPoint = { x: 0, y: 0 };
+          let bestDist = 0;
+          let bestIndex = 0;
+
+          images.map((image, index) => {
+            const result = srcMat.matchTemplate(
+              templates[index],
+              cv.TM_CCORR_NORMED,
+              new cv.Mat()
+            );
+
+            const minMax = result.minMaxLoc();
+
+            const point = minMax.maxLoc;
+            const dist = minMax.maxVal;
+            if (dist > bestDist) {
+              bestPoint = point;
+              bestDist = dist;
+              bestIndex = index;
+            }
+
+            return result;
+          });
+
+          if (bestDist > opt.cvMatchValue / 1000) {
+            if (globalData.debugCv) {
+              console.log(
+                `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(
+                  xScale * bestPoint.x
+                )},${Math.round(yScale * bestPoint.y)}`
+              );
+            }
+            const ret: CVResult = {
+              dist: bestDist,
+              sizeFactor: 0,
+              x: Math.round(xScale * bestPoint.x),
+              y: Math.round(yScale * bestPoint.y),
+              width: Math.round(templates[bestIndex].cols * xScale),
+              height: Math.round(templates[bestIndex].rows * yScale),
+            };
+            resolve(ret);
+          } else {
+            if (globalData.debugCv) {
+              console.log(
+                `not found: ${bestDist} (${opt.cvMatchValue / 1000})`
+              );
+            }
+            reject();
+          }
+          matToCanvas(srcMat, "canvasTestOutput");
+        })
+        .catch(reject);
     } else {
       reject();
     }

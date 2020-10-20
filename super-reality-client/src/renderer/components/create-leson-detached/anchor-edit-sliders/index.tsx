@@ -104,7 +104,7 @@ export default function AnchorEditSliders(
       />
       <BaseSlider
         title={`Delay: ${anchor.cvDelay}ms`}
-        domain={[1, 200]}
+        domain={[1, 500]}
         defaultValues={[anchor.cvDelay]}
         ticksNumber={10}
         callback={setDelay}
