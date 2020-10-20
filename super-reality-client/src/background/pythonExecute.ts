@@ -11,7 +11,6 @@ export default function pythonExecute(args: any): void {
     ? path.join(proc.resourcesPath)
     : path.join(remote.app.getAppPath(), "public");
 
-  console.log("pythonExec", args);
   const options = {
     args,
   };
@@ -22,7 +21,6 @@ export default function pythonExecute(args: any): void {
     (err, results) => {
       if (err) throw err;
       // results is an array consisting of messages collected during execution
-      console.log("results: %j", results);
       ipcSend({ method: "pythonResponse", arg: results, to: "renderer" });
     }
   );
