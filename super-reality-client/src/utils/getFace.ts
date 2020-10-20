@@ -22,7 +22,7 @@ export default function getFace(image: string, video: string): void {
 
   setLoading(true);
 
-  Axios.post<string>(`http://54.177.153:4444/generate_face`, data)
+  Axios.post<string>(`http://3.101.43.24:5000/face_api`, data)
     .then(handleGetFace)
     .then((d) => {
       console.log(d);
