@@ -91,7 +91,10 @@ export default function Auth(props: AuthProps): JSX.Element {
 
     axios
       .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
-      .then((res) => handleAuthSingup(res))
+      .then((res) => {
+        handleAuthSingup(res);
+        onAuth();
+      })
       .catch(handleAuthError);
   }, []);
 
