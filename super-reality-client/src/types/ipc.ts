@@ -3,7 +3,7 @@ type IpcMethods = "popup" | "pythonExec" | "pythonResponse";
 interface IpcMsg {
   method: IpcMethods;
   arg: any;
-  to: string;
+  to?: string;
 }
 
 interface IpcMsgPopup extends IpcMsg {
@@ -13,12 +13,12 @@ interface IpcMsgPopup extends IpcMsg {
 
 interface IpcMgsPythocExec extends IpcMsg {
   method: "pythonExec";
-  arg: string;
+  arg: any;
 }
 
 interface IpcMgsPythocResponse extends IpcMsg {
   method: "pythonResponse";
-  arg: string;
+  arg: any[] | undefined;
 }
 
-export type IpcArgument = IpcMsgPopup | IpcMgsPythocExec;
+export type IpcArgument = IpcMsgPopup | IpcMgsPythocExec | IpcMgsPythocResponse;

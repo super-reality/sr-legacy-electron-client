@@ -1,7 +1,9 @@
-import setupIpc from "./setupIpc";
+import getWindowId from "../utils/getWindowId";
 
 export default function initializeBackground() {
-  console.log("Background process init");
+  // eslint-disable-next-line global-require
+  const { ipcRenderer } = require("electron");
+  ipcRenderer.send("ipc_register", "background", getWindowId());
 
-  setupIpc();
+  console.log("Background process init");
 }

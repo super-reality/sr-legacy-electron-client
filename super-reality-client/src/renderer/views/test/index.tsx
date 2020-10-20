@@ -3,6 +3,7 @@ import "./index.scss";
 import ButtonSimple from "../../components/button-simple";
 import createLessonInterface from "../../../utils/createLessonInterface";
 import globalData from "../../globalData";
+import ipcSend from "../../../utils/ipcSend";
 
 export default function Test(): JSX.Element {
   const onCLose = useCallback(() => console.log("Closed!"), []);
@@ -12,10 +13,11 @@ export default function Test(): JSX.Element {
   }, []);
 
   const pythonTest = useCallback(() => {
-    globalData.backgroundProcess.webContents.send("pythonExec", [
-      "Test",
-      "Argument",
-    ]);
+    ipcSend({
+      method: "pythonExec",
+      arg: ["Test", "Argument"],
+      to: "background",
+    });
   }, []);
 
   return (
