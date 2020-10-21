@@ -48,3 +48,4 @@ export type IpcArgument =
   | IpcMsgPythocResponse
   | ipcMsgCv
   | ipcMsgCvResult;
+

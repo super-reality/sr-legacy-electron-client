@@ -9,6 +9,7 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
+
 import getWindowId from "./getWindowId";
 
 interface DetachLesson {
