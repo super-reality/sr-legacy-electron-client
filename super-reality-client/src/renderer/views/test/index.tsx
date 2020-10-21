@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import "./index.scss";
 import ButtonSimple from "../../components/button-simple";
 import createLessonInterface from "../../../utils/createLessonInterface";
@@ -6,17 +6,18 @@ import getFace from "../../../utils/getFace";
 
 export default function Test(): JSX.Element {
   const onCLose = useCallback(() => console.log("Closed!"), []);
+  const imageInput = useRef<HTMLInputElement>(null);
+  const videoInput = useRef<HTMLInputElement>(null);
 
   const onClick = useCallback(() => {
     createLessonInterface({}).then(onCLose);
   }, []);
 
   const testFace = useCallback(() => {
-    getFace(
-      "C:/Users/Manuh/Desktop/arnold.jpg",
-      "C:/Users/Manuh/Desktop/speakingtocamera.mp4"
-    );
-  }, []);
+    if (imageInput.current && videoInput.current) {
+      getFace(imageInput.current, videoInput.current);
+    }
+  }, [imageInput, videoInput]);
 
   return (
     <div className="mid">
@@ -31,6 +32,10 @@ export default function Test(): JSX.Element {
       >
         Test Face Thingy
       </ButtonSimple>
+      Select Image
+      <input ref={imageInput} type="file" accept="image/*" />
+      Select Video
+      <input ref={videoInput} type="file" accept="video/*" />
     </div>
   );
 }
