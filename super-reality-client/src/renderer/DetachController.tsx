@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
 import { useSelector } from "react-redux";
 import { AppState } from "./redux/stores/renderer";

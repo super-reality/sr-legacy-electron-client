@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import CreateCollection from "../../components/create-collection";
-import CreateLesson from "../../components/create-lesson";
 import ButtonSimple from "../../components/button-simple";
 import TopSearch from "../../components/top-search";
 import Collapsible from "../../components/collapsible";
@@ -11,7 +10,7 @@ import { mockCollections } from "../../../mocks";
 export default function Tests(): JSX.Element {
   const location = useLocation();
 
-  let Component = <CreateLesson />;
+  let Component = <></>;
   if (location.pathname == "/tests/1") Component = <CreateCollection />;
   if (location.pathname == "/tests/2")
     Component = (

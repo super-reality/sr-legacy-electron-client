@@ -20,7 +20,6 @@ export default function useCVMatch(
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
-  const templateEl = useRef<HTMLImageElement | null>(null);
   const [frames, setFrames] = useState(0);
 
   const videoElement = document.getElementById(
@@ -44,9 +43,9 @@ export default function useCVMatch(
 
   const doMatch = useCallback(
     (force: boolean = false) => {
-      // console.log(opt);
+      console.log(opt);
       const dateStart = new Date().getTime();
-      if (videoElement && templateEl.current) {
+      if (videoElement) {
         doCvMatch(images, videoElement, opt)
           .then((res) => {
             callback(res);
@@ -58,15 +57,13 @@ export default function useCVMatch(
               );
             }
           })
-          .catch(() => {
-            if (!capturing && !force) {
-              setTimeout(() => doMatch(true), 10);
-            }
+          .catch((e) => {
+            console.log(e);
           });
       }
       setFrames(frames + 1);
     },
-    [callback, capturing, frames, videoElement, templateEl, opt]
+    [callback, images, capturing, frames, videoElement, opt]
   );
 
   useEffect(() => {
@@ -85,23 +82,11 @@ export default function useCVMatch(
     () => () => (
       <div
         style={{
-          display: globalData.debugCv ? "none" : "none",
+          display: globalData.debugCv ? "flex" : "none",
           flexDirection: "column",
           alignItems: "center",
         }}
-      >
-        {images.map((image, index) => (
-          <img
-            // eslint-disable-next-line react/no-array-index-key
-            key={`${image}-${index}`}
-            style={{ display: "block" }}
-            id={`templateImage-${index}`}
-            src={image}
-            crossOrigin="anonymous"
-            ref={templateEl}
-          />
-        ))}
-      </div>
+      />
     ),
     [images]
   );

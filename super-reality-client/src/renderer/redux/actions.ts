@@ -8,6 +8,7 @@ import * as createStepSlice from "./slices/createStepSlice";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
 import * as settingsSlice from "./slices/settingsSlice";
+import * as backgroundSlice from "./slices/backgroundSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -19,6 +20,7 @@ export const actions = {
   SET_YSCROLL: renderSlice.setYScroll,
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
+  SET_CV_RESULT: renderSlice.setCvResult,
   SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
   CREATE_LESSON_V2_DATA: createLessonSliceV2.setData,
   CREATE_LESSON_V2_TREE: createLessonSliceV2.setOpenTree,
@@ -48,6 +50,7 @@ export const actions = {
   CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
   SET_DETACHED: commonPropSlice.setDetached,
+  SET_BACKGROUND: commonPropSlice.setBackground,
   USERDATA_RESET: userDataSlice.clearUserData,
   USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
   USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,
@@ -55,6 +58,7 @@ export const actions = {
   CLEAR_SETTINGS: settingsSlice.clearsettings,
   SET_SETTINGS: settingsSlice.setSettings,
   SET_CV_SETTINGS: settingsSlice.setCVSettings,
+  SET_BACK: backgroundSlice.setData,
 };
 
 export type ActionKeys = keyof typeof actions;

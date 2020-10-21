@@ -1,7 +1,8 @@
 .anchor-tester-container {
   overflow: auto;
   display: block;
-  height: 100%;
+  height: calc(100% - 10px);
+  margin: 5px;
 
   .anchor-tester-match {
     font-size: 24px;
