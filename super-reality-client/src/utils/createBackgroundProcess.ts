@@ -41,7 +41,7 @@ export default function createBackgroundProcess(): Promise<void> {
       : "http://localhost:3000"
   );
 
-  remote.globalShortcut.register("Alt+Shift+F", () => {
+  remote.globalShortcut.register("Alt+Shift+E", () => {
     globalData.backgroundProcess.webContents.openDevTools();
   });
 
