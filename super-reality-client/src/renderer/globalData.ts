@@ -7,6 +7,7 @@ const globalData = {
   subjects: {} as Record<string, ISubjectGet>,
   lessons: {} as Record<string, ILessonGet>,
   cvFindWindow: null as any | null,
+  backgroundProcess: null as any | null,
   debugCv: false as boolean,
 };
 
