@@ -40,15 +40,16 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
 
   const update = useCallback(
     (data: Partial<IAnchor>) => {
-      const newData = { ...anchor, ...data };
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETANCHOR",
-        arg: { anchor: newData },
-      });
       // Debouce api update, 1 second (should make a debounce hook??)
+      console.log(data);
       if (updateTImeout.current) clearTimeout(updateTImeout.current);
       updateTImeout.current = setTimeout(() => {
-        updateAnchor(anchor, anchor._id);
+        const newData = { ...anchor, ...data };
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETANCHOR",
+          arg: { anchor: newData },
+        });
+        updateAnchor(data, anchor._id);
       }, 1000);
     },
     [anchor, dispatch]
@@ -110,7 +111,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
       <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
         Test Anchor
       </ButtonSimple>
-      <AnchorEditSliders update={update} />
+      <AnchorEditSliders anchor={anchor} update={update} />
     </div>
   );
 }

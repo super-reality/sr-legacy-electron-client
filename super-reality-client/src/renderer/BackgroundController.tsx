@@ -9,13 +9,17 @@ import { AppState } from "./redux/stores/renderer";
 
 export default function BackgroundController(): JSX.Element {
   const dispatch = useDispatch();
+  const [processingCv, setProcessingCv] = useState<boolean>(false);
   const { cvTemplates, cvTo } = useSelector(
     (state: AppState) => state.background
   );
   const [sendTo, setSendTo] = useState("");
 
   const cvCallback = useCallback(
-    (arg) => ipcSend({ method: "cvResult", arg, to: sendTo }),
+    (arg) => {
+      setProcessingCv(false);
+      ipcSend({ method: "cvResult", arg, to: sendTo });
+    },
     [sendTo, dispatch]
   );
 
@@ -32,9 +36,12 @@ export default function BackgroundController(): JSX.Element {
     if (cvTo !== "") {
       setSendTo(cvTo);
       reduxAction(dispatch, { type: "SET_BACK", arg: { cvTo: "" } });
-      doMatch();
+      if (!processingCv) {
+        setProcessingCv(true);
+        doMatch();
+      }
     }
-  }, [doMatch, cvTo]);
+  }, [processingCv, doMatch, cvTo]);
 
   return (
     <>

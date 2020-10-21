@@ -13,6 +13,7 @@ export interface CVResult {
   y: number;
   width: number;
   height: number;
+  time: number;
 }
 
 export type ValueOf<T> = T[keyof T];

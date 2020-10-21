@@ -9,6 +9,7 @@ import AnchorEditSliders from "../anchor-edit-sliders";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import FindBox from "../find-box";
 import ipcSend from "../../../../utils/ipcSend";
+import getArrrayAverage from "../../../../utils/getArrayAverage";
 
 interface AnchorTesterProps {
   onFinish: () => void;
@@ -24,6 +25,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
 
   const [threshold, setThreshold] = useState(0);
+  const [times, setTimes] = useState([0]);
   const [previewPos, setPreviewPos] = useState<{
     x: number;
     y: number;
@@ -38,6 +40,8 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   useEffect(() => {
     console.log("cvResult", cvResult);
     setThreshold(Math.round(cvResult.dist * 1000));
+    const newArr = times.slice(Math.max(times.length - 9, 0));
+    setTimes([...newArr, cvResult.time]);
     setPreviewPos(cvResult);
   }, [cvResult]);
 
@@ -50,13 +54,12 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Start CV captures");
     const interval = setInterval(() => {
-      console.log("request CV capture");
       ipcSend({
         method: "cv",
         arg: {
           ...anchor,
+          cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "LESSON_CREATE",
         },
@@ -96,6 +99,18 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
             >
               {threshold / 10}%
             </div>
+            <div
+              className="anchor-tester-match"
+              style={{
+                fontSize: "16px",
+                margin: "auto 0px auto 8px",
+                color: `var(--color-${
+                  anchor.cvMatchValue > threshold ? "red" : "green"
+                })`,
+              }}
+            >
+              {Math.round(getArrrayAverage(times))}ms
+            </div>
           </Flex>
           <Flex
             column
@@ -106,7 +121,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
               padding: "8px",
             }}
           >
-            <AnchorEditSliders update={update} />
+            <AnchorEditSliders anchor={anchor} update={update} />
           </Flex>
         </div>
       </Windowlet>

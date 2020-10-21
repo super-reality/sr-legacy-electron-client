@@ -1,26 +1,18 @@
 import React, { useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import { AppState } from "../../../redux/stores/renderer";
 import BaseSlider from "../../base-slider";
 import BaseToggle from "../../base-toggle";
 
 interface AnchorEditSlidersProps {
   update: (data: Partial<IAnchor>) => void;
+  anchor: IAnchor;
 }
 
 export default function AnchorEditSliders(
   props: AnchorEditSlidersProps
 ): JSX.Element {
-  const { update } = props;
-
-  const { currentAnchor, treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  const anchor = useMemo(() => {
-    return treeAnchors[currentAnchor || ""] || null;
-  }, [treeAnchors, currentAnchor]);
+  const { anchor, update } = props;
+  const anchorState = useMemo(() => anchor, [anchor]);
 
   const setMatchValue = useCallback(
     (n: readonly number[]) => {
@@ -66,19 +58,19 @@ export default function AnchorEditSliders(
   return (
     <>
       <BaseSlider
-        title={`Match Value: ${anchor.cvMatchValue}`}
+        title={`Match Value: ${anchorState.cvMatchValue}`}
         domain={[800, 1000]}
-        defaultValues={[anchor.cvMatchValue]}
+        defaultValues={[anchorState.cvMatchValue]}
         ticksNumber={10}
         callback={setMatchValue}
         slideCallback={setMatchValue}
       />
       <BaseSlider
-        title={`Canvas Size: ${anchor.cvCanvas}% (${Math.round(
-          (window.screen.width / 100) * anchor.cvCanvas
+        title={`Canvas Size: ${anchorState.cvCanvas}% (${Math.round(
+          (window.screen.width / 100) * anchorState.cvCanvas
         )}px)`}
         domain={[10, 200]}
-        defaultValues={[anchor.cvCanvas]}
+        defaultValues={[anchorState.cvCanvas]}
         ticksNumber={8}
         step={10}
         callback={setCanvasSize}
@@ -86,26 +78,27 @@ export default function AnchorEditSliders(
       />
       <BaseToggle
         title="Grayscale"
-        value={anchor.cvGrayscale}
+        value={anchorState.cvGrayscale}
         callback={setGrayscale}
       />
       <BaseToggle
         title="Apply Threshold"
-        value={anchor.cvApplyThreshold}
+        value={anchorState.cvApplyThreshold}
         callback={setApplyThreshold}
       />
       <BaseSlider
-        title={`Threshold: ${anchor.cvThreshold}`}
+        title={`Threshold: ${anchorState.cvThreshold}`}
         domain={[0, 255]}
-        defaultValues={[anchor.cvThreshold]}
+        defaultValues={[anchorState.cvThreshold]}
         ticksNumber={10}
         callback={setThreshold}
         slideCallback={setThreshold}
       />
       <BaseSlider
-        title={`Delay: ${anchor.cvDelay}ms`}
-        domain={[1, 500]}
-        defaultValues={[anchor.cvDelay]}
+        title={`Delay: ${anchorState.cvDelay}ms`}
+        domain={[50, 500]}
+        step={10}
+        defaultValues={[anchorState.cvDelay]}
         ticksNumber={10}
         callback={setDelay}
         slideCallback={setDelay}

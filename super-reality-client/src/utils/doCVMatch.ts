@@ -104,6 +104,7 @@ export default function doCvMatch(
   sourceElement: string | HTMLVideoElement,
   options: Partial<AppState["settings"]["cv"]>
 ): Promise<CVResult> {
+  const beginTime = new Date().getTime();
   // Feed default settings from redux store + passed settings
   const opt: AppState["settings"]["cv"] = {
     ...store.getState().settings.cv,
@@ -225,6 +226,7 @@ export default function doCvMatch(
               );
             }
             const ret: CVResult = {
+              time: new Date().getTime() - beginTime,
               dist: bestDist,
               sizeFactor: 0,
               x: Math.round(xScale * bestPoint.x),
