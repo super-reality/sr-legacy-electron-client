@@ -27,6 +27,7 @@ import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import CvComponents from "../CvComponents";
+import LessonPlayer from "../lesson-player";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -78,7 +79,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
-  const { currentAnchor, anchorTestView } = useSelector(
+  const { currentAnchor, anchorTestView, stepPreview } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
@@ -156,6 +157,7 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
+      {stepPreview && <LessonPlayer onFinish={setSolid} />}
     </div>
   ) : (
     <div className="solid-container">
@@ -167,7 +169,7 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson />
+            <Lesson setTransparent={setTransparent} />
           </div>
           {currentAnchor !== undefined ? (
             <div

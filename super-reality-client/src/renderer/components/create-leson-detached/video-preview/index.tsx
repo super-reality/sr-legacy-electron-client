@@ -6,6 +6,8 @@ import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../lesson-utils/updateItem";
+import FindBox from "../../lesson-player/find-box";
+import ImageBox from "../../lesson-player/image.box";
 
 const cursorChecker: any = (
   action: any,
@@ -114,6 +116,33 @@ export default function VideoPreview(): JSX.Element {
     return () => {};
   }, [item, width, height, dispatcher]);
 
+  let subType = "";
+  if (item && item.type == "focus_highlight") {
+    if (item.focus == "Area highlight") subType = "target";
+    if (item.focus == "Mouse Point") subType = "mouse";
+    if (item.focus == "Rectangle") subType = "rectangle";
+  }
+
+  const pos = useMemo(() => {
+    return {
+      x: 0,
+      y: 0,
+      width: itemWidth,
+      height: itemHeight,
+    };
+  }, [item]);
+
+  const style = useMemo(() => {
+    return {
+      left: `calc((100% - ${itemWidth}px) / 100 * ${
+        item?.relativePos.horizontal || 0
+      })`,
+      top: `calc((100% - ${itemHeight}px) / 100 * ${
+        item?.relativePos.vertical || 0
+      })`,
+    };
+  }, [item]);
+
   return (
     <div ref={containerRef} className="video-preview-container">
       {!currentRecording && (
@@ -131,19 +160,16 @@ export default function VideoPreview(): JSX.Element {
         ref={vertPos}
         className="vertical-pos"
       />
-      {item && drawItemAbsolute ? (
-        <div
+      {item && drawItemAbsolute && item.type == "focus_highlight" && (
+        <FindBox ref={dragContainer} pos={pos} style={style} type="target" />
+      )}
+      {item && drawItemAbsolute && item.type == "image" && (
+        <ImageBox
           ref={dragContainer}
-          className={`item-${item.type}`}
-          style={{
-            left: `calc((100% - ${itemWidth}px) / 100 * ${item.relativePos.horizontal})`,
-            top: `calc((100% - ${itemHeight}px) / 100 * ${item.relativePos.vertical})`,
-            width: itemWidth,
-            height: itemHeight,
-          }}
+          pos={pos}
+          style={style}
+          image={item.url}
         />
-      ) : (
-        <></>
       )}
     </div>
   );

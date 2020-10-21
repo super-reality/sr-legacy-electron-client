@@ -28,6 +28,7 @@ const initialState = {
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
   anchorTestView: false as boolean,
+  stepPreview: false as boolean,
 };
 
 type InitialState = typeof initialState;

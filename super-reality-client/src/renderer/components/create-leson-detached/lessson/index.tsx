@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Flex from "../../flex";
 import "../../containers.scss";
 import "./index.scss";
@@ -16,15 +16,30 @@ import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
+import reduxAction from "../../../redux/reduxAction";
 
 type Sections = "Lessons" | "Info";
 const sections: Sections[] = ["Lessons", "Info"];
 
-export default function Lesson(): JSX.Element {
+interface LessonProps {
+  setTransparent: () => void;
+}
+
+export default function Lesson(props: LessonProps): JSX.Element {
+  const dispatch = useDispatch();
+  const { setTransparent } = props;
   const [view, setView] = useState<Sections>(sections[0]);
   const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+
+  const doPreviewOne = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { stepPreview: true },
+    });
+    setTransparent();
+  }, [dispatch, setTransparent]);
 
   return (
     <>
@@ -56,6 +71,14 @@ export default function Lesson(): JSX.Element {
             height="36px"
             iconFill="var(--color-green)"
             onClick={() => {}}
+            svg={ButtonPlay}
+            style={{ marginRight: "8px" }}
+          />
+          <ButtonRound
+            width="36px"
+            height="36px"
+            iconFill="var(--color-green)"
+            onClick={doPreviewOne}
             svg={ButtonPlay}
             style={{ marginRight: "8px" }}
           />

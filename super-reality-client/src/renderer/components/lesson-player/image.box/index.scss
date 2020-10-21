@@ -1,0 +1,12 @@
+@import "../index.scss";
+
+.image-box {
+  @include item-base;
+
+  img {
+    max-width: calc(100% - 16px);
+    max-height: calc(100% - 16px);
+    display: block;
+    margin: auto;
+  }
+}

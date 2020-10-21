@@ -7,7 +7,7 @@ import Windowlet from "../windowlet";
 import Flex from "../../flex";
 import AnchorEditSliders from "../anchor-edit-sliders";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import FindBox from "../find-box";
+import FindBox from "../../lesson-player/find-box";
 import ipcSend from "../../../../utils/ipcSend";
 import getArrrayAverage from "../../../../utils/getArrayAverage";
 
@@ -83,7 +83,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
 
   return (
     <>
-      {previewPos && <FindBox pos={previewPos} />}
+      {previewPos && <FindBox type="anchor" pos={previewPos} />}
       <Windowlet title="Super Reality" width={300} height={300} onClose={done}>
         <div className="anchor-tester-container">
           <Flex style={{ marginTop: "16px", justifyContent: "center" }}>

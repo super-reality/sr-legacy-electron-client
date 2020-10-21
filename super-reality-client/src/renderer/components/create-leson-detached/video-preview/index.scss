@@ -1,4 +1,6 @@
 @import "../../misc.scss";
+@import "../../lesson-player/index.scss";
+@import "../../lesson-player/find-box/index.scss";
 
 .video-preview-container {
   width: 100%;
@@ -32,32 +34,20 @@
     position: inherit;
   }
 
-  @mixin item-base {
-    background-color: var(--color-section);
-    width: inherit;
-    height: inherit;
-    position: absolute;
-    touch-action: none;
-    left: 0px;
-    top: 0px;
-  }
-
   .item-image {
     @include item-base;
   }
 
   .item-video {
     @include item-base;
-
   }
 
   .item-focus_highlight {
     @include item-base;
-
+    @include find-boxes;
   }
 
   .item-audio {
     @include item-base;
-
   }
 }

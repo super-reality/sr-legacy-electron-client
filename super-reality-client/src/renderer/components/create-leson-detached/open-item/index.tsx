@@ -22,6 +22,7 @@ import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
 import ModalList from "../modal-list";
 import updateItem from "../lesson-utils/updateItem";
+import SetttingsFocusHighlight from "./setttings-focus-highlight";
 
 interface OpenItemProps {
   id: string;
@@ -42,6 +43,7 @@ export default function OpenItem(props: OpenItemProps) {
     id,
     treeItems,
   ]);
+
   let triggers: Record<string, number | null> = { None: null };
   if (item) {
     switch (item.type) {
@@ -65,28 +67,16 @@ export default function OpenItem(props: OpenItemProps) {
     }
   }
 
-  const setTrigger = useCallback(
-    (value: number | null) => {
-      const update = { ...treeItems[id], trigger: value };
+  const doUpdate = useCallback(
+    <T extends Item>(data: Partial<T>) => {
+      const updatedItem = { ...treeItems[id], ...data };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
-        arg: { item: update },
+        arg: { item: updatedItem },
       });
-      updateItem(update, id);
+      updateItem(updatedItem, id);
     },
-    [id, dispatch]
-  );
-
-  const setAnchor = useCallback(
-    (value: string | null) => {
-      const update = { ...treeItems[id], anchor: value };
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETITEM",
-        arg: { item: update },
-      });
-      updateItem(update, id);
-    },
-    [id, dispatch]
+    [id, treeItems]
   );
 
   const callback = useCallback(
@@ -132,7 +122,9 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        {view === "Settings" && <Flex column />}
+        {view === "Settings" && item.type == "focus_highlight" && (
+          <SetttingsFocusHighlight item={item} update={doUpdate} />
+        )}
         {view === "Anchor" && (
           <>
             <Flex
@@ -143,7 +135,7 @@ export default function OpenItem(props: OpenItemProps) {
                 options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
                 current={item?.anchor || ""}
                 selected={currentAnchor || ""}
-                setCurrent={setAnchor}
+                setCurrent={(val) => doUpdate({ anchor: val })}
                 open={openAnchor}
               />
             </Flex>
@@ -165,7 +157,7 @@ export default function OpenItem(props: OpenItemProps) {
               current={item.trigger}
               options={Object.values(triggers)}
               optionFormatter={constantFormat(triggers)}
-              callback={setTrigger}
+              callback={(val) => doUpdate({ trigger: val })}
             />
           </Flex>
         )}
