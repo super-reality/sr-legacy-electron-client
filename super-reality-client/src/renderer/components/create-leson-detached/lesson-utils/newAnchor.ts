@@ -1,6 +1,5 @@
 import Axios from "axios";
 import handleAnchorCreate from "../../../api/handleAnchorCreate";
-import handleStepCreate from "../../../api/handleStepCreate";
 import { ApiError } from "../../../api/types";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import AnchorCreate from "../../../api/types/anchor/create";

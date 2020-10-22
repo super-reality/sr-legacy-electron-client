@@ -5,7 +5,7 @@ export default function apiErrorHandler<T extends ApiSucess>(
   res: AxiosResponse<T | ApiError>
 ): Promise<T> {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
+    if (res.status == 200 || res.status == 201) {
       if (res.data.err_code == 0) {
         resolve(res.data);
       } else {
