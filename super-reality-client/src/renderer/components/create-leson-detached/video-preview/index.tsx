@@ -8,22 +8,7 @@ import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../lesson-utils/updateItem";
 import FindBox from "../../lesson-player/find-box";
 import ImageBox from "../../lesson-player/image.box";
-
-const cursorChecker: any = (
-  action: any,
-  _interactable: any,
-  _element: any,
-  interacting: boolean
-): string => {
-  switch (action.axis) {
-    case "x":
-      return "ew-resize";
-    case "y":
-      return "ns-resize";
-    default:
-      return interacting ? "grabbing" : "grab";
-  }
-};
+import { cursorChecker } from "../../../constants";
 
 export default function VideoPreview(): JSX.Element {
   const {

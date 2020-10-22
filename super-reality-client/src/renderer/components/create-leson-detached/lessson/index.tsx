@@ -5,9 +5,10 @@ import "../../containers.scss";
 import "./index.scss";
 import ButtonRound from "../../button-round";
 import LessonTree from "../lesson-tree";
-import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev.svg";
-import { ReactComponent as ButtonNext } from "../../../../assets/svg/next.svg";
+import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev-step.svg";
+import { ReactComponent as ButtonNext } from "../../../../assets/svg/next-step.svg";
 import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
+
 import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.svg";
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
@@ -34,6 +35,17 @@ export default function Lesson(props: LessonProps): JSX.Element {
   );
 
   const doPreviewOne = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        stepPreview: treeCurrentType == "step",
+        itemPreview: treeCurrentType == "item",
+      },
+    });
+    setTransparent();
+  }, [dispatch, treeCurrentType, setTransparent]);
+
+  const doPreview = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: { stepPreview: true },
@@ -69,15 +81,15 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <ButtonRound
             width="36px"
             height="36px"
-            iconFill="var(--color-green)"
             onClick={() => {}}
-            svg={ButtonPlay}
+            svg={ButtonNext}
             style={{ marginRight: "8px" }}
           />
           <ButtonRound
             width="36px"
             height="36px"
-            iconFill="var(--color-green)"
+            disabled={treeCurrentType !== "step" && treeCurrentType !== "item"}
+            iconFill="var(--color-red)"
             onClick={doPreviewOne}
             svg={ButtonPlay}
             style={{ marginRight: "8px" }}
@@ -85,8 +97,9 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <ButtonRound
             width="36px"
             height="36px"
-            onClick={() => {}}
-            svg={ButtonNext}
+            iconFill="var(--color-green)"
+            onClick={doPreview}
+            svg={ButtonPlay}
             style={{ marginRight: "8px" }}
           />
           <ButtonRound

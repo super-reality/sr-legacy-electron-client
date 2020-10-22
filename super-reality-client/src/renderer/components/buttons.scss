@@ -32,10 +32,11 @@
     margin: auto;
   }
 
-  &:hover {
+  &:hover:not(.disabled) {
     background-color: var(--color-button-hover);
   }
-  &:active {
+
+  &:active:not(.disabled) {
     opacity: 0.5;
   }
 }

@@ -79,9 +79,12 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
-  const { currentAnchor, anchorTestView, stepPreview } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    currentAnchor,
+    anchorTestView,
+    stepPreview,
+    itemPreview,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
@@ -157,7 +160,7 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
-      {stepPreview && <LessonPlayer onFinish={setSolid} />}
+      {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
     </div>
   ) : (
     <div className="solid-container">
