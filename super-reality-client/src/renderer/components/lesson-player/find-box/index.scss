@@ -4,14 +4,14 @@
     border: dotted var(--color-red) 3px;
   }
 
-  &.target {
+  &.area {
     background-color: #47a3ff17;
     border: dotted var(--color-blue) 3px;
   }
 
   &.mouse {
-    background-color: #47a3ff17;
-    border: dotted var(--color-blue) 3px;
+    background-color: #ff814717;
+    border: dotted #ff8147 3px;
   }
 
   &.rectangle {

@@ -11,8 +11,8 @@ import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
 import { cursorChecker, restrictMinSize } from "../../../constants";
-import ipcSend from "../../../../utils/ipcSend";
 import reduxAction from "../../../redux/reduxAction";
+import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 
 export default function ItemPreview() {
   const dispatch = useDispatch();
@@ -36,43 +36,18 @@ export default function ItemPreview() {
   // If the item does not have an anchor it should draw in abolsute position
   const drawItemAbsolute = item?.anchor === null;
 
-  const itemWidth = 400;
-  const itemHeight = 300;
-
-  const updateCv = useCallback(() => {
-    if (anchor) {
-      ipcSend({
-        method: "cv",
-        arg: {
-          ...anchor,
-          cvMatchValue: 0,
-          cvTemplates: anchor.templates,
-          cvTo: "LESSON_CREATE",
-        },
-        to: "background",
-      });
-    }
-  }, [anchor]);
-
-  useEffect(() => {
-    const interval = setInterval(updateCv, 1000);
-    return () => clearInterval(interval);
-  }, [updateCv]);
-
   const updatePos = useCallback(() => {
     const newPos = {
       x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
       y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
-      width: anchor ? cvResult.width : itemWidth,
-      height: anchor ? cvResult.height : itemHeight,
+      width: item?.relativePos.width || 100,
+      height: item?.relativePos.height || 100,
     };
     setPos(newPos);
   }, [anchor, cvResult, item]);
 
   useEffect(() => {
-    if (!dragging.current) {
-      updatePos();
-    }
+    updatePos();
   }, [cvResult, updatePos]);
 
   useEffect(() => {
@@ -85,11 +60,12 @@ export default function ItemPreview() {
           inertia: true,
         } as any)
         .on("resizemove", (event) => {
-          dragging.current = true;
           const { target } = event;
           const x = parseFloat(target.style.left) + event.deltaRect.left;
           const y = parseFloat(target.style.top) + event.deltaRect.top;
           // fix for interact.js adding 4px to height/width on resize
+          startPos.width = event.rect.width - 4;
+          startPos.height = event.rect.height - 4;
           target.style.width = `${event.rect.width - 4}px`;
           target.style.height = `${event.rect.height - 4}px`;
           target.style.left = `${x}px`;
@@ -105,15 +81,13 @@ export default function ItemPreview() {
         })
         .on("dragmove", (event) => {
           if (dragContainer.current) {
-            dragging.current = true;
             startPos.x += event.dx;
             startPos.y += event.dy;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
         })
-        .on("resizeend", (event) => {
-          dragging.current = false;
+        .on("resizeend", () => {
           if (anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
@@ -127,9 +101,9 @@ export default function ItemPreview() {
               },
             },
           });
+          updateItem({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
-          dragging.current = false;
           if (anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
@@ -143,6 +117,7 @@ export default function ItemPreview() {
               },
             },
           });
+          updateItem({ ...item, relativePos: startPos }, item._id);
         });
 
       return (): void => {
@@ -156,7 +131,7 @@ export default function ItemPreview() {
     <>
       {anchor && cvResult && <FindBox type="anchor" pos={cvResult} />}
       {item && item.type == "focus_highlight" && (
-        <FindBox ref={dragContainer} pos={pos} type="target" />
+        <FindBox ref={dragContainer} pos={pos} type={item.focus} />
       )}
       {item && item.type == "image" && (
         <ImageBox ref={dragContainer} pos={pos} image={item.url} />

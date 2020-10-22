@@ -24,7 +24,7 @@ export default function SetttingsFocusHighlight(
         style={item.focus == "Area highlight" ? styleSelected : {}}
         onClick={() => update({ focus: "Area highlight" })}
       >
-        <div className="example-box target" />
+        <div className="example-box area" />
       </ButtonSimple>
       <ButtonSimple
         width="48px"

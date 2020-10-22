@@ -38,6 +38,8 @@ export interface IAbsolutePos {
   horizontal?: number; // In % of screen, not used for anchors
   x: number;
   y: number;
+  width: number;
+  height: number;
 }
 
 export type BaseItemType =

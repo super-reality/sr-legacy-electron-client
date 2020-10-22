@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties } from "react";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+import { ItemFocus } from "../../../api/types/item/item";
 import "./index.scss";
 
 export type FindBoxType = "anchor" | "target";
@@ -13,19 +14,24 @@ interface FindBoxProps {
     height: number;
   };
   style?: CSSProperties;
-  type: FindBoxType;
+  type: ItemFocus["focus"] | "anchor";
   ref?: React.RefObject<HTMLDivElement>;
 }
 
 const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
   (props, forwardedRef) => {
     const { type, pos, style } = props;
-    console.log(pos);
+
+    let computedType = "type";
+    if (type == "anchor") computedType = "anchor";
+    if (type == "Mouse Point") computedType = "mouse";
+    if (type == "Rectangle") computedType = "rectangle";
+    if (type == "Area highlight") computedType = "area";
 
     return (
       <div
         ref={forwardedRef}
-        className={`find-box ${type}`}
+        className={`find-box ${computedType}`}
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,

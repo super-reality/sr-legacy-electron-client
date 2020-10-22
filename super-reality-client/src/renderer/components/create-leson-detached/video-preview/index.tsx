@@ -37,13 +37,12 @@ export default function VideoPreview(): JSX.Element {
   // If the item does not have an anchor it should draw in abolsute position
   const drawItemAbsolute = item?.anchor === null;
 
-  const itemWidth = 400;
-  const itemHeight = 300;
-
   useEffect(() => {
     if (dragContainer.current && item) {
       let startX = item.relativePos.horizontal;
       let startY = item.relativePos.vertical;
+      const startW = item.relativePos.width;
+      const startH = item.relativePos.height;
       interact(dragContainer.current)
         .draggable({
           cursorChecker,
@@ -55,23 +54,23 @@ export default function VideoPreview(): JSX.Element {
         })
         .on("dragmove", (event) => {
           if (dragContainer.current) {
-            startX = (startX || 0) + (100 / (width - itemWidth)) * event.dx;
-            startY = (startY || 0) + (100 / (height - itemHeight)) * event.dy;
+            startX = (startX || 0) + (100 / (width - startW)) * event.dx;
+            startY = (startY || 0) + (100 / (height - startH)) * event.dy;
             startX = Math.min(Math.max(startX, 0), 100);
             startY = Math.min(Math.max(startY, 0), 100);
-            dragContainer.current.style.left = `calc((100% - ${itemWidth}px) / 100 * ${startX})`;
-            dragContainer.current.style.top = `calc((100% - ${itemHeight}px) / 100 * ${startY})`;
+            dragContainer.current.style.left = `calc((100% - ${startW}px) / 100 * ${startX})`;
+            dragContainer.current.style.top = `calc((100% - ${startH}px) / 100 * ${startY})`;
 
             if (horPor.current) {
               horPor.current.style.display = "block";
-              horPor.current.style.top = `calc((100% - ${itemHeight}px) / 100 * ${startY} + ${
-                itemHeight / 2
+              horPor.current.style.top = `calc((100% - ${startH}px) / 100 * ${startY} + ${
+                startH / 2
               }px)`;
             }
             if (vertPos.current) {
               vertPos.current.style.display = "block";
-              vertPos.current.style.left = `calc((100% - ${itemWidth}px) / 100 * ${startX} + ${
-                itemWidth / 2
+              vertPos.current.style.left = `calc((100% - ${startW}px) / 100 * ${startX} + ${
+                startW / 2
               }px)`;
             }
           }
@@ -112,17 +111,17 @@ export default function VideoPreview(): JSX.Element {
     return {
       x: 0,
       y: 0,
-      width: itemWidth,
-      height: itemHeight,
+      width: item?.relativePos.width || 100,
+      height: item?.relativePos.height || 100,
     };
   }, [item]);
 
   const style = useMemo(() => {
     return {
-      left: `calc((100% - ${itemWidth}px) / 100 * ${
+      left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
         item?.relativePos.horizontal || 0
       })`,
-      top: `calc((100% - ${itemHeight}px) / 100 * ${
+      top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
         item?.relativePos.vertical || 0
       })`,
     };
@@ -146,7 +145,12 @@ export default function VideoPreview(): JSX.Element {
         className="vertical-pos"
       />
       {item && drawItemAbsolute && item.type == "focus_highlight" && (
-        <FindBox ref={dragContainer} pos={pos} style={style} type="target" />
+        <FindBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          type="Area highlight"
+        />
       )}
       {item && drawItemAbsolute && item.type == "image" && (
         <ImageBox

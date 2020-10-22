@@ -1,7 +1,9 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
+import ButtonSimple from "../button-simple";
 import Windowlet from "../create-leson-detached/windowlet";
 import Flex from "../flex";
 import ItemPreview from "./item-preview";
@@ -13,9 +15,21 @@ interface LessonPlayerProps {
 export default function LessonPlayer(props: LessonPlayerProps) {
   const { onFinish } = props;
   const dispatch = useDispatch();
-  const { stepPreview, itemPreview, lessonPreview } = useSelector(
+  const { currentAnchor, currentItem, treeItems, treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+  const { itemPreview } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+
+  const item = useMemo(
+    () => (currentItem ? treeItems[currentItem] : undefined),
+    [currentItem, treeItems]
+  );
+
+  // Get item's anchor or just the one in use
+  const anchorId = item?.anchor || currentAnchor;
+  const anchor = anchorId ? treeAnchors[anchorId] : undefined;
 
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
@@ -24,6 +38,21 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     });
     onFinish();
   }, [dispatch, onFinish]);
+
+  const updateCv = useCallback(() => {
+    if (anchor) {
+      ipcSend({
+        method: "cv",
+        arg: {
+          ...anchor,
+          cvMatchValue: 0,
+          cvTemplates: anchor.templates,
+          cvTo: "LESSON_CREATE",
+        },
+        to: "background",
+      });
+    }
+  }, [anchor]);
 
   return (
     <>
@@ -35,7 +64,14 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onClose={clearPreviews}
       >
         <Flex column style={{ height: "100%" }}>
-          Playing lesson
+          <ButtonSimple
+            width="200px"
+            height="24px"
+            margin="auto"
+            onClick={updateCv}
+          >
+            Find Anchor
+          </ButtonSimple>
         </Flex>
       </Windowlet>
     </>
