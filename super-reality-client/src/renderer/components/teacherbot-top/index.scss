@@ -2,14 +2,14 @@
 
 .teacher-bot-top {
   cursor: pointer;
-  width: -webkit-fill-available;
+  /*width: -webkit-fill-available;*/
   justify-content: center;
   align-items: center;
   overflow: hidden;
   height: 24px;
-  background-color: var(--color-green);
-  border-radius: 6px;
-  margin: auto;
+  background-color: var(--color-blue-new);
+  border-radius: 6px 6px 0px 0px;
+  margin: auto 1vw 0px 1vw;
   display: flex;
   @include disable-select;
 

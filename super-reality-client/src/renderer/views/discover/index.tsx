@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.scss";
 import "../../components/containers.scss";
 import { useRouteMatch } from "react-router-dom";
@@ -8,6 +8,13 @@ import DiscoverFinder from "../../components/discover-finder";
 import CollectionActive from "../../components/collection-active";
 import SubjectActive from "../../components/subject-active";
 import LessonActive from "../../components/lesson-active";
+import { Tabs, TabsContainer } from "../../components/tabs";
+import Test from "../test";
+import Collection from "../../components/collection"
+import { mockCollections } from "../../../mocks"
+import { ContainerBottom, ContainerFlex, ContainerTop, ItemInner, Title, Image } from "../../components/item-inner";
+import ContainerBasic from "../../components/base/base-container"
+import ButtonSimple from "../../components/button-simple";
 
 export default function Discover(): JSX.Element {
   const catMatch = useRouteMatch<{
@@ -34,92 +41,109 @@ export default function Discover(): JSX.Element {
     );
   }
 
+
+  // My code Denis
+
+
+  // Test Array
+  type TestSections = "All" | "Jobs" | "Track"
+  const testArray: Array<TestSections> = ["All", "Jobs", "Track"]
+  enum TestEnum {
+    All,
+    Jobs,
+    Track
+  }
+
+  const ContentArray = ["content All", "content jobs", "content tracks"]
+  // console.log(TestEnum.All)
+  // Test state
+  const [currentCollection, setCurrentCollection] = useState(testArray[TestEnum.All])
   return (
     <>
-      {current == Category.Lesson || current == Category.All ? (
-        <Collapsible outer expanded={current !== Category.All} title="Lessons">
-          <DiscoverFinder category={Category.Lesson} />
-        </Collapsible>
-      ) : (
-        <></>
-      )}
-      {current == Category.Subject || current == Category.All ? (
-        <Collapsible outer expanded={current !== Category.All} title="Subjects">
-          <DiscoverFinder category={Category.Subject} />
-        </Collapsible>
-      ) : (
-        <></>
-      )}
-      {current == Category.Collection || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Collections"
-        >
-          <DiscoverFinder category={Category.Collection} />
-        </Collapsible>
-      ) : (
-        <></>
-      )}
-      {current == Category.Organization || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Organizations"
-        />
-      ) : (
-        <></>
-      )}
-      {current == Category.Teacher || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Teachers"
-        />
-      ) : (
-        <></>
-      )}
-      {current == Category.Student || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Students"
-        />
-      ) : (
-        <></>
-      )}
-      {current == Category.Project || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Projects"
-        />
-      ) : (
-        <></>
-      )}
-      {current == Category.Task || current == Category.All ? (
-        <Collapsible outer expanded={current !== Category.All} title="Tasks" />
-      ) : (
-        <></>
-      )}
-      {current == Category.Resource || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Resources"
-        />
-      ) : (
-        <></>
-      )}
-      {current == Category.Portfolio || current == Category.All ? (
-        <Collapsible
-          outer
-          expanded={current !== Category.All}
-          title="Portfolios"
-        />
-      ) : (
-        <></>
-      )}
+      <Tabs
+        buttons={testArray}
+        initial={currentCollection}
+        callback={setCurrentCollection}
+      />
+      <TabsContainer style={{ width: "fit-content" }}>
+        {ContentArray.map((item, indexF) => {
+          return (
+            <ContainerBasic key={item} style={{}}>
+              <ButtonSimple onClick={() => { console.log("Jobs") }} style={{width: "20vw"}}>
+                {`Collection_${indexF}`}
+              </ButtonSimple>
+
+              <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
+                {ContentArray.map((itemM, index) => {
+                  return (
+                    <ItemInner key={itemM} style={{
+                      display:"block"
+                     }}>
+                      <ContainerFlex style={{width: "50vw"}}>
+                        <Image
+                          src="https://www.cambridgeconsultants.com/sites/default/files/uploaded-images/Hero_Blog_VR-is-ready.jpg" />
+                      </ContainerFlex>
+                     
+                        <Title title={`Collection Item ${index}`} />
+                     
+                    </ItemInner>
+                  )
+                })}
+              </ContainerFlex>
+
+            </ContainerBasic>
+          )
+        })}
+
+
+      </TabsContainer>
     </>
   );
 }
+
+/*
+<ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
+          <ItemInner>
+            <ContainerTop>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerTop>
+            <ContainerFlex>
+              <Image
+
+                src="https://www.cambridgeconsultants.com/sites/default/files/uploaded-images/Hero_Blog_VR-is-ready.jpg" />
+            </ContainerFlex>
+            <ContainerBottom>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerBottom>
+          </ItemInner>
+          <ItemInner>
+            <ContainerTop>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerTop>
+            <ContainerFlex>
+              <Image
+
+                src="https://www.cambridgeconsultants.com/sites/default/files/uploaded-images/Hero_Blog_VR-is-ready.jpg" />
+            </ContainerFlex>
+            <ContainerBottom>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerBottom>
+          </ItemInner>
+          <ItemInner>
+            <ContainerTop>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerTop>
+            <ContainerFlex>
+              <Image
+
+                src="https://blog.dataart.com/wp-content/uploads/2013/12/21.png" />
+            </ContainerFlex>
+            <ContainerBottom>
+              <Title title={ContentArray[TestEnum.All]} />
+            </ContainerBottom>
+          </ItemInner>
+        </ContainerFlex>
+
+{ContentArray[TestEnum[currentCollection]]}
+        <Collection data={mockCollections[TestEnum[currentCollection]]} />
+*/

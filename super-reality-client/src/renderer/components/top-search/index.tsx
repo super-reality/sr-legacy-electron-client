@@ -23,6 +23,8 @@ import Category from "../../../types/collections";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import TeacherBotTop from "../teacherbot-top";
 import isElectron from "../../../utils/isElectron";
+import { Tabs, TabsContainer } from "../tabs";
+import { ContainerFlex, Image } from "../item-inner";
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -101,61 +103,51 @@ export default function TopSearch(): JSX.Element {
     history.push("/profile");
   };
 
-  // Dropdowns
-  const [openDropdown, setOpenDropdown] = useState<tabNames | null>(null);
-
-  const onSelect = useCallback(
-    (route: string, selected: string | Category) => {
-      if (openDropdown) {
-        history.push(`/${route}/${selected}`);
-        setOpenDropdown(null);
-      }
-    },
-    [openDropdown]
-  );
-
-  const [SelectDropdown, dropdownRef] = useSelectHeader(
-    openDropdown,
-    onSelect,
-    dropdownContainerRef
-  );
-
-  const closeDropdown = useCallback(() => {
-    if (openDropdown) {
-      setOpenDropdown(null);
-    }
-  }, [openDropdown]);
-
-  useOutsideClick(dropdownRef, closeDropdown);
+  // 
 
   return (
-    <div className="top-search-container">
-      <div className="title" />
+    <div className="">
+      
       <div className="top">
-        {isElectron() ? (
-          <ButtonRound
-            onClick={backClick}
-            svg={BackIcon}
-            height="24px"
-            width="24px"
-            style={{ margin: "auto" }}
-          />
-        ) : (
-          <div />
-        )}
-        <Flex>
-          <div className="top-input-container">
-            <input
-              className="top-input"
-              onChange={onInputchange}
-              value={currentInputValue}
-            />
-            <div className="top-input-icon">
-              <SearchIcon width="16px" height="16px" fill="var(--color-icon)" />
-            </div>
-          </div>
-        </Flex>
+        <ContainerFlex style={{display:"flex", flexDirection:"row"}}>
+        <Tabs
+          buttons={["Super Reality", "My Reality"]}
+          initial="Super Reality"
+          style={{}}
+          callback={(str:string): void=>{console.log(str)}}
+        />
         <TeacherBotTop />
+        </ContainerFlex>
+        
+          <TabsContainer>
+            <ContainerFlex>
+            <div className="top-input-container">
+                <input
+                  className="top-input"
+                  onChange={onInputchange}
+                  value={currentInputValue}
+                />
+                <div className="top-input-icon">
+                  <SearchIcon width="16px" height="16px" fill="var(--color-icon)" />
+                </div>
+              </div>
+            </ContainerFlex>
+            <ContainerFlex>
+              <Image
+              src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
+              />
+            </ContainerFlex>
+          </TabsContainer>
+       
+      </div>
+
+
+    </div>
+  );
+}
+
+/*
+<TeacherBotTop />
         <ButtonRound
           onClick={() => {
             openProfile();
@@ -175,28 +167,4 @@ export default function TopSearch(): JSX.Element {
           height="24px"
           width="24px"
         />
-      </div>
-      <div className="bottom" ref={dropdownContainerRef}>
-        {topNavButtons.map((b) => (
-          <TopNavItem
-            onClick={() => {
-              setOpenDropdown(openDropdown !== b[1] ? b[1] : null);
-              playSound("./sounds/top-menu.wav");
-            }}
-            key={b[0]}
-            style={{
-              backgroundColor:
-                openDropdown == b[1] || mainMatch?.params.any == b[0]
-                  ? "var(--color-background)"
-                  : "",
-              color:
-                mainMatch?.params.any == b[0] ? "var(--color-text-active)" : "",
-            }}
-            title={b[1]}
-          />
-        ))}
-      </div>
-      {openDropdown ? <SelectDropdown /> : <></>}
-    </div>
-  );
-}
+*/
