@@ -18,6 +18,7 @@ import {
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
+import { IAbsolutePos } from "../../../api/types/item/item";
 
 export default function ItemPreview() {
   const dispatch = useDispatch();
@@ -26,7 +27,12 @@ export default function ItemPreview() {
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [pos, setPos] = useState<IAbsolutePos>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const [style, setStyle] = useState<CSSProperties>({});
 
   const item = useMemo(
@@ -81,10 +87,11 @@ export default function ItemPreview() {
           const x = parseFloat(target.style.left) + event.deltaRect.left;
           const y = parseFloat(target.style.top) + event.deltaRect.top;
           // fix for interact.js adding 4px to height/width on resize
-          startPos.width = event.rect.width - 4;
-          startPos.height = event.rect.height - 4;
-          target.style.width = `${event.rect.width - 4}px`;
-          target.style.height = `${event.rect.height - 4}px`;
+          const edge = item.type == "focus_highlight" ? 4 : 0;
+          startPos.width = event.rect.width - edge;
+          startPos.height = event.rect.height - edge;
+          target.style.width = `${event.rect.width - edge}px`;
+          target.style.height = `${event.rect.height - edge}px`;
           target.style.left = `${x}px`;
           target.style.top = `${y}px`;
         })
@@ -124,6 +131,9 @@ export default function ItemPreview() {
           if (anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
+          } else {
+            startPos.horizontal = (100 / window.screen.width) * startPos.x;
+            startPos.vertical = (100 / window.screen.height) * startPos.y;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",

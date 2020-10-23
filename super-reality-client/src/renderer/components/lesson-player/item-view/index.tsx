@@ -32,10 +32,16 @@ export default function ItemView(props: ItemViewProps) {
     };
     setPos(newPos);
 
-    const newStyle = {
-      left: anchor ? undefined : `${item.relativePos.horizontal}%`,
-      top: anchor ? undefined : `${item.relativePos.vertical}%`,
-    };
+    const newStyle = anchor
+      ? {
+          left: `calc((100% - ${
+            item?.relativePos.width
+          }px) / 100 * ${Math.round(item?.relativePos.horizontal || 0)})`,
+          top: `calc((100% - ${
+            item?.relativePos.height
+          }px) / 100 * ${Math.round(item?.relativePos.vertical || 0)})`,
+        }
+      : {};
     setStyle(newStyle);
   }, [anchor, cvResult, item]);
 
