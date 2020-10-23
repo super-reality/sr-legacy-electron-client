@@ -31,8 +31,10 @@ export default function VideoPreview(): JSX.Element {
   );
 
   // Get item's anchor or just the one in use
-  const anchorId = item?.anchor || currentAnchor;
-  const anchor = anchorId ? treeAnchors[anchorId] : undefined;
+  const anchor = useMemo(() => {
+    const anchorId = item?.anchor || currentAnchor;
+    return anchorId ? treeAnchors[anchorId] : undefined;
+  }, [item, currentAnchor, treeAnchors]);
 
   // If the item does not have an anchor it should draw in abolsute position
   const drawItemAbsolute = item?.anchor === null;

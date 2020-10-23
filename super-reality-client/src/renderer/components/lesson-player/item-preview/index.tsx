@@ -41,8 +41,10 @@ export default function ItemPreview() {
   );
 
   // Get item's anchor or just the one in use
-  const anchorId = item?.anchor || currentAnchor;
-  const anchor = anchorId ? treeAnchors[anchorId] : undefined;
+  const anchor = useMemo(() => {
+    const anchorId = item?.anchor || currentAnchor;
+    return anchorId ? treeAnchors[anchorId] : undefined;
+  }, [item, currentAnchor, treeAnchors]);
 
   // If the item does not have an anchor it should draw in abolsute position
   const drawItemAbsolute = item?.anchor === null;
@@ -56,16 +58,16 @@ export default function ItemPreview() {
     };
     setPos(newPos);
 
-    const newStyle = !anchor
-      ? {
+    const newStyle = item?.anchor
+      ? {}
+      : {
           left: `calc((100% - ${
             item?.relativePos.width
           }px) / 100 * ${Math.round(item?.relativePos.horizontal || 0)})`,
           top: `calc((100% - ${
             item?.relativePos.height
           }px) / 100 * ${Math.round(item?.relativePos.vertical || 0)})`,
-        }
-      : {};
+        };
     setStyle(newStyle);
   }, [anchor, cvResult, item]);
 
@@ -112,7 +114,7 @@ export default function ItemPreview() {
           }
         })
         .on("resizeend", () => {
-          if (anchor) {
+          if (item.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
           }
@@ -128,12 +130,14 @@ export default function ItemPreview() {
           updateItem({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
-          if (anchor) {
+          if (item.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
           } else {
-            startPos.horizontal = (100 / window.screen.width) * startPos.x;
-            startPos.vertical = (100 / window.screen.height) * startPos.y;
+            startPos.horizontal =
+              (100 / (window.screen.width - startPos.width)) * startPos.x;
+            startPos.vertical =
+              (100 / (window.screen.height - startPos.height)) * startPos.y;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
