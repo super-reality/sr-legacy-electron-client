@@ -7,7 +7,7 @@ const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
 // eslint-disable-next-line no-undef
-const hbjs = __non_webpack_require__("handbrake-js");
+const {Decoder, Encoder, tools, Reader} = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
@@ -352,54 +352,65 @@ export default class CVRecorder {
     this._clickEventDetails = [];
   }
 
-  convertRawVideoFormat(pathtoRawFile, pathToConvertedFile) {
-    console.log(pathtoRawFile);
-    console.log(pathToConvertedFile);
-    hbjs
-      .spawn({ input: pathtoRawFile, output: pathToConvertedFile })
-      .on("error", (err) => {
-        console.error(err);
-        // invalid user input, no video found etc
-      })
-      // .on("progress", (progress) => {
-      //   console.log(
-      //     "Percent complete: %s, ETA: %s",
-      //     progress.percentComplete,
-      //     progress.eta
-      //   );
-      // })
-      .on("complete", (complete) => {
-        console.log("complete");
-        console.log(pathToConvertedFile);
-        this.extractClickedImages(pathToConvertedFile);
-      });
-  }
 
-  // Saves the video file on stop
-  handleStop(e) {
+   // Saves the video file on stop
+   handleStop(e) {
     const videoBlob = new Blob(this._recordedChunks, {
-      type: "video/webm; codecs=vp9",
+      type: "video/webm\;codecs=vp9",
     });
+    const readAsArrayBuffer = function(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = (ev) => {
+          reject(ev.error);
+        };
+      });
+    }
+    const injectMetadata = function(blob) {
+      const decoder = new Decoder();
+      const reader = new Reader();
+      reader.logging = false;
+      reader.drop_default_duration = false;
 
-    videoBlob.arrayBuffer().then((arrayBuffer) => {
-      const buffer = Buffer.from(arrayBuffer);
-      this._stepRecordingName = `${Date.now()}.webm`;
-      this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
-      this._fileNameAndExtension = this._recordingFullPath.split(".");
-      const pathToConvertedFile = `${this._fileNameAndExtension[0]}.m4v`;
-
-      console.log("_recordingPath == >", this._recordingFullPath);
-      console.log("pathToConvertedFile == >", pathToConvertedFile);
-      if (this._recordingFullPath) {
-        fs.writeFile(this._recordingFullPath, buffer, () => {
-          this.convertRawVideoFormat(
-            this._recordingFullPath,
-            pathToConvertedFile
-          );
+      return readAsArrayBuffer(blob).then((buffer) => {
+        const elms = decoder.decode(buffer);
+        elms.forEach((elm) => {
+          reader.read(elm);
         });
-      }
-    });
+        reader.stop();
+        const refinedMetadataBuf = tools.makeMetadataSeekable(
+          reader.metadatas,
+          reader.duration,
+          reader.cues
+        );
+        const body = buffer.slice(reader.metadataSize);
+        const result = new Blob([refinedMetadataBuf, body], {
+          type: blob.type
+        });
+
+        return result;
+      });
+    }
+    const seekableVideoBlob = injectMetadata(videoBlob)
+    seekableVideoBlob.then(blob =>{
+      blob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer);
+        this._stepRecordingName = `${Date.now()}.webm`;
+        this._recordingFullPath = this._recordingPath + 'vid-' + this._stepRecordingName;
+        console.log("_recordingPath == >", this._recordingFullPath);
+        if (this._recordingFullPath) {
+          fs.writeFile(this._recordingFullPath, buffer, () => {
+            this.extractClickedImages();
+          });
+        }
+      });
+    })
   }
+
 
   handleAudioStop(e) {
     const audioBlob = new Blob(this._audioRecordedChunks, {
