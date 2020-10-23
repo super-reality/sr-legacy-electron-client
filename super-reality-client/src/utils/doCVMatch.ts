@@ -8,7 +8,9 @@ function getImage(url: string): Promise<HTMLImageElement> {
     const img = new Image();
     img.onload = () => resolve(img);
     img.onerror = reject;
-    img.src = url;
+    img.crossOrigin = "Anonymous";
+    img.setAttribute("crossOrigin", "");
+    img.src = `${url}?${new Date().getTime()}`;
   });
 }
 

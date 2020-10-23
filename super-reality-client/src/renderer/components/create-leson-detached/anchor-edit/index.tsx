@@ -14,6 +14,7 @@ import ButtonSimple from "../../button-simple";
 import ButtonRound from "../../button-round";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import AnchorEditSliders from "../anchor-edit-sliders";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 
 interface AnchorEditProps {
   setTransparent: () => void;
@@ -57,8 +58,10 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
 
   const insertImage = useCallback(
     (image: string) => {
-      const imgArr = [...anchor.templates, image];
-      update({ templates: imgArr });
+      uploadFileToS3(image).then((url) => {
+        const imgArr = [...anchor.templates, url];
+        update({ templates: imgArr });
+      });
     },
     [anchor]
   );
@@ -107,7 +110,11 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
           onClick={open}
         />
       </Flex>
-      <TemplatesList update={update} templates={anchor.templates} />
+      <TemplatesList
+        key={anchor._id}
+        update={update}
+        templates={anchor.templates}
+      />
       <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
         Test Anchor
       </ButtonSimple>
