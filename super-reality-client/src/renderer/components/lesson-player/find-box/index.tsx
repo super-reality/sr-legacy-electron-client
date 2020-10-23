@@ -28,6 +28,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
     if (type == "Rectangle") computedType = "rectangle";
     if (type == "Area highlight") computedType = "area";
 
+    console.log(pos, style);
     return (
       <div
         ref={forwardedRef}

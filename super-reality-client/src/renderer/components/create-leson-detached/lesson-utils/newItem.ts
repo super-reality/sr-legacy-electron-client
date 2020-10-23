@@ -2,16 +2,22 @@ import Axios from "axios";
 import handleItemCreate from "../../../api/handleItemCreate";
 import { ApiError } from "../../../api/types";
 import ItemCreate from "../../../api/types/item/create";
-import { BaseItemType } from "../../../api/types/item/item";
+import { BaseItemType, Item } from "../../../api/types/item/item";
 import { API_URL } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 import updateStep from "./updateStep";
 
 export default function newItem(type: BaseItemType, step?: string): void {
-  const payload = {
+  const payload: Partial<Item> = {
     type,
   };
+  if (payload.type == "image") {
+    payload.relativePos = { x: 0, y: 0, width: 400, height: 300 };
+  }
+  if (payload.type == "audio") {
+    payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
+  }
   Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
     .then(handleItemCreate)
     .then((data) => {

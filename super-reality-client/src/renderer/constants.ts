@@ -25,3 +25,5 @@ export const restrictMinSize =
   interact.modifiers.restrictSize({
     min: { width: 10, height: 10 },
   });
+
+export const voidFunction = () => {};

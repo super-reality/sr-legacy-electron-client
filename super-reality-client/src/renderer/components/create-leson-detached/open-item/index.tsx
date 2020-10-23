@@ -22,7 +22,8 @@ import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
 import ModalList from "../modal-list";
 import updateItem from "../lesson-utils/updateItem";
-import SetttingsFocusHighlight from "./setttings-focus-highlight";
+import SettingsFocusHighlight from "./settings-focus-highlight";
+import SettingsImage from "./settings-image";
 
 interface OpenItemProps {
   id: string;
@@ -123,7 +124,10 @@ export default function OpenItem(props: OpenItemProps) {
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
         {view === "Settings" && item.type == "focus_highlight" && (
-          <SetttingsFocusHighlight item={item} update={doUpdate} />
+          <SettingsFocusHighlight item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "image" && (
+          <SettingsImage item={item} update={doUpdate} />
         )}
         {view === "Anchor" && (
           <>

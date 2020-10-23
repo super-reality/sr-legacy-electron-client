@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 import path from "path";
 import url from "url";
+import { voidFunction } from "../renderer/constants";
 import store from "../renderer/redux/stores/renderer";
 import isElectron from "./isElectron";
 
@@ -11,7 +12,7 @@ export default function createLessonInterface(
 ): Promise<void> {
   if (!isElectron()) {
     console.error("createLessonInterface was not escaped correcty.");
-    return new Promise(() => {});
+    return new Promise(voidFunction);
   }
   const { remote } = require("electron");
   const newWindow = new remote.BrowserWindow({

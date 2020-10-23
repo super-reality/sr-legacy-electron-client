@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties } from "react";
+import { voidFunction } from "../../../constants";
+import ButtonSimple from "../../button-simple";
 import "./index.scss";
 
 interface ImageBoxProps {
@@ -11,11 +13,12 @@ interface ImageBoxProps {
   };
   style?: CSSProperties;
   image: string;
+  callback?: () => void;
 }
 
 const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
   (props, forwardedRef) => {
-    const { image, style, pos } = props;
+    const { image, style, pos, callback } = props;
 
     return (
       <div
@@ -24,12 +27,20 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,
-          width: `${pos.width - 6}px`,
-          height: `${pos.height - 6}px`,
+          width: `${pos.width}px`,
+          height: `${pos.height}px`,
           ...style,
         }}
       >
         <img src={image} />
+        <ButtonSimple
+          width="200px"
+          height="24px"
+          margin="auto"
+          onClick={callback || voidFunction}
+        >
+          Ok
+        </ButtonSimple>
       </div>
     );
   }

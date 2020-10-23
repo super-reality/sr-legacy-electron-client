@@ -4,14 +4,12 @@ import ButtonSimple from "../../../button-simple";
 import Flex from "../../../flex";
 import "../../../lesson-player/find-box/index.scss";
 
-interface SetttingsFocusHighlight {
+interface SettingsFocusHighlight {
   item: ItemFocus;
   update: (date: Partial<ItemFocus>) => void;
 }
 
-export default function SetttingsFocusHighlight(
-  props: SetttingsFocusHighlight
-) {
+export default function SettingsFocusHighlight(props: SettingsFocusHighlight) {
   const { item, update } = props;
 
   const styleSelected = { backgroundColor: "var(--color-background)" };

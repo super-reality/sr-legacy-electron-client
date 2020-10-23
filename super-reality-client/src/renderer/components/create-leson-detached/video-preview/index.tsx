@@ -8,7 +8,7 @@ import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../lesson-utils/updateItem";
 import FindBox from "../../lesson-player/find-box";
 import ImageBox from "../../lesson-player/image.box";
-import { cursorChecker } from "../../../constants";
+import { cursorChecker, voidFunction } from "../../../constants";
 
 export default function VideoPreview(): JSX.Element {
   const {
@@ -58,28 +58,32 @@ export default function VideoPreview(): JSX.Element {
             startY = (startY || 0) + (100 / (height - startH)) * event.dy;
             startX = Math.min(Math.max(startX, 0), 100);
             startY = Math.min(Math.max(startY, 0), 100);
-            dragContainer.current.style.left = `calc((100% - ${startW}px) / 100 * ${startX})`;
-            dragContainer.current.style.top = `calc((100% - ${startH}px) / 100 * ${startY})`;
+            dragContainer.current.style.left = `calc((100% - ${startW}px) / 100 * ${Math.round(
+              startX
+            )})`;
+            dragContainer.current.style.top = `calc((100% - ${startH}px) / 100 * ${Math.round(
+              startY
+            )})`;
 
             if (horPor.current) {
               horPor.current.style.display = "block";
-              horPor.current.style.top = `calc((100% - ${startH}px) / 100 * ${startY} + ${
-                startH / 2
-              }px)`;
+              horPor.current.style.top = `calc((100% - ${startH}px) / 100 * ${Math.round(
+                startY
+              )} + ${startH / 2}px)`;
             }
             if (vertPos.current) {
               vertPos.current.style.display = "block";
-              vertPos.current.style.left = `calc((100% - ${startW}px) / 100 * ${startX} + ${
-                startW / 2
-              }px)`;
+              vertPos.current.style.left = `calc((100% - ${startW}px) / 100 * ${Math.round(
+                startX
+              )} + ${startW / 2}px)`;
             }
           }
         })
         .on("dragend", () => {
           const newRelativePos = {
             ...item.relativePos,
-            horizontal: startX,
-            vertical: startY,
+            horizontal: startX !== undefined ? Math.round(startX) : undefined,
+            vertical: startY !== undefined ? Math.round(startY) : undefined,
           };
           reduxAction(dispatcher, {
             type: "CREATE_LESSON_V2_SETITEM",
@@ -97,7 +101,7 @@ export default function VideoPreview(): JSX.Element {
         if (dragContainer.current) interact(dragContainer.current).unset();
       };
     }
-    return () => {};
+    return voidFunction;
   }, [item, width, height, dispatcher]);
 
   let subType = "";
@@ -111,19 +115,19 @@ export default function VideoPreview(): JSX.Element {
     return {
       x: 0,
       y: 0,
-      width: item?.relativePos.width || 100,
-      height: item?.relativePos.height || 100,
+      width: item?.relativePos.width || 400,
+      height: item?.relativePos.height || 300,
     };
   }, [item]);
 
   const style = useMemo(() => {
     return {
-      left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
+      left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${Math.round(
         item?.relativePos.horizontal || 0
-      })`,
-      top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
+      )})`,
+      top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${Math.round(
         item?.relativePos.vertical || 0
-      })`,
+      )})`,
     };
   }, [item]);
 

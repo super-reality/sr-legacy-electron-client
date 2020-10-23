@@ -28,6 +28,7 @@ import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import CvComponents from "../CvComponents";
 import LessonPlayer from "../lesson-player";
+import { voidFunction } from "../../constants";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -117,7 +118,7 @@ export default function CreateLessonDetached(): JSX.Element {
         if (resizeContainer.current) interact(resizeContainer.current).unset();
       };
     }
-    return () => {};
+    return voidFunction;
   }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {

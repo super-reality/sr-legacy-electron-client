@@ -1,18 +1,8 @@
-import interact from "interactjs";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
-import { cursorChecker, restrictMinSize } from "../../../constants";
-import reduxAction from "../../../redux/reduxAction";
-import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { Item } from "../../../api/types/item/item";
 
 interface ItemViewProps {
@@ -28,8 +18,7 @@ export default function ItemView(props: ItemViewProps) {
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
   const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
-
-  const [style, setStyle] = useState({ left: "", top: "" });
+  const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
   const anchor = item.anchor ? treeAnchors[item.anchor] : undefined;
@@ -38,14 +27,14 @@ export default function ItemView(props: ItemViewProps) {
     const newPos = {
       x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
       y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
-      width: item?.relativePos.width || 100,
-      height: item?.relativePos.height || 100,
+      width: item?.relativePos.width || 400,
+      height: item?.relativePos.height || 300,
     };
     setPos(newPos);
 
     const newStyle = {
-      left: anchor ? "" : `${item.relativePos.horizontal}%`,
-      top: anchor ? "" : `${item.relativePos.vertical}%`,
+      left: anchor ? undefined : `${item.relativePos.horizontal}%`,
+      top: anchor ? undefined : `${item.relativePos.vertical}%`,
     };
     setStyle(newStyle);
   }, [anchor, cvResult, item]);

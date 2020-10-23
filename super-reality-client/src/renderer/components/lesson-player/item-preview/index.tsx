@@ -1,5 +1,6 @@
 import interact from "interactjs";
 import React, {
+  CSSProperties,
   useCallback,
   useEffect,
   useMemo,
@@ -10,7 +11,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
-import { cursorChecker, restrictMinSize } from "../../../constants";
+import {
+  cursorChecker,
+  restrictMinSize,
+  voidFunction,
+} from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 
@@ -21,8 +26,8 @@ export default function ItemPreview() {
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
-  const dragging = useRef<boolean>(false);
   const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [style, setStyle] = useState<CSSProperties>({});
 
   const item = useMemo(
     () => (currentItem ? treeItems[currentItem] : undefined),
@@ -40,10 +45,22 @@ export default function ItemPreview() {
     const newPos = {
       x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
       y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
-      width: item?.relativePos.width || 100,
-      height: item?.relativePos.height || 100,
+      width: item?.relativePos.width || 400,
+      height: item?.relativePos.height || 300,
     };
     setPos(newPos);
+
+    const newStyle = !anchor
+      ? {
+          left: `calc((100% - ${
+            item?.relativePos.width
+          }px) / 100 * ${Math.round(item?.relativePos.horizontal || 0)})`,
+          top: `calc((100% - ${
+            item?.relativePos.height
+          }px) / 100 * ${Math.round(item?.relativePos.vertical || 0)})`,
+        }
+      : {};
+    setStyle(newStyle);
   }, [anchor, cvResult, item]);
 
   useEffect(() => {
@@ -124,17 +141,27 @@ export default function ItemPreview() {
         if (dragContainer.current) interact(dragContainer.current).unset();
       };
     }
-    return () => {};
+    return voidFunction;
   }, [dispatch, cvResult, pos, item]);
 
   return (
     <>
       {anchor && cvResult && <FindBox type="anchor" pos={cvResult} />}
       {item && item.type == "focus_highlight" && (
-        <FindBox ref={dragContainer} pos={pos} type={item.focus} />
+        <FindBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          type={item.focus}
+        />
       )}
       {item && item.type == "image" && (
-        <ImageBox ref={dragContainer} pos={pos} image={item.url} />
+        <ImageBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          image={item.url}
+        />
       )}
     </>
   );

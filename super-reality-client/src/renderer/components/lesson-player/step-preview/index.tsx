@@ -36,6 +36,7 @@ export default function StepPreview(props: StepPreviewProps) {
       state[id] = true;
       setItemsState(state);
       // If all items are TRUE, this step has finished
+      // Each item has its own logic defined to know when it can advance on the ../name-box components
       if (Object.keys(state).filter((iid) => state[iid] == false).length == 0) {
         onSucess();
       }
@@ -48,9 +49,13 @@ export default function StepPreview(props: StepPreviewProps) {
       {Object.keys(itemsState).map((itemId) => {
         const item = treeItems[itemId];
         return itemsState[itemId] ? (
-          <ItemView item={item} onSucess={() => itemSuceeded(itemId)} />
+          <ItemView
+            key={item._id}
+            item={item}
+            onSucess={() => itemSuceeded(itemId)}
+          />
         ) : (
-          <></>
+          <React.Fragment key={item._id} />
         );
       })}
     </>
