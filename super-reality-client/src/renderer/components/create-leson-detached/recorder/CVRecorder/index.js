@@ -7,6 +7,11 @@ const fs = require("fs");
 // eslint-disable-next-line no-undef
 const mouseEvents = __non_webpack_require__("global-mouse-events");
 // eslint-disable-next-line no-undef
+
+/*
+need to install the following dependency
+npm install ts-ebml --save
+*/
 const {Decoder, Encoder, tools, Reader} = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
@@ -58,7 +63,6 @@ export default class CVRecorder {
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
-    this.convertRawVideoFormat = this.convertRawVideoFormat.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handleDataAvailable = this.handleDataAvailable.bind(this);
     this.handleAudioStop = this.handleAudioStop.bind(this);
@@ -185,8 +189,8 @@ export default class CVRecorder {
     return [];
   }
 
-  async extractClickedImages(pathToConvertedFile) {
-    const cap = new cv.VideoCapture(pathToConvertedFile);
+  async extractClickedImages() {
+    const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
     const mainImage = cap.read();
     // console.log(pathToConvertedFile)
@@ -217,7 +221,7 @@ export default class CVRecorder {
 
       const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-      const cannyEdges = grayImg.canny(25, 200, 3);
+      const cannyEdges = grayImg.canny(23, 180, 3);
 
       // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
@@ -309,30 +313,19 @@ export default class CVRecorder {
         /:/g,
         "-"
       )}.jpeg`;
-      if (
-        !fs.existsSync(
-          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
-        )
-      ) {
-        fs.mkdir(
-          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
+      if (!fs.existsSync(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`)){
+        fs.mkdir(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
           (err) => {
-            if (err) throw err;
+            if(err) throw err;
           }
         );
       }
       cv.imwrite(
-        `${this._stepSnapshotPath}${
-          this._stepRecordingName.split(".")[0]
-        }/${snippedImageName}`,
+        `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}/${snippedImageName}`,
         outputImg,
         [parseInt(cv.IMWRITE_JPEG_QUALITY)]
       );
-      console.log(
-        `${this._stepSnapshotPath}${
-          this._stepRecordingName.split(".")[0]
-        }/${snippedImageName}`
-      );
+      console.log(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}/${snippedImageName}`)
       jsonMetaData.step_data.push({
         name: snippedImageName,
         x_cordinate: xCordinate,
