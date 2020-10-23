@@ -59,6 +59,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
         method: "cv",
         arg: {
           ...anchor,
+          anchorId: anchor._id,
           cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "LESSON_CREATE",

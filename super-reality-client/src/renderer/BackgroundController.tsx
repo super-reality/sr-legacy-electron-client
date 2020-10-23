@@ -10,7 +10,7 @@ import { AppState } from "./redux/stores/renderer";
 export default function BackgroundController(): JSX.Element {
   const dispatch = useDispatch();
   const [processingCv, setProcessingCv] = useState<boolean>(false);
-  const { cvTemplates, cvTo } = useSelector(
+  const { cvTemplates, cvTo, anchorId } = useSelector(
     (state: AppState) => state.background
   );
   const [sendTo, setSendTo] = useState("");
@@ -18,9 +18,13 @@ export default function BackgroundController(): JSX.Element {
   const cvCallback = useCallback(
     (arg) => {
       setProcessingCv(false);
-      ipcSend({ method: "cvResult", arg, to: sendTo });
+      ipcSend({
+        method: "cvResult",
+        arg: { ...arg, id: anchorId },
+        to: sendTo,
+      });
     },
-    [sendTo, dispatch]
+    [sendTo, anchorId, dispatch]
   );
 
   const [CV, isCapturing, startCV, endCV, doMatch] = useCVMatch(

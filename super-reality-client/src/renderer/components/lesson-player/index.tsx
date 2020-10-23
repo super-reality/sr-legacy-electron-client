@@ -7,6 +7,7 @@ import ButtonSimple from "../button-simple";
 import Windowlet from "../create-leson-detached/windowlet";
 import Flex from "../flex";
 import ItemPreview from "./item-preview";
+import StepPreview from "./step-preview";
 
 interface LessonPlayerProps {
   onFinish: () => void;
@@ -18,7 +19,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const { currentAnchor, currentItem, treeItems, treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
-  const { itemPreview } = useSelector(
+  const { itemPreview, stepPreview } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
@@ -45,6 +46,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         method: "cv",
         arg: {
           ...anchor,
+          anchorId: anchor._id,
           cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "LESSON_CREATE",
@@ -57,6 +59,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   return (
     <>
       {itemPreview && <ItemPreview />}
+      {stepPreview && <StepPreview onSucess={() => {}} />}
       <Windowlet
         title="Super Reality"
         width={320}

@@ -12,6 +12,7 @@ const initialCVSettings = {
 const initialBackgroundState = {
   cvTemplates: [] as string[],
   cvTo: "",
+  anchorId: "",
 };
 
 export { initialCVSettings, initialBackgroundState };

@@ -226,6 +226,7 @@ export default function doCvMatch(
               );
             }
             const ret: CVResult = {
+              id: "",
               time: new Date().getTime() - beginTime,
               dist: bestDist,
               sizeFactor: 0,
