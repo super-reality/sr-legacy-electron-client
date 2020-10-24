@@ -6,6 +6,7 @@ import { ReactComponent as TrashButton } from "../../../../assets/svg/trash.svg"
 import { ReactComponent as EditButton } from "../../../../assets/svg/edit.svg";
 import usePopupImage from "../../../hooks/usePopupImage";
 import { IAnchor } from "../../../api/types/anchor/anchor";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 
 interface TemplatesListProps {
   templates: string[];
@@ -23,9 +24,11 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
 
   const insertImage = useCallback(
     (image: string) => {
-      const images = [...temp];
-      images.splice(editIndex, 1, image);
-      setTemp(images);
+      uploadFileToS3(image).then((url) => {
+        const images = [...temp];
+        images.splice(editIndex, 1, url);
+        setTemp(images);
+      });
     },
     [editIndex, temp]
   );

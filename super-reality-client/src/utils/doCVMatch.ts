@@ -219,33 +219,25 @@ export default function doCvMatch(
             return result;
           });
 
-          if (bestDist > opt.cvMatchValue / 1000) {
-            if (globalData.debugCv) {
-              console.log(
-                `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(
-                  xScale * bestPoint.x
-                )},${Math.round(yScale * bestPoint.y)}`
-              );
-            }
-            const ret: CVResult = {
-              id: "",
-              time: new Date().getTime() - beginTime,
-              dist: bestDist,
-              sizeFactor: 0,
-              x: Math.round(xScale * bestPoint.x),
-              y: Math.round(yScale * bestPoint.y),
-              width: Math.round(templates[bestIndex].cols * xScale),
-              height: Math.round(templates[bestIndex].rows * yScale),
-            };
-            resolve(ret);
-          } else {
-            if (globalData.debugCv) {
-              console.log(
-                `not found: ${bestDist} (${opt.cvMatchValue / 1000})`
-              );
-            }
-            reject();
+          // if (bestDist > opt.cvMatchValue / 1000) {
+          if (globalData.debugCv) {
+            console.log(
+              `Distance: ${bestDist}, index: ${bestIndex}, point: ${Math.round(
+                xScale * bestPoint.x
+              )},${Math.round(yScale * bestPoint.y)}`
+            );
           }
+          const ret: CVResult = {
+            id: "",
+            time: new Date().getTime() - beginTime,
+            dist: bestDist,
+            sizeFactor: 0,
+            x: Math.round(xScale * bestPoint.x),
+            y: Math.round(yScale * bestPoint.y),
+            width: Math.round(templates[bestIndex].cols * xScale),
+            height: Math.round(templates[bestIndex].rows * yScale),
+          };
+          resolve(ret);
           matToCanvas(srcMat, "canvasTestOutput");
         })
         .catch(reject);

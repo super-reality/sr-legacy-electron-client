@@ -8,7 +8,7 @@ const globalData = {
   lessons: {} as Record<string, ILessonGet>,
   cvFindWindow: null as any | null,
   backgroundProcess: null as any | null,
-  debugCv: false as boolean,
+  debugCv: true as boolean,
 };
 
 export default globalData;

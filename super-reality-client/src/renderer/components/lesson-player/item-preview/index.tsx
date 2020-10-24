@@ -105,6 +105,14 @@ export default function ItemPreview() {
             }),
           ],
         })
+        .on("dragstart", (event) => {
+          if (!item.anchor && dragContainer.current) {
+            startPos.x = event.rect.left;
+            startPos.y = event.rect.top;
+            dragContainer.current.style.left = `${startPos.x}px`;
+            dragContainer.current.style.top = `${startPos.y}px`;
+          }
+        })
         .on("dragmove", (event) => {
           if (dragContainer.current) {
             startPos.x += event.dx;
@@ -133,11 +141,20 @@ export default function ItemPreview() {
           if (item.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
-          } else {
+          } else if (
+            dragContainer.current &&
+            dragContainer.current.parentElement
+          ) {
             startPos.horizontal =
-              (100 / (window.screen.width - startPos.width)) * startPos.x;
+              (100 /
+                (dragContainer.current.parentElement.offsetWidth -
+                  startPos.width)) *
+              startPos.x;
             startPos.vertical =
-              (100 / (window.screen.height - startPos.height)) * startPos.y;
+              (100 /
+                (dragContainer.current.parentElement.offsetHeight -
+                  startPos.height)) *
+              startPos.y;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
@@ -160,7 +177,9 @@ export default function ItemPreview() {
 
   return (
     <>
-      {anchor && cvResult && <FindBox type="anchor" pos={cvResult} />}
+      {item?.anchor && anchor && cvResult && (
+        <FindBox type="anchor" pos={cvResult} />
+      )}
       {item && item.type == "focus_highlight" && (
         <FindBox
           ref={dragContainer}
