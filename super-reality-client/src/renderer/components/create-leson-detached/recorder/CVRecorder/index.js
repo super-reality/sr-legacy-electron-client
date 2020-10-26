@@ -3,7 +3,12 @@
 const { desktopCapturer, app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
-const hbjs = __non_webpack_require__("handbrake-js");
+
+/*
+need to install the following dependency
+npm install ts-ebml --save
+*/
+const { Decoder, Encoder, tools, Reader } = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
@@ -54,7 +59,6 @@ export default class CVRecorder {
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
-    this.convertRawVideoFormat = this.convertRawVideoFormat.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handleDataAvailable = this.handleDataAvailable.bind(this);
     this.handleAudioStop = this.handleAudioStop.bind(this);
@@ -181,8 +185,8 @@ export default class CVRecorder {
     return [];
   }
 
-  async extractClickedImages(pathToConvertedFile) {
-    const cap = new cv.VideoCapture(pathToConvertedFile);
+  async extractClickedImages() {
+    const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
     const mainImage = cap.read();
     // console.log(pathToConvertedFile)
@@ -213,7 +217,7 @@ export default class CVRecorder {
 
       const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-      const cannyEdges = grayImg.canny(25, 200, 3);
+      const cannyEdges = grayImg.canny(23, 180, 3);
 
       // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
@@ -348,52 +352,61 @@ export default class CVRecorder {
     this._clickEventDetails = [];
   }
 
-  convertRawVideoFormat(pathtoRawFile, pathToConvertedFile) {
-    console.log(pathtoRawFile);
-    console.log(pathToConvertedFile);
-    hbjs
-      .spawn({ input: pathtoRawFile, output: pathToConvertedFile })
-      .on("error", (err) => {
-        console.error(err);
-        // invalid user input, no video found etc
-      })
-      // .on("progress", (progress) => {
-      //   console.log(
-      //     "Percent complete: %s, ETA: %s",
-      //     progress.percentComplete,
-      //     progress.eta
-      //   );
-      // })
-      .on("complete", (complete) => {
-        console.log("complete");
-        console.log(pathToConvertedFile);
-        this.extractClickedImages(pathToConvertedFile);
-      });
-  }
-
   // Saves the video file on stop
   handleStop(e) {
     const videoBlob = new Blob(this._recordedChunks, {
-      type: "video/webm; codecs=vp9",
+      type: "video/webm;codecs=vp9",
     });
+    const readAsArrayBuffer = (blob) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = (ev) => {
+          reject(ev.error);
+        };
+      });
+    };
+    const injectMetadata = (blob) => {
+      const decoder = new Decoder();
+      const reader = new Reader();
+      reader.logging = false;
+      reader.drop_default_duration = false;
 
-    videoBlob.arrayBuffer().then((arrayBuffer) => {
-      const buffer = Buffer.from(arrayBuffer);
-      this._stepRecordingName = `${Date.now()}.webm`;
-      this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
-      this._fileNameAndExtension = this._recordingFullPath.split(".");
-      const pathToConvertedFile = `${this._fileNameAndExtension[0]}.m4v`;
-
-      console.log("_recordingPath == >", this._recordingFullPath);
-      console.log("pathToConvertedFile == >", pathToConvertedFile);
-      if (this._recordingFullPath) {
-        fs.writeFile(this._recordingFullPath, buffer, () => {
-          this.convertRawVideoFormat(
-            this._recordingFullPath,
-            pathToConvertedFile
-          );
+      return readAsArrayBuffer(blob).then((buffer) => {
+        const elms = decoder.decode(buffer);
+        elms.forEach((elm) => {
+          reader.read(elm);
         });
-      }
+        reader.stop();
+        const refinedMetadataBuf = tools.makeMetadataSeekable(
+          reader.metadatas,
+          reader.duration,
+          reader.cues
+        );
+        const body = buffer.slice(reader.metadataSize);
+        const result = new Blob([refinedMetadataBuf, body], {
+          type: blob.type,
+        });
+
+        return result;
+      });
+    };
+    const seekableVideoBlob = injectMetadata(videoBlob);
+    seekableVideoBlob.then((blob) => {
+      blob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer);
+        this._stepRecordingName = `${Date.now()}.webm`;
+        this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
+        console.log("_recordingPath == >", this._recordingFullPath);
+        if (this._recordingFullPath) {
+          fs.writeFile(this._recordingFullPath, buffer, () => {
+            this.extractClickedImages();
+          });
+        }
+      });
     });
   }
 
