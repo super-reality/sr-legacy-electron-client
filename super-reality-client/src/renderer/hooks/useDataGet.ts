@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import Axios from "axios";
-import handleGenericGet from "../api/handleGenericGet";
+import handleGenericGet from "../api/handleGenericRequest";
 import { API_URL } from "../constants";
 import { ApiError, ApiSucess } from "../api/types";
 import SubjectGet from "../api/types/subject/get";

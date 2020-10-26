@@ -19,7 +19,7 @@
   @include disable-select;
 
   &.selected {
-    background-color: var(--color-section-hover);
+    background-color: var(--color-section-hover) !important;
   }
 
   &.open {
@@ -46,6 +46,39 @@
   }
 }
 
+.tree-loading {
+  position: relative;
+  overflow: hidden;
+  opacity: 0.66;
+  @include animated;
+}
+
+.tree-loading::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: -150px;
+  top: 0;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #2f3136 50%,
+    transparent 100%
+  );
+  animation: load 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes load {
+  from {
+    left: -150px;
+  }
+  to {
+    left: 100%;
+  }
+}
+
 .tree-item-container {
   display: flex;
   height: 18px;
@@ -56,7 +89,7 @@
   @include disable-select;
 
   &.selected {
-    background-color: var(--color-button);
+    background-color: var(--color-section-hover) !important;
   }
 
   &.open {
@@ -86,4 +119,9 @@
 .tree-folder:hover,
 .tree-item-container:hover {
   background-color: var(--color-button);
+}
+
+.drag-target {
+  border-top: 2px dotted var(--color-background-hover);
+  padding-top: 0px;
 }

@@ -1,0 +1,14 @@
+@import "../index.scss";
+
+.image-box {
+  @include item-base;
+
+  img {
+    width: calc(100% - 20px);
+    max-height: calc(100% - 64px);
+    display: block;
+    border-radius: 4px;
+    background-color: var(--color-background);
+    margin: 10px auto;
+  }
+}

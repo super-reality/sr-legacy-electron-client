@@ -77,7 +77,7 @@ export interface ApiError {
   err_code: Exclude<ErrorCodes, CodeSuccess>;
   salt?: string;
   hash?: string;
-  msg: string;
+  message: string;
 }
 
 export interface ApiSucess {

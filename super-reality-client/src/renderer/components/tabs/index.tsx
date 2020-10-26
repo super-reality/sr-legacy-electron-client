@@ -24,8 +24,8 @@ export function Tabs<T extends string>(props: TabsProps<T>): JSX.Element {
             className={`tabs-tab${value == str ? "-selected" : ""}`}
             style={{
               width: `calc(${Math.round(100 / buttons.length)}%)`,
-              height: height || "32px",
-              lineHeight: height || "32px",
+              height: height || "28px",
+              lineHeight: height || "28px",
             }}
             onClick={() => {
               setValue(str);

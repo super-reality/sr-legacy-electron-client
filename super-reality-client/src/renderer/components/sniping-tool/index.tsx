@@ -5,6 +5,7 @@ import ReactCrop from "react-image-crop";
 import ButtonSimple from "../button-simple";
 import "react-image-crop/lib/ReactCrop.scss";
 import logger from "../../../utils/logger";
+import { voidFunction } from "../../constants";
 
 export default function SnipingTool() {
   // eslint-disable-next-line global-require
@@ -15,7 +16,7 @@ export default function SnipingTool() {
   const [crop, setCrop] = useState<any>({});
 
   useEffect(() => {
-    fs.unlink(output, () => {});
+    fs.unlink(output, voidFunction);
     logger(
       "info",
       remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds()
