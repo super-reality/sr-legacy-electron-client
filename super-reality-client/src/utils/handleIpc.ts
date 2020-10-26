@@ -1,5 +1,6 @@
 import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
+import getWindowId from "./getWindowId";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
