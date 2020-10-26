@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-export const initialCVSettings = {
+const initialCVSettings = {
   cvMatchValue: 990,
   cvCanvas: 50,
   cvDelay: 100,
@@ -8,3 +8,11 @@ export const initialCVSettings = {
   cvApplyThreshold: false as boolean,
   cvThreshold: 127,
 };
+
+const initialBackgroundState = {
+  cvTemplates: [] as string[],
+  cvTo: "",
+  anchorId: "",
+};
+
+export { initialCVSettings, initialBackgroundState };

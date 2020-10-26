@@ -1,18 +1,14 @@
 /* eslint-disable lines-between-class-members */
-import { captureDesktopStream } from "../../../../../utils/capture";
-
 /* eslint-disable radix */
-const { app, remote } = require("electron");
+const { desktopCapturer, app, remote } = require("electron");
 const fs = require("fs");
-// eslint-disable-next-line no-undef
-const mouseEvents = __non_webpack_require__("global-mouse-events");
 // eslint-disable-next-line no-undef
 
 /*
 need to install the following dependency
 npm install ts-ebml --save
 */
-const {Decoder, Encoder, tools, Reader} = require("ts-ebml");
+const { Decoder, Encoder, tools, Reader } = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
@@ -313,19 +309,30 @@ export default class CVRecorder {
         /:/g,
         "-"
       )}.jpeg`;
-      if (!fs.existsSync(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`)){
-        fs.mkdir(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
+      if (
+        !fs.existsSync(
+          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
+        )
+      ) {
+        fs.mkdir(
+          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
           (err) => {
-            if(err) throw err;
+            if (err) throw err;
           }
         );
       }
       cv.imwrite(
-        `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}/${snippedImageName}`,
+        `${this._stepSnapshotPath}${
+          this._stepRecordingName.split(".")[0]
+        }/${snippedImageName}`,
         outputImg,
         [parseInt(cv.IMWRITE_JPEG_QUALITY)]
       );
-      console.log(`${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}/${snippedImageName}`)
+      console.log(
+        `${this._stepSnapshotPath}${
+          this._stepRecordingName.split(".")[0]
+        }/${snippedImageName}`
+      );
       jsonMetaData.step_data.push({
         name: snippedImageName,
         x_cordinate: xCordinate,
@@ -345,13 +352,12 @@ export default class CVRecorder {
     this._clickEventDetails = [];
   }
 
-
-   // Saves the video file on stop
-   handleStop(e) {
+  // Saves the video file on stop
+  handleStop(e) {
     const videoBlob = new Blob(this._recordedChunks, {
-      type: "video/webm\;codecs=vp9",
+      type: "video/webm;codecs=vp9",
     });
-    const readAsArrayBuffer = function(blob) {
+    const readAsArrayBuffer = (blob) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsArrayBuffer(blob);
@@ -362,8 +368,8 @@ export default class CVRecorder {
           reject(ev.error);
         };
       });
-    }
-    const injectMetadata = function(blob) {
+    };
+    const injectMetadata = (blob) => {
       const decoder = new Decoder();
       const reader = new Reader();
       reader.logging = false;
@@ -382,18 +388,18 @@ export default class CVRecorder {
         );
         const body = buffer.slice(reader.metadataSize);
         const result = new Blob([refinedMetadataBuf, body], {
-          type: blob.type
+          type: blob.type,
         });
 
         return result;
       });
-    }
-    const seekableVideoBlob = injectMetadata(videoBlob)
-    seekableVideoBlob.then(blob =>{
+    };
+    const seekableVideoBlob = injectMetadata(videoBlob);
+    seekableVideoBlob.then((blob) => {
       blob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
         this._stepRecordingName = `${Date.now()}.webm`;
-        this._recordingFullPath = this._recordingPath + 'vid-' + this._stepRecordingName;
+        this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
         console.log("_recordingPath == >", this._recordingFullPath);
         if (this._recordingFullPath) {
           fs.writeFile(this._recordingFullPath, buffer, () => {
@@ -401,9 +407,8 @@ export default class CVRecorder {
           });
         }
       });
-    })
+    });
   }
-
 
   handleAudioStop(e) {
     const audioBlob = new Blob(this._audioRecordedChunks, {
@@ -433,41 +438,73 @@ export default class CVRecorder {
     this._audioRecordedChunks.push(e.data);
   }
 
+  async captureDesktopStream(sourceId) {
+    return new Promise((resolve, reject) => {
+      desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: sourceId,
+              },
+            },
+          });
+          const constraintsAudio = { audio: true };
+          this._audioStream = await navigator.mediaDevices.getUserMedia(
+            constraintsAudio
+          );
+          const combinedStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            ...this._audioStream.getAudioTracks(),
+          ]);
+          resolve(combinedStream);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+  }
+
   // Change the videoSource window to record
-  async selectSource(source) {
-    try {
-      // Create a Stream
-      // accepts source id now
-      this.stream = await captureDesktopStream(source.id);
+  selectSource(source) {
+    return this.captureDesktopStream(source.id).then((newStream) => {
+      return new Promise((resolve, reject) => {
+        try {
+          this.stream = newStream;
+          this._videoElement = document.createElement("video");
+          this._videoElement.srcObject = this.stream;
+          this._videoElement.onloadedmetadata = (e) => {
+            console.log(e);
+            this._videoElement.play();
+            // this._videoElement.muted = true;
 
-      // Preview the source in a video element
-      this._videoElement = document.createElement("video");
-      this._videoElement.srcObject = this.stream;
-      this._videoElement.onloadedmetadata = (e) => {
-        this._videoElement.play();
-        this._videoElement.muted = true;
-      };
+            // Create the Media Recorder
+            const options = { mimeType: "video/webm; codecs=vp9" };
+            this._mediaRecorder = new MediaRecorder(this.stream, options);
 
-      // Create the Media Recorder
-      const options = { mimeType: "video/webm; codecs=vp9" };
-      this._mediaRecorder = new MediaRecorder(this.stream, options);
+            // Create the Media Recorder
+            const audioOptions = { mimeType: "audio/webm" };
+            this._audioMediaRecorder = new MediaRecorder(
+              this._audioStream,
+              audioOptions
+            );
 
-      // Create the Media Recorder
-      const audioOptions = { mimeType: "audio/webm" };
-      this._audioMediaRecorder = new MediaRecorder(
-        this._audioStream,
-        audioOptions
-      );
+            // Register Event Handlers
+            this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+            this._mediaRecorder.onstop = this.handleStop;
 
-      // Register Event Handlers
-      this._mediaRecorder.ondataavailable = this.handleDataAvailable;
-      this._mediaRecorder.onstop = this.handleStop;
-
-      this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
-      this._audioMediaRecorder.onstop = this.handleAudioStop;
-    } catch (e) {
-      console.error(e);
-    }
+            this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
+            this._audioMediaRecorder.onstop = this.handleAudioStop;
+            resolve();
+          };
+        } catch (e) {
+          console.log(e);
+          reject(e);
+        }
+      });
+    });
   }
 
   clockRunning() {
@@ -506,8 +543,9 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  start(source) {
-    this.selectSource(source).then(() => {
+  start(stream) {
+    console.log("dostart");
+    return this.selectSource(stream).then(() => {
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;

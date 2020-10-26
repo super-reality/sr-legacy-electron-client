@@ -36,7 +36,7 @@ export default function CvComponents() {
   }, []);
 
   return (
-    <div style={{ display: "none" }}>
+    <div>
       <video
         style={{ width: "300px", height: "210px" }}
         id="videoOutput"
@@ -49,6 +49,10 @@ export default function CvComponents() {
         ref={canvasEl}
         width={cvCanvas}
         height={cvCanvas}
+      />
+      <canvas
+        id="canvasTestOutput"
+        style={{ width: "300px", margin: "auto" }}
       />
     </div>
   );

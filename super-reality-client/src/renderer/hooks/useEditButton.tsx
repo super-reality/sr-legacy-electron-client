@@ -3,7 +3,7 @@ import Axios from "axios";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as EditButton } from "../../assets/svg/edit.svg";
 import { ApiError, ApiJoin } from "../api/types";
-import handleGenericGet from "../api/handleGenericGet";
+import handleGenericGet from "../api/handleGenericRequest";
 import { API_URL } from "../constants";
 import { ICollectionGet } from "../api/types/collection/get";
 import { ISubjectGet } from "../api/types/subject/get";

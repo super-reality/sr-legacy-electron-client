@@ -10,24 +10,38 @@ interface ButtonRoundProps {
   style?: CSSProperties;
   svgStyle?: CSSProperties;
   iconFill?: string;
+  disabled?: boolean;
   height: string;
   width: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export default function ButtonRound(props: ButtonRoundProps): JSX.Element {
-  const { onClick, svg, style, svgStyle, height, width, iconFill } = props;
+  const {
+    onClick,
+    svg,
+    style,
+    svgStyle,
+    height,
+    width,
+    iconFill,
+    disabled,
+  } = props;
   const SvgElement = svg;
   return (
     <div
       onClick={onClick}
-      className="button-round"
+      className={`button-round ${disabled ? "disabled" : ""}`}
       style={{ ...style, width, height }}
     >
       <SvgElement
         className="svg-icon"
         style={svgStyle}
-        fill={iconFill || "var(--color-icon)"}
+        fill={
+          disabled
+            ? "var(--color-text-disabled)"
+            : iconFill || "var(--color-icon)"
+        }
       />
     </div>
   );

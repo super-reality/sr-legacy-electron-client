@@ -1,77 +1,158 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import globalData from "../../../globalData";
+import React, { useCallback, useEffect, useState } from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
+import reduxAction from "../../../redux/reduxAction";
+import { Item } from "../../../api/types/item/item";
+import { IDName } from "../../../api/types";
+import Flex from "../../flex";
+import onDrag from "../lesson-utils/onDrag";
+import onDrop from "../lesson-utils/onDrop";
+import getLesson from "../lesson-utils/getLesson";
+import getChapter from "../lesson-utils/getChapter";
+import getStep from "../lesson-utils/getStep";
+
+import "./index.scss";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
 import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
-import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
-import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
-import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
-import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
-import "./index.scss";
-import reduxAction from "../../../redux/reduxAction";
-import ButtonRound from "../../button-round";
-import Flex from "../../flex";
-import { Item } from "../../../api/types/item/item";
-import { IDName } from "../../../api/types";
+import onDragOver from "../lesson-utils/onDragOver";
+import onDelete from "../lesson-utils/onDelete";
+import getItem from "../lesson-utils/getItem";
+import getAnchor from "../lesson-utils/getAnchor";
+
+const STATE_ERR = -1;
+const STATE_IDLE = 0;
+const STATE_LOADING = 1;
+const STATE_OK = 2;
+const STATE_CUT = 3;
+
+type STATES =
+  | typeof STATE_ERR
+  | typeof STATE_IDLE
+  | typeof STATE_LOADING
+  | typeof STATE_OK
+  | typeof STATE_CUT;
 
 interface TreeFolderProps {
   id: string;
   parentId: string;
+  uniqueId: string;
   name: string;
   type: "lesson" | "chapter" | "step";
+  expanded?: boolean;
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, parentId, name, type } = props;
+  const { id, parentId, uniqueId, name, type, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
     treeCurrentType,
     treeCurrentId,
-    chapters,
+    treeLessons,
     treeChapters,
-    treeItems,
     treeSteps,
+    dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const [open, setOpen] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [state, setState] = useState<STATES>(STATE_IDLE);
+  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
   const [selected, setSelected] = useState<boolean>(false);
-  const [children, setChildren] = useState<IDName[]>([]);
+
+  let children: IDName[] = [];
+  if (type == "lesson") {
+    children = treeLessons[id]?.chapters || [];
+  }
+  if (type == "chapter") {
+    children = treeChapters[id]?.steps || [];
+  }
+  if (type == "step") {
+    children = treeSteps[id]?.items || [];
+  }
+
+  useEffect(() => {
+    if (type == "lesson") {
+      setState(STATE_LOADING);
+      getLesson(id)
+        .then((data) => {
+          reduxAction(store.dispatch, {
+            type: "CREATE_LESSON_V2_SETLESSON",
+            arg: data,
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
+    }
+    if (type == "chapter" && treeChapters[id] == undefined) {
+      setState(STATE_OK);
+      getChapter(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETCHAPTER",
+            arg: { chapter: data },
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
+    }
+    if (type == "step" && treeSteps[id] == undefined) {
+      setState(STATE_OK);
+      getStep(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETSTEP",
+            arg: { step: data },
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
+    }
+  }, [dispatch, id]);
+
+  const keyListeners = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Delete") {
+      onDelete(type, id, parentId);
+    }
+    if (e.ctrlKey && e.key === "c") {
+      console.log(`copy ${id}`);
+    }
+    if (e.ctrlKey && e.key === "x") {
+      console.log(`cut ${id}`);
+    }
+    if (e.ctrlKey && e.key === "v") {
+      console.log(`paste on ${id}`);
+    }
+  }, []);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
     if (
-      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentUniqueId !== uniqueId ||
       lesson.treeCurrentType !== type
     ) {
       setSelected(false);
     }
   }, [toggleSelects]);
 
-  const doOpen = useCallback(() => {
-    if (type == "lesson") {
-      setChildren(chapters);
-    }
-    if (type == "chapter") {
-      setChildren(treeChapters[id].steps);
-    }
-    if (type == "step") {
-      setChildren(treeSteps[id].items);
-    }
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_TREE",
-      arg: { type, parentId, id },
-    });
-    setOpen(!open);
-    setSelected(true);
-  }, [dispatch, open]);
+  const doOpen = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (!e.ctrlKey) {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_TREE",
+          arg: { type, uniqueId, id },
+        });
+        setOpen(!open);
+      }
+      document.onkeydown = keyListeners;
+      setSelected(true);
+    },
+    [dispatch, open]
+  );
 
   useEffect(() => {
     setIsOpen(treeCurrentId == id && treeCurrentType == type);
@@ -84,9 +165,13 @@ function TreeFolder(props: TreeFolderProps) {
   return (
     <>
       <div
+        draggable
+        onDrag={(e) => onDrag(e, type, id, parentId)}
+        onDrop={(e) => onDrop(e, type, id, parentId)}
+        onDragOver={(e) => onDragOver(e, uniqueId)}
         className={`tree-folder ${selected ? "selected" : ""} ${
           isOpen ? "open" : ""
-        }`}
+        } ${dragOver == uniqueId ? "drag-target" : ""}`}
         onClick={doOpen}
         style={{ paddingLeft: padding }}
       >
@@ -96,7 +181,13 @@ function TreeFolder(props: TreeFolderProps) {
             fill={`var(--color-${isOpen ? "green" : "icon"})`}
           />
         </div>
-        <div className="folder-name">{name}</div>
+        <div
+          className={`folder-name ${
+            state == STATE_LOADING ? "tree-loading" : ""
+          }`}
+        >
+          {name}
+        </div>
       </div>
       <div
         className="tree-folder-container"
@@ -105,7 +196,8 @@ function TreeFolder(props: TreeFolderProps) {
         {children.map((ch) => {
           return type == "lesson" || type == "chapter" ? (
             <TreeFolder
-              parentId={`${parentId}.${ch._id}`}
+              parentId={id}
+              uniqueId={`${uniqueId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -113,7 +205,8 @@ function TreeFolder(props: TreeFolderProps) {
             />
           ) : (
             <TreeItem
-              parentId={`${parentId}.${ch._id}`}
+              parentId={id}
+              uniqueId={`${parentId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -128,35 +221,82 @@ function TreeFolder(props: TreeFolderProps) {
 interface TreeItemProps {
   id: string;
   parentId: string;
+  uniqueId: string;
   name: string;
+  expanded?: boolean;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, name } = props;
+  const { id, parentId, uniqueId, name, expanded } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
     treeCurrentType,
     treeCurrentId,
     treeItems,
+    dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
+  const [state, setState] = useState<STATES>(STATE_IDLE);
 
   const itemData: Item | null = treeItems[id] || null;
+
+  useEffect(() => {
+    setState(STATE_LOADING);
+    getItem(id)
+      .then((data) => {
+        reduxAction(store.dispatch, {
+          type: "CREATE_LESSON_V2_SETITEM",
+          arg: { item: data },
+        });
+        if (data.anchor) {
+          getAnchor(data.anchor).then((anchor) => {
+            reduxAction(store.dispatch, {
+              type: "CREATE_LESSON_V2_SETANCHOR",
+              arg: { anchor: anchor },
+            });
+          });
+        }
+        setState(STATE_OK);
+      })
+      .catch((e) => setState(STATE_ERR));
+  }, [dispatch, id]);
+
+  const keyListeners = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Delete") {
+      onDelete("item", id, parentId);
+    }
+    if (e.ctrlKey && e.key === "c") {
+      console.log(`copy ${id}`);
+    }
+    if (e.ctrlKey && e.key === "x") {
+      console.log(`cut ${id}`);
+    }
+    if (e.ctrlKey && e.key === "v") {
+      console.log(`paste on ${id}`);
+    }
+  }, []);
 
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
-      arg: { type: "item", parentId, id },
+      arg: { type: "item", uniqueId, id },
     });
+    if (id) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { currentItem: id },
+      });
+    }
+    document.onkeydown = keyListeners;
     setSelected(true);
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
     if (
-      lesson.treeCurrentParentId !== parentId ||
+      lesson.treeCurrentUniqueId !== uniqueId ||
       lesson.treeCurrentType !== "item"
     ) {
       setSelected(false);
@@ -189,16 +329,23 @@ function TreeItem(props: TreeItemProps) {
 
   return (
     <div
+      onDrag={(e) => onDrag(e, "item", id, parentId)}
+      onDrop={(e) => onDrop(e, "item", id, parentId)}
+      onDragOver={(e) => onDragOver(e, uniqueId)}
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
-      }`}
+      } ${dragOver == uniqueId ? "drag-target" : ""}`}
       onClick={doOpen}
       style={{ paddingLeft: "36px" }}
     >
       <div className="item-icon-tree">
         <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />
       </div>
-      <div className="item-name">{name}</div>
+      <div
+        className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
+      >
+        {itemData?.name || itemData?.type || name}
+      </div>
       <div className="item-trigger">
         {itemData && itemData.trigger && (
           <TriggerIcon width="14px" height="14px" fill="var(--color-icon)" />
@@ -209,97 +356,21 @@ function TreeItem(props: TreeItemProps) {
 }
 
 export default function LessonTree() {
-  const { name, _id } = useSelector((state: AppState) => state.createLessonV2);
+  const { lessons } = useSelector((state: AppState) => state.createLessonV2);
 
   return (
     <Flex column style={{ overflow: "auto" }}>
-      <TreeFolder parentId={`${_id}`} id={_id} name={name} type="lesson" />
-    </Flex>
-  );
-}
-
-export function LessonTreeControls() {
-  const { treeCurrentType } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  const doAddFolder = useCallback(() => {
-    //
-  }, []);
-
-  const doAddFocus = useCallback(() => {
-    //
-  }, []);
-
-  return (
-    <Flex style={{ margin: "8px 0" }}>
-      {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
-        <ButtonRound
-          onClick={doAddFolder}
-          svg={IconAddFolder}
-          width="32px"
-          height="32px"
+      {lessons.map((d) => (
+        <TreeFolder
+          uniqueId={`${d._id}`}
+          parentId=""
+          key={`${d._id}`}
+          id={d._id}
+          name={d.name}
+          expanded
+          type="lesson"
         />
-      ) : (
-        <>
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddFocus}
-            width="32px"
-            height="32px"
-            style={{ margin: "0px 4px 0 0" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddTTS}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddImage}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddVideo}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddTeach}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddAudio}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddClip}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={doAddFocus}
-            svg={IconAddShare}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 0 0 4px" }}
-          />
-        </>
-      )}
+      ))}
     </Flex>
   );
 }

@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Axios from "axios";
 import interact from "interactjs";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,106 +22,19 @@ import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
+import VideoNavigation from "./video-navigation";
+import VideoPreview from "./video-preview";
+import AnchorEdit from "./anchor-edit";
+import AnchorTester from "./anchor-tester";
+import CvComponents from "../CvComponents";
+import LessonPlayer from "../lesson-player";
+import { voidFunction } from "../../constants";
 
 function setMocks() {
-  const lesson = {
-    _id: "string",
-    name: "test",
-    cost: 0,
-    status: 1,
-    description: "",
-    entry: 2,
-    skills: ["skill"],
-    difficulty: 2,
-    media: [],
-    location: {},
-    chapters: [
-      { _id: "001", name: "Chapter One" },
-      { _id: "002", name: "Chapter Two" },
-    ],
-    setupScreenshots: [],
-    setupInstructions: "",
-    setupFiles: [],
-  };
-  reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
   reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
+    type: "CREATE_LESSON_V2_DATA",
     arg: {
-      _id: "001",
-      name: "Chapter One",
-      steps: [{ _id: "step01", name: "Step one" }],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
-    arg: {
-      _id: "002",
-      name: "Chapter Two",
-      steps: [{ _id: "step01", name: "Step one" }],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETSTEP",
-    arg: {
-      _id: "step01",
-      name: "Step one",
-      items: [
-        { _id: "001", name: "Focus Highlight" },
-        { _id: "002", name: "Image" },
-      ],
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      _id: "001",
-      name: "Focus Highlight",
-      type: "focus_highlight",
-      anchor: "001",
-      relativePos: {
-        x: 0,
-        y: 0,
-      },
-      trigger: null,
-      destination: "",
-      transition: 0,
-      focus: "Rectangle",
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      _id: "002",
-      name: "Image",
-      type: "image",
-      anchor: undefined,
-      relativePos: {
-        x: 0,
-        y: 0,
-      },
-      trigger: 2,
-      destination: "",
-      transition: 0,
-      url: "",
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETANCHOR",
-    arg: {
-      _id: "001",
-      name: "Anchor",
-      type: "crop",
-      templates: [],
-      function: "or",
-      cvMatchValue: 990,
-      cvCanvas: 100,
-      cvDelay: 100,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 0,
+      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }],
     },
   });
 }
@@ -164,10 +78,23 @@ function TopBar() {
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
+  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
+  const {
+    currentAnchor,
+    anchorTestView,
+    stepPreview,
+    itemPreview,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  const [videoNav, setVideoNav] = useState([100, 150, 200]);
+
+  const setVideoNavPos = useCallback((n: readonly number[]) => {
+    setVideoNav([...n]);
+  }, []);
 
   useEffect(() => {
     setMocks();
@@ -191,7 +118,7 @@ export default function CreateLessonDetached(): JSX.Element {
         if (resizeContainer.current) interact(resizeContainer.current).unset();
       };
     }
-    return () => {};
+    return voidFunction;
   }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {
@@ -217,16 +144,24 @@ export default function CreateLessonDetached(): JSX.Element {
 
   return overlayTransparent ? (
     <div className="transparent-container click-through">
-      {openRecorder ? (
+      {openRecorder && (
         <Recorder
           onFinish={() => {
             setOpenRecorder(false);
             setSolid();
           }}
         />
-      ) : (
-        <></>
       )}
+      {anchorTestView && (
+        <>
+          <AnchorTester
+            onFinish={() => {
+              setSolid();
+            }}
+          />
+        </>
+      )}
+      {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
     </div>
   ) : (
     <div className="solid-container">
@@ -238,17 +173,39 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson />
+            <Lesson setTransparent={setTransparent} />
           </div>
-          <div className="preview" />
+          {currentAnchor !== undefined ? (
+            <div
+              className="anchor-edit"
+              style={{ width: "340px" }}
+              ref={resizeContainerAnchor}
+            >
+              <AnchorEdit setTransparent={setTransparent} />
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="preview">
+            <VideoPreview />
+          </div>
         </div>
         <div className="nav">
           <ButtonRound
-            width="64px"
-            height="64px"
             svg={RecordIcon}
+            width="48px"
+            height="48px"
             onClick={createRecorder}
           />
+          {/*
+          <VideoNavigation
+            domain={[0, 1000]}
+            defaultValues={videoNav}
+            ticksNumber={100}
+            callback={setVideoNavPos}
+            slideCallback={setVideoNavPos}
+          />
+          */}
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { DetachArg } from "../../../utils/handleIpc";
 const initialState = {
   isLoading: false,
   detached: undefined as DetachArg | undefined,
+  background: false as boolean,
 };
 
 type commonPropState = typeof initialState;
@@ -25,9 +26,19 @@ const commonPropSlice = createSlice({
     ): void => {
       state.detached = action.payload;
     },
+    setBackground: (
+      state: commonPropState,
+      action: PayloadAction<boolean>
+    ): void => {
+      state.background = action.payload;
+    },
   },
 });
 
-export const { setIsLoading, setDetached } = commonPropSlice.actions;
+export const {
+  setIsLoading,
+  setDetached,
+  setBackground,
+} = commonPropSlice.actions;
 
 export default commonPropSlice;

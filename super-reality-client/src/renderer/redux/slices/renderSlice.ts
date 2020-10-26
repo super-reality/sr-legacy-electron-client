@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CVResult } from "../../../types/utils";
 
 export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 
@@ -9,6 +10,14 @@ const initialState = {
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
   overlayTransparent: false as boolean,
+  cvResult: {
+    dist: 0,
+    sizeFactor: 0,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  } as CVResult,
 };
 
 type RenderState = typeof initialState;
@@ -43,6 +52,12 @@ const renderSlice = createSlice({
         [action.payload.path]: action.payload.str,
       };
     },
+    setCvResult: (
+      state: RenderState,
+      action: PayloadAction<CVResult>
+    ): void => {
+      state.cvResult = action.payload;
+    },
   },
 });
 
@@ -51,6 +66,7 @@ export const {
   setOverlayTransparent,
   setYScrollMoveTo,
   setTopInput,
+  setCvResult,
 } = renderSlice.actions;
 
 export default renderSlice;

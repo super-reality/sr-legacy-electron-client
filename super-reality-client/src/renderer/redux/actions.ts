@@ -8,6 +8,7 @@ import * as createStepSlice from "./slices/createStepSlice";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
 import * as settingsSlice from "./slices/settingsSlice";
+import * as backgroundSlice from "./slices/backgroundSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -19,10 +20,17 @@ export const actions = {
   SET_YSCROLL: renderSlice.setYScroll,
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
+  SET_CV_RESULT: renderSlice.setCvResult,
   SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
   CREATE_LESSON_V2_DATA: createLessonSliceV2.setData,
   CREATE_LESSON_V2_TREE: createLessonSliceV2.setOpenTree,
+  CREATE_LESSON_V2_DRAG: createLessonSliceV2.setDrag,
+  CREATE_LESSON_V2_DRAGOVER: createLessonSliceV2.setDragOver,
+  CREATE_LESSON_V2_MOVE: createLessonSliceV2.doMove,
+  CREATE_LESSON_V2_CUT: createLessonSliceV2.doCut,
+  CREATE_LESSON_V2_DELETE: createLessonSliceV2.doDelete,
   CREATE_LESSON_V2_SELECT: createLessonSliceV2.selectEvent,
+  CREATE_LESSON_V2_SETLESSON: createLessonSliceV2.setLesson,
   CREATE_LESSON_V2_SETCHAPTER: createLessonSliceV2.setChapter,
   CREATE_LESSON_V2_SETSTEP: createLessonSliceV2.setStep,
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
@@ -42,6 +50,7 @@ export const actions = {
   CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
   SET_DETACHED: commonPropSlice.setDetached,
+  SET_BACKGROUND: commonPropSlice.setBackground,
   USERDATA_RESET: userDataSlice.clearUserData,
   USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
   USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,
@@ -49,6 +58,7 @@ export const actions = {
   CLEAR_SETTINGS: settingsSlice.clearsettings,
   SET_SETTINGS: settingsSlice.setSettings,
   SET_CV_SETTINGS: settingsSlice.setCVSettings,
+  SET_BACK: backgroundSlice.setData,
 };
 
 export type ActionKeys = keyof typeof actions;

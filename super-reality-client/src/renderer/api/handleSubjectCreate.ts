@@ -3,23 +3,20 @@ import { ApiError } from "./types";
 import reduxAction from "../redux/reduxAction";
 import store from "../redux/stores/renderer";
 import SubjectCreate from "./types/subject/create";
+import apiErrorHandler from "./apiErrorHandler";
 
 export default function handleSubjectCreate(
   res: AxiosResponse<SubjectCreate | ApiError>
 ) {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
-      if (res.data.err_code == 0) {
+    apiErrorHandler<SubjectCreate>(res)
+      .then((d) => {
         reduxAction(store.dispatch, {
           type: "CREATE_SUBJECT_RESET",
           arg: null,
         });
-        resolve();
-      } else {
-        reject();
-      }
-    } else {
-      reject();
-    }
+        resolve(d.data);
+      })
+      .catch(reject);
   });
 }

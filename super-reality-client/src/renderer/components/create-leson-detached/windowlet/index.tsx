@@ -9,28 +9,7 @@ import React, {
 import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
-
-const restrictMinSize =
-  interact.modifiers &&
-  interact.modifiers.restrictSize({
-    min: { width: 100, height: 100 },
-  });
-
-const cursorChecker: any = (
-  action: any,
-  _interactable: any,
-  _element: any,
-  interacting: boolean
-): string => {
-  switch (action.axis) {
-    case "x":
-      return "ew-resize";
-    case "y":
-      return "ns-resize";
-    default:
-      return interacting ? "grabbing" : "grab";
-  }
-};
+import { cursorChecker, restrictMinSize } from "../../../constants";
 
 interface WindowletProps {
   title: string;

@@ -1,0 +1,94 @@
+.video-railOuter {
+  position: absolute;
+  width: 100%;
+  height: 32px;
+  transform: translate(0%, -50%);
+  cursor: pointer;
+}
+
+.video-railInner {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  transform: translate(0%, -50%);
+  pointer-events: none;
+  background-color: var(--color-background-hover);
+}
+
+.video-handle-0 {
+  background-image: url("../../../../assets/svg/video-handle-left.svg");
+  position: absolute;
+  transform: translate(-100%, -25px);
+  z-index: 5;
+  width: 26px;
+  height: 32px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.video-handle-1 {
+  background-image: url("../../../../assets/svg/video-handle.svg");
+  position: absolute;
+  transform: translate(-50%, -25px);
+  z-index: 6;
+  width: 32px;
+  height: 110px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.video-handle-2 {
+  background-image: url("../../../../assets/svg/video-handle-right.svg");
+  position: absolute;
+  transform: translate(0, -25px);
+  z-index: 5;
+  width: 26px;
+  height: 32px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.video-slider {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.3);
+  background-color: #9bbfd4;
+}
+
+.video-track {
+  position: absolute;
+  transform: translate(0%, -50%);
+  height: 78px;
+  top: 41px;
+  z-index: 1;
+  background-color: var(--color-text-active);
+  cursor: pointer;
+  opacity: 0.25;
+}
+
+.video-tickPre {
+  position: absolute;
+  top: 4px;
+  width: 2px;
+  height: 20px;
+  background-color: var(--color-background-hover);
+}
+
+.video-tickPre-small {
+  position: absolute;
+  top: 4px;
+  width: 2px;
+  height: 10px;
+  background-color: var(--color-background-hover);
+}
+
+.video-tick {
+  position: absolute;
+  top: 28px;
+  font-size: 10px;
+  text-align: center;
+}

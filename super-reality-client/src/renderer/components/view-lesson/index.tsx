@@ -27,10 +27,6 @@ import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step-old/step";
-import useCVMatch from "../../hooks/useCVMatch";
-import closeFindBox from "../../../utils/closeFindBox";
-import cvStepProcess from "../../../utils/cvStepProcess";
-import { initialState } from "../../redux/slices/createStepSlice";
 import getTTS from "../../../utils/getTTS";
 import { initialCVSettings } from "../../redux/static";
 
@@ -80,27 +76,6 @@ export default function ViewLesson(props: ViewLessonProps) {
     );
   }, [data]);
 
-  const cvShow = useCallback(
-    (res: any) => {
-      cvStepProcess(res, stepNow || initialState, doNext);
-    },
-    [doNext, stepNow]
-  );
-
-  const [CV, isCapturing, startCV, endCv] = useCVMatch(
-    stepNow && stepNow.functions[0] !== InitalFnOptions["Computer vision Off"]
-      ? stepNow.images
-      : [""],
-    cvShow
-  );
-
-  useEffect(() => {
-    return () => {
-      closeFindBox();
-      endCv();
-    };
-  }, []);
-
   useEffect(() => {
     if (stepNow && isPlaying) {
       reduxAction(dispatch, {
@@ -111,16 +86,10 @@ export default function ViewLesson(props: ViewLessonProps) {
     }
   }, [stepNow, isPlaying, dispatch]);
 
-  const doStart = useCallback(() => {
-    startCV();
-    setIsPlaying(true);
-  }, [startCV]);
-
   return (
     <>
       {data && stepNow ? (
         <>
-          <CV />
           {isPlaying == true && (
             <Collapsible outer expanded title="Step">
               <ItemInner>
@@ -169,16 +138,6 @@ export default function ViewLesson(props: ViewLessonProps) {
             title="Lesson Info"
           >
             <LessonActive id={data?._id || id} compact />
-            {isPlaying == false && (
-              <ButtonSimple
-                width="120px"
-                height="16px"
-                margin="8px auto"
-                onClick={doStart}
-              >
-                Start Lesson
-              </ButtonSimple>
-            )}
           </Collapsible>
           <Collapsible outer title="Steps">
             {data.totalSteps.map((step, i: number) => (

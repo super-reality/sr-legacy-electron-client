@@ -1,20 +1,15 @@
 import { AxiosResponse } from "axios";
+import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
 import LessonGet from "./types/lesson/get";
 
 /* eslint-disable camelcase */
 export default function handleLessonGet(
-  res: AxiosResponse<ApiError | LessonGet>
+  res: AxiosResponse<LessonGet | ApiError>
 ): Promise<LessonGet> {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
-      if (res.data.err_code == 0) {
-        resolve(res.data);
-      } else {
-        reject();
-      }
-    } else {
-      reject();
-    }
+    apiErrorHandler<LessonGet>(res)
+      .then((d) => resolve(d))
+      .catch(reject);
   });
 }
