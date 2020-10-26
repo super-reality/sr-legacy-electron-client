@@ -35,8 +35,8 @@ export default function usePopupImageSource(
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.unregister("Shift+C");
-    doWait();
-  }, []);
+    closeWait();
+  }, [closeWait]);
 
   const doWaitStart = useCallback(() => {
     // eslint-disable-next-line global-require

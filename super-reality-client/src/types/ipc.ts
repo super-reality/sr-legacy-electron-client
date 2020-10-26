@@ -1,18 +1,51 @@
-type IpcMethods = "popup" | "test";
+import {
+  initialCVSettings,
+  initialBackgroundState,
+} from "../renderer/redux/static";
+import { CVResult } from "./utils";
 
-interface IpcMsg {
+export type IpcMethods =
+  | "popup"
+  | "pythonExec"
+  | "pythonResponse"
+  | "cv"
+  | "cvResult";
+
+export interface IpcMsg {
   method: IpcMethods;
   arg: any;
+  to?: string;
 }
 
-interface IpcMsgPopup extends IpcMsg {
+export interface IpcMsgPopup extends IpcMsg {
   method: "popup";
   arg: string;
 }
 
-interface IpcMsgTest extends IpcMsg {
-  method: "test";
-  arg: { foo: number };
+export interface IpcMsgPythocExec extends IpcMsg {
+  method: "pythonExec";
+  arg: any;
 }
 
-export type IpcArgument = IpcMsgPopup | IpcMsgTest;
+export interface IpcMsgPythocResponse extends IpcMsg {
+  method: "pythonResponse";
+  arg: any[] | undefined;
+}
+
+export interface ipcMsgCv extends IpcMsg {
+  method: "cv";
+  arg: typeof initialBackgroundState & typeof initialCVSettings;
+}
+
+export interface ipcMsgCvResult extends IpcMsg {
+  method: "cvResult";
+  arg: CVResult;
+}
+
+export type IpcArgument =
+  | IpcMsgPopup
+  | IpcMsgPythocExec
+  | IpcMsgPythocResponse
+  | ipcMsgCv
+  | ipcMsgCvResult;
+

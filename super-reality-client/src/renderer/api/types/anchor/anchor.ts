@@ -7,7 +7,7 @@ export interface IAnchor {
   name: string;
   type: AnchorType;
   templates: string[];
-  function: AnchorFn;
+  anchorFunction: AnchorFn;
   cvMatchValue: number;
   cvCanvas: number;
   cvDelay: number;

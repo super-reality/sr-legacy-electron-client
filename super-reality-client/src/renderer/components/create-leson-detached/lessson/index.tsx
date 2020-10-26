@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Flex from "../../flex";
 import "../../containers.scss";
 import "./index.scss";
 import ButtonRound from "../../button-round";
-import LessonTree, { LessonTreeControls } from "../lesson-tree";
-import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev.svg";
-import { ReactComponent as ButtonNext } from "../../../../assets/svg/next.svg";
+import LessonTree from "../lesson-tree";
+import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev-step.svg";
+import { ReactComponent as ButtonNext } from "../../../../assets/svg/next-step.svg";
 import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
+
 import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.svg";
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
@@ -15,15 +16,44 @@ import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
 import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
+import LessonTreeControls from "../lesson-tree-controls";
+import reduxAction from "../../../redux/reduxAction";
+import RecordingsView from "../recordings-view";
 
-type Sections = "Chapters" | "Anchors" | "Info";
-const sections: Sections[] = ["Chapters", "Anchors", "Info"];
+type Sections = "Lessons" | "Recordings";
+const sections: Sections[] = ["Lessons", "Recordings"];
 
-export default function Lesson(): JSX.Element {
+interface LessonProps {
+  setTransparent: () => void;
+  createRecorder: () => void;
+}
+
+export default function Lesson(props: LessonProps): JSX.Element {
+  const dispatch = useDispatch();
+  const { setTransparent, createRecorder } = props;
   const [view, setView] = useState<Sections>(sections[0]);
   const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+
+  const doPreviewOne = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        stepPreview: treeCurrentType == "step",
+        itemPreview: treeCurrentType == "item",
+      },
+    });
+    setTransparent();
+  }, [dispatch, treeCurrentType, setTransparent]);
+
+  const doPreview = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { stepPreview: true },
+    });
+    setTransparent();
+  }, [dispatch, setTransparent]);
 
   return (
     <>
@@ -35,7 +65,10 @@ export default function Lesson(): JSX.Element {
           overflow: "auto",
         }}
       >
-        <LessonTree />
+        {view == "Lessons" && <LessonTree />}
+        {view == "Recordings" && (
+          <RecordingsView createRecorder={createRecorder} />
+        )}
       </TabsContainer>
       <div className="create-lesson-item-container mid-tight">
         <LessonTreeControls />
@@ -53,16 +86,25 @@ export default function Lesson(): JSX.Element {
           <ButtonRound
             width="36px"
             height="36px"
-            iconFill="var(--color-green)"
             onClick={() => {}}
+            svg={ButtonNext}
+            style={{ marginRight: "8px" }}
+          />
+          <ButtonRound
+            width="36px"
+            height="36px"
+            disabled={treeCurrentType !== "step" && treeCurrentType !== "item"}
+            iconFill="var(--color-red)"
+            onClick={doPreviewOne}
             svg={ButtonPlay}
             style={{ marginRight: "8px" }}
           />
           <ButtonRound
             width="36px"
             height="36px"
-            onClick={() => {}}
-            svg={ButtonNext}
+            iconFill="var(--color-green)"
+            onClick={doPreview}
+            svg={ButtonPlay}
             style={{ marginRight: "8px" }}
           />
           <ButtonRound

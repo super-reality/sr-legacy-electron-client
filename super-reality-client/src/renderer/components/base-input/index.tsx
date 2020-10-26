@@ -8,10 +8,11 @@ interface BaseInputProps {
   placeholder?: string;
   value: string;
   onChange: (event: InputChangeEv) => void;
+  autoFocus?: boolean;
 }
 
 export default function BaseInput(props: BaseInputProps): JSX.Element {
-  const { title, placeholder, value, onChange } = props;
+  const { title, placeholder, value, onChange, autoFocus } = props;
 
   return (
     <Flex>
@@ -19,6 +20,9 @@ export default function BaseInput(props: BaseInputProps): JSX.Element {
         <div>{title}</div>
         <input
           placeholder={placeholder || ""}
+          ref={(input) => {
+            if (autoFocus && input) input.focus();
+          }}
           value={value}
           onChange={onChange}
           onKeyDown={onChange}

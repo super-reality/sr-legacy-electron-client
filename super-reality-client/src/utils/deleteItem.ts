@@ -14,7 +14,7 @@ export default function deleteItem(type: string, id: string): Promise<void> {
     })
       .then((d) => {
         if (d.data.err_code == 0) resolve();
-        else reject(d.data.msg);
+        else reject(d.data.message);
         setLoading(false);
       })
       .catch((err) => {

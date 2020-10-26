@@ -1,0 +1,36 @@
+@mixin find-boxes {
+  &.anchor {
+    background-color: #f047470d;
+    border: dotted var(--color-red) 3px;
+  }
+
+  &.area {
+    background-color: #47a3ff17;
+    border: dotted var(--color-blue) 3px;
+  }
+
+  &.mouse {
+    background-color: #ff814717;
+    border: dotted #ff8147 3px;
+  }
+
+  &.rectangle {
+    background-color: #47a3ff17;
+    border: solid var(--color-blue) 3px;
+  }
+}
+
+.example-box {
+  margin: auto;
+  width: 32px;
+  height: 32px;
+
+  @include find-boxes;
+}
+
+.find-box {
+  position: absolute;
+  display: flex;
+
+  @include find-boxes;
+}

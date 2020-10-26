@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Axios from "axios";
 import interact from "interactjs";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,7 +9,6 @@ import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
-import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
 import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
 import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
 import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
@@ -16,111 +16,22 @@ import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
-import ButtonRound from "../button-round";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
 import toggleMaximize from "../../../utils/toggleMaximize";
+import VideoNavigation from "./video-navigation";
+import VideoPreview from "./video-preview";
+import AnchorEdit from "./anchor-edit";
+import AnchorTester from "./anchor-tester";
+import LessonPlayer from "../lesson-player";
+import { voidFunction } from "../../constants";
 
 function setMocks() {
-  const lesson = {
-    _id: "string",
-    name: "test",
-    cost: 0,
-    status: 1,
-    description: "",
-    entry: 2,
-    skills: ["skill"],
-    difficulty: 2,
-    media: [],
-    location: {},
-    chapters: [
-      { _id: "001", name: "Chapter One" },
-      { _id: "002", name: "Chapter Two" },
-    ],
-    setupScreenshots: [],
-    setupInstructions: "",
-    setupFiles: [],
-  };
-  reduxAction(store.dispatch, { type: "CREATE_LESSON_V2_DATA", arg: lesson });
   reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
+    type: "CREATE_LESSON_V2_DATA",
     arg: {
-      _id: "001",
-      name: "Chapter One",
-      steps: [{ _id: "step01", name: "Step one" }],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETCHAPTER",
-    arg: {
-      _id: "002",
-      name: "Chapter Two",
-      steps: [{ _id: "step01", name: "Step one" }],
-    },
-  });
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETSTEP",
-    arg: {
-      _id: "step01",
-      name: "Step one",
-      items: [
-        { _id: "001", name: "Focus Highlight" },
-        { _id: "002", name: "Image" },
-      ],
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      _id: "001",
-      name: "Focus Highlight",
-      type: "focus_highlight",
-      anchor: "001",
-      relativePos: {
-        x: 0,
-        y: 0,
-      },
-      trigger: null,
-      destination: "",
-      transition: 0,
-      focus: "Rectangle",
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETITEM",
-    arg: {
-      _id: "002",
-      name: "Image",
-      type: "image",
-      anchor: undefined,
-      relativePos: {
-        x: 0,
-        y: 0,
-      },
-      trigger: 2,
-      destination: "",
-      transition: 0,
-      url: "",
-    },
-  });
-
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_SETANCHOR",
-    arg: {
-      _id: "001",
-      name: "Anchor",
-      type: "crop",
-      templates: [],
-      function: "or",
-      cvMatchValue: 990,
-      cvCanvas: 100,
-      cvDelay: 100,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 0,
+      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }],
     },
   });
 }
@@ -164,10 +75,31 @@ function TopBar() {
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
+  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
+  const {
+    currentAnchor,
+    currentRecording,
+    anchorTestView,
+    stepPreview,
+    itemPreview,
+    videoNavigation,
+    videoDuration,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  const setVideoNavPos = useCallback(
+    (n: readonly number[]) => {
+      console.log(n);
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { videoNavigation: [...n] },
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     setMocks();
@@ -191,7 +123,7 @@ export default function CreateLessonDetached(): JSX.Element {
         if (resizeContainer.current) interact(resizeContainer.current).unset();
       };
     }
-    return () => {};
+    return voidFunction;
   }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {
@@ -217,16 +149,24 @@ export default function CreateLessonDetached(): JSX.Element {
 
   return overlayTransparent ? (
     <div className="transparent-container click-through">
-      {openRecorder ? (
+      {openRecorder && (
         <Recorder
           onFinish={() => {
             setOpenRecorder(false);
             setSolid();
           }}
         />
-      ) : (
-        <></>
       )}
+      {anchorTestView && (
+        <>
+          <AnchorTester
+            onFinish={() => {
+              setSolid();
+            }}
+          />
+        </>
+      )}
+      {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
     </div>
   ) : (
     <div className="solid-container">
@@ -238,16 +178,34 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson />
+            <Lesson
+              createRecorder={createRecorder}
+              setTransparent={setTransparent}
+            />
           </div>
-          <div className="preview" />
+          {currentAnchor !== undefined ? (
+            <div
+              className="anchor-edit"
+              style={{ width: "340px" }}
+              ref={resizeContainerAnchor}
+            >
+              <AnchorEdit setTransparent={setTransparent} />
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="preview">
+            <VideoPreview />
+          </div>
         </div>
         <div className="nav">
-          <ButtonRound
-            width="64px"
-            height="64px"
-            svg={RecordIcon}
-            onClick={createRecorder}
+          <VideoNavigation
+            key={currentRecording}
+            domain={[0, Math.round(videoDuration * 1000)]}
+            defaultValues={videoNavigation}
+            ticksNumber={100}
+            callback={setVideoNavPos}
+            slideCallback={setVideoNavPos}
           />
         </div>
       </div>

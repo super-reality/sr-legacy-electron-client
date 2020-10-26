@@ -1,0 +1,63 @@
+@import "../../misc.scss";
+@import "../../lesson-player/index.scss";
+@import "../../lesson-player/find-box/index.scss";
+
+.video-preview-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  @include disable-select;
+
+  .horizontal-pos {
+    width: 100%;
+    height: 0px;
+    border-top: dotted 2px var(--color-section-separator);
+    position: absolute;
+    display: none;
+  }
+
+  .vertical-pos {
+    width: 0px;
+    height: 100%;
+    border-left: dotted 2px var(--color-section-separator);
+    position: absolute;
+    display: none;
+  }
+
+  .video-preview-no-video {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-background-hover);
+    margin: auto;
+    width: auto;
+    position: inherit;
+  }
+
+  .video-preview-video {
+    margin: auto;
+    display: block;
+    max-width: -webkit-fill-available;
+    max-height: -webkit-fill-available;
+    width: auto;
+    height: inherit;
+    position: inherit;
+  }
+
+  .item-image {
+    @include item-base;
+  }
+
+  .item-video {
+    @include item-base;
+  }
+
+  .item-focus_highlight {
+    @include item-base;
+    @include find-boxes;
+  }
+
+  .item-audio {
+    @include item-base;
+  }
+}

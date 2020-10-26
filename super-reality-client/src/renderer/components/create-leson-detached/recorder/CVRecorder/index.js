@@ -1,14 +1,14 @@
 /* eslint-disable lines-between-class-members */
-
-import { captureDesktopStream } from "../../../../../utils/capture";
-
 /* eslint-disable radix */
-const { app, remote } = require("electron");
+const { desktopCapturer, app, remote } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
-const mouseEvents = __non_webpack_require__("global-mouse-events");
-// eslint-disable-next-line no-undef
-const hbjs = __non_webpack_require__("handbrake-js");
+
+/*
+need to install the following dependency
+npm install ts-ebml --save
+*/
+const { Decoder, Encoder, tools, Reader } = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
@@ -20,6 +20,7 @@ export default class CVRecorder {
 
     this._clickEventDetails = [];
     this._recordedChunks = [];
+    this._audioRecordedChunks = [];
     this._stepPath = `${userData}/step/`;
     this._recordingPath = `${userData}/step/media/`;
     this._stepSnapshotPath = `${userData}/step/snapshots/`;
@@ -31,6 +32,7 @@ export default class CVRecorder {
     this._pausedValue = null;
     this._videoElement = null;
     this._mediaRecorder = null; // _MediaRecorder instance to capture footage
+    this._audioMediaRecorder = null; // _MediaRecorder instance to capture audio
     this._differenceValue = 0;
     this._stoppedDuration = 0;
     this._pixelOffset = 2;
@@ -38,6 +40,7 @@ export default class CVRecorder {
     this._currentTimer = "";
     this._stepRecordingName = "";
     this._recordingFullPath = "";
+    this._finishCallback = () => {};
 
     if (!fs.existsSync(this._stepPath)) {
       fs.mkdir(this._stepPath, (err) => {
@@ -57,9 +60,10 @@ export default class CVRecorder {
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
-    this.convertRawVideoFormat = this.convertRawVideoFormat.bind(this);
     this.handleStop = this.handleStop.bind(this);
     this.handleDataAvailable = this.handleDataAvailable.bind(this);
+    this.handleAudioStop = this.handleAudioStop.bind(this);
+    this.handleAudioDataAvailable = this.handleAudioDataAvailable.bind(this);
     this.selectSource = this.selectSource.bind(this);
     this.clockRunning = this.clockRunning.bind(this);
     this.startTimer = this.startTimer.bind(this);
@@ -71,6 +75,15 @@ export default class CVRecorder {
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
     this.stop = this.stop.bind(this);
+    this.finishCallback = this.finishCallback.bind(this);
+  }
+
+  set finishCallback(value) {
+    this._finishCallback = value;
+  }
+
+  get finishCallback() {
+    return this._finishCallback;
   }
 
   get clickEventDetails() {
@@ -182,17 +195,17 @@ export default class CVRecorder {
     return [];
   }
 
-  async extractClickedImages(pathToConvertedFile) {
-    const cap = new cv.VideoCapture(pathToConvertedFile);
+  async extractClickedImages() {
+    const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
     const mainImage = cap.read();
+    // console.log(pathToConvertedFile)
 
     const frames = cap.get(cv.CAP_PROP_FRAME_COUNT);
     const jsonMetaData = {
       step_data: [],
     };
 
-    // const jsonMetaData = new Dictionary()
     this._clickEventDetails.forEach(async (arr) => {
       const timestamp = arr[2];
       const yCordinate = arr[1];
@@ -214,7 +227,7 @@ export default class CVRecorder {
 
       const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-      const cannyEdges = grayImg.canny(25, 200, 3);
+      const cannyEdges = grayImg.canny(23, 180, 3);
 
       // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
@@ -306,10 +319,29 @@ export default class CVRecorder {
         /:/g,
         "-"
       )}.jpeg`;
+      if (
+        !fs.existsSync(
+          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
+        )
+      ) {
+        fs.mkdir(
+          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
+          (err) => {
+            if (err) throw err;
+          }
+        );
+      }
       cv.imwrite(
-        `${this._stepSnapshotPath}/${this._stepRecordingName}/${snippedImageName}`,
+        `${this._stepSnapshotPath}${
+          this._stepRecordingName.split(".")[0]
+        }/${snippedImageName}`,
         outputImg,
         [parseInt(cv.IMWRITE_JPEG_QUALITY)]
+      );
+      console.log(
+        `${this._stepSnapshotPath}${
+          this._stepRecordingName.split(".")[0]
+        }/${snippedImageName}`
       );
       jsonMetaData.step_data.push({
         name: snippedImageName,
@@ -328,51 +360,80 @@ export default class CVRecorder {
       }
     );
     this._clickEventDetails = [];
-  }
-
-  convertRawVideoFormat(pathtoRawFile, pathToConvertedFile) {
-    hbjs
-      .spawn({ input: pathtoRawFile, output: pathToConvertedFile })
-      .on("error", (err) => {
-        console.error(err);
-        // invalid user input, no video found etc
-      })
-      .on("progress", (progress) => {
-        console.log(
-          "Percent complete: %s, ETA: %s",
-          progress.percentComplete,
-          progress.eta
-        );
-      })
-      .on("complete", (complete) => {
-        console.log("complete");
-        this.extractClickedImages(pathToConvertedFile);
-      });
+    this._finishCallback(jsonMetaData);
   }
 
   // Saves the video file on stop
   handleStop(e) {
-    const blob = new Blob(this._recordedChunks, {
-      type: "video/webm; codecs=vp9",
+    const videoBlob = new Blob(this._recordedChunks, {
+      type: "video/webm;codecs=vp9",
+    });
+    const readAsArrayBuffer = (blob) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(blob);
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = (ev) => {
+          reject(ev.error);
+        };
+      });
+    };
+    const injectMetadata = (blob) => {
+      const decoder = new Decoder();
+      const reader = new Reader();
+      reader.logging = false;
+      reader.drop_default_duration = false;
+
+      return readAsArrayBuffer(blob).then((buffer) => {
+        const elms = decoder.decode(buffer);
+        elms.forEach((elm) => {
+          reader.read(elm);
+        });
+        reader.stop();
+        const refinedMetadataBuf = tools.makeMetadataSeekable(
+          reader.metadatas,
+          reader.duration,
+          reader.cues
+        );
+        const body = buffer.slice(reader.metadataSize);
+        const result = new Blob([refinedMetadataBuf, body], {
+          type: blob.type,
+        });
+
+        return result;
+      });
+    };
+    const seekableVideoBlob = injectMetadata(videoBlob);
+    seekableVideoBlob.then((blob) => {
+      blob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer);
+        this._stepRecordingName = `${Date.now()}.webm`;
+        this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
+        console.log("_recordingPath == >", this._recordingFullPath);
+        if (this._recordingFullPath) {
+          fs.writeFile(this._recordingFullPath, buffer, () => {
+            this.extractClickedImages();
+          });
+        }
+      });
+    });
+  }
+
+  handleAudioStop(e) {
+    const audioBlob = new Blob(this._audioRecordedChunks, {
+      type: "audio/wav;",
     });
 
-    blob.arrayBuffer().then((arrayBuffer) => {
+    audioBlob.arrayBuffer().then((arrayBuffer) => {
       const buffer = Buffer.from(arrayBuffer);
-      this._stepRecordingName = `vid-${Date.now()}.webm`;
-      // console.log("stop")
-      this._recordingFullPath = this._recordingPath + this._stepRecordingName;
-
-      const fileNameAndExtension = this._recordingFullPath.split(".");
-      const pathToConvertedFile = `${fileNameAndExtension[0]}.m4v`;
-
-      console.log("_recordingPath == >", this._recordingFullPath);
-      console.log("pathToConvertedFile == >", pathToConvertedFile);
-      if (this._recordingFullPath) {
-        fs.writeFile(this._recordingFullPath, buffer, () => {
-          this.convertRawVideoFormat(
-            this._recordingFullPath,
-            pathToConvertedFile
-          );
+      this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
+      this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
+      this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
+      if (this._audioRecordingFullPath) {
+        fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
+          if (err) throw err;
         });
       }
     });
@@ -383,28 +444,78 @@ export default class CVRecorder {
     this._recordedChunks.push(e.data);
   }
 
+  // Captures all recorded chunks
+  handleAudioDataAvailable(e) {
+    this._audioRecordedChunks.push(e.data);
+  }
+
+  async captureDesktopStream(sourceId) {
+    return new Promise((resolve, reject) => {
+      desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
+        try {
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: sourceId,
+              },
+            },
+          });
+          const constraintsAudio = { audio: true };
+          this._audioStream = await navigator.mediaDevices.getUserMedia(
+            constraintsAudio
+          );
+          const combinedStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            ...this._audioStream.getAudioTracks(),
+          ]);
+          resolve(combinedStream);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+  }
+
   // Change the videoSource window to record
-  async selectSource(source) {
-    try {
-      // Create a Stream
-      // Cant pass the ID to choose the source (I get an exception)
-      this.stream = await captureDesktopStream(); // source.id
+  selectSource(source) {
+    return this.captureDesktopStream(source.id).then((newStream) => {
+      return new Promise((resolve, reject) => {
+        try {
+          this.stream = newStream;
+          this._videoElement = document.createElement("video");
+          this._videoElement.srcObject = this.stream;
+          this._videoElement.onloadedmetadata = (e) => {
+            console.log(e);
+            this._videoElement.play();
+            // this._videoElement.muted = true;
 
-      // Preview the source in a video element
-      this._videoElement = document.createElement("video");
-      this._videoElement.srcObject = this.stream;
-      this._videoElement.onloadedmetadata = (e) => this._videoElement.play();
+            // Create the Media Recorder
+            const options = { mimeType: "video/webm; codecs=vp9" };
+            this._mediaRecorder = new MediaRecorder(this.stream, options);
 
-      // Create the Media Recorder
-      const options = { mimeType: "video/webm; codecs=vp9" };
-      this._mediaRecorder = new MediaRecorder(this.stream, options);
+            // Create the Media Recorder
+            const audioOptions = { mimeType: "audio/webm" };
+            this._audioMediaRecorder = new MediaRecorder(
+              this._audioStream,
+              audioOptions
+            );
 
-      // Register Event Handlers
-      this._mediaRecorder.ondataavailable = this.handleDataAvailable;
-      this._mediaRecorder.onstop = this.handleStop;
-    } catch (e) {
-      console.error(e);
-    }
+            // Register Event Handlers
+            this._mediaRecorder.ondataavailable = this.handleDataAvailable;
+            this._mediaRecorder.onstop = this.handleStop;
+
+            this._audioMediaRecorder.ondataavailable = this.handleAudioDataAvailable;
+            this._audioMediaRecorder.onstop = this.handleAudioStop;
+            resolve();
+          };
+        } catch (e) {
+          console.log(e);
+          reject(e);
+        }
+      });
+    });
   }
 
   clockRunning() {
@@ -443,9 +554,11 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  start(source) {
-    this.selectSource(source).then(() => {
+  start(stream) {
+    console.log("dostart");
+    return this.selectSource(stream).then(() => {
       this._mediaRecorder.start();
+      this._audioMediaRecorder.start();
       this._recordingStarted = true;
       this.startTimer();
     });
@@ -473,12 +586,14 @@ export default class CVRecorder {
     this._recordingStarted = false;
     this.pauseTimer();
     this._mediaRecorder.pause();
+    this._audioMediaRecorder.pause();
   }
 
   resume() {
     this._recordingStarted = true;
     this.resumeTimer();
     this._mediaRecorder.resume();
+    this._audioMediaRecorder.resume();
   }
 
   stop() {
@@ -486,5 +601,6 @@ export default class CVRecorder {
     this.stopTimer();
     this.resetTimer();
     this._mediaRecorder.stop();
+    this._audioMediaRecorder.stop();
   }
 }

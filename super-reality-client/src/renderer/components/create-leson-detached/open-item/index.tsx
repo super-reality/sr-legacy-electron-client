@@ -1,9 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as ItemArea } from "../../../../assets/svg/item-area.svg";
-import { ReactComponent as ItemAnchor } from "../../../../assets/svg/item-anchor.svg";
-import { ReactComponent as ItemTrigger } from "../../../../assets/svg/item-trigger.svg";
 import {
   ItemFocusTriggers,
   ItemAudioTriggers,
@@ -18,21 +15,36 @@ import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
+import ButtonRound from "../../button-round";
+
+import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
+import usePopupImageSource from "../../../hooks/usePopupImageSource";
+import newAnchor from "../lesson-utils/newAnchor";
+import ModalList from "../modal-list";
+import updateItem from "../lesson-utils/updateItem";
+import SettingsFocusHighlight from "./settings-focus-highlight";
+import SettingsImage from "./settings-image";
 
 interface OpenItemProps {
   id: string;
 }
 
-type ItemModalOptions = "settings" | "anchors" | "trigger";
-const itemModalOptions: ItemModalOptions[] = ["settings", "anchors", "trigger"];
+type ItemModalOptions = "Settings" | "Anchor" | "Trigger";
+const itemModalOptions: ItemModalOptions[] = ["Settings", "Anchor", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeItems, treeAnchors, currentAnchor } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
-  const item: Item | null = treeItems[id] || null;
+  const item: Item | null = useMemo(() => treeItems[id] || null, [
+    id,
+    treeItems,
+  ]);
+
   let triggers: Record<string, number | null> = { None: null };
   if (item) {
     switch (item.type) {
@@ -56,18 +68,54 @@ export default function OpenItem(props: OpenItemProps) {
     }
   }
 
-  const setTrigger = useCallback(
-    (value: number | null) => {
+  const doUpdate = useCallback(
+    <T extends Item>(data: Partial<T>) => {
+      const updatedItem = { ...treeItems[id], ...data };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETITEM",
-        arg: { ...treeItems[id], trigger: value },
+        arg: { item: updatedItem },
+      });
+      updateItem(updatedItem, id);
+    },
+    [id, treeItems]
+  );
+
+  const callback = useCallback(
+    (e) => {
+      newAnchor(
+        {
+          name: "New Anchor",
+          type: "crop",
+          templates: [e],
+          anchorFunction: "or",
+          cvMatchValue: 0,
+          cvCanvas: 50,
+          cvDelay: 100,
+          cvGrayscale: true,
+          cvApplyThreshold: false,
+          cvThreshold: 127,
+        },
+        id
+      );
+    },
+    [id]
+  );
+
+  const openAnchor = useCallback(
+    (e) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { currentAnchor: e },
       });
     },
-    [id, dispatch]
+    [id]
   );
+
+  const [Popup, open] = usePopupImageSource(callback, true, true, true);
 
   return (
     <>
+      {Popup}
       <Tabs
         buttons={itemModalOptions}
         initial={view}
@@ -75,16 +123,45 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        {view === "settings" && <Flex column />}
-        {view === "anchors" && <Flex column />}
-        {view === "trigger" && (
+        {view === "Settings" && item.type == "focus_highlight" && (
+          <SettingsFocusHighlight item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "image" && (
+          <SettingsImage item={item} update={doUpdate} />
+        )}
+        {view === "Anchor" && (
+          <>
+            <Flex
+              column
+              style={{ height: "calc(100% - 24px)", overflow: "auto" }}
+            >
+              <ModalList
+                options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
+                current={item?.anchor || ""}
+                selected={currentAnchor || ""}
+                setCurrent={(val) => doUpdate({ anchor: val })}
+                open={openAnchor}
+              />
+            </Flex>
+            <div>
+              <ButtonRound
+                width="24px"
+                height="24px"
+                svg={IconAdd}
+                svgStyle={{ width: "16px", height: "16px" }}
+                onClick={open}
+              />
+            </div>
+          </>
+        )}
+        {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>
             <BaseSelect
               title="Trigger"
               current={item.trigger}
               options={Object.values(triggers)}
               optionFormatter={constantFormat(triggers)}
-              callback={setTrigger}
+              callback={(val) => doUpdate({ trigger: val })}
             />
           </Flex>
         )}

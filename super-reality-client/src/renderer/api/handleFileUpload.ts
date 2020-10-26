@@ -1,20 +1,15 @@
 import { AxiosResponse } from "axios";
+import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
 import FileUpload from "./types/file/upload";
 
 /* eslint-disable camelcase */
 export default function handleFileUpload(
-  res: AxiosResponse<ApiError | FileUpload>
+  res: AxiosResponse<FileUpload | ApiError>
 ): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
-      if (res.data.err_code == 0) {
-        resolve(res.data.urls);
-      } else {
-        reject();
-      }
-    } else {
-      reject();
-    }
+    apiErrorHandler<FileUpload>(res)
+      .then((d) => resolve(d.urls))
+      .catch(reject);
   });
 }
