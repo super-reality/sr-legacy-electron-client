@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import { isEqual } from "lodash";
 import {
   Slider,
   Rail,
@@ -153,24 +154,13 @@ export default function VideoNavigation(
     ticksNumber,
     style,
   } = props;
-  const [state, setState] = useState({
-    values: defaultValues.slice(),
-    update: defaultValues.slice(),
-  });
+  const [state, setState] = useState<readonly number[]>(defaultValues.slice());
 
-  const onUpdate = useCallback(
-    (update) => {
-      setState({ ...state, update });
-    },
-    [state]
-  );
-
-  const onChange = useCallback(
-    (values) => {
-      setState({ ...state, values });
-    },
-    [state]
-  );
+  useEffect(() => {
+    if (!isEqual(state, defaultValues)) {
+      setState(defaultValues);
+    }
+  }, [state, defaultValues]);
 
   return (
     <div className="video-video-nav">
@@ -191,9 +181,9 @@ export default function VideoNavigation(
           disabled={disabled}
           domain={domain}
           rootStyle={sliderStyle}
-          onUpdate={onUpdate}
-          onChange={onChange}
-          values={state.values}
+          onUpdate={slideCallback}
+          onChange={callback}
+          values={state}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}

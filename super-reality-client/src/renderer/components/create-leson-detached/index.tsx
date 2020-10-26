@@ -9,7 +9,6 @@ import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
-import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
 import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
 import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
 import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
@@ -17,7 +16,6 @@ import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
-import ButtonRound from "../button-round";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
@@ -26,7 +24,6 @@ import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
-import CvComponents from "../CvComponents";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 
@@ -82,19 +79,27 @@ export default function CreateLessonDetached(): JSX.Element {
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
   const {
     currentAnchor,
+    currentRecording,
     anchorTestView,
     stepPreview,
     itemPreview,
+    videoNavigation,
+    videoDuration,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
 
-  const [videoNav, setVideoNav] = useState([100, 150, 200]);
-
-  const setVideoNavPos = useCallback((n: readonly number[]) => {
-    setVideoNav([...n]);
-  }, []);
+  const setVideoNavPos = useCallback(
+    (n: readonly number[]) => {
+      console.log(n);
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { videoNavigation: [...n] },
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     setMocks();
@@ -173,7 +178,10 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson setTransparent={setTransparent} />
+            <Lesson
+              createRecorder={createRecorder}
+              setTransparent={setTransparent}
+            />
           </div>
           {currentAnchor !== undefined ? (
             <div
@@ -191,21 +199,14 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
-          <ButtonRound
-            svg={RecordIcon}
-            width="48px"
-            height="48px"
-            onClick={createRecorder}
-          />
-          {/*
           <VideoNavigation
-            domain={[0, 1000]}
-            defaultValues={videoNav}
+            key={currentRecording}
+            domain={[0, Math.round(videoDuration * 1000)]}
+            defaultValues={videoNavigation}
             ticksNumber={100}
             callback={setVideoNavPos}
             slideCallback={setVideoNavPos}
           />
-          */}
         </div>
       </div>
     </div>

@@ -19,6 +19,8 @@ const initialState = {
   dragParent: "",
   dragOver: "",
   lessons: [] as IDName[],
+  videoNavigation: [0, 50, 100],
+  videoDuration: 100,
   treeLessons: {} as Record<string, ILessonV2>,
   treeChapters: {} as Record<string, IChapter>,
   treeSteps: {} as Record<string, IStep>,
