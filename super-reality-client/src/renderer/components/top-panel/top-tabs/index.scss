@@ -1,0 +1,46 @@
+@import "../../misc.scss";
+
+.top-tabs-content-container {
+  border-radius: 0 0 8px 8px;
+  background-color: var(--color-section);
+  padding: 10px;
+  margin: 0 5px 5px 5px;
+  border-top: 2px solid var(--color-button);
+  @include soft-shadow;
+}
+
+.top-tabs-tab-container {
+  justify-content: space-between;
+  display: flex;
+  margin: 0.5em 0.5em 0 0;
+  width: 70vw;
+  height: 1.5em;
+}
+
+@mixin top-tabs-tab {
+  text-align: center;
+  border-radius: 4px 4px 0 0;
+  margin: 0 0.25em;
+  cursor: pointer;
+}
+
+.top-tabs-tab {
+    
+    background-color: var(--color-section);
+  @include top-tabs-tab;
+}
+
+.top-tabs-tab:hover {
+  background-color: var(--color-background-hover);
+}
+
+.top-tabs-tab-selected {
+  background-color: var(--color-section-separator);
+  font-weight: 700;
+  color: var(--color-text-active);
+  @include top-tabs-tab;
+}
+
+.image-container{
+    border-radius: 0;
+}

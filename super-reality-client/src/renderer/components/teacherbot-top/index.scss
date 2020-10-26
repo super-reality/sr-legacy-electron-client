@@ -6,16 +6,16 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 24px;
-  background-color: var(--color-blue-new);
+  
+  background-color: var(--color-face-blue);
   border-radius: 6px 6px 0px 0px;
   margin: auto 1vw 0px 1vw;
   display: flex;
   @include disable-select;
 
   .face {
-    width: 40px;
-    height: 40px;
+    width: 26px;
+    height: 23px;
   }
 
   .points {

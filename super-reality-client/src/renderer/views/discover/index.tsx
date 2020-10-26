@@ -46,15 +46,16 @@ export default function Discover(): JSX.Element {
 
 
   // Test Array
-  type TestSections = "All" | "Jobs" | "Track"
-  const testArray: Array<TestSections> = ["All", "Jobs", "Track"]
   enum TestEnum {
     All,
     Jobs,
     Track
   }
+  type TestSections = keyof typeof TestEnum;
+  const testArray: Array<TestSections> = ["All", "Jobs", "Track"]
+  
 
-  const ContentArray = ["content All", "content jobs", "content tracks"]
+const ContentArray = ["content All", "content jobs", "content tracks"]
   // console.log(TestEnum.All)
   // Test state
   const [currentCollection, setCurrentCollection] = useState(testArray[TestEnum.All])

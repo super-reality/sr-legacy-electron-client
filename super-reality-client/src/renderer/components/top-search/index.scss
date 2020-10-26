@@ -52,6 +52,7 @@
       line-height: 40px;
       opacity: 0.5;
       -webkit-transition: all 0.1s ease-in-out;
+      transition: all 0.1s ease-in-out;
 
       &:hover {
         background-color: var(--color-background-hover);
@@ -65,17 +66,19 @@
   input {
     background: none;
     border: none;
-    height: 24px;
+    height: 1em;
     width: 100%;
     margin: 0;
     padding: 0 4px;
   }
 
   .top-input-icon {
-    width: 20px;
-    height: 20px;
-    margin: auto 0;
+    width: 16px;
+    height: 16px;
+    
+  
   }
+
 
   background: var(--color-background);
   border: 1px solid var(--color-background);
@@ -84,16 +87,35 @@
   margin: auto;
   color: var(--color-text);
   padding: 0 4px;
-  height: 24px;
+  height: 1em;
   display: flex;
-  margin: auto 4px;
+  margin: auto 0em;
 }
 
+.top-input-icon-plus{
+  margin: 0 0.25em 0 0.25em;
+}
+.top-input-icon-drop-down{
+  margin: 0 0.25em 0 0.1em;
+}
 .top-input {
-  background: var(--color-background);
-  border: 1px solid var(--color-separator);
+  background: var(--color-section-separator);
+  border: 1px solid var(--color-section-separator);
   border-radius: 24px;
   height: 24px;
   width: -webkit-fill-available;
   margin: auto;
+}
+
+
+
+
+
+.teacher-bot-top{
+  border: 0.1em solid var(--color-face-border);
+  border-bottom: none;
+}
+
+.top-tabs-content-container > .container-flex{
+  background-color: var(--color-section-separator);
 }
