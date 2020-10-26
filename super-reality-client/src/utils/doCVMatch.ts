@@ -1,18 +1,8 @@
 import globalData from "../renderer/globalData";
 import store, { AppState } from "../renderer/redux/stores/renderer";
 import { CVResult } from "../types/utils";
+import getImage from "./getImage";
 import * as cv from "./opencv/opencv";
-
-function getImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.crossOrigin = "Anonymous";
-    img.setAttribute("crossOrigin", "");
-    img.src = `${url}?${new Date().getTime()}`;
-  });
-}
 
 function getLocalMat(image: string): Promise<cv.Mat> {
   return new Promise((resolve, reject) => {

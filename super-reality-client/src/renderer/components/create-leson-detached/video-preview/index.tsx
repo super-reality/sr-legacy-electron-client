@@ -1,27 +1,20 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useMeasure } from "react-use";
-import interact from "interactjs";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
+import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
-import updateItem from "../lesson-utils/updateItem";
-import FindBox from "../../lesson-player/find-box";
-import ImageBox from "../../lesson-player/image.box";
-import { cursorChecker, voidFunction } from "../../../constants";
+import getImage from "../../../../utils/getImage";
 
 export default function VideoPreview(): JSX.Element {
-  const {
-    currentRecording,
-    currentAnchor,
-    currentItem,
-    treeItems,
-    treeAnchors,
-  } = useSelector((state: AppState) => state.createLessonV2);
-  const dispatcher = useDispatch();
-  const dragContainer = useRef<HTMLDivElement>(null);
+  const { currentRecording, currentItem, treeAnchors, treeItems } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+  const dispatch = useDispatch();
   const horPor = useRef<HTMLDivElement>(null);
   const vertPos = useRef<HTMLDivElement>(null);
+  const anchorImageRef = useRef<HTMLImageElement>(null);
 
   const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
 
@@ -30,108 +23,25 @@ export default function VideoPreview(): JSX.Element {
     [currentItem, treeItems]
   );
 
-  // Get item's anchor or just the one in use
-  const anchor = useMemo(() => {
-    const anchorId = item?.anchor || currentAnchor;
-    return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [item, currentAnchor, treeAnchors]);
-
-  // If the item does not have an anchor it should draw in abolsute position
-  const drawItemAbsolute = item?.anchor === null;
-
   useEffect(() => {
-    if (dragContainer.current && item) {
-      let startX = item.relativePos.horizontal;
-      let startY = item.relativePos.vertical;
-      const startW = item.relativePos.width;
-      const startH = item.relativePos.height;
-      interact(dragContainer.current)
-        .draggable({
-          cursorChecker,
-          modifiers: [
-            interact.modifiers.restrict({
-              restriction: "parent",
-            }),
-          ],
-        })
-        .on("dragmove", (event) => {
-          if (dragContainer.current) {
-            startX = (startX || 0) + (100 / (width - startW)) * event.dx;
-            startY = (startY || 0) + (100 / (height - startH)) * event.dy;
-            startX = Math.min(Math.max(startX, 0), 100);
-            startY = Math.min(Math.max(startY, 0), 100);
-            dragContainer.current.style.left = `calc((100% - ${startW}px) / 100 * ${Math.round(
-              startX
-            )})`;
-            dragContainer.current.style.top = `calc((100% - ${startH}px) / 100 * ${Math.round(
-              startY
-            )})`;
-
-            if (horPor.current) {
-              horPor.current.style.display = "block";
-              horPor.current.style.top = `calc((100% - ${startH}px) / 100 * ${Math.round(
-                startY
-              )} + ${startH / 2}px)`;
-            }
-            if (vertPos.current) {
-              vertPos.current.style.display = "block";
-              vertPos.current.style.left = `calc((100% - ${startW}px) / 100 * ${Math.round(
-                startX
-              )} + ${startW / 2}px)`;
-            }
-          }
-        })
-        .on("dragend", () => {
-          const newRelativePos = {
-            ...item.relativePos,
-            horizontal: startX !== undefined ? Math.round(startX) : undefined,
-            vertical: startY !== undefined ? Math.round(startY) : undefined,
-          };
-          reduxAction(dispatcher, {
-            type: "CREATE_LESSON_V2_SETITEM",
-            arg: {
-              item: {
-                ...item,
-                relativePos: newRelativePos,
-              },
-            },
-          });
-          updateItem({ relativePos: newRelativePos }, item._id);
-        });
-
-      return (): void => {
-        if (dragContainer.current) interact(dragContainer.current).unset();
-      };
+    if (item?.anchor && anchorImageRef.current) {
+      const anchor = treeAnchors[item?.anchor];
+      [anchorImageRef.current.src] = anchor?.templates || "";
+      reduxAction(dispatch, {
+        type: "SET_CV_RESULT",
+        arg: {
+          id: anchor._id,
+          width: anchorImageRef.current.width,
+          height: anchorImageRef.current.height,
+          x: width / 2 - anchorImageRef.current.width / 2,
+          y: height / 2 - anchorImageRef.current.height / 2,
+          sizeFactor: 1,
+          dist: 0,
+          time: 0,
+        },
+      });
     }
-    return voidFunction;
-  }, [item, width, height, dispatcher]);
-
-  let subType = "";
-  if (item && item.type == "focus_highlight") {
-    if (item.focus == "Area highlight") subType = "target";
-    if (item.focus == "Mouse Point") subType = "mouse";
-    if (item.focus == "Rectangle") subType = "rectangle";
-  }
-
-  const pos = useMemo(() => {
-    return {
-      x: 0,
-      y: 0,
-      width: item?.relativePos.width || 400,
-      height: item?.relativePos.height || 300,
-    };
-  }, [item]);
-
-  const style = useMemo(() => {
-    return {
-      left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${Math.round(
-        item?.relativePos.horizontal || 0
-      )})`,
-      top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${Math.round(
-        item?.relativePos.vertical || 0
-      )})`,
-    };
-  }, [item]);
+  }, [dispatch, treeAnchors, item, width, height]);
 
   return (
     <div ref={containerRef} className="video-preview-container">
@@ -150,22 +60,8 @@ export default function VideoPreview(): JSX.Element {
         ref={vertPos}
         className="vertical-pos"
       />
-      {item && drawItemAbsolute && item.type == "focus_highlight" && (
-        <FindBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          type="Area highlight"
-        />
-      )}
-      {item && drawItemAbsolute && item.type == "image" && (
-        <ImageBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          image={item.url}
-        />
-      )}
+      <img ref={anchorImageRef} style={{ display: "none" }} />
+      {item && <ItemPreview />}
     </div>
   );
 }

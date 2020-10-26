@@ -107,8 +107,13 @@ export default function ItemPreview() {
         })
         .on("dragstart", (event) => {
           if (!item.anchor && dragContainer.current) {
-            startPos.x = event.rect.left;
-            startPos.y = event.rect.top;
+            console.log(event, event.rect.left, event.rect.top);
+            startPos.x =
+              event.rect.left -
+              (dragContainer.current.parentElement?.offsetLeft || 0);
+            startPos.y =
+              event.rect.top -
+              (dragContainer.current.parentElement?.offsetTop || 0);
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }

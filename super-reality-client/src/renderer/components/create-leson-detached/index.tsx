@@ -177,7 +177,7 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
           {currentAnchor !== undefined ? (
             <div
-              className="anchor"
+              className="anchor-edit"
               style={{ width: "340px" }}
               ref={resizeContainerAnchor}
             >
