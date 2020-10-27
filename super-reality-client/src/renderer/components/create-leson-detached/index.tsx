@@ -108,6 +108,12 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debouncer = useDebounce(500);
 
+  const debounceVideoNav = useCallback((n: readonly number[]) => {
+    debouncer(() => setVideoNavPos([...n]));
+    const el = document.getElementById("video-hidden") as HTMLVideoElement;
+    if (el) el.currentTime = n[1] / 1000;
+  }, []);
+
   useEffect(() => {
     setMocks();
     document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
@@ -214,8 +220,8 @@ export default function CreateLessonDetached(): JSX.Element {
             domain={videoNavDomain}
             defaultValues={videoNavigation}
             ticksNumber={100}
-            callback={(n) => debouncer(() => setVideoNavPos(n))}
-            slideCallback={(n) => debouncer(() => setVideoNavPos(n))}
+            callback={debounceVideoNav}
+            slideCallback={debounceVideoNav}
           />
         </div>
       </div>

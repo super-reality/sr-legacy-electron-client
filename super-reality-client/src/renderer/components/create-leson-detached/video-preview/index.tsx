@@ -96,7 +96,11 @@ export default function VideoPreview(): JSX.Element {
       {currentRecording && (
         <>
           <canvas ref={videoCanvasRef} className="video-preview-video" />
-          <video ref={videoHiddenRef} style={{ display: "none" }} />
+          <video
+            ref={videoHiddenRef}
+            id="video-hidden"
+            style={{ display: "none" }}
+          />
         </>
       )}
       <div
