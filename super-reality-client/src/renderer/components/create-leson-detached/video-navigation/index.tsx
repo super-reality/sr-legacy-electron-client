@@ -2,6 +2,7 @@
 import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import {
+  SliderModeFunction,
   Slider,
   Rail,
   Handles,
@@ -14,6 +15,37 @@ import {
 } from "react-compound-slider";
 import "../../containers.scss";
 import "./index.scss";
+
+const customMode: SliderModeFunction = (curr, next) => {
+  console.log(curr, next);
+  const newNext = next;
+  let changed = -1;
+  for (let i = 0; i < curr.length; i += 1) {
+    if (curr[i].val !== next[i].val) changed = i;
+  }
+  // No changes
+  if (changed == -1) return next;
+
+  if (
+    changed == 1 &&
+    curr[0].val == curr[1].val &&
+    curr[2].val == curr[1].val
+  ) {
+    newNext[0].val = next[1].val;
+    newNext[2].val = next[1].val;
+    return newNext;
+  }
+
+  if (changed == 0 && Math.abs(next[0].val - next[1].val) < 100) {
+    newNext[0].val = next[1].val;
+  }
+
+  if (changed == 2 && Math.abs(next[2].val - next[1].val) < 100) {
+    newNext[2].val = next[1].val;
+  }
+
+  return newNext;
+}; // pushable mode
 
 function formatTime(time: number): string {
   const minutes = `${Math.floor(time / 1000)}`.padStart(2, "0");
@@ -168,6 +200,7 @@ export default function VideoNavigation(
     ticksNumber,
     style,
   } = props;
+
   const [state, setState] = useState<readonly number[]>(defaultValues.slice());
 
   useEffect(() => {
@@ -209,8 +242,8 @@ export default function VideoNavigation(
         }}
       >
         <Slider
-          mode={3}
-          step={step || 1}
+          mode={customMode}
+          step={step || 10}
           disabled={disabled}
           domain={domain}
           rootStyle={sliderStyle}

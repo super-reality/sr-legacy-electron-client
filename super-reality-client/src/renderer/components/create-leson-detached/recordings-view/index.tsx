@@ -12,6 +12,7 @@ import ButtonRound from "../../button-round";
 interface RecordingsViewProps {
   createRecorder: () => void;
 }
+
 export default function RecordingsView(props: RecordingsViewProps) {
   const { createRecorder } = props;
   const [videos, setVideos] = useState<string[]>([]);

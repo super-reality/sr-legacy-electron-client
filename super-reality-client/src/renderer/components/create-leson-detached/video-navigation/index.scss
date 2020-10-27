@@ -58,7 +58,10 @@
   font-size: 10px;
   width: auto;
   position: absolute;
-  top: -20px;
+  top: -22px;
+  background-color: var(--color-background);
+  padding: 2px 4px;
+  border-radius: 4px;
 
   &.time-0 {
     margin-left: 4px;
@@ -66,10 +69,11 @@
 
   &.time-1 {
     margin-left: 22px;
+    z-index: 10;
   }
 
   &.time-2 {
-    margin-left: 32px;
+    margin-left: 30px;
   }
 }
 
@@ -121,4 +125,30 @@
 .video-video-nav {
   background-color: var(--color-section);
   margin-top: 46px;
+}
+
+.video-data {
+  display: flex;
+  margin-top: -30px;
+  margin-left: 8px;
+  height: 40px;
+  position: absolute;
+  width: calc(100% - 30px);
+  /* border: 1px solid red; */
+}
+
+.video-data-click {
+  position: absolute;
+  margin: auto 0;
+  width: 16px;
+  margin-left: -8px;
+  height: 16px;
+  border-radius: 64px;
+  background-color: var(--color-blue);
+  z-index: 20;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #98c9fb;
+  }
 }

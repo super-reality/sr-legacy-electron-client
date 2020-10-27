@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import interact from "interactjs";
 import "./index.scss";
+import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
@@ -32,6 +33,8 @@ import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
+import userDataPath from "../../../utils/userDataPath";
+import { RecordingJson } from "./recorder/types";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -164,6 +167,26 @@ export default function CreateLessonDetached(): JSX.Element {
     videoDuration,
   ]);
 
+  const recordingData = useMemo(() => {
+    const userData = userDataPath();
+    let json: RecordingJson = {
+      step_data: [],
+    };
+    if (currentRecording) {
+      try {
+        const file = fs
+          .readFileSync(
+            `${userData}/step/snapshots/${currentRecording}.webm.json`
+          )
+          .toString("utf8");
+        json = JSON.parse(file);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return json;
+  }, [currentRecording]);
+
   return overlayTransparent ? (
     <div className="transparent-container click-through">
       {openRecorder && (
@@ -223,6 +246,26 @@ export default function CreateLessonDetached(): JSX.Element {
             callback={debounceVideoNav}
             slideCallback={debounceVideoNav}
           />
+          <div className="video-data">
+            {recordingData.step_data.map((s) => {
+              // eslint-disable-next-line radix
+              const time = parseInt(s.time_stamp.replace(/:/g, ""));
+              return (
+                <div
+                  className="video-data-click"
+                  style={{
+                    left: `${(100 / (videoDuration * 1000)) * time}%`,
+                  }}
+                  onClick={() => {
+                    const n = [...videoNavigation];
+                    n[1] = time;
+                    setVideoNavPos(n);
+                  }}
+                  key={s.time_stamp}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

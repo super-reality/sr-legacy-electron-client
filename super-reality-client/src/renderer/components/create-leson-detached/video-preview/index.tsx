@@ -5,7 +5,6 @@ import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
-import getImage from "../../../../utils/getImage";
 import CVEditor from "../recorder/CVEditor";
 import userDataPath from "../../../../utils/userDataPath";
 
