@@ -2,6 +2,7 @@
 
 .image-box {
   @include item-base;
+  @include item-solid;
 
   img {
     width: calc(100% - 20px);
