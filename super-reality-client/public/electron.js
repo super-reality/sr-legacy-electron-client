@@ -9,6 +9,11 @@ let mainWindow;
 
 app.allowRendererProcessReuse = false;
 
+function sendInit() {
+  console.log("Renderer Init signal");
+  mainWindow.webContents.send("rendererInit", true);
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     backgroundColor: "#242526",
@@ -29,12 +34,16 @@ function createWindow() {
         slashes: true,
       })
   );
-  // mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools();
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
 
   mainWindow.on("closed", () => {
-    mainWindow = null;
+    app.quit();
+  });
+
+  mainWindow.webContents.once("dom-ready", () => {
+    sendInit();
   });
 
   mainIpcInitialize();

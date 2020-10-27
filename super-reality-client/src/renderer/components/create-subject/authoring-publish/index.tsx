@@ -124,10 +124,8 @@ export default function PublishAuthoring(): JSX.Element {
         .get<SubjectSearchParent | ApiError>(
           `${API_URL}subject/search-parent/${encodeURIComponent(value)}`
         )
-        .then((response) => {
-          const values = handleSubjectSearchParent(response);
-          if (values) setSuggestions(values);
-        })
+        .then(handleSubjectSearchParent)
+        .then(setSuggestions)
         .catch(handleGenericError);
     }
   }, []);

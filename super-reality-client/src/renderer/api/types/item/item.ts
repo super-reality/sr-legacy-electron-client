@@ -38,6 +38,8 @@ export interface IAbsolutePos {
   horizontal?: number; // In % of screen, not used for anchors
   x: number;
   y: number;
+  width: number;
+  height: number;
 }
 
 export type BaseItemType =
@@ -51,7 +53,7 @@ export interface BaseItem {
   _id: string;
   name: string;
   type: BaseItemType;
-  anchor?: string;
+  anchor: string | null;
   relativePos: IAbsolutePos;
   trigger: number | null;
   destination: string; // a step ID to go to

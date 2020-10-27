@@ -9,5 +9,5 @@ export interface ChaptersGet extends ApiSucess {
 
 export interface ChapterGet extends ApiSucess {
   err_code: CodeSuccess;
-  chapter: IChapter;
+  chapters: IChapter;
 }

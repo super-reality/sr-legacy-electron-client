@@ -9,5 +9,5 @@ export interface StepsGet extends ApiSucess {
 
 export interface StepGet extends ApiSucess {
   err_code: CodeSuccess;
-  step: IStep;
+  steps: IStep;
 }

@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "../slices/authSlice";
 import renderSlice from "../slices/renderSlice";
+import backgroundSlice from "../slices/backgroundSlice";
 import createCollectionSlice from "../slices/createCollectionSlice";
 import createSubjectSlice from "../slices/createSubjectSlice";
 import createLessonSlice from "../slices/createLessonSlice";
@@ -14,6 +15,7 @@ import settingsSlice from "../slices/settingsSlice";
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
   render: renderSlice.reducer,
+  background: backgroundSlice.reducer,
   createCollection: createCollectionSlice.reducer,
   createSubject: createSubjectSlice.reducer,
   createLesson: createLessonSlice.reducer,

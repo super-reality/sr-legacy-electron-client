@@ -1,20 +1,15 @@
 import { AxiosResponse } from "axios";
+import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
 import SubjectGet from "./types/subject/get";
 
 /* eslint-disable camelcase */
 export default function handleSubjectGet(
-  res: AxiosResponse<ApiError | SubjectGet>
+  res: AxiosResponse<SubjectGet | ApiError>
 ): Promise<SubjectGet> {
   return new Promise((resolve, reject) => {
-    if (res.status == 200) {
-      if (res.data.err_code == 0) {
-        resolve(res.data);
-      } else {
-        reject();
-      }
-    } else {
-      reject();
-    }
+    apiErrorHandler<SubjectGet>(res)
+      .then((d) => resolve(d))
+      .catch(reject);
   });
 }

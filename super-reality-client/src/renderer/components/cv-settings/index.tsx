@@ -55,7 +55,7 @@ export default function CVSettings(): JSX.Element {
   }, []);
 
   return (
-    <Collapsible title="CV Setings">
+    <>
       <BaseSlider
         title={`Match Value: ${stepData.cvMatchValue}`}
         domain={[800, 1000]}
@@ -101,6 +101,6 @@ export default function CVSettings(): JSX.Element {
         callback={setDelay}
         slideCallback={setDelay}
       />
-    </Collapsible>
+    </>
   );
 }

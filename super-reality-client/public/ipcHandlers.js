@@ -24,7 +24,7 @@ function handleIpcSwitch(_event, method, msg) {
 }
 
 function handleIpcRegister(event, method, arg) {
-  console.log(`Register IPC ${method}`);
+  console.log(`Register IPC`, method);
   ipcWindows[method] = event.sender;
 }
 
