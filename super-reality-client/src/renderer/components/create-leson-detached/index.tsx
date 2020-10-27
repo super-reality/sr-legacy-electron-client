@@ -1,6 +1,11 @@
 /* eslint-disable dot-notation */
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Axios from "axios";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import interact from "interactjs";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,6 +31,7 @@ import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
+import useDebounce from "../../hooks/useDebounce";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -92,7 +98,6 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const setVideoNavPos = useCallback(
     (n: readonly number[]) => {
-      console.log(n);
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: { videoNavigation: [...n] },
@@ -100,6 +105,8 @@ export default function CreateLessonDetached(): JSX.Element {
     },
     [dispatch]
   );
+
+  const debouncer = useDebounce(500);
 
   useEffect(() => {
     setMocks();
@@ -146,6 +153,10 @@ export default function CreateLessonDetached(): JSX.Element {
     setTransparent();
     setOpenRecorder(true);
   }, []);
+
+  const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
+    videoDuration,
+  ]);
 
   return overlayTransparent ? (
     <div className="transparent-container click-through">
@@ -200,12 +211,11 @@ export default function CreateLessonDetached(): JSX.Element {
         </div>
         <div className="nav">
           <VideoNavigation
-            key={currentRecording}
-            domain={[0, Math.round(videoDuration * 1000)]}
+            domain={videoNavDomain}
             defaultValues={videoNavigation}
             ticksNumber={100}
-            callback={setVideoNavPos}
-            slideCallback={setVideoNavPos}
+            callback={(n) => debouncer(() => setVideoNavPos(n))}
+            slideCallback={(n) => debouncer(() => setVideoNavPos(n))}
           />
         </div>
       </div>

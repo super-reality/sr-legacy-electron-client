@@ -1,18 +1,21 @@
 .video-railOuter {
   position: absolute;
   width: 100%;
-  height: 32px;
-  transform: translate(0%, -50%);
   cursor: pointer;
+  background-color: var(--color-background);
+  top: -25px;
+  height: 22px;
+  border-radius: 4px;
 }
 
 .video-railInner {
   position: absolute;
   width: 100%;
-  height: 4px;
-  transform: translate(0%, -50%);
+  border-radius: 4px;
+  height: 42px;
+  top: 38px;
   pointer-events: none;
-  background-color: var(--color-background-hover);
+  background-color: var(--color-background);
 }
 
 .video-handle-0 {
@@ -24,6 +27,7 @@
   height: 32px;
   background-repeat: no-repeat;
   cursor: pointer;
+  top: 0px;
 }
 
 .video-handle-1 {
@@ -35,6 +39,7 @@
   height: 110px;
   background-repeat: no-repeat;
   cursor: pointer;
+  top: 0px;
 }
 
 .video-handle-2 {
@@ -46,6 +51,26 @@
   height: 32px;
   background-repeat: no-repeat;
   cursor: pointer;
+  top: 0px;
+}
+
+.video-handle-time {
+  font-size: 10px;
+  width: auto;
+  position: absolute;
+  top: -20px;
+
+  &.time-0 {
+    margin-left: 4px;
+  }
+
+  &.time-1 {
+    margin-left: 22px;
+  }
+
+  &.time-2 {
+    margin-left: 32px;
+  }
 }
 
 .video-slider {
@@ -61,20 +86,19 @@
 
 .video-track {
   position: absolute;
-  transform: translate(0%, -50%);
-  height: 78px;
-  top: 41px;
+  height: 80px;
+  top: 0;
   z-index: 1;
-  background-color: var(--color-text-active);
+  background-color: var(--color-blue);
   cursor: pointer;
-  opacity: 0.25;
+  opacity: 0.15;
 }
 
 .video-tickPre {
   position: absolute;
   top: 4px;
   width: 2px;
-  height: 20px;
+  height: 28px;
   background-color: var(--color-background-hover);
 }
 
@@ -88,7 +112,13 @@
 
 .video-tick {
   position: absolute;
-  top: 28px;
+  top: 20px;
+  margin-left: 8px;
   font-size: 10px;
   text-align: center;
+}
+
+.video-video-nav {
+  background-color: var(--color-section);
+  margin-top: 46px;
 }

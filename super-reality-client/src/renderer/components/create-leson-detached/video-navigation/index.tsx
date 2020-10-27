@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import {
   Slider,
@@ -14,6 +14,13 @@ import {
 } from "react-compound-slider";
 import "../../containers.scss";
 import "./index.scss";
+
+function formatTime(time: number): string {
+  const minutes = `${Math.floor(time / 1000)}`.padStart(2, "0");
+  const seconds = `${time % 1000}`.padStart(3, "0");
+
+  return `${minutes}:${seconds}`;
+}
 
 interface SliderRailProps {
   getRailProps: GetRailProps;
@@ -52,6 +59,14 @@ function Handle({
         }}
         {...getHandleProps(id)}
       />
+      <div
+        className={`video-handle-time time-${index}`}
+        style={{
+          left: `${percent}%`,
+        }}
+      >
+        {formatTime(value)}
+      </div>
       <div
         role="slider"
         aria-valuemin={min}
@@ -96,10 +111,9 @@ interface TickProps {
   tick: SliderItem;
   count: number;
   index: number;
-  format?: (val: number) => string;
 }
 
-function Tick({ tick, count, index, format = (d) => `${d}` }: TickProps) {
+function Tick({ tick, count, index }: TickProps) {
   return (
     <div>
       <div
@@ -112,12 +126,12 @@ function Tick({ tick, count, index, format = (d) => `${d}` }: TickProps) {
         <div
           className="video-tick"
           style={{
-            marginLeft: `${-(100 / count) / 2}%`,
+            // marginLeft: `${-(100 / count) / 2}%`,
             width: `${100 / count}%`,
             left: `${tick.percent}%`,
           }}
         >
-          {format(tick.value)}
+          {formatTime(tick.value)}
         </div>
       )}
     </div>
@@ -162,6 +176,25 @@ export default function VideoNavigation(
     }
   }, [state, defaultValues]);
 
+  const memoizedTicks = useMemo(() => {
+    return (
+      <Ticks count={ticksNumber}>
+        {({ ticks }) => (
+          <div className="video-slider-ticks">
+            {ticks.map((tick, index) => (
+              <Tick
+                index={index}
+                key={tick.id}
+                tick={tick}
+                count={ticks.length}
+              />
+            ))}
+          </div>
+        )}
+      </Ticks>
+    );
+  }, [domain]);
+
   return (
     <div className="video-video-nav">
       <div
@@ -169,8 +202,8 @@ export default function VideoNavigation(
           height: "80px",
           display: "flex",
           alignItems: "flex-start",
-          paddingTop: "28px",
-          width: "100%",
+          paddingTop: "26px",
+          width: "calc(100% - 16px)",
           margin: "auto",
           ...style,
         }}
@@ -219,22 +252,7 @@ export default function VideoNavigation(
               </div>
             )}
           </Tracks>
-          {ticksNumber && (
-            <Ticks count={ticksNumber}>
-              {({ ticks }) => (
-                <div className="video-slider-ticks">
-                  {ticks.map((tick, index) => (
-                    <Tick
-                      index={index}
-                      key={tick.id}
-                      tick={tick}
-                      count={ticks.length}
-                    />
-                  ))}
-                </div>
-              )}
-            </Ticks>
-          )}
+          {ticksNumber && memoizedTicks}
         </Slider>
       </div>
     </div>
