@@ -18,17 +18,19 @@ import OpenItem from "../open-item";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
 import reduxAction from "../../../redux/reduxAction";
+import RecordingsView from "../recordings-view";
 
-type Sections = "Lessons" | "Info";
-const sections: Sections[] = ["Lessons", "Info"];
+type Sections = "Lessons" | "Recordings";
+const sections: Sections[] = ["Lessons", "Recordings"];
 
 interface LessonProps {
   setTransparent: () => void;
+  createRecorder: () => void;
 }
 
 export default function Lesson(props: LessonProps): JSX.Element {
   const dispatch = useDispatch();
-  const { setTransparent } = props;
+  const { setTransparent, createRecorder } = props;
   const [view, setView] = useState<Sections>(sections[0]);
   const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -64,6 +66,9 @@ export default function Lesson(props: LessonProps): JSX.Element {
         }}
       >
         {view == "Lessons" && <LessonTree />}
+        {view == "Recordings" && (
+          <RecordingsView createRecorder={createRecorder} />
+        )}
       </TabsContainer>
       <div className="create-lesson-item-container mid-tight">
         <LessonTreeControls />

@@ -12,6 +12,9 @@ export default function newItem(type: BaseItemType, step?: string): void {
   const payload: Partial<Item> = {
     type,
   };
+  if (payload.type == "focus_highlight") {
+    payload.focus = "Area highlight";
+  }
   if (payload.type == "image") {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 300 };
   }

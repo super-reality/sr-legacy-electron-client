@@ -1,15 +1,20 @@
 /* eslint-disable dot-notation */
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Axios from "axios";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import interact from "interactjs";
 import "./index.scss";
+import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 import setTopMost from "../../../utils/setTopMost";
 import setMaximize from "../../../utils/setMaximize";
-import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
 import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
 import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
 import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
@@ -17,7 +22,6 @@ import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg
 import setFocusable from "../../../utils/setFocusable";
 import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
-import ButtonRound from "../button-round";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/minimizeWindow";
 import closeWindow from "../../../utils/closeWindow";
@@ -26,9 +30,11 @@ import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
-import CvComponents from "../CvComponents";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
+import useDebounce from "../../hooks/useDebounce";
+import userDataPath from "../../../utils/userDataPath";
+import { RecordingJson } from "./recorder/types";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -82,18 +88,33 @@ export default function CreateLessonDetached(): JSX.Element {
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
   const {
     currentAnchor,
+    currentRecording,
     anchorTestView,
     stepPreview,
     itemPreview,
+    videoNavigation,
+    videoDuration,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
 
-  const [videoNav, setVideoNav] = useState([100, 150, 200]);
+  const setVideoNavPos = useCallback(
+    (n: readonly number[]) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { videoNavigation: [...n] },
+      });
+    },
+    [dispatch]
+  );
 
-  const setVideoNavPos = useCallback((n: readonly number[]) => {
-    setVideoNav([...n]);
+  const debouncer = useDebounce(500);
+
+  const debounceVideoNav = useCallback((n: readonly number[]) => {
+    debouncer(() => setVideoNavPos([...n]));
+    const el = document.getElementById("video-hidden") as HTMLVideoElement;
+    if (el) el.currentTime = n[1] / 1000;
   }, []);
 
   useEffect(() => {
@@ -142,6 +163,30 @@ export default function CreateLessonDetached(): JSX.Element {
     setOpenRecorder(true);
   }, []);
 
+  const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
+    videoDuration,
+  ]);
+
+  const recordingData = useMemo(() => {
+    const userData = userDataPath();
+    let json: RecordingJson = {
+      step_data: [],
+    };
+    if (currentRecording) {
+      try {
+        const file = fs
+          .readFileSync(
+            `${userData}/step/snapshots/${currentRecording}.webm.json`
+          )
+          .toString("utf8");
+        json = JSON.parse(file);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return json;
+  }, [currentRecording]);
+
   return overlayTransparent ? (
     <div className="transparent-container click-through">
       {openRecorder && (
@@ -173,7 +218,10 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson setTransparent={setTransparent} />
+            <Lesson
+              createRecorder={createRecorder}
+              setTransparent={setTransparent}
+            />
           </div>
           {currentAnchor !== undefined ? (
             <div
@@ -191,21 +239,33 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
-          <ButtonRound
-            svg={RecordIcon}
-            width="48px"
-            height="48px"
-            onClick={createRecorder}
-          />
-          {/*
           <VideoNavigation
-            domain={[0, 1000]}
-            defaultValues={videoNav}
+            domain={videoNavDomain}
+            defaultValues={videoNavigation}
             ticksNumber={100}
-            callback={setVideoNavPos}
-            slideCallback={setVideoNavPos}
+            callback={debounceVideoNav}
+            slideCallback={debounceVideoNav}
           />
-          */}
+          <div className="video-data">
+            {recordingData.step_data.map((s) => {
+              // eslint-disable-next-line radix
+              const time = parseInt(s.time_stamp.replace(/:/g, ""));
+              return (
+                <div
+                  className="video-data-click"
+                  style={{
+                    left: `${(100 / (videoDuration * 1000)) * time}%`,
+                  }}
+                  onClick={() => {
+                    const n = [...videoNavigation];
+                    n[1] = time;
+                    setVideoNavPos(n);
+                  }}
+                  key={s.time_stamp}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

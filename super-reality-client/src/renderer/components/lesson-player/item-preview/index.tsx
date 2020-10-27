@@ -61,12 +61,12 @@ export default function ItemPreview() {
     const newStyle = item?.anchor
       ? {}
       : {
-          left: `calc((100% - ${
-            item?.relativePos.width
-          }px) / 100 * ${Math.round(item?.relativePos.horizontal || 0)})`,
-          top: `calc((100% - ${
-            item?.relativePos.height
-          }px) / 100 * ${Math.round(item?.relativePos.vertical || 0)})`,
+          left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
+            item?.relativePos.horizontal || 0
+          })`,
+          top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
+            item?.relativePos.vertical || 0
+          })`,
         };
     setStyle(newStyle);
   }, [anchor, cvResult, item]);
@@ -107,7 +107,18 @@ export default function ItemPreview() {
         })
         .on("dragstart", (event) => {
           if (!item.anchor && dragContainer.current) {
-            console.log(event, event.rect.left, event.rect.top);
+            startPos.x =
+              event.rect.left -
+              (dragContainer.current.parentElement?.offsetLeft || 0);
+            startPos.y =
+              event.rect.top -
+              (dragContainer.current.parentElement?.offsetTop || 0);
+            dragContainer.current.style.left = `${startPos.x}px`;
+            dragContainer.current.style.top = `${startPos.y}px`;
+          }
+        })
+        .on("resizestart", (event) => {
+          if (!item.anchor && dragContainer.current) {
             startPos.x =
               event.rect.left -
               (dragContainer.current.parentElement?.offsetLeft || 0);
@@ -126,10 +137,32 @@ export default function ItemPreview() {
             dragContainer.current.style.top = `${startPos.y}px`;
           }
         })
-        .on("resizeend", () => {
+        .on("resizeend", (event) => {
           if (item.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
+          } else if (
+            dragContainer.current &&
+            dragContainer.current.parentElement
+          ) {
+            startPos.x =
+              event.rect.left -
+              (dragContainer.current.parentElement?.offsetLeft || 0);
+            startPos.y =
+              event.rect.top -
+              (dragContainer.current.parentElement?.offsetTop || 0);
+            dragContainer.current.style.left = `${startPos.x}px`;
+            dragContainer.current.style.top = `${startPos.y}px`;
+            startPos.horizontal =
+              (100 /
+                (dragContainer.current.parentElement.offsetWidth -
+                  startPos.width)) *
+              startPos.x;
+            startPos.vertical =
+              (100 /
+                (dragContainer.current.parentElement.offsetHeight -
+                  startPos.height)) *
+              startPos.y;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",

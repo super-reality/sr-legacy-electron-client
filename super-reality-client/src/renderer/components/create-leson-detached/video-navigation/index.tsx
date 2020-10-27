@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useMemo, useState } from "react";
+import { isEqual } from "lodash";
 import {
+  SliderModeFunction,
   Slider,
   Rail,
   Handles,
@@ -13,6 +15,44 @@ import {
 } from "react-compound-slider";
 import "../../containers.scss";
 import "./index.scss";
+
+const customMode: SliderModeFunction = (curr, next) => {
+  console.log(curr, next);
+  const newNext = next;
+  let changed = -1;
+  for (let i = 0; i < curr.length; i += 1) {
+    if (curr[i].val !== next[i].val) changed = i;
+  }
+  // No changes
+  if (changed == -1) return next;
+
+  if (
+    changed == 1 &&
+    curr[0].val == curr[1].val &&
+    curr[2].val == curr[1].val
+  ) {
+    newNext[0].val = next[1].val;
+    newNext[2].val = next[1].val;
+    return newNext;
+  }
+
+  if (changed == 0 && Math.abs(next[0].val - next[1].val) < 100) {
+    newNext[0].val = next[1].val;
+  }
+
+  if (changed == 2 && Math.abs(next[2].val - next[1].val) < 100) {
+    newNext[2].val = next[1].val;
+  }
+
+  return newNext;
+}; // pushable mode
+
+function formatTime(time: number): string {
+  const minutes = `${Math.floor(time / 1000)}`.padStart(2, "0");
+  const seconds = `${time % 1000}`.padStart(3, "0");
+
+  return `${minutes}:${seconds}`;
+}
 
 interface SliderRailProps {
   getRailProps: GetRailProps;
@@ -51,6 +91,14 @@ function Handle({
         }}
         {...getHandleProps(id)}
       />
+      <div
+        className={`video-handle-time time-${index}`}
+        style={{
+          left: `${percent}%`,
+        }}
+      >
+        {formatTime(value)}
+      </div>
       <div
         role="slider"
         aria-valuemin={min}
@@ -95,10 +143,9 @@ interface TickProps {
   tick: SliderItem;
   count: number;
   index: number;
-  format?: (val: number) => string;
 }
 
-function Tick({ tick, count, index, format = (d) => `${d}` }: TickProps) {
+function Tick({ tick, count, index }: TickProps) {
   return (
     <div>
       <div
@@ -111,12 +158,12 @@ function Tick({ tick, count, index, format = (d) => `${d}` }: TickProps) {
         <div
           className="video-tick"
           style={{
-            marginLeft: `${-(100 / count) / 2}%`,
+            // marginLeft: `${-(100 / count) / 2}%`,
             width: `${100 / count}%`,
             left: `${tick.percent}%`,
           }}
         >
-          {format(tick.value)}
+          {formatTime(tick.value)}
         </div>
       )}
     </div>
@@ -153,24 +200,33 @@ export default function VideoNavigation(
     ticksNumber,
     style,
   } = props;
-  const [state, setState] = useState({
-    values: defaultValues.slice(),
-    update: defaultValues.slice(),
-  });
 
-  const onUpdate = useCallback(
-    (update) => {
-      setState({ ...state, update });
-    },
-    [state]
-  );
+  const [state, setState] = useState<readonly number[]>(defaultValues.slice());
 
-  const onChange = useCallback(
-    (values) => {
-      setState({ ...state, values });
-    },
-    [state]
-  );
+  useEffect(() => {
+    if (!isEqual(state, defaultValues)) {
+      setState(defaultValues);
+    }
+  }, [state, defaultValues]);
+
+  const memoizedTicks = useMemo(() => {
+    return (
+      <Ticks count={ticksNumber}>
+        {({ ticks }) => (
+          <div className="video-slider-ticks">
+            {ticks.map((tick, index) => (
+              <Tick
+                index={index}
+                key={tick.id}
+                tick={tick}
+                count={ticks.length}
+              />
+            ))}
+          </div>
+        )}
+      </Ticks>
+    );
+  }, [domain]);
 
   return (
     <div className="video-video-nav">
@@ -179,21 +235,21 @@ export default function VideoNavigation(
           height: "80px",
           display: "flex",
           alignItems: "flex-start",
-          paddingTop: "28px",
-          width: "100%",
+          paddingTop: "26px",
+          width: "calc(100% - 16px)",
           margin: "auto",
           ...style,
         }}
       >
         <Slider
-          mode={3}
-          step={step || 1}
+          mode={customMode}
+          step={step || 10}
           disabled={disabled}
           domain={domain}
           rootStyle={sliderStyle}
-          onUpdate={onUpdate}
-          onChange={onChange}
-          values={state.values}
+          onUpdate={slideCallback}
+          onChange={callback}
+          values={state}
         >
           <Rail>
             {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
@@ -229,22 +285,7 @@ export default function VideoNavigation(
               </div>
             )}
           </Tracks>
-          {ticksNumber && (
-            <Ticks count={ticksNumber}>
-              {({ ticks }) => (
-                <div className="video-slider-ticks">
-                  {ticks.map((tick, index) => (
-                    <Tick
-                      index={index}
-                      key={tick.id}
-                      tick={tick}
-                      count={ticks.length}
-                    />
-                  ))}
-                </div>
-              )}
-            </Ticks>
-          )}
+          {ticksNumber && memoizedTicks}
         </Slider>
       </div>
     </div>

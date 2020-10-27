@@ -1,3 +1,5 @@
+@import "../misc.scss";
+
 @mixin item-base {
   background-color: var(--color-section);
   width: inherit;
@@ -6,4 +8,8 @@
   touch-action: none;
   left: 0px;
   top: 0px;
+}
+
+@mixin item-solid {
+  @include soft-shadow;
 }

@@ -34,6 +34,14 @@
     position: inherit;
   }
 
+  .video-preview-video {
+    margin: auto;
+    display: block;
+    max-height: -webkit-fill-available;
+    height: inherit;
+    position: inherit;
+  }
+
   .item-image {
     @include item-base;
   }

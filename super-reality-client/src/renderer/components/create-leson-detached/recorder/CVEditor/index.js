@@ -8,14 +8,20 @@ export default class CVEditor {
   }
 
   set videoElement(elem) {
-    if (elem === undefined) throw new Error("video element undefined");
+    if (!elem) {
+      console.error("video element undefined/null");
+      return;
+    }
 
     this._vid = elem;
     this._vid.addEventListener("seeked", this.videoEventHandler.bind(this));
   }
 
   set canvasElement(elem) {
-    if (elem === undefined) throw new Error("canvas element undefined");
+    if (!elem) {
+      console.error("canvas element undefined/null");
+      return;
+    }
     this._canvas = elem;
   }
 

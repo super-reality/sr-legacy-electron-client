@@ -40,6 +40,7 @@ export default class CVRecorder {
     this._currentTimer = "";
     this._stepRecordingName = "";
     this._recordingFullPath = "";
+    this._finishCallback = () => {};
 
     if (!fs.existsSync(this._stepPath)) {
       fs.mkdir(this._stepPath, (err) => {
@@ -74,6 +75,15 @@ export default class CVRecorder {
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
     this.stop = this.stop.bind(this);
+    this.finishCallback = this.finishCallback.bind(this);
+  }
+
+  set finishCallback(value) {
+    this._finishCallback = value;
+  }
+
+  get finishCallback() {
+    return this._finishCallback;
   }
 
   get clickEventDetails() {
@@ -350,6 +360,7 @@ export default class CVRecorder {
       }
     );
     this._clickEventDetails = [];
+    this._finishCallback(jsonMetaData);
   }
 
   // Saves the video file on stop
