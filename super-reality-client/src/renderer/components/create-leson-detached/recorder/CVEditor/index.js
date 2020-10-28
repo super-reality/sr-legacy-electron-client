@@ -68,7 +68,6 @@ export default class CVEditor {
     exec(ffmpegCommand, (err) => {
       if (err) {
         console.error(err)
-        process.exit(1)
       } else {
         console.info('Audio Trimmed!')
       }
