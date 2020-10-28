@@ -10,6 +10,7 @@ import userDataPath from "../../../../utils/userDataPath";
 
 export default function VideoPreview(): JSX.Element {
   const {
+    recordingData,
     videoNavigation,
     currentRecording,
     currentItem,
@@ -36,7 +37,7 @@ export default function VideoPreview(): JSX.Element {
   );
 
   useEffect(() => {
-    if (item?.anchor && anchorImageRef.current) {
+    if (item?.anchor && anchorImageRef.current && !recordingData.anchor) {
       const anchor = treeAnchors[item?.anchor];
       [anchorImageRef.current.src] = anchor?.templates || "";
       reduxAction(dispatch, {
