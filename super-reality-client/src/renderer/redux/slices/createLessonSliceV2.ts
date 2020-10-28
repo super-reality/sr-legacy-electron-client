@@ -6,6 +6,7 @@ import { IStep } from "../../api/types/step/step";
 import { Item } from "../../api/types/item/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
+import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
@@ -33,6 +34,9 @@ const initialState = {
   lessonPreview: false as boolean,
   stepPreview: false as boolean,
   itemPreview: false as boolean,
+  recordingData: {
+    step_data: [],
+  } as RecordingJson,
 };
 
 type InitialState = typeof initialState;
@@ -53,6 +57,12 @@ const createLessonSlice = createSlice({
   name: "createLessonV2",
   initialState,
   reducers: {
+    setRecordingData: (
+      state: InitialState,
+      action: PayloadAction<Partial<RecordingJson>>
+    ): void => {
+      state.recordingData = Object.assign(state.recordingData, action.payload);
+    },
     setData: (
       state: InitialState,
       action: PayloadAction<Partial<InitialState>>
@@ -293,6 +303,7 @@ const createLessonSlice = createSlice({
 });
 
 export const {
+  setRecordingData,
   setData,
   setDrag,
   setDragOver,
