@@ -9,7 +9,7 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
-import store, { AppState } from "../../../redux/stores/renderer";
+import { AppState } from "../../../redux/stores/renderer";
 import usePopup from "../../../hooks/usePopup";
 import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
@@ -70,7 +70,7 @@ export default function VideoStatus() {
       "video-hidden"
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
-      if (matchFrame > -1 && matchFrame < videoDuration) {
+      if (matchFrame !== -1 && matchFrame < videoDuration) {
         videoHidden.currentTime = matchFrame + 0.1;
         timeoutRef.current = setTimeout(() => {
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
@@ -78,7 +78,9 @@ export default function VideoStatus() {
               type: "SET_RECORDING_CV_DATA",
               arg: { index: Math.round(matchFrame * 10), value: arg.dist },
             });
-            setMatchFrame(matchFrame + 0.1);
+            if (timeoutRef.current) {
+              setMatchFrame(matchFrame + 0.1);
+            }
           });
         }, 50);
       } else {
@@ -158,6 +160,14 @@ export default function VideoStatus() {
             }
           >
             {matchFrame == -1 ? "Check anchor" : "Stop checking"}
+          </ButtonSimple>
+          <ButtonSimple
+            width="140px"
+            height="12px"
+            margin="auto 4px"
+            onClick={() => {}}
+          >
+            Generate items
           </ButtonSimple>
         </>
       ) : (
