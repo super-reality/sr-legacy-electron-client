@@ -32,6 +32,13 @@
   width: calc(100% - 28px);
 }
 
+.video-cv-data-current {
+  border-right: 1px solid var(--color-green);
+  position: relative;
+  height: 80px;
+  top: -38px;
+}
+
 .video-cv-data-item {
   width: -webkit-fill-available;
   height: 8px;

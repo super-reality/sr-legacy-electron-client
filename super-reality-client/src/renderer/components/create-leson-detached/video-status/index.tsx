@@ -1,9 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import usePopup from "../../../hooks/usePopup";
 import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
@@ -18,6 +24,8 @@ export default function VideoStatus() {
     videoNavigation,
     videoDuration,
   } = useSelector((state: AppState) => state.createLessonV2);
+  const [matchFrame, setMatchFrame] = useState(-1);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const anchor = useMemo(() => {
     return treeAnchors[recordingData.anchor || ""] || null;
@@ -57,26 +65,27 @@ export default function VideoStatus() {
   }, [dispatch, anchor, videoNavigation]);
 
   // Anchor full video wide matching/testing
-  const matchOne = useCallback(
-    (index) => {
-      const videoHidden = document.getElementById(
-        "video-hidden"
-      ) as HTMLVideoElement;
-      if (videoHidden && anchor) {
-        doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
-          reduxAction(dispatch, {
-            type: "SET_RECORDING_CV_DATA",
-            arg: { index: Math.round(index * 10), value: arg.dist },
+  useEffect(() => {
+    const videoHidden = document.getElementById(
+      "video-hidden"
+    ) as HTMLVideoElement;
+    if (videoHidden && anchor) {
+      if (matchFrame > -1 && matchFrame < videoDuration) {
+        videoHidden.currentTime = matchFrame + 0.1;
+        timeoutRef.current = setTimeout(() => {
+          doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
+            reduxAction(dispatch, {
+              type: "SET_RECORDING_CV_DATA",
+              arg: { index: Math.round(matchFrame * 10), value: arg.dist },
+            });
+            setMatchFrame(matchFrame + 0.1);
           });
-          if (index + 0.1 < videoDuration) {
-            videoHidden.currentTime = index + 0.1;
-            setTimeout(() => matchOne(index + 0.1), 50);
-          }
-        });
+        }, 50);
+      } else {
+        setMatchFrame(-1);
       }
-    },
-    [dispatch, anchor, videoDuration]
-  );
+    }
+  }, [matchFrame, timeoutRef, dispatch, anchor, videoDuration]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
@@ -85,16 +94,16 @@ export default function VideoStatus() {
     });
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { recordingCvMatchValue: anchor.cvMatchValue },
+      arg: { recordingCvFrame: 0, recordingCvMatchValue: anchor.cvMatchValue },
     });
     const videoHidden = document.getElementById(
       "video-hidden"
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
       videoHidden.currentTime = 0;
-      setTimeout(() => matchOne(0), 50);
+      setMatchFrame(0);
     }
-  }, [matchOne, anchor]);
+  }, [anchor]);
 
   return (
     <div className="video-status-container">
@@ -139,9 +148,16 @@ export default function VideoStatus() {
             width="140px"
             height="12px"
             margin="auto 4px"
-            onClick={testFullVideo}
+            onClick={
+              matchFrame == -1
+                ? testFullVideo
+                : () => {
+                    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+                    setMatchFrame(-1);
+                  }
+            }
           >
-            Check anchor
+            {matchFrame == -1 ? "Check anchor" : "Stop checking"}
           </ButtonSimple>
         </>
       ) : (

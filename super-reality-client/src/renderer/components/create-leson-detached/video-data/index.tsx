@@ -12,6 +12,7 @@ export default function VideoData() {
     videoDuration,
     recordingCvMatches,
     recordingCvMatchValue,
+    recordingCvFrame,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const setVideoNavPos = useCallback(
@@ -35,9 +36,13 @@ export default function VideoData() {
             key={`cv-nav-${i}`}
             className="video-cv-data-item"
             style={{
-              opacity: (1 / maxCv) * (d * 1000 - recordingCvMatchValue),
+              backgroundColor: `rgba(67,181,129,${
+                (1 / maxCv) * (d * 1000 - recordingCvMatchValue)
+              })`,
             }}
-          />
+          >
+            {recordingCvFrame == i && <div className="video-cv-data-current" />}
+          </div>
         ))}
       </div>
       <div className="video-data">
