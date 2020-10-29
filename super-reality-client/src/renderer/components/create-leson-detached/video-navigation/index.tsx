@@ -17,7 +17,7 @@ import "../../containers.scss";
 import "./index.scss";
 
 const customMode: SliderModeFunction = (curr, next) => {
-  console.log(curr, next);
+  // console.log(curr, next);
   const newNext = next;
   let changed = -1;
   for (let i = 0; i < curr.length; i += 1) {

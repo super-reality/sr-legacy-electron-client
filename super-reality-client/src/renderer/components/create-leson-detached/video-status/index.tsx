@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
@@ -12,9 +12,12 @@ import doCvMatch from "../../../../utils/doCVMatch";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
-  const { recordingData, treeAnchors, videoNavigation } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    recordingData,
+    treeAnchors,
+    videoNavigation,
+    videoDuration,
+  } = useSelector((state: AppState) => state.createLessonV2);
 
   const anchor = useMemo(() => {
     return treeAnchors[recordingData.anchor || ""] || null;
@@ -53,6 +56,46 @@ export default function VideoStatus() {
     }
   }, [dispatch, anchor, videoNavigation]);
 
+  // Anchor full video wide matching/testing
+  const matchOne = useCallback(
+    (index) => {
+      const videoHidden = document.getElementById(
+        "video-hidden"
+      ) as HTMLVideoElement;
+      if (videoHidden && anchor) {
+        doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
+          reduxAction(dispatch, {
+            type: "SET_RECORDING_CV_DATA",
+            arg: { index: Math.round(index * 10), value: arg.dist },
+          });
+          if (index + 0.1 < videoDuration) {
+            videoHidden.currentTime = index + 0.1;
+            setTimeout(() => matchOne(index + 0.1), 50);
+          }
+        });
+      }
+    },
+    [dispatch, anchor, videoDuration]
+  );
+
+  const testFullVideo = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CLEAR_RECORDING_CV_DATA",
+      arg: null,
+    });
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { recordingCvMatchValue: anchor.cvMatchValue },
+    });
+    const videoHidden = document.getElementById(
+      "video-hidden"
+    ) as HTMLVideoElement;
+    if (videoHidden && anchor) {
+      videoHidden.currentTime = 0;
+      setTimeout(() => matchOne(0), 50);
+    }
+  }, [matchOne, anchor]);
+
   return (
     <div className="video-status-container">
       <SelectAnchorPopup
@@ -83,14 +126,24 @@ export default function VideoStatus() {
         onClick={doOpenAnchorPopup}
       />
       {anchor ? (
-        <ButtonSimple
-          width="140px"
-          height="12px"
-          margin="auto 4px"
-          onClick={() => openAnchor(anchor._id)}
-        >
-          {anchor.name}
-        </ButtonSimple>
+        <>
+          <ButtonSimple
+            width="140px"
+            height="12px"
+            margin="auto 4px"
+            onClick={() => openAnchor(anchor._id)}
+          >
+            {anchor.name}
+          </ButtonSimple>
+          <ButtonSimple
+            width="140px"
+            height="12px"
+            margin="auto 4px"
+            onClick={testFullVideo}
+          >
+            Check anchor
+          </ButtonSimple>
+        </>
       ) : (
         <div style={{ color: "var(--color-red)" }}>
           <i>Attach an anchor to edit</i>

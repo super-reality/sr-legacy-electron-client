@@ -22,6 +22,8 @@ export const actions = {
   SET_TOP_INPUT: renderSlice.setTopInput,
   SET_CV_RESULT: renderSlice.setCvResult,
   SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
+  CLEAR_RECORDING_CV_DATA: createLessonSliceV2.clearRecordingCVData,
+  SET_RECORDING_CV_DATA: createLessonSliceV2.setRecordingCVData,
   SET_RECORDING_DATA: createLessonSliceV2.setRecordingData,
   CREATE_LESSON_V2_DATA: createLessonSliceV2.setData,
   CREATE_LESSON_V2_TREE: createLessonSliceV2.setOpenTree,

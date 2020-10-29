@@ -70,73 +70,81 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <RecordingsView createRecorder={createRecorder} />
         )}
       </TabsContainer>
-      <div className="create-lesson-item-container mid-tight">
-        <LessonTreeControls />
-      </div>
-      {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
-      <div className="create-lesson-item-container mid-tight">
-        <Flex style={{ marginTop: "auto" }}>
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonPrev}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonNext}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            disabled={treeCurrentType !== "step" && treeCurrentType !== "item"}
-            iconFill="var(--color-red)"
-            onClick={doPreviewOne}
-            svg={ButtonPlay}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            iconFill="var(--color-green)"
-            onClick={doPreview}
-            svg={ButtonPlay}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonFolder}
-            style={{ marginLeft: "auto" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonCopy}
-            style={{ marginLeft: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonPaste}
-            style={{ marginLeft: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonCut}
-            style={{ marginLeft: "8px" }}
-          />
-        </Flex>
-      </div>
+      {view == "Lessons" && (
+        <div className="create-lesson-item-container mid-tight">
+          <LessonTreeControls />
+        </div>
+      )}
+      {treeCurrentType == "item" && view == "Lessons" && (
+        <OpenItem id={treeCurrentId} />
+      )}
+      {view == "Lessons" && (
+        <div className="create-lesson-item-container mid-tight">
+          <Flex style={{ marginTop: "auto" }}>
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonPrev}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonNext}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              disabled={
+                treeCurrentType !== "step" && treeCurrentType !== "item"
+              }
+              iconFill="var(--color-red)"
+              onClick={doPreviewOne}
+              svg={ButtonPlay}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              iconFill="var(--color-green)"
+              onClick={doPreview}
+              svg={ButtonPlay}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonFolder}
+              style={{ marginLeft: "auto" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonCopy}
+              style={{ marginLeft: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonPaste}
+              style={{ marginLeft: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonCut}
+              style={{ marginLeft: "8px" }}
+            />
+          </Flex>
+        </div>
+      )}
     </>
   );
 }

@@ -37,6 +37,8 @@ const initialState = {
   recordingData: {
     step_data: [],
   } as RecordingJson,
+  recordingCvMatches: [] as number[],
+  recordingCvMatchValue: 995,
 };
 
 type InitialState = typeof initialState;
@@ -57,6 +59,23 @@ const createLessonSlice = createSlice({
   name: "createLessonV2",
   initialState,
   reducers: {
+    clearRecordingCVData: (
+      state: InitialState,
+      action: PayloadAction<null>
+    ): void => {
+      state.recordingCvMatches = new Array(
+        Math.ceil(state.videoDuration * 10)
+      ).fill(0);
+    },
+    setRecordingCVData: (
+      state: InitialState,
+      action: PayloadAction<{
+        index: number;
+        value: number;
+      }>
+    ): void => {
+      state.recordingCvMatches[action.payload.index] = action.payload.value;
+    },
     setRecordingData: (
       state: InitialState,
       action: PayloadAction<Partial<RecordingJson>>
@@ -303,6 +322,8 @@ const createLessonSlice = createSlice({
 });
 
 export const {
+  clearRecordingCVData,
+  setRecordingCVData,
   setRecordingData,
   setData,
   setDrag,

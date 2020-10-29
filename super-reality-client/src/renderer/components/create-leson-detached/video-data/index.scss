@@ -1,0 +1,40 @@
+.video-data {
+  display: flex;
+  margin-top: -26px;
+  margin-left: 8px;
+  height: 22px;
+  position: absolute;
+  width: calc(100% - 28px);
+}
+
+.video-data-click {
+  position: absolute;
+  margin: auto 0;
+  width: 16px;
+  margin-left: -8px;
+  height: 16px;
+  border-radius: 64px;
+  background-color: var(--color-blue);
+  z-index: 1;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #98c9fb;
+  }
+}
+
+.video-cv-data {
+  display: flex;
+  margin-top: -42px;
+  margin-left: 8px;
+  height: 8px;
+  position: absolute;
+  width: calc(100% - 28px);
+}
+
+.video-cv-data-item {
+  width: -webkit-fill-available;
+  height: 8px;
+  background-color: var(--color-green);
+  z-index: 1;
+}
