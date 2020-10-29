@@ -154,7 +154,7 @@ function TreeFolder(props: TreeFolderProps) {
         setOpen(!open);
         setTimeout(() => {
           window.localStorage.setItem(id, !open ? "true" : "false");
-        }, 200);
+        }, 100);
       }
       document.onkeydown = keyListeners;
       setSelected(true);
