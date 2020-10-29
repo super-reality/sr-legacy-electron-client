@@ -59,9 +59,14 @@ function TreeFolder(props: TreeFolderProps) {
     dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
 
-  const [open, setOpen] = useState<boolean>(false);
+  let exp = expanded;
+  if (window.localStorage.getItem(id) !== null) {
+    exp = window.localStorage.getItem(id) == "true";
+  }
+
+  const [open, setOpen] = useState<boolean>(exp || false);
   const [state, setState] = useState<STATES>(STATE_IDLE);
-  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
 
   let children: IDName[] = [];
@@ -147,6 +152,9 @@ function TreeFolder(props: TreeFolderProps) {
           arg: { type, uniqueId, id },
         });
         setOpen(!open);
+        setTimeout(() => {
+          window.localStorage.setItem(id, !open ? "true" : "false");
+        }, 200);
       }
       document.onkeydown = keyListeners;
       setSelected(true);
@@ -237,8 +245,8 @@ function TreeItem(props: TreeItemProps) {
     dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(expanded || false);
   const [state, setState] = useState<STATES>(STATE_IDLE);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const itemData: Item | null = treeItems[id] || null;
 
@@ -335,7 +343,7 @@ function TreeItem(props: TreeItemProps) {
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
       } ${dragOver == uniqueId ? "drag-target" : ""}`}
-      onClick={doOpen}
+      onClick={state == STATE_OK ? doOpen : undefined}
       style={{ paddingLeft: "36px" }}
     >
       <div className="item-icon-tree">
@@ -367,7 +375,6 @@ export default function LessonTree() {
           key={`${d._id}`}
           id={d._id}
           name={d.name}
-          expanded
           type="lesson"
         />
       ))}
