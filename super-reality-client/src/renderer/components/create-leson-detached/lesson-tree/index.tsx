@@ -114,6 +114,14 @@ function TreeFolder(props: TreeFolderProps) {
             arg: { step: data },
           });
           setState(STATE_OK);
+          if (data.anchor) {
+            getAnchor(data.anchor).then((anchor) => {
+              reduxAction(store.dispatch, {
+                type: "CREATE_LESSON_V2_SETANCHOR",
+                arg: { anchor: anchor },
+              });
+            });
+          }
         })
         .catch((e) => setState(STATE_ERR));
     }
@@ -151,6 +159,12 @@ function TreeFolder(props: TreeFolderProps) {
           type: "CREATE_LESSON_V2_TREE",
           arg: { type, uniqueId, id },
         });
+        if (id && type == "step") {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: { currentStep: id, currentItem: undefined },
+          });
+        }
         setOpen(!open);
         setTimeout(() => {
           window.localStorage.setItem(id, !open ? "true" : "false");
@@ -258,14 +272,6 @@ function TreeItem(props: TreeItemProps) {
           type: "CREATE_LESSON_V2_SETITEM",
           arg: { item: data },
         });
-        if (data.anchor) {
-          getAnchor(data.anchor).then((anchor) => {
-            reduxAction(store.dispatch, {
-              type: "CREATE_LESSON_V2_SETANCHOR",
-              arg: { anchor: anchor },
-            });
-          });
-        }
         setState(STATE_OK);
       })
       .catch((e) => setState(STATE_ERR));
@@ -294,7 +300,7 @@ function TreeItem(props: TreeItemProps) {
     if (id) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
-        arg: { currentItem: id },
+        arg: { currentStep: parentId, currentItem: id },
       });
     }
     document.onkeydown = keyListeners;

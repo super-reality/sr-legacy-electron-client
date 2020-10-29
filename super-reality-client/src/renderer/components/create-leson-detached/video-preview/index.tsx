@@ -13,9 +13,11 @@ export default function VideoPreview(): JSX.Element {
     recordingData,
     videoNavigation,
     currentRecording,
+    currentStep,
     currentItem,
     treeAnchors,
     treeItems,
+    treeSteps,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const horPor = useRef<HTMLDivElement>(null);
@@ -36,25 +38,32 @@ export default function VideoPreview(): JSX.Element {
     [currentItem, treeItems]
   );
 
+  const step = useMemo(
+    () => (currentStep ? treeSteps[currentStep] : undefined),
+    [currentStep, treeSteps]
+  );
+
   useEffect(() => {
-    if (item?.anchor && anchorImageRef.current && !recordingData.anchor) {
-      const anchor = treeAnchors[item?.anchor];
+    if (step?.anchor && anchorImageRef.current && !recordingData.anchor) {
+      const anchor = treeAnchors[step?.anchor];
       [anchorImageRef.current.src] = anchor?.templates || "";
-      reduxAction(dispatch, {
-        type: "SET_CV_RESULT",
-        arg: {
-          id: anchor._id,
-          width: anchorImageRef.current.width,
-          height: anchorImageRef.current.height,
-          x: width / 2 - anchorImageRef.current.width / 2,
-          y: height / 2 - anchorImageRef.current.height / 2,
-          sizeFactor: 1,
-          dist: 0,
-          time: 0,
-        },
-      });
+      if (anchor) {
+        reduxAction(dispatch, {
+          type: "SET_CV_RESULT",
+          arg: {
+            id: anchor._id,
+            width: anchorImageRef.current.width,
+            height: anchorImageRef.current.height,
+            x: width / 2 - anchorImageRef.current.width / 2,
+            y: height / 2 - anchorImageRef.current.height / 2,
+            sizeFactor: 1,
+            dist: 0,
+            time: 0,
+          },
+        });
+      }
     }
-  }, [dispatch, treeAnchors, item, width, height]);
+  }, [dispatch, treeAnchors, width, height]);
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {

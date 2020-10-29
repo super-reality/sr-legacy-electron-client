@@ -15,6 +15,7 @@ import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg"
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
 import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
+import OpenStep from "../open-step";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
 import reduxAction from "../../../redux/reduxAction";
@@ -77,6 +78,9 @@ export default function Lesson(props: LessonProps): JSX.Element {
       )}
       {treeCurrentType == "item" && view == "Lessons" && (
         <OpenItem id={treeCurrentId} />
+      )}
+      {treeCurrentType == "step" && view == "Lessons" && (
+        <OpenStep id={treeCurrentId} />
       )}
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">

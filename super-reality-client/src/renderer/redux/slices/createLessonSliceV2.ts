@@ -30,6 +30,8 @@ const initialState = {
   currentRecording: undefined as undefined | string,
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
+  currentStep: undefined as undefined | string,
+  currentSubView: "none" as TreeTypes,
   anchorTestView: false as boolean,
   lessonPreview: false as boolean,
   stepPreview: false as boolean,
@@ -294,12 +296,12 @@ const createLessonSlice = createSlice({
     },
     setAnchor: (
       state: InitialState,
-      action: PayloadAction<{ anchor: IAnchor; item?: string }>
+      action: PayloadAction<{ anchor: IAnchor; step?: string }>
     ): void => {
-      const { anchor, item } = action.payload;
+      const { anchor, step } = action.payload;
 
-      if (item) {
-        state.treeItems[item].anchor = anchor._id;
+      if (step) {
+        state.treeSteps[step].anchor = anchor._id;
       }
 
       state.treeAnchors = {

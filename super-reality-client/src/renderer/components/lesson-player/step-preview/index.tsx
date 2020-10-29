@@ -52,6 +52,7 @@ export default function StepPreview(props: StepPreviewProps) {
           <ItemView
             key={item._id}
             item={item}
+            anchorId={step.anchor || ""}
             onSucess={() => itemSuceeded(itemId)}
           />
         ) : (
