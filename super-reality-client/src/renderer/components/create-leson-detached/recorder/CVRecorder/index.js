@@ -197,6 +197,10 @@ export default class CVRecorder {
     };
 
     this._clickEventDetails.forEach(async (arr) => {
+      let keyboardEvents = {};
+      if(arr[4] !== undefined){
+        keyboardEvents = arr[4]
+      }
       let snippedImageName = "";
       const eventType      = arr[3];
       const timestamp      = arr[2];
@@ -211,7 +215,7 @@ export default class CVRecorder {
       const milliSeconds = timestampFormat[3];
       const interval = seconds * 1000 + parseInt(milliSeconds);
 
-      if(eventType === "mousedown"){
+      if(eventType === "left_click"){
 
         cap.set(cv.CAP_PROP_POS_MSEC, interval);
         const currentImage = cap.read();
@@ -343,6 +347,7 @@ export default class CVRecorder {
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
         time_stamp: timestamp,
+        keyboard_events: keyboardEvents
       });
     });
     const json = JSON.stringify(jsonMetaData, null, "  ");
