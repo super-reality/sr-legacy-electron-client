@@ -3,7 +3,10 @@
 
 .window-top-navigation{
     display: flex;
-    .window-top-navigation-buttons-left{
+    .window-top-navigation-buttons{
+        cursor: pointer;
+    }
+    .buttons-left{
         margin-left: 3px;
         .window-top-navigation-buttons-icons{
             position: relative;

@@ -117,13 +117,19 @@ export default function TopSearch(): JSX.Element {
   const sections: Sections[] = ["Super Reality", "My Reality"];
   const [view, setView] = useState<Sections>(sections[0]);
 
+  
   // 
 
   return (
 
 
     <ContainerTop>
-      <AppTopNav/>
+      {isElectron()?(
+        <AppTopNav/>
+      ):(
+        <div/>
+      )}
+      
       <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
         <TopTabs
           buttons={sections}
