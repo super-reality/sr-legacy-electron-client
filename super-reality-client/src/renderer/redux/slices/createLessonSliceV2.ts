@@ -27,6 +27,7 @@ const initialState = {
   treeSteps: {} as Record<string, IStep>,
   treeItems: {} as Record<string, Item>,
   treeAnchors: {} as Record<string, IAnchor>,
+  recordintTempItems: {} as Record<string, Item>,
   currentRecording: undefined as undefined | string,
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,

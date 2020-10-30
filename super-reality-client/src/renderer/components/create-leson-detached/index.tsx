@@ -37,6 +37,7 @@ import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
+import generateTempItems from "./lesson-utils/generateTempItems";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -189,6 +190,12 @@ export default function CreateLessonDetached(): JSX.Element {
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
       arg: json,
+    });
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        recordintTempItems: generateTempItems(json.step_data),
+      },
     });
   }, [dispatch, currentRecording]);
 
