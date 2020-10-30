@@ -11,8 +11,8 @@ import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
 import ModalList from "../modal-list";
-import updateItem from "../lesson-utils/updateItem";
 import { IStep } from "../../../api/types/step/step";
+import updateStep from "../lesson-utils/updateStep";
 
 interface OpenStepProps {
   id: string;
@@ -41,7 +41,7 @@ export default function OpenStep(props: OpenStepProps) {
         type: "CREATE_LESSON_V2_SETSTEP",
         arg: { step: updatedStep },
       });
-      updateItem(updatedStep, id);
+      updateStep(updatedStep, id);
     },
     [id, treeSteps]
   );

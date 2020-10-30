@@ -57,6 +57,7 @@ export interface BaseItem {
   trigger: number | null;
   destination: string; // a step ID to go to
   transition: number; // type
+  anchor: boolean;
 }
 
 export interface ItemFocus extends BaseItem {

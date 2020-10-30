@@ -15,15 +15,10 @@ import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
-import ButtonRound from "../../button-round";
-
-import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
-import usePopupImageSource from "../../../hooks/usePopupImageSource";
-import newAnchor from "../lesson-utils/newAnchor";
-import ModalList from "../modal-list";
 import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
+import BaseToggle from "../../base-toggle";
 
 interface OpenItemProps {
   id: string;
@@ -87,6 +82,13 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
+        <BaseToggle
+          title="Use Anchor"
+          value={item.anchor}
+          callback={(val) => {
+            doUpdate({ anchor: val });
+          }}
+        />
         {view === "Settings" && item.type == "focus_highlight" && (
           <SettingsFocusHighlight item={item} update={doUpdate} />
         )}

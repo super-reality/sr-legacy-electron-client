@@ -40,7 +40,7 @@ export default function VideoPreview(): JSX.Element {
 
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, treeSteps]
+    [currentStep, item, treeSteps]
   );
 
   useEffect(() => {
