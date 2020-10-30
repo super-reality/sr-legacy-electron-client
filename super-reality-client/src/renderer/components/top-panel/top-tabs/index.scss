@@ -12,15 +12,15 @@
 .top-tabs-tab-container {
   justify-content: space-between;
   display: flex;
-  margin: 0.5em 0.5em 0 0;
-  width: 70vw;
-  height: 1.5em;
+  margin: 3px 3px 0 0;
+
+  
 }
 
 @mixin top-tabs-tab {
   text-align: center;
   border-radius: 4px 4px 0 0;
-  margin: 0 0.25em;
+  margin: 0 5px 0 2px;
   cursor: pointer;
 }
 

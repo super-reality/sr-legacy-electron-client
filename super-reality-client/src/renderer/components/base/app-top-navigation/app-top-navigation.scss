@@ -1,0 +1,25 @@
+
+
+
+.window-top-navigation{
+    display: flex;
+    .window-top-navigation-buttons-left{
+        margin-left: 3px;
+        .window-top-navigation-buttons-icons{
+            position: relative;
+            top: 2px;
+        }
+    }
+    .window-top-navigation-right{
+        margin-left: auto;
+        .minimize-button, .maximize-button{
+            padding-right: 4px;
+        }
+        
+        .minimize{
+            position: relative;
+            bottom: 4px;
+            
+        }
+    }
+}

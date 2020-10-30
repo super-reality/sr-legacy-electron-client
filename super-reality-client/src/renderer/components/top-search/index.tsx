@@ -8,9 +8,10 @@ import React, {
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
-import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
-import { ReactComponent as SearchHistoryIcon } from "../../../assets/svg/tree-drop.svg"
-import { ReactComponent as SearchPlusIcon } from "../../../assets/svg/plus.svg"
+import { ReactComponent as SearchIcon } from "../../../assets/svg/search-new.svg";
+import { ReactComponent as SearchDrop } from "../../../assets/svg/tree-drop.svg";
+import { ReactComponent as SearchPlusIcon } from "../../../assets/svg/plus.svg";
+
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as ProfileIcon } from "../../../assets/svg/profile.svg";
 import { AppState } from "../../redux/stores/renderer";
@@ -28,6 +29,8 @@ import isElectron from "../../../utils/isElectron";
 import { TopTabs, TopTabsContainer } from "../top-panel/top-tabs";
 import { ContainerFlex, Image, ItemInner, Title, Text, ContainerTop } from "../item-inner";
 import ContainerBasic from "../base/base-container";
+import { ItemImage } from "../collection-new/collection-all";
+import AppTopNav from "../base/app-top-navigation";
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -110,7 +113,7 @@ export default function TopSearch(): JSX.Element {
     SuperReality,
     MyReality
   }
-  type Sections = "Super Reality"| "My Reality";
+  type Sections = "Super Reality" | "My Reality";
   const sections: Sections[] = ["Super Reality", "My Reality"];
   const [view, setView] = useState<Sections>(sections[0]);
 
@@ -120,14 +123,15 @@ export default function TopSearch(): JSX.Element {
 
 
     <ContainerTop>
+      <AppTopNav/>
       <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
         <TopTabs
           buttons={sections}
           initial={view}
-          height="1.5em"
-
+          height="auto"
+          style={{ width: "60vw", fontSize:"15px" }}
           callback={(str: string): void => { console.log(str) }}
-          
+
         />
         <TeacherBotTop />
       </ContainerFlex>
@@ -136,76 +140,71 @@ export default function TopSearch(): JSX.Element {
         margin: "0",
         padding: "0",
         borderTop: "none"
-  }}>
-      <ContainerFlex style={{ padding: "0.1em 0.25em", display: "flex" }}>
-        <div className="top-input-container">
-          <div className="top-input-icon">
-            <SearchIcon width="12px" height="12px" fill="var(--color-icon)" />
+      }}>
+        <ContainerFlex style={{ padding: "0.1em 0.25em", display: "flex" }}>
+          <div className="top-input-container">
+            <div className="top-input-icon">
+              <SearchIcon width="12px" height="12px" fill="var(--color-icon)" />
+            </div>
+            <div className="top-input-icon-drop-down" >
+
+              <SearchDrop width="8px" height="16px" fill="var(--color-icon)" />
+
+
+            </div>
+
+            <input
+              className="top-input"
+              onChange={onInputchange}
+              value={currentInputValue}
+            />
+
+          </div>
+          <div className="top-input-icon-plus">
+            <SearchPlusIcon width="10px" height="10px" fill="var(--color-icon)" />
           </div>
           <div className="top-input-icon-drop-down" >
-
-            <SearchHistoryIcon width="8px" height="16px" fill="var(--color-icon)" />
-
-
+            <SearchDrop width="8px" height="10px" fill="var(--color-icon)" />
           </div>
-          
-          <input
-            className="top-input"
-            onChange={onInputchange}
-            value={currentInputValue}
-          />
-
-        </div>
-        <div className="top-input-icon-plus">
-          <SearchPlusIcon width="10px" height="10px" fill="var(--color-icon)" />
-        </div>
-        <div className="top-input-icon-drop-down" >
-          <SearchHistoryIcon width="8px" height="10px" fill="var(--color-icon)" />
-        </div>
-      </ContainerFlex>
-
-      <ContainerFlex style={{ backgroundColor: " var(--color-background)", display: "flex", width: "150%" }}>
-        <ItemInner style={{ backgroundColor: "inherit", margin: "0 0.1rem", padding: "0" }}>
-          <ContainerBasic className="top-image-container">
-            <Image style={{borderRadius:"0"}}
-              src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
-            />
-          </ContainerBasic>
-          <ContainerFlex>
-            <Text style={{ color: "var(--color-blue)", margin: "0 0 1rem 1rem", fontSize: "16px" }}>
-              Featured - Super Reality Teacher
-                </Text>
-          </ContainerFlex>
-        </ItemInner>
-        <ItemInner style={{ backgroundColor: "inherit", margin: "0 0.1rem", padding: "0" }}>
-          <ContainerBasic className="top-image-container">
-            <Image style={{borderRadius:"0"}}
-              src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
-            />
-          </ContainerBasic>
-          <ContainerFlex>
-            <Text style={{ color: "var(--color-blue)", margin: "0 0 1rem 1rem", fontSize: "16px" }}>
-              VR Game Developer
-                </Text>
-          </ContainerFlex>
-        </ItemInner>
-      </ContainerFlex>
+        </ContainerFlex>
+        <ContainerFlex style={{ backgroundColor: " var(--color-background)", display: "flex", width: "150%" }}>
+          {["Featured - Super Reality Teacher", "VR Game Developer"].map((item: string): JSX.Element => {
+            return (
+              <ItemInner key={item} style={{ backgroundColor: "inherit", margin: "0 0.1rem", padding: "0" }}>
+                <ContainerBasic className="top-image-container">
+                  <Image style={{ borderRadius: "0" }}
+                    src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
+                  />
+                </ContainerBasic>
+                <ContainerFlex>
+                  <Text style={{ color: "var(--color-blue)", margin: "0 0 1rem 1rem", fontSize: "16px" }}>
+                    {item}
+                  </Text>
+                </ContainerFlex>
+              </ItemInner>
+            )
+          })}
+        </ContainerFlex>
       </TopTabsContainer>
     </ContainerTop >
-
-
-
-
-
-
-
-
 
 
   );
 }
 
 /*
+<ItemInner style={{ backgroundColor: "inherit", margin: "0 0.1rem", padding: "0" }}>
+            <ContainerBasic className="top-image-container">
+              <Image style={{ borderRadius: "0" }}
+                src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
+              />
+            </ContainerBasic>
+            <ContainerFlex>
+              <Text style={{ color: "var(--color-blue)", margin: "0 0 1rem 1rem", fontSize: "16px" }}>
+                VR Game Developer
+                </Text>
+            </ContainerFlex>
+          </ItemInner>
 <TeacherBotTop />
         <ButtonRound
           onClick={() => {

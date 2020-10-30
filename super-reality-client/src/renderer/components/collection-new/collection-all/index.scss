@@ -1,0 +1,41 @@
+@import "../../misc.scss";
+
+.collection-item-image{
+    width:100%;
+    height: 100%;
+    display: block;
+}
+
+.collection-container{
+    margin: 7px 5px 10px 3px;
+    
+    .collecion-name-button{
+        font-size: 17px;
+        padding: 0 0 0 5px;
+        background-color: var(--color-section);
+        margin: 0 0 5px 2px;
+        width: 25vw;
+        justify-content: left;
+        border-radius: 2px;
+    }
+
+    .items-row{
+        display: flex;
+        flex-direction: row;
+
+        .collection-item-container{
+            display: flex;
+            flex-direction: column;
+            margin: 0 5px 0 0;
+
+            .collection-container-image-container{
+                width: 210px;
+                height: 150px;
+            }
+
+            .collection-item-title{
+                margin: 5px 0 0 10px;
+            }
+        }
+    }
+}

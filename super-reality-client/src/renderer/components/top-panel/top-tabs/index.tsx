@@ -9,17 +9,18 @@ interface TopTabsProps<T> {
   style?: CSSProperties;
   icons?: React.FunctionComponent<any>[];
   className?: string;
+  width?: string
   
   
 }
 
 export function TopTabs<T extends string>(props: TopTabsProps<T>): JSX.Element {
-  const { buttons, initial, callback, height, style, icons, className } = props;
+  const { buttons, initial, callback, width, height, style, icons, className } = props;
  
   const [value, setValue] = useState<T>(initial);
 
   return (
-    <div className={`top-tabs-tab-container ${className}`}>
+    <div className={`top-tabs-tab-container ${className}`} style={style}>
       {buttons.map((str, i) => {
         const Icon = icons ? icons[i] : undefined;
         return (
@@ -27,7 +28,8 @@ export function TopTabs<T extends string>(props: TopTabsProps<T>): JSX.Element {
             key={str}
             className={`top-tabs-tab${value == str ? "-selected" : ""}`}
             style={{
-              width: `calc(${Math.round(100 / buttons.length)}%)`,
+              
+              width: width || `calc(${Math.round(100 / buttons.length)}%)`,
               height: height || "32px",
               lineHeight: height || "32px",
             }}
@@ -56,12 +58,13 @@ export function TopTabs<T extends string>(props: TopTabsProps<T>): JSX.Element {
 
 interface TopTabsContainerProps {
   style?: CSSProperties;
+  className?: string;
 }
 
 export function TopTabsContainer(props: PropsWithChildren<TopTabsContainerProps>) {
-  const { children, style } = props;
+  const { children, style, className } = props;
   return (
-    <div className="top-tabs-content-container" style={style}>
+    <div className={`top-tabs-content-container ${className}`} style={style}>
       {children}
     </div>
   );

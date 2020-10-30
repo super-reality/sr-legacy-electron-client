@@ -8,9 +8,10 @@ import DiscoverFinder from "../../components/discover-finder";
 import CollectionActive from "../../components/collection-active";
 import SubjectActive from "../../components/subject-active";
 import LessonActive from "../../components/lesson-active";
-import { Tabs, TabsContainer } from "../../components/tabs";
+import { TopTabs, TopTabsContainer } from "../../components/top-panel/top-tabs";
 import Test from "../test";
 import Collection from "../../components/collection"
+import CollectionNew from "../../components/collection-new/collection-all"
 import { mockCollections } from "../../../mocks"
 import { ContainerBottom, ContainerFlex, ContainerTop, ItemInner, Title, Image } from "../../components/item-inner";
 import ContainerBasic from "../../components/base/base-container"
@@ -44,60 +45,49 @@ export default function Discover(): JSX.Element {
 
   // My code Denis
 
-
+  // Move it to the separate component
   // Test Array
   enum TestEnum {
     All,
     Jobs,
-    Track
+    Tracks,
+    Lessons,
+    Groups,
+    Projects,
+    Resources
   }
-  type TestSections = keyof typeof TestEnum;
-  const testArray: Array<TestSections> = ["All", "Jobs", "Track"]
-  
+  type Sections = keyof typeof TestEnum;
+  const sections: Sections[] = ["All", "Jobs", "Tracks", "Lessons", "Groups", "Projects", "Resources"]
 
-const ContentArray = ["content All", "content jobs", "content tracks"]
-  // console.log(TestEnum.All)
-  // Test state
-  const [currentCollection, setCurrentCollection] = useState(testArray[TestEnum.All])
+
+
+  const [view, setView] = useState(sections[0]);
+  const ContentArray = [
+    "Jobs", "Tracks",
+    "Lessons", "Groups",
+    "Projects", "Resourses"
+  ]
+
   return (
     <>
-      <Tabs
-        buttons={testArray}
-        initial={currentCollection}
-        callback={setCurrentCollection}
-      />
-      <TabsContainer style={{ width: "fit-content" }}>
-        {ContentArray.map((item, indexF) => {
-          return (
-            <ContainerBasic key={item} style={{}}>
-              <ButtonSimple onClick={() => { console.log("Jobs") }} style={{width: "20vw"}}>
-                {`Collection_${indexF}`}
-              </ButtonSimple>
+      <div className="front-page-container">
+        <TopTabs
+          className="front-page-tabs"
+          buttons={sections}
+          initial={view}
+          callback={setView}
+          width="fit-content"
+          height="23px"
+          style={{
+            alignItems:"stretch",
+            width: "max-content"
+          }}
+        />
+        <TopTabsContainer className="front-page-tabs-container" style={{ width: "fit-content" }}>
+          {view == "All" && <CollectionNew dataArray={ContentArray} />}
+        </TopTabsContainer>
+      </div>
 
-              <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
-                {ContentArray.map((itemM, index) => {
-                  return (
-                    <ItemInner key={itemM} style={{
-                      display:"block"
-                     }}>
-                      <ContainerFlex style={{width: "50vw"}}>
-                        <Image
-                          src="https://www.cambridgeconsultants.com/sites/default/files/uploaded-images/Hero_Blog_VR-is-ready.jpg" />
-                      </ContainerFlex>
-                     
-                        <Title title={`Collection Item ${index}`} />
-                     
-                    </ItemInner>
-                  )
-                })}
-              </ContainerFlex>
-
-            </ContainerBasic>
-          )
-        })}
-
-
-      </TabsContainer>
     </>
   );
 }

@@ -116,6 +116,9 @@
   border-bottom: none;
 }
 
-.top-tabs-content-container > .container-flex{
-  background-color: var(--color-section-separator);
-}
+.top-tabs-content-container{
+  margin: 3px 0 0 0;
+  .container-flex{
+    background-color: var(--color-section-separator);
+  }
+} 
