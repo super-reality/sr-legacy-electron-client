@@ -72,6 +72,7 @@
     "jest:ci": "react-scripts test --env=jsdom --watchAll=false --testPathIgnorePatterns \"src/__tests__/\"",
     "jest:ci:watch": "react-scripts test --env=jsdom --testPathIgnorePatterns \"src/__tests__/\"",
     "test:eslint": "eslint src/**",
+    "eslint:fix": "eslint src/** --fix",
     "test:all": "npm run test:eslint && npm run jest:ci",
     "eject": "react-scripts eject",
     "electron": "electron .",

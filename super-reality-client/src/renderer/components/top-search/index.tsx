@@ -27,7 +27,14 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import TeacherBotTop from "../teacherbot-top";
 import isElectron from "../../../utils/isElectron";
 import { TopTabs, TopTabsContainer } from "../top-panel/top-tabs";
-import { ContainerFlex, Image, ItemInner, Title, Text, ContainerTop } from "../item-inner";
+import {
+  ContainerFlex,
+  Image,
+  ItemInner,
+  Title,
+  Text,
+  ContainerTop,
+} from "../item-inner";
 import ContainerBasic from "../base/base-container";
 import { ItemImage } from "../collection-new/collection-all";
 import AppTopNav from "../base/app-top-navigation";
@@ -111,52 +118,45 @@ export default function TopSearch(): JSX.Element {
 
   enum TestTopEnum {
     SuperReality,
-    MyReality
+    MyReality,
   }
   type Sections = "Super Reality" | "My Reality";
   const sections: Sections[] = ["Super Reality", "My Reality"];
   const [view, setView] = useState<Sections>(sections[0]);
 
-  
-  // 
+  //
 
   return (
-
-
     <ContainerTop>
-      {isElectron()?(
-        <AppTopNav/>
-      ):(
-        <div/>
-      )}
-      
+      {isElectron() ? <AppTopNav /> : <div />}
+
       <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
         <TopTabs
           buttons={sections}
           initial={view}
           height="auto"
-          style={{ width: "60vw", fontSize:"15px" }}
-          callback={(str: string): void => { console.log(str) }}
-
+          style={{ width: "60vw", fontSize: "15px" }}
+          callback={(str: string): void => {
+            console.log(str);
+          }}
         />
         <TeacherBotTop />
       </ContainerFlex>
 
-      <TopTabsContainer style={{
-        margin: "0",
-        padding: "0",
-        borderTop: "none"
-      }}>
+      <TopTabsContainer
+        style={{
+          margin: "0",
+          padding: "0",
+          borderTop: "none",
+        }}
+      >
         <ContainerFlex style={{ padding: "0.1em 0.25em", display: "flex" }}>
           <div className="top-input-container">
             <div className="top-input-icon">
               <SearchIcon width="12px" height="12px" fill="var(--color-icon)" />
             </div>
-            <div className="top-input-icon-drop-down" >
-
+            <div className="top-input-icon-drop-down">
               <SearchDrop width="8px" height="16px" fill="var(--color-icon)" />
-
-
             </div>
 
             <input
@@ -164,37 +164,60 @@ export default function TopSearch(): JSX.Element {
               onChange={onInputchange}
               value={currentInputValue}
             />
-
           </div>
           <div className="top-input-icon-plus">
-            <SearchPlusIcon width="10px" height="10px" fill="var(--color-icon)" />
+            <SearchPlusIcon
+              width="10px"
+              height="10px"
+              fill="var(--color-icon)"
+            />
           </div>
-          <div className="top-input-icon-drop-down" >
+          <div className="top-input-icon-drop-down">
             <SearchDrop width="8px" height="10px" fill="var(--color-icon)" />
           </div>
         </ContainerFlex>
-        <ContainerFlex style={{ backgroundColor: " var(--color-background)", display: "flex", width: "150%" }}>
-          {["Featured - Super Reality Teacher", "VR Game Developer"].map((item: string): JSX.Element => {
-            return (
-              <ItemInner key={item} style={{ backgroundColor: "inherit", margin: "0 0.1rem", padding: "0" }}>
-                <ContainerBasic className="top-image-container">
-                  <Image style={{ borderRadius: "0" }}
-                    src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
-                  />
-                </ContainerBasic>
-                <ContainerFlex>
-                  <Text style={{ color: "var(--color-blue)", margin: "0 0 1rem 1rem", fontSize: "16px" }}>
-                    {item}
-                  </Text>
-                </ContainerFlex>
-              </ItemInner>
-            )
-          })}
+        <ContainerFlex
+          style={{
+            backgroundColor: " var(--color-background)",
+            display: "flex",
+            width: "150%",
+          }}
+        >
+          {["Featured - Super Reality Teacher", "VR Game Developer"].map(
+            (item: string): JSX.Element => {
+              return (
+                <ItemInner
+                  key={item}
+                  style={{
+                    backgroundColor: "inherit",
+                    margin: "0 0.1rem",
+                    padding: "0",
+                  }}
+                >
+                  <ContainerBasic className="top-image-container">
+                    <Image
+                      style={{ borderRadius: "0" }}
+                      src="https://img.freepik.com/free-vector/synthwave-night-city-background_126980-167.jpg?size=626&ext=jpg"
+                    />
+                  </ContainerBasic>
+                  <ContainerFlex>
+                    <Text
+                      style={{
+                        color: "var(--color-blue)",
+                        margin: "0 0 1rem 1rem",
+                        fontSize: "16px",
+                      }}
+                    >
+                      {item}
+                    </Text>
+                  </ContainerFlex>
+                </ItemInner>
+              );
+            }
+          )}
         </ContainerFlex>
       </TopTabsContainer>
-    </ContainerTop >
-
-
+    </ContainerTop>
   );
 }
 

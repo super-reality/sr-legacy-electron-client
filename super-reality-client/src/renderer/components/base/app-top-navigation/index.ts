@@ -1,1 +1,1 @@
-export {default} from './app-top-navigation';
+export { default } from "./app-top-navigation";

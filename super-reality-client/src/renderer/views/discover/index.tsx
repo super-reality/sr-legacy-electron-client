@@ -10,11 +10,18 @@ import SubjectActive from "../../components/subject-active";
 import LessonActive from "../../components/lesson-active";
 import { TopTabs, TopTabsContainer } from "../../components/top-panel/top-tabs";
 import Test from "../test";
-import Collection from "../../components/collection"
-import CollectionNew from "../../components/collection-new/collection-all"
-import { mockCollections } from "../../../mocks"
-import { ContainerBottom, ContainerFlex, ContainerTop, ItemInner, Title, Image } from "../../components/item-inner";
-import ContainerBasic from "../../components/base/base-container"
+import Collection from "../../components/collection";
+import CollectionNew from "../../components/collection-new/collection-all";
+import { mockCollections } from "../../../mocks";
+import {
+  ContainerBottom,
+  ContainerFlex,
+  ContainerTop,
+  ItemInner,
+  Title,
+  Image,
+} from "../../components/item-inner";
+import ContainerBasic from "../../components/base/base-container";
 import ButtonSimple from "../../components/button-simple";
 
 export default function Discover(): JSX.Element {
@@ -42,7 +49,6 @@ export default function Discover(): JSX.Element {
     );
   }
 
-
   // My code Denis
 
   // Move it to the separate component
@@ -54,19 +60,28 @@ export default function Discover(): JSX.Element {
     Lessons,
     Groups,
     Projects,
-    Resources
+    Resources,
   }
   type Sections = keyof typeof TestEnum;
-  const sections: Sections[] = ["All", "Jobs", "Tracks", "Lessons", "Groups", "Projects", "Resources"]
-
-
+  const sections: Sections[] = [
+    "All",
+    "Jobs",
+    "Tracks",
+    "Lessons",
+    "Groups",
+    "Projects",
+    "Resources",
+  ];
 
   const [view, setView] = useState(sections[0]);
   const ContentArray = [
-    "Jobs", "Tracks",
-    "Lessons", "Groups",
-    "Projects", "Resourses"
-  ]
+    "Jobs",
+    "Tracks",
+    "Lessons",
+    "Groups",
+    "Projects",
+    "Resourses",
+  ];
 
   return (
     <>
@@ -79,15 +94,17 @@ export default function Discover(): JSX.Element {
           width="fit-content"
           height="23px"
           style={{
-            alignItems:"stretch",
-            width: "max-content"
+            alignItems: "stretch",
+            width: "max-content",
           }}
         />
-        <TopTabsContainer className="front-page-tabs-container" style={{ width: "fit-content" }}>
+        <TopTabsContainer
+          className="front-page-tabs-container"
+          style={{ width: "fit-content" }}
+        >
           {view == "All" && <CollectionNew dataArray={ContentArray} />}
         </TopTabsContainer>
       </div>
-
     </>
   );
 }

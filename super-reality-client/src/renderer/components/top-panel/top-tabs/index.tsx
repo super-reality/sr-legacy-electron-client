@@ -9,14 +9,21 @@ interface TopTabsProps<T> {
   style?: CSSProperties;
   icons?: React.FunctionComponent<any>[];
   className?: string;
-  width?: string
-  
-  
+  width?: string;
 }
 
 export function TopTabs<T extends string>(props: TopTabsProps<T>): JSX.Element {
-  const { buttons, initial, callback, width, height, style, icons, className } = props;
- 
+  const {
+    buttons,
+    initial,
+    callback,
+    width,
+    height,
+    style,
+    icons,
+    className,
+  } = props;
+
   const [value, setValue] = useState<T>(initial);
 
   return (
@@ -28,7 +35,6 @@ export function TopTabs<T extends string>(props: TopTabsProps<T>): JSX.Element {
             key={str}
             className={`top-tabs-tab${value == str ? "-selected" : ""}`}
             style={{
-              
               width: width || `calc(${Math.round(100 / buttons.length)}%)`,
               height: height || "32px",
               lineHeight: height || "32px",
@@ -61,7 +67,9 @@ interface TopTabsContainerProps {
   className?: string;
 }
 
-export function TopTabsContainer(props: PropsWithChildren<TopTabsContainerProps>) {
+export function TopTabsContainer(
+  props: PropsWithChildren<TopTabsContainerProps>
+) {
   const { children, style, className } = props;
   return (
     <div className={`top-tabs-content-container ${className}`} style={style}>
