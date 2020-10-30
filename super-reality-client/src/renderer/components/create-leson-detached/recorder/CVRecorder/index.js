@@ -197,11 +197,12 @@ export default class CVRecorder {
     };
 
     this._clickEventDetails.forEach(async (arr) => {
-      const timestamp = arr[2];
-      const yCordinate = arr[1];
-      const xCordinate = arr[0];
+      let snippedImageName = "";
+      const eventType      = arr[3];
+      const timestamp      = arr[2];
+      const yCordinate     = arr[1];
+      const xCordinate     = arr[0];
       const timestampFormat = timestamp.split(":"); // split it at the colons
-
       // minutes are worth 60 seconds. Hours are worth 60 minutes.
       const seconds =
         +timestampFormat[0] * 60 * 60 +
@@ -210,130 +211,134 @@ export default class CVRecorder {
       const milliSeconds = timestampFormat[3];
       const interval = seconds * 1000 + parseInt(milliSeconds);
 
-      cap.set(cv.CAP_PROP_POS_MSEC, interval);
-      const currentImage = cap.read();
+      if(eventType === "mousedown"){
 
-      const absDiff = mainImage.absdiff(currentImage);
+        cap.set(cv.CAP_PROP_POS_MSEC, interval);
+        const currentImage = cap.read();
 
-      const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
+        const absDiff = mainImage.absdiff(currentImage);
 
-      const cannyEdges = grayImg.canny(23, 180, 3);
+        const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-      // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
+        const cannyEdges = grayImg.canny(23, 180, 3);
 
-      const cannyEdges2D = cannyEdges.getDataAsArray();
+        // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
-      const rightBorderCordiates = this.getWindowsNearestBorderPoint(
-        xCordinate - this._pixelOffset,
-        yCordinate - this._pixelOffset,
-        cannyEdges2D,
-        "right"
-      );
-      const leftBorderCordinates = this.getWindowsNearestBorderPoint(
-        xCordinate - this._pixelOffset,
-        yCordinate - this._pixelOffset,
-        cannyEdges2D,
-        "left"
-      );
-      const topBorderCordinates = this.getWindowsNearestBorderPoint(
-        xCordinate - this._pixelOffset,
-        yCordinate - this._pixelOffset,
-        cannyEdges2D,
-        "top"
-      );
-      const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
-        xCordinate - this._pixelOffset,
-        yCordinate - this._pixelOffset,
-        cannyEdges2D,
-        "bottom"
-      );
-      const rightBorderX = rightBorderCordiates[0];
-      const rightBorderY = rightBorderCordiates[1];
-      const leftBorderX = leftBorderCordinates[0];
-      const leftBorderY = leftBorderCordinates[1];
-      const topBorderX = topBorderCordinates[0];
-      const topBorderY = topBorderCordinates[1];
-      const bottomBorderX = bottomBorderCordinates[0];
-      const bottomBorderY = bottomBorderCordinates[1];
-      const snipWindowHeight = bottomBorderY - topBorderY;
-      const snipWindowWidth = rightBorderX - leftBorderX;
+        const cannyEdges2D = cannyEdges.getDataAsArray();
 
-      const topLeftCornerX =
-        topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
-      const topLeftCornerY = topBorderY - this._pixelOffset;
+        const rightBorderCordiates = this.getWindowsNearestBorderPoint(
+          xCordinate - this._pixelOffset,
+          yCordinate - this._pixelOffset,
+          cannyEdges2D,
+          "right"
+        );
+        const leftBorderCordinates = this.getWindowsNearestBorderPoint(
+          xCordinate - this._pixelOffset,
+          yCordinate - this._pixelOffset,
+          cannyEdges2D,
+          "left"
+        );
+        const topBorderCordinates = this.getWindowsNearestBorderPoint(
+          xCordinate - this._pixelOffset,
+          yCordinate - this._pixelOffset,
+          cannyEdges2D,
+          "top"
+        );
+        const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
+          xCordinate - this._pixelOffset,
+          yCordinate - this._pixelOffset,
+          cannyEdges2D,
+          "bottom"
+        );
+        const rightBorderX = rightBorderCordiates[0];
+        const rightBorderY = rightBorderCordiates[1];
+        const leftBorderX = leftBorderCordinates[0];
+        const leftBorderY = leftBorderCordinates[1];
+        const topBorderX = topBorderCordinates[0];
+        const topBorderY = topBorderCordinates[1];
+        const bottomBorderX = bottomBorderCordinates[0];
+        const bottomBorderY = bottomBorderCordinates[1];
+        const snipWindowHeight = bottomBorderY - topBorderY;
+        const snipWindowWidth = rightBorderX - leftBorderX;
 
-      const topRightCornerX = rightBorderX + this._pixelOffset;
-      const topRightCornerY =
-        rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
+        const topLeftCornerX =
+          topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+        const topLeftCornerY = topBorderY - this._pixelOffset;
 
-      const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-      const bottomLeftCornerY =
-        leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+        const topRightCornerX = rightBorderX + this._pixelOffset;
+        const topRightCornerY =
+          rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
 
-      const bottomRightCornerX =
-        bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
-      const bottomRightCornerY = bottomBorderY + this._pixelOffset;
+        const bottomLeftCornerX = leftBorderX - this._pixelOffset;
+        const bottomLeftCornerY =
+          leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
 
-      const cornerPointsArr = new Array(4);
-      cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
-      cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-      cornerPointsArr[2] = new cv.Point2(bottomLeftCornerX, bottomLeftCornerY);
-      cornerPointsArr[3] = new cv.Point2(
-        bottomRightCornerX,
-        bottomRightCornerY
-      );
+        const bottomRightCornerX =
+          bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
+        const bottomRightCornerY = bottomBorderY + this._pixelOffset;
 
-      const outputCornerPointsArr = new Array(4);
-      outputCornerPointsArr[0] = new cv.Point2(0, 0);
-      outputCornerPointsArr[1] = new cv.Point2(snipWindowWidth, 0);
-      outputCornerPointsArr[2] = new cv.Point2(0, snipWindowHeight);
-      outputCornerPointsArr[3] = new cv.Point2(
-        snipWindowWidth,
-        snipWindowHeight
-      );
-      const matrix = cv.getPerspectiveTransform(
-        cornerPointsArr,
-        outputCornerPointsArr
-      );
+        const cornerPointsArr = new Array(4);
+        cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
+        cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
+        cornerPointsArr[2] = new cv.Point2(bottomLeftCornerX, bottomLeftCornerY);
+        cornerPointsArr[3] = new cv.Point2(
+          bottomRightCornerX,
+          bottomRightCornerY
+        );
 
-      const dsize = new cv.Size(snipWindowWidth, snipWindowHeight);
+        const outputCornerPointsArr = new Array(4);
+        outputCornerPointsArr[0] = new cv.Point2(0, 0);
+        outputCornerPointsArr[1] = new cv.Point2(snipWindowWidth, 0);
+        outputCornerPointsArr[2] = new cv.Point2(0, snipWindowHeight);
+        outputCornerPointsArr[3] = new cv.Point2(
+          snipWindowWidth,
+          snipWindowHeight
+        );
+        const matrix = cv.getPerspectiveTransform(
+          cornerPointsArr,
+          outputCornerPointsArr
+        );
 
-      const outputImg = mainImage.warpPerspective(
-        matrix,
-        dsize,
-        cv.INTER_LINEAR,
-        cv.BORDER_CONSTANT
-      );
+        const dsize = new cv.Size(snipWindowWidth, snipWindowHeight);
 
-      const snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
-        /:/g,
-        "-"
-      )}.jpeg`;
-      if (
-        !fs.existsSync(
-          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
-        )
-      ) {
-        fs.mkdir(
-          `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
-          (err) => {
-            if (err) throw err;
-          }
+        const outputImg = mainImage.warpPerspective(
+          matrix,
+          dsize,
+          cv.INTER_LINEAR,
+          cv.BORDER_CONSTANT
+        );
+
+        const snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
+          /:/g,
+          "-"
+        )}.jpeg`;
+        if (
+          !fs.existsSync(
+            `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
+          )
+        ) {
+          fs.mkdir(
+            `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
+            (err) => {
+              if (err) throw err;
+            }
+          );
+        }
+        cv.imwrite(
+          `${this._stepSnapshotPath}${
+            this._stepRecordingName.split(".")[0]
+          }/${snippedImageName}`,
+          outputImg,
+          [parseInt(cv.IMWRITE_JPEG_QUALITY)]
+        );
+        console.log(
+          `${this._stepSnapshotPath}${
+            this._stepRecordingName.split(".")[0]
+          }/${snippedImageName}`
         );
       }
-      cv.imwrite(
-        `${this._stepSnapshotPath}${
-          this._stepRecordingName.split(".")[0]
-        }/${snippedImageName}`,
-        outputImg,
-        [parseInt(cv.IMWRITE_JPEG_QUALITY)]
-      );
-      console.log(
-        `${this._stepSnapshotPath}${
-          this._stepRecordingName.split(".")[0]
-        }/${snippedImageName}`
-      );
       jsonMetaData.step_data.push({
+        type: eventType,
         name: snippedImageName,
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
