@@ -40,6 +40,7 @@ body {
   margin: 0px;
   background-color: var(--color-background);
   font-family: Roboto;
+  /*-webkit-app-region: drag;*/
 }
 
 button {
@@ -51,7 +52,9 @@ button {
     outline: none;
   }
 }
-
+.button-simple{
+  -webkit-app-region: no-drag;
+}
 input, textarea {
   font-family: sans-serif;
   background: var(--color-background);

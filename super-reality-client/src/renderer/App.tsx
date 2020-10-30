@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import isElectron from "../utils/isElectron";
 import "./App.scss";
 import Test from "./views/test";
 import Discover from "./views/discover";
 import Learn from "./views/learn";
 import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
+
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Loading from "./components/loading";
@@ -16,6 +18,7 @@ import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
+import AppTopNav from "./components/base/app-top-navigation";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -54,6 +57,7 @@ export default function App(): JSX.Element {
 
   return isAuthenticated ? (
     <>
+    {isElectron() ? <AppTopNav /> : <div />}
       <TopSearch />
       <Loading state={isLoading} />
       <div onScroll={handleScroll} ref={scrollRef} className="content">
@@ -70,6 +74,7 @@ export default function App(): JSX.Element {
     </>
   ) : (
     <>
+    
       <Loading state={isPending} />
       <Switch>
         <Route exact path="/tests/:id" component={Tests} />

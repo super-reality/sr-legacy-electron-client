@@ -50,7 +50,7 @@ export default function TeacherBotTop(): JSX.Element {
     <div className="teacher-bot-top" onClick={onClick}>
       {mode == "FACE" ? (
         <div className="face">
-          <Face width="26px" height="23px" />
+          <Face width="20px" height="20px" />
         </div>
       ) : (
         <div className="points">{points}</div>

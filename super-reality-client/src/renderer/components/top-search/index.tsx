@@ -25,7 +25,6 @@ import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import TeacherBotTop from "../teacherbot-top";
-import isElectron from "../../../utils/isElectron";
 import { TopTabs, TopTabsContainer } from "../top-panel/top-tabs";
 import {
   ContainerFlex,
@@ -37,7 +36,7 @@ import {
 } from "../item-inner";
 import ContainerBasic from "../base/base-container";
 import { ItemImage } from "../collection-new/collection-all";
-import AppTopNav from "../base/app-top-navigation";
+
 
 interface TopNavItemProps {
   style?: CSSProperties;
@@ -128,14 +127,13 @@ export default function TopSearch(): JSX.Element {
 
   return (
     <ContainerTop>
-      {isElectron() ? <AppTopNav /> : <div />}
-
       <ContainerFlex style={{ display: "flex", flexDirection: "row" }}>
         <TopTabs
           buttons={sections}
           initial={view}
+          width="-webkit-fill-available"
           height="auto"
-          style={{ width: "60vw", fontSize: "15px" }}
+          style={{ width: "65vw", fontSize: "15px" }}
           callback={(str: string): void => {
             console.log(str);
           }}
