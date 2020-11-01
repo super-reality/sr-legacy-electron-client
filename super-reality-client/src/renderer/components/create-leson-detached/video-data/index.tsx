@@ -3,6 +3,7 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
+import timestampToTime from "../../../../utils/timestampToTime";
 
 export default function VideoData() {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ export default function VideoData() {
       <div className="video-data">
         {recordingData.step_data.map((s) => {
           // eslint-disable-next-line radix
-          const time = parseInt(s.time_stamp.replace(/:/g, ""));
+          const time = timestampToTime(s.time_stamp);
           return (
             <div
               className="video-data-click"

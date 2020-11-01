@@ -15,6 +15,7 @@ import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/doCVMatch";
+import timestampToTime from "../../../../utils/timestampToTime";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -70,16 +71,18 @@ export default function VideoStatus() {
       "video-hidden"
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
-      if (matchFrame !== -1 && matchFrame < videoDuration) {
-        videoHidden.currentTime = matchFrame + 0.1;
+      if (matchFrame !== -1 && matchFrame < recordingData.step_data.length) {
+        const timestamp = recordingData.step_data[matchFrame].time_stamp;
+        const timestampTime = timestampToTime(timestamp);
+        videoHidden.currentTime = timestampTime / 1000;
         timeoutRef.current = setTimeout(() => {
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
             reduxAction(dispatch, {
               type: "SET_RECORDING_CV_DATA",
-              arg: { index: Math.round(matchFrame * 10), value: arg.dist },
+              arg: { index: Math.round(timestampTime / 100), value: arg.dist },
             });
             if (timeoutRef.current) {
-              setMatchFrame(matchFrame + 0.1);
+              setMatchFrame(matchFrame + 1);
             }
           });
         }, 50);
@@ -87,7 +90,7 @@ export default function VideoStatus() {
         setMatchFrame(-1);
       }
     }
-  }, [matchFrame, timeoutRef, dispatch, anchor, videoDuration]);
+  }, [matchFrame, recordingData, timeoutRef, dispatch, anchor]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
