@@ -17,4 +17,11 @@ export interface CVResult {
   id: string;
 }
 
+export type Rectangle = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export type ValueOf<T> = T[keyof T];

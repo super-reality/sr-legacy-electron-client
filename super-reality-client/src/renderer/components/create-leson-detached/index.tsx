@@ -38,6 +38,7 @@ import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
 import generateTempItems from "./lesson-utils/generateTempItems";
+import setFullBounds from "../../../utils/setFullBounds";
 
 function setMocks() {
   reduxAction(store.dispatch, {
