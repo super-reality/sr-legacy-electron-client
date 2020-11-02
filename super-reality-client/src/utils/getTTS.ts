@@ -23,7 +23,7 @@ export default function getTTS(text: string, play?: boolean): void {
   const payload = {
     lesson: text,
   };
-
+console.log("start req")
   Axios.post<string>(`http://54.177.153.12:8080/text_to_speech`, payload, {
     headers: {
       "Content-Type": "application/json",
@@ -32,6 +32,7 @@ export default function getTTS(text: string, play?: boolean): void {
     .then(handleGetTTS)
     .then((url) => {
       setLoading(false);
+      console.log(filename);
       downloadFile(url, filename)
         .then(() => {
           playSound(filename);
@@ -39,6 +40,7 @@ export default function getTTS(text: string, play?: boolean): void {
         .catch(console.error);
     })
     .catch((err) => {
+      console.log(err);
       setLoading(false);
     });
 }

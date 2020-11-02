@@ -28,7 +28,8 @@ export default function getFace(
       setLoading(false);
     });
     res.on("error", console.error);
-    res.pipe(fs.createWriteStream(path.join(userDataPath(), "output.mp4")));
+   
+    res.pipe(fs.createWriteStream(path.join(userDataPath(), "face_api_output.mp4")));
   });
 
   if (image && image.files && video && video.files) {
