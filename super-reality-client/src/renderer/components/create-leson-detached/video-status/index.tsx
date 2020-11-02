@@ -23,7 +23,8 @@ export default function VideoStatus() {
     recordingData,
     treeAnchors,
     videoNavigation,
-    videoDuration,
+    recordingTempItems,
+    currentStep,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [matchFrame, setMatchFrame] = useState(-1);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,7 +73,10 @@ export default function VideoStatus() {
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
       if (matchFrame !== -1 && matchFrame < recordingData.step_data.length) {
-        const timestamp = recordingData.step_data[matchFrame].time_stamp;
+        const tempItemId = Object.keys(recordingTempItems)[matchFrame];
+        const orig = recordingData.step_data[matchFrame];
+        const tempItem = recordingTempItems[tempItemId];
+        const timestamp = orig.time_stamp;
         const timestampTime = timestampToTime(timestamp);
         videoHidden.currentTime = timestampTime / 1000;
         timeoutRef.current = setTimeout(() => {
@@ -81,16 +85,38 @@ export default function VideoStatus() {
               type: "SET_RECORDING_CV_DATA",
               arg: { index: Math.round(timestampTime / 100), value: arg.dist },
             });
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETITEM",
+              arg: {
+                item: {
+                  ...tempItem,
+                  relativePos: {
+                    ...tempItem.relativePos,
+                    x: orig.x_cordinate - arg.x - 64,
+                    y: orig.y_cordinate - arg.y - 64,
+                    width: 128,
+                    height: 128,
+                  },
+                },
+              },
+            });
             if (timeoutRef.current) {
               setMatchFrame(matchFrame + 1);
             }
           });
-        }, 50);
+        }, 200);
       } else {
         setMatchFrame(-1);
       }
     }
-  }, [matchFrame, recordingData, timeoutRef, dispatch, anchor]);
+  }, [
+    matchFrame,
+    recordingData,
+    timeoutRef,
+    dispatch,
+    recordingTempItems,
+    anchor,
+  ]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
@@ -109,6 +135,17 @@ export default function VideoStatus() {
       setMatchFrame(0);
     }
   }, [anchor]);
+
+  const generateItems = useCallback(() => {
+    Object.keys(recordingTempItems).map((k) => {
+      const item = recordingTempItems[k];
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_SETITEM",
+        arg: { item, step: currentStep },
+      });
+      return item;
+    });
+  }, [dispatch, currentStep]);
 
   return (
     <div className="video-status-container">
@@ -168,7 +205,7 @@ export default function VideoStatus() {
             width="140px"
             height="12px"
             margin="auto 4px"
-            onClick={() => {}}
+            onClick={generateItems}
           >
             Generate items
           </ButtonSimple>

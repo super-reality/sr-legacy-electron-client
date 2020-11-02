@@ -40,7 +40,7 @@ export default function VideoPreview(): JSX.Element {
 
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, item, treeSteps]
+    [currentStep, treeSteps]
   );
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
-  }, [dispatch, treeAnchors, width, height]);
+  }, [dispatch, treeAnchors, width, height, step, recordingData]);
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {

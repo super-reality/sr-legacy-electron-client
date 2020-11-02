@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 import timestampToTime from "../../../../utils/timestampToTime";
+import sha1 from "../../../../utils/md5";
 
 export default function VideoData() {
   const dispatch = useDispatch();
   const {
     recordingData,
+    recordingTempItems,
     videoNavigation,
     videoDuration,
     recordingCvMatches,
@@ -48,6 +50,7 @@ export default function VideoData() {
       </div>
       <div className="video-data">
         {recordingData.step_data.map((s) => {
+          const item = recordingTempItems[sha1(s.name)] || null;
           // eslint-disable-next-line radix
           const time = timestampToTime(s.time_stamp);
           return (
@@ -60,6 +63,16 @@ export default function VideoData() {
                 const n = [...videoNavigation];
                 n[1] = time;
                 setVideoNavPos(n);
+                if (item) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_DATA",
+                    arg: {
+                      currentItem: item._id,
+                      treeCurrentId: item._id,
+                      treeCurrentType: "item",
+                    },
+                  });
+                }
               }}
               key={s.time_stamp}
             />

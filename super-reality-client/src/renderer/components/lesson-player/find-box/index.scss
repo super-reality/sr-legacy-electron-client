@@ -10,8 +10,10 @@
   }
 
   &.mouse {
-    background-color: #ff814717;
-    border: dotted #ff8147 3px;
+    background-image: url("../../../../assets/images/mouse-area-blue.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 
   &.rectangle {
@@ -22,8 +24,8 @@
 
 .example-box {
   margin: auto;
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
 
   @include find-boxes;
 }
