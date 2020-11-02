@@ -139,6 +139,9 @@ export default function ItemPreview() {
             startPos.y =
               event.rect.top -
               (dragContainer.current.parentElement?.offsetTop || 0);
+            const edge = item.type == "focus_highlight" ? 6 : 0;
+            startPos.width += edge;
+            startPos.height += edge;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }

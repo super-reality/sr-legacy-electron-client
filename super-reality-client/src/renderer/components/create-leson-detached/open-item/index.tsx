@@ -73,6 +73,8 @@ export default function OpenItem(props: OpenItemProps) {
     [id, treeItems]
   );
 
+  if (!item) return <></>;
+
   return (
     <>
       <Tabs

@@ -538,9 +538,9 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  start(stream) {
+  start(source) {
     console.log("dostart");
-    return this.selectSource(stream).then(() => {
+    return this.selectSource(source).then(() => {
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;

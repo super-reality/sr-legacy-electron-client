@@ -33,16 +33,23 @@ const initialState = {
   currentItem: undefined as undefined | string,
   currentStep: undefined as undefined | string,
   currentSubView: "none" as TreeTypes,
-  anchorTestView: false as boolean,
-  lessonPreview: false as boolean,
-  stepPreview: false as boolean,
-  itemPreview: false as boolean,
+  anchorTestView: false,
+  lessonPreview: false,
+  stepPreview: false,
+  itemPreview: false,
   recordingData: {
     step_data: [],
   } as RecordingJson,
   recordingCvMatches: [] as number[],
   recordingCvMatchValue: 995,
   recordingCvFrame: -1,
+  cropRecording: false,
+  cropRecordingPos: {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+  },
 };
 
 type InitialState = typeof initialState;

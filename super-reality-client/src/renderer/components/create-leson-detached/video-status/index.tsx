@@ -5,8 +5,11 @@ import React, {
   useRef,
   useState,
 } from "react";
+import fs from "fs";
+import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
+import { nativeImage, remote } from "electron";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
 import { AppState } from "../../../redux/stores/renderer";
@@ -16,15 +19,24 @@ import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/doCVMatch";
 import timestampToTime from "../../../../utils/timestampToTime";
+import usePopupImageSource from "../../../hooks/usePopupImageSource";
+import newAnchor from "../lesson-utils/newAnchor";
+import userDataPath from "../../../../utils/userDataPath";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import newItem from "../lesson-utils/newItem";
+import sha1 from "../../../../utils/sha1";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
     recordingData,
     treeAnchors,
+    treeItems,
     videoNavigation,
     recordingTempItems,
     currentStep,
+    cropRecording,
+    cropRecordingPos,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [matchFrame, setMatchFrame] = useState(-1);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -92,6 +104,7 @@ export default function VideoStatus() {
                   ...tempItem,
                   relativePos: {
                     ...tempItem.relativePos,
+                    // only for mouse point item:
                     x: orig.x_cordinate - arg.x - 64,
                     y: orig.y_cordinate - arg.y - 64,
                     width: 128,
@@ -139,16 +152,91 @@ export default function VideoStatus() {
   const generateItems = useCallback(() => {
     Object.keys(recordingTempItems).map((k) => {
       const item = recordingTempItems[k];
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETITEM",
-        arg: { item, step: currentStep },
-      });
+      const id = sha1(item.name);
+      console.log(treeItems[item._id]);
+      newItem(treeItems[item._id], currentStep);
       return item;
     });
-  }, [dispatch, currentStep]);
+  }, [dispatch, recordingTempItems, treeItems, currentStep]);
+
+  const doNewAnchor = useCallback(
+    (url) => {
+      newAnchor({
+        name: "New Anchor",
+        type: "crop",
+        templates: [url],
+        anchorFunction: "or",
+        cvMatchValue: 0,
+        cvCanvas: 50,
+        cvDelay: 100,
+        cvGrayscale: true,
+        cvApplyThreshold: false,
+        cvThreshold: 127,
+      });
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { cropRecording: false },
+      });
+    },
+    [dispatch]
+  );
+
+  const callback = useCallback(
+    (e) => {
+      if (e.indexOf("http") == -1) {
+        uploadFileToS3(e).then((url) => {
+          doNewAnchor(url);
+        });
+      } else {
+        doNewAnchor(e);
+      }
+    },
+    [doNewAnchor]
+  );
+
+  const doSaveNewAnchor = useCallback(() => {
+    const userData = userDataPath();
+    const fileName = `${userData}/capture.png`;
+    const output = `${userData}/crop.png`;
+
+    const canvas = document.getElementById("preview-video-canvas") as
+      | HTMLCanvasElement
+      | undefined;
+    if (canvas) {
+      const url = canvas.toDataURL("image/jpg", 0.8);
+
+      // remove Base64 stuff from the Image
+      const base64Data = url.replace(/^data:image\/png;base64,/, "");
+      fs.writeFile(fileName, base64Data, "base64", (err) => {
+        const image = nativeImage.createFromPath(fileName).crop({
+          x: cropRecordingPos.x,
+          y: cropRecordingPos.y,
+          width: cropRecordingPos.width,
+          height: cropRecordingPos.height,
+        });
+        // console.log(image);
+        fs.writeFile(output, image.toPNG(), {}, () => {
+          const timestamped = path.join(
+            userData,
+            `${new Date().getTime()}.png`
+          );
+          fs.copyFile(output, timestamped, () => callback(timestamped));
+        });
+      });
+    }
+  }, [callback, cropRecordingPos]);
+
+  const [Popup, doCreateAnchor] = usePopupImageSource(
+    callback,
+    true,
+    true,
+    true,
+    true
+  );
 
   return (
     <div className="video-status-container">
+      {Popup}
       <SelectAnchorPopup
         width="320px"
         height="400px"
@@ -169,14 +257,36 @@ export default function VideoStatus() {
           }}
         />
       </SelectAnchorPopup>
-      <ButtonRound
-        svg={AnchorIcon}
-        width="28px"
-        height="28px"
-        style={{ margin: "auto 8px" }}
-        onClick={doOpenAnchorPopup}
-      />
-      {anchor ? (
+      {!cropRecording && (
+        <>
+          <ButtonRound
+            svg={AnchorIcon}
+            width="28px"
+            height="28px"
+            style={{ margin: "auto 8px" }}
+            onClick={doOpenAnchorPopup}
+          />
+          <ButtonSimple
+            width="140px"
+            height="12px"
+            margin="auto 4px"
+            onClick={doCreateAnchor}
+          >
+            Create new anchor
+          </ButtonSimple>
+        </>
+      )}
+      {cropRecording && (
+        <ButtonSimple
+          width="140px"
+          height="12px"
+          margin="auto auto"
+          onClick={doSaveNewAnchor}
+        >
+          Save anchor
+        </ButtonSimple>
+      )}
+      {anchor && !cropRecording ? (
         <>
           <ButtonSimple
             width="140px"
@@ -212,7 +322,7 @@ export default function VideoStatus() {
         </>
       ) : (
         <div style={{ color: "var(--color-red)" }}>
-          <i>Attach an anchor to edit</i>
+          <i>{!cropRecording && "Attach an anchor to edit"}</i>
         </div>
       )}
       <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />

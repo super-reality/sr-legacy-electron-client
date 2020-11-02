@@ -193,6 +193,11 @@ export default function CreateLessonDetached(): JSX.Element {
       arg: json,
     });
     reduxAction(dispatch, {
+      type: "CLEAR_RECORDING_CV_DATA",
+      arg: null,
+    });
+
+    reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
         recordingTempItems: generateTempItems(json.step_data),

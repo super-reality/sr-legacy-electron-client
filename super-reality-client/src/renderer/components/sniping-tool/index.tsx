@@ -2,15 +2,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import fs from "fs";
 import ReactCrop from "react-image-crop";
-import ButtonSimple from "../button-simple";
 import "react-image-crop/lib/ReactCrop.scss";
+import ButtonSimple from "../button-simple";
 import logger from "../../../utils/logger";
 import { voidFunction } from "../../constants";
+import userDataPath from "../../../utils/userDataPath";
 
 export default function SnipingTool() {
   // eslint-disable-next-line global-require
-  const { app, remote, nativeImage } = require("electron") as any;
-  const userData = (app || remote.app).getPath("userData").replace(/\\/g, "/");
+  const { remote, nativeImage } = require("electron") as any;
+  const userData = userDataPath();
   const fileName = `${userData}/capture.png`;
   const output = `${userData}/crop.png`;
   const [crop, setCrop] = useState<any>({});
