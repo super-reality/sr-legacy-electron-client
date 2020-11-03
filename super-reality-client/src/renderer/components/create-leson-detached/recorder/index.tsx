@@ -7,11 +7,11 @@ import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
-// eslint-disable-next-line no-undef
-const iohook = __non_webpack_require__("iohook");
-
-iohook.unload();
-iohook.stop();
+const leftButtonId = 1;
+const rightButtonId = 2;
+const wheelButtonId = 3;
+const scrollDownId = 1;
+const scrollUpId = -1;
 
 interface RecorderProps {
   onFinish: () => void;
@@ -42,21 +42,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
     get();
 
-    /*
-        1 is emitted for left mouse click
-        2 is emitted form right mouse click
-        3 is emitted for wheel mouse click
-        1 is emitted when wheel is scrolled down
-       -1 is emitted when wheel is scrolled up
-    */
-    const leftButtonId = 1;
-    const rightButtonId = 2;
-    const wheelButtonId = 3;
-    const scrollDownId = 1;
-    const scrollUpId = -1;
-    /*
-      new event listeners using iohook
-    */
+    // new event listeners using iohook
+    // eslint-disable-next-line no-undef
+    const iohook = __non_webpack_require__("iohook");
+    iohook.load();
     iohook.start();
     iohook.on("mousedown", (event: any) => {
       if (recorder.recordingStarted) {
@@ -176,6 +165,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     remote.globalShortcut.unregister("F10");
     recorder.stop();
     // setRecording(false);
+    // eslint-disable-next-line no-undef
+    const iohook = __non_webpack_require__("iohook");
+    iohook.unload();
+    iohook.stop();
     onFinish();
   }, [recorder, onFinish]);
 
