@@ -5,7 +5,6 @@ export default class CVEditor {
     this._context = null;
     this.canvasElement = canvas;
     this.videoElement = video;
-    this.trimAudio = this.trimAudio.bind(this);
   }
 
   set videoElement(elem) {
