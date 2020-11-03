@@ -103,7 +103,7 @@ export default function VideoStatus() {
                 item: {
                   ...tempItem,
                   relativePos: {
-                    ...tempItem.relativePos,
+                    ...(tempItem?.relativePos || {}),
                     // only for mouse point item:
                     x: orig.x_cordinate - arg.x - 64,
                     y: orig.y_cordinate - arg.y - 64,
