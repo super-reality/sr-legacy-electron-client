@@ -7,6 +7,10 @@ import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
 // eslint-disable-next-line no-undef
+
+/*
+  need to import iohook 
+*/ 
 const mouseEvents = __non_webpack_require__("global-mouse-events");
 
 interface RecorderProps {
@@ -38,18 +42,100 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
     get();
 
-    mouseEvents.on("mousedown", (event: any) => {
-      if (recorder.recordingStarted) {
-        // clickEventTriggered = true;
-        // rec.pixelCordinates.x = event.x
-        // rec.pixelCordinates.y = event.y
-        recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer];
-        console.log("click registered ==>", recorder.currentTimer);
-      } else {
-        // console.log(rec.clickEventDetails)
-        // console.log(rec.currentTimer);
+    /*
+      dont need this
+    */
+
+    // mouseEvents.on("mousedown", (event: any) => {
+    //   if (recorder.recordingStarted) {
+    //     // clickEventTriggered = true;
+    //     // rec.pixelCordinates.x = event.x
+    //     // rec.pixelCordinates.y = event.y
+    //     recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer];
+    //     console.log("click registered ==>", recorder.currentTimer);
+    //   } else {
+    //     // console.log(rec.clickEventDetails)
+    //     // console.log(rec.currentTimer);
+    //   }
+    // });
+
+    /*
+        1 is emitted for left mouse click
+        2 is emitted form right mouse click
+        3 is emitted for wheel mouse click
+        1 is emitted when wheel is scrolled down
+       -1 is emitted when wheel is scrolled up
+    */
+    const leftButtonId  = 1
+    const rightButtonId = 2
+    const wheelButtonId = 3
+    const scrollDownId  = 1
+    const scrollUpId   = -1
+    /*
+      new event listeners using iohook
+    */
+    ioHook.on('mousedown', event => {
+      if(recorder.recordingStarted){
+        if(event.button === leftButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "left_click"]
+        }
+        if(event.button === rightButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "right_click"]
+        }
+        if(event.button === wheelButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "wheel_click"]
+        }
+        
+        console.log("click registered ==>",recorder.currentTimer);
       }
     });
+    
+    ioHook.on('mouseup', event => {
+      if(recorder.recordingStarted){
+        
+        if(event.button === leftButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "left_release"]
+        }
+        if(event.button === rightButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "right_release"]
+        }
+        if(event.button === wheelButtonId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "wheel_release"]
+        }
+        
+        console.log("release registered ==>",recorder.currentTimer);
+      }
+    });
+    
+    ioHook.on('mousewheel', event => {
+      if(recorder.recordingStarted){
+        if(event.rotation === scrollDownId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "scroll_down"]
+        } 
+        if(event.rotation === scrollUpId){
+          recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, "scroll_up"]
+        }
+        console.log("mousewheel registered ==>",recorder.currentTimer);
+      }
+    });
+    
+    
+    ioHook.on('keydown', event => {
+      if(recorder.recordingStarted){
+        recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, event.type, event]
+        console.log("keyboard key clicked ==>",recorder.currentTimer);
+      }
+    });
+    
+    ioHook.on('keyup', event => {
+      // console.log(event)
+      if(recorder.recordingStarted){
+        
+        recorder.clickEventDetails = [event.x, event.y, recorder.currentTimer, event.type, event]
+        console.log("keyboard key released ==>",recorder.currentTimer);
+      }
+    });
+
   }, [recorder]);
 
   const stopRecord = useCallback(() => {
