@@ -192,14 +192,14 @@ export default class CVRecorder {
 
     this._clickEventDetails.forEach(async (arr) => {
       let keyboardEvents = {};
-      if(arr[4] !== undefined){
-        keyboardEvents = arr[4]
+      if (arr[4] !== undefined) {
+        [, , , , keyboardEvents] = arr;
       }
       let snippedImageName = "";
-      const eventType      = arr[3];
-      const timestamp      = arr[2];
-      const yCordinate     = arr[1];
-      const xCordinate     = arr[0];
+      const eventType = arr[3];
+      const timestamp = arr[2];
+      const yCordinate = arr[1];
+      const xCordinate = arr[0];
       const timestampFormat = timestamp.split(":"); // split it at the colons
       // minutes are worth 60 seconds. Hours are worth 60 minutes.
       const seconds =
@@ -209,8 +209,7 @@ export default class CVRecorder {
       const milliSeconds = timestampFormat[3];
       const interval = seconds * 1000 + parseInt(milliSeconds);
 
-      if(eventType === "left_click"){
-
+      if (eventType === "left_click") {
         cap.set(cv.CAP_PROP_POS_MSEC, interval);
         const currentImage = cap.read();
 
@@ -278,7 +277,10 @@ export default class CVRecorder {
         const cornerPointsArr = new Array(4);
         cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
         cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-        cornerPointsArr[2] = new cv.Point2(bottomLeftCornerX, bottomLeftCornerY);
+        cornerPointsArr[2] = new cv.Point2(
+          bottomLeftCornerX,
+          bottomLeftCornerY
+        );
         cornerPointsArr[3] = new cv.Point2(
           bottomRightCornerX,
           bottomRightCornerY
@@ -306,7 +308,7 @@ export default class CVRecorder {
           cv.BORDER_CONSTANT
         );
 
-        const snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
+        snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
           /:/g,
           "-"
         )}.jpeg`;
@@ -341,7 +343,7 @@ export default class CVRecorder {
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
         time_stamp: timestamp,
-        keyboard_events: keyboardEvents
+        keyboard_events: keyboardEvents,
       });
     });
     const json = JSON.stringify(jsonMetaData, null, "  ");

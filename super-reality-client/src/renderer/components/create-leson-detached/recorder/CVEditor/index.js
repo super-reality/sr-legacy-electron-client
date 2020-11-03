@@ -1,23 +1,3 @@
-
-/*
-We are using ffmpeg to trim audio. 
-You need to install these pakages: 
--- npm install ffmpeg-static
--- npm install any-shell-escape
-
-trimAudio function
-@params
-trimFrom = "00:00:00" or "seconds"
-trimTo   = "00:00:00" or "seconds"
-src      = "../folder/fileToTrim.webm"
-dst      = "../folder/trimmedAudio.webm" 
-
-*/
-
-const pathToFfmpeg = require('ffmpeg-static');
-const shell        = require('any-shell-escape')
-const {exec}       = require('child_process')
-
 export default class CVEditor {
   constructor(video, canvas) {
     this._vid = null;
@@ -25,6 +5,7 @@ export default class CVEditor {
     this._context = null;
     this.canvasElement = canvas;
     this.videoElement = video;
+    this.trimAudio = this.trimAudio.bind(this);
   }
 
   set videoElement(elem) {
@@ -62,21 +43,5 @@ export default class CVEditor {
       this._canvas.width,
       this._canvas.height
     );
-  }
-
-  trimAudio(trimFrom, trimTo, src, dst){
-    const ffmpegCommand = shell([
-      pathToFfmpeg,
-      '-ss', trimFrom, '-i', src,
-      '-t', trimTo, '-c', 'copy', dst
-    ])
-    
-    exec(ffmpegCommand, (err) => {
-      if (err) {
-        console.error(err)
-      } else {
-        console.info('Audio Trimmed!')
-      }
-    })
   }
 }
