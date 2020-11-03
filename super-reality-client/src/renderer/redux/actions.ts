@@ -37,6 +37,7 @@ export const actions = {
   CREATE_LESSON_V2_SETCHAPTER: createLessonSliceV2.setChapter,
   CREATE_LESSON_V2_SETSTEP: createLessonSliceV2.setStep,
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
+  CREATE_LESSON_V2_SET_TEMPITEM: createLessonSliceV2.setTempItem,
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,

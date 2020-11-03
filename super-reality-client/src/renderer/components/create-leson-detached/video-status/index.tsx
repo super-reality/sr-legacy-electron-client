@@ -9,7 +9,7 @@ import fs from "fs";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { nativeImage, remote } from "electron";
+import { nativeImage } from "electron";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
 import { AppState } from "../../../redux/stores/renderer";
@@ -25,6 +25,7 @@ import userDataPath from "../../../../utils/userDataPath";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import newItem from "../lesson-utils/newItem";
 import sha1 from "../../../../utils/sha1";
+import { Item } from "../../../api/types/item/item";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -85,9 +86,7 @@ export default function VideoStatus() {
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
       if (matchFrame !== -1 && matchFrame < recordingData.step_data.length) {
-        const tempItemId = Object.keys(recordingTempItems)[matchFrame];
         const orig = recordingData.step_data[matchFrame];
-        const tempItem = recordingTempItems[tempItemId];
         const timestamp = orig.time_stamp;
         const timestampTime = timestampToTime(timestamp);
         videoHidden.currentTime = timestampTime / 1000;
@@ -97,22 +96,41 @@ export default function VideoStatus() {
               type: "SET_RECORDING_CV_DATA",
               arg: { index: Math.round(timestampTime / 100), value: arg.dist },
             });
+
+            // Create new item based on step data from recording
+            const id = sha1(`${orig.type}-${orig.time_stamp}`);
+            const itemToSet: Item = {
+              _id: id,
+              name: `Mouse Point ${orig.time_stamp}`,
+              type: "focus_highlight",
+              focus: "Mouse Point",
+              trigger: null,
+              destination: "", // a step ID to go to
+              transition: 0, // type
+              anchor: true,
+
+              relativePos: {
+                width: 16,
+                height: 16,
+                x: orig.x_cordinate ? orig.x_cordinate - arg.x : 0,
+                y: orig.y_cordinate ? orig.y_cordinate - arg.y : 0,
+              },
+            };
+
+            if (orig.type !== "keydown" && orig.type !== "keyup") {
+              itemToSet.relativePos.x -= 64;
+              itemToSet.relativePos.y -= 64;
+              itemToSet.relativePos.width = 128;
+              itemToSet.relativePos.height = 128;
+            }
+
             reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SETITEM",
+              type: "CREATE_LESSON_V2_SET_TEMPITEM",
               arg: {
-                item: {
-                  ...tempItem,
-                  relativePos: {
-                    ...(tempItem?.relativePos || {}),
-                    // only for mouse point item:
-                    x: orig.x_cordinate - arg.x - 64,
-                    y: orig.y_cordinate - arg.y - 64,
-                    width: 128,
-                    height: 128,
-                  },
-                },
+                item: itemToSet,
               },
             });
+
             if (timeoutRef.current) {
               setMatchFrame(matchFrame + 1);
             }
@@ -122,14 +140,7 @@ export default function VideoStatus() {
         setMatchFrame(-1);
       }
     }
-  }, [
-    matchFrame,
-    recordingData,
-    timeoutRef,
-    dispatch,
-    recordingTempItems,
-    anchor,
-  ]);
+  }, [matchFrame, recordingData, timeoutRef, dispatch, anchor]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
@@ -152,9 +163,7 @@ export default function VideoStatus() {
   const generateItems = useCallback(() => {
     Object.keys(recordingTempItems).map((k) => {
       const item = recordingTempItems[k];
-      const id = sha1(item.name);
-      console.log(treeItems[item._id]);
-      newItem(treeItems[item._id], currentStep);
+      newItem(item, currentStep);
       return item;
     });
   }, [dispatch, recordingTempItems, treeItems, currentStep]);

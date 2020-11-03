@@ -1,10 +1,32 @@
 /* eslint-disable camelcase */
 
+export type StepType =
+  | "left_click"
+  | "right_click"
+  | "wheel_click"
+  | "left_release"
+  | "right_release"
+  | "wheel_release"
+  | "scroll_down"
+  | "scroll_up"
+  | "keydown"
+  | "keyup";
+
 export interface StepData {
-  name: string; // "_x-820_y-98_time_00-00-01-431.jpeg"
-  x_cordinate: number;
-  y_cordinate: number;
-  time_stamp: string; // "00:00:01:431"
+  type: StepType;
+  name: string;
+  x_cordinate?: number;
+  y_cordinate?: number;
+  time_stamp: string;
+  keyboard_events: {
+    shiftKey?: boolean;
+    altKey?: boolean;
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    keycode?: number;
+    rawcode?: number;
+    type?: "keydown" | "keyup";
+  };
 }
 
 export interface RecordingJson {

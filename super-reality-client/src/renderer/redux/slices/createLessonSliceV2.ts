@@ -302,6 +302,17 @@ const createLessonSlice = createSlice({
         [item._id]: item,
       };
     },
+    setTempItem: (
+      state: InitialState,
+      action: PayloadAction<{ item: Item }>
+    ): void => {
+      const { item } = action.payload;
+
+      state.recordingTempItems = {
+        ...state.recordingTempItems,
+        [item._id]: item,
+      };
+    },
     setAnchor: (
       state: InitialState,
       action: PayloadAction<{ anchor: IAnchor; step?: string }>
@@ -348,6 +359,7 @@ export const {
   setChapter,
   setStep,
   setItem,
+  setTempItem,
   setAnchor,
   setOpenTree,
   selectEvent,

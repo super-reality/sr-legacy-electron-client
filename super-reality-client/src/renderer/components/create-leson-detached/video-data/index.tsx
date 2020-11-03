@@ -50,12 +50,13 @@ export default function VideoData() {
       </div>
       <div className="video-data">
         {recordingData.step_data.map((s) => {
-          const item = recordingTempItems[sha1(s.name)] || null;
+          const item =
+            recordingTempItems[sha1(`${s.type}-${s.time_stamp}`)] || null;
           // eslint-disable-next-line radix
           const time = timestampToTime(s.time_stamp);
           return (
             <div
-              className="video-data-click"
+              className={`video-data-${s.type}`}
               style={{
                 left: `${(100 / (videoDuration * 1000)) * time}%`,
               }}
