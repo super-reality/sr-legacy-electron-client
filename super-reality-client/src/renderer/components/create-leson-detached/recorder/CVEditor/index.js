@@ -17,6 +17,7 @@ dst      = "../folder/trimmedAudio.webm"
 const pathToFfmpeg = require('ffmpeg-static');
 const shell        = require('any-shell-escape')
 const {exec}       = require('child_process')
+const fs           = require('fs');
 
 export default class CVEditor {
   constructor(video, canvas) {
@@ -72,5 +73,23 @@ export default class CVEditor {
         console.info('Audio Trimmed!')
       }
     })
+  }
+
+  getRawAudioData(pathToAudio){
+    return new Promise( function( resolve, reject ) { 
+      fs.readFile(pathToAudio, function(err, buffer) {
+        const audioBlob = new window.Blob([new Uint8Array(buffer)]);
+        const fileReader = new FileReader()
+        fileReader.onloadend = () => {
+            const arrayBuffer  = fileReader.result
+            const audioContext = new AudioContext();
+            // Convert array buffer into audio buffer
+            audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+              resolve(audioBuffer.getChannelData(0))
+            })
+        }
+        fileReader.readAsArrayBuffer(audioBlob)
+      })
+    }); 
   }
 }
