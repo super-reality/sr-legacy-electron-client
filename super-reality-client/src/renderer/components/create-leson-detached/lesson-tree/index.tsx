@@ -256,6 +256,7 @@ function TreeItem(props: TreeItemProps) {
     treeCurrentType,
     treeCurrentId,
     treeItems,
+    treeSteps,
     dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
@@ -298,9 +299,14 @@ function TreeItem(props: TreeItemProps) {
       arg: { type: "item", uniqueId, id },
     });
     if (id) {
+      const parentAnchor = treeSteps[parentId].anchor || undefined;
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
-        arg: { currentStep: parentId, currentItem: id },
+        arg: {
+          currentStep: parentId,
+          currentAnchor: parentAnchor,
+          currentItem: id,
+        },
       });
     }
     document.onkeydown = keyListeners;

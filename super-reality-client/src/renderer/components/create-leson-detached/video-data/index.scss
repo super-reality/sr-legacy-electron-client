@@ -113,6 +113,8 @@
 .video-cv-data-item {
   width: -webkit-fill-available;
   height: 8px;
+  width: 4px;
+  position: absolute;
   background-color: var(--color-green);
   z-index: 1;
 }

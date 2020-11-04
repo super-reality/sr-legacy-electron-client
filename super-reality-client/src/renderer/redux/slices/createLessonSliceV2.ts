@@ -40,7 +40,10 @@ const initialState = {
   recordingData: {
     step_data: [],
   } as RecordingJson,
-  recordingCvMatches: [] as number[],
+  recordingCvMatches: [] as {
+    index: number;
+    value: number;
+  }[],
   recordingCvMatchValue: 995,
   recordingCvFrame: -1,
   cropRecording: false,
@@ -75,9 +78,7 @@ const createLessonSlice = createSlice({
       action: PayloadAction<null>
     ): void => {
       state.recordingCvFrame = 0;
-      state.recordingCvMatches = new Array(
-        Math.ceil(state.videoDuration * 10)
-      ).fill(0);
+      state.recordingCvMatches = [];
     },
     setRecordingCVData: (
       state: InitialState,
@@ -87,7 +88,10 @@ const createLessonSlice = createSlice({
       }>
     ): void => {
       state.recordingCvFrame = action.payload.index;
-      state.recordingCvMatches[action.payload.index] = action.payload.value;
+      state.recordingCvMatches = [
+        ...state.recordingCvMatches,
+        { ...action.payload },
+      ];
     },
     setRecordingData: (
       state: InitialState,

@@ -39,12 +39,15 @@ export default function VideoData() {
             key={`cv-nav-${i}`}
             className="video-cv-data-item"
             style={{
+              left: `calc(${(100 / videoDuration) * d.index}% - 4px)`,
               backgroundColor: `rgba(67,181,129,${
-                (1 / maxCv) * (d * 1000 - recordingCvMatchValue)
+                (1 / maxCv) * (d.value * 1000 - recordingCvMatchValue)
               })`,
             }}
           >
-            {recordingCvFrame == i && <div className="video-cv-data-current" />}
+            {recordingCvFrame == d.index && (
+              <div className="video-cv-data-current" />
+            )}
           </div>
         ))}
       </div>

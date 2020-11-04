@@ -94,14 +94,14 @@ export default function VideoStatus() {
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
             reduxAction(dispatch, {
               type: "SET_RECORDING_CV_DATA",
-              arg: { index: Math.round(timestampTime / 100), value: arg.dist },
+              arg: { index: timestampTime / 1000, value: arg.dist },
             });
 
             // Create new item based on step data from recording
             const id = sha1(`${orig.type}-${orig.time_stamp}`);
             const itemToSet: Item = {
               _id: id,
-              name: `Mouse Point ${orig.time_stamp}`,
+              name: `${orig.type} ${orig.time_stamp}`,
               type: "focus_highlight",
               focus: "Mouse Point",
               trigger: null,
@@ -301,14 +301,6 @@ export default function VideoStatus() {
             width="140px"
             height="12px"
             margin="auto 4px"
-            onClick={() => openAnchor(anchor._id)}
-          >
-            {anchor.name}
-          </ButtonSimple>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
             onClick={
               matchFrame == -1
                 ? testFullVideo
@@ -326,7 +318,7 @@ export default function VideoStatus() {
             margin="auto 4px"
             onClick={generateItems}
           >
-            Generate items
+            Generate
           </ButtonSimple>
         </>
       ) : (
