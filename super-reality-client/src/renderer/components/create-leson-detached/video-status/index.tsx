@@ -31,6 +31,7 @@ export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
     recordingData,
+    currentAnchor,
     treeAnchors,
     treeItems,
     videoNavigation,
@@ -43,13 +44,13 @@ export default function VideoStatus() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const anchor = useMemo(() => {
-    return treeAnchors[recordingData.anchor || ""] || null;
-  }, [treeAnchors, recordingData]);
+    return treeAnchors[currentAnchor || ""] || null;
+  }, [treeAnchors, currentAnchor]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
 
   const openAnchor = useCallback(
-    (e) => {
+    (e: string | undefined) => {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: { currentAnchor: e },
@@ -59,7 +60,7 @@ export default function VideoStatus() {
   );
 
   const setRecordingAnchor = useCallback(
-    (e) => {
+    (e: string | undefined) => {
       reduxAction(dispatch, {
         type: "SET_RECORDING_DATA",
         arg: { anchor: e },
@@ -149,16 +150,21 @@ export default function VideoStatus() {
     });
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { recordingCvFrame: 0, recordingCvMatchValue: anchor.cvMatchValue },
+      arg: {
+        currentItem: undefined,
+        currentStep: undefined,
+        currentAnchor: recordingData.anchor,
+        recordingCvFrame: 0,
+      },
     });
     const videoHidden = document.getElementById(
       "video-hidden"
     ) as HTMLVideoElement;
-    if (videoHidden && anchor) {
+    if (videoHidden && recordingData.anchor) {
       videoHidden.currentTime = 0;
       setMatchFrame(0);
     }
-  }, [anchor]);
+  }, [recordingData]);
 
   const generateItems = useCallback(() => {
     Object.keys(recordingTempItems).map((k) => {
@@ -256,12 +262,12 @@ export default function VideoStatus() {
           current={recordingData.anchor || ""}
           selected={recordingData.anchor || ""}
           setCurrent={(id) => {
-            setRecordingAnchor(id);
-            openAnchor(id);
+            setRecordingAnchor(id || undefined);
+            openAnchor(id || undefined);
             close();
           }}
           open={(id) => {
-            openAnchor(id);
+            openAnchor(id || undefined);
             close();
           }}
         />
@@ -295,7 +301,7 @@ export default function VideoStatus() {
           Save anchor
         </ButtonSimple>
       )}
-      {anchor && !cropRecording ? (
+      {recordingData.anchor && !cropRecording ? (
         <>
           <ButtonSimple
             width="140px"

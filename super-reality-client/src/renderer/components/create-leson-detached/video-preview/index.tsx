@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import fs from "fs";
 import { useMeasure } from "react-use";
-import ReactCrop from "react-image-crop";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
@@ -17,12 +16,15 @@ import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import userDataPath from "../../../../utils/userDataPath";
 import AnchorCrop from "../../lesson-player/anchor-crop";
+import FindBox from "../../lesson-player/find-box";
 
 export default function VideoPreview(): JSX.Element {
+  const { cvResult } = useSelector((state: AppState) => state.render);
   const {
     recordingData,
     videoNavigation,
     currentRecording,
+    currentAnchor,
     currentStep,
     currentItem,
     treeAnchors,
@@ -161,6 +163,9 @@ export default function VideoPreview(): JSX.Element {
       />
       <img ref={anchorImageRef} style={{ display: "none" }} />
       {item && !cropRecording && <ItemPreview />}
+      {!cropRecording && (currentRecording || currentAnchor) && (
+        <FindBox type="anchor" pos={cvResult} />
+      )}
       {cropRecording && <AnchorCrop />}
     </div>
   );
