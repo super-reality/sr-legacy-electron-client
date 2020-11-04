@@ -82,19 +82,22 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
 
-  useEffect(() => {
-    debouncer(() => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETANCHOR",
-        arg: { anchor: { ...anchor, name: anchorName } },
-      });
-      updateAnchor({ name: anchorName }, anchor._id);
-    });
-  }, [anchorName, anchor]);
+  const handleNameChange = useCallback(
+    (e) => {
+      setAnchorName(e.currentTarget.value);
 
-  useEffect(() => {
-    setAnchorName(anchor.name);
-  }, [currentAnchor]);
+      if (e.key === "Enter") {
+        debouncer(() => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETANCHOR",
+            arg: { anchor: { ...anchor, name: anchorName } },
+          });
+          updateAnchor({ name: anchorName }, anchor._id);
+        });
+      }
+    },
+    [anchor, anchorName, debouncer]
+  );
 
   if (anchor === null) return <></>;
   return (
@@ -117,7 +120,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
       <BaseInput
         title="Anchor name"
         value={anchorName}
-        onChange={(e) => setAnchorName(e.currentTarget.value)}
+        onChange={handleNameChange}
       />
       <Flex style={{ marginBottom: "8px" }}>
         <ButtonRound
