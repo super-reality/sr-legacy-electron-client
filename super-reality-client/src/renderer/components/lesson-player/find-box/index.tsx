@@ -33,15 +33,18 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
         ref={forwardedRef}
         className={`find-box ${computedType}`}
         style={{
-          left: `${pos.x}px`,
-          top: `${pos.y}px`,
-          width: `${pos.width - 6}px`,
-          height: `${pos.height - 6}px`,
+          left: `${pos.x - 3}px`,
+          top: `${pos.y - 3}px`,
+          width: `${pos.width}px`,
+          height: `${pos.height}px`,
           ...style,
         }}
       >
-        {type == "anchor" && (
-          <AnchorIcon fill="var(--color-red)" style={{ margin: "auto" }} />
+        {type == "anchor" && pos.width > 150 && pos.height > 150 && (
+          <AnchorIcon
+            fill="var(--color-red)"
+            style={{ opacity: 0.66, margin: "auto" }}
+          />
         )}
       </div>
     );
