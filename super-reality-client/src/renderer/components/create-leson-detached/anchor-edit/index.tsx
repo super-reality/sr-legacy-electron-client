@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import reduxAction from "../../../redux/reduxAction";
@@ -15,6 +21,8 @@ import ButtonRound from "../../button-round";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import AnchorEditSliders from "../anchor-edit-sliders";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import BaseInput from "../../base-input";
+import useDebounce from "../../../hooks/useDebounce";
 
 interface AnchorEditProps {
   setTransparent: () => void;
@@ -22,12 +30,7 @@ interface AnchorEditProps {
 
 export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const { setTransparent } = props;
-  const updateTImeout = useRef<NodeJS.Timeout | null>(null);
   const dispatch = useDispatch();
-  const { currentAnchor, treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
   const closeAnchorEdit = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -35,25 +38,28 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     });
   }, [dispatch]);
 
+  const { currentAnchor, treeAnchors } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const anchor = useMemo(() => {
     return treeAnchors[currentAnchor || ""] || null;
   }, [treeAnchors, currentAnchor]);
+
+  const [anchorName, setAnchorName] = useState(anchor.name || "New Anchor");
+  const debouncer = useDebounce(1000);
 
   const update = useCallback(
     (data: Partial<IAnchor>) => {
       // Debouce api update, 1 second (should make a debounce hook??)
       console.log(data);
-      if (updateTImeout.current) clearTimeout(updateTImeout.current);
-      updateTImeout.current = setTimeout(() => {
-        const newData = { ...anchor, ...data };
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETANCHOR",
-          arg: { anchor: newData },
-        });
-        updateAnchor(data, anchor._id);
-      }, 1000);
+      const newData = { ...anchor, ...data };
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_SETANCHOR",
+        arg: { anchor: newData },
+      });
+      debouncer(() => updateAnchor(data, anchor._id));
     },
-    [anchor, dispatch]
+    [anchor, debouncer, dispatch]
   );
 
   const insertImage = useCallback(
@@ -76,8 +82,21 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
 
-  if (anchor === null) return <></>;
+  useEffect(() => {
+    debouncer(() => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_SETANCHOR",
+        arg: { anchor: { ...anchor, name: anchorName } },
+      });
+      updateAnchor({ name: anchorName }, anchor._id);
+    });
+  }, [anchorName, anchor]);
 
+  useEffect(() => {
+    setAnchorName(anchor.name);
+  }, [currentAnchor]);
+
+  if (anchor === null) return <></>;
   return (
     <div
       className="mid-tight"
@@ -95,6 +114,11 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
           <CloseButton style={{ margin: "auto" }} />
         </div>
       </Flex>
+      <BaseInput
+        title="Anchor name"
+        value={anchorName}
+        onChange={(e) => setAnchorName(e.currentTarget.value)}
+      />
       <Flex style={{ marginBottom: "8px" }}>
         <ButtonRound
           svg={ImageButton}

@@ -12,7 +12,7 @@ import reduxAction from "../../../redux/reduxAction";
 
 export default function AnchorCrop() {
   const dispatch = useDispatch();
-  const { currentAnchor, treeAnchors, cropRecordingPos } = useSelector(
+  const { cropRecordingPos } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -76,10 +76,12 @@ export default function AnchorCrop() {
           if (dragContainer.current) {
             startPos.x =
               event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
+              (dragContainer.current.parentElement?.offsetLeft || 0) -
+              2;
             startPos.y =
               event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+              (dragContainer.current.parentElement?.offsetTop || 0) -
+              2;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
@@ -96,18 +98,20 @@ export default function AnchorCrop() {
           if (dragContainer.current && dragContainer.current.parentElement) {
             startPos.x =
               event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
+              (dragContainer.current.parentElement?.offsetLeft || 0) +
+              1;
             startPos.y =
               event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
-            startPos.width += 6;
-            startPos.height += 6;
+              (dragContainer.current.parentElement?.offsetTop || 0) +
+              1;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
           setPos(startPos);
         })
         .on("dragend", () => {
+          startPos.x += 3;
+          startPos.y += 3;
           setPos(startPos);
         });
 

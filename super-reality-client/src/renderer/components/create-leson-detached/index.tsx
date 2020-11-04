@@ -113,11 +113,14 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debouncer = useDebounce(500);
 
-  const debounceVideoNav = useCallback((n: readonly number[]) => {
-    debouncer(() => setVideoNavPos([...n]));
-    const el = document.getElementById("video-hidden") as HTMLVideoElement;
-    if (el) el.currentTime = n[1] / 1000;
-  }, []);
+  const debounceVideoNav = useCallback(
+    (n: readonly number[]) => {
+      debouncer(() => setVideoNavPos([...n]));
+      const el = document.getElementById("video-hidden") as HTMLVideoElement;
+      if (el) el.currentTime = n[1] / 1000;
+    },
+    [debouncer]
+  );
 
   useEffect(() => {
     setMocks();
