@@ -37,6 +37,7 @@ import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
+import ButtonSimple from "../button-simple";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -88,6 +89,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
+  const [fxTest, setFxTest] = useState(false);
   const {
     currentAnchor,
     currentRecording,
@@ -218,6 +220,21 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
+      {fxTest && (
+        <>
+          <iframe src="../fx-test/" />
+          <ButtonSimple
+            onClick={() => {
+              setSolid();
+              setFxTest(false);
+            }}
+            width="200px"
+            height="16px"
+          >
+            OK
+          </ButtonSimple>
+        </>
+      )}
       {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
     </div>
   ) : (
@@ -251,6 +268,16 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
+          <ButtonSimple
+            onClick={() => {
+              setTransparent();
+              setFxTest(true);
+            }}
+            width="200px"
+            height="16px"
+          >
+            FX TEST
+          </ButtonSimple>
           <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}
