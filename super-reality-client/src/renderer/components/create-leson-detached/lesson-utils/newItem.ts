@@ -11,8 +11,7 @@ import updateStep from "./updateStep";
 export default function newItem(
   type: BaseItemType | Partial<Item>,
   step?: string
-): void {
-  console.log(type);
+): Promise<void> {
   const payload: Partial<Item> =
     typeof type == "string"
       ? {
@@ -28,7 +27,7 @@ export default function newItem(
   if (payload.type == "audio" && !payload.relativePos) {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
   }
-  Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
+  return Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
     .then(handleItemCreate)
     .then((data) => {
       reduxAction(store.dispatch, {

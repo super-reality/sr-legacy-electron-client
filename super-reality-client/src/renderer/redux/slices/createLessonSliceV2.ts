@@ -32,6 +32,7 @@ const initialState = {
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
   currentStep: undefined as undefined | string,
+  currentChapter: undefined as undefined | string,
   currentSubView: "none" as TreeTypes,
   anchorTestView: false,
   lessonPreview: false,

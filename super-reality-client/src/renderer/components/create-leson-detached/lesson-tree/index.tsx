@@ -165,6 +165,12 @@ function TreeFolder(props: TreeFolderProps) {
             arg: { currentStep: id, currentItem: undefined },
           });
         }
+        if (id && type == "chapter") {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: { currentChapter: id, currentItem: undefined },
+          });
+        }
         setOpen(!open);
         setTimeout(() => {
           window.localStorage.setItem(id, !open ? "true" : "false");

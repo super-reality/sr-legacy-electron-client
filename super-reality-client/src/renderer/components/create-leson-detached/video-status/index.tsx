@@ -26,6 +26,7 @@ import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import newItem from "../lesson-utils/newItem";
 import sha1 from "../../../../utils/sha1";
 import { Item } from "../../../api/types/item/item";
+import newStep from "../lesson-utils/newStep";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -36,7 +37,7 @@ export default function VideoStatus() {
     treeItems,
     videoNavigation,
     recordingTempItems,
-    currentStep,
+    currentChapter,
     cropRecording,
     cropRecordingPos,
   } = useSelector((state: AppState) => state.createLessonV2);
@@ -167,12 +168,18 @@ export default function VideoStatus() {
   }, [recordingData]);
 
   const generateItems = useCallback(() => {
-    Object.keys(recordingTempItems).map((k) => {
-      const item = recordingTempItems[k];
-      newItem(item, currentStep);
-      return item;
-    });
-  }, [dispatch, recordingTempItems, treeItems, currentStep]);
+    Promise.all(
+      Object.keys(recordingTempItems).map((k) => {
+        const item = recordingTempItems[k];
+        return newStep(
+          { name: recordingTempItems[k].name, anchor: recordingData.anchor },
+          currentChapter
+        ).then((step) => {
+          if (step) newItem(item, step._id);
+        });
+      })
+    );
+  }, [dispatch, recordingTempItems, treeItems, currentChapter, recordingData]);
 
   const doNewAnchor = useCallback(
     (url) => {
