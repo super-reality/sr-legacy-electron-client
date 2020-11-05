@@ -15,28 +15,21 @@ import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
-import ButtonRound from "../../button-round";
-
-import { ReactComponent as IconAdd } from "../../../../assets/svg/add.svg";
-import usePopupImageSource from "../../../hooks/usePopupImageSource";
-import newAnchor from "../lesson-utils/newAnchor";
-import ModalList from "../modal-list";
 import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
+import BaseToggle from "../../base-toggle";
 
 interface OpenItemProps {
   id: string;
 }
 
-type ItemModalOptions = "Settings" | "Anchor" | "Trigger";
-const itemModalOptions: ItemModalOptions[] = ["Settings", "Anchor", "Trigger"];
+type ItemModalOptions = "Settings" | "Trigger";
+const itemModalOptions: ItemModalOptions[] = ["Settings", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems, treeAnchors, currentAnchor } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const { treeItems } = useSelector((state: AppState) => state.createLessonV2);
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
@@ -80,42 +73,10 @@ export default function OpenItem(props: OpenItemProps) {
     [id, treeItems]
   );
 
-  const callback = useCallback(
-    (e) => {
-      newAnchor(
-        {
-          name: "New Anchor",
-          type: "crop",
-          templates: [e],
-          anchorFunction: "or",
-          cvMatchValue: 0,
-          cvCanvas: 50,
-          cvDelay: 100,
-          cvGrayscale: true,
-          cvApplyThreshold: false,
-          cvThreshold: 127,
-        },
-        id
-      );
-    },
-    [id]
-  );
-
-  const openAnchor = useCallback(
-    (e) => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: { currentAnchor: e },
-      });
-    },
-    [id]
-  );
-
-  const [Popup, open] = usePopupImageSource(callback, true, true, true);
+  if (!item) return <></>;
 
   return (
     <>
-      {Popup}
       <Tabs
         buttons={itemModalOptions}
         initial={view}
@@ -123,36 +84,18 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
+        <BaseToggle
+          title="Use Anchor"
+          value={item.anchor}
+          callback={(val) => {
+            doUpdate({ anchor: val });
+          }}
+        />
         {view === "Settings" && item.type == "focus_highlight" && (
           <SettingsFocusHighlight item={item} update={doUpdate} />
         )}
         {view === "Settings" && item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
-        )}
-        {view === "Anchor" && (
-          <>
-            <Flex
-              column
-              style={{ height: "calc(100% - 24px)", overflow: "auto" }}
-            >
-              <ModalList
-                options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
-                current={item?.anchor || ""}
-                selected={currentAnchor || ""}
-                setCurrent={(val) => doUpdate({ anchor: val })}
-                open={openAnchor}
-              />
-            </Flex>
-            <div>
-              <ButtonRound
-                width="24px"
-                height="24px"
-                svg={IconAdd}
-                svgStyle={{ width: "16px", height: "16px" }}
-                onClick={open}
-              />
-            </div>
-          </>
         )}
         {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>

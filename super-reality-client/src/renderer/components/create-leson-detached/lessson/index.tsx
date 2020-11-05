@@ -15,6 +15,7 @@ import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg"
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
 import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
+import OpenStep from "../open-step";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
 import reduxAction from "../../../redux/reduxAction";
@@ -70,73 +71,84 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <RecordingsView createRecorder={createRecorder} />
         )}
       </TabsContainer>
-      <div className="create-lesson-item-container mid-tight">
-        <LessonTreeControls />
-      </div>
-      {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
-      <div className="create-lesson-item-container mid-tight">
-        <Flex style={{ marginTop: "auto" }}>
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonPrev}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonNext}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            disabled={treeCurrentType !== "step" && treeCurrentType !== "item"}
-            iconFill="var(--color-red)"
-            onClick={doPreviewOne}
-            svg={ButtonPlay}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            iconFill="var(--color-green)"
-            onClick={doPreview}
-            svg={ButtonPlay}
-            style={{ marginRight: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonFolder}
-            style={{ marginLeft: "auto" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonCopy}
-            style={{ marginLeft: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonPaste}
-            style={{ marginLeft: "8px" }}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={() => {}}
-            svg={ButtonCut}
-            style={{ marginLeft: "8px" }}
-          />
-        </Flex>
-      </div>
+      {view == "Lessons" && (
+        <div className="create-lesson-item-container mid-tight">
+          <LessonTreeControls />
+        </div>
+      )}
+      {treeCurrentType == "item" && view == "Lessons" && (
+        <OpenItem id={treeCurrentId} />
+      )}
+      {treeCurrentType == "step" && view == "Lessons" && (
+        <OpenStep id={treeCurrentId} />
+      )}
+      {view == "Lessons" && (
+        <div className="create-lesson-item-container mid-tight">
+          <Flex style={{ marginTop: "auto" }}>
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonPrev}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonNext}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              disabled={
+                treeCurrentType !== "step" && treeCurrentType !== "item"
+              }
+              iconFill="var(--color-red)"
+              onClick={doPreviewOne}
+              svg={ButtonPlay}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              iconFill="var(--color-green)"
+              onClick={doPreview}
+              svg={ButtonPlay}
+              style={{ marginRight: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonFolder}
+              style={{ marginLeft: "auto" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonCopy}
+              style={{ marginLeft: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonPaste}
+              style={{ marginLeft: "8px" }}
+            />
+            <ButtonRound
+              width="36px"
+              height="36px"
+              onClick={() => {}}
+              svg={ButtonCut}
+              style={{ marginLeft: "8px" }}
+            />
+          </Flex>
+        </div>
+      )}
     </>
   );
 }

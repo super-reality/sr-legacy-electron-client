@@ -1,5 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import fs from "fs";
 import { useMeasure } from "react-use";
+import ReactCrop from "react-image-crop";
+import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
@@ -7,14 +16,19 @@ import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import userDataPath from "../../../../utils/userDataPath";
+import AnchorCrop from "../../lesson-player/anchor-crop";
 
 export default function VideoPreview(): JSX.Element {
   const {
+    recordingData,
     videoNavigation,
     currentRecording,
+    currentStep,
     currentItem,
     treeAnchors,
     treeItems,
+    treeSteps,
+    cropRecording,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const horPor = useRef<HTMLDivElement>(null);
@@ -22,6 +36,26 @@ export default function VideoPreview(): JSX.Element {
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
+
+  // eslint-disable-next-line global-require
+  const { remote, nativeImage } = require("electron") as any;
+  const userData = userDataPath();
+  const fileName = `${userData}/capture.png`;
+  const output = `${userData}/crop.png`;
+  const [crop, setCrop] = useState<any>({});
+
+  const doClick = useCallback(async () => {
+    const image = nativeImage.createFromPath(fileName).crop({
+      x: crop.x,
+      y: crop.y,
+      width: crop.width,
+      height: crop.height,
+    });
+    // console.log(image);
+    fs.writeFile(output, image.toPNG(), {}, () => {
+      remote.getCurrentWindow().close();
+    });
+  }, [crop]);
 
   const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
 
@@ -35,25 +69,32 @@ export default function VideoPreview(): JSX.Element {
     [currentItem, treeItems]
   );
 
+  const step = useMemo(
+    () => (currentStep ? treeSteps[currentStep] : undefined),
+    [currentStep, treeSteps]
+  );
+
   useEffect(() => {
-    if (item?.anchor && anchorImageRef.current) {
-      const anchor = treeAnchors[item?.anchor];
+    if (step?.anchor && anchorImageRef.current && !recordingData.anchor) {
+      const anchor = treeAnchors[step?.anchor];
       [anchorImageRef.current.src] = anchor?.templates || "";
-      reduxAction(dispatch, {
-        type: "SET_CV_RESULT",
-        arg: {
-          id: anchor._id,
-          width: anchorImageRef.current.width,
-          height: anchorImageRef.current.height,
-          x: width / 2 - anchorImageRef.current.width / 2,
-          y: height / 2 - anchorImageRef.current.height / 2,
-          sizeFactor: 1,
-          dist: 0,
-          time: 0,
-        },
-      });
+      if (anchor) {
+        reduxAction(dispatch, {
+          type: "SET_CV_RESULT",
+          arg: {
+            id: anchor._id,
+            width: anchorImageRef.current.width,
+            height: anchorImageRef.current.height,
+            x: width / 2 - anchorImageRef.current.width / 2,
+            y: height / 2 - anchorImageRef.current.height / 2,
+            sizeFactor: 1,
+            dist: 0,
+            time: 0,
+          },
+        });
+      }
     }
-  }, [dispatch, treeAnchors, item, width, height]);
+  }, [dispatch, treeAnchors, width, height, step, recordingData]);
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
@@ -89,12 +130,18 @@ export default function VideoPreview(): JSX.Element {
     <div ref={containerRef} className="video-preview-container">
       {!currentRecording && (
         <div className="video-preview-no-video">
-          Select a recording to preview
+          {`Select a recording to ${
+            cropRecording ? "crop an anchor" : "preview"
+          }`}
         </div>
       )}
       {currentRecording && (
         <>
-          <canvas ref={videoCanvasRef} className="video-preview-video" />
+          <canvas
+            ref={videoCanvasRef}
+            id="preview-video-canvas"
+            className="video-preview-video"
+          />
           <video
             ref={videoHiddenRef}
             id="video-hidden"
@@ -113,7 +160,8 @@ export default function VideoPreview(): JSX.Element {
         className="vertical-pos"
       />
       <img ref={anchorImageRef} style={{ display: "none" }} />
-      {item && <ItemPreview />}
+      {item && !cropRecording && <ItemPreview />}
+      {cropRecording && <AnchorCrop />}
     </div>
   );
 }

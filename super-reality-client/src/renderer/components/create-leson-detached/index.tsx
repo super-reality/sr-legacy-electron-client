@@ -35,6 +35,10 @@ import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
 import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
+import VideoStatus from "./video-status";
+import VideoData from "./video-data";
+import generateTempItems from "./lesson-utils/generateTempItems";
+import setFullBounds from "../../../utils/setFullBounds";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -167,7 +171,7 @@ export default function CreateLessonDetached(): JSX.Element {
     videoDuration,
   ]);
 
-  const recordingData = useMemo(() => {
+  useEffect(() => {
     const userData = userDataPath();
     let json: RecordingJson = {
       step_data: [],
@@ -184,8 +188,22 @@ export default function CreateLessonDetached(): JSX.Element {
         console.error(e);
       }
     }
-    return json;
-  }, [currentRecording]);
+    reduxAction(dispatch, {
+      type: "SET_RECORDING_DATA",
+      arg: json,
+    });
+    reduxAction(dispatch, {
+      type: "CLEAR_RECORDING_CV_DATA",
+      arg: null,
+    });
+
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        recordingTempItems: generateTempItems(json.step_data),
+      },
+    });
+  }, [dispatch, currentRecording]);
 
   return overlayTransparent ? (
     <div className="transparent-container click-through">
@@ -239,6 +257,7 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
+          <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}
             defaultValues={videoNavigation}
@@ -246,26 +265,7 @@ export default function CreateLessonDetached(): JSX.Element {
             callback={debounceVideoNav}
             slideCallback={debounceVideoNav}
           />
-          <div className="video-data">
-            {recordingData.step_data.map((s) => {
-              // eslint-disable-next-line radix
-              const time = parseInt(s.time_stamp.replace(/:/g, ""));
-              return (
-                <div
-                  className="video-data-click"
-                  style={{
-                    left: `${(100 / (videoDuration * 1000)) * time}%`,
-                  }}
-                  onClick={() => {
-                    const n = [...videoNavigation];
-                    n[1] = time;
-                    setVideoNavPos(n);
-                  }}
-                  key={s.time_stamp}
-                />
-              );
-            })}
-          </div>
+          <VideoData />
         </div>
       </div>
     </div>

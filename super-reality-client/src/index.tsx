@@ -9,8 +9,10 @@ import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
 import handleIpc from "./utils/handleIpc";
 import isElectron from "./utils/isElectron";
+import createDataDirs from "./utils/createDataDirs";
 
 if (isElectron()) {
+  createDataDirs();
   handleIpc();
 }
 

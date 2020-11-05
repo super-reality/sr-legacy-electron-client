@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import usePopup from "./usePopup";
 import ButtonSimple from "../components/button-simple";
 import "../components/popups.scss";
@@ -7,6 +8,7 @@ import useMediaInsert from "./useMediaInsert";
 import useMediaSniper from "./useMediaSniper";
 import { InputChangeEv } from "../../types/utils";
 import closeFindBox from "../../utils/closeFindBox";
+import reduxAction from "../redux/reduxAction";
 
 type Modes = "Buttons" | "Input";
 
@@ -14,8 +16,10 @@ export default function usePopupImageSource(
   callback: (url: string) => void,
   snip: boolean = false,
   url: boolean = false,
-  disk: boolean = false
+  disk: boolean = false,
+  recording: boolean = false
 ): [JSX.Element, () => void] {
+  const dispatch = useDispatch();
   const [Popup, doOpen, close] = usePopup(false);
   const [mode, setMode] = useState<Modes>("Buttons");
   const [value, setValue] = useState("");
@@ -98,6 +102,32 @@ export default function usePopupImageSource(
                 }}
               >
                 URL
+              </ButtonSimple>
+            ) : (
+              <></>
+            )}
+            {recording ? (
+              <ButtonSimple
+                margin="8px auto"
+                width="140px"
+                height="16px"
+                onClick={() => {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_DATA",
+                    arg: {
+                      cropRecording: true,
+                      cropRecordingPos: {
+                        x: 0,
+                        y: 0,
+                        width: 100,
+                        height: 100,
+                      },
+                    },
+                  });
+                  close();
+                }}
+              >
+                Recording
               </ButtonSimple>
             ) : (
               <></>

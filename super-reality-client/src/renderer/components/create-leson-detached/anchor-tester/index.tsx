@@ -10,6 +10,8 @@ import { IAnchor } from "../../../api/types/anchor/anchor";
 import FindBox from "../../lesson-player/find-box";
 import ipcSend from "../../../../utils/ipcSend";
 import getArrrayAverage from "../../../../utils/getArrayAverage";
+import updateAnchor from "../lesson-utils/updateAnchor";
+import useDebounce from "../../../hooks/useDebounce";
 
 interface AnchorTesterProps {
   onFinish: () => void;
@@ -71,15 +73,18 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
     return () => clearInterval(interval);
   }, [anchor]);
 
-  const update = useCallback(
+  const debouncer = useDebounce(1000);
+
+  const debounceUpdate = useCallback(
     (data: Partial<IAnchor>) => {
       const newData = { ...anchor, ...data };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETANCHOR",
         arg: { anchor: newData },
       });
+      debouncer(() => updateAnchor(newData, anchor._id));
     },
-    [anchor, dispatch]
+    [anchor, dispatch, debouncer]
   );
 
   return (
@@ -122,7 +127,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
               padding: "8px",
             }}
           >
-            <AnchorEditSliders anchor={anchor} update={update} />
+            <AnchorEditSliders anchor={anchor} update={debounceUpdate} />
           </Flex>
         </div>
       </Windowlet>

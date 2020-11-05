@@ -6,6 +6,7 @@ import { IStep } from "../../api/types/step/step";
 import { Item } from "../../api/types/item/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
+import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
@@ -26,13 +27,29 @@ const initialState = {
   treeSteps: {} as Record<string, IStep>,
   treeItems: {} as Record<string, Item>,
   treeAnchors: {} as Record<string, IAnchor>,
+  recordingTempItems: {} as Record<string, Item>,
   currentRecording: undefined as undefined | string,
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
-  anchorTestView: false as boolean,
-  lessonPreview: false as boolean,
-  stepPreview: false as boolean,
-  itemPreview: false as boolean,
+  currentStep: undefined as undefined | string,
+  currentSubView: "none" as TreeTypes,
+  anchorTestView: false,
+  lessonPreview: false,
+  stepPreview: false,
+  itemPreview: false,
+  recordingData: {
+    step_data: [],
+  } as RecordingJson,
+  recordingCvMatches: [] as number[],
+  recordingCvMatchValue: 995,
+  recordingCvFrame: -1,
+  cropRecording: false,
+  cropRecordingPos: {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+  },
 };
 
 type InitialState = typeof initialState;
@@ -53,6 +70,31 @@ const createLessonSlice = createSlice({
   name: "createLessonV2",
   initialState,
   reducers: {
+    clearRecordingCVData: (
+      state: InitialState,
+      action: PayloadAction<null>
+    ): void => {
+      state.recordingCvFrame = 0;
+      state.recordingCvMatches = new Array(
+        Math.ceil(state.videoDuration * 10)
+      ).fill(0);
+    },
+    setRecordingCVData: (
+      state: InitialState,
+      action: PayloadAction<{
+        index: number;
+        value: number;
+      }>
+    ): void => {
+      state.recordingCvFrame = action.payload.index;
+      state.recordingCvMatches[action.payload.index] = action.payload.value;
+    },
+    setRecordingData: (
+      state: InitialState,
+      action: PayloadAction<Partial<RecordingJson>>
+    ): void => {
+      state.recordingData = Object.assign(state.recordingData, action.payload);
+    },
     setData: (
       state: InitialState,
       action: PayloadAction<Partial<InitialState>>
@@ -262,12 +304,12 @@ const createLessonSlice = createSlice({
     },
     setAnchor: (
       state: InitialState,
-      action: PayloadAction<{ anchor: IAnchor; item?: string }>
+      action: PayloadAction<{ anchor: IAnchor; step?: string }>
     ): void => {
-      const { anchor, item } = action.payload;
+      const { anchor, step } = action.payload;
 
-      if (item) {
-        state.treeItems[item].anchor = anchor._id;
+      if (step) {
+        state.treeSteps[step].anchor = anchor._id;
       }
 
       state.treeAnchors = {
@@ -293,6 +335,9 @@ const createLessonSlice = createSlice({
 });
 
 export const {
+  clearRecordingCVData,
+  setRecordingCVData,
+  setRecordingData,
   setData,
   setDrag,
   setDragOver,

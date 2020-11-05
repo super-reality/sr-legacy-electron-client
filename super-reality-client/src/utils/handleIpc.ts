@@ -9,6 +9,8 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
+import getDisplayBounds from "./getNewBounds";
+import getPrimaryPos from "./getPrimaryPos";
 
 import getWindowId from "./getWindowId";
 
@@ -94,6 +96,10 @@ export default function handleIpc(): void {
   });
 
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
-    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
+    const pos = arg;
+    const primary = getPrimaryPos(getDisplayBounds());
+    pos.x -= primary.x;
+    pos.y -= primary.y;
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
   });
 }

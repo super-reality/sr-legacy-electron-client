@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { captureDesktopStream } from "../../../utils/capture";
+import getDisplayBounds from "../../../utils/getNewBounds";
 import { AppState } from "../../redux/stores/renderer";
 
 export default function CvComponents() {
@@ -11,8 +12,9 @@ export default function CvComponents() {
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        videoElement.current.width = window.screen.width;
-        videoElement.current.height = window.screen.height;
+        const fullBounds = getDisplayBounds();
+        videoElement.current.width = fullBounds.width;
+        videoElement.current.height = fullBounds.height;
         videoElement.current.srcObject = await captureDesktopStream();
 
         return new Promise((resolve) => {

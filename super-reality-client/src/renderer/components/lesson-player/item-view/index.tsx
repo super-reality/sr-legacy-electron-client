@@ -7,13 +7,14 @@ import { Item } from "../../../api/types/item/item";
 
 interface ItemViewProps {
   item: Item;
+  anchorId: string;
   onSucess: () => void;
 }
 
 export default function ItemView(props: ItemViewProps) {
-  const { item, onSucess } = props;
+  const { anchorId, item, onSucess } = props;
 
-  const { treeItems, treeAnchors } = useSelector(
+  const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -21,7 +22,7 @@ export default function ItemView(props: ItemViewProps) {
   const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
-  const anchor = item.anchor ? treeAnchors[item.anchor] : undefined;
+  const anchor = treeAnchors[anchorId] || undefined;
 
   const updatePos = useCallback(() => {
     const newPos = {

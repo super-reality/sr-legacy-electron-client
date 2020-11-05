@@ -73,11 +73,13 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       })
       .then((all) => {
         const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
+        console.log(sources, currentSource);
+        console.log(s);
         recorder.start(s);
       });
 
     remote.globalShortcut.register("F10", stopRecord);
-  }, [sources, recorder]);
+  }, [currentSource, sources, recorder]);
 
   useEffect(() => {
     if (count > 0) {

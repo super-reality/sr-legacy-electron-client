@@ -17,24 +17,24 @@ export default function SettingsFocusHighlight(props: SettingsFocusHighlight) {
   return (
     <Flex style={{ justifyContent: "space-between" }}>
       <ButtonSimple
-        width="48px"
-        height="48px"
+        width="56px"
+        height="56px"
         style={item.focus == "Area highlight" ? styleSelected : {}}
         onClick={() => update({ focus: "Area highlight" })}
       >
         <div className="example-box area" />
       </ButtonSimple>
       <ButtonSimple
-        width="48px"
-        height="48px"
+        width="56px"
+        height="56px"
         style={item.focus == "Mouse Point" ? styleSelected : {}}
         onClick={() => update({ focus: "Mouse Point" })}
       >
         <div className="example-box mouse" />
       </ButtonSimple>
       <ButtonSimple
-        width="48px"
-        height="48px"
+        width="56px"
+        height="56px"
         style={item.focus == "Rectangle" ? styleSelected : {}}
         onClick={() => update({ focus: "Rectangle" })}
       >

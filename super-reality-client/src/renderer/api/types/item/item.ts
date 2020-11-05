@@ -53,11 +53,11 @@ export interface BaseItem {
   _id: string;
   name: string;
   type: BaseItemType;
-  anchor: string | null;
   relativePos: IAbsolutePos;
   trigger: number | null;
   destination: string; // a step ID to go to
   transition: number; // type
+  anchor: boolean;
 }
 
 export interface ItemFocus extends BaseItem {

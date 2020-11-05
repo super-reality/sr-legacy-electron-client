@@ -8,5 +8,6 @@ export interface StepData {
 }
 
 export interface RecordingJson {
+  anchor?: string;
   step_data: StepData[];
 }

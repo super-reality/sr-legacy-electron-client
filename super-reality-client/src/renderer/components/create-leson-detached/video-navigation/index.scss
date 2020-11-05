@@ -124,31 +124,4 @@
 
 .video-video-nav {
   background-color: var(--color-section);
-  margin-top: 46px;
-}
-
-.video-data {
-  display: flex;
-  margin-top: -30px;
-  margin-left: 8px;
-  height: 40px;
-  position: absolute;
-  width: calc(100% - 30px);
-  /* border: 1px solid red; */
-}
-
-.video-data-click {
-  position: absolute;
-  margin: auto 0;
-  width: 16px;
-  margin-left: -8px;
-  height: 16px;
-  border-radius: 64px;
-  background-color: var(--color-blue);
-  z-index: 20;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #98c9fb;
-  }
 }

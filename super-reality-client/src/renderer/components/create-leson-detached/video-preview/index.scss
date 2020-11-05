@@ -7,6 +7,7 @@
   height: 100%;
   display: flex;
   position: relative;
+  overflow: auto;
   @include disable-select;
 
   .horizontal-pos {
@@ -37,8 +38,12 @@
   .video-preview-video {
     margin: auto;
     display: block;
+    width: auto;
+    height: auto;
+    /*
     max-height: -webkit-fill-available;
     height: inherit;
+    */
     position: inherit;
   }
 

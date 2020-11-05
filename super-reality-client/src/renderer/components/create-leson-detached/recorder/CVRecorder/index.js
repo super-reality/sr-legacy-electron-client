@@ -1,6 +1,8 @@
 /* eslint-disable lines-between-class-members */
+import userDataPath from "../../../../../utils/userDataPath";
+
 /* eslint-disable radix */
-const { desktopCapturer, app, remote } = require("electron");
+const { desktopCapturer } = require("electron");
 const fs = require("fs");
 // eslint-disable-next-line no-undef
 
@@ -14,9 +16,7 @@ const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
   constructor() {
-    const userData = (app || remote.app)
-      .getPath("userData")
-      .replace(/\\/g, "/");
+    const userData = userDataPath();
 
     this._clickEventDetails = [];
     this._recordedChunks = [];
@@ -41,22 +41,6 @@ export default class CVRecorder {
     this._stepRecordingName = "";
     this._recordingFullPath = "";
     this._finishCallback = () => {};
-
-    if (!fs.existsSync(this._stepPath)) {
-      fs.mkdir(this._stepPath, (err) => {
-        if (err) console.log("error", err);
-      });
-    }
-    if (!fs.existsSync(this._recordingPath)) {
-      fs.mkdir(this._recordingPath, (err) => {
-        if (err) console.log("error", err);
-      });
-    }
-    if (!fs.existsSync(this._stepSnapshotPath)) {
-      fs.mkdir(this._stepSnapshotPath, (err) => {
-        if (err) console.log("error", err);
-      });
-    }
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
@@ -554,9 +538,9 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  start(stream) {
+  start(source) {
     console.log("dostart");
-    return this.selectSource(stream).then(() => {
+    return this.selectSource(source).then(() => {
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;

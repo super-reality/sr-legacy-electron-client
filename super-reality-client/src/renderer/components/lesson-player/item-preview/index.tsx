@@ -22,9 +22,14 @@ import { IAbsolutePos } from "../../../api/types/item/item";
 
 export default function ItemPreview() {
   const dispatch = useDispatch();
-  const { currentAnchor, currentItem, treeItems, treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    currentAnchor,
+    currentItem,
+    currentStep,
+    treeItems,
+    treeSteps,
+    treeAnchors,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
@@ -40,43 +45,52 @@ export default function ItemPreview() {
     [currentItem, treeItems]
   );
 
-  // Get item's anchor or just the one in use
-  const anchor = useMemo(() => {
-    const anchorId = item?.anchor || currentAnchor;
-    return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [item, currentAnchor, treeAnchors]);
+  const step = useMemo(
+    () => (currentStep ? treeSteps[currentStep] : undefined),
+    [currentStep, treeSteps]
+  );
 
-  // If the item does not have an anchor it should draw in abolsute position
-  const drawItemAbsolute = item?.anchor === null;
+  // Get step's anchor or just the one in use
+  const anchor = useMemo(() => {
+    const anchorId = step?.anchor || currentAnchor;
+    return anchorId ? treeAnchors[anchorId] : undefined;
+  }, [step, currentAnchor, treeAnchors]);
 
   const updatePos = useCallback(() => {
     const newPos = {
-      x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
-      y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
+      x:
+        step?.anchor && item?.anchor
+          ? cvResult.x + (item?.relativePos.x || 0)
+          : 0,
+      y:
+        step?.anchor && item?.anchor
+          ? cvResult.y + (item?.relativePos.y || 0)
+          : 0,
       width: item?.relativePos.width || 400,
       height: item?.relativePos.height || 300,
     };
     setPos(newPos);
 
-    const newStyle = item?.anchor
-      ? {}
-      : {
-          left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
-            item?.relativePos.horizontal || 0
-          })`,
-          top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
-            item?.relativePos.vertical || 0
-          })`,
-        };
+    const newStyle =
+      step?.anchor && item?.anchor
+        ? {}
+        : {
+            left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
+              item?.relativePos.horizontal || 0
+            })`,
+            top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
+              item?.relativePos.vertical || 0
+            })`,
+          };
     setStyle(newStyle);
-  }, [anchor, cvResult, item]);
+  }, [cvResult, step, item]);
 
   useEffect(() => {
     updatePos();
   }, [cvResult, updatePos]);
 
   useEffect(() => {
-    if (dragContainer.current && item) {
+    if (dragContainer.current && item && step) {
       const startPos = { ...pos };
       interact(dragContainer.current)
         .resizable({
@@ -106,7 +120,7 @@ export default function ItemPreview() {
           ],
         })
         .on("dragstart", (event) => {
-          if (!item.anchor && dragContainer.current) {
+          if (dragContainer.current) {
             startPos.x =
               event.rect.left -
               (dragContainer.current.parentElement?.offsetLeft || 0);
@@ -118,13 +132,16 @@ export default function ItemPreview() {
           }
         })
         .on("resizestart", (event) => {
-          if (!item.anchor && dragContainer.current) {
+          if (dragContainer.current) {
             startPos.x =
               event.rect.left -
               (dragContainer.current.parentElement?.offsetLeft || 0);
             startPos.y =
               event.rect.top -
               (dragContainer.current.parentElement?.offsetTop || 0);
+            const edge = item.type == "focus_highlight" ? 6 : 0;
+            startPos.width += edge;
+            startPos.height += edge;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
@@ -138,7 +155,7 @@ export default function ItemPreview() {
           }
         })
         .on("resizeend", (event) => {
-          if (item.anchor) {
+          if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
           } else if (
@@ -176,7 +193,7 @@ export default function ItemPreview() {
           updateItem({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
-          if (item.anchor) {
+          if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x;
             startPos.y -= cvResult.y;
           } else if (
@@ -211,11 +228,11 @@ export default function ItemPreview() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, pos, item]);
+  }, [dispatch, cvResult, pos, step, item]);
 
   return (
     <>
-      {item?.anchor && anchor && cvResult && (
+      {step?.anchor && item?.anchor && anchor && cvResult && (
         <FindBox type="anchor" pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (

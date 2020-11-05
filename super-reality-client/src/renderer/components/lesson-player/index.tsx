@@ -16,23 +16,23 @@ interface LessonPlayerProps {
 export default function LessonPlayer(props: LessonPlayerProps) {
   const { onFinish } = props;
   const dispatch = useDispatch();
-  const { currentAnchor, currentItem, treeItems, treeAnchors } = useSelector(
+  const { currentAnchor, treeAnchors, currentStep, treeSteps } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { itemPreview, stepPreview } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
-  const item = useMemo(
-    () => (currentItem ? treeItems[currentItem] : undefined),
-    [currentItem, treeItems]
+  const step = useMemo(
+    () => (currentStep ? treeSteps[currentStep] : undefined),
+    [currentStep, treeSteps]
   );
 
   // Get item's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = item?.anchor || currentAnchor;
+    const anchorId = step?.anchor || currentAnchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [item, currentAnchor, treeAnchors]);
+  }, [currentAnchor, treeAnchors]);
 
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
