@@ -7,7 +7,7 @@ import ButtonSimple from "../button-simple";
 import Windowlet from "../create-leson-detached/windowlet";
 import Flex from "../flex";
 import ItemPreview from "./item-preview";
-import StepPreview from "./step-preview";
+import StepView from "./step-view";
 
 interface LessonPlayerProps {
   onFinish: () => void;
@@ -61,7 +61,14 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   return (
     <>
       {itemPreview && <ItemPreview />}
-      {stepPreview && <StepPreview onSucess={() => {}} />}
+      {stepPreview && currentStep && (
+        <StepView
+          stepId={currentStep}
+          onSucess={() => {
+            console.info(`STEP SUCESS ${currentStep}`);
+          }}
+        />
+      )}
       <Windowlet
         title="Super Reality"
         width={320}

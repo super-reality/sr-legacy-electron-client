@@ -1,14 +1,20 @@
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
-import { Item } from "../../../api/types/item/item";
+import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 
 interface ItemViewProps {
   item: Item;
   anchorId: string;
-  onSucess: () => void;
+  onSucess: (trigger: number) => void;
 }
 
 export default function ItemView(props: ItemViewProps) {
@@ -22,7 +28,7 @@ export default function ItemView(props: ItemViewProps) {
   const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
-  const anchor = treeAnchors[anchorId] || undefined;
+  const anchor = useMemo(() => treeAnchors[anchorId] || undefined, [anchorId]);
 
   const updatePos = useCallback(() => {
     const newPos = {
@@ -33,7 +39,7 @@ export default function ItemView(props: ItemViewProps) {
     };
     setPos(newPos);
 
-    const newStyle = anchor
+    const newStyle = !anchor
       ? {
           left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
             item?.relativePos.horizontal || 0
@@ -44,7 +50,15 @@ export default function ItemView(props: ItemViewProps) {
         }
       : {};
     setStyle(newStyle);
-  }, [anchor, cvResult, item]);
+
+    if (
+      item &&
+      item.type == "focus_highlight" &&
+      cvResult.dist > anchor.cvMatchValue
+    ) {
+      onSucess(ItemFocusTriggers["Target found"]);
+    }
+  }, [anchor, cvResult, item, onSucess]);
 
   useEffect(() => {
     updatePos();
@@ -53,10 +67,20 @@ export default function ItemView(props: ItemViewProps) {
   return (
     <>
       {item && item.type == "focus_highlight" && (
-        <FindBox pos={pos} style={style} type={item.focus} />
+        <FindBox
+          pos={pos}
+          style={style}
+          type={item.focus}
+          callback={onSucess}
+        />
       )}
       {item && item.type == "image" && (
-        <ImageBox pos={pos} style={style} image={item.url} />
+        <ImageBox
+          pos={pos}
+          style={style}
+          image={item.url}
+          callback={onSucess}
+        />
       )}
     </>
   );
