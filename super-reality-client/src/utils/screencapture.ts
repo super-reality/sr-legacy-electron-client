@@ -2,6 +2,9 @@ import { exec } from "child_process";
 import os from "os";
 import fs from "fs";
 import path from "path";
+import getPrimaryPos from "./getPrimaryPos";
+import getPrimarySize from "./getPrimarySize";
+import getDisplayBounds from "./getNewBounds";
 
 function captureCommand(filePath: string) {
   // eslint-disable-next-line global-require
@@ -46,6 +49,25 @@ function capture(filePath: string, callback: any) {
    @param {String} [filePath]
    @param {Function} callback
 */
-export default function screencapture(filePath: string, callback: any) {
-  capture(filePath, callback);
+export default function screencapture(
+  filePath: string,
+  callback: (err: any, imagePath: string) => void
+) {
+  capture(filePath, (err: any, imagePath: string) => {
+    const displays = getDisplayBounds();
+    const pos = getPrimaryPos(displays);
+    const size = getPrimarySize(displays);
+    // eslint-disable-next-line global-require
+    const { nativeImage } = require("electron");
+
+    const image = nativeImage.createFromPath(filePath).crop({
+      x: pos.x,
+      y: pos.y,
+      width: size.width,
+      height: size.height,
+    });
+    fs.writeFile(filePath, image.toPNG(), {}, () => {
+      callback(err, imagePath);
+    });
+  });
 }
