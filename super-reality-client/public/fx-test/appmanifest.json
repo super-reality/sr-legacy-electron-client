@@ -1,6 +1,6 @@
 {
-	"name": "test",
-	"short_name": "test",
+	"name": "particles",
+	"short_name": "particles",
 	"description": "",
 	"start_url": "index.html",
 	"display": "fullscreen",
