@@ -10,6 +10,7 @@ import getTTS from "../../../utils/getTTS";
 import getSTT from "../../../utils/getSTT";
 import ipcSend from "../../../utils/ipcSend";
 import getAvatar from "../../../utils/getAvatar";
+import getFileSha1 from "../../../utils/getFileSha1";
 
 export default function Test(): JSX.Element {
   const onCLose = useCallback(() => console.log("Closed!"), []);
@@ -29,7 +30,6 @@ export default function Test(): JSX.Element {
   const ses = WIN.webContents.session;
 
   const videoFaceOutput = path.join(userDataPath(), "face_api_output.mp4");
-  console.log(videoFaceOutput);
 
   const onClick = useCallback(() => {
     createLessonInterface({}).then(onCLose);
@@ -45,7 +45,6 @@ export default function Test(): JSX.Element {
   // create video player
   const createVideoPlayer = useCallback(() => {
     fs.stat(videoFaceOutput, (err, stat) => {
-      console.log(stat);
       if (stat && stat.isFile()) {
         setIsFileExist(true);
       }
@@ -74,8 +73,9 @@ export default function Test(): JSX.Element {
   }, [text]);
   // test speech to text
   const testSpeechToText = useCallback(() => {
+    console.log(audioInput.current);
     if (audioInput.current) {
-      console.log(audioInput.current.files);
+      console.log("audioInput", audioInput.current.files);
       getSTT(audioInput.current);
     }
   }, [audioInput]);
