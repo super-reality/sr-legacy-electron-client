@@ -27,13 +27,17 @@ export default function StepView(props: StepViewProps) {
   useEffect(() => {
     const state: ItemsState = {};
     step.items.forEach((i) => {
+      const item: Item | undefined = treeItems[i._id];
       state[i._id] = false;
+      if (item && item.trigger == null) {
+        state[i._id] = true;
+      }
     });
     setItemsState(state);
   }, [step]);
 
   const itemSuceeded = useCallback(
-    (id: string, trigger: number) => {
+    (id: string, trigger: number | null) => {
       const state = { ...itemsState };
       state[id] = true;
       setItemsState(state);
@@ -50,12 +54,12 @@ export default function StepView(props: StepViewProps) {
     <>
       {Object.keys(itemsState).map((itemId) => {
         const item: Item | undefined = treeItems[itemId];
-        return itemsState[itemId] == false && item ? (
+        return item && (itemsState[itemId] == false || item.trigger == null) ? (
           <ItemView
             key={item._id}
             item={item}
             anchorId={step.anchor || ""}
-            onSucess={(trigger: number) => {
+            onSucess={(trigger: number | null) => {
               if (trigger == item.trigger) {
                 itemSuceeded(itemId, trigger);
               }

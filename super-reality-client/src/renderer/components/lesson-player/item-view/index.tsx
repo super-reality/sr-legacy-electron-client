@@ -14,7 +14,7 @@ import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 interface ItemViewProps {
   item: Item;
   anchorId: string;
-  onSucess: (trigger: number) => void;
+  onSucess: (trigger: number | null) => void;
 }
 
 export default function ItemView(props: ItemViewProps) {

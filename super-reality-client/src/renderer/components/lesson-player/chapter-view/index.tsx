@@ -32,7 +32,7 @@ export default function ChapterView(props: ChapterViewProps) {
   console.log(chapter, currentStepId, currentStep);
 
   const doNextStep = useCallback(() => {
-    if (currentStep + 1 > chapter.steps.length) {
+    if (currentStep + 1 >= chapter.steps.length) {
       onSucess();
     } else {
       setCurrentStep(currentStep + 1);
