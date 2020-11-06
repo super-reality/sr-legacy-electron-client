@@ -66,7 +66,9 @@ export default function StepView(props: StepViewProps) {
             }}
           />
         ) : (
-          <React.Fragment key={item?._id || "undef-item"} />
+          <React.Fragment
+            key={item?._id || `${new Date().getTime()}-undef-item`}
+          />
         );
       })}
     </>
