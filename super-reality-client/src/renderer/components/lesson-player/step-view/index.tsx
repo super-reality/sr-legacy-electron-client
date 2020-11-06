@@ -7,12 +7,12 @@ import ItemView from "../item-view";
 
 type ItemsState = Record<string, boolean>;
 
-interface StepPreviewProps {
+interface StepViewProps {
   stepId: string;
   onSucess: () => void;
 }
 
-export default function StepView(props: StepPreviewProps) {
+export default function StepView(props: StepViewProps) {
   const { onSucess, stepId } = props;
   const { treeSteps, treeItems } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -29,7 +29,6 @@ export default function StepView(props: StepPreviewProps) {
     step.items.forEach((i) => {
       state[i._id] = false;
     });
-    console.log("setItemsState", state);
     setItemsState(state);
   }, [step]);
 
@@ -50,9 +49,9 @@ export default function StepView(props: StepPreviewProps) {
   return (
     <>
       {Object.keys(itemsState).map((itemId) => {
-        const item: Item = treeItems[itemId];
+        const item: Item | undefined = treeItems[itemId];
         // console.log(item);
-        return itemsState[itemId] == false ? (
+        return itemsState[itemId] == false && item ? (
           <ItemView
             key={item._id}
             item={item}
@@ -64,7 +63,7 @@ export default function StepView(props: StepPreviewProps) {
             }}
           />
         ) : (
-          <React.Fragment key={item._id} />
+          <React.Fragment key={item?._id || "undef-item"} />
         );
       })}
     </>

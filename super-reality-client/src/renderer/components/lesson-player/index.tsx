@@ -6,6 +6,7 @@ import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../button-simple";
 import Windowlet from "../create-leson-detached/windowlet";
 import Flex from "../flex";
+import ChapterView from "./chapter-view";
 import ItemPreview from "./item-preview";
 import StepView from "./step-view";
 
@@ -16,12 +17,17 @@ interface LessonPlayerProps {
 export default function LessonPlayer(props: LessonPlayerProps) {
   const { onFinish } = props;
   const dispatch = useDispatch();
-  const { currentAnchor, treeAnchors, currentStep, treeSteps } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-  const { itemPreview, stepPreview } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    currentAnchor,
+    treeAnchors,
+    currentChapter,
+    currentStep,
+    treeSteps,
+    itemPreview,
+    stepPreview,
+    chapterPreview,
+    previewOne,
+  } = useSelector((state: AppState) => state.createLessonV2);
 
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
@@ -37,7 +43,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { stepPreview: false, itemPreview: false, lessonPreview: false },
+      arg: {
+        lessonPreview: false,
+        chapterPreview: false,
+        stepPreview: false,
+        itemPreview: false,
+      },
     });
     onFinish();
   }, [dispatch, onFinish]);
@@ -60,14 +71,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   return (
     <>
-      {itemPreview && <ItemPreview />}
-      {stepPreview && currentStep && (
-        <StepView
-          stepId={currentStep}
-          onSucess={() => {
-            console.info(`STEP SUCESS ${currentStep}`);
-          }}
-        />
+      {itemPreview && previewOne && <ItemPreview />}
+      {stepPreview && previewOne && currentStep && (
+        <StepView stepId={currentStep} onSucess={onFinish} />
+      )}
+      {chapterPreview && currentChapter && (
+        <ChapterView chapterId={currentChapter} onSucess={onFinish} />
       )}
       <Windowlet
         title="Super Reality"

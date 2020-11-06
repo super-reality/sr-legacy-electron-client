@@ -51,10 +51,12 @@ export default function ItemView(props: ItemViewProps) {
       : {};
     setStyle(newStyle);
 
+    console.log("cvResult", cvResult.dist, anchor.cvMatchValue / 100);
     if (
+      cvResult.dist > 0 &&
       item &&
       item.type == "focus_highlight" &&
-      cvResult.dist > anchor.cvMatchValue
+      cvResult.dist < anchor.cvMatchValue / 100
     ) {
       onSucess(ItemFocusTriggers["Target found"]);
     }
