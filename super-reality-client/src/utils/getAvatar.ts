@@ -1,46 +1,56 @@
-import Axios from 'axios';
-import FormData from 'form-data';
-import handleGetTTS from "../renderer/api/handleGetTTS";
+import fs from "fs";
+import path from "path";
+import http from "http";
 import setLoading from "../renderer/redux/utils/setLoading";
-
+import userDataPath from "./userDataPath";
 
 export default function getAvatar(
-    inAudio: HTMLInputElement,
-    video: HTMLInputElement,
-
+  inAudio: HTMLInputElement,
+  video: HTMLInputElement
 ): void {
+  setLoading(true);
 
+  const options = {
+    method: "POST",
+    hostname: "54.219.193.178",
+    port: 8080,
+    path: "/face_api",
+    headers: {},
+    maxRedirects: 20,
+  };
 
+  const req = http.request(options, (res) => {
+    const chunks: any[] = [];
+    res.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+    res.on("end", () => {
+      setLoading(false);
+    });
+    res.on("error", console.error);
 
+    res.pipe(
+      fs.createWriteStream(path.join(userDataPath(), "Avatar_api_output.mp4"))
+    );
+  });
 
+  if (inAudio && inAudio.files && video && video.files) {
+    const postData = `------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="audio"; filename="${
+      inAudio.files[0].path
+    }"\r\nContent-Type: "audio/webm"\r\n\r\n${fs.readFileSync(
+      inAudio.files[0].path
+    )}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name="video"; filename="${
+      video.files[0].path
+    }"\r\nContent-Type: "video/mp4"\r\n\r\n${fs.readFileSync(
+      video.files[0].path
+    )}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--`;
 
-    if (inAudio && inAudio.files && video && video.files) {
-        const form = new FormData();
-        form.append('audio_file', inAudio.files[0]);
-        form.append('video_file', video.files[0]);
+    req.setHeader(
+      "content-type",
+      "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+    );
 
-        setLoading(true);
-    Axios.post<string>(`http://54.219.193.178:5000/speech_to_text`,
-        form, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        }
-    }
-    )
-        .then(handleGetTTS)
-        .then((res) => {
-            setLoading(false);
-            console.log(res);
-        })
-        .catch((err) => {
-            console.log(err);
-            setLoading(false);
-        });
-
-    }else{
-        console.log("no audio or video", inAudio, video);
-    }
-
-
-    
+    req.write(postData);
+  }
+  req.end();
 }
