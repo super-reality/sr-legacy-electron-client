@@ -38,7 +38,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const anchor = useMemo(() => {
     const anchorId = step?.anchor || currentAnchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [currentAnchor, treeAnchors]);
+  }, [step, currentAnchor, treeAnchors]);
 
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {

@@ -50,7 +50,6 @@ export default function StepView(props: StepViewProps) {
     <>
       {Object.keys(itemsState).map((itemId) => {
         const item: Item | undefined = treeItems[itemId];
-        // console.log(item);
         return itemsState[itemId] == false && item ? (
           <ItemView
             key={item._id}

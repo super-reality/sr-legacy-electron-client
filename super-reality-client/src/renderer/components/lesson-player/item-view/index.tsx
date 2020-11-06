@@ -51,7 +51,6 @@ export default function ItemView(props: ItemViewProps) {
       : {};
     setStyle(newStyle);
 
-    console.log("cvResult", cvResult.dist, anchor.cvMatchValue / 100);
     if (
       cvResult.dist > 0 &&
       item &&
