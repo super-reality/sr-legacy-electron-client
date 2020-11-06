@@ -23,16 +23,17 @@ export default function getTTS(text: string, play?: boolean): void {
   const payload = {
     lesson: text,
   };
-console.log("start req")
-  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech`, payload, {
+  console.log("start req");
+  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech/`, payload, {
     headers: {
       "Content-Type": "application/json",
     },
   })
-    .then(handleGetTTS)
-    .then((url) => {
+    // .then(handleGetTTS)
+    .then((result) => {
       setLoading(false);
-      console.log(filename);
+      const { url } = JSON.parse(JSON.stringify(result.data));
+      console.log(filename, url);
       downloadFile(url, filename)
         .then(() => {
           playSound(filename);
