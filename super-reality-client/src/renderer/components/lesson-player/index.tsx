@@ -32,6 +32,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const {
     currentAnchor,
     treeAnchors,
+    treeChapters,
     currentChapter,
     currentStep,
     treeSteps,
@@ -48,6 +49,11 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
     [currentStep, treeSteps]
+  );
+
+  const chapter = useMemo(
+    () => (currentChapter ? treeChapters[currentChapter] : undefined),
+    [currentChapter, treeChapters]
   );
 
   // Get item's anchor or just the one in use
@@ -76,7 +82,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         arg: {
           ...anchor,
           anchorId: anchor._id,
-          cvMatchValue: 0,
+          // cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "LESSON_CREATE",
         },
@@ -88,16 +94,15 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   useEffect(() => {
     if (playing) {
       updateCv();
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     }
-  }, [timeoutRef, timeTick, playing, updateCv]);
+  }, [playing, timeTick, updateCv]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setTimeTick(timeTick + 1);
-    }, 500);
-    timeoutRef.current = timeout;
-  }, [cvResult]);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setTimeTick(new Date().getTime());
+    }, anchor?.cvDelay || 500);
+  }, [timeoutRef, anchor, cvResult]);
 
   const doPrev = useCallback(() => {}, []);
 
@@ -111,13 +116,17 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     setPlaying(false);
   }, []);
 
+  useEffect(() => {
+    setPlaying(true);
+  }, []);
+
   return (
     <>
-      {itemPreview && previewOne && <ItemPreview />}
-      {stepPreview && previewOne && currentStep && (
+      {playing && itemPreview && previewOne && <ItemPreview />}
+      {playing && stepPreview && previewOne && currentStep && (
         <StepView stepId={currentStep} onSucess={onFinish} />
       )}
-      {chapterPreview && currentChapter && (
+      {playing && chapterPreview && currentChapter && (
         <ChapterView chapterId={currentChapter} onSucess={onFinish} />
       )}
       <Windowlet
@@ -127,6 +136,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onClose={clearPreviews}
       >
         <Flex column style={{ height: "100%" }}>
+          {stepPreview && currentStep && step && (
+            <Flex style={{ margin: "auto" }}>{step.name}</Flex>
+          )}
+          {chapterPreview && currentChapter && chapter && (
+            <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
+          )}
           <Flex style={{ margin: "auto" }}>
             <ButtonRound
               width="36px"

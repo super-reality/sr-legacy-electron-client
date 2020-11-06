@@ -29,7 +29,6 @@ export default function ChapterView(props: ChapterViewProps) {
       ? chapter.steps.findIndex((s) => defaultStep == s._id)
       : 0
   );
-  console.log(chapter, currentStepId, currentStep);
 
   const doNextStep = useCallback(() => {
     if (currentStep + 1 >= chapter.steps.length) {
