@@ -55,8 +55,8 @@ export default function Test(): JSX.Element {
   console.log(createVideoPlayer);
   // test Avatar API
   const testAvatar = useCallback(() => {
-    if (audioInput.current && avatarVideoInput.current) {
-      getAvatar(audioInput.current, avatarVideoInput.current);
+    if (avatarAudioInput.current && avatarVideoInput.current) {
+      getAvatar(avatarAudioInput.current, avatarVideoInput.current);
     }
   }, [audioInput, avatarVideoInput]);
 

@@ -25,12 +25,13 @@ export default function getAvatar(
       chunks.push(chunk);
     });
     res.on("end", () => {
+      console.log(res);
       setLoading(false);
     });
     res.on("error", console.error);
 
     res.pipe(
-      fs.createWriteStream(path.join(userDataPath(), "Avatar_api_output.mp4"))
+      fs.createWriteStream(path.join(userDataPath(), "Avatar_api_output.qt"))
     );
   });
 

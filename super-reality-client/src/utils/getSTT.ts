@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import http from "http";
 
-
 import setLoading from "../renderer/redux/utils/setLoading";
 import userDataPath from "./userDataPath";
 
@@ -22,8 +21,8 @@ export default function getSTT(inAudio: HTMLInputElement): void {
   };
 
   const req = http.request(options, (res) => {
-     const chunks: any[] = [];
-     res.on("data", (chunk) => {
+    const chunks: any[] = [];
+    res.on("data", (chunk) => {
       chunks.push(chunk);
     });
     res.on("end", () => {
