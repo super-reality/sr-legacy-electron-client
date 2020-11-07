@@ -146,6 +146,7 @@ export default function VideoPreview(): JSX.Element {
           />
           <video
             ref={videoHiddenRef}
+            muted
             id="video-hidden"
             style={{ display: "none" }}
           />
