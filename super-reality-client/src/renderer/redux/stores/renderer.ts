@@ -11,6 +11,7 @@ import createStepSlice from "../slices/createStepSlice";
 import commonPropSlice from "../slices/commonPropSlice";
 import userDataSlice from "../slices/userDataSlice";
 import settingsSlice from "../slices/settingsSlice";
+import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   commonProps: commonPropSlice.reducer,
   userData: userDataSlice.reducer,
   settings: settingsSlice.reducer,
+  lessonPlayer: lessonPlayerSlice.reducer,
 });
 
 const store = configureStore({
