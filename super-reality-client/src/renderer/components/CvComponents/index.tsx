@@ -43,6 +43,7 @@ export default function CvComponents() {
         style={{ width: "300px", height: "210px" }}
         id="videoOutput"
         playsInline
+        muted
         ref={videoElement}
       />
       <canvas
