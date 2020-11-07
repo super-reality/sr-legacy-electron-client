@@ -41,10 +41,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     chapterPreview,
     previewOne,
   } = useSelector((state: AppState) => state.createLessonV2);
+  const { playingStepNumber, playingChapterNumber, playing } = useSelector(
+    (state: AppState) => state.lessonPlayer
+  );
   const { cvResult } = useSelector((state: AppState) => state.render);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [timeTick, setTimeTick] = useState(0);
-  const [playing, setPlaying] = useState(false);
 
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
@@ -104,21 +106,48 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     }, anchor?.cvDelay || 500);
   }, [timeoutRef, anchor, cvResult]);
 
-  const doPrev = useCallback(() => {}, []);
+  const doPrev = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "SET_LESSON_PLAYER_DATA",
+      arg: {
+        playingStepNumber: playingStepNumber - 1,
+      },
+    });
+  }, [dispatch, playingStepNumber]);
 
-  const doNext = useCallback(() => {}, []);
+  const doNext = useCallback(() => {
+    if (chapter) {
+      if (playingStepNumber + 1 < chapter.steps.length) {
+        reduxAction(dispatch, {
+          type: "SET_LESSON_PLAYER_DATA",
+          arg: {
+            playingStepNumber: playingStepNumber + 1,
+          },
+        });
+      } else {
+        reduxAction(dispatch, {
+          type: "SET_LESSON_PLAYER_DATA",
+          arg: {
+            playingChapterNumber: playingChapterNumber + 1,
+          },
+        });
+      }
+    }
+  }, [dispatch, chapter, playingStepNumber, playingChapterNumber]);
 
-  const doPlay = useCallback(() => {
-    setPlaying(true);
-  }, []);
-
-  const doStop = useCallback(() => {
-    setPlaying(false);
-  }, []);
+  const doPlay = useCallback(
+    (play: boolean) => {
+      reduxAction(dispatch, {
+        type: "SET_LESSON_PLAYING",
+        arg: play,
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
-    setPlaying(true);
-  }, []);
+    doPlay(true);
+  }, [doPlay]);
 
   return (
     <>
@@ -162,7 +191,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
               height="36px"
               style={{ margin: "8px" }}
               svg={playing ? ButtonStop : ButtonPlay}
-              onClick={playing ? doStop : doPlay}
+              onClick={playing ? () => doPlay(false) : () => doPlay(true)}
             />
           </Flex>
         </Flex>

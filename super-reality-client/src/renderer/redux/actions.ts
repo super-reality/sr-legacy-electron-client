@@ -9,6 +9,7 @@ import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
 import * as settingsSlice from "./slices/settingsSlice";
 import * as backgroundSlice from "./slices/backgroundSlice";
+import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -63,6 +64,9 @@ export const actions = {
   SET_SETTINGS: settingsSlice.setSettings,
   SET_CV_SETTINGS: settingsSlice.setCVSettings,
   SET_BACK: backgroundSlice.setData,
+  SET_LESSON_PLAYER_DATA: lessonPlayerSlice.setLessonPlayerData,
+  RESET_LESSON_PLAYER: lessonPlayerSlice.reset,
+  SET_LESSON_PLAYING: lessonPlayerSlice.setPlaying,
 };
 
 export type ActionKeys = keyof typeof actions;

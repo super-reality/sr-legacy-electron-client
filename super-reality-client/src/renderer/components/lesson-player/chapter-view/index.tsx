@@ -17,6 +17,9 @@ export default function ChapterView(props: ChapterViewProps) {
   const { treeChapters } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+  const { playingStepNumber } = useSelector(
+    (state: AppState) => state.lessonPlayer
+  );
 
   const chapter: IChapter | undefined = useMemo(
     () => treeChapters[chapterId] || undefined,
@@ -24,22 +27,29 @@ export default function ChapterView(props: ChapterViewProps) {
   );
 
   const [currentStepId, setCurrentStepId] = useState(defaultStep);
-  const [currentStep, setCurrentStep] = useState(
-    defaultStep && chapter
-      ? chapter.steps.findIndex((s) => defaultStep == s._id)
-      : 0
+
+  const setCurrentStep = useCallback(
+    (i: number) => {
+      reduxAction(dispatch, {
+        type: "SET_LESSON_PLAYER_DATA",
+        arg: {
+          playingStepNumber: i,
+        },
+      });
+    },
+    [dispatch]
   );
 
   const doNextStep = useCallback(() => {
-    if (currentStep + 1 >= chapter.steps.length) {
+    if (playingStepNumber + 1 >= chapter.steps.length) {
       onSucess();
     } else {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(playingStepNumber + 1);
     }
-  }, [chapter, currentStep]);
+  }, [chapter, playingStepNumber]);
 
   useEffect(() => {
-    const stepId = chapter.steps[currentStep]._id;
+    const stepId = chapter.steps[playingStepNumber]._id;
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
@@ -47,7 +57,7 @@ export default function ChapterView(props: ChapterViewProps) {
       },
     });
     setCurrentStepId(stepId);
-  }, [dispatch, currentStep]);
+  }, [dispatch, playingStepNumber]);
 
   return currentStepId ? (
     <StepView stepId={currentStepId} onSucess={doNextStep} />
