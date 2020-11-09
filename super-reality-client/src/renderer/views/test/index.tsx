@@ -71,17 +71,18 @@ export default function Test(): JSX.Element {
   }, [text]);
   // test speech to text
 
-  let output: any;
-  const testSpeechToText = useCallback(() => {
+  const testSpeechToText = useCallback(async () => {
     if (audioInput.current) {
       // console.log("audioInput", audioInput.current.files);
-      output = getSTT(audioInput.current);
+      const output = await getSTT(audioInput.current);
+      settextSTT(output);
+      console.log(output);
     }
   }, [audioInput]);
 
-  const testSpeechToText2 = useEffect(() => {
-    console.log(output);
-  }, [output]);
+  // const testSpeechToText2 = useEffect(() => {
+  //   console.log(output);
+  // }, [output]);
 
   const pythonTest = useCallback(() => {
     ipcSend({
@@ -151,9 +152,9 @@ export default function Test(): JSX.Element {
         >
           Test Speach to Text
         </ButtonSimple>
-        Select Audio File
-        <input ref={audioInput} type="file" accept="audio/*" />
-        <h2>STT Output</h2>
+        Select Audio or Video File
+        <input ref={audioInput} type="file" accept="audio/*, video/*" />
+        <h2>STT Output:</h2>
         <div>{textSTT}</div>
       </div>
       <div className="test-buttons mid">
