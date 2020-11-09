@@ -362,7 +362,7 @@ function TreeItem(props: TreeItemProps) {
         isOpen ? "open" : ""
       } ${dragOver == uniqueId ? "drag-target" : ""}`}
       onClick={state == STATE_OK ? doOpen : undefined}
-      style={{ paddingLeft: "36px" }}
+      style={{ paddingLeft: "56px" }}
     >
       <div className="item-icon-tree">
         <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />
