@@ -193,7 +193,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
               height="36px"
               style={{ margin: "8px" }}
               svg={playing ? ButtonStop : ButtonPlay}
-              onClick={playing ? () => doPlay(false) : () => doPlay(true)}
+              onClick={() => doPlay(!playing)}
             />
           </Flex>
         </Flex>
