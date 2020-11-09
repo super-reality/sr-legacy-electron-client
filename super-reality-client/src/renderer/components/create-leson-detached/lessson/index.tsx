@@ -41,8 +41,11 @@ export default function Lesson(props: LessonProps): JSX.Element {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
+        lessonPreview: treeCurrentType == "lesson",
+        chapterPreview: treeCurrentType == "chapter",
         stepPreview: treeCurrentType == "step",
         itemPreview: treeCurrentType == "item",
+        previewOne: true,
       },
     });
     setTransparent();
@@ -51,10 +54,16 @@ export default function Lesson(props: LessonProps): JSX.Element {
   const doPreview = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { stepPreview: true },
+      arg: {
+        lessonPreview: treeCurrentType == "lesson",
+        chapterPreview: treeCurrentType == "chapter",
+        stepPreview: treeCurrentType == "step",
+        itemPreview: treeCurrentType == "item",
+        previewOne: false,
+      },
     });
     setTransparent();
-  }, [dispatch, setTransparent]);
+  }, [dispatch, treeCurrentType, setTransparent]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import Axios from "axios";
+import Axios, { AxiosResponse } from "axios";
 import fs from "fs";
 import handleGetTTS from "../renderer/api/handleGetTTS";
 import setLoading from "../renderer/redux/utils/setLoading";
@@ -29,10 +29,10 @@ export default function getTTS(text: string, play?: boolean): void {
       "Content-Type": "application/json",
     },
   })
-    // .then(handleGetTTS)
+    .then(handleGetTTS)
     .then((result) => {
       setLoading(false);
-      const { url } = JSON.parse(JSON.stringify(result.data));
+      const { url } = JSON.parse(JSON.stringify(result));
       console.log(filename, url);
       downloadFile(url, filename)
         .then(() => {

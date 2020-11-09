@@ -32,15 +32,21 @@ const initialState = {
   currentAnchor: undefined as undefined | string,
   currentItem: undefined as undefined | string,
   currentStep: undefined as undefined | string,
+  currentChapter: undefined as undefined | string,
   currentSubView: "none" as TreeTypes,
   anchorTestView: false,
   lessonPreview: false,
+  chapterPreview: false,
   stepPreview: false,
   itemPreview: false,
+  previewOne: false,
   recordingData: {
     step_data: [],
   } as RecordingJson,
-  recordingCvMatches: [] as number[],
+  recordingCvMatches: [] as {
+    index: number;
+    value: number;
+  }[],
   recordingCvMatchValue: 995,
   recordingCvFrame: -1,
   cropRecording: false,
@@ -75,9 +81,7 @@ const createLessonSlice = createSlice({
       action: PayloadAction<null>
     ): void => {
       state.recordingCvFrame = 0;
-      state.recordingCvMatches = new Array(
-        Math.ceil(state.videoDuration * 10)
-      ).fill(0);
+      state.recordingCvMatches = [];
     },
     setRecordingCVData: (
       state: InitialState,
@@ -87,7 +91,10 @@ const createLessonSlice = createSlice({
       }>
     ): void => {
       state.recordingCvFrame = action.payload.index;
-      state.recordingCvMatches[action.payload.index] = action.payload.value;
+      state.recordingCvMatches = [
+        ...state.recordingCvMatches,
+        { ...action.payload },
+      ];
     },
     setRecordingData: (
       state: InitialState,
@@ -302,6 +309,17 @@ const createLessonSlice = createSlice({
         [item._id]: item,
       };
     },
+    setTempItem: (
+      state: InitialState,
+      action: PayloadAction<{ item: Item }>
+    ): void => {
+      const { item } = action.payload;
+
+      state.recordingTempItems = {
+        ...state.recordingTempItems,
+        [item._id]: item,
+      };
+    },
     setAnchor: (
       state: InitialState,
       action: PayloadAction<{ anchor: IAnchor; step?: string }>
@@ -348,6 +366,7 @@ export const {
   setChapter,
   setStep,
   setItem,
+  setTempItem,
   setAnchor,
   setOpenTree,
   selectEvent,

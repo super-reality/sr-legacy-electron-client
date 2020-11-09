@@ -7,11 +7,17 @@ import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 import updateLesson from "./updateLesson";
 
-export default function newChapter(name: string, lesson?: string): void {
+export default function newChapter(
+  name: string,
+  lesson?: string
+): Promise<void> {
   const payload = {
     name,
   };
-  Axios.post<ChapterCreate | ApiError>(`${API_URL}chapter/create`, payload)
+  return Axios.post<ChapterCreate | ApiError>(
+    `${API_URL}chapter/create`,
+    payload
+  )
     .then(handleChapterCreate)
     .then((data) => {
       reduxAction(store.dispatch, {

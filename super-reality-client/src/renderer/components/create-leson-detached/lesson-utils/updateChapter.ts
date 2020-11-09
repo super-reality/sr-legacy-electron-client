@@ -10,7 +10,7 @@ import store from "../../../redux/stores/renderer";
 export default function updateChapter(
   data: Partial<IChapter>,
   id: string
-): void {
+): Promise<void | IChapter> {
   const updated = store.getState().createLessonV2.treeChapters[id];
   const newData = {
     steps: updated.steps,
@@ -18,7 +18,7 @@ export default function updateChapter(
     chapter_id: id,
   };
 
-  Axios.put<ChapterUpdate | ApiError>(
+  return Axios.put<ChapterUpdate | ApiError>(
     `${API_URL}chapter`,
     _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )

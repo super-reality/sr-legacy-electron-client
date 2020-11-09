@@ -4,6 +4,7 @@ export const ItemFocusTriggers = {
   "Click target": 1,
   "Hover target": 2,
   "Click Next button": 3,
+  "Target found": 4,
   None: null,
 };
 

@@ -39,23 +39,27 @@ export default function VideoData() {
             key={`cv-nav-${i}`}
             className="video-cv-data-item"
             style={{
+              left: `calc(${(100 / videoDuration) * d.index}% - 4px)`,
               backgroundColor: `rgba(67,181,129,${
-                (1 / maxCv) * (d * 1000 - recordingCvMatchValue)
+                (1 / maxCv) * (d.value * 1000 - recordingCvMatchValue)
               })`,
             }}
           >
-            {recordingCvFrame == i && <div className="video-cv-data-current" />}
+            {recordingCvFrame == d.index && (
+              <div className="video-cv-data-current" />
+            )}
           </div>
         ))}
       </div>
       <div className="video-data">
         {recordingData.step_data.map((s) => {
-          const item = recordingTempItems[sha1(s.name)] || null;
+          const item =
+            recordingTempItems[sha1(`${s.type}-${s.time_stamp}`)] || null;
           // eslint-disable-next-line radix
           const time = timestampToTime(s.time_stamp);
           return (
             <div
-              className="video-data-click"
+              className={`video-data-${s.type}`}
               style={{
                 left: `${(100 / (videoDuration * 1000)) * time}%`,
               }}

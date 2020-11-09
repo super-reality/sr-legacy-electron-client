@@ -1,9 +1,9 @@
 import { isThisTypeNode } from "typescript";
 import setLoading from "../renderer/redux/utils/setLoading";
 
+// function to get the text from the audio-video file
 export default function getSTT(inAudio: HTMLInputElement): Promise<any> {
-  
-  // eslint-disable-next-line
+  // eslint-disable-next-line global-require
   const { formData } = require("form-data");
   const form = new FormData();
   const getText = async () => {

@@ -38,7 +38,7 @@ export default function LessonTreeControls() {
       }
       // Create step
       if (childType == "step") {
-        newStep(name, treeCurrentId);
+        newStep({ name }, treeCurrentId);
       }
     },
     [treeCurrentType, treeCurrentId, dispatch]

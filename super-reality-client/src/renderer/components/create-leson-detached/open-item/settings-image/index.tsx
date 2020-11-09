@@ -1,7 +1,6 @@
 import React from "react";
 import { ItemImage } from "../../../../api/types/item/item";
 import BaseInput from "../../../base-input";
-import Flex from "../../../flex";
 import "../../../lesson-player/find-box/index.scss";
 
 interface SettingsImage {

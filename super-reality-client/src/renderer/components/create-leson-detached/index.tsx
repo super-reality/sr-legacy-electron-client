@@ -37,8 +37,6 @@ import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
-import generateTempItems from "./lesson-utils/generateTempItems";
-import setFullBounds from "../../../utils/setFullBounds";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -94,6 +92,8 @@ export default function CreateLessonDetached(): JSX.Element {
     currentAnchor,
     currentRecording,
     anchorTestView,
+    lessonPreview,
+    chapterPreview,
     stepPreview,
     itemPreview,
     videoNavigation,
@@ -115,11 +115,14 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debouncer = useDebounce(500);
 
-  const debounceVideoNav = useCallback((n: readonly number[]) => {
-    debouncer(() => setVideoNavPos([...n]));
-    const el = document.getElementById("video-hidden") as HTMLVideoElement;
-    if (el) el.currentTime = n[1] / 1000;
-  }, []);
+  const debounceVideoNav = useCallback(
+    (n: readonly number[]) => {
+      debouncer(() => setVideoNavPos([...n]));
+      const el = document.getElementById("video-hidden") as HTMLVideoElement;
+      if (el) el.currentTime = n[1] / 1000;
+    },
+    [debouncer]
+  );
 
   useEffect(() => {
     setMocks();
@@ -196,13 +199,6 @@ export default function CreateLessonDetached(): JSX.Element {
       type: "CLEAR_RECORDING_CV_DATA",
       arg: null,
     });
-
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        recordingTempItems: generateTempItems(json.step_data),
-      },
-    });
   }, [dispatch, currentRecording]);
 
   return overlayTransparent ? (
@@ -224,7 +220,9 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
-      {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
+      {(lessonPreview || chapterPreview || stepPreview || itemPreview) && (
+        <LessonPlayer onFinish={setSolid} />
+      )}
     </div>
   ) : (
     <div className="solid-container">

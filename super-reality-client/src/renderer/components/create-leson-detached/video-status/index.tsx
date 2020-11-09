@@ -9,7 +9,7 @@ import fs from "fs";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { nativeImage, remote } from "electron";
+import { nativeImage } from "electron";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
 import { AppState } from "../../../redux/stores/renderer";
@@ -25,16 +25,19 @@ import userDataPath from "../../../../utils/userDataPath";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
 import newItem from "../lesson-utils/newItem";
 import sha1 from "../../../../utils/sha1";
+import { Item } from "../../../api/types/item/item";
+import newStep from "../lesson-utils/newStep";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
     recordingData,
+    currentAnchor,
     treeAnchors,
     treeItems,
     videoNavigation,
     recordingTempItems,
-    currentStep,
+    currentChapter,
     cropRecording,
     cropRecordingPos,
   } = useSelector((state: AppState) => state.createLessonV2);
@@ -42,13 +45,13 @@ export default function VideoStatus() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const anchor = useMemo(() => {
-    return treeAnchors[recordingData.anchor || ""] || null;
-  }, [treeAnchors, recordingData]);
+    return treeAnchors[currentAnchor || ""] || null;
+  }, [treeAnchors, currentAnchor]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
 
   const openAnchor = useCallback(
-    (e) => {
+    (e: string | undefined) => {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: { currentAnchor: e },
@@ -58,7 +61,7 @@ export default function VideoStatus() {
   );
 
   const setRecordingAnchor = useCallback(
-    (e) => {
+    (e: string | undefined) => {
       reduxAction(dispatch, {
         type: "SET_RECORDING_DATA",
         arg: { anchor: e },
@@ -85,9 +88,7 @@ export default function VideoStatus() {
     ) as HTMLVideoElement;
     if (videoHidden && anchor) {
       if (matchFrame !== -1 && matchFrame < recordingData.step_data.length) {
-        const tempItemId = Object.keys(recordingTempItems)[matchFrame];
         const orig = recordingData.step_data[matchFrame];
-        const tempItem = recordingTempItems[tempItemId];
         const timestamp = orig.time_stamp;
         const timestampTime = timestampToTime(timestamp);
         videoHidden.currentTime = timestampTime / 1000;
@@ -95,24 +96,49 @@ export default function VideoStatus() {
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
             reduxAction(dispatch, {
               type: "SET_RECORDING_CV_DATA",
-              arg: { index: Math.round(timestampTime / 100), value: arg.dist },
+              arg: { index: timestampTime / 1000, value: arg.dist },
             });
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SETITEM",
-              arg: {
-                item: {
-                  ...tempItem,
-                  relativePos: {
-                    ...tempItem.relativePos,
-                    // only for mouse point item:
-                    x: orig.x_cordinate - arg.x - 64,
-                    y: orig.y_cordinate - arg.y - 64,
-                    width: 128,
-                    height: 128,
-                  },
-                },
+
+            // Create new item based on step data from recording
+            const id = sha1(`${orig.type}-${orig.time_stamp}`);
+            const itemToSet: Item = {
+              _id: id,
+              name: `${orig.type} ${orig.time_stamp}`,
+              type: "focus_highlight",
+              focus: "Mouse Point",
+              trigger: null,
+              destination: "", // a step ID to go to
+              transition: 0, // type
+              anchor: true,
+
+              relativePos: {
+                width: 16,
+                height: 16,
+                x: orig.x_cordinate ? orig.x_cordinate - arg.x : 0,
+                y: orig.y_cordinate ? orig.y_cordinate - arg.y : 0,
               },
-            });
+            };
+
+            if (orig.type !== "keydown" && orig.type !== "keyup") {
+              itemToSet.relativePos.x -= 64;
+              itemToSet.relativePos.y -= 64;
+              itemToSet.relativePos.width = 128;
+              itemToSet.relativePos.height = 128;
+            }
+
+            if (
+              orig.type == "left_click" ||
+              orig.type == "right_click" ||
+              orig.type == "wheel_click"
+            ) {
+              reduxAction(dispatch, {
+                type: "CREATE_LESSON_V2_SET_TEMPITEM",
+                arg: {
+                  item: itemToSet,
+                },
+              });
+            }
+
             if (timeoutRef.current) {
               setMatchFrame(matchFrame + 1);
             }
@@ -122,14 +148,7 @@ export default function VideoStatus() {
         setMatchFrame(-1);
       }
     }
-  }, [
-    matchFrame,
-    recordingData,
-    timeoutRef,
-    dispatch,
-    recordingTempItems,
-    anchor,
-  ]);
+  }, [matchFrame, recordingData, timeoutRef, dispatch, anchor]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
@@ -138,26 +157,35 @@ export default function VideoStatus() {
     });
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { recordingCvFrame: 0, recordingCvMatchValue: anchor.cvMatchValue },
+      arg: {
+        currentItem: undefined,
+        currentStep: undefined,
+        currentAnchor: recordingData.anchor,
+        recordingCvFrame: 0,
+      },
     });
     const videoHidden = document.getElementById(
       "video-hidden"
     ) as HTMLVideoElement;
-    if (videoHidden && anchor) {
+    if (videoHidden && recordingData.anchor) {
       videoHidden.currentTime = 0;
       setMatchFrame(0);
     }
-  }, [anchor]);
+  }, [recordingData]);
 
   const generateItems = useCallback(() => {
-    Object.keys(recordingTempItems).map((k) => {
-      const item = recordingTempItems[k];
-      const id = sha1(item.name);
-      console.log(treeItems[item._id]);
-      newItem(treeItems[item._id], currentStep);
-      return item;
-    });
-  }, [dispatch, recordingTempItems, treeItems, currentStep]);
+    Promise.all(
+      Object.keys(recordingTempItems).map((k) => {
+        const item = recordingTempItems[k];
+        return newStep(
+          { name: recordingTempItems[k].name, anchor: recordingData.anchor },
+          currentChapter
+        ).then((step) => {
+          if (step) newItem(item, step._id);
+        });
+      })
+    );
+  }, [dispatch, recordingTempItems, treeItems, currentChapter, recordingData]);
 
   const doNewAnchor = useCallback(
     (url) => {
@@ -247,12 +275,12 @@ export default function VideoStatus() {
           current={recordingData.anchor || ""}
           selected={recordingData.anchor || ""}
           setCurrent={(id) => {
-            setRecordingAnchor(id);
-            openAnchor(id);
+            setRecordingAnchor(id || undefined);
+            openAnchor(id || undefined);
             close();
           }}
           open={(id) => {
-            openAnchor(id);
+            openAnchor(id || undefined);
             close();
           }}
         />
@@ -286,16 +314,8 @@ export default function VideoStatus() {
           Save anchor
         </ButtonSimple>
       )}
-      {anchor && !cropRecording ? (
+      {recordingData.anchor && !cropRecording ? (
         <>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={() => openAnchor(anchor._id)}
-          >
-            {anchor.name}
-          </ButtonSimple>
           <ButtonSimple
             width="140px"
             height="12px"
@@ -317,7 +337,7 @@ export default function VideoStatus() {
             margin="auto 4px"
             onClick={generateItems}
           >
-            Generate items
+            Generate
           </ButtonSimple>
         </>
       ) : (

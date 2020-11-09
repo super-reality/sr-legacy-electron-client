@@ -11,8 +11,8 @@ import updateStep from "./updateStep";
 export default function newAnchor(
   payload: Partial<IAnchor>,
   step?: string
-): void {
-  Axios.post<AnchorCreate | ApiError>(`${API_URL}anchor/create`, payload)
+): Promise<void> {
+  return Axios.post<AnchorCreate | ApiError>(`${API_URL}anchor/create`, payload)
     .then(handleAnchorCreate)
     .then((data) => {
       reduxAction(store.dispatch, {

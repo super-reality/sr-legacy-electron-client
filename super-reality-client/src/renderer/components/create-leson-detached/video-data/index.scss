@@ -7,7 +7,7 @@
   width: calc(100% - 28px);
 }
 
-.video-data-click {
+@mixin video-data-item {
   position: absolute;
   margin: auto 0;
   width: 16px;
@@ -22,6 +22,77 @@
     background-color: #98c9fb;
   }
 }
+
+.video-data-left_click {
+  @include video-data-item;
+}
+
+.video-data-right_click {
+  @include video-data-item;
+}
+
+.video-data-wheel_click {
+  @include video-data-item;
+}
+
+.video-data-left_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-right_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-wheel_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-scroll_down {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+  background-color: var(--color-green);
+  &:hover {
+    background-color: #98fbc9;
+  }
+}
+
+.video-data-scroll_up {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+  background-color: var(--color-green);
+  &:hover {
+    background-color: #98fbc9;
+  }
+}
+
+.video-data-keydown {
+  @include video-data-item;
+  background-color: var(--color-red);
+  &:hover {
+    background-color: #fbac98;
+  }
+}
+
+.video-data-keyup {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
 
 .video-cv-data {
   display: flex;
@@ -42,6 +113,8 @@
 .video-cv-data-item {
   width: -webkit-fill-available;
   height: 8px;
+  width: 8px;
+  position: absolute;
   background-color: var(--color-green);
   z-index: 1;
 }

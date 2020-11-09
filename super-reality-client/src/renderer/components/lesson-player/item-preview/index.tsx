@@ -156,18 +156,20 @@ export default function ItemPreview() {
         })
         .on("resizeend", (event) => {
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x;
-            startPos.y -= cvResult.y;
+            startPos.x -= cvResult.x - 3;
+            startPos.y -= cvResult.y - 3;
           } else if (
             dragContainer.current &&
             dragContainer.current.parentElement
           ) {
             startPos.x =
               event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
+              (dragContainer.current.parentElement?.offsetLeft || 0) +
+              3;
             startPos.y =
               event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+              (dragContainer.current.parentElement?.offsetTop || 0) +
+              3;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
             startPos.horizontal =
@@ -194,8 +196,8 @@ export default function ItemPreview() {
         })
         .on("dragend", () => {
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x;
-            startPos.y -= cvResult.y;
+            startPos.x -= cvResult.x - 3;
+            startPos.y -= cvResult.y - 3;
           } else if (
             dragContainer.current &&
             dragContainer.current.parentElement
@@ -233,7 +235,7 @@ export default function ItemPreview() {
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox type="anchor" pos={cvResult} />
+        <FindBox clicktThrough type="anchor" pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (
         <FindBox

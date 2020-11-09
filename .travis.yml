@@ -27,6 +27,7 @@ jobs:
         - cd super-reality-client
         - npm install
         - npm run test:all
+        - npm run pre-build-iohook
         - npm run build:web
         - npm run build
         - node ./rm-unpacked.js
