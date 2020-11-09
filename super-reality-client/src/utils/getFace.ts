@@ -41,6 +41,7 @@ export default function getFace(
     };
     getVideo();
   }
+}
   /*
   const random = Math.random().toString();
   const options = {
@@ -99,16 +100,5 @@ export default function getFace(
   console.log(req);
   req.end();
   */
-}
-/*
-req.setHeader(
-      "content-type",
-      "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
-    );
-    req.setHeader("Cache-Control", "no-store");
-      
-    
 
 
-    
-    */
