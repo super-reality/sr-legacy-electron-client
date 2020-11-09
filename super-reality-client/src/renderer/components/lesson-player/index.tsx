@@ -19,7 +19,7 @@ import StepView from "./step-view";
 import { ReactComponent as ButtonPrev } from "../../../assets/svg/prev-step.svg";
 import { ReactComponent as ButtonNext } from "../../../assets/svg/next-step.svg";
 import { ReactComponent as ButtonPlay } from "../../../assets/svg/play.svg";
-import { ReactComponent as ButtonStop } from "../../../assets/svg/prev.svg";
+import { ReactComponent as ButtonStop } from "../../../assets/svg/stop.svg";
 
 interface LessonPlayerProps {
   onFinish: () => void;
