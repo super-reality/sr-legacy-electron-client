@@ -162,13 +162,32 @@ function TreeFolder(props: TreeFolderProps) {
         if (id && type == "step") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
-            arg: { currentStep: id, currentItem: undefined },
+            arg: {
+              currentLesson: uniqueId.split(".")[0],
+              currentChapter: parentId,
+              currentStep: id,
+              currentItem: undefined,
+            },
           });
         }
         if (id && type == "chapter") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
-            arg: { currentChapter: id, currentItem: undefined },
+            arg: {
+              currentLesson: parentId,
+              currentChapter: id,
+              currentItem: undefined,
+            },
+          });
+        }
+        if (id && type == "lesson") {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              currentLesson: id,
+              currentChapter: undefined,
+              currentItem: undefined,
+            },
           });
         }
         setOpen(!open);
@@ -234,7 +253,7 @@ function TreeFolder(props: TreeFolderProps) {
           ) : (
             <TreeItem
               parentId={id}
-              uniqueId={`${parentId}.${ch._id}`}
+              uniqueId={`${uniqueId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -309,6 +328,8 @@ function TreeItem(props: TreeItemProps) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
+          currentLesson: uniqueId.split(".")[0],
+          currentChapter: uniqueId.split(".")[1],
           currentStep: parentId,
           currentAnchor: parentAnchor,
           currentItem: id,

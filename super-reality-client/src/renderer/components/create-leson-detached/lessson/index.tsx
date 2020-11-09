@@ -13,13 +13,14 @@ import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.sv
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import OpenStep from "../open-step";
 import { Tabs, TabsContainer } from "../../tabs";
 import LessonTreeControls from "../lesson-tree-controls";
 import reduxAction from "../../../redux/reduxAction";
 import RecordingsView from "../recordings-view";
+import idNamePos from "../../../../utils/idNamePos";
 
 type Sections = "Lessons" | "Recordings";
 const sections: Sections[] = ["Lessons", "Recordings"];
@@ -37,6 +38,29 @@ export default function Lesson(props: LessonProps): JSX.Element {
     (state: AppState) => state.createLessonV2
   );
 
+  const doPreviewCurrentToNumber = useCallback(() => {
+    const slice = store.getState().createLessonV2;
+
+    const lessonId = slice.currentLesson;
+    const chapterId = slice.currentChapter;
+    const stepId = slice.currentStep;
+
+    if (lessonId && chapterId && stepId) {
+      const lesson = slice.treeLessons[lessonId];
+      const chapter = slice.treeChapters[chapterId];
+      const chapterPos = lesson ? idNamePos(lesson.chapters, chapterId) : 0;
+      const stepPos = chapter ? idNamePos(chapter.steps, stepId) : 0;
+
+      reduxAction(dispatch, {
+        type: "SET_LESSON_PLAYER_DATA",
+        arg: {
+          playingChapterNumber: chapterPos > -1 ? chapterPos : 0,
+          playingStepNumber: stepPos > -1 ? stepPos : 0,
+        },
+      });
+    }
+  }, [dispatch]);
+
   const doPreviewOne = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -49,6 +73,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
       },
     });
     setTransparent();
+    doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, setTransparent]);
 
   const doPreview = useCallback(() => {
@@ -63,7 +88,8 @@ export default function Lesson(props: LessonProps): JSX.Element {
       },
     });
     setTransparent();
-  }, [dispatch, treeCurrentType, setTransparent]);
+    doPreviewCurrentToNumber();
+  }, [dispatch, treeCurrentType, setTransparent, doPreviewCurrentToNumber]);
 
   return (
     <>

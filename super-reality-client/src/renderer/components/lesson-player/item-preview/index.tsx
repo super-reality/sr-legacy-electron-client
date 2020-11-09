@@ -20,7 +20,12 @@ import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
 
-export default function ItemPreview() {
+interface ItemPreviewProps {
+  onSucess?: () => void;
+}
+
+export default function ItemPreview(props: ItemPreviewProps) {
+  const { onSucess } = props;
   const dispatch = useDispatch();
   const {
     currentAnchor,
@@ -232,6 +237,15 @@ export default function ItemPreview() {
     return voidFunction;
   }, [dispatch, cvResult, pos, step, item]);
 
+  const onSucessCallback = useCallback(
+    (trigger: number | null) => {
+      if (item && onSucess && trigger == item.trigger) {
+        onSucess();
+      }
+    },
+    [item]
+  );
+
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
@@ -243,6 +257,7 @@ export default function ItemPreview() {
           pos={pos}
           style={style}
           type={item.focus}
+          callback={onSucessCallback}
         />
       )}
       {item && item.type == "image" && (
@@ -251,6 +266,7 @@ export default function ItemPreview() {
           pos={pos}
           style={style}
           image={item.url}
+          callback={onSucessCallback}
         />
       )}
     </>

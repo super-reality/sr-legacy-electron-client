@@ -91,6 +91,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const {
     currentAnchor,
     currentRecording,
+    currentLesson,
     anchorTestView,
     lessonPreview,
     chapterPreview,
@@ -220,9 +221,10 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
-      {(lessonPreview || chapterPreview || stepPreview || itemPreview) && (
-        <LessonPlayer onFinish={setSolid} />
-      )}
+      {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
+        currentLesson && (
+          <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
+        )}
     </div>
   ) : (
     <div className="solid-container">
