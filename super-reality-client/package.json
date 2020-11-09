@@ -23,6 +23,7 @@
     "electron-devtools-installer": "^3.1.1",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.2.4",
+    "form-data": "^3.0.0",
     "global-mouse-events": "^1.0.3",
     "handbrake-js": "^5.0.0",
     "howler": "^2.2.0",

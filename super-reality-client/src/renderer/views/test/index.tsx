@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./index.scss";
 import path from "path";
 import fs from "fs";
@@ -21,7 +21,7 @@ export default function Test(): JSX.Element {
   const audioInput = useRef<HTMLInputElement>(null);
   const avatarAudioInput = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(textInput.current?.value);
-  const [isVideoPlayer, setIsVideoPlayer] = useState(false);
+  const [textSTT, settextSTT] = useState("");
   const [isFileExist, setIsFileExist] = useState(false);
 
   // eslint-disable-next-line global-require
@@ -48,10 +48,10 @@ export default function Test(): JSX.Element {
       if (stat && stat.isFile()) {
         setIsFileExist(true);
       }
-      console.log(err);
+      // console.log(err);
     });
   }, [videoFaceOutput]);
-  console.log(createVideoPlayer);
+
   // test Avatar API
   const testAvatar = useCallback(() => {
     if (avatarAudioInput.current && avatarVideoInput.current) {
@@ -63,22 +63,26 @@ export default function Test(): JSX.Element {
   const onChange = useCallback(() => {
     if (textInput.current && textInput.current?.value)
       setText(textInput.current.value);
-    console.log(text);
   }, [text]);
   const testTextToSpeech = useCallback(() => {
     if (text) {
       getTTS(text);
     }
-    console.log(text);
   }, [text]);
   // test speech to text
+
+  let output: any;
   const testSpeechToText = useCallback(() => {
-    console.log(audioInput.current);
     if (audioInput.current) {
-      console.log("audioInput", audioInput.current.files);
-      getSTT(audioInput.current);
+      // console.log("audioInput", audioInput.current.files);
+      output = getSTT(audioInput.current);
     }
   }, [audioInput]);
+
+  const testSpeechToText2 = useEffect(() => {
+    console.log(output);
+  }, [output]);
+
   const pythonTest = useCallback(() => {
     ipcSend({
       method: "pythonExec",
@@ -149,6 +153,8 @@ export default function Test(): JSX.Element {
         </ButtonSimple>
         Select Audio File
         <input ref={audioInput} type="file" accept="audio/*" />
+        <h2>STT Output</h2>
+        <div>{textSTT}</div>
       </div>
       <div className="test-buttons mid">
         <h1> Avatar API</h1>
