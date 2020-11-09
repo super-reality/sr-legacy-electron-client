@@ -148,8 +148,9 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   useEffect(() => {
     doPlay(true);
+    setTimeout(() => doPlay(false), 100);
+    setTimeout(() => doPlay(true), 2000);
   }, [doPlay]);
-
   return (
     <>
       {playing && itemPreview && previewOne && <ItemPreview />}
