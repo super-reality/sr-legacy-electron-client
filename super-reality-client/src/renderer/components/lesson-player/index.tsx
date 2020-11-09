@@ -10,7 +10,6 @@ import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonRound from "../button-round";
-import ButtonSimple from "../button-simple";
 import Windowlet from "../create-leson-detached/windowlet";
 import Flex from "../flex";
 import ChapterView from "./chapter-view";
@@ -107,12 +106,14 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   }, [timeoutRef, anchor, cvResult]);
 
   const doPrev = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "SET_LESSON_PLAYER_DATA",
-      arg: {
-        playingStepNumber: playingStepNumber - 1,
-      },
-    });
+    if (playingStepNumber > 0) {
+      reduxAction(dispatch, {
+        type: "SET_LESSON_PLAYER_DATA",
+        arg: {
+          playingStepNumber: playingStepNumber - 1,
+        },
+      });
+    }
   }, [dispatch, playingStepNumber]);
 
   const doNext = useCallback(() => {

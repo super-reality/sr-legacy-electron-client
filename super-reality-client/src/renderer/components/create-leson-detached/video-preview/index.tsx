@@ -165,7 +165,7 @@ export default function VideoPreview(): JSX.Element {
       <img ref={anchorImageRef} style={{ display: "none" }} />
       {item && !cropRecording && <ItemPreview />}
       {!cropRecording && (currentRecording || currentAnchor) && (
-        <FindBox type="anchor" pos={cvResult} />
+        <FindBox clicktThrough type="anchor" pos={cvResult} />
       )}
       {cropRecording && <AnchorCrop />}
     </div>

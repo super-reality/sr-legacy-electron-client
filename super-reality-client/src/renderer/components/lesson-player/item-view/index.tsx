@@ -69,6 +69,7 @@ export default function ItemView(props: ItemViewProps) {
     <>
       {item && item.type == "focus_highlight" && (
         <FindBox
+          clicktThrough
           pos={pos}
           style={style}
           type={item.focus}

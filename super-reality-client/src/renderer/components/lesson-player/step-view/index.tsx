@@ -38,6 +38,7 @@ export default function StepView(props: StepViewProps) {
 
   const itemSuceeded = useCallback(
     (id: string, trigger: number | null) => {
+      console.log(`item sucess event ${id} - trigger: ${trigger}`);
       const state = { ...itemsState };
       state[id] = true;
       setItemsState(state);
@@ -60,7 +61,7 @@ export default function StepView(props: StepViewProps) {
             item={item}
             anchorId={step.anchor || ""}
             onSucess={(trigger: number | null) => {
-              if (trigger == item.trigger) {
+              if (trigger == item.trigger && itemsState[itemId] == false) {
                 itemSuceeded(itemId, trigger);
               }
             }}
