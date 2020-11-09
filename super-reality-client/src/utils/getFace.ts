@@ -42,7 +42,7 @@ export default function getFace(
     getVideo();
   }
 }
-  /*
+/*
   const random = Math.random().toString();
   const options = {
     method: "POST",
@@ -100,5 +100,3 @@ export default function getFace(
   console.log(req);
   req.end();
   */
-
-
