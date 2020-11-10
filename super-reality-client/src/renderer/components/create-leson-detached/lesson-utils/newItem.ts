@@ -20,12 +20,22 @@ export default function newItem(
       : { ...type };
   if (payload.type == "focus_highlight" && !payload.focus) {
     payload.focus = "Area highlight";
+    payload.trigger = 1;
   }
   if (payload.type == "image" && !payload.relativePos) {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 300 };
+    payload.trigger = 1;
   }
   if (payload.type == "audio" && !payload.relativePos) {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
+    payload.trigger = 1;
+  }
+  if (payload.type == "video" && !payload.relativePos) {
+    payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
+    payload.trigger = 1;
+  }
+  if (payload.type == "dialog") {
+    payload.trigger = 1;
   }
   return Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
     .then(handleItemCreate)
