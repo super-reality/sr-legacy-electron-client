@@ -68,6 +68,25 @@ export default function VideoPreview(): JSX.Element {
 
   const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
   const containerReactRef = useRef<HTMLDivElement | null>();
+  const containerOutRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerOutRef.current) {
+      const containerWidth = videoCanvasRef.current?.width ?? 1920;
+      const containerHeight = videoCanvasRef.current?.height ?? 1080;
+      const innherWidth = containerOutRef.current.offsetWidth - 16;
+      const innherHeight = containerOutRef.current.offsetHeight - 16;
+      const scale = Math.min(
+        (1 / containerWidth) * innherWidth,
+        (1 / containerHeight) * innherHeight
+      );
+      const xPos = (innherWidth - containerWidth) / 2 + 8;
+      const yPos = (innherHeight - containerHeight) / 2 + 8;
+
+      setVideoScale(scale);
+      setVideoPos({ x: xPos, y: yPos });
+    }
+  }, [setVideoScale, setVideoPos]);
 
   const cvEditor: any = useMemo(
     () => new CVEditor(videoHiddenRef.current, videoCanvasRef.current),
@@ -173,7 +192,7 @@ export default function VideoPreview(): JSX.Element {
   );
 
   return (
-    <div className="video-preview-container-out">
+    <div className="video-preview-container-out" ref={containerOutRef}>
       <div
         ref={(ref) => {
           if (ref) containerRef(ref);
