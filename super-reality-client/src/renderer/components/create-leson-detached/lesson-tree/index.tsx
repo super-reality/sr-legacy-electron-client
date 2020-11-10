@@ -81,7 +81,7 @@ function TreeFolder(props: TreeFolderProps) {
   }
 
   useEffect(() => {
-    if (type == "lesson") {
+    if (type == "lesson" && treeLessons[id] == undefined) {
       setState(STATE_LOADING);
       getLesson(id)
         .then((data) => {
@@ -125,7 +125,7 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, treeLessons, treeChapters, treeSteps]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
@@ -291,17 +291,19 @@ function TreeItem(props: TreeItemProps) {
   const itemData: Item | null = treeItems[id] || null;
 
   useEffect(() => {
-    setState(STATE_LOADING);
-    getItem(id)
-      .then((data) => {
-        reduxAction(store.dispatch, {
-          type: "CREATE_LESSON_V2_SETITEM",
-          arg: { item: data },
-        });
-        setState(STATE_OK);
-      })
-      .catch((e) => setState(STATE_ERR));
-  }, [dispatch, id]);
+    if (treeItems[id] == undefined) {
+      setState(STATE_LOADING);
+      getItem(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETITEM",
+            arg: { item: data },
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
+    }
+  }, [dispatch, id, treeItems]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
@@ -382,7 +384,7 @@ function TreeItem(props: TreeItemProps) {
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
       } ${dragOver == uniqueId ? "drag-target" : ""}`}
-      onClick={state == STATE_OK ? doOpen : undefined}
+      onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
       style={{ paddingLeft: "56px" }}
     >
       <div className="item-icon-tree">
