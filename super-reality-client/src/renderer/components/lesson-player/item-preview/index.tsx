@@ -165,10 +165,10 @@ export default function ItemPreview(props: ItemPreviewProps) {
             dragContainer.current &&
             dragContainer.current.parentElement
           ) {
-            startPos.x = (dragContainer.current.offsetLeft || 0) + 3;
-            startPos.y = (dragContainer.current.offsetTop || 0) + 3;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+            if (!onSucess) {
+              startPos.width /= videoScale;
+              startPos.height /= videoScale;
+            }
             startPos.horizontal =
               (100 /
                 (dragContainer.current.parentElement.offsetWidth -
@@ -179,10 +179,6 @@ export default function ItemPreview(props: ItemPreviewProps) {
                 (dragContainer.current.parentElement.offsetHeight -
                   startPos.height)) *
               startPos.y;
-          }
-          if (!onSucess) {
-            startPos.width /= videoScale;
-            startPos.height /= videoScale;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
