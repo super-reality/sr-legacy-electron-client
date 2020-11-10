@@ -81,7 +81,10 @@ function TreeFolder(props: TreeFolderProps) {
   }
 
   useEffect(() => {
-    if (type == "lesson" && treeLessons[id] == undefined) {
+    if (state !== STATE_IDLE) return;
+    const slice = store.getState().createLessonV2;
+    if (type == "lesson" && slice.treeLessons[id] == undefined) {
+      console.log(type, id, !!slice.treeLessons[id], state);
       setState(STATE_LOADING);
       getLesson(id)
         .then((data) => {
@@ -93,7 +96,8 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-    if (type == "chapter" && treeChapters[id] == undefined) {
+    if (type == "chapter" && slice.treeChapters[id] == undefined) {
+      console.log(type, id, !!slice.treeChapters[id], state);
       setState(STATE_OK);
       getChapter(id)
         .then((data) => {
@@ -105,7 +109,8 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-    if (type == "step" && treeSteps[id] == undefined) {
+    if (type == "step" && slice.treeSteps[id] == undefined) {
+      console.log(type, id, !!slice.treeSteps[id], state);
       setState(STATE_OK);
       getStep(id)
         .then((data) => {
@@ -114,7 +119,11 @@ function TreeFolder(props: TreeFolderProps) {
             arg: { step: data },
           });
           setState(STATE_OK);
-          if (data.anchor) {
+          if (
+            data.anchor &&
+            store.getState().createLessonV2.treeAnchors[data.anchor] ==
+              undefined
+          ) {
             getAnchor(data.anchor).then((anchor) => {
               reduxAction(store.dispatch, {
                 type: "CREATE_LESSON_V2_SETANCHOR",
@@ -125,7 +134,7 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-  }, [dispatch, id, treeLessons, treeChapters, treeSteps]);
+  }, [dispatch, state, id]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
@@ -291,7 +300,10 @@ function TreeItem(props: TreeItemProps) {
   const itemData: Item | null = treeItems[id] || null;
 
   useEffect(() => {
-    if (treeItems[id] == undefined) {
+    if (state !== STATE_IDLE) return;
+    const slice = store.getState().createLessonV2;
+    if (slice.treeItems[id] == undefined) {
+      console.log("item", id, !!slice.treeItems[id], state);
       setState(STATE_LOADING);
       getItem(id)
         .then((data) => {
@@ -303,7 +315,7 @@ function TreeItem(props: TreeItemProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-  }, [dispatch, id, treeItems]);
+  }, [dispatch, id, state]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
