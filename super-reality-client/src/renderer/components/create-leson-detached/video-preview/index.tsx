@@ -86,7 +86,13 @@ export default function VideoPreview(): JSX.Element {
       setVideoScale(scale);
       setVideoPos({ x: xPos, y: yPos });
     }
-  }, [currentRecording, setVideoScale, setVideoPos]);
+  }, [
+    currentRecording,
+    containerOutRef,
+    videoCanvasRef,
+    setVideoScale,
+    setVideoPos,
+  ]);
 
   const cvEditor: any = useMemo(
     () => new CVEditor(videoHiddenRef.current, videoCanvasRef.current),
@@ -184,11 +190,20 @@ export default function VideoPreview(): JSX.Element {
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
       const newScale = videoScale + e.deltaY / -1000;
+
       if (videoScale > 0.1 && newScale < 4) {
         setVideoScale(newScale);
+        /*
+        if (containerOutRef.current) {
+          const containerWidth = videoCanvasRef.current?.width ?? 1920;
+          const containerHeight = videoCanvasRef.current?.height ?? 1080;
+          const innherWidth = containerOutRef.current.offsetWidth;
+          const innherHeight = containerOutRef.current.offsetHeight;
+        }
+        */
       }
     },
-    [videoScale]
+    [setVideoScale, videoScale]
   );
 
   return (
