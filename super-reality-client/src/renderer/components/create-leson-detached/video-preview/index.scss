@@ -2,12 +2,19 @@
 @import "../../lesson-player/index.scss";
 @import "../../lesson-player/find-box/index.scss";
 
-.video-preview-container {
+.video-preview-container-out {
   width: 100%;
   height: 100%;
   display: flex;
   position: relative;
   overflow: auto;
+  @include disable-select;
+}
+
+.video-preview-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
   @include disable-select;
 
   .horizontal-pos {

@@ -126,24 +126,16 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("dragstart", (event) => {
           if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+            startPos.x = dragContainer.current.offsetLeft || 0;
+            startPos.y = dragContainer.current.offsetTop || 0;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
         })
         .on("resizestart", (event) => {
           if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+            startPos.x = dragContainer.current.offsetLeft || 0;
+            startPos.y = dragContainer.current.offsetTop || 0;
             const edge = item.type == "focus_highlight" ? 6 : 0;
             startPos.width += edge;
             startPos.height += edge;
@@ -167,14 +159,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
             dragContainer.current &&
             dragContainer.current.parentElement
           ) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0) +
-              3;
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0) +
-              3;
+            startPos.x = (dragContainer.current.offsetLeft || 0) + 3;
+            startPos.y = (dragContainer.current.offsetTop || 0) + 3;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
             startPos.horizontal =
