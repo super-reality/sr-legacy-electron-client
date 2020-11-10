@@ -43,6 +43,8 @@ const initialState = {
   stepPreview: false,
   itemPreview: false,
   previewOne: false,
+  videoScale: 1,
+  videoPos: { x: 0, y: 0 },
   recordingData: {
     step_data: [],
   } as RecordingJson,

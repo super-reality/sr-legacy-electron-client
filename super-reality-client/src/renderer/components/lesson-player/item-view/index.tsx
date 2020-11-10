@@ -10,6 +10,7 @@ import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
+import { IAnchor } from "../../../api/types/anchor/anchor";
 
 interface ItemViewProps {
   item: Item;
@@ -28,7 +29,10 @@ export default function ItemView(props: ItemViewProps) {
   const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
-  const anchor = useMemo(() => treeAnchors[anchorId] || undefined, [anchorId]);
+  const anchor: IAnchor | undefined = useMemo(
+    () => treeAnchors[anchorId] || undefined,
+    [anchorId]
+  );
 
   const updatePos = useCallback(() => {
     const newPos = {
@@ -54,6 +58,7 @@ export default function ItemView(props: ItemViewProps) {
     if (
       cvResult.dist > 0 &&
       item &&
+      anchor &&
       item.type == "focus_highlight" &&
       cvResult.dist < anchor.cvMatchValue / 100
     ) {
@@ -69,7 +74,7 @@ export default function ItemView(props: ItemViewProps) {
     <>
       {item && item.type == "focus_highlight" && (
         <FindBox
-          clicktThrough
+          clickThrough
           pos={pos}
           style={style}
           type={item.focus}

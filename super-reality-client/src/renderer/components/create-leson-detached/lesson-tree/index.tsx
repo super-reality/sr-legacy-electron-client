@@ -84,7 +84,7 @@ function TreeFolder(props: TreeFolderProps) {
     if (state !== STATE_IDLE) return;
     const slice = store.getState().createLessonV2;
     if (type == "lesson" && slice.treeLessons[id] == undefined) {
-      console.log(type, id, !!slice.treeLessons[id], state);
+      // console.log(type, id, !!slice.treeLessons[id], state);
       setState(STATE_LOADING);
       getLesson(id)
         .then((data) => {
@@ -97,7 +97,7 @@ function TreeFolder(props: TreeFolderProps) {
         .catch((e) => setState(STATE_ERR));
     }
     if (type == "chapter" && slice.treeChapters[id] == undefined) {
-      console.log(type, id, !!slice.treeChapters[id], state);
+      // console.log(type, id, !!slice.treeChapters[id], state);
       setState(STATE_OK);
       getChapter(id)
         .then((data) => {
@@ -110,7 +110,7 @@ function TreeFolder(props: TreeFolderProps) {
         .catch((e) => setState(STATE_ERR));
     }
     if (type == "step" && slice.treeSteps[id] == undefined) {
-      console.log(type, id, !!slice.treeSteps[id], state);
+      // console.log(type, id, !!slice.treeSteps[id], state);
       setState(STATE_OK);
       getStep(id)
         .then((data) => {
@@ -303,7 +303,7 @@ function TreeItem(props: TreeItemProps) {
     if (state !== STATE_IDLE) return;
     const slice = store.getState().createLessonV2;
     if (slice.treeItems[id] == undefined) {
-      console.log("item", id, !!slice.treeItems[id], state);
+      // console.log("item", id, !!slice.treeItems[id], state);
       setState(STATE_LOADING);
       getItem(id)
         .then((data) => {

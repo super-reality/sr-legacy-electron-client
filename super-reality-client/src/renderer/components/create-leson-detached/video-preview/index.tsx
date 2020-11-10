@@ -32,6 +32,8 @@ export default function VideoPreview(): JSX.Element {
     treeItems,
     treeSteps,
     cropRecording,
+    videoScale,
+    videoPos,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const horPor = useRef<HTMLDivElement>(null);
@@ -40,8 +42,29 @@ export default function VideoPreview(): JSX.Element {
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
 
-  const [videoPos, setVideoPos] = useState({ x: 0, y: 0 });
-  const [videoScale, setVideoScale] = useState(1);
+  const setVideoPos = useCallback(
+    (arg: { x: number; y: number }) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          videoPos: arg,
+        },
+      });
+    },
+    [dispatch]
+  );
+
+  const setVideoScale = useCallback(
+    (arg: number) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          videoScale: arg,
+        },
+      });
+    },
+    [dispatch]
+  );
 
   const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
   const containerReactRef = useRef<HTMLDivElement | null>();
@@ -196,10 +219,10 @@ export default function VideoPreview(): JSX.Element {
         />
         <img ref={anchorImageRef} style={{ display: "none" }} />
         {item && !cropRecording && <ItemPreview />}
-        {!cropRecording && (currentRecording || currentAnchor) && (
-          <FindBox clicktThrough type="anchor" pos={cvResult} />
-        )}
         {cropRecording && <AnchorCrop />}
+        {!item && !cropRecording && (currentRecording || currentAnchor) && (
+          <FindBox type="anchor" pos={cvResult} />
+        )}
       </div>
     </div>
   );

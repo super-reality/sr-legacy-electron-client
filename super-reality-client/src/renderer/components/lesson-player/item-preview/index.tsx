@@ -34,6 +34,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     treeItems,
     treeSteps,
     treeAnchors,
+    videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
@@ -115,6 +116,11 @@ export default function ItemPreview(props: ItemPreviewProps) {
           target.style.height = `${event.rect.height - edge}px`;
           target.style.left = `${x}px`;
           target.style.top = `${y}px`;
+
+          if (!onSucess) {
+            target.style.width = `${event.rect.width / videoScale - edge}px`;
+            target.style.height = `${event.rect.height / videoScale - edge}px`;
+          }
         })
         .draggable({
           cursorChecker,
@@ -145,8 +151,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("dragmove", (event) => {
           if (dragContainer.current) {
-            startPos.x += event.dx;
-            startPos.y += event.dy;
+            startPos.x += event.dx / (!onSucess ? videoScale : 1);
+            startPos.y += event.dy / (!onSucess ? videoScale : 1);
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
@@ -173,6 +179,10 @@ export default function ItemPreview(props: ItemPreviewProps) {
                 (dragContainer.current.parentElement.offsetHeight -
                   startPos.height)) *
               startPos.y;
+          }
+          if (!onSucess) {
+            startPos.width /= videoScale;
+            startPos.height /= videoScale;
           }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
@@ -221,7 +231,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, pos, step, item]);
+  }, [dispatch, cvResult, pos, step, item, videoScale]);
 
   const onSucessCallback = useCallback(
     (trigger: number | null) => {
@@ -235,7 +245,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox clicktThrough type="anchor" pos={cvResult} />
+        <FindBox clickThrough={!!onSucess} type="anchor" pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (
         <FindBox

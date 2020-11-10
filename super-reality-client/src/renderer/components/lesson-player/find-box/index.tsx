@@ -18,13 +18,13 @@ interface FindBoxProps {
   style?: CSSProperties;
   type: ItemFocus["focus"] | "anchor";
   ref?: React.RefObject<HTMLDivElement>;
-  clicktThrough?: boolean;
+  clickThrough?: boolean;
   callback?: (trigger: number) => void;
 }
 
 const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
   (props, forwardedRef) => {
-    const { type, pos, style, clicktThrough, callback } = props;
+    const { type, pos, style, clickThrough, callback } = props;
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     let computedType = "type";
@@ -53,7 +53,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       const mouseEvents = __non_webpack_require__("global-mouse-events");
       const { remote } = require("electron");
 
-      if (clicktThrough && callback) {
+      if (clickThrough && callback) {
         const interval = setInterval(() => {
           const mouse = remote.screen.getCursorScreenPoint();
           if (
@@ -80,7 +80,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       <div
         ref={forwardedRef}
         className={`find-box ${
-          clicktThrough ? "click-through" : ""
+          clickThrough ? "click-through" : ""
         } ${computedType}`}
         style={{
           left: `${pos.x - 3}px`,
