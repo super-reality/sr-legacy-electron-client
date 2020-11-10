@@ -86,7 +86,7 @@ export default function VideoPreview(): JSX.Element {
       setVideoScale(scale);
       setVideoPos({ x: xPos, y: yPos });
     }
-  }, [setVideoScale, setVideoPos]);
+  }, [currentRecording, setVideoScale, setVideoPos]);
 
   const cvEditor: any = useMemo(
     () => new CVEditor(videoHiddenRef.current, videoCanvasRef.current),
