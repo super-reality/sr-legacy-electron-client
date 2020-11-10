@@ -10,7 +10,7 @@ import newStep from "../lesson-utils/newStep";
 
 import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
 import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
-import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
+import { ReactComponent as IconAddFX } from "../../../../assets/svg/fx-icon.svg";
 import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
 import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
@@ -48,6 +48,7 @@ export default function LessonTreeControls() {
     (type: BaseItemType) => {
       if (treeCurrentType == "step") {
         newItem(type, treeCurrentId);
+        console.log("type created", type);
       }
     },
     [treeCurrentType, treeCurrentId]
@@ -99,8 +100,8 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddTeach}
+            onClick={() => doAddItem("effect")}
+            svg={IconAddFX}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}

@@ -1,0 +1,65 @@
+@import "../../../misc.scss";
+
+ul[class^="settings-list"] {
+    list-style: none;
+}
+li[class$="item"] {
+    margin: 5px 0;
+}
+.settings-list-item-header,
+.subitem-container {
+    display: flex;
+    flex-direction: row;
+
+    margin: 5px 0;
+}
+.settings-list-item-list-subitem {
+    padding-left: 35px;
+    width: -webkit-fill-available;
+    color: var(--color-text);
+}
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    width: -webkit-fill-available;
+
+    .settings-list-item {
+        font-size: 13px;
+        cursor: pointer;
+
+        .title {
+            margin: 5px;
+        }
+
+        .subitem-container-selected,
+        .subitem-container:hover {
+            background-color: var(--color-text-active);
+            display: flex;
+            flex-direction: row;
+        }
+
+        .settings-subitem-icon {
+            height: 30px;
+            width: 30px;
+        }
+        .settings-list-item-header {
+            margin: 10px 10px 0 15px;
+            .title {
+                margin-left: 5px;
+            }
+
+            .folder-drop {
+                width: 16px;
+
+                transform: rotate(-90deg);
+                display: flex;
+                @include animated;
+                @include disable-select;
+
+                &.open {
+                    transform: rotate(0deg);
+                }
+            }
+        }
+    }
+}

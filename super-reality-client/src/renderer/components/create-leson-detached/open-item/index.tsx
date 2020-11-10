@@ -7,6 +7,7 @@ import {
   ItemImageTriggers,
   ItemVideoTriggers,
   ItemDialogTriggers,
+  ItemFXTriggers,
   Item,
 } from "../../../api/types/item/item";
 import constantFormat from "../../../../utils/constantFormat";
@@ -19,6 +20,7 @@ import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
 import BaseToggle from "../../base-toggle";
+import FXSettings from "./settings-fx/settings-fx";
 
 interface OpenItemProps {
   id: string;
@@ -43,6 +45,9 @@ export default function OpenItem(props: OpenItemProps) {
     switch (item.type) {
       case "focus_highlight":
         triggers = ItemFocusTriggers;
+        break;
+      case "effect":
+        triggers = ItemFXTriggers;
         break;
       case "audio":
         triggers = ItemAudioTriggers;
@@ -69,12 +74,14 @@ export default function OpenItem(props: OpenItemProps) {
         arg: { item: updatedItem },
       });
       updateItem(updatedItem, id);
+      console.log("treeItems", treeItems[id]);
+      console.log(updateItem(updatedItem, id));
     },
     [id, treeItems]
   );
-
+  console.log(treeItems);
   if (!item) return <></>;
-
+  console.log(item);
   return (
     <>
       <Tabs
@@ -91,8 +98,8 @@ export default function OpenItem(props: OpenItemProps) {
             doUpdate({ anchor: val });
           }}
         />
-        {view === "Settings" && item.type == "focus_highlight" && (
-          <SettingsFocusHighlight item={item} update={doUpdate} />
+        {view === "Settings" && item.type == "effect" && (
+          <FXSettings item={item} update={doUpdate} />
         )}
         {view === "Settings" && item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
@@ -112,3 +119,7 @@ export default function OpenItem(props: OpenItemProps) {
     </>
   );
 }
+
+/*
+<SettingsFocusHighlight item={item} update={doUpdate} />
+*/

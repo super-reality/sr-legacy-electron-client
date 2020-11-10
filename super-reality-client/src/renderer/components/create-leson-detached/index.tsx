@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import React, {
   useCallback,
   useEffect,
@@ -10,6 +9,7 @@ import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
+import { Item } from "../../api/types/item/item";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
@@ -90,6 +90,8 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
   const [fxTest, setFxTest] = useState(false);
+  const [fxFrame, setFxFrame] = useState("../fx-orb/");
+
   const {
     currentAnchor,
     currentRecording,
@@ -98,10 +100,17 @@ export default function CreateLessonDetached(): JSX.Element {
     itemPreview,
     videoNavigation,
     videoDuration,
+    treeItems,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  console.log("treeItems:", treeItems, "itemPreview", itemPreview);
+  const itemTest: Item | null = useMemo(
+    () => treeItems["5fa59476e5674429bcfde682"] || null,
+    ["5fa59476e5674429bcfde682", treeItems]
+  );
 
   const setVideoNavPos = useCallback(
     (n: readonly number[]) => {
@@ -222,7 +231,14 @@ export default function CreateLessonDetached(): JSX.Element {
       )}
       {fxTest && (
         <>
-          <iframe src="../fx-test/" />
+          <iframe
+            style={{
+              width: "600px",
+              height: "600px",
+            }}
+            className="fx-iframe click-through"
+            src={fxFrame}
+          />
           <ButtonSimple
             onClick={() => {
               setSolid();
@@ -232,6 +248,33 @@ export default function CreateLessonDetached(): JSX.Element {
             height="16px"
           >
             OK
+          </ButtonSimple>
+          <ButtonSimple
+            onClick={() => {
+              setFxFrame("../fx-wavy/");
+            }}
+            width="200px"
+            height="16px"
+          >
+            Wave
+          </ButtonSimple>
+          <ButtonSimple
+            onClick={() => {
+              setFxFrame("../fx-confetti/");
+            }}
+            width="200px"
+            height="16px"
+          >
+            Confetti
+          </ButtonSimple>
+          <ButtonSimple
+            onClick={() => {
+              setFxFrame("../fx-orb/");
+            }}
+            width="200px"
+            height="16px"
+          >
+            Cool Effect
           </ButtonSimple>
         </>
       )}
@@ -292,3 +335,4 @@ export default function CreateLessonDetached(): JSX.Element {
     </div>
   );
 }
+/* eslint-disable dot-notation */

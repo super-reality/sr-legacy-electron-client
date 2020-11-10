@@ -7,6 +7,11 @@ export const ItemFocusTriggers = {
   None: null,
 };
 
+export const ItemFXTriggers = {
+  "On fx end": 1,
+  None: null,
+};
+
 export const ItemAudioTriggers = {
   "Audio finish": 1,
   "Click Next button": 2,
@@ -47,7 +52,8 @@ export type BaseItemType =
   | "audio"
   | "video"
   | "image"
-  | "dialog";
+  | "dialog"
+  | "effect";
 
 export interface BaseItem {
   _id: string;
@@ -66,6 +72,11 @@ export interface ItemFocus extends BaseItem {
   trigger: ValueOf<typeof ItemFocusTriggers>;
 }
 
+export type FX = "id_1" | "id_2" | "id_3";
+export interface ItemFX extends BaseItem {
+  type: "effect";
+  effect: FX;
+}
 export interface ItemAudio extends BaseItem {
   type: "audio";
   showPopup: boolean;
@@ -93,4 +104,10 @@ export interface ItemDialog extends BaseItem {
   trigger: ValueOf<typeof ItemDialogTriggers>;
 }
 
-export type Item = ItemFocus | ItemAudio | ItemImage | ItemVideo | ItemDialog;
+export type Item =
+  | ItemFocus
+  | ItemAudio
+  | ItemImage
+  | ItemVideo
+  | ItemDialog
+  | ItemFX;
