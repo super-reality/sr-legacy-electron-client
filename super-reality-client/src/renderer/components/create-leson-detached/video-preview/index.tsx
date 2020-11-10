@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useMeasure } from "react-use";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,7 +61,6 @@ export default function VideoPreview(): JSX.Element {
     [currentStep, treeSteps]
   );
 
-  /*
   useEffect(() => {
     if (step?.anchor && anchorImageRef.current && !recordingData.anchor) {
       const anchor = treeAnchors[step?.anchor];
@@ -77,7 +82,6 @@ export default function VideoPreview(): JSX.Element {
       }
     }
   }, [dispatch, treeAnchors, width, height, step, recordingData]);
-  */
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
@@ -118,10 +122,13 @@ export default function VideoPreview(): JSX.Element {
         })
         .on("dragmove", (event) => {
           if (containerReactRef.current) {
-            videoPos.x += event.dx;
-            videoPos.y += event.dy;
-            containerReactRef.current.style.transform = `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`;
+            newPos.x += event.dx;
+            newPos.y += event.dy;
+            containerReactRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
           }
+        })
+        .on("dragend", (event) => {
+          setVideoPos(newPos);
         });
 
       return (): void => {
@@ -132,6 +139,16 @@ export default function VideoPreview(): JSX.Element {
     return voidFunction;
   }, [containerReactRef, videoScale, videoPos]);
 
+  const doScale = useCallback(
+    (e: React.WheelEvent<HTMLDivElement>) => {
+      const newScale = videoScale + e.deltaY / -1000;
+      if (videoScale > 0.1 && newScale < 4) {
+        setVideoScale(newScale);
+      }
+    },
+    [videoScale]
+  );
+
   return (
     <div className="video-preview-container-out">
       <div
@@ -140,6 +157,7 @@ export default function VideoPreview(): JSX.Element {
           containerReactRef.current = ref;
         }}
         className="video-preview-container"
+        onWheel={doScale}
         style={{
           transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
         }}
