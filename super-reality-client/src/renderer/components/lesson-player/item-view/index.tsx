@@ -36,14 +36,14 @@ export default function ItemView(props: ItemViewProps) {
 
   const updatePos = useCallback(() => {
     const newPos = {
-      x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
-      y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
+      x: anchor && item.anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
+      y: anchor && item.anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
       width: item?.relativePos.width || 400,
       height: item?.relativePos.height || 300,
     };
     setPos(newPos);
 
-    const newStyle = !anchor
+    const newStyle = !item.anchor
       ? {
           left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
             item?.relativePos.horizontal || 0
