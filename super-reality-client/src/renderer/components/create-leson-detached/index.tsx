@@ -33,10 +33,10 @@ import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
+import { stepSnapshotPath } from "../../electron-constants";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -176,16 +176,13 @@ export default function CreateLessonDetached(): JSX.Element {
   ]);
 
   useEffect(() => {
-    const userData = userDataPath();
     let json: RecordingJson = {
       step_data: [],
     };
     if (currentRecording) {
       try {
         const file = fs
-          .readFileSync(
-            `${userData}/step/snapshots/${currentRecording}.webm.json`
-          )
+          .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {

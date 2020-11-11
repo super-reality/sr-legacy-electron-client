@@ -14,10 +14,10 @@ import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
-import userDataPath from "../../../../utils/userDataPath";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import FindBox from "../../lesson-player/find-box";
 import { cursorChecker, voidFunction } from "../../../constants";
+import { recordingPath } from "../../../electron-constants";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -135,7 +135,7 @@ export default function VideoPreview(): JSX.Element {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
       cvEditor.canvasElement = videoCanvasRef.current;
       cvEditor.videoElement = videoHiddenRef.current;
-      videoHiddenRef.current.src = `${userDataPath()}/step/media/vid-${currentRecording}.webm`;
+      videoHiddenRef.current.src = `${recordingPath}/vid-${currentRecording}.webm`;
       videoHiddenRef.current.addEventListener("loadeddata", () => {
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
