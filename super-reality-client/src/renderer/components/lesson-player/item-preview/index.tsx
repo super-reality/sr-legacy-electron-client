@@ -21,7 +21,12 @@ import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
 import ButtonSimple from "../../button-simple";
 
-export default function ItemPreview() {
+interface ItemPreviewProps {
+  onSucess?: () => void;
+}
+
+export default function ItemPreview(props: ItemPreviewProps) {
+  const { onSucess } = props;
   const dispatch = useDispatch();
   const {
     currentAnchor,
@@ -30,6 +35,7 @@ export default function ItemPreview() {
     treeItems,
     treeSteps,
     treeAnchors,
+    videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
   // test FX
@@ -113,6 +119,11 @@ export default function ItemPreview() {
           target.style.height = `${event.rect.height - edge}px`;
           target.style.left = `${x}px`;
           target.style.top = `${y}px`;
+
+          if (!onSucess) {
+            target.style.width = `${event.rect.width / videoScale - edge}px`;
+            target.style.height = `${event.rect.height / videoScale - edge}px`;
+          }
         })
         .draggable({
           cursorChecker,
@@ -124,24 +135,16 @@ export default function ItemPreview() {
         })
         .on("dragstart", (event) => {
           if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+            startPos.x = dragContainer.current.offsetLeft || 0;
+            startPos.y = dragContainer.current.offsetTop || 0;
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
         })
         .on("resizestart", (event) => {
           if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
+            startPos.x = dragContainer.current.offsetLeft || 0;
+            startPos.y = dragContainer.current.offsetTop || 0;
             const edge = item.type == "focus_highlight" ? 6 : 0;
             startPos.width += edge;
             startPos.height += edge;
@@ -151,8 +154,8 @@ export default function ItemPreview() {
         })
         .on("dragmove", (event) => {
           if (dragContainer.current) {
-            startPos.x += event.dx;
-            startPos.y += event.dy;
+            startPos.x += event.dx / (!onSucess ? videoScale : 1);
+            startPos.y += event.dy / (!onSucess ? videoScale : 1);
             dragContainer.current.style.left = `${startPos.x}px`;
             dragContainer.current.style.top = `${startPos.y}px`;
           }
@@ -165,16 +168,10 @@ export default function ItemPreview() {
             dragContainer.current &&
             dragContainer.current.parentElement
           ) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0) +
-              3;
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0) +
-              3;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+            if (!onSucess) {
+              startPos.width /= videoScale;
+              startPos.height /= videoScale;
+            }
             startPos.horizontal =
               (100 /
                 (dragContainer.current.parentElement.offsetWidth -
@@ -233,12 +230,21 @@ export default function ItemPreview() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, pos, step, item]);
+  }, [dispatch, cvResult, pos, step, item, videoScale]);
+
+  const onSucessCallback = useCallback(
+    (trigger: number | null) => {
+      if (item && onSucess && trigger == item.trigger) {
+        onSucess();
+      }
+    },
+    [item]
+  );
 
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox clicktThrough type="anchor" pos={cvResult} />
+        <FindBox clickThrough={!!onSucess} type="anchor" pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (
         <FindBox
@@ -246,6 +252,7 @@ export default function ItemPreview() {
           pos={pos}
           style={style}
           type={item.focus}
+          callback={onSucessCallback}
         />
       )}
       {item && item.type == "image" && (
@@ -254,6 +261,7 @@ export default function ItemPreview() {
           pos={pos}
           style={style}
           image={item.url}
+          callback={onSucessCallback}
         />
       )}
       {testFX.type == "effect" && (

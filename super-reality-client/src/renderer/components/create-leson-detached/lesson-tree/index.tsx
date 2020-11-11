@@ -81,7 +81,10 @@ function TreeFolder(props: TreeFolderProps) {
   }
 
   useEffect(() => {
-    if (type == "lesson") {
+    if (state !== STATE_IDLE) return;
+    const slice = store.getState().createLessonV2;
+    if (type == "lesson" && slice.treeLessons[id] == undefined) {
+      // console.log(type, id, !!slice.treeLessons[id], state);
       setState(STATE_LOADING);
       getLesson(id)
         .then((data) => {
@@ -93,7 +96,8 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-    if (type == "chapter" && treeChapters[id] == undefined) {
+    if (type == "chapter" && slice.treeChapters[id] == undefined) {
+      // console.log(type, id, !!slice.treeChapters[id], state);
       setState(STATE_OK);
       getChapter(id)
         .then((data) => {
@@ -105,7 +109,8 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-    if (type == "step" && treeSteps[id] == undefined) {
+    if (type == "step" && slice.treeSteps[id] == undefined) {
+      // console.log(type, id, !!slice.treeSteps[id], state);
       setState(STATE_OK);
       getStep(id)
         .then((data) => {
@@ -114,7 +119,11 @@ function TreeFolder(props: TreeFolderProps) {
             arg: { step: data },
           });
           setState(STATE_OK);
-          if (data.anchor) {
+          if (
+            data.anchor &&
+            store.getState().createLessonV2.treeAnchors[data.anchor] ==
+              undefined
+          ) {
             getAnchor(data.anchor).then((anchor) => {
               reduxAction(store.dispatch, {
                 type: "CREATE_LESSON_V2_SETANCHOR",
@@ -125,7 +134,7 @@ function TreeFolder(props: TreeFolderProps) {
         })
         .catch((e) => setState(STATE_ERR));
     }
-  }, [dispatch, id]);
+  }, [dispatch, state, id]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
@@ -162,13 +171,32 @@ function TreeFolder(props: TreeFolderProps) {
         if (id && type == "step") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
-            arg: { currentStep: id, currentItem: undefined },
+            arg: {
+              currentLesson: uniqueId.split(".")[0],
+              currentChapter: parentId,
+              currentStep: id,
+              currentItem: undefined,
+            },
           });
         }
         if (id && type == "chapter") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
-            arg: { currentChapter: id, currentItem: undefined },
+            arg: {
+              currentLesson: parentId,
+              currentChapter: id,
+              currentItem: undefined,
+            },
+          });
+        }
+        if (id && type == "lesson") {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              currentLesson: id,
+              currentChapter: undefined,
+              currentItem: undefined,
+            },
           });
         }
         setOpen(!open);
@@ -234,7 +262,7 @@ function TreeFolder(props: TreeFolderProps) {
           ) : (
             <TreeItem
               parentId={id}
-              uniqueId={`${parentId}.${ch._id}`}
+              uniqueId={`${uniqueId}.${ch._id}`}
               key={ch._id}
               id={ch._id}
               name={ch.name}
@@ -272,17 +300,22 @@ function TreeItem(props: TreeItemProps) {
   const itemData: Item | null = treeItems[id] || null;
 
   useEffect(() => {
-    setState(STATE_LOADING);
-    getItem(id)
-      .then((data) => {
-        reduxAction(store.dispatch, {
-          type: "CREATE_LESSON_V2_SETITEM",
-          arg: { item: data },
-        });
-        setState(STATE_OK);
-      })
-      .catch((e) => setState(STATE_ERR));
-  }, [dispatch, id]);
+    if (state !== STATE_IDLE) return;
+    const slice = store.getState().createLessonV2;
+    if (slice.treeItems[id] == undefined) {
+      // console.log("item", id, !!slice.treeItems[id], state);
+      setState(STATE_LOADING);
+      getItem(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETITEM",
+            arg: { item: data },
+          });
+          setState(STATE_OK);
+        })
+        .catch((e) => setState(STATE_ERR));
+    }
+  }, [dispatch, id, state]);
 
   const keyListeners = useCallback((e: KeyboardEvent) => {
     if (e.key === "Delete") {
@@ -309,6 +342,8 @@ function TreeItem(props: TreeItemProps) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
+          currentLesson: uniqueId.split(".")[0],
+          currentChapter: uniqueId.split(".")[1],
           currentStep: parentId,
           currentAnchor: parentAnchor,
           currentItem: id,
@@ -361,8 +396,8 @@ function TreeItem(props: TreeItemProps) {
       className={`tree-item-container ${selected ? "selected" : ""} ${
         isOpen ? "open" : ""
       } ${dragOver == uniqueId ? "drag-target" : ""}`}
-      onClick={state == STATE_OK ? doOpen : undefined}
-      style={{ paddingLeft: "36px" }}
+      onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
+      style={{ paddingLeft: "56px" }}
     >
       <div className="item-icon-tree">
         <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />

@@ -1,25 +1,22 @@
 import fs from "fs";
-import userDataPath from "./userDataPath";
+import {
+  itemsPath,
+  recordingPath,
+  stepPath,
+  stepSnapshotPath,
+} from "../renderer/electron-constants";
+
+function makeDataDir(dir: string) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdir(dir, (err) => {
+      if (err) console.log("error", err);
+    });
+  }
+}
 
 export default function createDataDirs() {
-  const userData = userDataPath();
-  const stepPath = `${userData}/step/`;
-  const recordingPath = `${userData}/step/media/`;
-
-  const stepSnapshotPath = `${userData}/step/snapshots/`;
-  if (!fs.existsSync(stepPath)) {
-    fs.mkdir(stepPath, (err) => {
-      if (err) console.log("error", err);
-    });
-  }
-  if (!fs.existsSync(recordingPath)) {
-    fs.mkdir(recordingPath, (err) => {
-      if (err) console.log("error", err);
-    });
-  }
-  if (!fs.existsSync(stepSnapshotPath)) {
-    fs.mkdir(stepSnapshotPath, (err) => {
-      if (err) console.log("error", err);
-    });
-  }
+  makeDataDir(stepPath);
+  makeDataDir(recordingPath);
+  makeDataDir(stepSnapshotPath);
+  makeDataDir(itemsPath);
 }

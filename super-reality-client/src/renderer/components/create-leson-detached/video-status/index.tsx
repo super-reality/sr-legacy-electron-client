@@ -236,20 +236,24 @@ export default function VideoStatus() {
       // remove Base64 stuff from the Image
       const base64Data = url.replace(/^data:image\/png;base64,/, "");
       fs.writeFile(fileName, base64Data, "base64", (err) => {
-        const image = nativeImage.createFromPath(fileName).crop({
-          x: cropRecordingPos.x,
-          y: cropRecordingPos.y,
-          width: cropRecordingPos.width,
-          height: cropRecordingPos.height,
-        });
-        // console.log(image);
-        fs.writeFile(output, image.toPNG(), {}, () => {
-          const timestamped = path.join(
-            userData,
-            `${new Date().getTime()}.png`
-          );
-          fs.copyFile(output, timestamped, () => callback(timestamped));
-        });
+        if (err) console.error(err);
+        else {
+          console.log(cropRecordingPos);
+          const image = nativeImage.createFromPath(fileName).crop({
+            x: Math.round(cropRecordingPos.x),
+            y: Math.round(cropRecordingPos.y),
+            width: Math.round(cropRecordingPos.width),
+            height: Math.round(cropRecordingPos.height),
+          });
+          // console.log(image);
+          fs.writeFile(output, image.toPNG(), {}, () => {
+            const timestamped = path.join(
+              userData,
+              `${new Date().getTime()}.png`
+            );
+            fs.copyFile(output, timestamped, () => callback(timestamped));
+          });
+        }
       });
     }
   }, [callback, cropRecordingPos]);

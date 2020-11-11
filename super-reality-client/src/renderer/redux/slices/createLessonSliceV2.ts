@@ -7,6 +7,8 @@ import { Item } from "../../api/types/item/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
 import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
+import idNamePos from "../../../utils/idNamePos";
+import idInIdName from "../../../utils/idInIdName";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
@@ -33,6 +35,7 @@ const initialState = {
   currentItem: undefined as undefined | string,
   currentStep: undefined as undefined | string,
   currentChapter: undefined as undefined | string,
+  currentLesson: undefined as undefined | string,
   currentSubView: "none" as TreeTypes,
   anchorTestView: false,
   lessonPreview: false,
@@ -45,6 +48,8 @@ const initialState = {
     effect: "" as string,
     type: "" as string,
   },
+  videoScale: 1,
+  videoPos: { x: 0, y: 0 },
   recordingData: {
     step_data: [],
   } as RecordingJson,
@@ -64,18 +69,6 @@ const initialState = {
 };
 
 type InitialState = typeof initialState;
-
-function idInIdName(arr: IDName[], id: string): boolean {
-  return arr.filter((d) => d._id == id).length > 0;
-}
-
-function idNamePos(arr: IDName[], id: string): number {
-  let ret = -1;
-  arr.forEach((d, i) => {
-    if (d._id == id) ret = i;
-  });
-  return ret;
-}
 
 const createLessonSlice = createSlice({
   name: "createLessonV2",

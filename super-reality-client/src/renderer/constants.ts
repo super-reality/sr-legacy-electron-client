@@ -26,4 +26,10 @@ export const restrictMinSize =
     min: { width: 10, height: 10 },
   });
 
+export const restrictSnapRound = interact.modifiers.snap({
+  targets: [interact.createSnapGrid({ x: 1, y: 1 })],
+  range: Infinity,
+  relativePoints: [{ x: 0, y: 0 }],
+});
+
 export const voidFunction = () => {};

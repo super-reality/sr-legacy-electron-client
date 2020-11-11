@@ -19,27 +19,27 @@ import StepView from "./step-view";
 import { ReactComponent as ButtonPrev } from "../../../assets/svg/prev-step.svg";
 import { ReactComponent as ButtonNext } from "../../../assets/svg/next-step.svg";
 import { ReactComponent as ButtonPlay } from "../../../assets/svg/play.svg";
-import { ReactComponent as ButtonStop } from "../../../assets/svg/prev.svg";
+import { ReactComponent as ButtonStop } from "../../../assets/svg/stop.svg";
 
 interface LessonPlayerProps {
+  lessonId: string;
   onFinish: () => void;
 }
 
 export default function LessonPlayer(props: LessonPlayerProps) {
-  const { onFinish } = props;
+  const { lessonId, onFinish } = props;
   const dispatch = useDispatch();
   const {
-    currentAnchor,
     treeAnchors,
-    treeChapters,
-    currentChapter,
-    currentStep,
     treeSteps,
+    treeChapters,
+    treeLessons,
+    previewOne,
     itemPreview,
     stepPreview,
     chapterPreview,
-    previewOne,
   } = useSelector((state: AppState) => state.createLessonV2);
+
   const { playingStepNumber, playingChapterNumber, playing } = useSelector(
     (state: AppState) => state.lessonPlayer
   );
@@ -47,21 +47,26 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [timeTick, setTimeTick] = useState(0);
 
-  const step = useMemo(
-    () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, treeSteps]
-  );
+  const lesson = useMemo(() => (lessonId ? treeLessons[lessonId] : undefined), [
+    lessonId,
+    treeLessons,
+  ]);
 
-  const chapter = useMemo(
-    () => (currentChapter ? treeChapters[currentChapter] : undefined),
-    [currentChapter, treeChapters]
-  );
+  const chapter = useMemo(() => {
+    const chapterIdName = lesson?.chapters[playingChapterNumber];
+    return chapterIdName ? treeChapters[chapterIdName._id] : undefined;
+  }, [playingChapterNumber, treeChapters]);
 
-  // Get item's anchor or just the one in use
+  const step = useMemo(() => {
+    const stepIdName = chapter?.steps[playingStepNumber];
+    return stepIdName ? treeSteps[stepIdName._id] : undefined;
+  }, [playingStepNumber, treeSteps]);
+
+  // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor || currentAnchor;
+    const anchorId = step?.anchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [step, currentAnchor, treeAnchors]);
+  }, [step, treeAnchors]);
 
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
@@ -125,16 +130,20 @@ export default function LessonPlayer(props: LessonPlayerProps) {
             playingStepNumber: playingStepNumber + 1,
           },
         });
-      } else {
+      } else if (lesson && playingChapterNumber + 1 < lesson.chapters.length) {
         reduxAction(dispatch, {
           type: "SET_LESSON_PLAYER_DATA",
           arg: {
+            playingStepNumber: 0,
             playingChapterNumber: playingChapterNumber + 1,
           },
         });
+      } else if (lesson && playingChapterNumber + 1 >= lesson.chapters.length) {
+        // we reached the end of the lesson, finish it
+        onFinish();
       }
     }
-  }, [dispatch, chapter, playingStepNumber, playingChapterNumber]);
+  }, [dispatch, onFinish, chapter, playingStepNumber, playingChapterNumber]);
 
   const doPlay = useCallback(
     (play: boolean) => {
@@ -148,17 +157,27 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   useEffect(() => {
     doPlay(true);
+    // hacky hack ahead!
+    // First CV find target against a video stream source always fails, I set some
+    // timeout to pretend we send one then stop, and set again, since we rely on
+    // the CV find result to continue with the loop.
     setTimeout(() => doPlay(false), 100);
     setTimeout(() => doPlay(true), 2000);
   }, [doPlay]);
+
   return (
     <>
-      {playing && itemPreview && previewOne && <ItemPreview />}
-      {playing && stepPreview && previewOne && currentStep && (
-        <StepView stepId={currentStep} onSucess={onFinish} />
+      {playing && itemPreview && previewOne && (
+        <ItemPreview onSucess={onFinish} />
       )}
-      {playing && chapterPreview && currentChapter && (
-        <ChapterView chapterId={currentChapter} onSucess={onFinish} />
+      {playing && stepPreview && previewOne && step && (
+        <StepView stepId={step?._id} onSucess={onFinish} />
+      )}
+      {playing && chapterPreview && previewOne && chapter && (
+        <ChapterView chapterId={chapter._id} onSucess={onFinish} />
+      )}
+      {playing && chapter && !previewOne && (
+        <ChapterView chapterId={chapter?._id} onSucess={doNext} />
       )}
       <Windowlet
         title="Super Reality"
@@ -167,10 +186,16 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onClose={clearPreviews}
       >
         <Flex column style={{ height: "100%" }}>
-          {stepPreview && currentStep && step && (
+          {!previewOne && chapter && step && (
+            <>
+              <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
+              <Flex style={{ margin: "auto" }}>step: {step.name}</Flex>
+            </>
+          )}
+          {stepPreview && previewOne && step && (
             <Flex style={{ margin: "auto" }}>{step.name}</Flex>
           )}
-          {chapterPreview && currentChapter && chapter && (
+          {chapterPreview && previewOne && chapter && (
             <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
           )}
           <Flex style={{ margin: "auto" }}>

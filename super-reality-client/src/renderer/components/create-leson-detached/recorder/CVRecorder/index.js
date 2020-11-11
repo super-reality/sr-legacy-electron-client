@@ -1,5 +1,9 @@
 /* eslint-disable lines-between-class-members */
-import userDataPath from "../../../../../utils/userDataPath";
+import {
+  recordingPath,
+  stepPath,
+  stepSnapshotPath,
+} from "../../../../electron-constants";
 
 /* eslint-disable radix */
 const { desktopCapturer } = require("electron");
@@ -16,14 +20,12 @@ const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
   constructor() {
-    const userData = userDataPath();
-
     this._clickEventDetails = [];
     this._recordedChunks = [];
     this._audioRecordedChunks = [];
-    this._stepPath = `${userData}/step/`;
-    this._recordingPath = `${userData}/step/media/`;
-    this._stepSnapshotPath = `${userData}/step/snapshots/`;
+    this._stepPath = stepPath;
+    this._recordingPath = recordingPath;
+    this._stepSnapshotPath = stepSnapshotPath;
     this._recordingStarted = false;
     this._clickEventTriggered = false;
     this._timeBegan = null;

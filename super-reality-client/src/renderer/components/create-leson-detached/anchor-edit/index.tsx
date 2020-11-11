@@ -52,7 +52,6 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const update = useCallback(
     (data: Partial<IAnchor>) => {
       // Debouce api update, 1 second (should make a debounce hook??)
-      console.log(data);
       const newData = { ...anchor, ...data };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETANCHOR",

@@ -89,7 +89,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
 
   return (
     <>
-      {previewPos && <FindBox clicktThrough type="anchor" pos={previewPos} />}
+      {previewPos && <FindBox clickThrough type="anchor" pos={previewPos} />}
       <Windowlet title="Super Reality" width={300} height={300} onClose={done}>
         <div className="anchor-tester-container">
           <Flex style={{ marginTop: "16px", justifyContent: "center" }}>

@@ -100,7 +100,16 @@ a:focus, a:hover, a:visited, a:link, a:active {
   }
 }
 
+::-webkit-resizer {
+  background: #1b1c1d;
+}
+
+::-webkit-scrollbar-corner {
+  background: #1b1c1d;
+}
+
 ::-webkit-scrollbar {
+  background: #1b1c1d;
   height: 8px;
   width: 8px;
 }

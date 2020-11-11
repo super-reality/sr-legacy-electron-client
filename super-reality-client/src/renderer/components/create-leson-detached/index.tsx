@@ -33,11 +33,11 @@ import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
 import ButtonSimple from "../button-simple";
+import { stepSnapshotPath } from "../../electron-constants";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -95,6 +95,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const {
     currentAnchor,
     currentRecording,
+    currentLesson,
     anchorTestView,
     lessonPreview,
     chapterPreview,
@@ -185,16 +186,13 @@ export default function CreateLessonDetached(): JSX.Element {
   ]);
 
   useEffect(() => {
-    const userData = userDataPath();
     let json: RecordingJson = {
       step_data: [],
     };
     if (currentRecording) {
       try {
         const file = fs
-          .readFileSync(
-            `${userData}/step/snapshots/${currentRecording}.webm.json`
-          )
+          .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
@@ -279,10 +277,10 @@ export default function CreateLessonDetached(): JSX.Element {
           </ButtonSimple>
         </>
       )}
-      {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
-      {(lessonPreview || chapterPreview || stepPreview || itemPreview) && (
-        <LessonPlayer onFinish={setSolid} />
-      )}
+      {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
+        currentLesson && (
+          <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
+        )}
     </div>
   ) : (
     <div className="solid-container">

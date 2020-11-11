@@ -3,11 +3,11 @@ import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import ModalList from "../modal-list";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
-import userDataPath from "../../../../utils/userDataPath";
 import { AppState } from "../../../redux/stores/renderer";
 import { voidFunction } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonRound from "../../button-round";
+import { stepSnapshotPath } from "../../../electron-constants";
 
 interface RecordingsViewProps {
   createRecorder: () => void;
@@ -35,9 +35,8 @@ export default function RecordingsView(props: RecordingsViewProps) {
   );
 
   useEffect(() => {
-    const userData = userDataPath();
     const newFiles: string[] = [];
-    const files = fs.readdirSync(`${userData}/step/snapshots/`);
+    const files = fs.readdirSync(stepSnapshotPath);
     files
       .filter((f) => f.indexOf(".webm.json") > -1)
       .map((f) => f.replace(".webm.json", ""))

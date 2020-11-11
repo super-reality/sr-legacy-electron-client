@@ -6,6 +6,7 @@ import { BaseItemType, Item } from "../../../api/types/item/item";
 import { API_URL } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
+import getDefaultItemProps from "./getDefaultItemProps";
 import updateStep from "./updateStep";
 
 export default function newItem(
@@ -13,23 +14,7 @@ export default function newItem(
   step?: string
 ): Promise<void> {
   const payload: Partial<Item> =
-    typeof type == "string"
-      ? {
-          type,
-        }
-      : { ...type };
-  if (payload.type == "focus_highlight" && !payload.focus) {
-    payload.focus = "Area highlight";
-  }
-  if (payload.type == "effect" && !payload.effect) {
-    payload.effect = "id_1";
-  }
-  if (payload.type == "image" && !payload.relativePos) {
-    payload.relativePos = { x: 0, y: 0, width: 400, height: 300 };
-  }
-  if (payload.type == "audio" && !payload.relativePos) {
-    payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
-  }
+    typeof type == "string" ? getDefaultItemProps(type) : { ...type };
 
   return Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
     .then(handleItemCreate)

@@ -97,16 +97,20 @@ export default function OpenItem(props: OpenItemProps) {
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        <BaseToggle
-          title="Use Anchor"
-          value={item.anchor}
-          callback={(val) => {
-            doUpdate({ anchor: val });
-          }}
-        />
-
+        {view === "Settings" && (
+          <BaseToggle
+            title="Use Anchor"
+            value={item.anchor}
+            callback={(val) => {
+              doUpdate({ anchor: val });
+            }}
+          />
+        )}
         {view === "Settings" && testFX.type == "effect" && (
           <FXSettings item={item} update={updateFX} />
+        )}
+        {view === "Settings" && item.type == "focus_highlight" && (
+          <SettingsFocusHighlight item={item} update={doUpdate} />
         )}
         {view === "Settings" && item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
