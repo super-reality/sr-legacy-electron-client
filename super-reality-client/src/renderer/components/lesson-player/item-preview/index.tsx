@@ -235,7 +235,7 @@ export default function ItemPreview() {
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox type="anchor" pos={cvResult} />
+        <FindBox clicktThrough type="anchor" pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (
         <FindBox

@@ -41,6 +41,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const { currentAnchor, treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
+
   const anchor = useMemo(() => {
     return treeAnchors[currentAnchor || ""] || null;
   }, [treeAnchors, currentAnchor]);

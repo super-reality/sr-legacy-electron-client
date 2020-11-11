@@ -36,8 +36,10 @@ const initialState = {
   currentSubView: "none" as TreeTypes,
   anchorTestView: false,
   lessonPreview: false,
+  chapterPreview: false,
   stepPreview: false,
   itemPreview: false,
+  previewOne: false,
   recordingData: {
     step_data: [],
   } as RecordingJson,

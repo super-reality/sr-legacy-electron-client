@@ -96,6 +96,8 @@ export default function CreateLessonDetached(): JSX.Element {
     currentAnchor,
     currentRecording,
     anchorTestView,
+    lessonPreview,
+    chapterPreview,
     stepPreview,
     itemPreview,
     videoNavigation,
@@ -106,7 +108,6 @@ export default function CreateLessonDetached(): JSX.Element {
   const dispatch = useDispatch();
   useTransparentFix(false);
 
-  console.log("treeItems:", treeItems, "itemPreview", itemPreview);
   const itemTest: Item | null = useMemo(
     () => treeItems["5fa59476e5674429bcfde682"] || null,
     ["5fa59476e5674429bcfde682", treeItems]
@@ -279,6 +280,9 @@ export default function CreateLessonDetached(): JSX.Element {
         </>
       )}
       {(stepPreview || itemPreview) && <LessonPlayer onFinish={setSolid} />}
+      {(lessonPreview || chapterPreview || stepPreview || itemPreview) && (
+        <LessonPlayer onFinish={setSolid} />
+      )}
     </div>
   ) : (
     <div className="solid-container">

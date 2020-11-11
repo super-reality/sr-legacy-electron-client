@@ -126,12 +126,18 @@ export default function VideoStatus() {
               itemToSet.relativePos.height = 128;
             }
 
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SET_TEMPITEM",
-              arg: {
-                item: itemToSet,
-              },
-            });
+            if (
+              orig.type == "left_click" ||
+              orig.type == "right_click" ||
+              orig.type == "wheel_click"
+            ) {
+              reduxAction(dispatch, {
+                type: "CREATE_LESSON_V2_SET_TEMPITEM",
+                arg: {
+                  item: itemToSet,
+                },
+              });
+            }
 
             if (timeoutRef.current) {
               setMatchFrame(matchFrame + 1);

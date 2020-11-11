@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties } from "react";
+import { ItemImageTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import ButtonSimple from "../../button-simple";
 import "./index.scss";
@@ -13,7 +14,7 @@ interface ImageBoxProps {
   };
   style?: CSSProperties;
   image: string;
-  callback?: () => void;
+  callback?: (trigger: number) => void;
 }
 
 const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
@@ -37,7 +38,11 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
           width="200px"
           height="24px"
           margin="auto"
-          onClick={callback || voidFunction}
+          onClick={
+            callback
+              ? () => callback(ItemImageTriggers["Click Ok button"])
+              : voidFunction
+          }
         >
           Ok
         </ButtonSimple>
