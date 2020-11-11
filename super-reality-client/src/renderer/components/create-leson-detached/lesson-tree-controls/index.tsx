@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import usePopupInput from "../../../hooks/usePopupInput";
 import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
@@ -19,13 +19,16 @@ import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { BaseItemType } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
+import reduxAction from "../../../redux/reduxAction";
 
 export default function LessonTreeControls() {
   const dispatch = useDispatch();
   const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
   );
-
+  const { treeSteps } = useSelector((state: AppState) => state.createLessonV2);
+  // for the test FX
+  const { testFX } = useSelector((state: AppState) => state.createLessonV2);
   let childType: TreeTypes = "chapter";
   if (treeCurrentType == "chapter") childType = "step";
   if (treeCurrentType == "step") childType = "item";
@@ -43,12 +46,22 @@ export default function LessonTreeControls() {
     },
     [treeCurrentType, treeCurrentId, dispatch]
   );
-
+  const doAddFX = useCallback(
+    (type: BaseItemType) => {
+      if (type == "effect") {
+        console.log("type created", type, "treeCurrentId", treeCurrentId);
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETFX",
+          arg: { type: type, effect: "id_1" },
+        });
+      }
+    },
+    [treeCurrentType, treeCurrentId]
+  );
   const doAddItem = useCallback(
     (type: BaseItemType) => {
       if (treeCurrentType == "step") {
         newItem(type, treeCurrentId);
-        console.log("type created", type);
       }
     },
     [treeCurrentType, treeCurrentId]
@@ -100,7 +113,7 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("effect")}
+            onClick={() => doAddFX("effect")}
             svg={IconAddFX}
             width="32px"
             height="32px"

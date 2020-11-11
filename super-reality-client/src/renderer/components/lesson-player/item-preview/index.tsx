@@ -19,6 +19,7 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import ButtonSimple from "../../button-simple";
 
 export default function ItemPreview() {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ export default function ItemPreview() {
     treeAnchors,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+  // test FX
+  const { testFX } = useSelector((state: AppState) => state.createLessonV2);
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -252,6 +255,18 @@ export default function ItemPreview() {
           style={style}
           image={item.url}
         />
+      )}
+      {testFX.type == "effect" && (
+        <>
+          <iframe
+            style={{
+              width: "150px",
+              height: "150px",
+            }}
+            className="fx-iframe click-through"
+            src="../fx-wavy"
+          />
+        </>
       )}
     </>
   );

@@ -21,12 +21,16 @@ export default function newItem(
   if (payload.type == "focus_highlight" && !payload.focus) {
     payload.focus = "Area highlight";
   }
+  if (payload.type == "effect" && !payload.effect) {
+    payload.effect = "id_1";
+  }
   if (payload.type == "image" && !payload.relativePos) {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 300 };
   }
   if (payload.type == "audio" && !payload.relativePos) {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
   }
+
   return Axios.post<ItemCreate | ApiError>(`${API_URL}item/create`, payload)
     .then(handleItemCreate)
     .then((data) => {

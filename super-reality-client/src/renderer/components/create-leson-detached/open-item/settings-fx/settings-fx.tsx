@@ -55,7 +55,7 @@ interface FXSettingsProps {
 }
 
 export default function FXSettings(props: FXSettingsProps): JSX.Element {
-  const { item, update } = props;
+  const { item, update, style } = props;
   const dispatch = useDispatch();
   const [open, setOpen] = useState<boolean>(false);
   const [effect, setEffect] = useState("id1");
@@ -128,7 +128,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }`}
               onClick={() => {
                 setEffect("id_3");
-                update({ effect: "id_2" });
+                update({ effect: "id_3" });
               }}
             >
               <img

@@ -32,6 +32,8 @@ const itemModalOptions: ItemModalOptions[] = ["Settings", "Trigger"];
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
   const { treeItems } = useSelector((state: AppState) => state.createLessonV2);
+  // test Fx
+  const { testFX } = useSelector((state: AppState) => state.createLessonV2);
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
@@ -65,7 +67,13 @@ export default function OpenItem(props: OpenItemProps) {
         break;
     }
   }
-
+  const updateFX = useCallback(<T extends Item>(data: Partial<T>) => {
+    const updatedItem = { ...testFX, ...data };
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_SETFX",
+      arg: { ...updatedItem },
+    });
+  }, []);
   const doUpdate = useCallback(
     <T extends Item>(data: Partial<T>) => {
       const updatedItem = { ...treeItems[id], ...data };
@@ -74,8 +82,6 @@ export default function OpenItem(props: OpenItemProps) {
         arg: { item: updatedItem },
       });
       updateItem(updatedItem, id);
-      console.log("treeItems", treeItems[id]);
-      console.log(updateItem(updatedItem, id));
     },
     [id, treeItems]
   );
@@ -98,8 +104,9 @@ export default function OpenItem(props: OpenItemProps) {
             doUpdate({ anchor: val });
           }}
         />
-        {view === "Settings" && item.type == "effect" && (
-          <FXSettings item={item} update={doUpdate} />
+
+        {view === "Settings" && testFX.type == "effect" && (
+          <FXSettings item={item} update={updateFX} />
         )}
         {view === "Settings" && item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
@@ -121,5 +128,7 @@ export default function OpenItem(props: OpenItemProps) {
 }
 
 /*
-<SettingsFocusHighlight item={item} update={doUpdate} />
+{view === "Settings" && item.type == "focus_highlight" && (
+          <SettingsFocusHighlight item={item} update={doUpdate} />
+        )}
 */
