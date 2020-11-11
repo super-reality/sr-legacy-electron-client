@@ -38,6 +38,21 @@ export default function Lesson(props: LessonProps): JSX.Element {
     (state: AppState) => state.createLessonV2
   );
 
+  const setViewPre = useCallback(
+    (arg: Sections) => {
+      if (arg == "Lessons") {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
+            currentRecording: undefined,
+          },
+        });
+      }
+      setView(arg);
+    },
+    [dispatch]
+  );
+
   const doPreviewCurrentToNumber = useCallback(() => {
     const slice = store.getState().createLessonV2;
 
@@ -93,7 +108,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
 
   return (
     <>
-      <Tabs buttons={sections} initial={view} callback={setView} />
+      <Tabs buttons={sections} initial={view} callback={setViewPre} />
       <TabsContainer
         style={{
           height: "-webkit-fill-available",

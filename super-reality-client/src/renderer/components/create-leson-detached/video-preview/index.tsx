@@ -1,15 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useMeasure } from "react-use";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import fs from "fs";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
@@ -17,23 +11,24 @@ import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import FindBox from "../../lesson-player/find-box";
 import { cursorChecker, voidFunction } from "../../../constants";
-import { recordingPath } from "../../../electron-constants";
+import { itemsPath, recordingPath } from "../../../electron-constants";
+import sha1 from "../../../../utils/sha1";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
   const {
-    recordingData,
     videoNavigation,
     currentRecording,
     currentAnchor,
     currentStep,
     currentItem,
-    treeAnchors,
     treeItems,
     treeSteps,
     cropRecording,
     videoScale,
     videoPos,
+    canvasSource,
+    currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const horPor = useRef<HTMLDivElement>(null);
@@ -66,8 +61,7 @@ export default function VideoPreview(): JSX.Element {
     [dispatch]
   );
 
-  const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
-  const containerReactRef = useRef<HTMLDivElement | null>();
+  const containerRef = useRef<HTMLDivElement>(null);
   const containerOutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -109,9 +103,19 @@ export default function VideoPreview(): JSX.Element {
     [currentStep, treeSteps]
   );
 
+  const shouldDisplayPreview = useMemo(
+    () => currentRecording || currentCanvasSource,
+    [currentRecording, currentCanvasSource]
+  );
+
   useEffect(() => {
-    if (step?.anchor && anchorImageRef.current && !recordingData.anchor) {
-      const anchor = treeAnchors[step?.anchor];
+    if (
+      !shouldDisplayPreview &&
+      step?.anchor &&
+      anchorImageRef.current &&
+      containerRef.current
+    ) {
+      const anchor = store.getState().createLessonV2.treeAnchors[step?.anchor];
       [anchorImageRef.current.src] = anchor?.templates || "";
       if (anchor) {
         reduxAction(dispatch, {
@@ -120,8 +124,12 @@ export default function VideoPreview(): JSX.Element {
             id: anchor._id,
             width: anchorImageRef.current.width,
             height: anchorImageRef.current.height,
-            x: width / 2 - anchorImageRef.current.width / 2,
-            y: height / 2 - anchorImageRef.current.height / 2,
+            x:
+              containerRef.current.offsetWidth / 2 -
+              anchorImageRef.current.width / 2,
+            y:
+              containerRef.current.offsetHeight / 2 -
+              anchorImageRef.current.height / 2,
             sizeFactor: 1,
             dist: 0,
             time: 0,
@@ -129,7 +137,7 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
-  }, [dispatch, treeAnchors, width, height, step, recordingData]);
+  }, [dispatch, currentRecording, canvasSource, shouldDisplayPreview, step]);
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
@@ -153,6 +161,42 @@ export default function VideoPreview(): JSX.Element {
   }, [dispatch, currentRecording, videoCanvasRef, videoHiddenRef]);
 
   useEffect(() => {
+    const it = store.getState().createLessonV2.treeItems[currentItem || ""];
+    const imagePath = `${itemsPath}/${sha1(it?.name || "")}.png`;
+    if (currentItem && fs.existsSync(imagePath)) {
+      const pngImage = new Image();
+      pngImage.src = imagePath;
+      pngImage.onload = () => {
+        if (videoCanvasRef.current) {
+          videoCanvasRef.current.width = pngImage.width;
+          videoCanvasRef.current.height = pngImage.height;
+          const context = videoCanvasRef.current.getContext("2d");
+          if (context) {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_DATA",
+              arg: {
+                currentRecording: undefined,
+                currentCanvasSource: imagePath,
+                canvasSource: `item ${currentItem}`,
+              },
+            });
+            context.drawImage(pngImage, 0, 0);
+          }
+        }
+      };
+    } else {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          currentRecording: undefined,
+          currentCanvasSource: undefined,
+          canvasSource: `no source`,
+        },
+      });
+    }
+  }, [currentItem, videoCanvasRef]);
+
+  useEffect(() => {
     if (
       videoHiddenRef.current &&
       videoHiddenRef.current?.currentTime !== videoNavigation[1]
@@ -162,17 +206,17 @@ export default function VideoPreview(): JSX.Element {
   }, [videoNavigation]);
 
   useEffect(() => {
-    if (containerReactRef.current) {
+    if (containerRef.current) {
       const newPos = { ...videoPos };
-      interact(containerReactRef.current)
+      interact(containerRef.current)
         .draggable({
           cursorChecker,
         })
         .on("dragmove", (event) => {
-          if (containerReactRef.current) {
+          if (containerRef.current) {
             newPos.x += event.dx;
             newPos.y += event.dy;
-            containerReactRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
+            containerRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
           }
         })
         .on("dragend", (event) => {
@@ -180,12 +224,11 @@ export default function VideoPreview(): JSX.Element {
         });
 
       return (): void => {
-        if (containerReactRef.current)
-          interact(containerReactRef.current).unset();
+        if (containerRef.current) interact(containerRef.current).unset();
       };
     }
     return voidFunction;
-  }, [containerReactRef, videoScale, videoPos]);
+  }, [containerRef, videoScale, videoPos]);
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
@@ -209,37 +252,30 @@ export default function VideoPreview(): JSX.Element {
   return (
     <div className="video-preview-container-out" ref={containerOutRef}>
       <div
-        ref={(ref) => {
-          if (ref) containerRef(ref);
-          containerReactRef.current = ref;
-        }}
+        ref={containerRef}
         className="video-preview-container"
         onWheel={doScale}
         style={{
           transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
         }}
       >
-        {!currentRecording && (
-          <div className="video-preview-no-video">
-            {`Select a recording to ${
-              cropRecording ? "crop an anchor" : "preview"
-            }`}
-          </div>
-        )}
-        {currentRecording && (
-          <>
-            <canvas
-              ref={videoCanvasRef}
-              id="preview-video-canvas"
-              className="video-preview-video"
-            />
-            <video
-              ref={videoHiddenRef}
-              muted
-              id="video-hidden"
-              style={{ display: "none" }}
-            />
-          </>
+        <canvas
+          style={{
+            display: shouldDisplayPreview ? "block" : "none",
+          }}
+          ref={videoCanvasRef}
+          id="preview-video-canvas"
+          className="video-preview-video"
+        />
+        {shouldDisplayPreview ? (
+          <video
+            ref={videoHiddenRef}
+            muted
+            id="video-hidden"
+            style={{ display: "none" }}
+          />
+        ) : (
+          <div className="video-preview-no-video">Nothing to preview</div>
         )}
         <div
           key={`hor-${item?._id}` || ""}

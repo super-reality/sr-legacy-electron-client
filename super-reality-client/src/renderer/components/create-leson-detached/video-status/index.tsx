@@ -27,6 +27,29 @@ import newItem from "../lesson-utils/newItem";
 import sha1 from "../../../../utils/sha1";
 import { Item } from "../../../api/types/item/item";
 import newStep from "../lesson-utils/newStep";
+import { itemsPath } from "../../../electron-constants";
+
+function saveCanvasImage(fileName: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const canvas = document.getElementById("preview-video-canvas") as
+      | HTMLCanvasElement
+      | undefined;
+    if (canvas) {
+      const url = canvas.toDataURL("image/jpg", 0.8);
+
+      // remove Base64 stuff from the Image
+      const base64Data = url.replace(/^data:image\/png;base64,/, "");
+      fs.writeFile(fileName, base64Data, "base64", (err) => {
+        if (err) reject(err);
+        else {
+          resolve();
+        }
+      });
+    } else {
+      reject();
+    }
+  });
+}
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -40,6 +63,9 @@ export default function VideoStatus() {
     currentChapter,
     cropRecording,
     cropRecordingPos,
+    canvasSource,
+    currentRecording,
+    currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [matchFrame, setMatchFrame] = useState(-1);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -71,15 +97,28 @@ export default function VideoStatus() {
   );
 
   useEffect(() => {
-    const videoHidden = document.getElementById(
-      "video-hidden"
-    ) as HTMLVideoElement;
-    if (videoHidden && anchor) {
-      doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
+    if (currentCanvasSource && anchor) {
+      console.log(__dirname, currentCanvasSource);
+      doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
         reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
       );
+    } else if (anchor) {
+      const videoHidden = document.getElementById(
+        "video-hidden"
+      ) as HTMLVideoElement;
+      if (videoHidden) {
+        doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
+          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
+        );
+      }
     }
-  }, [dispatch, anchor, videoNavigation]);
+  }, [
+    dispatch,
+    anchor,
+    currentRecording,
+    videoNavigation,
+    currentCanvasSource,
+  ]);
 
   // Anchor full video wide matching/testing
   useEffect(() => {
@@ -139,9 +178,13 @@ export default function VideoStatus() {
               });
             }
 
-            if (timeoutRef.current) {
-              setMatchFrame(matchFrame + 1);
-            }
+            saveCanvasImage(`${itemsPath}/${sha1(itemToSet.name)}.png`).then(
+              () => {
+                if (timeoutRef.current) {
+                  setMatchFrame(matchFrame + 1);
+                }
+              }
+            );
           });
         }, 200);
       } else {
@@ -227,35 +270,21 @@ export default function VideoStatus() {
     const fileName = `${userData}/capture.png`;
     const output = `${userData}/crop.png`;
 
-    const canvas = document.getElementById("preview-video-canvas") as
-      | HTMLCanvasElement
-      | undefined;
-    if (canvas) {
-      const url = canvas.toDataURL("image/jpg", 0.8);
-
-      // remove Base64 stuff from the Image
-      const base64Data = url.replace(/^data:image\/png;base64,/, "");
-      fs.writeFile(fileName, base64Data, "base64", (err) => {
-        if (err) console.error(err);
-        else {
-          console.log(cropRecordingPos);
-          const image = nativeImage.createFromPath(fileName).crop({
-            x: Math.round(cropRecordingPos.x),
-            y: Math.round(cropRecordingPos.y),
-            width: Math.round(cropRecordingPos.width),
-            height: Math.round(cropRecordingPos.height),
-          });
-          // console.log(image);
-          fs.writeFile(output, image.toPNG(), {}, () => {
-            const timestamped = path.join(
-              userData,
-              `${new Date().getTime()}.png`
-            );
-            fs.copyFile(output, timestamped, () => callback(timestamped));
-          });
-        }
+    saveCanvasImage(fileName).then(() => {
+      // Crop it
+      console.log(cropRecordingPos);
+      const image = nativeImage.createFromPath(fileName).crop({
+        x: Math.round(cropRecordingPos.x),
+        y: Math.round(cropRecordingPos.y),
+        width: Math.round(cropRecordingPos.width),
+        height: Math.round(cropRecordingPos.height),
       });
-    }
+      // console.log(image);
+      fs.writeFile(output, image.toPNG(), {}, () => {
+        const timestamped = path.join(userData, `${new Date().getTime()}.png`);
+        fs.copyFile(output, timestamped, () => callback(timestamped));
+      });
+    });
   }, [callback, cropRecordingPos]);
 
   const [Popup, doCreateAnchor] = usePopupImageSource(
@@ -349,6 +378,7 @@ export default function VideoStatus() {
           <i>{!cropRecording && "Attach an anchor to edit"}</i>
         </div>
       )}
+      <div style={{ marginLeft: "auto" }}>{canvasSource}</div>
       <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
     </div>
   );
