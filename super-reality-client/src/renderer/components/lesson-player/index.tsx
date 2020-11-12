@@ -30,6 +30,8 @@ export default function LessonPlayer(props: LessonPlayerProps) {
   const { lessonId, onFinish } = props;
   const dispatch = useDispatch();
   const {
+    currentStep,
+    currentItem,
     treeAnchors,
     treeSteps,
     treeChapters,
@@ -167,8 +169,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   return (
     <>
-      {playing && itemPreview && previewOne && (
-        <ItemPreview onSucess={onFinish} />
+      {playing && itemPreview && previewOne && currentStep && currentItem && (
+        <ItemPreview
+          stepId={currentStep}
+          itemId={currentItem}
+          onSucess={onFinish}
+        />
       )}
       {playing && stepPreview && previewOne && step && (
         <StepView stepId={step?._id} onSucess={onFinish} />

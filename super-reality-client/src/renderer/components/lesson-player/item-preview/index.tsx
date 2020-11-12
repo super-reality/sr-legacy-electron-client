@@ -23,20 +23,18 @@ import { IAbsolutePos } from "../../../api/types/item/item";
 import DialogBox from "../dialog-box";
 
 interface ItemPreviewProps {
+  itemId: string;
+  stepId: string;
   onSucess?: () => void;
 }
 
 export default function ItemPreview(props: ItemPreviewProps) {
+  const { itemId, stepId } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
-  const {
-    currentItem,
-    currentStep,
-    treeItems,
-    treeSteps,
-    treeAnchors,
-    videoScale,
-  } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeItems, treeSteps, treeAnchors, videoScale } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
@@ -47,15 +45,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
   });
   const [style, setStyle] = useState<CSSProperties>({});
 
-  const item = useMemo(
-    () => (currentItem ? treeItems[currentItem] : undefined),
-    [currentItem, treeItems]
-  );
+  const item = useMemo(() => (itemId ? treeItems[itemId] : undefined), [
+    itemId,
+    treeItems,
+  ]);
 
-  const step = useMemo(
-    () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, treeSteps]
-  );
+  const step = useMemo(() => (stepId ? treeSteps[stepId] : undefined), [
+    stepId,
+    treeSteps,
+  ]);
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {

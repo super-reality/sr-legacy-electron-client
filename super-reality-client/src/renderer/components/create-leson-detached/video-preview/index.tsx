@@ -13,6 +13,7 @@ import FindBox from "../../lesson-player/find-box";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import sha1 from "../../../../utils/sha1";
+import StepView from "../../lesson-player/step-view";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -297,7 +298,12 @@ export default function VideoPreview(): JSX.Element {
           className="vertical-pos"
         />
         <img ref={anchorImageRef} style={{ display: "none" }} />
-        {item && !cropRecording && <ItemPreview />}
+        {item && currentItem && currentStep && !cropRecording && (
+          <ItemPreview stepId={currentStep} itemId={currentItem} />
+        )}
+        {step && !currentItem && currentStep && !cropRecording && (
+          <StepView stepId={currentStep} onSucess={() => {}} />
+        )}
         {cropRecording && <AnchorCrop />}
         {!item && !cropRecording && (currentRecording || currentAnchor) && (
           <FindBox type="anchor" pos={cvResult} />
