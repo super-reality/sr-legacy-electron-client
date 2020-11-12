@@ -302,7 +302,10 @@ export default function VideoPreview(): JSX.Element {
           <ItemPreview stepId={currentStep} itemId={currentItem} />
         )}
         {step && !currentItem && currentStep && !cropRecording && (
-          <StepView stepId={currentStep} onSucess={() => {}} />
+          <>
+            <FindBox type="anchor" pos={cvResult} />
+            <StepView stepId={currentStep} onSucess={() => {}} />
+          </>
         )}
         {cropRecording && <AnchorCrop />}
         {!item && !cropRecording && (currentRecording || currentAnchor) && (
