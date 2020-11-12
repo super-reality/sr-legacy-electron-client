@@ -166,8 +166,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
             startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
             if (!onSucess) {
-              startPos.width /= videoScale;
-              startPos.height /= videoScale;
+              // startPos.width /= scale;
+              // startPos.height /= scale;
             }
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
