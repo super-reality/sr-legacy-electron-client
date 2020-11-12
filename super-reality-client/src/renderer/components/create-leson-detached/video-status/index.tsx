@@ -142,15 +142,15 @@ export default function VideoStatus() {
             const id = sha1(`${orig.type}-${orig.time_stamp}`);
             const itemType = "focus_highlight";
             const itemToSet = {
+              trigger: null,
+              destination: "", // a step ID to go to
+              transition: 0, // type
+              anchor: true,
               ...getDefaultItemProps(itemType),
               _id: id,
               name: `${orig.type} ${orig.time_stamp}`,
               type: itemType,
               focus: "Mouse Point",
-              trigger: null,
-              destination: "", // a step ID to go to
-              transition: 0, // type
-              anchor: true,
               relativePos: {
                 width: 16,
                 height: 16,
