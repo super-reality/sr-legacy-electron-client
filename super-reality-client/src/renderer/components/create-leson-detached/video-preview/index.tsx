@@ -64,11 +64,22 @@ export default function VideoPreview(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerOutRef = useRef<HTMLDivElement>(null);
 
+  const shouldDisplayPreview = useMemo(
+    () => currentRecording || currentCanvasSource,
+    [currentRecording, currentCanvasSource]
+  );
+
   useEffect(() => {
     setTimeout(() => {
       if (containerOutRef.current) {
-        const containerWidth = videoCanvasRef.current?.width ?? 1920;
-        const containerHeight = videoCanvasRef.current?.height ?? 1080;
+        const containerWidth =
+          shouldDisplayPreview && videoCanvasRef.current
+            ? videoCanvasRef.current.width
+            : 1920;
+        const containerHeight =
+          shouldDisplayPreview && videoCanvasRef.current
+            ? videoCanvasRef.current.height
+            : 1080;
         const innherWidth = containerOutRef.current.offsetWidth - 16;
         const innherHeight = containerOutRef.current.offsetHeight - 16;
         const scale = Math.min(
@@ -78,7 +89,7 @@ export default function VideoPreview(): JSX.Element {
         const xPos = (innherWidth - containerWidth) / 2 + 8;
         const yPos = (innherHeight - containerHeight) / 2 + 8;
 
-        setVideoScale(scale);
+        setVideoScale(Math.round(scale * 10) / 10);
         setVideoPos({ x: xPos, y: yPos });
       }
     }, 500);
@@ -88,6 +99,7 @@ export default function VideoPreview(): JSX.Element {
     videoCanvasRef,
     setVideoScale,
     setVideoPos,
+    shouldDisplayPreview,
   ]);
 
   const cvEditor: any = useMemo(
@@ -103,11 +115,6 @@ export default function VideoPreview(): JSX.Element {
   const step = useMemo(
     () => (currentStep ? treeSteps[currentStep] : undefined),
     [currentStep, treeSteps]
-  );
-
-  const shouldDisplayPreview = useMemo(
-    () => currentRecording || currentCanvasSource,
-    [currentRecording, currentCanvasSource]
   );
 
   useEffect(() => {

@@ -99,7 +99,6 @@ export default function VideoStatus() {
 
   useEffect(() => {
     if (currentCanvasSource && anchor) {
-      console.log(__dirname, currentCanvasSource);
       doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
         reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
       );

@@ -10,6 +10,7 @@ import {
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
+import { IAbsolutePos } from "../../../api/types/item/item";
 
 export default function AnchorCrop() {
   const dispatch = useDispatch();
@@ -31,26 +32,26 @@ export default function AnchorCrop() {
     [dispatch]
   );
 
+  function updateDiv(startPos: IAbsolutePos) {
+    const div = dragContainer.current;
+    if (div) {
+      div.style.left = `${Math.round(startPos.x)}px`;
+      div.style.top = `${Math.round(startPos.y)}px`;
+      div.style.width = `${Math.round(startPos.width)}px`;
+      div.style.height = `${Math.round(startPos.height)}px`;
+    }
+  }
+
   useEffect(() => {
     if (dragContainer.current) {
       const startPos = { ...cropRecordingPos };
+      const scale = videoScale;
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: [restrictSnapRound, restrictMinSize],
-          inertia: true,
+          inertia: false,
         } as any)
-        .on("resizemove", (event) => {
-          const { target } = event;
-          const x = parseFloat(target.style.left) + event.deltaRect.left;
-          const y = parseFloat(target.style.top) + event.deltaRect.top;
-          startPos.width = event.rect.width - 4 / videoScale;
-          startPos.height = event.rect.height - 4 / videoScale;
-          target.style.width = `${startPos.width}px`;
-          target.style.height = `${startPos.height}px`;
-          target.style.left = `${x}px`;
-          target.style.top = `${y}px`;
-        })
         .draggable({
           cursorChecker,
           modifiers: [
@@ -60,47 +61,49 @@ export default function AnchorCrop() {
             }),
           ],
         })
+        .on("resizemove", (event) => {
+          const div = dragContainer.current;
+          if (div) {
+            const delta = event.deltaRect;
+            startPos.x = div.offsetLeft + delta.left / scale;
+            startPos.y = div.offsetTop + delta.top / scale;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
+          }
+        })
         .on("dragstart", (event) => {
-          if (dragContainer.current) {
-            startPos.x = dragContainer.current.offsetLeft || 0 + 3;
-            startPos.y = dragContainer.current.offsetTop || 0 + 3;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
-            dragContainer.current.style.width = `${startPos.width}px`;
-            dragContainer.current.style.height = `${startPos.height}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            updateDiv(startPos);
           }
         })
         .on("resizestart", (event) => {
-          const { target } = event;
-          if (dragContainer.current) {
-            startPos.x = target.offsetLeft || 0 + 3;
-            startPos.y = target.offsetTop || 0 + 3;
-            startPos.width = event.rect.width - 6;
-            startPos.height = event.rect.height - 6;
-            target.style.left = `${startPos.x}px`;
-            target.style.top = `${startPos.y}px`;
-            target.style.width = `${startPos.width}px`;
-            target.style.height = `${startPos.height}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
           }
         })
         .on("dragmove", (event) => {
-          if (dragContainer.current) {
-            startPos.x += event.dx / videoScale;
-            startPos.y += event.dy / videoScale;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
-          }
+          startPos.x += event.dx / scale;
+          startPos.y += event.dy / scale;
+          updateDiv(startPos);
         })
         .on("resizeend", (event) => {
-          if (dragContainer.current && dragContainer.current.parentElement) {
-            startPos.x = dragContainer.current.offsetLeft;
-            startPos.y = dragContainer.current.offsetTop;
-            dragContainer.current.style.left = `${Math.round(startPos.x)}px`;
-            dragContainer.current.style.top = `${Math.round(startPos.y)}px`;
+          const div = dragContainer.current;
+          if (div && div.parentElement) {
+            startPos.x = div.offsetLeft + 3;
+            startPos.y = div.offsetTop + 3;
+            // startPos.width /= scale;
+            // startPos.height /= scale;
+            setPos(startPos);
           }
-          startPos.width /= videoScale;
-          startPos.height /= videoScale;
-          setPos(startPos);
         })
         .on("dragend", () => {
           startPos.x += 3;

@@ -14,6 +14,7 @@ import ImageBox from "../image.box";
 import {
   cursorChecker,
   restrictMinSize,
+  restrictSnapRound,
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
@@ -95,33 +96,27 @@ export default function ItemPreview(props: ItemPreviewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
+  function updateDiv(startPos: IAbsolutePos) {
+    const div = dragContainer.current;
+    if (div) {
+      div.style.left = `${Math.round(startPos.x)}px`;
+      div.style.top = `${Math.round(startPos.y)}px`;
+      div.style.width = `${Math.round(startPos.width)}px`;
+      div.style.height = `${Math.round(startPos.height)}px`;
+    }
+  }
+
   useEffect(() => {
     if (dragContainer.current && item && step) {
       const startPos = { ...pos };
+      const scale = !onSucess ? videoScale : 1;
+
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictMinSize],
-          inertia: true,
+          modifiers: [restrictSnapRound, restrictMinSize],
+          inertia: false,
         } as any)
-        .on("resizemove", (event) => {
-          const { target } = event;
-          const x = parseFloat(target.style.left) + event.deltaRect.left;
-          const y = parseFloat(target.style.top) + event.deltaRect.top;
-          // fix for interact.js adding 4px to height/width on resize
-          const edge = item.type == "focus_highlight" ? 4 : 0;
-          startPos.width = event.rect.width - edge;
-          startPos.height = event.rect.height - edge;
-          target.style.width = `${event.rect.width - edge}px`;
-          target.style.height = `${event.rect.height - edge}px`;
-          target.style.left = `${x}px`;
-          target.style.top = `${y}px`;
-
-          if (!onSucess) {
-            target.style.width = `${event.rect.width / videoScale - edge}px`;
-            target.style.height = `${event.rect.height / videoScale - edge}px`;
-          }
-        })
         .draggable({
           cursorChecker,
           modifiers: [
@@ -130,54 +125,55 @@ export default function ItemPreview(props: ItemPreviewProps) {
             }),
           ],
         })
+        .on("resizemove", (event) => {
+          const div = dragContainer.current;
+          if (div) {
+            const delta = event.deltaRect;
+            startPos.x = div.offsetLeft + delta.left / scale;
+            startPos.y = div.offsetTop + delta.top / scale;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
+          }
+        })
         .on("dragstart", (event) => {
-          if (dragContainer.current) {
-            startPos.x = dragContainer.current.offsetLeft || 0;
-            startPos.y = dragContainer.current.offsetTop || 0;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            updateDiv(startPos);
           }
         })
         .on("resizestart", (event) => {
-          if (dragContainer.current) {
-            startPos.x = dragContainer.current.offsetLeft || 0;
-            startPos.y = dragContainer.current.offsetTop || 0;
-            const edge = item.type == "focus_highlight" ? 6 : 0;
-            startPos.width += edge;
-            startPos.height += edge;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
           }
         })
         .on("dragmove", (event) => {
-          if (dragContainer.current) {
-            startPos.x += event.dx / (!onSucess ? videoScale : 1);
-            startPos.y += event.dy / (!onSucess ? videoScale : 1);
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
-          }
+          startPos.x += event.dx / scale;
+          startPos.y += event.dy / scale;
+          updateDiv(startPos);
         })
         .on("resizeend", (event) => {
+          const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
-          } else if (
-            dragContainer.current &&
-            dragContainer.current.parentElement
-          ) {
+          } else if (div && div.parentElement) {
             if (!onSucess) {
               startPos.width /= videoScale;
               startPos.height /= videoScale;
             }
             startPos.horizontal =
-              (100 /
-                (dragContainer.current.parentElement.offsetWidth -
-                  startPos.width)) *
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
             startPos.vertical =
-              (100 /
-                (dragContainer.current.parentElement.offsetHeight -
-                  startPos.height)) *
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
           reduxAction(dispatch, {
@@ -192,22 +188,16 @@ export default function ItemPreview(props: ItemPreviewProps) {
           updateItem({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
+          const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
-          } else if (
-            dragContainer.current &&
-            dragContainer.current.parentElement
-          ) {
+          } else if (div && div.parentElement) {
             startPos.horizontal =
-              (100 /
-                (dragContainer.current.parentElement.offsetWidth -
-                  startPos.width)) *
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
             startPos.vertical =
-              (100 /
-                (dragContainer.current.parentElement.offsetHeight -
-                  startPos.height)) *
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
           reduxAction(dispatch, {
@@ -219,7 +209,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          updateItem({ ...item, relativePos: startPos }, item._id);
+          // updateItem({ ...item, relativePos: startPos }, item._id);
         });
 
       return (): void => {
