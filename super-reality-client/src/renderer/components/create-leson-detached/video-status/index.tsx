@@ -29,6 +29,7 @@ import { Item } from "../../../api/types/item/item";
 import newStep from "../lesson-utils/newStep";
 import { itemsPath } from "../../../electron-constants";
 import getDefaultItemProps from "../lesson-utils/getDefaultItemProps";
+import { IStep } from "../../../api/types/step/step";
 
 function saveCanvasImage(fileName: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -74,9 +75,9 @@ export default function VideoStatus() {
 
   const anchor = useMemo(() => {
     const slice = store.getState().createLessonV2;
-    const step = slice.treeSteps[currentStep || ""] || null;
+    const step: IStep | null = slice.treeSteps[currentStep || ""];
 
-    return slice.treeAnchors[step.anchor || currentAnchor || ""] || null;
+    return slice.treeAnchors[step?.anchor || currentAnchor || ""] || null;
   }, [currentAnchor]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
