@@ -20,6 +20,7 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import DialogBox from "../dialog-box";
 
 interface ItemPreviewProps {
   onSucess?: () => void;
@@ -29,7 +30,6 @@ export default function ItemPreview(props: ItemPreviewProps) {
   const { onSucess } = props;
   const dispatch = useDispatch();
   const {
-    currentAnchor,
     currentItem,
     currentStep,
     treeItems,
@@ -59,9 +59,9 @@ export default function ItemPreview(props: ItemPreviewProps) {
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor || currentAnchor;
+    const anchorId = step?.anchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [step, currentAnchor, treeAnchors]);
+  }, [step, treeAnchors]);
 
   const updatePos = useCallback(() => {
     const newPos = {
@@ -209,7 +209,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          // updateItem({ ...item, relativePos: startPos }, item._id);
+          updateItem({ ...item, relativePos: startPos }, item._id);
         });
 
       return (): void => {
@@ -248,6 +248,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          callback={onSucessCallback}
+        />
+      )}
+      {item && item.type == "dialog" && (
+        <DialogBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          text={item.text}
           callback={onSucessCallback}
         />
       )}

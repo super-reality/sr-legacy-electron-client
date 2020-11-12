@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { InputChangeEv } from "../../../../../types/utils";
 import { ItemDialog } from "../../../../api/types/item/item";
+import useDebounce from "../../../../hooks/useDebounce";
 import BaseInput from "../../../base-input";
+import BaseTextArea from "../../../base-textarea";
 import "../../../lesson-player/find-box/index.scss";
 
 interface SettingsDialog {
@@ -10,12 +13,31 @@ interface SettingsDialog {
 
 export default function SettingsDialog(props: SettingsDialog) {
   const { item, update } = props;
+  const [text, setText] = useState(item.text);
+
+  useEffect(() => {
+    setText(item.text);
+  }, [item.text]);
+
+  const debouncer = useDebounce(1000);
+
+  const debouncedUpdate = useCallback(
+    (data: Partial<ItemDialog>) => {
+      debouncer(() => {
+        update(data);
+      });
+    },
+    [debouncer, update]
+  );
 
   return (
-    <BaseInput
+    <BaseTextArea
       title="Text"
-      value={item.text}
-      onChange={(e) => update({ text: e.currentTarget.value })}
+      value={text}
+      onChange={(e) => {
+        setText(e.currentTarget.value);
+        debouncedUpdate({ text: e.currentTarget.value });
+      }}
     />
   );
 }

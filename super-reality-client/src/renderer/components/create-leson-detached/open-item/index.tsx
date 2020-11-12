@@ -20,6 +20,9 @@ import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
 import BaseToggle from "../../base-toggle";
 import SettingsDialog from "./settings-dialog";
+import ButtonRound from "../../button-round";
+
+import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 
 interface OpenItemProps {
   id: string;
@@ -30,7 +33,9 @@ const itemModalOptions: ItemModalOptions[] = ["Settings", "Trigger"];
 
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeItems, treeSteps, currentStep } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
@@ -74,6 +79,16 @@ export default function OpenItem(props: OpenItemProps) {
     [id, treeItems]
   );
 
+  const openParentAnchor = useCallback(() => {
+    const step = treeSteps[currentStep || ""];
+    if (step && step.anchor) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { currentAnchor: step.anchor },
+      });
+    }
+  }, [dispatch, treeSteps, currentStep]);
+
   if (!item) return <></>;
 
   return (
@@ -86,13 +101,27 @@ export default function OpenItem(props: OpenItemProps) {
       />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
         {view === "Settings" && (
-          <BaseToggle
-            title="Use Anchor"
-            value={item.anchor}
-            callback={(val) => {
-              doUpdate({ anchor: val });
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "32px auto",
+              gap: "8px",
             }}
-          />
+          >
+            <ButtonRound
+              width="32px"
+              height="32px"
+              svg={AnchorIcon}
+              onClick={openParentAnchor}
+            />
+            <BaseToggle
+              title="Use Anchor"
+              value={item.anchor}
+              callback={(val) => {
+                doUpdate({ anchor: val });
+              }}
+            />
+          </div>
         )}
         {view === "Settings" && item.type == "focus_highlight" && (
           <SettingsFocusHighlight item={item} update={doUpdate} />

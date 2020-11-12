@@ -33,11 +33,11 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
           ...style,
         }}
       >
-        <div>{text}</div>
+        <div className="dialog-text">{text}</div>
         <ButtonSimple
           width="200px"
           height="24px"
-          margin="auto"
+          margin="auto auto 16px auto"
           onClick={
             callback
               ? () => callback(ItemImageTriggers["Click Ok button"])
