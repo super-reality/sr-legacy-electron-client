@@ -28,6 +28,7 @@ import sha1 from "../../../../utils/sha1";
 import { Item } from "../../../api/types/item/item";
 import newStep from "../lesson-utils/newStep";
 import { itemsPath } from "../../../electron-constants";
+import getDefaultItemProps from "../lesson-utils/getDefaultItemProps";
 
 function saveCanvasImage(fileName: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -140,16 +141,17 @@ export default function VideoStatus() {
 
             // Create new item based on step data from recording
             const id = sha1(`${orig.type}-${orig.time_stamp}`);
-            const itemToSet: Item = {
+            const itemType = "focus_highlight";
+            const itemToSet = {
+              ...getDefaultItemProps(itemType),
               _id: id,
               name: `${orig.type} ${orig.time_stamp}`,
-              type: "focus_highlight",
+              type: itemType,
               focus: "Mouse Point",
               trigger: null,
               destination: "", // a step ID to go to
               transition: 0, // type
               anchor: true,
-
               relativePos: {
                 width: 16,
                 height: 16,
@@ -173,7 +175,7 @@ export default function VideoStatus() {
               reduxAction(dispatch, {
                 type: "CREATE_LESSON_V2_SET_TEMPITEM",
                 arg: {
-                  item: itemToSet,
+                  item: itemToSet as Item,
                 },
               });
             }
