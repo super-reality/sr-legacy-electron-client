@@ -171,9 +171,9 @@ export default function VideoPreview(): JSX.Element {
   }, [dispatch, currentRecording, videoCanvasRef, videoHiddenRef]);
 
   useEffect(() => {
-    const it = store.getState().createLessonV2.treeItems[currentItem || ""];
-    const imagePath = `${itemsPath}/${sha1(it?.name || "")}.png`;
-    if (currentItem && fs.existsSync(imagePath)) {
+    const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
+    const imagePath = `${itemsPath}/${sha1(st?.name || "")}.png`;
+    if (currentStep && fs.existsSync(imagePath)) {
       const pngImage = new Image();
       pngImage.src = imagePath;
       pngImage.onload = () => {
@@ -187,7 +187,7 @@ export default function VideoPreview(): JSX.Element {
               arg: {
                 currentRecording: undefined,
                 currentCanvasSource: imagePath,
-                canvasSource: `item ${currentItem}`,
+                canvasSource: `step ${st.name}`,
               },
             });
             context.drawImage(pngImage, 0, 0);
@@ -204,7 +204,7 @@ export default function VideoPreview(): JSX.Element {
         },
       });
     }
-  }, [currentItem, videoCanvasRef]);
+  }, [currentStep, videoCanvasRef]);
 
   useEffect(() => {
     if (

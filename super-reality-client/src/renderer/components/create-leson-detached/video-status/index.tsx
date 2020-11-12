@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { nativeImage } from "electron";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import ButtonRound from "../../button-round";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import usePopup from "../../../hooks/usePopup";
 import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
@@ -57,6 +57,7 @@ export default function VideoStatus() {
   const {
     recordingData,
     currentAnchor,
+    currentStep,
     treeAnchors,
     treeItems,
     videoNavigation,
@@ -72,8 +73,11 @@ export default function VideoStatus() {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const anchor = useMemo(() => {
-    return treeAnchors[currentAnchor || ""] || null;
-  }, [treeAnchors, currentAnchor]);
+    const slice = store.getState().createLessonV2;
+    const step = slice.treeSteps[currentStep || ""] || null;
+
+    return slice.treeAnchors[step.anchor || currentAnchor || ""] || null;
+  }, [currentAnchor]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
 
@@ -115,6 +119,7 @@ export default function VideoStatus() {
   }, [
     dispatch,
     anchor,
+    currentStep,
     currentRecording,
     videoNavigation,
     currentCanvasSource,
