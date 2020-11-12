@@ -19,6 +19,7 @@ import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
 import BaseToggle from "../../base-toggle";
+import SettingsDialog from "./settings-dialog";
 
 interface OpenItemProps {
   id: string;
@@ -98,6 +99,9 @@ export default function OpenItem(props: OpenItemProps) {
         )}
         {view === "Settings" && item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "dialog" && (
+          <SettingsDialog item={item} update={doUpdate} />
         )}
         {view === "Trigger" && (
           <Flex column style={{ width: "-webkit-fill-available" }}>

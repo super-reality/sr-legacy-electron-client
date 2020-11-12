@@ -1,0 +1,6 @@
+@import "../index.scss";
+
+.dialog-box {
+  @include item-base;
+  @include item-solid;
+}

@@ -78,7 +78,7 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("audio")}
+            onClick={() => doAddItem("dialog")}
             svg={IconAddTTS}
             width="32px"
             height="32px"
