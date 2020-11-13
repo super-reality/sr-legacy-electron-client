@@ -78,7 +78,7 @@ export default function VideoStatus() {
     const step: IStep | null = slice.treeSteps[currentStep || ""];
 
     return slice.treeAnchors[step?.anchor || currentAnchor || ""] || null;
-  }, [currentAnchor]);
+  }, [currentAnchor, currentStep]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
 
@@ -120,7 +120,6 @@ export default function VideoStatus() {
   }, [
     dispatch,
     anchor,
-    currentStep,
     currentRecording,
     videoNavigation,
     currentCanvasSource,
