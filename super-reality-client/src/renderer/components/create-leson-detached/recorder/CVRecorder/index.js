@@ -192,7 +192,10 @@ export default class CVRecorder {
       step_data: [],
     };
 
+    let previousInterval = 0;
     this._clickEventDetails.forEach(async (arr) => {
+      let doubleClick = false;
+      let clickType = "";
       let keyboardEvents = {};
       if (arr[4] !== undefined) {
         [, , , , keyboardEvents] = arr;
@@ -339,8 +342,21 @@ export default class CVRecorder {
           }/${snippedImageName}`
         );
       }
+      if(eventType === "left_click" || eventType === "right_click" || eventType === "wheel_click" ){
+        console.log("Interval Diffrence => ", interval - previousInterval)
+        if(interval - previousInterval < 500){
+          doubleClick = true
+        }
+        if(!doubleClick){
+          clickType = "single"
+        }else{
+          clickType = "double"
+        }
+        previousInterval = interval
+      }
       jsonMetaData.step_data.push({
         type: eventType,
+        click_type: clickType, 
         name: snippedImageName,
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
