@@ -9,3 +9,5 @@ export const recordingPath = `${userData}/step/media/`;
 export const stepSnapshotPath = `${userData}/step/snapshots/`;
 
 export const itemsPath = `${userData}/item/`;
+
+export const tempPath = `${userData}/temp/`;

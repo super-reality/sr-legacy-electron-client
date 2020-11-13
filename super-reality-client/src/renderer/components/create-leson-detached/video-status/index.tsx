@@ -27,9 +27,15 @@ import newItem from "../lesson-utils/newItem";
 import sha1 from "../../../../utils/sha1";
 import { Item } from "../../../api/types/item/item";
 import newStep from "../lesson-utils/newStep";
-import { itemsPath } from "../../../electron-constants";
+import {
+  itemsPath,
+  recordingPath,
+  tempPath,
+} from "../../../electron-constants";
 import getDefaultItemProps from "../lesson-utils/getDefaultItemProps";
 import { IStep } from "../../../api/types/step/step";
+import globalData from "../../../globalData";
+import { trimAudio } from "../recorder/CVEditor";
 
 function saveCanvasImage(fileName: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -135,6 +141,18 @@ export default function VideoStatus() {
         const orig = recordingData.step_data[matchFrame];
         const timestamp = orig.time_stamp;
         const timestampTime = timestampToTime(timestamp);
+        const seconds = timestampTime / 1000;
+        if (orig.type == "left_click" || orig.type == "right_click") {
+          trimAudio(
+            globalData.audioCutoffTime,
+            seconds,
+            `${recordingPath}/aud-${currentRecording}.webm`,
+            `${tempPath}/${globalData.audioCutoffTime}.mp3`
+          ).then((file) => {
+            //
+          });
+          globalData.audioCutoffTime = seconds;
+        }
         videoHidden.currentTime = timestampTime / 1000;
         timeoutRef.current = setTimeout(() => {
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
@@ -197,7 +215,14 @@ export default function VideoStatus() {
         setMatchFrame(-1);
       }
     }
-  }, [matchFrame, recordingData, timeoutRef, dispatch, anchor]);
+  }, [
+    matchFrame,
+    currentRecording,
+    recordingData,
+    timeoutRef,
+    dispatch,
+    anchor,
+  ]);
 
   const testFullVideo = useCallback(() => {
     reduxAction(dispatch, {
@@ -213,6 +238,7 @@ export default function VideoStatus() {
         recordingCvFrame: 0,
       },
     });
+    globalData.audioCutoffTime = 0;
     const videoHidden = document.getElementById(
       "video-hidden"
     ) as HTMLVideoElement;
