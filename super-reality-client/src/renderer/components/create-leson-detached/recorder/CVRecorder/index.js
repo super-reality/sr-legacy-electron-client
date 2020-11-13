@@ -39,6 +39,7 @@ export default class CVRecorder {
     this._stoppedDuration = 0;
     this._pixelOffset = 2;
     this._maxPixelStepLimit = 30;
+    this._doubleClickThreshold = 500    // in milliseconds
     this._currentTimer = "";
     this._stepRecordingName = "";
     this._recordingFullPath = "";
@@ -344,7 +345,7 @@ export default class CVRecorder {
       }
       if(eventType === "left_click" || eventType === "right_click" || eventType === "wheel_click" ){
         console.log("Interval Diffrence => ", interval - previousInterval)
-        if(interval - previousInterval < 500){
+        if(interval - previousInterval < this._doubleClickThreshold){
           doubleClick = true
         }
         if(!doubleClick){
