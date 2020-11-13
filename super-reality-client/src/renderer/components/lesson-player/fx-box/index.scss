@@ -3,9 +3,10 @@
 .fx-box {
   @include item-base;
   // background-color: gray;
-  border-radius: 50%;
+  // border-radius: 50%;
   // @include item-solid;
   background-color: transparent;
+  border: var(--color-blue) solid 2px;
 
   .fx-iframe {
     position: relative;

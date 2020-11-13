@@ -24,29 +24,29 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
     const { effect, style, pos, callback } = props;
     // const [srcFX, setSrcFX] = useState("../fx-wavy/");
 
-    let srcFX = "../fx/rainbow-circle-wavy-big/";
+    let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
     if (effect) {
       switch (effect) {
         case "id_1":
-          srcFX = "../fx/rainbow-circle-wavy-big/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
           break;
         case "id_2":
-          srcFX = "../fx/rainbow-confetti/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-confetti/`;
           break;
         case "id_3":
-          srcFX = "../fx/rainbow-orb-big/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/`;
           break;
         case "id_4":
-          srcFX = "../fx/hyperspace1/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace1/`;
           break;
         case "id_5":
-          srcFX = "../fx/hyperspace2/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace2/`;
           break;
         case "id_6":
-          srcFX = "../fx/hyperspace3/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace3/`;
           break;
         default:
-          srcFX = "../fx/rainbow-circle-wavy-big/";
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
       }
     }
     console.log("effect", effect, "srcFX", srcFX);
@@ -75,16 +75,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
         }}
       >
         {/* <div>FX</div> */}
-        <iframe
-          style={{
-            width: "274%",
-            top: "-20%",
-            left: "-87%",
-            height: "calc(100% * 1.7)",
-          }}
-          className="fx-iframe"
-          src={srcFX}
-        />
+        <iframe className="fx-iframe" src={srcFX} />
       </div>
     );
   }
@@ -93,3 +84,11 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
 FXBox.displayName = "FXBox";
 
 export default FXBox;
+/*
+style={{
+            width: "274%",
+            top: "-20%",
+            left: "-87%",
+            height: "calc(100% * 1.7)",
+          }}
+*/
