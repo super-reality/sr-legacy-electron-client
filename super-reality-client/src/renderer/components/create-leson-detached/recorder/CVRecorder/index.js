@@ -186,9 +186,7 @@ export default class CVRecorder {
     const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
     const mainImage = cap.read();
-    // console.log(pathToConvertedFile)
 
-    const frames = cap.get(cv.CAP_PROP_FRAME_COUNT);
     const jsonMetaData = {
       step_data: [],
     };
