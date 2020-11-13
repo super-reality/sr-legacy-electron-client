@@ -28,6 +28,8 @@ export default function RecordingsView(props: RecordingsViewProps) {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
             currentRecording: id,
+            currentCanvasSource: undefined,
+            canvasSource: `recording ${id}`,
           },
         });
     },

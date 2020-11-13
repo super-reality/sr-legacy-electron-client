@@ -4,6 +4,7 @@ import {
   recordingPath,
   stepPath,
   stepSnapshotPath,
+  tempPath,
 } from "../renderer/electron-constants";
 
 function makeDataDir(dir: string) {
@@ -19,4 +20,5 @@ export default function createDataDirs() {
   makeDataDir(recordingPath);
   makeDataDir(stepSnapshotPath);
   makeDataDir(itemsPath);
+  makeDataDir(tempPath);
 }

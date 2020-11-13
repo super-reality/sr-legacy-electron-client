@@ -11,6 +11,7 @@ import FindBox from "../find-box";
 import ImageBox from "../image.box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
+import DialogBox from "../dialog-box";
 
 interface ItemViewProps {
   item: Item;
@@ -86,6 +87,14 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          callback={onSucess}
+        />
+      )}
+      {item && item.type == "dialog" && (
+        <DialogBox
+          pos={pos}
+          style={style}
+          text={item.text}
           callback={onSucess}
         />
       )}

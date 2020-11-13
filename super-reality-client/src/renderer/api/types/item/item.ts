@@ -90,7 +90,7 @@ export interface ItemVideo extends BaseItem {
 
 export interface ItemDialog extends BaseItem {
   type: "dialog";
-  url: string;
+  text: string;
   trigger: ValueOf<typeof ItemDialogTriggers>;
 }
 

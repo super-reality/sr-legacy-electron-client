@@ -66,25 +66,27 @@ export default class CVEditor {
 }
 
 export function trimAudio(trimFrom, trimTo, src, dst) {
-  const ffmpegCommand = shell([
-    pathToFfmpeg,
-    "-ss",
-    trimFrom,
-    "-i",
-    src,
-    "-t",
-    trimTo,
-    "-c",
-    "copy",
-    dst,
-  ]);
+  return new Promise((resolve, reject) => {
+    const ffmpegCommand = shell([
+      pathToFfmpeg,
+      "-ss",
+      trimFrom,
+      "-i",
+      src,
+      "-t",
+      trimTo,
+      "-c",
+      "copy",
+      dst,
+    ]);
 
-  exec(ffmpegCommand, (err) => {
-    if (err) {
-      console.error(err);
-    } else {
-      console.info("Audio Trimmed!");
-    }
+    exec(ffmpegCommand, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(dst);
+      }
+    });
   });
 }
 

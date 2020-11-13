@@ -180,7 +180,7 @@ export default function doCvMatch(
       // Get Templates
       Promise.all(
         images.map((image) =>
-          mode == "Dom" ? getUrlMat(image) : getLocalMat(image)
+          image.indexOf("http") !== -1 ? getUrlMat(image) : getLocalMat(image)
         )
       )
         .then((templateMats) => {
