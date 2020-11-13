@@ -48,7 +48,7 @@ export default function OpenItem(props: OpenItemProps) {
       case "focus_highlight":
         triggers = ItemFocusTriggers;
         break;
-      case "effect":
+      case "fx":
         triggers = ItemFXTriggers;
         break;
       case "audio":
@@ -85,7 +85,7 @@ export default function OpenItem(props: OpenItemProps) {
     },
     [id, treeItems]
   );
-  console.log(treeItems);
+  // console.log(treeItems);
   if (!item) return <></>;
   console.log(item);
   return (
@@ -106,8 +106,8 @@ export default function OpenItem(props: OpenItemProps) {
             }}
           />
         )}
-        {view === "Settings" && testFX.type == "effect" && (
-          <FXSettings item={item} update={updateFX} />
+        {view === "Settings" && item.type == "fx" && (
+          <FXSettings item={item} update={doUpdate} />
         )}
         {view === "Settings" && item.type == "focus_highlight" && (
           <SettingsFocusHighlight item={item} update={doUpdate} />

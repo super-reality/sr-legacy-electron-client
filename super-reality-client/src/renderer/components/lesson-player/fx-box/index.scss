@@ -1,0 +1,20 @@
+@import "../index.scss";
+
+.fx-box {
+  @include item-base;
+  // background-color: gray;
+  border-radius: 50%;
+  // @include item-solid;
+  background-color: transparent;
+
+  .fx-iframe {
+    position: relative;
+    border-radius: 50%;
+    border: none;
+    height: inherit;
+    pointer-events: none;
+    margin: 0px;
+    @include item-base;
+    background-color: transparent;
+  }
+}

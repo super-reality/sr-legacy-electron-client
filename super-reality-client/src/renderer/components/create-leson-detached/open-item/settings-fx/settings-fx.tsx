@@ -58,7 +58,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const { item, update, style } = props;
   const dispatch = useDispatch();
   const [open, setOpen] = useState<boolean>(false);
-  const [effect, setEffect] = useState("id1");
+  const [effect, setEffect] = useState("id_1");
 
   const openFolder = useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
@@ -82,7 +82,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               />
             </div>
 
-            <div className="title">Great Success</div>
+            <div className="title">Effects</div>
           </div>
           <div className="settings-list-item-list">
             <button
@@ -95,12 +95,17 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_1" });
               }}
             >
-              <img
+              {/* <img
                 src={IconStars}
                 alt="icon-stars"
                 className="settings-subitem-icon"
+              /> */}
+              <embed
+                src="../fx/rainbow-circle-wavy-big/"
+                width="40"
+                height="40"
               />
-              <div className="title">Stars</div>
+              <div className="title">Rainbow Wavy circle</div>
             </button>
 
             <button
@@ -113,12 +118,8 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_2" });
               }}
             >
-              <img
-                src={IconFireworks}
-                alt="icon-fireworks"
-                className="settings-subitem-icon"
-              />
-              <div className="title">Fireworks</div>
+              <embed src="../fx/rainbow-confetti/" width="40" height="40" />
+              <div className="title">Rainbow Confetti</div>
             </button>
 
             <button
@@ -131,31 +132,61 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_3" });
               }}
             >
-              <img
-                src={IconCoins}
-                alt="icon-coins"
-                className="settings-subitem-icon"
-              />
-              <div className="title">Coins</div>
+              <embed src="../fx/rainbow-orb-big/" width="40" height="40" />
+              <div className="title">Rainbow ORB Big</div>
+            </button>
+
+            <button
+              type="button"
+              className={`settings-list-item-list-subitem subitem-container${
+                item.effect == "id_4" ? "-selected" : ""
+              }`}
+              onClick={() => {
+                setEffect("id_4");
+                update({ effect: "id_4" });
+              }}
+            >
+              <embed src="../fx/hyperspace1/" width="40" height="40" />
+              <div className="title">Hyperspace1</div>
+            </button>
+
+            <button
+              type="button"
+              className={`settings-list-item-list-subitem subitem-container${
+                item.effect == "id_5" ? "-selected" : ""
+              }`}
+              onClick={() => {
+                setEffect("id_5");
+                update({ effect: "id_5" });
+              }}
+            >
+              <embed src="../fx/hyperspace2/" width="40" height="40" />
+              <div className="title">Hyperspace2</div>
+            </button>
+
+            <button
+              type="button"
+              className={`settings-list-item-list-subitem subitem-container${
+                item.effect == "id_6" ? "-selected" : ""
+              }`}
+              onClick={() => {
+                setEffect("id_6");
+                update({ effect: "id_6" });
+              }}
+            >
+              <embed src="../fx/hyperspace3/" width="40" height="40" />
+              <div className="title">Hyperspace3</div>
             </button>
           </div>
         </div>
-        <div className="settings-list-item">
-          <div
-            className="settings-list-item-header"
-            style={{}}
-            onClick={openFolder}
-          >
-            <div className={`folder-drop ${open ? "open" : ""}`}>
-              <IconTreeDropArrow
-                style={{ margin: "auto" }}
-                fill="var(--color-icon)"
-              />
-            </div>
-            <div className="title">Background</div>
-          </div>
-        </div>
-        <div className="settings-list-item">
+        <div className="settings-list-item" />
+      </div>
+    </Flex>
+  );
+}
+
+/*
+<div className="settings-list-item">
           <div
             className="settings-list-item-header"
             style={{}}
@@ -170,66 +201,17 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
             <div className="title">Splashes</div>
           </div>
         </div>
-      </div>
-    </Flex>
-  );
-}
-
-/*
-
-*/
-
-/*
-<ul className="settings-list">
-                <li className="settings-list-item">
-                    <Flex style={{ flexDirection: "row" }}>
-                        <IconTreeDropArrow
-                            style={{ position: "relative", top: "10px" }}
-                            fill="var(--color-icon)"
-                        />
-                        <div className="title">Great Success</div>
-                    </Flex>
-
-
-                    <ul className="settings-list-item-list">
-                        <li className="settings-list-item-list-subitem subitem-container">
-                            <img src={IconStars} alt="icon-stars" className="settings-subitem-icon" />
-                            <div className="title">Stars</div>
-                        </li>
-                        <li className="settings-list-item-list-subitem subitem-container">
-                            <img src={IconFireworks} alt="icon-fireworks" className="settings-subitem-icon" />
-                            <div className="title">Fireworks</div>
-                        </li>
-                        <li className="settings-list-item-list-subitem subitem-container">
-                            <img src={IconCoins} alt="icon-coins" className="settings-subitem-icon" />
-                            <div className="title">Coins</div>
-                        </li>
-                    </ul>
-
-                </li>
-
-            </ul>
-<div className="settings-list-item-list">
-                        <div className="settings-list-item-list-subitem"></div>
-                        <div className="settings-list-item-list-subitem"></div>
-                        <div className="settings-list-item-list-subitem"></div>
-                    </div>
-<li className="settings-list-item">
-                    <div className="title">
-                        <ul className="settings-list-item-list">
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                        </ul>
-                    </div>
-                </li>
-                <li className="settings-list-item">
-                    <div className="title">
-                        <ul className="settings-list-item-list">
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                            <li className="settings-list-item-list-subitem"><img src="" alt="" className="settings-subitem-icon"/></li>
-                        </ul>
-                    </div>
-                </li>
+<div
+            className="settings-list-item-header"
+            style={{}}
+            onClick={openFolder}
+          >
+            <div className={`folder-drop ${open ? "open" : ""}`}>
+              <IconTreeDropArrow
+                style={{ margin: "auto" }}
+                fill="var(--color-icon)"
+              />
+            </div>
+            <div className="title">Background</div>
+          </div>
 */

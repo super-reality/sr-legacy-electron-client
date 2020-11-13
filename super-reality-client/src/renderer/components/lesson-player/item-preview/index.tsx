@@ -20,6 +20,7 @@ import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
 import ButtonSimple from "../../button-simple";
+import FXBox from "../fx-box/fx-box";
 
 interface ItemPreviewProps {
   onSucess?: () => void;
@@ -38,8 +39,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
-  // test FX
-  const { testFX } = useSelector((state: AppState) => state.createLessonV2);
+
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -101,10 +101,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
   useEffect(() => {
     if (dragContainer.current && item && step) {
       const startPos = { ...pos };
+      let ratioForEffect = null;
+      if (item.type == "fx") {
+        ratioForEffect = interact.modifiers.aspectRatio({
+          // make sure the width is always equal to the height
+          ratio: 1,
+          // also restrict the size by nesting another modifier
+          modifiers: [interact.modifiers.restrictSize({ max: "parent" })],
+        });
+      }
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictMinSize],
+          modifiers: [restrictMinSize, ratioForEffect],
           inertia: true,
         } as any)
         .on("resizemove", (event) => {
@@ -264,17 +273,14 @@ export default function ItemPreview(props: ItemPreviewProps) {
           callback={onSucessCallback}
         />
       )}
-      {testFX.type == "effect" && (
-        <>
-          <iframe
-            style={{
-              width: "150px",
-              height: "150px",
-            }}
-            className="fx-iframe click-through"
-            src="../fx-wavy"
-          />
-        </>
+      {item && item.type == "fx" && (
+        <FXBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          effect={item.effect}
+          callback={onSucessCallback}
+        />
       )}
     </>
   );

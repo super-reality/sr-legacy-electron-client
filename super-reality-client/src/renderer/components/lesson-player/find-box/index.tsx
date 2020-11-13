@@ -12,7 +12,6 @@ import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg"
 import {
   ItemFocus,
   ItemFocusTriggers,
-  ItemFX,
   ItemFXTriggers,
 } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
@@ -29,7 +28,7 @@ interface FindBoxProps {
     height: number;
   };
   style?: CSSProperties;
-  type: ItemFX["effect"] | ItemFocus["focus"] | "anchor";
+  type: ItemFocus["focus"] | "anchor";
   ref?: React.RefObject<HTMLDivElement>;
   clickThrough?: boolean;
   callback?: (trigger: number) => void;
@@ -39,21 +38,12 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
   (props, forwardedRef) => {
     const { type, pos, style, clickThrough, callback } = props;
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    // test FX
-    const { testFX } = useSelector((state: AppState) => state.createLessonV2);
-    const [currentEffect, setcurrentEffect] = useState("../fx-wavy");
-    useEffect(() => {
-      if (testFX.effect == "id_1") setcurrentEffect("../fx-wavy/");
-      if (testFX.effect == "id_2") setcurrentEffect("../fx-confetti/");
-      if (testFX.effect == "id_3") setcurrentEffect("../fx-orb/");
-    }, [testFX.effect]);
 
     let computedType = "type";
     if (type == "anchor") computedType = "anchor";
     if (type == "Mouse Point") computedType = "mouse";
     if (type == "Rectangle") computedType = "rectangle";
     if (type == "Area highlight") computedType = "area";
-    if (type == "id_1") computedType = "area";
 
     const clickCallback = useCallback(
       (e: { x: number; y: number; button: number }) => {
@@ -123,14 +113,6 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
             style={{ opacity: 0.66, margin: "auto" }}
           />
         )}
-        <iframe
-          style={{
-            width: "1050px",
-            height: "550px",
-          }}
-          className="fx-iframe click-through"
-          src={currentEffect}
-        />
       </div>
     );
   }

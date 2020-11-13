@@ -23,6 +23,11 @@ export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
     payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
     payload.trigger = 1;
   }
+  if (payload.type == "fx" && !payload.effect) {
+    payload.relativePos = { x: 0, y: 0, width: 400, height: 400 };
+    payload.effect = "id_1";
+    payload.trigger = 1;
+  }
 
   return payload;
 }

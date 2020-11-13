@@ -19,6 +19,7 @@ import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
+import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import onDragOver from "../lesson-utils/onDragOver";
 import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
@@ -382,6 +383,9 @@ function TreeItem(props: TreeItemProps) {
         break;
       case "video":
         Icon = IconAddVideo;
+        break;
+      case "fx":
+        Icon = IconAddFX;
         break;
       default:
         Icon = IconAddFocus;
