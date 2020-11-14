@@ -18,46 +18,17 @@ import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/doCVMatch";
-import timestampToTime from "../../../../utils/timestampToTime";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import newAnchor from "../lesson-utils/newAnchor";
 import userDataPath from "../../../../utils/userDataPath";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
-import newItem from "../lesson-utils/newItem";
-import sha1 from "../../../../utils/sha1";
-import { Item } from "../../../api/types/item/item";
-import newStep from "../lesson-utils/newStep";
-import {
-  itemsPath,
-  recordingPath,
-  tempPath,
-} from "../../../electron-constants";
-import getDefaultItemProps from "../lesson-utils/getDefaultItemProps";
 import { IStep } from "../../../api/types/step/step";
-import globalData from "../../../globalData";
-import { trimAudio } from "../recorder/CVEditor";
-
-function saveCanvasImage(fileName: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const canvas = document.getElementById("preview-video-canvas") as
-      | HTMLCanvasElement
-      | undefined;
-    if (canvas) {
-      const url = canvas.toDataURL("image/jpg", 0.8);
-
-      // remove Base64 stuff from the Image
-      const base64Data = url.replace(/^data:image\/png;base64,/, "");
-      fs.writeFile(fileName, base64Data, "base64", (err) => {
-        if (err) reject(err);
-        else {
-          resolve();
-        }
-      });
-    } else {
-      reject();
-    }
-  });
-}
+import generateDialogues from "./generation/generateDialogues";
+import generateBaseData from "./generation/generateBaseData";
+import generateSteps from "./generation/generateSteps";
+import generateClicks from "./generation/generateClicks";
+import saveCanvasImage from "../../../../utils/saveCanvasImage";
+import testFullVideo from "./generation/testFullVideo";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -131,100 +102,20 @@ export default function VideoStatus() {
     currentCanvasSource,
   ]);
 
-  // Anchor full video wide matching/testing
-  useEffect(() => {
-    const videoHidden = document.getElementById(
-      "video-hidden"
-    ) as HTMLVideoElement;
-    if (videoHidden && anchor) {
-      if (matchFrame !== -1 && matchFrame < recordingData.step_data.length) {
-        const orig = recordingData.step_data[matchFrame];
-        const timestamp = orig.time_stamp;
-        const timestampTime = timestampToTime(timestamp);
-        const seconds = timestampTime / 1000;
-        if (orig.type == "left_click" || orig.type == "right_click") {
-          trimAudio(
-            globalData.audioCutoffTime,
-            seconds,
-            `${recordingPath}/aud-${currentRecording}.webm`,
-            `${tempPath}/${globalData.audioCutoffTime}.mp3`
-          ).then((file) => {
-            //
-          });
-          globalData.audioCutoffTime = seconds;
-        }
-        videoHidden.currentTime = timestampTime / 1000;
-        timeoutRef.current = setTimeout(() => {
-          doCvMatch(anchor.templates, videoHidden, anchor).then((arg) => {
-            reduxAction(dispatch, {
-              type: "SET_RECORDING_CV_DATA",
-              arg: { index: timestampTime / 1000, value: arg.dist },
-            });
+  const generateItems = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CLEAR_RECORDING_CV_DATA",
+      arg: null,
+    });
 
-            // Create new item based on step data from recording
-            const id = sha1(`${orig.type}-${orig.time_stamp}`);
-            const itemType = "focus_highlight";
-            const itemToSet = {
-              trigger: null,
-              destination: "", // a step ID to go to
-              transition: 0, // type
-              anchor: true,
-              ...getDefaultItemProps(itemType),
-              _id: id,
-              name: `${orig.type} ${orig.time_stamp}`,
-              type: itemType,
-              focus: "Mouse Point",
-              relativePos: {
-                width: 16,
-                height: 16,
-                x: orig.x_cordinate ? orig.x_cordinate - arg.x : 0,
-                y: orig.y_cordinate ? orig.y_cordinate - arg.y : 0,
-              },
-            };
+    const generatedData = generateBaseData();
+    generateSteps(generatedData)
+      .then((data) => generateDialogues(data))
+      .then((data) => generateClicks(data, anchor))
+      .then(console.log);
+  }, [recordingData, anchor]);
 
-            if (orig.type !== "keydown" && orig.type !== "keyup") {
-              itemToSet.relativePos.x -= 64;
-              itemToSet.relativePos.y -= 64;
-              itemToSet.relativePos.width = 128;
-              itemToSet.relativePos.height = 128;
-            }
-
-            if (
-              orig.type == "left_click" ||
-              orig.type == "right_click" ||
-              orig.type == "wheel_click"
-            ) {
-              reduxAction(dispatch, {
-                type: "CREATE_LESSON_V2_SET_TEMPITEM",
-                arg: {
-                  item: itemToSet as Item,
-                },
-              });
-            }
-
-            saveCanvasImage(`${itemsPath}/${sha1(itemToSet.name)}.png`).then(
-              () => {
-                if (timeoutRef.current) {
-                  setMatchFrame(matchFrame + 1);
-                }
-              }
-            );
-          });
-        }, 200);
-      } else {
-        setMatchFrame(-1);
-      }
-    }
-  }, [
-    matchFrame,
-    currentRecording,
-    recordingData,
-    timeoutRef,
-    dispatch,
-    anchor,
-  ]);
-
-  const testFullVideo = useCallback(() => {
+  const checkAnchor = useCallback(() => {
     reduxAction(dispatch, {
       type: "CLEAR_RECORDING_CV_DATA",
       arg: null,
@@ -238,29 +129,8 @@ export default function VideoStatus() {
         recordingCvFrame: 0,
       },
     });
-    globalData.audioCutoffTime = 0;
-    const videoHidden = document.getElementById(
-      "video-hidden"
-    ) as HTMLVideoElement;
-    if (videoHidden && recordingData.anchor) {
-      videoHidden.currentTime = 0;
-      setMatchFrame(0);
-    }
-  }, [recordingData]);
-
-  const generateItems = useCallback(() => {
-    Promise.all(
-      Object.keys(recordingTempItems).map((k) => {
-        const item = recordingTempItems[k];
-        return newStep(
-          { name: recordingTempItems[k].name, anchor: recordingData.anchor },
-          currentChapter
-        ).then((step) => {
-          if (step) newItem(item, step._id);
-        });
-      })
-    );
-  }, [dispatch, recordingTempItems, treeItems, currentChapter, recordingData]);
+    testFullVideo(anchor);
+  }, [recordingData, anchor]);
 
   const doNewAnchor = useCallback(
     (url) => {
@@ -385,16 +255,9 @@ export default function VideoStatus() {
             width="140px"
             height="12px"
             margin="auto 4px"
-            onClick={
-              matchFrame == -1
-                ? testFullVideo
-                : () => {
-                    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                    setMatchFrame(-1);
-                  }
-            }
+            onClick={checkAnchor}
           >
-            {matchFrame == -1 ? "Check anchor" : "Stop checking"}
+            Check anchor
           </ButtonSimple>
           <ButtonSimple
             width="140px"

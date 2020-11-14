@@ -12,7 +12,7 @@ import updateStep from "./updateStep";
 export default function newItem(
   type: BaseItemType | Partial<Item>,
   step?: string
-): Promise<void> {
+): Promise<Item | void> {
   const payload: Partial<Item> =
     typeof type == "string" ? getDefaultItemProps(type) : { ...type };
 
@@ -26,6 +26,7 @@ export default function newItem(
       if (step) {
         updateStep({}, step);
       }
+      return data;
     })
     .catch(console.error);
 }
