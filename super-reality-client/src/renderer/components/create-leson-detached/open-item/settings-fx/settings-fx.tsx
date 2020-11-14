@@ -101,7 +101,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 className="settings-subitem-icon"
               /> */}
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`}
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`}
                 width="40"
                 height="40"
               />
@@ -119,7 +119,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }}
             >
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/`}
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`}
                 width="40"
                 height="40"
               />
@@ -137,7 +137,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }}
             >
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-orb-big/`}
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`}
                 width="40"
                 height="40"
               />
@@ -155,7 +155,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }}
             >
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace1/`}
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`}
                 width="40"
                 height="40"
               />
@@ -173,7 +173,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }}
             >
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace2/`}
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`}
                 width="40"
                 height="40"
               />
@@ -191,7 +191,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               }}
             >
               <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace3/`}
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`}
                 width="40"
                 height="40"
               />

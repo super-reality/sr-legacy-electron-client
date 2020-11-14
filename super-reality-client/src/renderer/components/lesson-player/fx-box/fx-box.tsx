@@ -31,29 +31,29 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
       ? path.join(proc.resourcesPath)
       : path.join(remote.app.getAppPath(), "public");
 
-    let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
+    let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
     if (effect) {
       switch (effect) {
         case "id_1":
-          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
           break;
         case "id_2":
-          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-confetti/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`;
           break;
         case "id_3":
-          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`;
           break;
         case "id_4":
-          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace1/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`;
           break;
         case "id_5":
-          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace2/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`;
           break;
         case "id_6":
-          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace3/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`;
           break;
         default:
-          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
       }
     }
     console.log("effect", effect, "srcFX", srcFX);
