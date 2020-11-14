@@ -1,6 +1,6 @@
 {
   "name": "super-reality-client",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
@@ -115,6 +115,13 @@
       {
         "from": "./public/extra/",
         "to": "extra",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./public/fx/",
+        "to": "fx",
         "filter": [
           "**/*"
         ]

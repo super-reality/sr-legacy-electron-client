@@ -14,7 +14,7 @@ import getStep from "../lesson-utils/getStep";
 import "./index.scss";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
-import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
+import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
@@ -186,6 +186,7 @@ function TreeFolder(props: TreeFolderProps) {
             arg: {
               currentLesson: parentId,
               currentChapter: id,
+              currentStep: undefined,
               currentItem: undefined,
             },
           });
@@ -196,6 +197,7 @@ function TreeFolder(props: TreeFolderProps) {
             arg: {
               currentLesson: id,
               currentChapter: undefined,
+              currentStep: undefined,
               currentItem: undefined,
             },
           });
@@ -291,7 +293,6 @@ function TreeItem(props: TreeItemProps) {
     treeCurrentType,
     treeCurrentId,
     treeItems,
-    treeSteps,
     dragOver,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [selected, setSelected] = useState<boolean>(false);
@@ -339,14 +340,12 @@ function TreeItem(props: TreeItemProps) {
       arg: { type: "item", uniqueId, id },
     });
     if (id) {
-      const parentAnchor = treeSteps[parentId].anchor || undefined;
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
           currentLesson: uniqueId.split(".")[0],
           currentChapter: uniqueId.split(".")[1],
           currentStep: parentId,
-          currentAnchor: parentAnchor,
           currentItem: id,
         },
       });
@@ -376,7 +375,7 @@ function TreeItem(props: TreeItemProps) {
         Icon = IconAddAudio;
         break;
       case "dialog":
-        Icon = IconAddClip;
+        Icon = IconAddDialog;
         break;
       case "image":
         Icon = IconAddImage;

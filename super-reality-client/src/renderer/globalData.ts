@@ -11,6 +11,7 @@ const globalData = {
   backgroundProcess: null as any | null,
   debugCv: true as boolean,
   prevBounds: { x: 0, y: 0, width: 0, height: 0 } as Rectangle,
+  audioCutoffTime: 0,
 };
 
 export default globalData;

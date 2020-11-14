@@ -101,7 +101,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 className="settings-subitem-icon"
               /> */}
               <embed
-                src="../fx/rainbow-circle-wavy-big/"
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`}
                 width="40"
                 height="40"
               />
@@ -118,7 +118,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_2" });
               }}
             >
-              <embed src="../fx/rainbow-confetti/" width="40" height="40" />
+              <embed
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/`}
+                width="40"
+                height="40"
+              />
               <div className="title">Rainbow Confetti</div>
             </button>
 
@@ -132,7 +136,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_3" });
               }}
             >
-              <embed src="../fx/rainbow-orb-big/" width="40" height="40" />
+              <embed
+                src={`${process.env.PUBLIC_URL}/fx/rainbow-orb-big/`}
+                width="40"
+                height="40"
+              />
               <div className="title">Rainbow ORB Big</div>
             </button>
 
@@ -146,7 +154,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_4" });
               }}
             >
-              <embed src="../fx/hyperspace1/" width="40" height="40" />
+              <embed
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace1/`}
+                width="40"
+                height="40"
+              />
               <div className="title">Hyperspace1</div>
             </button>
 
@@ -160,7 +172,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_5" });
               }}
             >
-              <embed src="../fx/hyperspace2/" width="40" height="40" />
+              <embed
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace2/`}
+                width="40"
+                height="40"
+              />
               <div className="title">Hyperspace2</div>
             </button>
 
@@ -174,7 +190,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                 update({ effect: "id_6" });
               }}
             >
-              <embed src="../fx/hyperspace3/" width="40" height="40" />
+              <embed
+                src={`${process.env.PUBLIC_URL}/fx/hyperspace3/`}
+                width="40"
+                height="40"
+              />
               <div className="title">Hyperspace3</div>
             </button>
           </div>

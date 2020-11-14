@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import path from "path";
+import proc from "process";
 import { FX, ItemFXTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
@@ -23,6 +25,11 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
     const { effect, style, pos, callback } = props;
     // const [srcFX, setSrcFX] = useState("../fx-wavy/");
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    const publicPath = remote.app.isPackaged
+      ? path.join(proc.resourcesPath)
+      : path.join(remote.app.getAppPath(), "public");
 
     let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/`;
     if (effect) {
