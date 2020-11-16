@@ -1,6 +1,5 @@
 import { CVResult } from "../../../../../types/utils";
 import doCvMatch from "../../../../../utils/doCVMatch";
-import sha1 from "../../../../../utils/md5";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
@@ -9,6 +8,7 @@ import { itemsPath } from "../../../../electron-constants";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";
 import newItem from "../../lesson-utils/newItem";
+import setStatus from "../../lesson-utils/setStatus";
 import { StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
@@ -52,6 +52,8 @@ export default async function generateClicks(
     const data = filtered[index];
     const stepName = `step ${data.time_stamp}`;
     const stepId = baseData.steps[stepName]?._id ?? undefined;
+
+    setStatus(`Generating clicks (${index}/${filtered.length})`);
 
     if (stepId) {
       // eslint-disable-next-line no-await-in-loop

@@ -4,6 +4,7 @@ import trimAudio from "../../../../../utils/trimAudio";
 import { recordingPath, tempPath } from "../../../../electron-constants";
 import store from "../../../../redux/stores/renderer";
 import newItem from "../../lesson-utils/newItem";
+import setStatus from "../../lesson-utils/setStatus";
 import { GeneratedData } from "./types";
 
 interface AudioPiece {
@@ -20,6 +21,7 @@ function makeDialogsFromPieces(
   const newData = { ...baseData };
   console.log("Audio Pieces", pieces);
 
+  setStatus(`Pushing dialogues`);
   const promises = pieces.map((p) => {
     return newItem(
       {
@@ -47,7 +49,7 @@ function makeDialogsFromPieces(
   return Promise.all(promises).then(() => newData);
 }
 
-export default function generateDialogues(
+export default async function generateDialogues(
   baseData: GeneratedData
 ): Promise<GeneratedData> {
   const audioPieces: AudioPiece[] = [];
@@ -72,43 +74,42 @@ export default function generateDialogues(
     last = seconds;
   });
 
+  setStatus(`Audio triming (0/${audioPieces.length})`);
   // Chain promises to call STT and get the strings
-  const promises = audioPieces.map((piece, index) => {
-    return new Promise<string>((resolve, reject) => {
-      const from = piece.time;
-      const to = audioPieces[index + 1]?.time ?? last;
 
-      console.log(`trimAudio from ${from} to ${to} (${to - from})`);
-      trimAudio(
-        `${from}`,
-        `${to - from}`,
-        `${recordingPath}aud-${currentRecording}.webm`,
-        `${tempPath}${from}-${to}.webm`
-      )
-        .then((file) => {
-          try {
-            getSTT(file).then((text) => {
-              if (
-                text !== "Google Speech Recognition could not understand audio"
-              ) {
-                audioPieces[index].text = text;
-                resolve(text);
-              } else {
-                resolve("");
-              }
-            });
-          } catch (e) {
-            reject(e);
-          }
-        })
-        .catch(reject);
-    });
-  });
+  for (let index = 0; index < audioPieces.length; index += 1) {
+    const piece = audioPieces[index];
 
-  return Promise.all(promises).then(() =>
-    makeDialogsFromPieces(
-      baseData,
-      audioPieces.filter((p) => p.text !== "")
+    const from = piece.time;
+    const to = audioPieces[index + 1]?.time ?? last;
+
+    console.log(`trimAudio from ${from} to ${to} (${to - from})`);
+    setStatus(`Audio triming (${index}/${audioPieces.length})`);
+    // eslint-disable-next-line no-await-in-loop
+    await trimAudio(
+      `${from}`,
+      `${to - from}`,
+      `${recordingPath}aud-${currentRecording}.webm`,
+      `${tempPath}${from}-${to}.webm`
     )
+      .then((file) => {
+        try {
+          getSTT(file).then((text) => {
+            if (
+              text !== "Google Speech Recognition could not understand audio"
+            ) {
+              audioPieces[index].text = text;
+            }
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .catch(console.error);
+  }
+
+  return makeDialogsFromPieces(
+    baseData,
+    audioPieces.filter((p) => p.text !== "")
   );
 }

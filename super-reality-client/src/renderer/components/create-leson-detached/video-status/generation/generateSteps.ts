@@ -1,6 +1,7 @@
 import { IStep } from "../../../../api/types/step/step";
 import store from "../../../../redux/stores/renderer";
 import newStep from "../../lesson-utils/newStep";
+import setStatus from "../../lesson-utils/setStatus";
 import { GeneratedData } from "./types";
 
 function onlyUnique(value: any, index: number, self: Array<any>) {
@@ -15,6 +16,8 @@ export default function generateSteps(
   const uniqueSteps: string[] = Object.values(baseData.itemToStep).filter(
     onlyUnique
   );
+
+  setStatus(`Generating steps`);
 
   const stepNameToStep: Record<string, IStep> = {};
   uniqueSteps.map((stepName) => {

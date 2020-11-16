@@ -23,12 +23,16 @@ export default function trimAudio(
       dst,
     ]);
 
-    exec(ffmpegCommand, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(dst);
-      }
-    });
+    try {
+      exec(ffmpegCommand, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(dst);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 }

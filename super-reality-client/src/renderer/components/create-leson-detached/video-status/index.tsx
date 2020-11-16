@@ -23,6 +23,8 @@ import generateSteps from "./generation/generateSteps";
 import generateClicks from "./generation/generateClicks";
 import saveCanvasImage from "../../../../utils/saveCanvasImage";
 import testFullVideo from "./generation/testFullVideo";
+import setStatus from "../lesson-utils/setStatus";
+import generationDone from "./generation/generationDone";
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -37,6 +39,7 @@ export default function VideoStatus() {
     canvasSource,
     currentRecording,
     currentCanvasSource,
+    status,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const anchor = useMemo(() => {
@@ -97,11 +100,13 @@ export default function VideoStatus() {
       arg: null,
     });
 
+    setStatus(`Generating`);
     const generatedData = generateBaseData();
     generateSteps(generatedData)
       .then((data) => generateDialogues(data))
       .then((data) => generateClicks(data, anchor))
-      .then(console.log);
+      .then(() => generationDone())
+      .catch((e) => setStatus(`Error generating`));
   }, [recordingData, anchor]);
 
   const checkAnchor = useCallback(() => {
@@ -262,7 +267,9 @@ export default function VideoStatus() {
           <i>{!cropRecording && "Attach an anchor to edit"}</i>
         </div>
       )}
-      <div style={{ marginLeft: "auto" }}>{canvasSource}</div>
+      <div
+        style={{ fontFamily: "monospace", marginLeft: "auto" }}
+      >{`${canvasSource} / ${status}`}</div>
       <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
     </div>
   );
