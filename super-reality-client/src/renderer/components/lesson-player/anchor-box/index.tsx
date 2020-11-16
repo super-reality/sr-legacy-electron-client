@@ -23,7 +23,7 @@ const AnchorBox = React.forwardRef<HTMLDivElement, AnchorBoxProps>(
     return (
       <div
         ref={forwardedRef}
-        className={`ind-box ${clickThrough ? "click-through" : ""} anchor`}
+        className={`find-box ${clickThrough ? "click-through" : ""} anchor`}
         style={{
           left: `${pos.x - 3}px`,
           top: `${pos.y - 3}px`,
