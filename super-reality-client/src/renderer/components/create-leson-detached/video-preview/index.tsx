@@ -12,8 +12,8 @@ import AnchorCrop from "../../lesson-player/anchor-crop";
 import FindBox from "../../lesson-player/find-box";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
-import sha1 from "../../../../utils/sha1";
 import StepView from "../../lesson-player/step-view";
+import AnchorBox from "../../lesson-player/anchor-box";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -304,13 +304,13 @@ export default function VideoPreview(): JSX.Element {
         )}
         {step && !currentItem && currentStep && !cropRecording && (
           <>
-            <FindBox type="anchor" pos={cvResult} />
+            <AnchorBox pos={cvResult} />
             <StepView stepId={currentStep} onSucess={() => {}} />
           </>
         )}
         {cropRecording && <AnchorCrop />}
         {!item && !cropRecording && (currentRecording || currentAnchor) && (
-          <FindBox type="anchor" pos={cvResult} />
+          <AnchorBox pos={cvResult} />
         )}
       </div>
     </div>
