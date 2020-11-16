@@ -196,6 +196,7 @@ export default class CVRecorder {
       let doubleClick = false;
       let clickType = "";
       let keyboardEvents = {};
+      let contourDic = {};
       if (arr[4] !== undefined) {
         [, , , , keyboardEvents] = arr;
       }
@@ -298,6 +299,12 @@ export default class CVRecorder {
           snipWindowWidth,
           snipWindowHeight
         );
+        
+        contourDic["top_left_corner"]  = [topLeftCornerX, topLeftCornerY];
+        contourDic["top_right_corner"] = [topRightCornerX, topRightCornerY];
+        contourDic["bottom_left_corner"] = [bottomLeftCornerX, bottomLeftCornerY];
+        contourDic["bottom_right_corner"] = [bottomRightCornerX, bottomRightCornerY];
+
         const matrix = cv.getPerspectiveTransform(
           cornerPointsArr,
           outputCornerPointsArr
@@ -360,6 +367,7 @@ export default class CVRecorder {
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
         time_stamp: timestamp,
+        contours: contourDic,
         keyboard_events: keyboardEvents,
       });
     });
