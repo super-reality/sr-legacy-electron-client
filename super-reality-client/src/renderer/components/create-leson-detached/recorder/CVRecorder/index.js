@@ -342,21 +342,25 @@ export default class CVRecorder {
           }/${snippedImageName}`
         );
       }
-      if(eventType === "left_click" || eventType === "right_click" || eventType === "wheel_click" ){
-        console.log("Interval Diffrence => ", interval - previousInterval)
-        if(interval - previousInterval < 500){
-          doubleClick = true
+      if (
+        eventType === "left_click" ||
+        eventType === "right_click" ||
+        eventType === "wheel_click"
+      ) {
+        console.log("Interval Diffrence => ", interval - previousInterval);
+        if (interval - previousInterval < 500) {
+          doubleClick = true;
         }
-        if(!doubleClick){
-          clickType = "single"
-        }else{
-          clickType = "double"
+        if (!doubleClick) {
+          clickType = "single";
+        } else {
+          clickType = "double";
         }
-        previousInterval = interval
+        previousInterval = interval;
       }
       jsonMetaData.step_data.push({
         type: eventType,
-        click_type: clickType, 
+        click_type: clickType,
         name: snippedImageName,
         x_cordinate: xCordinate,
         y_cordinate: yCordinate,
