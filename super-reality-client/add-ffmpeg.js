@@ -1,5 +1,6 @@
 const fs = require("fs");
 const os = require("os");
+// eslint-disable-next-line import/no-extraneous-dependencies
 const pathToFfmpeg = require("ffmpeg-static");
 
 const platform = process.env.npm_config_platform || os.platform();
