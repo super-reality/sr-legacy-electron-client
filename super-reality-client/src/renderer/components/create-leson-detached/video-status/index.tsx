@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import fs from "fs";
 import path from "path";
 import "./index.scss";
@@ -37,18 +31,13 @@ export default function VideoStatus() {
     currentAnchor,
     currentStep,
     treeAnchors,
-    treeItems,
     videoNavigation,
-    recordingTempItems,
-    currentChapter,
     cropRecording,
     cropRecordingPos,
     canvasSource,
     currentRecording,
     currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const [matchFrame, setMatchFrame] = useState(-1);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const anchor = useMemo(() => {
     const slice = store.getState().createLessonV2;
