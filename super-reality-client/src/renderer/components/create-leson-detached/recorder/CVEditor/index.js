@@ -12,10 +12,6 @@ src      = "../folder/fileToTrim.webm"
 dst      = "../folder/trimmedAudio.webm" 
 
 */
-
-const pathToFfmpeg = require("ffmpeg-static");
-const shell = require("any-shell-escape");
-const { exec } = require("child_process");
 const fs = require("fs");
 
 export default class CVEditor {
@@ -63,31 +59,6 @@ export default class CVEditor {
       this._canvas.height
     );
   }
-}
-
-export function trimAudio(trimFrom, trimTo, src, dst) {
-  return new Promise((resolve, reject) => {
-    const ffmpegCommand = shell([
-      pathToFfmpeg,
-      "-ss",
-      trimFrom,
-      "-i",
-      src,
-      "-t",
-      trimTo,
-      "-c",
-      "copy",
-      dst,
-    ]);
-
-    exec(ffmpegCommand, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(dst);
-      }
-    });
-  });
 }
 
 export function getRawAudioData(pathToAudio) {

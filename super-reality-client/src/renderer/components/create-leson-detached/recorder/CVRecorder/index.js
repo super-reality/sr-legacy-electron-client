@@ -407,7 +407,6 @@ export default class CVRecorder {
     seekableVideoBlob.then((blob) => {
       blob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        this._stepRecordingName = `${Date.now()}.webm`;
         this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
         console.log("_recordingPath == >", this._recordingFullPath);
         if (this._recordingFullPath) {
@@ -421,7 +420,7 @@ export default class CVRecorder {
 
   handleAudioStop(e) {
     const audioBlob = new Blob(this._audioRecordedChunks, {
-      type: "audio/wav;",
+      type: "audio/webm",
     });
 
     audioBlob.arrayBuffer().then((arrayBuffer) => {
@@ -555,6 +554,7 @@ export default class CVRecorder {
   start(source) {
     console.log("dostart");
     return this.selectSource(source).then(() => {
+      this._stepRecordingName = `${Date.now()}.webm`;
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;

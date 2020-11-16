@@ -172,7 +172,8 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
-    const imagePath = `${itemsPath}/${sha1(st?.name || "")}.png`;
+    const imagePath = `${itemsPath}/${st?._id || ""}.png`;
+    console.log(imagePath);
     if (currentStep && fs.existsSync(imagePath)) {
       const pngImage = new Image();
       pngImage.src = imagePath;
