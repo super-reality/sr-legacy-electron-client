@@ -1,19 +1,3 @@
-import rawAudioToWaveform from "../../lesson-utils/rawAudioToWaveform";
-
-/*
-We are using ffmpeg to trim audio. 
-You need to install these pakages: 
--- npm install ffmpeg-static
--- npm install any-shell-escape
-
-trimAudio function
-@params
-trimFrom = "00:00:00" or "seconds"
-trimTo   = "00:00:00" or "seconds"
-src      = "../folder/fileToTrim.webm"
-dst      = "../folder/trimmedAudio.webm" 
-
-*/
 const fs = require("fs");
 
 export default class CVEditor {

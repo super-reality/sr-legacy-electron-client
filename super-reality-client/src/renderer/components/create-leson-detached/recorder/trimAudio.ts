@@ -1,18 +1,4 @@
-/*
-We are using ffmpeg to trim audio. 
-You need to install these pakages: 
--- npm install ffmpeg-static
--- npm install any-shell-escape
-
-trimAudio function
-@params
-trimFrom = "00:00:00" or "seconds"
-trimTo   = "00:00:00" or "seconds"
-src      = "../folder/fileToTrim.webm"
-dst      = "../folder/trimmedAudio.webm" 
-
-*/
-const pathToFfmpeg = require("ffmpeg-static");
+const path = require("path");
 const shell = require("any-shell-escape");
 const { exec } = require("child_process");
 
@@ -22,6 +8,12 @@ export default function trimAudio(
   src: string,
   dst: string
 ) {
+  // eslint-disable-next-line global-require
+  const { remote } = require("electron");
+  const pathToFfmpeg = remote.app.isPackaged
+    ? path.join(process.resourcesPath, "extra", "ffmpeg.exe")
+    : path.join(remote.app.getAppPath(), "public", "extra", "ffmpeg.exe");
+
   const ffmpegCommand = shell([
     pathToFfmpeg,
     "-ss",
