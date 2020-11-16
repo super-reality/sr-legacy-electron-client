@@ -209,14 +209,16 @@ export default function CreateLessonDetached(): JSX.Element {
         console.error(e);
       }
     }
-    getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
-      (data) => {
-        reduxAction(dispatch, {
-          type: "SET_RECORDING_DATA",
-          arg: { spectrum: rawAudioToWaveform(data) },
-        });
-      }
-    );
+    if (currentRecording) {
+      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
+        (data) => {
+          reduxAction(dispatch, {
+            type: "SET_RECORDING_DATA",
+            arg: { spectrum: rawAudioToWaveform(data) },
+          });
+        }
+      );
+    }
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
       arg: json,
