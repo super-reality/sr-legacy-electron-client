@@ -63,6 +63,7 @@ const initialState = {
   },
   currentCanvasSource: undefined as string | undefined,
   canvasSource: "no source" as string,
+  status: "-",
 };
 
 type InitialState = typeof initialState;
