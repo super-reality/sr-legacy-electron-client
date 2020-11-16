@@ -31,5 +31,6 @@ export interface StepData {
 
 export interface RecordingJson {
   anchor?: string;
+  spectrum: number[];
   step_data: StepData[];
 }

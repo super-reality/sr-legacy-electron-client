@@ -152,3 +152,19 @@
     }
   }
 }
+
+.spectrum-container {
+  width: calc(100% - 28px);
+  height: 36px;
+  position: absolute;
+  display: flex;
+  margin-left: 8px;
+  margin-top: -39px;
+  align-items: center;
+
+  .spectrum-bar {
+    width: -webkit-fill-available;
+    background: var(--color-background-hover);
+    display: flex;
+  }
+}

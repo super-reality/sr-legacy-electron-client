@@ -10,6 +10,7 @@ import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
+import { hidden } from "colorette";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
@@ -36,7 +37,9 @@ import useDebounce from "../../hooks/useDebounce";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
-import { stepSnapshotPath } from "../../electron-constants";
+import { recordingPath, stepSnapshotPath } from "../../electron-constants";
+import { getRawAudioData } from "./recorder/CVEditor";
+import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -99,10 +102,26 @@ export default function CreateLessonDetached(): JSX.Element {
     itemPreview,
     videoNavigation,
     videoDuration,
+    recordingData,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  const meoizedSpectrum = useMemo(() => {
+    return (
+      <div className="spectrum-container">
+        {recordingData.spectrum.map((n, i) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={`spectrum-key-${i}`}
+            className="spectrum-bar"
+            style={{ height: `${n * 100}%` }}
+          />
+        ))}
+      </div>
+    );
+  }, [recordingData]);
 
   const setVideoNavPos = useCallback(
     (n: readonly number[]) => {
@@ -178,6 +197,7 @@ export default function CreateLessonDetached(): JSX.Element {
   useEffect(() => {
     let json: RecordingJson = {
       step_data: [],
+      spectrum: [],
     };
     if (currentRecording) {
       try {
@@ -189,6 +209,14 @@ export default function CreateLessonDetached(): JSX.Element {
         console.error(e);
       }
     }
+    getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
+      (data) => {
+        reduxAction(dispatch, {
+          type: "SET_RECORDING_DATA",
+          arg: { spectrum: rawAudioToWaveform(data) },
+        });
+      }
+    );
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
       arg: json,
@@ -263,6 +291,7 @@ export default function CreateLessonDetached(): JSX.Element {
             slideCallback={debounceVideoNav}
           />
           <VideoData />
+          {meoizedSpectrum}
         </div>
       </div>
     </div>
