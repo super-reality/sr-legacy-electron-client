@@ -110,19 +110,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
     if (dragContainer.current && item && step) {
       const startPos = { ...pos };
       const scale = !onSucess ? videoScale : 1;
-      let ratioForEffect = null;
-      if (item.type == "fx") {
-        ratioForEffect = interact.modifiers.aspectRatio({
-          // make sure the width is always equal to the height
-          ratio: 1,
-          // also restrict the size by nesting another modifier
-          modifiers: [interact.modifiers.restrictSize({ max: "parent" })],
-        });
-      }
+      // let ratioForEffect = null;
+      // if (item.type == "fx") {
+      //   ratioForEffect = interact.modifiers.aspectRatio({
+      //     // set the width to the height ratio
+      //     ratio: 1,
+      //     // also restrict the size by nesting another modifier
+      //     modifiers: [interact.modifiers.restrictSize({ max: "parent" })],
+      //   });
+      // }
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictSnapRound, restrictMinSize, ratioForEffect],
+          modifiers: [restrictSnapRound, restrictMinSize],
           inertia: false,
         } as any)
         .draggable({
@@ -236,6 +236,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
+  // set full screen for the effect
+  if (
+    item &&
+    item.type == "fx" &&
+    item.fullScreen &&
+    dragContainer.current?.parentElement
+  ) {
+    console.log("item.fullScreen", dragContainer.current.parentElement);
+    pos.width = dragContainer.current.parentElement.offsetWidth;
+    pos.height = dragContainer.current.parentElement.offsetHeight;
+    pos.x = dragContainer.current.parentElement.scrollLeft;
+    pos.y = dragContainer.current.parentElement.scrollTop;
+  }
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (

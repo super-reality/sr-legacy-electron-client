@@ -12,6 +12,7 @@ import ImageBox from "../image.box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import DialogBox from "../dialog-box";
+import FXBox from "../fx-box";
 
 interface ItemViewProps {
   item: Item;
@@ -95,6 +96,14 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           text={item.text}
+          callback={onSucess}
+        />
+      )}
+      {item && item.type == "fx" && (
+        <FXBox
+          pos={pos}
+          style={style}
+          effect={item.effect}
           callback={onSucess}
         />
       )}

@@ -77,6 +77,7 @@ export type FX = "id_1" | "id_2" | "id_3" | "id_4" | "id_5" | "id_6";
 export interface ItemFX extends BaseItem {
   type: "fx";
   effect: FX;
+  fullScreen: boolean;
 }
 export interface ItemAudio extends BaseItem {
   type: "audio";

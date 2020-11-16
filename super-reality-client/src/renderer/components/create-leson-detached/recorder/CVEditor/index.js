@@ -12,9 +12,9 @@ src      = "../folder/fileToTrim.webm"
 dst      = "../folder/trimmedAudio.webm" 
 
 */
-// eslint-disable-next-line
+
 const pathToFfmpeg = require("ffmpeg-static");
-// eslint-disable-next-line
+
 const shell = require("any-shell-escape");
 const { exec } = require("child_process");
 const fs = require("fs");

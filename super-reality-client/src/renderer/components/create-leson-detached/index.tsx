@@ -228,55 +228,7 @@ export default function CreateLessonDetached(): JSX.Element {
           />
         </>
       )}
-      {fxTest && (
-        <>
-          <iframe
-            style={{
-              width: "600px",
-              height: "600px",
-            }}
-            className="fx-iframe click-through"
-            src={fxFrame}
-          />
-          <ButtonSimple
-            onClick={() => {
-              setSolid();
-              setFxTest(false);
-            }}
-            width="200px"
-            height="16px"
-          >
-            OK
-          </ButtonSimple>
-          <ButtonSimple
-            onClick={() => {
-              setFxFrame("../fx-wavy/");
-            }}
-            width="200px"
-            height="16px"
-          >
-            Wave
-          </ButtonSimple>
-          <ButtonSimple
-            onClick={() => {
-              setFxFrame("../fx-confetti/");
-            }}
-            width="200px"
-            height="16px"
-          >
-            Confetti
-          </ButtonSimple>
-          <ButtonSimple
-            onClick={() => {
-              setFxFrame("../fx-orb/");
-            }}
-            width="200px"
-            height="16px"
-          >
-            Cool Effect
-          </ButtonSimple>
-        </>
-      )}
+
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
         currentLesson && (
           <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
@@ -313,16 +265,6 @@ export default function CreateLessonDetached(): JSX.Element {
           </div>
         </div>
         <div className="nav">
-          <ButtonSimple
-            onClick={() => {
-              setTransparent();
-              setFxTest(true);
-            }}
-            width="200px"
-            height="16px"
-          >
-            FX TEST
-          </ButtonSimple>
           <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}

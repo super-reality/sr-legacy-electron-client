@@ -27,8 +27,7 @@ export default function LessonTreeControls() {
     (state: AppState) => state.createLessonV2
   );
   const { treeSteps } = useSelector((state: AppState) => state.createLessonV2);
-  // for the test FX
-  const { testFX } = useSelector((state: AppState) => state.createLessonV2);
+
   let childType: TreeTypes = "chapter";
   if (treeCurrentType == "chapter") childType = "step";
   if (treeCurrentType == "step") childType = "item";
@@ -47,45 +46,6 @@ export default function LessonTreeControls() {
     [treeCurrentType, treeCurrentId, dispatch]
   );
 
-  // create the FX Item
-
-  const addFXItem = useCallback(
-    (type: "fx", effect: FX) => {
-      if (treeCurrentType == "step") {
-        const effectItem = {
-          _id: (Math.random() * 1000).toString(),
-          name: "test-effect",
-          type: type,
-          relativePos: {
-            vertical: 50,
-            horizontal: 50,
-            x: 0,
-            y: 0,
-            width: 400,
-            height: 400,
-          },
-          trigger: null,
-          destination: treeCurrentId, // a step ID to go to
-          transition: 0, // type
-          anchor: true,
-          effect: effect,
-        };
-        if (type == "fx") {
-          reduxAction(store.dispatch, {
-            type: "CREATE_LESSON_V2_SETITEM",
-            arg: { item: effectItem, step: treeCurrentId },
-          });
-        }
-
-        console.log("type created", type, "treeCurrentId", treeCurrentId);
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETFX",
-          arg: { type: type, effect: "id_1" },
-        });
-      }
-    },
-    [treeCurrentType, treeCurrentId]
-  );
   const doAddItem = useCallback(
     (type: BaseItemType) => {
       if (treeCurrentType == "step") {

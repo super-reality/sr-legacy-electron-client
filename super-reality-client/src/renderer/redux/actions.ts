@@ -40,7 +40,6 @@ export const actions = {
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
   CREATE_LESSON_V2_SET_TEMPITEM: createLessonSliceV2.setTempItem,
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
-  CREATE_LESSON_V2_SETFX: createLessonSliceV2.setTestFX,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,

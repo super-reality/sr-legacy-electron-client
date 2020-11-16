@@ -24,7 +24,7 @@ interface FXBoxProps {
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
     const { effect, style, pos, callback } = props;
-    // const [srcFX, setSrcFX] = useState("../fx-wavy/");
+
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     const publicPath = remote.app.isPackaged
@@ -56,18 +56,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
           srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
       }
     }
-    console.log("effect", effect, "srcFX", srcFX);
-    // useEffect(() => {
-    //   if (effect == "id_1") {
-    //     setSrcFX("../fx/rainbow-circle-wavy-big/");
-    //   }
-    //   if (effect == "id_2") {
-    //     setSrcFX("../fx/rainbow-confetti");
-    //   }
-    //   if (effect == "id_3") {
-    //     setSrcFX("../fx/fx-test/");
-    //   }
-    // }, [effect]);
+    // console.log("effect", effect, "srcFX", srcFX);
 
     return (
       <div
@@ -81,7 +70,6 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
           ...style,
         }}
       >
-        {/* <div>FX</div> */}
         <iframe className="fx-iframe" src={srcFX} />
       </div>
     );

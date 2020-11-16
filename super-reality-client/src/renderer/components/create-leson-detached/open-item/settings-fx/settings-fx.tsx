@@ -66,142 +66,160 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
     },
     [open]
   );
-  return (
-    <Flex style={{ backgroundColor: "var(--color-background)" }}>
-      <div className="settings-list">
-        <div className="settings-list-item">
-          <div
-            className="settings-list-item-header"
-            style={{}}
-            onClick={openFolder}
-          >
-            <div className={`folder-drop ${open ? "open" : ""}`}>
-              <IconTreeDropArrow
-                style={{ margin: "auto" }}
-                fill="var(--color-icon)"
-              />
-            </div>
 
-            <div className="title">Effects</div>
-          </div>
-          <div className="settings-list-item-list">
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_1" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_1");
-                update({ effect: "id_1" });
-              }}
+  const toggleFullScreen = useCallback((event) => {
+    event.preventDefault();
+    update({ fullScreen: !item.fullScreen });
+  }, []);
+  return (
+    <>
+      <ButtonSimple
+        style={{
+          margin: "5px",
+          width: "100px",
+        }}
+        onClick={() => {
+          update({ fullScreen: !item.fullScreen });
+        }}
+      >
+        Full Screen
+      </ButtonSimple>
+      <Flex style={{ backgroundColor: "var(--color-background)" }}>
+        <div className="settings-list">
+          <div className="settings-list-item">
+            <div
+              className="settings-list-item-header"
+              style={{}}
+              onClick={openFolder}
             >
-              {/* <img
+              <div className={`folder-drop ${open ? "open" : ""}`}>
+                <IconTreeDropArrow
+                  style={{ margin: "auto" }}
+                  fill="var(--color-icon)"
+                />
+              </div>
+
+              <div className="title">Effects</div>
+            </div>
+            <div className="settings-list-item-list">
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_1" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_1");
+                  update({ effect: "id_1" });
+                }}
+              >
+                {/* <img
                 src={IconStars}
                 alt="icon-stars"
                 className="settings-subitem-icon"
               /> */}
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Rainbow Wavy circle</div>
-            </button>
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Rainbow Wavy circle</div>
+              </button>
 
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_2" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_2");
-                update({ effect: "id_2" });
-              }}
-            >
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Rainbow Confetti</div>
-            </button>
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_2" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_2");
+                  update({ effect: "id_2" });
+                }}
+              >
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Rainbow Confetti</div>
+              </button>
 
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_3" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_3");
-                update({ effect: "id_3" });
-              }}
-            >
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Rainbow ORB Big</div>
-            </button>
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_3" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_3");
+                  update({ effect: "id_3" });
+                }}
+              >
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Rainbow ORB Big</div>
+              </button>
 
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_4" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_4");
-                update({ effect: "id_4" });
-              }}
-            >
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Hyperspace1</div>
-            </button>
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_4" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_4");
+                  update({ effect: "id_4" });
+                }}
+              >
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Hyperspace1</div>
+              </button>
 
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_5" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_5");
-                update({ effect: "id_5" });
-              }}
-            >
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Hyperspace2</div>
-            </button>
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_5" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_5");
+                  update({ effect: "id_5" });
+                }}
+              >
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Hyperspace2</div>
+              </button>
 
-            <button
-              type="button"
-              className={`settings-list-item-list-subitem subitem-container${
-                item.effect == "id_6" ? "-selected" : ""
-              }`}
-              onClick={() => {
-                setEffect("id_6");
-                update({ effect: "id_6" });
-              }}
-            >
-              <embed
-                src={`${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`}
-                width="40"
-                height="40"
-              />
-              <div className="title">Hyperspace3</div>
-            </button>
+              <button
+                type="button"
+                className={`settings-list-item-list-subitem subitem-container${
+                  item.effect == "id_6" ? "-selected" : ""
+                }`}
+                onClick={() => {
+                  setEffect("id_6");
+                  update({ effect: "id_6" });
+                }}
+              >
+                <embed
+                  src={`${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`}
+                  width="40"
+                  height="40"
+                />
+                <div className="title">Hyperspace3</div>
+              </button>
+            </div>
           </div>
+          <div className="settings-list-item" />
         </div>
-        <div className="settings-list-item" />
-      </div>
-    </Flex>
+      </Flex>
+    </>
   );
 }
 

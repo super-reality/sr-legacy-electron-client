@@ -43,11 +43,6 @@ const initialState = {
   stepPreview: false,
   itemPreview: false,
   previewOne: false,
-  // for the test FX
-  testFX: {
-    effect: "" as string,
-    type: "" as string,
-  },
   videoScale: 1,
   videoPos: { x: 0, y: 0 },
   recordingData: {
@@ -76,21 +71,6 @@ const createLessonSlice = createSlice({
   name: "createLessonV2",
   initialState,
   reducers: {
-    setTestFX: (
-      state: InitialState,
-      action: PayloadAction<{
-        effect: string;
-        type?: string;
-      }>
-    ): void => {
-      if (action.payload.type == "effect" && state.testFX.type !== "effect") {
-        state.testFX.type = action.payload.type;
-      }
-      state.testFX = {
-        ...state.testFX,
-        effect: action.payload.effect,
-      };
-    },
     clearRecordingCVData: (
       state: InitialState,
       action: PayloadAction<null>
@@ -385,7 +365,6 @@ export const {
   setAnchor,
   setOpenTree,
   selectEvent,
-  setTestFX,
 } = createLessonSlice.actions;
 
 export default createLessonSlice;
