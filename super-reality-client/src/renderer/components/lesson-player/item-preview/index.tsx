@@ -246,8 +246,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
     console.log("item.fullScreen", dragContainer.current.parentElement);
     pos.width = dragContainer.current.parentElement.offsetWidth;
     pos.height = dragContainer.current.parentElement.offsetHeight;
-    pos.x = dragContainer.current.parentElement.scrollLeft;
-    pos.y = dragContainer.current.parentElement.scrollTop;
+    pos.x = dragContainer.current.parentElement.offsetLeft;
+    pos.y = dragContainer.current.parentElement.offsetTop;
   }
   return (
     <>
