@@ -31,11 +31,12 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
       ? path.join(proc.resourcesPath)
       : path.join(remote.app.getAppPath(), "public");
 
-    let srcFX = `../../../../fx/rainbow-circle-wavy-big/index.html`;
+    // ../../../..
+    let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
     if (effect) {
       switch (effect) {
         case "id_1":
-          srcFX = `../../../../fx/rainbow-circle-wavy-big/index.html`;
+          srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
           break;
         case "id_2":
           srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`;
