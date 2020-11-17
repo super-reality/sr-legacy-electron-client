@@ -46,8 +46,7 @@ export default class CVEditor {
 }
 
 export function getRawAudioData(pathToAudio) {
-  console.log(pathToAudio);
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       fs.readFile(pathToAudio, (err, buffer) => {
         const audioBlob = new window.Blob([new Uint8Array(buffer)]);

@@ -137,6 +137,7 @@
     padding-left: 8px;
     height: 24px;
     background-color: rgba(0, 0, 0, 0.3);
+    touch-action: none;
     display: flex;
 
     .close {

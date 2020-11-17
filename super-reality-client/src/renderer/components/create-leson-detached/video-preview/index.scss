@@ -18,6 +18,7 @@
   width: auto;
   height: auto;
   display: table;
+  touch-action: none;
   @include disable-select;
 
   .horizontal-pos {
