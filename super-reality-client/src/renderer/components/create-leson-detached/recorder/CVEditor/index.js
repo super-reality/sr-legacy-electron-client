@@ -1,17 +1,3 @@
-/*
-We are using ffmpeg to trim audio. 
-You need to install these pakages: 
--- npm install ffmpeg-static
--- npm install any-shell-escape
-
-trimAudio function
-@params
-trimFrom = "00:00:00" or "seconds"
-trimTo   = "00:00:00" or "seconds"
-src      = "../folder/fileToTrim.webm"
-dst      = "../folder/trimmedAudio.webm" 
-
-*/
 const fs = require("fs");
 
 export default class CVEditor {
@@ -62,19 +48,24 @@ export default class CVEditor {
 }
 
 export function getRawAudioData(pathToAudio) {
+  console.log(pathToAudio);
   return new Promise((resolve, reject) => {
-    fs.readFile(pathToAudio, (err, buffer) => {
-      const audioBlob = new window.Blob([new Uint8Array(buffer)]);
-      const fileReader = new FileReader();
-      fileReader.onloadend = () => {
-        const arrayBuffer = fileReader.result;
-        const audioContext = new AudioContext();
-        // Convert array buffer into audio buffer
-        audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
-          resolve(audioBuffer.getChannelData(0));
-        });
-      };
-      fileReader.readAsArrayBuffer(audioBlob);
-    });
+    try {
+      fs.readFile(pathToAudio, (err, buffer) => {
+        const audioBlob = new window.Blob([new Uint8Array(buffer)]);
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+          const arrayBuffer = fileReader.result;
+          const audioContext = new AudioContext();
+          // Convert array buffer into audio buffer
+          audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+            resolve(audioBuffer.getChannelData(0));
+          });
+        };
+        fileReader.readAsArrayBuffer(audioBlob);
+      });
+    } catch (e) {
+      console.error(e);
+    }
   });
 }

@@ -47,6 +47,7 @@ const initialState = {
   videoPos: { x: 0, y: 0 },
   recordingData: {
     step_data: [],
+    spectrum: [],
   } as RecordingJson,
   recordingCvMatches: [] as {
     index: number;
