@@ -13,6 +13,7 @@ import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../lesson-player/anchor-box";
+import EditAnchorButton from "./edit-anchor-button";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -298,11 +299,20 @@ export default function VideoPreview(): JSX.Element {
         />
         <img ref={anchorImageRef} style={{ display: "none" }} />
         {item && currentItem && currentStep && !cropRecording && (
-          <ItemPreview stepId={currentStep} itemId={currentItem} />
+          <>
+            <AnchorBox pos={cvResult} />
+            <EditAnchorButton pos={cvResult} />
+            <ItemPreview
+              showAnchor={false}
+              stepId={currentStep}
+              itemId={currentItem}
+            />
+          </>
         )}
         {step && !currentItem && currentStep && !cropRecording && (
           <>
             <AnchorBox pos={cvResult} />
+            <EditAnchorButton pos={cvResult} />
             <StepView stepId={currentStep} onSucess={() => {}} />
           </>
         )}

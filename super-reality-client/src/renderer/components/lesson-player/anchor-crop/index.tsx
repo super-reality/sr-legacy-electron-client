@@ -2,7 +2,6 @@ import interact from "interactjs";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import FindBox from "../find-box";
 import {
   cursorChecker,
   restrictMinSize,
@@ -101,8 +100,6 @@ export default function AnchorCrop() {
           if (div && div.parentElement) {
             startPos.x = div.offsetLeft + 3;
             startPos.y = div.offsetTop + 3;
-            // startPos.width /= scale;
-            // startPos.height /= scale;
             setPos(startPos);
           }
         })
