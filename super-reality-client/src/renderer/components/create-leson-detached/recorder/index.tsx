@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { current } from '@reduxjs/toolkit';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 // import iohook from "iohook";
-import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
-import ButtonRound from "../../button-round";
-import Flex from "../../flex";
-import ReactSelect from "../../top-select";
-import Windowlet from "../windowlet";
-import CVRecorder from "./CVRecorder";
+import { ReactComponent as RecordIcon } from '../../../../assets/svg/record.svg';
+import ButtonRound from '../../button-round';
+import Flex from '../../flex';
+import ReactSelect from '../../top-select';
+import Windowlet from '../windowlet';
+import CVRecorder from './CVRecorder';
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -22,16 +23,19 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
-  const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
+  const [currentSource, setCurrentSource] = useState<string>('Entire Screen');
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
+  const [recordingTime, setRecordingTime] = useState<string[]>(
+    recorder.currentTimer.split(':')
+  );
 
   useEffect(() => {
     const get = async () => {
       // eslint-disable-next-line global-require
-      const { desktopCapturer } = require("electron");
+      const { desktopCapturer } = require('electron');
       const inputSources = await desktopCapturer.getSources({
-        types: ["window", "screen"],
+        types: ['window', 'screen']
       });
       const data: Record<string, any> = {};
       inputSources.forEach((source: any) => {
@@ -44,17 +48,17 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
     // new event listeners using iohook
     // eslint-disable-next-line no-undef
-    const iohook = __non_webpack_require__("iohook");
+    const iohook = __non_webpack_require__('iohook');
     iohook.load();
     iohook.start();
-    iohook.on("mousedown", (event: any) => {
+    iohook.on('mousedown', (event: any) => {
       if (recorder.recordingStarted) {
         if (event.button === leftButtonId) {
           recorder.clickEventDetails = [
             event.x,
             event.y,
             recorder.currentTimer,
-            "left_click",
+            'left_click'
           ];
         }
         if (event.button === rightButtonId) {
@@ -62,7 +66,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             event.x,
             event.y,
             recorder.currentTimer,
-            "right_click",
+            'right_click'
           ];
         }
         if (event.button === wheelButtonId) {
@@ -70,22 +74,22 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             event.x,
             event.y,
             recorder.currentTimer,
-            "wheel_click",
+            'wheel_click'
           ];
         }
 
-        console.log("click registered ==>", recorder.currentTimer);
+        console.log('click registered ==>', recorder.currentTimer);
       }
     });
 
-    iohook.on("mouseup", (event: any) => {
+    iohook.on('mouseup', (event: any) => {
       if (recorder.recordingStarted) {
         if (event.button === leftButtonId) {
           recorder.clickEventDetails = [
             event.x,
             event.y,
             recorder.currentTimer,
-            "left_release",
+            'left_release'
           ];
         }
         if (event.button === rightButtonId) {
@@ -93,7 +97,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             event.x,
             event.y,
             recorder.currentTimer,
-            "right_release",
+            'right_release'
           ];
         }
         if (event.button === wheelButtonId) {
@@ -101,22 +105,22 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             event.x,
             event.y,
             recorder.currentTimer,
-            "wheel_release",
+            'wheel_release'
           ];
         }
 
-        console.log("release registered ==>", recorder.currentTimer);
+        console.log('release registered ==>', recorder.currentTimer);
       }
     });
 
-    iohook.on("mousewheel", (event: any) => {
+    iohook.on('mousewheel', (event: any) => {
       if (recorder.recordingStarted) {
         if (event.rotation === scrollDownId) {
           recorder.clickEventDetails = [
             event.x,
             event.y,
             recorder.currentTimer,
-            "scroll_down",
+            'scroll_down'
           ];
         }
         if (event.rotation === scrollUpId) {
@@ -124,27 +128,27 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             event.x,
             event.y,
             recorder.currentTimer,
-            "scroll_up",
+            'scroll_up'
           ];
         }
-        console.log("mousewheel registered ==>", recorder.currentTimer);
+        console.log('mousewheel registered ==>', recorder.currentTimer);
       }
     });
 
-    iohook.on("keydown", (event: any) => {
+    iohook.on('keydown', (event: any) => {
       if (recorder.recordingStarted) {
         recorder.clickEventDetails = [
           event.x,
           event.y,
           recorder.currentTimer,
           event.type,
-          event,
+          event
         ];
-        console.log("keyboard key clicked ==>", recorder.currentTimer);
+        console.log('keyboard key clicked ==>', recorder.currentTimer);
       }
     });
 
-    iohook.on("keyup", (event: any) => {
+    iohook.on('keyup', (event: any) => {
       // console.log(event)
       if (recorder.recordingStarted) {
         recorder.clickEventDetails = [
@@ -152,21 +156,21 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           event.y,
           recorder.currentTimer,
           event.type,
-          event,
+          event
         ];
-        console.log("keyboard key released ==>", recorder.currentTimer);
+        console.log('keyboard key released ==>', recorder.currentTimer);
       }
     });
   }, [recorder]);
 
   const stopRecord = useCallback(() => {
     // eslint-disable-next-line global-require
-    const { remote } = require("electron");
-    remote.globalShortcut.unregister("F10");
+    const { remote } = require('electron');
+    remote.globalShortcut.unregister('F10');
     recorder.stop();
-    // setRecording(false);
+    setRecording(false);
     // eslint-disable-next-line no-undef
-    const iohook = __non_webpack_require__("iohook");
+    const iohook = __non_webpack_require__('iohook');
     iohook.unload();
     iohook.stop();
     onFinish();
@@ -174,23 +178,23 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   const startRecord = useCallback(() => {
     // eslint-disable-next-line global-require
-    const { remote, desktopCapturer } = require("electron");
+    const { remote, desktopCapturer } = require('electron');
     setCount(-1);
     setRecording(true);
 
     desktopCapturer
       .getSources({
-        types: ["window", "screen"],
+        types: ['window', 'screen']
       })
-      .then((all) => {
-        const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
+      .then(all => {
+        const s = all.filter(c => c.name == currentSource)[0] || sources[0];
         console.log(sources, currentSource);
         console.log(s);
         recorder.start(s);
       });
 
-    remote.globalShortcut.register("F10", stopRecord);
-  }, [currentSource, sources, recorder]);
+    remote.globalShortcut.register('F10', stopRecord);
+  }, [currentSource, sources, recorder, stopRecord]);
 
   useEffect(() => {
     if (count > 0) {
@@ -201,6 +205,15 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     }
   }, [count, startRecord]);
 
+  useEffect(() => {
+    if (recordingTime) {
+      setTimeout(
+        () => setRecordingTime(recorder.currentTimer.split(':')),
+        1000
+      );
+    }
+  });
+
   return (
     <>
       {count > -1 && !recording ? (
@@ -210,7 +223,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           height={320}
           onClose={onFinish}
         >
-          <video muted autoPlay style={{ width: "100%", height: "100%" }}>
+          <video muted autoPlay style={{ width: '100%', height: '100%' }}>
             <source src="countdown.mp4" type="video/mp4" />
           </video>
         </Windowlet>
@@ -224,31 +237,61 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           height={140}
           onClose={onFinish}
         >
-          <Flex column style={{ height: "100%" }}>
+          <Flex column style={{ height: '100%' }}>
             <Flex
-              style={{ margin: "auto 16px", justifyContent: "space-between" }}
+              style={{ margin: 'auto 16px', justifyContent: 'space-between' }}
             >
               <ReactSelect
-                style={{ width: "200px" }}
+                style={{ width: '200px' }}
                 options={Object.keys(sources)}
                 current={currentSource}
-                callback={(name) => {
+                callback={name => {
                   setCurrentSource(name);
                 }}
               />
               <ButtonRound
                 svg={RecordIcon}
                 svgStyle={{
-                  width: "36px",
-                  height: "36px",
+                  width: '36px',
+                  height: '36px'
                 }}
                 width="48px"
                 height="48px"
                 onClick={() => setCount(3)}
               />
             </Flex>
-            <div style={{ margin: "4px auto auto auto" }}>
+            <div style={{ margin: '4px auto auto auto' }}>
               Press F10 to stop recording
+            </div>
+          </Flex>
+        </Windowlet>
+      ) : (
+        <></>
+      )}
+      {recording ? (
+        <Windowlet
+          title="Super Reality Recorder"
+          width={320}
+          height={100}
+          onClose={onFinish}
+        >
+          <Flex
+            style={{ margin: '16px 16px', justifyContent: 'space-between' }}
+          >
+            <div>
+              <p>
+                {recordingTime[0]}: {recordingTime[1]}: {recordingTime[2]}
+              </p>
+            </div>
+            {/* <div> here goes the slider for sound </div> */}
+            <div>
+              <p>res</p>
+            </div>
+            <div>
+              <p>pause</p>
+            </div>
+            <div>
+              <p>stop</p>
             </div>
           </Flex>
         </Windowlet>
