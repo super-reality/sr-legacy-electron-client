@@ -91,8 +91,11 @@ export default function VideoPreview(): JSX.Element {
         const xPos = (innherWidth - containerWidth) / 2 + 8;
         const yPos = (innherHeight - containerHeight) / 2 + 8;
 
-        setVideoScale(Math.round(scale * 10) / 10);
-        setVideoPos({ x: xPos, y: yPos });
+        const newScale = Math.round(scale * 10) / 10;
+        if (newScale < 4 && newScale > 0.1) {
+          setVideoScale(newScale);
+          setVideoPos({ x: xPos, y: yPos });
+        }
       }
     }, 500);
   }, [
