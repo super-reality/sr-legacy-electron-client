@@ -1,17 +1,16 @@
 const fs = require("fs");
 
 export default class CVEditor {
-  constructor(video, canvas) {
+  constructor() {
     this._vid = null;
     this._canvas = null;
     this._context = null;
-    this.canvasElement = canvas;
-    this.videoElement = video;
+    this.canvasElement = null;
+    this.videoElement = null;
   }
 
   set videoElement(elem) {
     if (!elem) {
-      console.error("video element undefined/null");
       return;
     }
 
@@ -21,7 +20,6 @@ export default class CVEditor {
 
   set canvasElement(elem) {
     if (!elem) {
-      console.error("canvas element undefined/null");
       return;
     }
     this._canvas = elem;
