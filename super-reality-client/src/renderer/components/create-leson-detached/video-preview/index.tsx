@@ -176,14 +176,6 @@ export default function VideoPreview(): JSX.Element {
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
     if (currentStep && st) {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: {
-          currentRecording: st.recordingId,
-          currentCanvasSource: undefined,
-          canvasSource: `step ${st.name}`,
-        },
-      });
       const nav: number[] = [
         ...store.getState().createLessonV2.videoNavigation,
       ] || [0, 0, 0];
@@ -191,6 +183,9 @@ export default function VideoPreview(): JSX.Element {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
+          currentRecording: st.recordingId,
+          currentCanvasSource: undefined,
+          canvasSource: `step ${st.name}`,
           videoNavigation: nav,
         },
       });

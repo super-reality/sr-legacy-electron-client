@@ -45,6 +45,7 @@ const initialState = {
   previewOne: false,
   videoScale: 1,
   videoPos: { x: 0, y: 0 },
+  triggerCvMatch: 0,
   recordingData: {
     step_data: [],
     spectrum: [],
@@ -79,6 +80,12 @@ const createLessonSlice = createSlice({
     ): void => {
       state.recordingCvFrame = 0;
       state.recordingCvMatches = [];
+    },
+    doTriggerCvMatch: (
+      state: InitialState,
+      action: PayloadAction<null>
+    ): void => {
+      state.triggerCvMatch = new Date().getTime();
     },
     setRecordingCVData: (
       state: InitialState,
@@ -367,6 +374,7 @@ export const {
   setAnchor,
   setOpenTree,
   selectEvent,
+  doTriggerCvMatch,
 } = createLessonSlice.actions;
 
 export default createLessonSlice;
