@@ -92,19 +92,13 @@ export default async function generateDialogues(
       `${recordingPath}aud-${currentRecording}.webm`,
       `${tempPath}${from}-${to}.webm`
     )
-      .then((file) => {
-        try {
-          getSTT(file).then((text) => {
-            if (
-              text !== "Google Speech Recognition could not understand audio"
-            ) {
-              audioPieces[index].text = text;
-            }
-          });
-        } catch (e) {
-          console.error(e);
-        }
-      })
+      .then((file) =>
+        getSTT(file).then((text) => {
+          if (text !== "Google Speech Recognition could not understand audio") {
+            audioPieces[index].text = text;
+          }
+        })
+      )
       .catch(console.error);
   }
 

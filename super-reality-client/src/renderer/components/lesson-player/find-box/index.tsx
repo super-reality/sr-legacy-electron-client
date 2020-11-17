@@ -28,7 +28,7 @@ interface FindBoxProps {
     height: number;
   };
   style?: CSSProperties;
-  type: ItemFocus["focus"] | "anchor";
+  type: ItemFocus["focus"];
   ref?: React.RefObject<HTMLDivElement>;
   clickThrough?: boolean;
   callback?: (trigger: number) => void;
@@ -40,7 +40,6 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     let computedType = "type";
-    if (type == "anchor") computedType = "anchor";
     if (type == "Mouse Point") computedType = "mouse";
     if (type == "Rectangle") computedType = "rectangle";
     if (type == "Area highlight") computedType = "area";
@@ -106,14 +105,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
             ? () => callback(ItemFocusTriggers["Click target"])
             : voidFunction
         }
-      >
-        {type == "anchor" && pos.width > 150 && pos.height > 150 && (
-          <AnchorIcon
-            fill="var(--color-red)"
-            style={{ opacity: 0.66, margin: "auto" }}
-          />
-        )}
-      </div>
+      />
     );
   }
 );

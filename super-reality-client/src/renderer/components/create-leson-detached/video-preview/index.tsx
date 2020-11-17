@@ -9,12 +9,10 @@ import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
-import FindBox from "../../lesson-player/find-box";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
-
-import sha1 from "../../../../utils/sha1";
 import StepView from "../../lesson-player/step-view";
+import AnchorBox from "../../lesson-player/anchor-box";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -104,10 +102,7 @@ export default function VideoPreview(): JSX.Element {
     shouldDisplayPreview,
   ]);
 
-  const cvEditor: any = useMemo(
-    () => new CVEditor(videoHiddenRef.current, videoCanvasRef.current),
-    []
-  );
+  const cvEditor: any = useMemo(() => new CVEditor(), []);
 
   const item = useMemo(
     () => (currentItem ? treeItems[currentItem] : undefined),
@@ -152,8 +147,10 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
-      cvEditor.canvasElement = videoCanvasRef.current;
-      cvEditor.videoElement = videoHiddenRef.current;
+      if (videoCanvasRef.current)
+        cvEditor.canvasElement = videoCanvasRef.current;
+      if (videoHiddenRef.current)
+        cvEditor.videoElement = videoHiddenRef.current;
       videoHiddenRef.current.src = `${recordingPath}/vid-${currentRecording}.webm`;
       videoHiddenRef.current.addEventListener("loadeddata", () => {
         reduxAction(dispatch, {
@@ -174,7 +171,7 @@ export default function VideoPreview(): JSX.Element {
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
     const imagePath = `${itemsPath}/${st?._id || ""}.png`;
-    console.log(imagePath);
+    // console.log(imagePath);
     if (currentStep && fs.existsSync(imagePath)) {
       const pngImage = new Image();
       pngImage.src = imagePath;
@@ -305,13 +302,13 @@ export default function VideoPreview(): JSX.Element {
         )}
         {step && !currentItem && currentStep && !cropRecording && (
           <>
-            <FindBox type="anchor" pos={cvResult} />
+            <AnchorBox pos={cvResult} />
             <StepView stepId={currentStep} onSucess={() => {}} />
           </>
         )}
         {cropRecording && <AnchorCrop />}
         {!item && !cropRecording && (currentRecording || currentAnchor) && (
-          <FindBox type="anchor" pos={cvResult} />
+          <AnchorBox pos={cvResult} />
         )}
       </div>
     </div>

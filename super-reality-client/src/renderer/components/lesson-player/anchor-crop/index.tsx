@@ -11,6 +11,7 @@ import {
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import AnchorBox from "../anchor-box";
 
 export default function AnchorCrop() {
   const dispatch = useDispatch();
@@ -118,9 +119,5 @@ export default function AnchorCrop() {
     return voidFunction;
   }, [dispatch, cvResult, cropRecordingPos, videoScale]);
 
-  return (
-    <>
-      <FindBox ref={dragContainer} type="anchor" pos={cropRecordingPos} />
-    </>
-  );
+  return <AnchorBox ref={dragContainer} pos={cropRecordingPos} />;
 }

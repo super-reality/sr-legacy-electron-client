@@ -162,7 +162,7 @@ export default class CVRecorder {
           startYCordinate += 1;
         }
       } catch (err) {
-        console.log(`Exception clicked near ${direction} edge of frame`);
+        console.warn(`Exception clicked near ${direction} edge of frame`);
         if (direction == "right") {
           return [startXPoint + this._maxPixelStepLimit, startYPoint];
         }
@@ -346,7 +346,7 @@ export default class CVRecorder {
           [parseInt(cv.IMWRITE_JPEG_QUALITY)]
         );
         console.log(
-          `${this._stepSnapshotPath}${
+          `saved snipped image ${this._stepSnapshotPath}${
             this._stepRecordingName.split(".")[0]
           }/${snippedImageName}`
         );
@@ -356,7 +356,7 @@ export default class CVRecorder {
         eventType === "right_click" ||
         eventType === "wheel_click"
       ) {
-        console.log("Interval Diffrence => ", interval - previousInterval);
+        // console.log("Interval Diffrence => ", interval - previousInterval);
         if (interval - previousInterval < 500) {
           doubleClick = true;
         }
@@ -438,7 +438,7 @@ export default class CVRecorder {
       blob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
         this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
-        console.log("_recordingPath == >", this._recordingFullPath);
+        console.log("recording path: ", this._recordingFullPath);
         if (this._recordingFullPath) {
           fs.writeFile(this._recordingFullPath, buffer, () => {
             this.extractClickedImages();
@@ -514,9 +514,9 @@ export default class CVRecorder {
           this._videoElement = document.createElement("video");
           this._videoElement.srcObject = this.stream;
           this._videoElement.onloadedmetadata = (e) => {
-            console.log(e);
+            // console.log(e);
             this._videoElement.play();
-            // this._videoElement.muted = true;
+            this._videoElement.muted = true;
 
             // Create the Media Recorder
             const options = { mimeType: "video/webm; codecs=vp9" };
@@ -538,7 +538,7 @@ export default class CVRecorder {
             resolve();
           };
         } catch (e) {
-          console.log(e);
+          console.error(e);
           reject(e);
         }
       });
@@ -582,7 +582,7 @@ export default class CVRecorder {
   }
 
   start(source) {
-    console.log("dostart");
+    console.log("started video recording");
     return this.selectSource(source).then(() => {
       this._stepRecordingName = `${Date.now()}.webm`;
       this._mediaRecorder.start();

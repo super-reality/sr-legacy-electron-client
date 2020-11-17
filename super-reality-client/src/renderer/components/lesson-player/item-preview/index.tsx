@@ -22,6 +22,7 @@ import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
 import FXBox from "../fx-box/fx-box";
 import DialogBox from "../dialog-box";
+import AnchorBox from "../anchor-box";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -252,7 +253,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
   return (
     <>
       {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox clickThrough={!!onSucess} type="anchor" pos={cvResult} />
+        <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (
         <FindBox
