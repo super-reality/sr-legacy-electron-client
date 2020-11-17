@@ -14,6 +14,7 @@ import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../lesson-player/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
+import timestampToTime from "../../../../utils/timestampToTime";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -72,7 +73,7 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     setTimeout(() => {
-      if (containerOutRef.current) {
+      if (containerOutRef.current && videoCanvasRef.current) {
         const containerWidth =
           shouldDisplayPreview && videoCanvasRef.current
             ? videoCanvasRef.current.width
@@ -171,29 +172,25 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
-    const imagePath = `${itemsPath}/${st?._id || ""}.png`;
-    // console.log(imagePath);
-    if (currentStep && fs.existsSync(imagePath)) {
-      const pngImage = new Image();
-      pngImage.src = imagePath;
-      pngImage.onload = () => {
-        if (videoCanvasRef.current) {
-          videoCanvasRef.current.width = pngImage.width;
-          videoCanvasRef.current.height = pngImage.height;
-          const context = videoCanvasRef.current.getContext("2d");
-          if (context) {
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_DATA",
-              arg: {
-                currentRecording: undefined,
-                currentCanvasSource: imagePath,
-                canvasSource: `step ${st.name}`,
-              },
-            });
-            context.drawImage(pngImage, 0, 0);
-          }
-        }
-      };
+    if (currentStep && st) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          currentRecording: st.recordingId,
+          currentCanvasSource: undefined,
+          canvasSource: `step ${st.name}`,
+        },
+      });
+      const nav: number[] = [
+        ...store.getState().createLessonV2.videoNavigation,
+      ] || [0, 0, 0];
+      nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          videoNavigation: nav,
+        },
+      });
     } else {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
