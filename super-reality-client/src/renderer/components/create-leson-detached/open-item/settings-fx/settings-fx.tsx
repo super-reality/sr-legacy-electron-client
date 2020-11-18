@@ -1,4 +1,10 @@
-import React, { CSSProperties, useCallback, useMemo, useState } from "react";
+import React, {
+  CSSProperties,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import "./settings-fx.scss";
 
@@ -11,6 +17,7 @@ import { ReactComponent as IconTreeDropArrow } from "../../../../../assets/svg/t
 import IconStars from "../../../../../assets/images/stars-icon.png";
 import IconFireworks from "../../../../../assets/images/fireworks-icon.png";
 import IconCoins from "../../../../../assets/images/coins-icon.png";
+import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
 import { ItemFX, FX } from "../../../../api/types/item/item";
 import ButtonSimple from "../../../button-simple";
 
@@ -59,6 +66,10 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const dispatch = useDispatch();
   const [open, setOpen] = useState<boolean>(false);
   const [effect, setEffect] = useState("id_1");
+  const [isHover, setIsHover] = useState("");
+
+  const effectOneRef = useRef<HTMLDivElement>(null);
+  const effectSecondRef = useRef<HTMLDivElement>(null);
 
   const openFolder = useCallback(
     (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
@@ -66,6 +77,18 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
     },
     [open]
   );
+
+  const onHover = useCallback(() => {
+    if (effectOneRef.current && effectOneRef.current.id) {
+      setIsHover(effectOneRef.current.id);
+      console.log(isHover, effectOneRef.current);
+    }
+  }, []);
+
+  const onHoverEnd = useCallback(() => {
+    setIsHover("");
+    console.log(isHover);
+  }, []);
 
   const toggleFullScreen = useCallback((event) => {
     event.preventDefault();
@@ -102,8 +125,8 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
               <div className="title">Effects</div>
             </div>
             <div className="settings-list-item-list">
-              <button
-                type="button"
+              <div
+                ref={effectOneRef}
                 className={`settings-list-item-list-subitem subitem-container${
                   item.effect == "id_1" ? "-selected" : ""
                 }`}
@@ -111,22 +134,28 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                   setEffect("id_1");
                   update({ effect: "id_1" });
                 }}
+                onMouseEnter={onHover}
+                onMouseLeave={onHoverEnd}
+                id="id_1"
               >
-                {/* <img
-                src={IconStars}
-                alt="icon-stars"
-                className="settings-subitem-icon"
-              /> */}
-                <embed
-                  src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`}
-                  width="40"
-                  height="40"
-                />
-                <div className="title">Rainbow Wavy circle</div>
-              </button>
+                {isHover !== "id_1" ? (
+                  <img
+                    src={IconFXThumbnail}
+                    alt="icon-stars"
+                    className="settings-subitem-icon"
+                  />
+                ) : (
+                  <embed
+                    src={`${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`}
+                    width="40"
+                    height="40"
+                  />
+                )}
 
-              <button
-                type="button"
+                <div className="title">Rainbow Wavy circle</div>
+              </div>
+
+              <div
                 className={`settings-list-item-list-subitem subitem-container${
                   item.effect == "id_2" ? "-selected" : ""
                 }`}
@@ -134,14 +163,18 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
                   setEffect("id_2");
                   update({ effect: "id_2" });
                 }}
+                onMouseEnter={onHover}
+                onMouseLeave={onHoverEnd}
+                id="id_2"
               >
                 <embed
                   src={`${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`}
                   width="40"
                   height="40"
                 />
+
                 <div className="title">Rainbow Confetti</div>
-              </button>
+              </div>
 
               <button
                 type="button"
