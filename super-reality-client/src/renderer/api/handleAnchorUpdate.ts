@@ -12,13 +12,7 @@ export default function handleAnchorUpdate(
 ): Promise<IAnchor> {
   return new Promise((resolve, reject) => {
     apiErrorHandler<AnchorUpdate>(res)
-      .then((d) => {
-        reduxAction(store.dispatch, {
-          type: "CREATE_LESSON_V2_SETANCHOR",
-          arg: { anchor: d.anchor },
-        });
-        resolve(d.anchor);
-      })
+      .then((d) => resolve(d.anchor))
       .catch(reject);
   });
 }

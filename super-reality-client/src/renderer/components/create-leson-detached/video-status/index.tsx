@@ -208,7 +208,17 @@ export default function VideoStatus() {
           const slice = store.getState().createLessonV2;
           const step: IStep | null = slice.treeSteps[currentStep || ""];
           if (a && step && currentStep) {
-            return updateStep({ anchor: a._id }, currentStep);
+            return updateStep({ anchor: a._id }, currentStep).then(
+              (updatedStep) => {
+                if (updatedStep) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_SETSTEP",
+                    arg: { step: updatedStep },
+                  });
+                }
+                return updatedStep;
+              }
+            );
           }
           return new Promise((r) => r());
         }
@@ -218,7 +228,7 @@ export default function VideoStatus() {
         console.error(e);
         doExitEditAnchor();
       });
-  }, [newAnchorCallback, newAnchorFile, doExitEditAnchor]);
+  }, [dispatch, newAnchorCallback, newAnchorFile, doExitEditAnchor]);
 
   const editCurrentAnchor = useCallback(() => {
     uploadFileToS3(newAnchorFile)
@@ -227,7 +237,17 @@ export default function VideoStatus() {
           const slice = store.getState().createLessonV2;
           const step: IStep | null = slice.treeSteps[currentStep || ""];
           if (currentStep && step && step.anchor) {
-            return updateAnchor({ templates: [newUrl] }, step.anchor);
+            return updateAnchor({ templates: [newUrl] }, step.anchor).then(
+              (updatedAnchor) => {
+                if (updatedAnchor) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_SETANCHOR",
+                    arg: { anchor: updatedAnchor },
+                  });
+                }
+                return updatedAnchor;
+              }
+            );
           }
           return new Promise((r) => r());
         }
