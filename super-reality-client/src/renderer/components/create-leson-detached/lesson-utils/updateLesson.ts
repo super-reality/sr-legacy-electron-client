@@ -20,5 +20,8 @@ export default function updateLesson(data: Partial<ILessonV2>, id: string) {
     _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleLessonUpdate)
-    .catch(console.error);
+    .catch((e) => {
+      console.error(e);
+      return undefined;
+    });
 }

@@ -15,10 +15,13 @@ export default function updateStep(data: Partial<IStep>, id: string) {
     step_id: id,
   };
 
-  Axios.put<StepUpdate | ApiError>(
+  return Axios.put<StepUpdate | ApiError>(
     `${API_URL}step`,
     _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleStepUpdate)
-    .catch(console.error);
+    .catch((e) => {
+      console.error(e);
+      return undefined;
+    });
 }
