@@ -1,8 +1,11 @@
 import React, { useCallback } from "react";
 import "./index.scss";
+import { useDispatch } from "react-redux";
 import { ReactComponent as ButtonEdit } from "../../../../../assets/svg/edit.svg";
+import reduxAction from "../../../../redux/reduxAction";
 
 interface EditAnchorButtoProps {
+  anchor: string | null;
   pos: {
     x: number;
     y: number;
@@ -12,11 +15,21 @@ interface EditAnchorButtoProps {
 }
 
 export default function EditAnchorButton(props: EditAnchorButtoProps) {
-  const { pos } = props;
+  const dispatch = useDispatch();
+  const { anchor, pos } = props;
 
   const onClick = useCallback(() => {
-    //
-  }, []);
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        cropEditAnchor: anchor,
+        cropRecording: true,
+        cropRecordingPos: {
+          ...pos,
+        },
+      },
+    });
+  }, [dispatch, anchor, pos]);
 
   return (
     <div
@@ -28,7 +41,7 @@ export default function EditAnchorButton(props: EditAnchorButtoProps) {
         height: `${pos.height + 128}px`,
       }}
     >
-      <div className="edit-anchor-button">
+      <div className="edit-anchor-button" onClick={onClick}>
         <ButtonEdit
           style={{
             width: "16px",

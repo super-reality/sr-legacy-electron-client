@@ -11,7 +11,7 @@ import updateStep from "./updateStep";
 export default function newAnchor(
   payload: Partial<IAnchor>,
   step?: string
-): Promise<void> {
+): Promise<IAnchor | undefined> {
   return Axios.post<AnchorCreate | ApiError>(`${API_URL}anchor/create`, payload)
     .then(handleAnchorCreate)
     .then((data) => {
@@ -22,6 +22,10 @@ export default function newAnchor(
       if (step) {
         updateStep({ anchor: data._id }, step);
       }
+      return data;
     })
-    .catch(console.error);
+    .catch((e) => {
+      console.error(e);
+      return undefined;
+    });
 }

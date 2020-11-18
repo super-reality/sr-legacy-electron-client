@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import fs from "fs";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
@@ -10,7 +9,7 @@ import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
-import { itemsPath, recordingPath } from "../../../electron-constants";
+import { recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../lesson-player/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
@@ -33,8 +32,6 @@ export default function VideoPreview(): JSX.Element {
     currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
-  const horPor = useRef<HTMLDivElement>(null);
-  const vertPos = useRef<HTMLDivElement>(null);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
@@ -251,7 +248,7 @@ export default function VideoPreview(): JSX.Element {
         */
       }
     },
-    [setVideoScale, videoScale]
+    [videoScale]
   );
 
   return (
@@ -284,19 +281,19 @@ export default function VideoPreview(): JSX.Element {
         )}
         <div
           key={`hor-${item?._id}` || ""}
-          ref={horPor}
+          id="horizontal-pos"
           className="horizontal-pos"
         />
         <div
           key={`ver-${item?._id}` || ""}
-          ref={vertPos}
+          id="horizontal-pos"
           className="vertical-pos"
         />
         <img ref={anchorImageRef} style={{ display: "none" }} />
         {item && currentItem && currentStep && !cropRecording && (
           <>
             <AnchorBox pos={cvResult} />
-            <EditAnchorButton pos={cvResult} />
+            <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
             <ItemPreview
               showAnchor={false}
               stepId={currentStep}
@@ -307,7 +304,7 @@ export default function VideoPreview(): JSX.Element {
         {step && !currentItem && currentStep && !cropRecording && (
           <>
             <AnchorBox pos={cvResult} />
-            <EditAnchorButton pos={cvResult} />
+            <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
             <StepView stepId={currentStep} onSucess={() => {}} />
           </>
         )}

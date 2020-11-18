@@ -57,6 +57,7 @@ const initialState = {
   recordingCvMatchValue: 995,
   recordingCvFrame: -1,
   cropRecording: false,
+  cropEditAnchor: null as string | null,
   cropRecordingPos: {
     x: 0,
     y: 0,
