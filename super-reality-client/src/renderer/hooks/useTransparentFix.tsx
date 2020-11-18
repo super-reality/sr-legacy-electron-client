@@ -1,5 +1,4 @@
 import React, { useCallback, useLayoutEffect, useRef } from "react";
-import setFocusable from "../../utils/setFocusable";
 
 export default function useTransparentFix(debug?: boolean) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
