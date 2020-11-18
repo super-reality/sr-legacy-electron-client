@@ -13,11 +13,13 @@ export default function getSTT(audioFile: string): Promise<any> {
     return json.text;
   };
 
-  const fileContent = fs.readFileSync(audioFile);
-  const file = new File([fileContent], audioFile);
   const form = new FormData();
-  form.append("audio", file);
-
-  const text = getText(form);
-  return text;
+  try {
+    const fileContent = fs.readFileSync(audioFile);
+    const file = new File([fileContent], audioFile);
+    form.append("audio", file);
+  } catch (e) {
+    console.error(e);
+  }
+  return getText(form);
 }

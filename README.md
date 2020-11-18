@@ -6,6 +6,10 @@
 
 2. if not installed; `npm install foreman -g`
 
+3. run `npm run electron-rebuild`
+
+4. run `pre-build-iohook`
+
 
 ## Run from source
 

@@ -38,6 +38,7 @@ jobs:
         edge: true
         access_key_id: $ARTIFACTS_KEY
         secret_access_key: $ARTIFACTS_SECRET
+        overwrite: true
         bucket: "super-reality-builds"
         skip_cleanup: true
         region: "us-west-1"

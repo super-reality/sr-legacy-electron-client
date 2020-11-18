@@ -51,7 +51,6 @@ export default function createLessonInterface(
   );
 
   return new Promise<void>((resolve) => {
-    newWindow.webContents.openDevTools({ mode: "undocked" });
     newWindow.webContents.once("dom-ready", () => {
       newWindow.webContents.send("token", store.getState().auth.token);
       newWindow.webContents.send("detached", {
@@ -59,6 +58,7 @@ export default function createLessonInterface(
         arg: true,
       });
       setTimeout(function () {
+        newWindow.webContents.openDevTools({ mode: "undocked" });
         newWindow.show();
         newWindow.focus();
       }, 1000);
