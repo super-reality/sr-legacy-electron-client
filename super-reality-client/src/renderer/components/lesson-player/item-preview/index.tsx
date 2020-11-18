@@ -27,11 +27,12 @@ import AnchorBox from "../anchor-box";
 interface ItemPreviewProps {
   itemId: string;
   stepId: string;
+  showAnchor: boolean;
   onSucess?: () => void;
 }
 
 export default function ItemPreview(props: ItemPreviewProps) {
-  const { itemId, stepId } = props;
+  const { itemId, stepId, showAnchor } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
   const { treeItems, treeSteps, treeAnchors, videoScale } = useSelector(
@@ -252,7 +253,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
   }
   return (
     <>
-      {step?.anchor && item?.anchor && anchor && cvResult && (
+      {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
         <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
       {item && item.type == "focus_highlight" && (

@@ -40,6 +40,7 @@ export default function VideoStatus() {
     currentRecording,
     currentCanvasSource,
     status,
+    triggerCvMatch,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const anchor = useMemo(() => {
@@ -72,6 +73,12 @@ export default function VideoStatus() {
   );
 
   useEffect(() => {
+    console.log(
+      "Do cv match trigger",
+      currentRecording,
+      triggerCvMatch,
+      currentCanvasSource
+    );
     if (currentCanvasSource && anchor) {
       doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
         reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
@@ -86,13 +93,7 @@ export default function VideoStatus() {
         );
       }
     }
-  }, [
-    dispatch,
-    anchor,
-    currentRecording,
-    videoNavigation,
-    currentCanvasSource,
-  ]);
+  }, [dispatch, anchor, currentRecording, triggerCvMatch, currentCanvasSource]);
 
   const generateItems = useCallback(() => {
     reduxAction(dispatch, {

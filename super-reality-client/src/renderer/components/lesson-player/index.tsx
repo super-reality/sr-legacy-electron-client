@@ -171,6 +171,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     <>
       {playing && itemPreview && previewOne && currentStep && currentItem && (
         <ItemPreview
+          showAnchor={false}
           stepId={currentStep}
           itemId={currentItem}
           onSucess={onFinish}
