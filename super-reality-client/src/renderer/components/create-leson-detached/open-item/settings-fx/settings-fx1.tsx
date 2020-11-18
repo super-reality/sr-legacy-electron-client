@@ -1,3 +1,4 @@
+// eslint-disable
 import React, { CSSProperties, useCallback, useMemo, useState } from "react";
 
 import "./settings-fx.scss";
@@ -11,7 +12,7 @@ import { ReactComponent as IconTreeDropArrow } from "../../../../../assets/svg/t
 import IconStars from "../../../../../assets/images/stars-icon.png";
 import IconFireworks from "../../../../../assets/images/fireworks-icon.png";
 import IconCoins from "../../../../../assets/images/coins-icon.png";
-import { ItemFX, FX } from "../../../../api/types/item/item";
+import { ItemFX } from "../../../../api/types/item/item";
 
 const TestFXItems = [
   {

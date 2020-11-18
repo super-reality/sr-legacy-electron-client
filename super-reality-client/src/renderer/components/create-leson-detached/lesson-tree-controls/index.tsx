@@ -17,7 +17,7 @@ import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dial
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType, ItemFX, FX } from "../../../api/types/item/item";
+import { BaseItemType, ItemFX } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
 import reduxAction from "../../../redux/reduxAction";
 

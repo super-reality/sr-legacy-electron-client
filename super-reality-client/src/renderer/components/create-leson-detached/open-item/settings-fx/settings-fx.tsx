@@ -18,7 +18,7 @@ import IconStars from "../../../../../assets/images/stars-icon.png";
 import IconFireworks from "../../../../../assets/images/fireworks-icon.png";
 import IconCoins from "../../../../../assets/images/coins-icon.png";
 import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
-import { ItemFX, FX } from "../../../../api/types/item/item";
+import { ItemFX } from "../../../../api/types/item/item";
 import ButtonSimple from "../../../button-simple";
 
 const TestFXItems = [

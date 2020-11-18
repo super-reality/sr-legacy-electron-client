@@ -1,13 +1,21 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSelector } from "react-redux";
 import path from "path";
 import proc from "process";
-import { FX, ItemFXTriggers } from "../../../api/types/item/item";
+import { ItemFXTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
 
 import "./index.scss";
+import usePopupItemSettings from "../../../hooks/usePopupItemSettings";
+import ButtonSimple from "../../button-simple";
 
 interface FXBoxProps {
   pos: {
@@ -17,20 +25,21 @@ interface FXBoxProps {
     height: number;
   };
   style?: CSSProperties;
-  effect?: FX;
+  effect?: string;
   callback?: (trigger: number) => void;
 }
 
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
     const { effect, style, pos, callback } = props;
+    const [isModalBtn, setIsModalBtn] = useState("none");
 
-    // eslint-disable-next-line global-require
-    const { remote } = require("electron");
-    const publicPath = remote.app.isPackaged
-      ? path.join(proc.resourcesPath)
-      : path.join(remote.app.getAppPath(), "public");
-
+    const showModalBtn = useCallback(() => {
+      setIsModalBtn("block");
+    }, []);
+    const hideModalBtn = useCallback(() => {
+      setIsModalBtn("none");
+    }, []);
     // ../../../..
     let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
     if (effect) {
@@ -58,21 +67,35 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
       }
     }
     // console.log("effect", effect, "srcFX", srcFX);
-
+    const [Popup, open] = usePopupItemSettings();
+    console.log(Popup, open);
     return (
-      <div
-        ref={forwardedRef}
-        className="fx-box"
-        style={{
-          left: `${pos.x}px`,
-          top: `${pos.y}px`,
-          width: `${pos.width}px`,
-          height: `${pos.height}px`,
-          ...style,
-        }}
-      >
-        <iframe className="fx-iframe" src={srcFX} />
-      </div>
+      <>
+        {Popup}
+        <div
+          ref={forwardedRef}
+          className="fx-box"
+          style={{
+            left: `${pos.x}px`,
+            top: `${pos.y}px`,
+            width: `${pos.width}px`,
+            height: `${pos.height}px`,
+            ...style,
+          }}
+          onMouseEnter={showModalBtn}
+          onMouseLeave={hideModalBtn}
+        >
+          <ButtonSimple
+            style={{
+              display: isModalBtn,
+            }}
+            onClick={open}
+          >
+            Open Modal
+          </ButtonSimple>
+          <iframe className="fx-iframe" src={srcFX} />
+        </div>
+      </>
     );
   }
 );
