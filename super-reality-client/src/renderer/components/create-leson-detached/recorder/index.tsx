@@ -24,11 +24,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
   const [currentSource, setCurrentSource] = useState<string>('Entire Screen');
+  const [timePassed, setTimePassed] = useState<string[]>([]);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
-  const [recordingTime, setRecordingTime] = useState<string[]>(
-    recorder.currentTimer.split(':')
-  );
+  const recorderTime = recorder.currentTimer.split(':');
 
   useEffect(() => {
     const get = async () => {
@@ -181,6 +180,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     const { remote, desktopCapturer } = require('electron');
     setCount(-1);
     setRecording(true);
+    setTimePassed(recorderTime);
 
     desktopCapturer
       .getSources({
@@ -206,11 +206,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   }, [count, startRecord]);
 
   useEffect(() => {
-    if (recordingTime) {
-      setTimeout(
-        () => setRecordingTime(recorder.currentTimer.split(':')),
-        1000
-      );
+    if (recording) {
+      setTimeout(() => setTimePassed(recorderTime), 1000);
     }
   });
 
@@ -280,18 +277,18 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           >
             <div>
               <p>
-                {recordingTime[0]}: {recordingTime[1]}: {recordingTime[2]}
+                {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
               </p>
             </div>
             {/* <div> here goes the slider for sound </div> */}
-            <div>
+            <div style={{ cursor: 'pointer' }}>
               <p>res</p>
             </div>
-            <div>
+            <div style={{ cursor: 'pointer' }}>
               <p>pause</p>
             </div>
-            <div>
-              <p>stop</p>
+            <div style={{ cursor: 'pointer' }}>
+              <p onClick={stopRecord}>stop</p>
             </div>
           </Flex>
         </Windowlet>
