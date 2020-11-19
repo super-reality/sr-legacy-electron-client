@@ -29,7 +29,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [timePassed, setTimePassed] = useState<string[]>([]);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
-  const recorderTime: string[] = recorder.currentTimer.split(":");
+  // const recordTimer: string[] = useMemo(
+  //   () => recorder.currentTimer.split(":"),
+  //   [recorder.currentTimer]
+  // );
 
   useEffect(() => {
     const get = async () => {
@@ -180,9 +183,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const startRecord = useCallback(() => {
     // eslint-disable-next-line global-require
     const { remote, desktopCapturer } = require("electron");
+    const recordTimer = recorder.currentTimer.split(":");
     setCount(-1);
     setRecording(true);
-    setTimePassed(recorderTime);
+    setTimePassed([recordTimer[0], recordTimer[1], recordTimer[2]]);
 
     desktopCapturer
       .getSources({
@@ -207,12 +211,15 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     }
   }, [count, startRecord]);
 
-  // useEffect(() => {
-  //   if (recording) {
-  //     setTimePassed(recorderTime);
-  //   }
-  // }, [recorderTime]);
+  useEffect(() => {
+    if (recording) {
+      const recordTimer = recorder.currentTimer.split(":");
+      setTimePassed([recordTimer[0], recordTimer[1], recordTimer[2]]);
+    }
+  }, [recorder.currentTimer, recording]);
 
+  console.log("recorder", recorder.currentTimer);
+  console.log("state", timePassed);
   return (
     <>
       {count > -1 && !recording ? (
@@ -282,51 +289,50 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             }}
           >
             <Flex>
-              {/* {recorder.currentTimer.length ? (
-                <p>
+              {recorder.currentTimer.length ? (
+                <p style={{ margin: 0 }}>
                   {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
                 </p>
               ) : (
-                <p>00:00:00</p>
-              )} */}
-              <p style={{ margin: 0 }}>00:00:00</p>
+                <p style={{ margin: 0 }}>00:00:00</p>
+              )}
             </Flex>
-            <Flex style={{ width: "20%" }}>
+            <Flex style={{ width: "25%" }}>
               <input type="range" style={{ width: "100%", margin: 0 }} />
             </Flex>
             {/* <div> here goes the slider for sound </div> */}
             <ButtonRound
               svg={PlayIcon}
               svgStyle={{
-                width: "20px",
-                height: "20px",
+                width: "1rem",
+                height: "1rem",
                 cursor: "pointer"
               }}
-              width="36px"
-              height="36px"
+              width="28px"
+              height="28px"
               onClick={stopRecord /* should be resume play */}
             />
 
             <ButtonRound
               svg={PlayIcon}
               svgStyle={{
-                width: "20px",
-                height: "20px",
+                width: "1rem",
+                height: "1rem",
                 cursor: "pointer"
               }}
-              width="36px"
-              height="36px"
+              width="28px"
+              height="28px"
               onClick={stopRecord /* should be resume play */}
             />
             <ButtonRound
               svg={StopIcon}
               svgStyle={{
-                width: "20px",
-                height: "20px",
+                width: "1rem",
+                height: "1rem",
                 cursor: "pointer"
               }}
-              width="36px"
-              height="36px"
+              width="28px"
+              height="28px"
               onClick={stopRecord}
             />
           </Flex>
