@@ -90,8 +90,6 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
-  const [fxTest, setFxTest] = useState(false);
-  const [fxFrame, setFxFrame] = useState("../fx-orb/");
 
   const {
     currentAnchor,

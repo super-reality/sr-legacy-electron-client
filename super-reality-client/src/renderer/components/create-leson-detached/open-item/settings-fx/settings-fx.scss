@@ -1,5 +1,43 @@
 @import "../../../misc.scss";
 
+.settings-item-lable {
+    display: flex;
+    margin: 10px;
+}
+.item-settings {
+    margin: 10px 10px 10px 10px;
+    .input-name {
+        margin-bottom: 5px;
+    }
+    .settings-item-icon {
+        display: flex;
+        background-color: var(--color-background);
+        width: fit-content;
+        padding: 8px;
+        border-radius: 8px;
+
+        cursor: pointer;
+    }
+    .anchor-preview {
+        background-color: var(--color-background);
+        width: 126px;
+        height: 65px;
+        border-radius: 5px;
+    }
+    .settings-input-container-input-box {
+        display: flex;
+        flex-direction: row;
+        background-color: var(--color-background);
+        border-radius: 5px;
+        padding-right: 5px;
+    }
+    .settings-input-container-input-box,
+    .settings-item-icon,
+    .anchor-preview {
+        margin-bottom: 5px;
+    }
+}
+
 ul[class^="settings-list"] {
     list-style: none;
 }

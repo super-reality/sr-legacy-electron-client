@@ -5,7 +5,7 @@ import usePopup from "./usePopup";
 import IconFXInList from "../../assets/images/fx-in-popup-list-icon.png";
 import IconFXThumbnail from "../../assets/images/fx-popup-icon.png";
 import Flex from "../components/flex";
-import { ReactComponent as CloseIcon } from "../../assets/svg/close.svg";
+import { ReactComponent as CloseIcon } from "../../assets/svg/win-close.svg";
 
 const effectDB = [
   { id: "1" },
@@ -66,9 +66,9 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         }}
       >
         <Flex>
-          <div className="settings-input-container">
+          <div className="popup-settings-input-container">
             <input
-              className="settings-input"
+              className="popup-settings-input-container-input"
               onChange={() => {}}
               value="currentInputValue"
             />
@@ -88,7 +88,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             onClick={() => {}}
           >
             Pop
-            <CloseIcon height="15px" width="15px" />
+            <CloseIcon height="10px" width="10px" />
           </ButtonSimple>
           <ButtonSimple
             style={{
@@ -98,7 +98,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             onClick={() => {}}
           >
             Celebration
-            <CloseIcon height="5px" width="5px" />
+            <CloseIcon height="10px" width="10px" />
           </ButtonSimple>
           <ButtonSimple
             style={{
@@ -108,7 +108,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             onClick={() => {}}
           >
             Ambient
-            <CloseIcon height="5px" width="5px" />
+            <CloseIcon height="10px" width="10px" />
           </ButtonSimple>
         </div>
         <Flex

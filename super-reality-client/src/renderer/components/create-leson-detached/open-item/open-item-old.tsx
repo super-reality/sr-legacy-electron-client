@@ -25,7 +25,6 @@ import SettingsDialog from "./settings-dialog";
 import ButtonRound from "../../button-round";
 
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
-import ItemSettingsContainer from "../settings-container";
 
 interface OpenItemProps {
   id: string;
@@ -98,15 +97,8 @@ export default function OpenItem(props: OpenItemProps) {
   if (!item) return <></>;
   // console.log(item);
   return (
-    <ItemSettingsContainer>
-      {view === "Settings" && item.type == "fx" && (
-        <FXSettings item={item} update={doUpdate} />
-      )}
-    </ItemSettingsContainer>
-  );
-}
-/*
-<Tabs
+    <>
+      <Tabs
         buttons={itemModalOptions}
         initial={view}
         callback={setView}
@@ -162,4 +154,6 @@ export default function OpenItem(props: OpenItemProps) {
           </Flex>
         )}
       </TabsContainer>
-      */
+    </>
+  );
+}

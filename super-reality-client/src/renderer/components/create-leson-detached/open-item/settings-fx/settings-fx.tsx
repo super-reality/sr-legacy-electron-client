@@ -14,40 +14,40 @@ import { AppState } from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
 
 import { ReactComponent as IconTreeDropArrow } from "../../../../../assets/svg/tree-drop.svg";
-import IconStars from "../../../../../assets/images/stars-icon.png";
-import IconFireworks from "../../../../../assets/images/fireworks-icon.png";
-import IconCoins from "../../../../../assets/images/coins-icon.png";
+import { ReactComponent as IconAddFX } from "../../../../../assets/svg/new-fx-icon.svg";
 import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
 import { ItemFX } from "../../../../api/types/item/item";
 import ButtonSimple from "../../../button-simple";
 
-const TestFXItems = [
-  {
-    id: "1",
-    name: "Great Success",
-    effect: "id_1",
-    subitems: [
-      {
-        id: "id_1",
-        name: "Stars",
-        icon: IconStars,
-        effect: "id_1",
-      },
-      {
-        id: "id_2",
-        name: "Fireworks",
-        icon: IconFireworks,
-        effect: "id_1",
-      },
-      {
-        id: "id_3",
-        name: "Coins",
-        icon: IconCoins,
-        effect: "id_1",
-      },
-    ],
-  },
-];
+import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
+
+// const TestFXItems = [
+//   {
+//     id: "1",
+//     name: "Great Success",
+//     effect: "id_1",
+//     subitems: [
+//       {
+//         id: "id_1",
+//         name: "Stars",
+//         icon: IconStars,
+//         effect: "id_1",
+//       },
+//       {
+//         id: "id_2",
+//         name: "Fireworks",
+//         icon: IconFireworks,
+//         effect: "id_1",
+//       },
+//       {
+//         id: "id_3",
+//         name: "Coins",
+//         icon: IconCoins,
+//         effect: "id_1",
+//       },
+//     ],
+//   },
+// ];
 
 interface SettingsFX {
   name: ItemFX;
@@ -64,19 +64,19 @@ interface FXSettingsProps {
 export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const { item, update, style } = props;
   const dispatch = useDispatch();
-  const [open, setOpen] = useState<boolean>(false);
+  // const [open, setOpen] = useState<boolean>(false);
   const [effect, setEffect] = useState("id_1");
   const [isHover, setIsHover] = useState("");
 
   const effectOneRef = useRef<HTMLDivElement>(null);
   const effectSecondRef = useRef<HTMLDivElement>(null);
 
-  const openFolder = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-      setOpen(!open);
-    },
-    [open]
-  );
+  // const openFolder = useCallback(
+  //   (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+  //     setOpen(!open);
+  //   },
+  //   [open]
+  // );
 
   const onHover = useCallback(() => {
     if (effectOneRef.current && effectOneRef.current.id) {
@@ -94,9 +94,91 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
     event.preventDefault();
     update({ fullScreen: !item.fullScreen });
   }, []);
+
+  const [Popup, open] = usePopupItemSettings();
+
   return (
     <>
-      <ButtonSimple
+      {Popup}
+
+      <div className="settings-item-lable ">
+        <IconAddFX
+          width="16px"
+          height="16px"
+          style={{
+            margin: "3px 5px 3px 0",
+          }}
+        />
+        <div className="item-lable-name">FX</div>
+      </div>
+      <div className="item-settings">
+        <div
+          className="input-name"
+          style={{
+            color: "var(--color--text)",
+          }}
+        >
+          Style
+        </div>
+        <div className="settings-item-icon" onClick={open}>
+          <img
+            width="50px"
+            height="50px"
+            src={IconFXThumbnail}
+            alt="icon-fx"
+            className="settings-subitem-icon"
+          />
+        </div>
+        <div className="settings-input-container">
+          <div
+            className="input-name"
+            style={{
+              color: "var(--color--text)",
+            }}
+          >
+            Computer Vision
+          </div>
+          <div className="settings-input-container-input-box">
+            <input
+              className="settings-input-container-input"
+              onChange={() => {}}
+              value="currentInputValue"
+            />
+            <IconTreeDropArrow
+              style={{ margin: "auto" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        </div>
+        <div className="anchor-preview" />
+        <div className="settings-input-container">
+          <div
+            className="input-name"
+            style={{
+              color: "var(--color--text)",
+            }}
+          >
+            Trigger
+          </div>
+          <div className="settings-input-container-input-box">
+            <input
+              className="settings-input-container-input"
+              onChange={() => {}}
+              value="currentInputValue"
+            />
+            <IconTreeDropArrow
+              style={{ margin: "auto" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/*
+<ButtonSimple
         style={{
           margin: "5px",
           width: "100px",
@@ -107,7 +189,7 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
       >
         Full Screen
       </ButtonSimple>
-      <Flex style={{ backgroundColor: "var(--color-background)" }}>
+<Flex style={{ backgroundColor: "var(--color-background)" }}>
         <div className="settings-list">
           <div className="settings-list-item">
             <div
@@ -252,37 +334,4 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
           <div className="settings-list-item" />
         </div>
       </Flex>
-    </>
-  );
-}
-
-/*
-<div className="settings-list-item">
-          <div
-            className="settings-list-item-header"
-            style={{}}
-            onClick={openFolder}
-          >
-            <div className={`folder-drop ${open ? "open" : ""}`}>
-              <IconTreeDropArrow
-                style={{ margin: "auto" }}
-                fill="var(--color-icon)"
-              />
-            </div>
-            <div className="title">Splashes</div>
-          </div>
-        </div>
-<div
-            className="settings-list-item-header"
-            style={{}}
-            onClick={openFolder}
-          >
-            <div className={`folder-drop ${open ? "open" : ""}`}>
-              <IconTreeDropArrow
-                style={{ margin: "auto" }}
-                fill="var(--color-icon)"
-              />
-            </div>
-            <div className="title">Background</div>
-          </div>
 */
