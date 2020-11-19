@@ -228,6 +228,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
+  if (
+    item &&
+    item.anchor &&
+    anchor &&
+    cvResult.dist < anchor.cvMatchValue / 1000
+  ) {
+    return <></>;
+  }
+
   return (
     <>
       {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (

@@ -71,6 +71,10 @@ export default function ItemView(props: ItemViewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
+  if (item.anchor && cvResult.dist < anchor.cvMatchValue / 1000) {
+    return <></>;
+  }
+
   return (
     <>
       {item && item.type == "focus_highlight" && (
