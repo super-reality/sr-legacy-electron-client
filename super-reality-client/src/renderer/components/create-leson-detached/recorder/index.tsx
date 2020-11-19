@@ -207,11 +207,11 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     }
   }, [count, startRecord]);
 
-  useEffect(() => {
-    if (recording) {
-      setTimePassed(recorderTime);
-    }
-  }, [recorderTime]);
+  // useEffect(() => {
+  //   if (recording) {
+  //     setTimePassed(recorderTime);
+  //   }
+  // }, [recorderTime]);
 
   return (
     <>
@@ -270,26 +270,30 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       {recording ? (
         <Windowlet
           title="Super Reality Recorder"
-          width={320}
+          width={400}
           height={100}
           onClose={onFinish}
         >
           <Flex
             style={{ margin: '16px 16px', justifyContent: 'space-between' }}
           >
-            <div>
-              {recorder.currentTimer.length ? (
+            <Flex>
+              {/* {recorder.currentTimer.length ? (
                 <p>
                   {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
                 </p>
               ) : (
                 <p>00:00:00</p>
-              )}
-            </div>
+              )} */}
+              <p>00:00:00</p>
+            </Flex>
+            <Flex style={{ width: '20%' }}>
+              <input type="range" style={{ width: 100 }} />
+            </Flex>
             {/* <div> here goes the slider for sound </div> */}
-            <div style={{ cursor: 'pointer' }}>
+            <Flex style={{ cursor: 'pointer' }}>
               <p>res</p>
-            </div>
+            </Flex>
 
             <ButtonRound
               svg={PlayIcon}
