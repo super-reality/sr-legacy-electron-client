@@ -1,5 +1,5 @@
 import { CVResult } from "../../../../../types/utils";
-import doCvMatch from "../../../../../utils/doCVMatch";
+import doCvMatch from "../../../../../utils/cv/doCVMatch";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import { IAnchor } from "../../../../api/types/anchor/anchor";

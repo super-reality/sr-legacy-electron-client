@@ -1,95 +1,11 @@
-import globalData from "../renderer/globalData";
-import store, { AppState } from "../renderer/redux/stores/renderer";
-import { CVResult } from "../types/utils";
-import getImage from "./getImage";
-import * as cv from "./opencv/opencv";
-
-function getLocalMat(image: string): Promise<cv.Mat> {
-  return new Promise((resolve, reject) => {
-    try {
-      const mat = cv.imread(image);
-      resolve(mat);
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
-
-function getUrlMat(image: string): Promise<cv.Mat> {
-  return new Promise((resolve, reject) => {
-    getImage(image).then((img) => {
-      const canvas = document.createElement("canvas");
-      const w = img.width;
-      const h = img.height;
-      canvas.width = w;
-      canvas.height = h;
-      // console.log(w, h);
-      const ctx = canvas.getContext("2d");
-      if (ctx && w !== 0 && h !== 0) {
-        ctx.drawImage(img, 0, 0);
-        const buff = ctx.getImageData(0, 0, w, h).data;
-        const mat = new cv.Mat(Buffer.from(buff), h, w, cv.CV_8UC4);
-        // console.log(w / xScale, h / yScale);
-        resolve(mat);
-      } else {
-        resolve(new cv.Mat());
-      }
-    });
-  });
-}
-
-function matToCanvas(mat: cv.Mat, id: string): void {
-  // convert your image to rgba color space
-  const matRGBA =
-    mat.channels === 1
-      ? mat.cvtColor(cv.COLOR_GRAY2RGBA)
-      : mat.cvtColor(cv.COLOR_BGRA2RGBA);
-
-  // create new ImageData from raw mat data
-  const imgData = new ImageData(
-    new Uint8ClampedArray(matRGBA.getData()),
-    mat.cols,
-    mat.rows
-  );
-
-  // set canvas dimensions
-  const canvas = document.getElementById(id) as HTMLCanvasElement;
-  if (canvas) {
-    canvas.width = mat.cols;
-    canvas.height = mat.rows;
-  }
-
-  // set image data
-  const ctx = canvas.getContext("2d");
-  if (ctx) ctx.putImageData(imgData, 0, 0);
-}
-
-function getMatFromVideo(
-  videoElement: HTMLVideoElement,
-  width: number,
-  height: number
-): cv.Mat | null {
-  if (videoElement?.videoWidth == 0 || videoElement?.videoHeight == 0) {
-    return null;
-  }
-
-  // get canvas for the output
-  const canvas = document.getElementById("canvasOutput") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d");
-  if (ctx) {
-    canvas.width = width;
-    canvas.height = height;
-
-    // Draw video onto a new canvas and get the buffer data to a Mat
-    ctx.drawImage(videoElement, 0, 0, width, height);
-
-    const buffer = Buffer.from(ctx.getImageData(0, 0, width, height).data);
-    let srcMat = new cv.Mat(buffer, height, width, cv.CV_8UC4);
-    srcMat = srcMat.cvtColor(cv.COLOR_RGBA2BGRA);
-    return srcMat;
-  }
-  return null;
-}
+import globalData from "../../renderer/globalData";
+import store, { AppState } from "../../renderer/redux/stores/renderer";
+import { CVResult } from "../../types/utils";
+import getLocalMat from "./getLocalMat";
+import getMatFromVideo from "./getMatFromVideo";
+import getUrlMat from "./getUrlMat";
+import matToCanvas from "./matToCanvas";
+import * as cv from "../opencv/opencv";
 
 export default function doCvMatch(
   images: string[],
