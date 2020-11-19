@@ -6,7 +6,7 @@ import downloadFile from "./downloadFIle";
 import md5 from "./md5";
 import playSound from "./playSound";
 
-export default function getTTS(text: string, play?: boolean): void {
+export default function getTTS(text: string, play?: boolean): Promise<void> {
   // eslint-disable-next-line global-require
   const { app, remote } = require("electron");
   const userData = (app || remote.app).getPath("userData").replace(/\\/g, "/");
@@ -16,25 +16,27 @@ export default function getTTS(text: string, play?: boolean): void {
     if (play) {
       playSound(filename);
     }
-    return;
+    return new Promise((r) => r());
   }
 
-  // setLoading(true);
   const payload = {
     lesson: text,
   };
 
-  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech/`, payload, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  return Axios.post<string>(
+    `http://54.177.153.12:8080/text_to_speech/`,
+    payload,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
     .then(handleGetTTS)
     .then((result) => {
-      // setLoading(false);
       const { url } = JSON.parse(JSON.stringify(result));
       console.log(filename, url);
-      downloadFile(url, filename)
+      return downloadFile(url, filename)
         .then(() => {
           playSound(filename);
         })
@@ -42,6 +44,5 @@ export default function getTTS(text: string, play?: boolean): void {
     })
     .catch((err) => {
       console.log(err);
-      // setLoading(false);
     });
 }
