@@ -2,6 +2,8 @@ import { current } from '@reduxjs/toolkit';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 // import iohook from "iohook";
 import { ReactComponent as RecordIcon } from '../../../../assets/svg/record.svg';
+import { ReactComponent as StopIcon } from '../../../../assets/svg/stop.svg';
+import { ReactComponent as PlayIcon } from '../../../../assets/svg/play.svg';
 import ButtonRound from '../../button-round';
 import Flex from '../../flex';
 import ReactSelect from '../../top-select';
@@ -27,7 +29,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [timePassed, setTimePassed] = useState<string[]>([]);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
-  const recorderTime = recorder.currentTimer.split(':');
+  const recorderTime: string[] = recorder.currentTimer.split(':');
 
   useEffect(() => {
     const get = async () => {
@@ -207,9 +209,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   useEffect(() => {
     if (recording) {
-      setTimeout(() => setTimePassed(recorderTime), 1000);
+      setTimePassed(recorderTime);
     }
-  });
+  }, [recorderTime]);
 
   return (
     <>
@@ -276,20 +278,41 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             style={{ margin: '16px 16px', justifyContent: 'space-between' }}
           >
             <div>
-              <p>
-                {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
-              </p>
+              {recorder.currentTimer.length ? (
+                <p>
+                  {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
+                </p>
+              ) : (
+                <p>00:00:00</p>
+              )}
             </div>
             {/* <div> here goes the slider for sound </div> */}
             <div style={{ cursor: 'pointer' }}>
               <p>res</p>
             </div>
-            <div style={{ cursor: 'pointer' }}>
-              <p>pause</p>
-            </div>
-            <div style={{ cursor: 'pointer' }}>
-              <p onClick={stopRecord}>stop</p>
-            </div>
+
+            <ButtonRound
+              svg={PlayIcon}
+              svgStyle={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer'
+              }}
+              width="36px"
+              height="36px"
+              onClick={stopRecord /* should be resume play */}
+            />
+            <ButtonRound
+              svg={StopIcon}
+              svgStyle={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer'
+              }}
+              width="36px"
+              height="36px"
+              onClick={stopRecord}
+            />
           </Flex>
         </Windowlet>
       ) : (
