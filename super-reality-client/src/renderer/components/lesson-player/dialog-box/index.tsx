@@ -27,7 +27,7 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
 
     useEffect(() => {
       getTTS(text, true);
-    }, []);
+    }, [text]);
 
     return (
       <div
