@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useEffect } from "react";
 import { ItemImageTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import ButtonRound from "../../button-round";
@@ -24,6 +24,10 @@ interface DialogBoxProps {
 const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
   (props, forwardedRef) => {
     const { text, style, pos, callback } = props;
+
+    useEffect(() => {
+      getTTS(text, true);
+    }, []);
 
     return (
       <div
