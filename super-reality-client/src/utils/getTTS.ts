@@ -1,7 +1,7 @@
 import Axios from "axios";
 import fs from "fs";
 import handleGetTTS from "../renderer/api/handleGetTTS";
-import setLoading from "../renderer/redux/utils/setLoading";
+// import setLoading from "../renderer/redux/utils/setLoading";
 import downloadFile from "./downloadFIle";
 import md5 from "./md5";
 import playSound from "./playSound";
@@ -19,19 +19,21 @@ export default function getTTS(text: string, play?: boolean): void {
     return;
   }
 
-  setLoading(true);
+  // setLoading(true);
   const payload = {
     lesson: text,
   };
 
-  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech`, payload, {
+  Axios.post<string>(`http://54.177.153.12:8080/text_to_speech/`, payload, {
     headers: {
       "Content-Type": "application/json",
     },
   })
     .then(handleGetTTS)
-    .then((url) => {
-      setLoading(false);
+    .then((result) => {
+      // setLoading(false);
+      const { url } = JSON.parse(JSON.stringify(result));
+      console.log(filename, url);
       downloadFile(url, filename)
         .then(() => {
           playSound(filename);
@@ -39,6 +41,7 @@ export default function getTTS(text: string, play?: boolean): void {
         .catch(console.error);
     })
     .catch((err) => {
-      setLoading(false);
+      console.log(err);
+      // setLoading(false);
     });
 }
