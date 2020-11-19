@@ -65,7 +65,7 @@ export default async function generateDialogues(
     const seconds = timestampTime / 1000;
     if (data.type == "left_click" || data.type == "right_click") {
       audioPieces.push({
-        time: seconds,
+        time: last,
         step: stepName,
         name: itemName,
         text: "",

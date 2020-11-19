@@ -37,6 +37,7 @@ export default function VideoStatus() {
     recordingData,
     currentAnchor,
     currentStep,
+    treeSteps,
     treeAnchors,
     cropRecording,
     cropEditAnchor,
@@ -50,11 +51,11 @@ export default function VideoStatus() {
   const [newAnchorFile, setNewAnchor] = useState("");
 
   const anchor = useMemo(() => {
-    const slice = store.getState().createLessonV2;
-    const step: IStep | null = slice.treeSteps[currentStep || ""];
+    // const slice = store.getState().createLessonV2;
+    const step: IStep | null = treeSteps[currentStep || ""];
 
-    return slice.treeAnchors[step?.anchor || currentAnchor || ""] || null;
-  }, [currentAnchor, currentStep]);
+    return treeAnchors[step?.anchor || currentAnchor || ""] || null;
+  }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
 
   const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
 
@@ -270,7 +271,15 @@ export default function VideoStatus() {
             return updateAnchor(
               { templates: [...a.templates, newUrl] },
               step.anchor
-            );
+            ).then((updatedAnchor) => {
+              if (updatedAnchor) {
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_SETANCHOR",
+                  arg: { anchor: updatedAnchor },
+                });
+              }
+              return updatedAnchor;
+            });
           }
           return new Promise((r) => r());
         }
