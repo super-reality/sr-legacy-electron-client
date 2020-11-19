@@ -9,6 +9,7 @@ import { ApiError } from "../../renderer/api/types";
 import handleAuthError from "../../renderer/api/handleAuthError";
 import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
 import constantFormat from "../constantFormat";
+import createDataDirs from "../createDataDirs";
 
 jest.setTimeout(30000);
 
@@ -58,4 +59,8 @@ test("Can log in", async (done) => {
   expect(token).toBeDefined();
   // Axios.defaults.headers.post.Authorization = `Bearer ${token}`;
   done();
+});
+
+test("Can create data directories", () => {
+  expect(createDataDirs()).toBe(true);
 });

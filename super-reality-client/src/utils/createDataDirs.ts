@@ -10,7 +10,7 @@ import {
 function makeDataDir(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdir(dir, (err) => {
-      if (err) console.log("error", err);
+      if (err) throw err;
     });
   }
 }
@@ -21,4 +21,6 @@ export default function createDataDirs() {
   makeDataDir(stepSnapshotPath);
   makeDataDir(itemsPath);
   makeDataDir(tempPath);
+
+  return true;
 }
