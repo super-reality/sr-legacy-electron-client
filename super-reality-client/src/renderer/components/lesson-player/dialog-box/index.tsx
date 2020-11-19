@@ -28,7 +28,7 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
     return (
       <div
         ref={forwardedRef}
-        className="dialog-box"
+        className="dialog-box click-on"
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,
