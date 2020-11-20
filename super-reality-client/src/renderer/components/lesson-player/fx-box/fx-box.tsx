@@ -1,21 +1,12 @@
 /* eslint-disable react/prop-types */
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { CSSProperties, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
-import path from "path";
-import proc from "process";
+
 import { ItemFXTriggers } from "../../../api/types/item/item";
-import { voidFunction } from "../../../constants";
+import { effectDB } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
 
 import "./index.scss";
-import usePopupItemSettings from "../../../hooks/usePopupItemSettings";
-import ButtonSimple from "../../button-simple";
 
 interface FXBoxProps {
   pos: {
@@ -40,7 +31,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
     const hideModalBtn = useCallback(() => {
       setIsModalBtn("none");
     }, []);
-    // ../../../..
+    // effectDB[0].url
     let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
     if (effect) {
       switch (effect) {
@@ -67,11 +58,9 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
       }
     }
     // console.log("effect", effect, "srcFX", srcFX);
-    const [Popup, open] = usePopupItemSettings();
-    console.log(Popup, open);
+
     return (
       <>
-        {Popup}
         <div
           ref={forwardedRef}
           className="fx-box"
@@ -82,17 +71,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
             height: `${pos.height}px`,
             ...style,
           }}
-          onMouseEnter={showModalBtn}
-          onMouseLeave={hideModalBtn}
         >
-          <ButtonSimple
-            style={{
-              display: isModalBtn,
-            }}
-            onClick={open}
-          >
-            Open Modal
-          </ButtonSimple>
           <iframe className="fx-iframe" src={srcFX} />
         </div>
       </>
@@ -103,11 +82,3 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
 FXBox.displayName = "FXBox";
 
 export default FXBox;
-/*
-style={{
-            width: "274%",
-            top: "-20%",
-            left: "-87%",
-            height: "calc(100% * 1.7)",
-          }}
-*/

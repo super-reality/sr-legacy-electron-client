@@ -64,19 +64,19 @@ interface FXSettingsProps {
 export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const { item, update, style } = props;
   const dispatch = useDispatch();
-  // const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [effect, setEffect] = useState("id_1");
   const [isHover, setIsHover] = useState("");
 
   const effectOneRef = useRef<HTMLDivElement>(null);
   const effectSecondRef = useRef<HTMLDivElement>(null);
 
-  // const openFolder = useCallback(
-  //   (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-  //     setOpen(!open);
-  //   },
-  //   [open]
-  // );
+  const openFolder = useCallback(
+    (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+      setOpen(!open);
+    },
+    [open]
+  );
 
   const onHover = useCallback(() => {
     if (effectOneRef.current && effectOneRef.current.id) {
@@ -95,101 +95,11 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
     update({ fullScreen: !item.fullScreen });
   }, []);
 
-  const [Popup, open] = usePopupItemSettings();
+  // const [Popup, open] = usePopupItemSettings();
 
   return (
     <>
-      {Popup}
-
-      <div className="settings-item-lable ">
-        <IconAddFX
-          width="16px"
-          height="16px"
-          style={{
-            margin: "3px 5px 3px 0",
-          }}
-        />
-        <div className="item-lable-name">FX</div>
-      </div>
-      <div className="item-settings">
-        <div
-          className="input-name"
-          style={{
-            color: "var(--color--text)",
-          }}
-        >
-          Style
-        </div>
-        <div className="settings-item-icon" onClick={open}>
-          <img
-            width="50px"
-            height="50px"
-            src={IconFXThumbnail}
-            alt="icon-fx"
-            className="settings-subitem-icon"
-          />
-        </div>
-        <div className="settings-input-container">
-          <div
-            className="input-name"
-            style={{
-              color: "var(--color--text)",
-            }}
-          >
-            Computer Vision
-          </div>
-          <div className="settings-input-container-input-box">
-            <input
-              className="settings-input-container-input"
-              onChange={() => {}}
-              value="currentInputValue"
-            />
-            <IconTreeDropArrow
-              style={{ margin: "auto" }}
-              fill="var(--color-icon)"
-            />
-          </div>
-        </div>
-        <div className="anchor-preview" />
-        <div className="settings-input-container">
-          <div
-            className="input-name"
-            style={{
-              color: "var(--color--text)",
-            }}
-          >
-            Trigger
-          </div>
-          <div className="settings-input-container-input-box">
-            <input
-              className="settings-input-container-input"
-              onChange={() => {}}
-              value="currentInputValue"
-            />
-            <IconTreeDropArrow
-              style={{ margin: "auto" }}
-              fill="var(--color-icon)"
-            />
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-/*
-<ButtonSimple
-        style={{
-          margin: "5px",
-          width: "100px",
-        }}
-        onClick={() => {
-          update({ fullScreen: !item.fullScreen });
-        }}
-      >
-        Full Screen
-      </ButtonSimple>
-<Flex style={{ backgroundColor: "var(--color-background)" }}>
+      <Flex style={{ backgroundColor: "var(--color-background)" }}>
         <div className="settings-list">
           <div className="settings-list-item">
             <div
@@ -334,4 +244,97 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
           <div className="settings-list-item" />
         </div>
       </Flex>
+    </>
+  );
+}
+
+/*
+ {Popup}
+
+      <div className="settings-item-lable ">
+        <IconAddFX
+          width="16px"
+          height="16px"
+          style={{
+            margin: "3px 5px 3px 0",
+          }}
+        />
+        <div className="item-lable-name">FX</div>
+      </div>
+      <div className="item-settings">
+        <div
+          className="input-name"
+          style={{
+            color: "var(--color--text)",
+          }}
+        >
+          Style
+        </div>
+        <div className="settings-item-icon" onClick={open}>
+          <img
+            width="50px"
+            height="50px"
+            src={IconFXThumbnail}
+            alt="icon-fx"
+            className="settings-subitem-icon"
+          />
+        </div>
+        <div className="settings-input-container">
+          <div
+            className="input-name"
+            style={{
+              color: "var(--color--text)",
+            }}
+          >
+            Computer Vision
+          </div>
+          <div className="settings-input-container-input-box">
+            <input
+              className="settings-input-container-input"
+              onChange={() => {}}
+              value="currentInputValue"
+            />
+            <IconTreeDropArrow
+              style={{ margin: "auto" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        </div>
+        <div className="anchor-preview" />
+        <div className="settings-input-container">
+          <div
+            className="input-name"
+            style={{
+              color: "var(--color--text)",
+            }}
+          >
+            Trigger
+          </div>
+          <div className="settings-input-container-input-box">
+            <input
+              className="settings-input-container-input"
+              onChange={() => {}}
+              value="currentInputValue"
+            />
+            <IconTreeDropArrow
+              style={{ margin: "auto" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        </div>
+      </div>
+
+
+<ButtonSimple
+        style={{
+          margin: "5px",
+          width: "100px",
+        }}
+        onClick={() => {
+          update({ fullScreen: !item.fullScreen });
+        }}
+      >
+        Full Screen
+      </ButtonSimple>
+
 */

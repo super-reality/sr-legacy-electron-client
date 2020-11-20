@@ -25,6 +25,7 @@ import SettingsDialog from "./settings-dialog";
 import ButtonRound from "../../button-round";
 
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+import ItemSettingsContainer from "../settings-container";
 
 interface OpenItemProps {
   id: string;
@@ -98,62 +99,68 @@ export default function OpenItem(props: OpenItemProps) {
   // console.log(item);
   return (
     <>
-      <Tabs
-        buttons={itemModalOptions}
-        initial={view}
-        callback={setView}
-        style={{ width: "-webkit-fill-available", height: "42px" }}
-      />
-      <TabsContainer
-        style={{ minHeight: "270px", height: "400px", overflow: "auto" }}
-      >
-        {view === "Settings" && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "32px auto",
-              gap: "8px",
-            }}
-          >
-            <ButtonRound
-              width="32px"
-              height="32px"
-              svg={AnchorIcon}
-              onClick={openParentAnchor}
-            />
-            <BaseToggle
-              title="Use Anchor"
-              value={item.anchor}
-              callback={(val) => {
-                doUpdate({ anchor: val });
-              }}
-            />
-          </div>
-        )}
-        {view === "Settings" && item.type == "focus_highlight" && (
-          <SettingsFocusHighlight item={item} update={doUpdate} />
-        )}
-        {view === "Settings" && item.type == "image" && (
-          <SettingsImage item={item} update={doUpdate} />
-        )}
-        {view === "Settings" && item.type == "dialog" && (
-          <SettingsDialog item={item} update={doUpdate} />
-        )}
-        {view === "Settings" && item.type == "fx" && (
+      {view === "Settings" && item.type == "fx" ? (
+        <ItemSettingsContainer>
+          <div>{item.type}</div>
           <FXSettings item={item} update={doUpdate} />
-        )}
-        {view === "Trigger" && (
-          <Flex column style={{ width: "-webkit-fill-available" }}>
-            <BaseSelect
-              title="Trigger"
-              current={item.trigger}
-              options={Object.values(triggers)}
-              optionFormatter={constantFormat(triggers)}
-              callback={(val) => doUpdate({ trigger: val })}
-            />
-          </Flex>
-        )}
-      </TabsContainer>
+        </ItemSettingsContainer>
+      ) : (
+        <>
+          <Tabs
+            buttons={itemModalOptions}
+            initial={view}
+            callback={setView}
+            style={{ width: "-webkit-fill-available", height: "42px" }}
+          />
+          <TabsContainer
+            style={{ minHeight: "270px", height: "400px", overflow: "auto" }}
+          >
+            {view === "Settings" && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "32px auto",
+                  gap: "8px",
+                }}
+              >
+                <ButtonRound
+                  width="32px"
+                  height="32px"
+                  svg={AnchorIcon}
+                  onClick={openParentAnchor}
+                />
+                <BaseToggle
+                  title="Use Anchor"
+                  value={item.anchor}
+                  callback={(val) => {
+                    doUpdate({ anchor: val });
+                  }}
+                />
+              </div>
+            )}
+            {view === "Settings" && item.type == "focus_highlight" && (
+              <SettingsFocusHighlight item={item} update={doUpdate} />
+            )}
+            {view === "Settings" && item.type == "image" && (
+              <SettingsImage item={item} update={doUpdate} />
+            )}
+            {view === "Settings" && item.type == "dialog" && (
+              <SettingsDialog item={item} update={doUpdate} />
+            )}
+            {view === "Trigger" && (
+              <Flex column style={{ width: "-webkit-fill-available" }}>
+                <BaseSelect
+                  title="Trigger"
+                  current={item.trigger}
+                  options={Object.values(triggers)}
+                  optionFormatter={constantFormat(triggers)}
+                  callback={(val) => doUpdate({ trigger: val })}
+                />
+              </Flex>
+            )}
+          </TabsContainer>
+        </>
+      )}
     </>
   );
 }

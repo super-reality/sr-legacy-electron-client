@@ -6,18 +6,19 @@ import IconFXInList from "../../assets/images/fx-in-popup-list-icon.png";
 import IconFXThumbnail from "../../assets/images/fx-popup-icon.png";
 import Flex from "../components/flex";
 import { ReactComponent as CloseIcon } from "../../assets/svg/win-close.svg";
+import { effectDB } from "../constants";
 
-const effectDB = [
-  { id: "1" },
-  { id: "2" },
-  { id: "3" },
-  { id: "4" },
-  { id: "5" },
-  { id: "6" },
-  { id: "7" },
-  { id: "8" },
-  { id: "9" },
-];
+// const effectDB = [
+//   { id: "1" },
+//   { id: "2" },
+//   { id: "3" },
+//   { id: "4" },
+//   { id: "5" },
+//   { id: "6" },
+//   { id: "7" },
+//   { id: "8" },
+//   { id: "9" },
+// ];
 export default function usePopupItemSettings(): [JSX.Element, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
   const [item, setItem] = useState("fx");
@@ -116,10 +117,13 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             flexWrap: "wrap",
           }}
         >
-          {effectDB.map((fxIcon) => {
+          {effectDB.map((fxItem) => {
+            // const fxItem: string | undefined = effectDB[key]
+            console.log(fxItem);
             return (
-              <div key={fxIcon.id}>
-                <img width="200px" height="200px" src={IconFXInList} />
+              <div key={fxItem.id}>
+                <embed src={fxItem.url} width="40" height="40" />
+                {/* <img width="200px" height="200px" src={IconFXInList} /> */}
               </div>
             );
           })}
