@@ -77,6 +77,7 @@ export interface ItemFX extends BaseItem {
   type: "fx";
   effect: string;
   fullScreen: boolean;
+  trigger: ValueOf<typeof ItemFXTriggers>;
 }
 export interface ItemAudio extends BaseItem {
   type: "audio";
