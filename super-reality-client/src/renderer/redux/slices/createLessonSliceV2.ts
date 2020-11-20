@@ -42,6 +42,7 @@ const initialState = {
   chapterPreview: false,
   stepPreview: false,
   itemPreview: false,
+  previewing: false,
   previewOne: false,
   videoScale: 1,
   videoPos: { x: 0, y: 0 },

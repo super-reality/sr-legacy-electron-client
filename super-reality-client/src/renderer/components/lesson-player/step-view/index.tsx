@@ -14,7 +14,7 @@ interface StepViewProps {
 
 export default function StepView(props: StepViewProps) {
   const { onSucess, stepId } = props;
-  const { treeSteps, treeItems } = useSelector(
+  const { previewing, treeSteps, treeItems } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const [itemsState, setItemsState] = useState<ItemsState>({});
@@ -61,7 +61,11 @@ export default function StepView(props: StepViewProps) {
             item={item}
             anchorId={step.anchor || ""}
             onSucess={(trigger: number | null) => {
-              if (trigger == item.trigger && itemsState[itemId] == false) {
+              if (
+                previewing &&
+                trigger == item.trigger &&
+                itemsState[itemId] == false
+              ) {
                 itemSuceeded(itemId, trigger);
               }
             }}

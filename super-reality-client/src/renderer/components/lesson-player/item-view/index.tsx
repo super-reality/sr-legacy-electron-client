@@ -22,7 +22,7 @@ interface ItemViewProps {
 export default function ItemView(props: ItemViewProps) {
   const { anchorId, item, onSucess } = props;
 
-  const { treeAnchors } = useSelector(
+  const { treeAnchors, previewing } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -71,7 +71,7 @@ export default function ItemView(props: ItemViewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
-  if (item.anchor && cvResult.dist < anchor.cvMatchValue / 1000) {
+  if (previewing && item.anchor && cvResult.dist < anchor.cvMatchValue / 1000) {
     return <></>;
   }
 

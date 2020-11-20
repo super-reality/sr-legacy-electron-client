@@ -34,7 +34,7 @@ function doNewAnchor(url: string) {
     type: "crop",
     templates: [url],
     anchorFunction: "or",
-    cvMatchValue: 995,
+    cvMatchValue: 900,
     cvCanvas: 50,
     cvDelay: 100,
     cvGrayscale: true,

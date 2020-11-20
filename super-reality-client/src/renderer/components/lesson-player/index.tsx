@@ -78,6 +78,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         chapterPreview: false,
         stepPreview: false,
         itemPreview: false,
+        previewing: false,
       },
     });
     onFinish();

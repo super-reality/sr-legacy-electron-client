@@ -34,9 +34,13 @@ export default function ItemPreview(props: ItemPreviewProps) {
   const { itemId, stepId, showAnchor } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
-  const { treeItems, treeSteps, treeAnchors, videoScale } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    previewing,
+    treeItems,
+    treeSteps,
+    treeAnchors,
+    videoScale,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
@@ -229,6 +233,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
   );
 
   if (
+    previewing &&
     item &&
     item.anchor &&
     anchor &&
@@ -242,7 +247,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
       {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
         <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
-      {item && item.type == "focus_highlight" && (
+      {item && item.type == "focus_highlight" ? (
         <FindBox
           ref={dragContainer}
           pos={pos}
@@ -250,8 +255,10 @@ export default function ItemPreview(props: ItemPreviewProps) {
           type={item.focus}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
-      {item && item.type == "image" && (
+      {item && item.type == "image" ? (
         <ImageBox
           ref={dragContainer}
           pos={pos}
@@ -259,8 +266,10 @@ export default function ItemPreview(props: ItemPreviewProps) {
           image={item.url}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
-      {item && item.type == "dialog" && (
+      {item && item.type == "dialog" ? (
         <DialogBox
           ref={dragContainer}
           pos={pos}
@@ -268,6 +277,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
           text={item.text}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
     </>
   );

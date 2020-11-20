@@ -98,6 +98,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
         chapterPreview: treeCurrentType == "chapter",
         stepPreview: treeCurrentType == "step",
         itemPreview: treeCurrentType == "item",
+        previewing: true,
         previewOne: true,
       },
     });
@@ -113,6 +114,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
         chapterPreview: treeCurrentType == "chapter",
         stepPreview: treeCurrentType == "step",
         itemPreview: treeCurrentType == "item",
+        previewing: true,
         previewOne: false,
       },
     });
