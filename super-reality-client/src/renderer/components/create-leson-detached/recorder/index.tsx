@@ -1,5 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
+
 import { current } from "@reduxjs/toolkit";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Slider, Rail, GetRailProps } from "react-compound-slider";
 // import iohook from "iohook";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
@@ -20,6 +23,19 @@ interface RecorderProps {
   onFinish: () => void;
 }
 
+const sliderStyle: React.CSSProperties = {
+  position: "relative",
+  width: "100%"
+};
+
+const railStyle: React.CSSProperties = {
+  position: "absolute",
+  width: "100%",
+  height: 3,
+  cursor: "pointer",
+  backgroundColor: "#202225"
+};
+
 export default function Recorder(props: RecorderProps): JSX.Element {
   const { onFinish } = props;
   const [count, setCount] = useState(-1);
@@ -29,10 +45,6 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [timePassed, setTimePassed] = useState<string[]>([]);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
-  // const recordTimer: string[] = useMemo(
-  //   () => recorder.currentTimer.split(":"),
-  //   [recorder.currentTimer]
-  // );
 
   useEffect(() => {
     const get = async () => {
@@ -299,9 +311,23 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               )}
             </Flex>
             <Flex style={{ width: "25%" }}>
-              <input type="range" style={{ width: "100%", margin: 0 }} />
+              <Slider
+                rootStyle={sliderStyle}
+                domain={[0, 100]}
+                mode={1}
+                step={1}
+                disabled={false}
+                onUpdate={() => console.log("slider updated")}
+                onChange={() => console.log("slider changed")}
+                values={[]}
+              >
+                <Rail>
+                  {({ getRailProps }: { getRailProps: GetRailProps }) => (
+                    <div style={railStyle} {...getRailProps()} />
+                  )}
+                </Rail>
+              </Slider>
             </Flex>
-            {/* <div> here goes the slider for sound </div> */}
             <ButtonRound
               svg={PlayIcon}
               svgStyle={{
