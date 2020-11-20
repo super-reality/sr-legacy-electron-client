@@ -5,47 +5,47 @@ import React, {
   useMemo,
   useRef,
   useState
-} from 'react';
-import interact from 'interactjs';
-import './index.scss';
-import fs from 'fs';
-import { useSelector, useDispatch } from 'react-redux';
-import { hidden } from 'colorette';
-import useTransparentFix from '../../hooks/useTransparentFix';
-import store, { AppState } from '../../redux/stores/renderer';
-import reduxAction from '../../redux/reduxAction';
-import setTopMost from '../../../utils/setTopMost';
-import setMaximize from '../../../utils/setMaximize';
-import { ReactComponent as ButtonMinimize } from '../../../assets/svg/win-minimize.svg';
-import { ReactComponent as ButtonMaximize } from '../../../assets/svg/win-maximize.svg';
-import { ReactComponent as ButtonClose } from '../../../assets/svg/win-close.svg';
+} from "react";
+import interact from "interactjs";
+import "./index.scss";
+import fs from "fs";
+import { useSelector, useDispatch } from "react-redux";
+import { hidden } from "colorette";
+import useTransparentFix from "../../hooks/useTransparentFix";
+import store, { AppState } from "../../redux/stores/renderer";
+import reduxAction from "../../redux/reduxAction";
+import setTopMost from "../../../utils/setTopMost";
+import setMaximize from "../../../utils/setMaximize";
+import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
+import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
+import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
 
-import setFocusable from '../../../utils/setFocusable';
-import setResizable from '../../../utils/setResizable';
-import Lesson from './lessson';
-import Recorder from './recorder';
-import minimizeWindow from '../../../utils/minimizeWindow';
-import closeWindow from '../../../utils/closeWindow';
-import toggleMaximize from '../../../utils/toggleMaximize';
-import VideoNavigation from './video-navigation';
-import VideoPreview from './video-preview';
-import AnchorEdit from './anchor-edit';
-import AnchorTester from './anchor-tester';
-import LessonPlayer from '../lesson-player';
-import { voidFunction } from '../../constants';
-import useDebounce from '../../hooks/useDebounce';
-import { RecordingJson } from './recorder/types';
-import VideoStatus from './video-status';
-import VideoData from './video-data';
-import { recordingPath, stepSnapshotPath } from '../../electron-constants';
-import { getRawAudioData } from './recorder/CVEditor';
-import rawAudioToWaveform from './lesson-utils/rawAudioToWaveform';
+import setFocusable from "../../../utils/setFocusable";
+import setResizable from "../../../utils/setResizable";
+import Lesson from "./lessson";
+import Recorder from "./recorder";
+import minimizeWindow from "../../../utils/minimizeWindow";
+import closeWindow from "../../../utils/closeWindow";
+import toggleMaximize from "../../../utils/toggleMaximize";
+import VideoNavigation from "./video-navigation";
+import VideoPreview from "./video-preview";
+import AnchorEdit from "./anchor-edit";
+import AnchorTester from "./anchor-tester";
+import LessonPlayer from "../lesson-player";
+import { voidFunction } from "../../constants";
+import useDebounce from "../../hooks/useDebounce";
+import { RecordingJson } from "./recorder/types";
+import VideoStatus from "./video-status";
+import VideoData from "./video-data";
+import { recordingPath, stepSnapshotPath } from "../../electron-constants";
+import { getRawAudioData } from "./recorder/CVEditor";
+import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 
 function setMocks() {
   reduxAction(store.dispatch, {
-    type: 'CREATE_LESSON_V2_DATA',
+    type: "CREATE_LESSON_V2_DATA",
     arg: {
-      lessons: [{ _id: '5f7e0b2bf658117398cb4aca', name: 'Test Lesson' }]
+      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }]
     }
   });
 }
@@ -74,13 +74,13 @@ function TopBar() {
       <div className="name">Super Reality</div>
       <div className="buttons">
         <div className="minimize" onClick={onMinimize}>
-          <ButtonMinimize style={{ margin: 'auto' }} />
+          <ButtonMinimize style={{ margin: "auto" }} />
         </div>
         <div className="maximize" onClick={onMaximize}>
-          <ButtonMaximize style={{ margin: 'auto' }} />
+          <ButtonMaximize style={{ margin: "auto" }} />
         </div>
         <div className="close" onClick={onCLose}>
-          <ButtonClose style={{ margin: 'auto' }} />
+          <ButtonClose style={{ margin: "auto" }} />
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const setVideoNavPos = useCallback(
     (n: readonly number[]) => {
       reduxAction(dispatch, {
-        type: 'CREATE_LESSON_V2_DATA',
+        type: "CREATE_LESSON_V2_DATA",
         arg: { videoNavigation: [...n] }
       });
     },
@@ -138,7 +138,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const debounceVideoNav = useCallback(
     (n: readonly number[]) => {
       debouncer(() => setVideoNavPos([...n]));
-      const el = document.getElementById('video-hidden') as HTMLVideoElement;
+      const el = document.getElementById("video-hidden") as HTMLVideoElement;
       if (el) el.currentTime = n[1] / 1000;
     },
     [debouncer]
@@ -146,7 +146,7 @@ export default function CreateLessonDetached(): JSX.Element {
 
   useEffect(() => {
     setMocks();
-    document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+    document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
   }, []);
 
   useEffect(() => {
@@ -157,7 +157,7 @@ export default function CreateLessonDetached(): JSX.Element {
           modifiers: [restrictMinSize],
           inertia: true
         } as any)
-        .on('resizemove', event => {
+        .on("resizemove", event => {
           const { target } = event;
           target.style.width = `${event.rect.width - 4}px`;
         });
@@ -170,7 +170,7 @@ export default function CreateLessonDetached(): JSX.Element {
   }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {
-    reduxAction(dispatch, { type: 'SET_OVERLAY_TRANSPARENT', arg: true });
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
     setFocusable(false);
     setTopMost(true);
     setMaximize(true);
@@ -178,7 +178,7 @@ export default function CreateLessonDetached(): JSX.Element {
   }, [dispatch]);
 
   const setSolid = useCallback(() => {
-    reduxAction(dispatch, { type: 'SET_OVERLAY_TRANSPARENT', arg: false });
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: false });
     setFocusable(true);
     setTopMost(false);
     setMaximize(false);
@@ -203,7 +203,7 @@ export default function CreateLessonDetached(): JSX.Element {
       try {
         const file = fs
           .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
-          .toString('utf8');
+          .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
         console.error(e);
@@ -213,18 +213,18 @@ export default function CreateLessonDetached(): JSX.Element {
       getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
         data => {
           reduxAction(dispatch, {
-            type: 'SET_RECORDING_DATA',
+            type: "SET_RECORDING_DATA",
             arg: { spectrum: rawAudioToWaveform(data) }
           });
         }
       );
     }
     reduxAction(dispatch, {
-      type: 'SET_RECORDING_DATA',
+      type: "SET_RECORDING_DATA",
       arg: json
     });
     reduxAction(dispatch, {
-      type: 'CLEAR_RECORDING_CV_DATA',
+      type: "CLEAR_RECORDING_CV_DATA",
       arg: null
     });
   }, [dispatch, currentRecording]);
@@ -260,7 +260,7 @@ export default function CreateLessonDetached(): JSX.Element {
         <div className="edit">
           <div
             className="creator"
-            style={{ width: '340px' }}
+            style={{ width: "340px" }}
             ref={resizeContainer}
           >
             <Lesson
@@ -271,7 +271,7 @@ export default function CreateLessonDetached(): JSX.Element {
           {currentAnchor !== undefined ? (
             <div
               className="anchor-edit"
-              style={{ width: '340px' }}
+              style={{ width: "340px" }}
               ref={resizeContainerAnchor}
             >
               <AnchorEdit setTransparent={setTransparent} />

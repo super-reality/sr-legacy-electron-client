@@ -121,7 +121,7 @@ function Tick({ tick, count, format = d => `${d}` }: TickProps) {
 }
 
 interface BaseSliderProps<T> {
-  title: string;
+  title?: string;
   domain: number[];
   defaultValues: number[];
   step?: number;
@@ -161,7 +161,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
   return (
     <Flex style={{ overflow: "hidden" }}>
       <div className="container-with-desc">
-        <div>{title}</div>
+        {title && <div>{title}</div>}
         <div
           style={{
             height: ticksNumber ? "44px" : "32px",

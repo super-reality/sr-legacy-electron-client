@@ -5,6 +5,8 @@ import { Slider, Rail, Handles, Tracks } from "react-compound-slider";
 // import iohook from "iohook";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
+import { ReactComponent as PauseIcon } from "../../../../assets/svg/pause.svg";
+import { ReactComponent as ResetIcon } from "../../../../assets/svg/restart.svg";
 import { ReactComponent as PlayIcon } from "../../../../assets/svg/play.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
@@ -12,6 +14,7 @@ import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 import { RecorderHandle, Track } from "./SliderUtilities";
+import BaseSlider from "../../base-slider";
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -309,7 +312,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               )}
             </Flex>
             <Flex style={{ width: "25%" }}>
-              <Slider
+              <BaseSlider domain={[0, 100]} step={1} defaultValues={[50]} />
+              {/* <Slider
                 rootStyle={sliderStyle}
                 domain={[0, 100]}
                 mode={1}
@@ -352,10 +356,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                     </div>
                   )}
                 </Tracks>
-              </Slider>
+              </Slider> */}
             </Flex>
             <ButtonRound
-              svg={PlayIcon}
+              svg={StopIcon}
               svgStyle={{
                 width: "1rem",
                 height: "1rem",
@@ -367,7 +371,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               style={{ backgroundColor: "#202225" }}
             />
             <ButtonRound
-              svg={PlayIcon}
+              svg={ResetIcon}
               svgStyle={{
                 width: "1rem",
                 height: "1rem",
@@ -380,7 +384,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             />
 
             <ButtonRound
-              svg={PlayIcon}
+              svg={PauseIcon}
               svgStyle={{
                 width: "1rem",
                 height: "1rem",
