@@ -58,6 +58,7 @@ const initialState = {
   recordingCvFrame: -1,
   cropRecording: false,
   cropEditAnchor: null as string | null,
+  cropEditAnchorMode: 0,
   cropRecordingPos: {
     x: 0,
     y: 0,
