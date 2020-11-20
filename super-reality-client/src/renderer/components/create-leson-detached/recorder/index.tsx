@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import { current } from "@reduxjs/toolkit";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Slider, Rail, GetRailProps } from "react-compound-slider";
+import { Slider, Rail, Handles } from "react-compound-slider";
 // import iohook from "iohook";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
@@ -12,6 +11,7 @@ import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
+import RecorderHandle from "./RecorderHandle";
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -230,8 +230,6 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     }
   }, [recorder.currentTimer, recording]);
 
-  console.log("recorder", recorder.currentTimer);
-  console.log("state", timePassed);
   return (
     <>
       {count > -1 && !recording ? (
@@ -322,10 +320,24 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 values={[]}
               >
                 <Rail>
-                  {({ getRailProps }: { getRailProps: GetRailProps }) => (
+                  {({ getRailProps }) => (
                     <div style={railStyle} {...getRailProps()} />
                   )}
                 </Rail>
+                <Handles>
+                  {({ handles, getHandleProps }) => (
+                    <div>
+                      {handles.map(handle => (
+                        <RecorderHandle
+                          key={handle.id}
+                          handle={handle}
+                          domain={[0, 100]}
+                          getHandleProps={getHandleProps}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </Handles>
               </Slider>
             </Flex>
             <ButtonRound

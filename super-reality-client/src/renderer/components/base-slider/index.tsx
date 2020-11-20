@@ -10,7 +10,7 @@ import {
   GetHandleProps,
   GetTrackProps,
   SliderItem,
-  Ticks,
+  Ticks
 } from "react-compound-slider";
 import Flex from "../flex";
 import "../containers.scss";
@@ -40,14 +40,14 @@ function Handle({
   domain: [min, max],
   handle: { id, value, percent },
   disabled = false,
-  getHandleProps,
+  getHandleProps
 }: HandleProps) {
   return (
     <>
       <div
         className="handle"
         style={{
-          left: `${percent}%`,
+          left: `${percent}%`
         }}
         {...getHandleProps(id)}
       />
@@ -58,7 +58,7 @@ function Handle({
         aria-valuenow={value}
         style={{
           left: `${percent}%`,
-          backgroundColor: disabled ? "#666" : undefined,
+          backgroundColor: disabled ? "#666" : undefined
         }}
       />
     </>
@@ -76,7 +76,7 @@ function Track({
   source,
   target,
   getTrackProps,
-  disabled = false,
+  disabled = false
 }: TrackProps) {
   return (
     <div
@@ -84,7 +84,7 @@ function Track({
       style={{
         backgroundColor: disabled ? "#999" : undefined,
         left: `calc(${source.percent}% - 4px)`,
-        width: `calc(${target.percent - source.percent}% + 4px)`,
+        width: `calc(${target.percent - source.percent}% + 4px)`
       }}
       {...getTrackProps()}
     />
@@ -97,13 +97,13 @@ interface TickProps {
   format?: (val: number) => string;
 }
 
-function Tick({ tick, count, format = (d) => `${d}` }: TickProps) {
+function Tick({ tick, count, format = d => `${d}` }: TickProps) {
   return (
     <div>
       <div
         className="tickPre"
         style={{
-          left: `${tick.percent}%`,
+          left: `${tick.percent}%`
         }}
       />
       <div
@@ -111,7 +111,7 @@ function Tick({ tick, count, format = (d) => `${d}` }: TickProps) {
         style={{
           marginLeft: `${-(100 / count) / 2}%`,
           width: `${100 / count}%`,
-          left: `${tick.percent}%`,
+          left: `${tick.percent}%`
         }}
       >
         {format(tick.value)}
@@ -135,7 +135,7 @@ interface BaseSliderProps<T> {
 const sliderStyle = {
   position: "relative" as "relative",
   width: "100%",
-  touchAction: "none",
+  touchAction: "none"
 };
 
 export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
@@ -148,7 +148,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
     slideCallback,
     disabled,
     ticksNumber,
-    style,
+    style
   } = props;
   const [state, setState] = useState<readonly number[]>(defaultValues.slice());
 
@@ -170,7 +170,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
             paddingTop: "16px",
             width: "calc(100% - 8px)",
             margin: "auto",
-            ...style,
+            ...style
           }}
         >
           <Slider
@@ -189,7 +189,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
             <Handles>
               {({ handles, getHandleProps }) => (
                 <div className="slider-handles">
-                  {handles.map((handle) => (
+                  {handles.map(handle => (
                     <Handle
                       key={handle.id}
                       handle={handle}
@@ -218,7 +218,7 @@ export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
               <Ticks count={ticksNumber}>
                 {({ ticks }) => (
                   <div className="slider-ticks">
-                    {ticks.map((tick) => (
+                    {ticks.map(tick => (
                       <Tick key={tick.id} tick={tick} count={ticks.length} />
                     ))}
                   </div>
