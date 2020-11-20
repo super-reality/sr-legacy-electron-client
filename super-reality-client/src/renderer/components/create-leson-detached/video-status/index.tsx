@@ -176,7 +176,7 @@ export default function VideoStatus() {
     EditAnchorOptions,
     openEditAnchorOptions,
     closeEditAnchorOptions,
-  ] = usePopup(false, doExitEditAnchor);
+  ] = usePopup(false);
 
   const doSaveNewAnchor = useCallback(() => {
     setStatus("Saving anchor..");
@@ -326,7 +326,10 @@ export default function VideoStatus() {
           <ButtonSimple
             width="100px"
             height="16px"
-            onClick={closeEditAnchorOptions}
+            onClick={() => {
+              closeEditAnchorOptions();
+              doExitEditAnchor();
+            }}
           >
             Cancel
           </ButtonSimple>
