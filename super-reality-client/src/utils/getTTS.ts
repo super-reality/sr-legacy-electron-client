@@ -14,7 +14,7 @@ export default function getTTS(text: string, play?: boolean): Promise<void> {
 
   if (fs.existsSync(filename)) {
     if (play) {
-      playSound(filename);
+      return playSound(filename);
     }
     return new Promise((r) => r());
   }
@@ -37,9 +37,7 @@ export default function getTTS(text: string, play?: boolean): Promise<void> {
       const { url } = JSON.parse(JSON.stringify(result));
       console.log(filename, url);
       return downloadFile(url, filename)
-        .then(() => {
-          playSound(filename);
-        })
+        .then(() => playSound(filename))
         .catch(console.error);
     })
     .catch((err) => {
