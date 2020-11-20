@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Slider, Rail, Handles } from "react-compound-slider";
+import { Slider, Rail, Handles, Tracks } from "react-compound-slider";
 // import iohook from "iohook";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
@@ -11,7 +11,7 @@ import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
-import RecorderHandle from "./RecorderHandle";
+import { RecorderHandle, Track } from "./SliderUtilities";
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -326,7 +326,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 </Rail>
                 <Handles>
                   {({ handles, getHandleProps }) => (
-                    <div>
+                    <div className="slider-handles">
                       {handles.map(handle => (
                         <RecorderHandle
                           key={handle.id}
@@ -338,6 +338,20 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                     </div>
                   )}
                 </Handles>
+                <Tracks>
+                  {({ tracks, getTrackProps }) => (
+                    <div className="slider-tracks">
+                      {tracks.map(({ id, source, target }) => (
+                        <Track
+                          key={id}
+                          source={source}
+                          target={target}
+                          getTrackProps={getTrackProps}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </Tracks>
               </Slider>
             </Flex>
             <ButtonRound
