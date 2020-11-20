@@ -280,6 +280,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           width={320}
           height={100}
           onClose={onFinish}
+          style={{ backgroundColor: "#2f3136" }}
         >
           <Flex
             style={{
@@ -310,7 +311,20 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               }}
               width="28px"
               height="28px"
+              onClick={stopRecord /* should be STEP play */}
+              style={{ backgroundColor: "#202225" }}
+            />
+            <ButtonRound
+              svg={PlayIcon}
+              svgStyle={{
+                width: "1rem",
+                height: "1rem",
+                cursor: "pointer"
+              }}
+              width="28px"
+              height="28px"
               onClick={stopRecord /* should be resume play */}
+              style={{ backgroundColor: "#202225" }}
             />
 
             <ButtonRound
@@ -323,6 +337,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               width="28px"
               height="28px"
               onClick={stopRecord /* should be resume play */}
+              style={{ backgroundColor: "#202225" }}
             />
             <ButtonRound
               svg={StopIcon}
@@ -334,6 +349,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               width="28px"
               height="28px"
               onClick={stopRecord}
+              style={{ backgroundColor: "#202225" }}
             />
           </Flex>
         </Windowlet>
