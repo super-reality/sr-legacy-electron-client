@@ -140,6 +140,7 @@ function TreeFolder(props: TreeFolderProps) {
     if (e.key === "Delete") {
       onDelete(type, id, parentId);
     }
+    /*
     if (e.ctrlKey && e.key === "c") {
       console.log(`copy ${id}`);
     }
@@ -149,6 +150,7 @@ function TreeFolder(props: TreeFolderProps) {
     if (e.ctrlKey && e.key === "v") {
       console.log(`paste on ${id}`);
     }
+    */
   }, []);
 
   useEffect(() => {
