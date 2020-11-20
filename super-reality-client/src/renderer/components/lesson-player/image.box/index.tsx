@@ -24,7 +24,7 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
     return (
       <div
         ref={forwardedRef}
-        className="image-box"
+        className="image-box  click-on"
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,

@@ -8,7 +8,7 @@ import usePopup from "../../../hooks/usePopup";
 import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
-import doCvMatch from "../../../../utils/doCVMatch";
+import doCvMatch from "../../../../utils/cv/doCVMatch";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import userDataPath from "../../../../utils/userDataPath";
 import uploadFileToS3 from "../../../../utils/uploadFileToS3";
