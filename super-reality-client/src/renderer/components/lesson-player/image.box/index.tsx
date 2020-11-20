@@ -20,7 +20,6 @@ interface ImageBoxProps {
 const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
   (props, forwardedRef) => {
     const { image, style, pos, callback } = props;
-    console.log(callback);
     return (
       <div
         ref={forwardedRef}

@@ -17,11 +17,12 @@ import FXBox from "../fx-box";
 interface ItemViewProps {
   item: Item;
   anchorId: string;
+  triggersState?: {};
   onSucess: (trigger: number | null) => void;
 }
 
 export default function ItemView(props: ItemViewProps) {
-  const { anchorId, item, onSucess } = props;
+  const { anchorId, item, onSucess, triggersState } = props;
 
   const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -101,8 +102,10 @@ export default function ItemView(props: ItemViewProps) {
       )}
       {item && item.type == "fx" && (
         <FXBox
+          id={item._id}
+          triggersState={triggersState}
           pos={pos}
-          style={style}
+          style={{ ...style, border: "none" }}
           effect={item.effect}
           callback={onSucess}
         />

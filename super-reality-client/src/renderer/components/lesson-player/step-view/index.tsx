@@ -60,6 +60,7 @@ export default function StepView(props: StepViewProps) {
             key={item._id}
             item={item}
             anchorId={step.anchor || ""}
+            triggersState={itemsState}
             onSucess={(trigger: number | null) => {
               if (trigger == item.trigger && itemsState[itemId] == false) {
                 itemSuceeded(itemId, trigger);

@@ -3,11 +3,13 @@ import React, { CSSProperties, useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { ItemFXTriggers } from "../../../api/types/item/item";
-import { effectDB } from "../../../constants";
+import { effectDB, voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
+import ButtonSimple from "../../button-simple";
 
 import "./index.scss";
 
+type ItemsState = Record<string, boolean>;
 interface FXBoxProps {
   pos: {
     x: number;
@@ -17,20 +19,32 @@ interface FXBoxProps {
   };
   style?: CSSProperties;
   effect?: string;
+  triggersState?: ItemsState;
   callback?: (trigger: number) => void;
+  id?: string;
 }
 
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
-    const { effect, style, pos, callback } = props;
-    const [isModalBtn, setIsModalBtn] = useState("none");
+    const { effect, style, pos, callback, triggersState, id } = props;
+    const { treeItems } = useSelector(
+      (state: AppState) => state.createLessonV2
+    );
+    const triggers = { ...triggersState };
+    // if (triggersState) {
+    //   if (
+    //     Object.keys(triggersState).filter((iid) => triggersState[iid] == false)
+    //       .length == 1
+    //   ) {
+    //     const itemsId = Object.keys(triggersState).filter(
+    //       (iid) => triggersState[iid] == true
+    //     );
+    //     const OK = Object.keys(triggersState);
+    //     console.log(triggersState, itemsId, OK);
+    //     if (itemsId[0] == id && callback) callback(ItemFXTriggers["On fx end"]);
+    //   }
+    // }
 
-    const showModalBtn = useCallback(() => {
-      setIsModalBtn("block");
-    }, []);
-    const hideModalBtn = useCallback(() => {
-      setIsModalBtn("none");
-    }, []);
     // effectDB[0].url
     let srcFX = `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`;
     if (effect) {
@@ -82,3 +96,15 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
 FXBox.displayName = "FXBox";
 
 export default FXBox;
+/*
+<ButtonSimple
+            className="click-on"
+            onClick={
+              callback
+                ? () => callback(ItemFXTriggers["On fx end"])
+                : voidFunction
+            }
+          >
+            Hide
+          </ButtonSimple>
+  */
