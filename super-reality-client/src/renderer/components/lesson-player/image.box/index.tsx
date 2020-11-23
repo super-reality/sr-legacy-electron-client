@@ -25,7 +25,7 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
     return (
       <div
         ref={forwardedRef}
-        className="image-box  click-on"
+        className="image-box click-on"
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,
@@ -34,7 +34,12 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
           ...style,
         }}
       >
-        <img src={image} />
+        <img
+          style={{
+            maxHeight: trigger ? "calc(100% - 64px)" : "100%",
+          }}
+          src={image}
+        />
         {trigger && (
           <ButtonSimple
             width="200px"
