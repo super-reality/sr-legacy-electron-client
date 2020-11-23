@@ -63,7 +63,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
           ) {
             callback(ItemFocusTriggers["Hover target"]);
           }
-        }, 500);
+        }, 50);
         timeoutRef.current = interval;
 
         if (clickThrough) {
