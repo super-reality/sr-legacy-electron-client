@@ -296,9 +296,6 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 onClick={() => setCount(3)}
               />
             </Flex>
-            <div style={{ margin: "4px auto auto auto" }}>
-              Press F10 to stop recording
-            </div>
           </Flex>
         </Windowlet>
       ) : (
