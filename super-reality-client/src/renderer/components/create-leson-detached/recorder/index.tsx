@@ -305,7 +305,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       {recording ? (
         <Windowlet
           title="Super Reality Recorder"
-          width={320}
+          width={350}
           height={100}
           onClose={onFinish}
           style={{ backgroundColor: "#2f3136" }}
@@ -317,7 +317,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               alignItems: "center"
             }}
           >
-            <Flex style={{ width: "33%" }}>
+            <Flex style={{ width: "25%" }}>
               {recorder.currentTimer.length ? (
                 <p style={{ margin: 0 }}>
                   {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
@@ -334,7 +334,12 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 margin: "auto"
               }}
             >
-              <BaseSlider domain={[0, 100]} step={1} defaultValues={[50]} />
+              <BaseSlider
+                domain={[0, 100]}
+                step={1}
+                defaultValues={[50]}
+                style={{ width: "80%" }}
+              />
             </div>
             <Flex style={{ width: "33%", justifyContent: "space-between" }}>
               <ButtonRound
