@@ -290,7 +290,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         </div>
         <Flex
           style={{
-            overflow: "scroll",
+            overflow: "auto scroll",
             height: "90%",
             flexWrap: "wrap",
           }}
