@@ -3,34 +3,28 @@ import { ValueOf } from "../../../../types/utils";
 export const ItemFocusTriggers = {
   "Click target": 1,
   "Hover target": 2,
-  "Click Next button": 3,
   "Target found": 4,
   None: null,
 };
 
 export const ItemAudioTriggers = {
   "Audio finish": 1,
-  "Click Next button": 2,
   None: null,
 };
 
 export const ItemImageTriggers = {
   "Click Ok button": 1,
-  "Click Next button": 2,
   None: null,
 };
 
 export const ItemVideoTriggers = {
   "Click Ok button": 1,
   "On video end": 2,
-  "Click Next button": 3,
   None: null,
 };
 
 export const ItemDialogTriggers = {
   "Click Ok button": 1,
-  "On video end": 2,
-  "Click Next button": 3,
   None: null,
 };
 
