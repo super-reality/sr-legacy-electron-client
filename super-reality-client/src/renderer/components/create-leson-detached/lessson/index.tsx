@@ -77,6 +77,16 @@ export default function Lesson(props: LessonProps): JSX.Element {
           playingStepNumber: stepPos > -1 ? stepPos : 0,
         },
       });
+    } else if (lessonId && chapterId) {
+      const lesson = slice.treeLessons[lessonId];
+      const chapterPos = lesson ? idNamePos(lesson.chapters, chapterId) : 0;
+
+      reduxAction(dispatch, {
+        type: "SET_LESSON_PLAYER_DATA",
+        arg: {
+          playingChapterNumber: chapterPos > -1 ? chapterPos : 0,
+        },
+      });
     }
   }, [dispatch]);
 
@@ -88,12 +98,14 @@ export default function Lesson(props: LessonProps): JSX.Element {
         chapterPreview: treeCurrentType == "chapter",
         stepPreview: treeCurrentType == "step",
         itemPreview: treeCurrentType == "item",
+        anchorTestView: false,
+        previewing: true,
         previewOne: true,
       },
     });
     setTransparent();
     doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, setTransparent]);
+  }, [dispatch, treeCurrentType, setTransparent, doPreviewCurrentToNumber]);
 
   const doPreview = useCallback(() => {
     reduxAction(dispatch, {
@@ -103,6 +115,8 @@ export default function Lesson(props: LessonProps): JSX.Element {
         chapterPreview: treeCurrentType == "chapter",
         stepPreview: treeCurrentType == "step",
         itemPreview: treeCurrentType == "item",
+        anchorTestView: false,
+        previewing: true,
         previewOne: false,
       },
     });

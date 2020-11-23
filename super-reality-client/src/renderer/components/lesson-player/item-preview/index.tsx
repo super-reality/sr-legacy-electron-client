@@ -35,9 +35,13 @@ export default function ItemPreview(props: ItemPreviewProps) {
   const { itemId, stepId, showAnchor } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
-  const { treeItems, treeSteps, treeAnchors, videoScale } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    previewing,
+    treeItems,
+    treeSteps,
+    treeAnchors,
+    videoScale,
+  } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
 
   const dragContainer = useRef<HTMLDivElement>(null);
@@ -251,12 +255,22 @@ export default function ItemPreview(props: ItemPreviewProps) {
   //   pos.x = 0;
   //   pos.y = 0;
   // }
+  if (
+    previewing &&
+    item &&
+    item.anchor &&
+    anchor &&
+    cvResult.dist < anchor.cvMatchValue / 1000
+  ) {
+    return <></>;
+  }
+
   return (
     <>
       {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
         <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
-      {item && item.type == "focus_highlight" && (
+      {item && item.type == "focus_highlight" ? (
         <FindBox
           ref={dragContainer}
           pos={pos}
@@ -264,24 +278,32 @@ export default function ItemPreview(props: ItemPreviewProps) {
           type={item.focus}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
-      {item && item.type == "image" && (
+      {item && item.type == "image" ? (
         <ImageBox
           ref={dragContainer}
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
-      {item && item.type == "dialog" && (
+      {item && item.type == "dialog" ? (
         <DialogBox
           ref={dragContainer}
           pos={pos}
           style={style}
           text={item.text}
+          trigger={item.trigger}
           callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
       {item && item.type == "fx" && (
         <FXBox

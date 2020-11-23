@@ -42,6 +42,7 @@ const initialState = {
   chapterPreview: false,
   stepPreview: false,
   itemPreview: false,
+  previewing: false,
   previewOne: false,
   videoScale: 1,
   videoPos: { x: 0, y: 0 },
@@ -54,10 +55,11 @@ const initialState = {
     index: number;
     value: number;
   }[],
-  recordingCvMatchValue: 995,
+  recordingCvMatchValue: 990,
   recordingCvFrame: -1,
   cropRecording: false,
   cropEditAnchor: null as string | null,
+  cropEditAnchorMode: 0,
   cropRecordingPos: {
     x: 0,
     y: 0,

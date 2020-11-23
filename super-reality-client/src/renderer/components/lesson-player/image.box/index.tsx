@@ -13,18 +13,19 @@ interface ImageBoxProps {
     height: number;
   };
   style?: CSSProperties;
+  trigger: number | null;
   image: string;
   callback?: (trigger: number) => void;
 }
 
 const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
   (props, forwardedRef) => {
-    const { image, style, pos, callback } = props;
+    const { image, trigger, style, pos, callback } = props;
 
     return (
       <div
         ref={forwardedRef}
-        className="image-box"
+        className="image-box click-on"
         style={{
           left: `${pos.x}px`,
           top: `${pos.y}px`,
@@ -33,19 +34,26 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
           ...style,
         }}
       >
-        <img src={image} />
-        <ButtonSimple
-          width="200px"
-          height="24px"
-          margin="auto"
-          onClick={
-            callback
-              ? () => callback(ItemImageTriggers["Click Ok button"])
-              : voidFunction
-          }
-        >
-          Ok
-        </ButtonSimple>
+        <img
+          style={{
+            maxHeight: trigger ? "calc(100% - 64px)" : "100%",
+          }}
+          src={image}
+        />
+        {trigger && (
+          <ButtonSimple
+            width="200px"
+            height="24px"
+            margin="auto"
+            onClick={
+              callback
+                ? () => callback(ItemImageTriggers["Click Ok button"])
+                : voidFunction
+            }
+          >
+            Ok
+          </ButtonSimple>
+        )}
       </div>
     );
   }

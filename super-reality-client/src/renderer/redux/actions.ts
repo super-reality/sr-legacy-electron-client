@@ -68,6 +68,7 @@ export const actions = {
   SET_LESSON_PLAYER_DATA: lessonPlayerSlice.setLessonPlayerData,
   RESET_LESSON_PLAYER: lessonPlayerSlice.reset,
   SET_LESSON_PLAYING: lessonPlayerSlice.setPlaying,
+  SET_TTS: lessonPlayerSlice.setTTS,
 };
 
 export type ActionKeys = keyof typeof actions;
