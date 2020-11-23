@@ -85,7 +85,15 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const doTest = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { anchorTestView: true },
+      arg: {
+        previewing: false,
+        previewOne: false,
+        lessonPreview: false,
+        chapterPreview: false,
+        stepPreview: false,
+        itemPreview: false,
+        anchorTestView: true,
+      },
     });
     setTransparent();
   }, [dispatch, setTransparent]);
