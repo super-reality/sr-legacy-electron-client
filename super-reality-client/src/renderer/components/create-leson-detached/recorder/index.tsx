@@ -44,8 +44,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
   const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
-  // const [timePassed, setTimePassed] = useState<string[]>([]);
   const [ticks, setTicks] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
@@ -215,15 +215,15 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     remote.globalShortcut.register("F10", stopRecord);
   }, [currentSource, sources, recorder, stopRecord]);
 
-  const pauseRecord = useCallback(() => {
+  const pauseRecord = () => {
     recorder.pause();
-    setRecording(false);
-  }, [recorder]);
+    setIsPaused(true);
+  };
 
-  const resumeRecord = useCallback(() => {
+  const resumeRecord = () => {
     recorder.resume();
-    setRecording(true);
-  }, []);
+    setIsPaused(false);
+  };
 
   useEffect(() => {
     if (count > 0) {
@@ -235,7 +235,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   }, [count, startRecord]);
 
   useEffect(() => {
-    if (recording) {
+    if (recording && !isPaused) {
       const timer = setInterval(() => {
         setTicks(new Date().getTime());
       }, 200);
@@ -243,10 +243,11 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       return () => clearInterval(timer);
     }
     return (): void => {};
-  }, [recording, recorder]);
+  }, [recording, recorder, isPaused]);
 
   const recordTimer = recorder.currentTimer.split(":");
   const timePassed = [recordTimer[0], recordTimer[1], recordTimer[2]];
+  console.log("this is the current timer", recorder.currentTimer);
   return (
     <>
       {count > -1 && !recording ? (
@@ -335,7 +336,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             >
               <BaseSlider domain={[0, 100]} step={1} defaultValues={[50]} />
             </div>
-            <Flex style={{ width: "33%" }}>
+            <Flex style={{ width: "33%", justifyContent: "space-between" }}>
               <ButtonRound
                 svg={ResetIcon}
                 svgStyle={{
@@ -348,19 +349,33 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 onClick={stopRecord /* should be resume play */}
                 style={{ backgroundColor: "#202225" }}
               />
-
-              <ButtonRound
-                svg={PauseIcon}
-                svgStyle={{
-                  width: "1rem",
-                  height: "1rem",
-                  cursor: "pointer"
-                }}
-                width="28px"
-                height="28px"
-                onClick={stopRecord /* should be resume play */}
-                style={{ backgroundColor: "#202225" }}
-              />
+              {isPaused ? (
+                <ButtonRound
+                  svg={PlayIcon}
+                  svgStyle={{
+                    width: "1rem",
+                    height: "1rem",
+                    cursor: "pointer"
+                  }}
+                  width="28px"
+                  height="28px"
+                  onClick={resumeRecord}
+                  style={{ backgroundColor: "#202225" }}
+                />
+              ) : (
+                <ButtonRound
+                  svg={PauseIcon}
+                  svgStyle={{
+                    width: "1rem",
+                    height: "1rem",
+                    cursor: "pointer"
+                  }}
+                  width="28px"
+                  height="28px"
+                  onClick={pauseRecord}
+                  style={{ backgroundColor: "#202225" }}
+                />
+              )}
               <ButtonRound
                 svg={StopIcon}
                 svgStyle={{
@@ -370,7 +385,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 }}
                 width="28px"
                 height="28px"
-                onClick={stopRecord}
+                onClick={stopRecord /* should be resume play */}
                 style={{ backgroundColor: "#202225" }}
               />
             </Flex>
