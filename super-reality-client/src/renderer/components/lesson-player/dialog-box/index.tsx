@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useEffect } from "react";
+import React, { CSSProperties, useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Howler } from "howler";
 import { ItemImageTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import ButtonRound from "../../button-round";
 import ButtonSimple from "../../button-simple";
-import { ReactComponent as AudioIcon } from "../../../../assets/svg/mute.svg";
+import { ReactComponent as MuteIcon } from "../../../../assets/svg/mute.svg";
+import { ReactComponent as UnmuteIcon } from "../../../../assets/svg/unmute.svg";
+import { ReactComponent as TTSIcon } from "../../../../assets/svg/add-tts.svg";
 import Flex from "../../flex";
 import "./index.scss";
 import getTTS from "../../../../utils/getTTS";
+import reduxAction from "../../../redux/reduxAction";
+import { AppState } from "../../../redux/stores/renderer";
 
 interface DialogBoxProps {
   pos: {
@@ -26,9 +32,20 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
   (props, forwardedRef) => {
     const { text, trigger, style, pos, callback } = props;
 
+    const dispatch = useDispatch();
+    const muted = useSelector((state: AppState) => state.lessonPlayer.ttsOn);
+
+    const toggleMute = useCallback(() => {
+      reduxAction(dispatch, { type: "SET_TTS", arg: !muted });
+    }, [dispatch, muted]);
+
     useEffect(() => {
-      getTTS(text, true);
-    }, [text]);
+      if (!muted) {
+        getTTS(text, true);
+      } else {
+        Howler.unload();
+      }
+    }, [text, muted]);
 
     return (
       <div
@@ -61,8 +78,15 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
           <ButtonRound
             width="40px"
             height="40px"
+            onClick={toggleMute}
+            svg={muted ? UnmuteIcon : MuteIcon}
+          />
+          <ButtonRound
+            style={{ marginLeft: "16px" }}
+            width="40px"
+            height="40px"
             onClick={() => getTTS(text, true)}
-            svg={AudioIcon}
+            svg={TTSIcon}
           />
         </Flex>
       </div>
