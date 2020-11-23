@@ -13,7 +13,6 @@ import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
-import { RecorderHandle, Track } from "./SliderUtilities";
 import BaseSlider from "../../base-slider";
 
 const leftButtonId = 1;
@@ -45,7 +44,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
   const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
-  const [timePassed, setTimePassed] = useState<string[]>([]);
+  // const [timePassed, setTimePassed] = useState<string[]>([]);
+  const [ticks, setTicks] = useState<number>(0);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
@@ -198,10 +198,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const startRecord = useCallback(() => {
     // eslint-disable-next-line global-require
     const { remote, desktopCapturer } = require("electron");
-    const recordTimer = recorder.currentTimer.split(":");
     setCount(-1);
     setRecording(true);
-    setTimePassed([recordTimer[0], recordTimer[1], recordTimer[2]]);
 
     desktopCapturer
       .getSources({
@@ -217,6 +215,16 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     remote.globalShortcut.register("F10", stopRecord);
   }, [currentSource, sources, recorder, stopRecord]);
 
+  const pauseRecord = useCallback(() => {
+    recorder.pause();
+    setRecording(false);
+  }, [recorder]);
+
+  const resumeRecord = useCallback(() => {
+    recorder.resume();
+    setRecording(true);
+  }, []);
+
   useEffect(() => {
     if (count > 0) {
       setTimeout(() => setCount(count - 1), 1000);
@@ -228,11 +236,17 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   useEffect(() => {
     if (recording) {
-      const recordTimer = recorder.currentTimer.split(":");
-      setTimePassed([recordTimer[0], recordTimer[1], recordTimer[2]]);
-    }
-  }, [recorder.currentTimer, recording]);
+      const timer = setInterval(() => {
+        setTicks(new Date().getTime());
+      }, 200);
 
+      return () => clearInterval(timer);
+    }
+    return (): void => {};
+  }, [recording, recorder]);
+
+  const recordTimer = recorder.currentTimer.split(":");
+  const timePassed = [recordTimer[0], recordTimer[1], recordTimer[2]];
   return (
     <>
       {count > -1 && !recording ? (
@@ -302,7 +316,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               alignItems: "center"
             }}
           >
-            <Flex>
+            <Flex style={{ width: "33%" }}>
               {recorder.currentTimer.length ? (
                 <p style={{ margin: 0 }}>
                   {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
@@ -311,102 +325,55 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 <p style={{ margin: 0 }}>00:00:00</p>
               )}
             </Flex>
-            <Flex style={{ width: "25%" }}>
+            <div
+              style={{
+                width: "33%",
+                height: 32,
+                display: "block",
+                margin: "auto"
+              }}
+            >
               <BaseSlider domain={[0, 100]} step={1} defaultValues={[50]} />
-              {/* <Slider
-                rootStyle={sliderStyle}
-                domain={[0, 100]}
-                mode={1}
-                step={1}
-                disabled={false}
-                onUpdate={() => console.log("slider updated")}
-                onChange={() => console.log("slider changed")}
-                values={[]}
-              >
-                <Rail>
-                  {({ getRailProps }) => (
-                    <div style={railStyle} {...getRailProps()} />
-                  )}
-                </Rail>
-                <Handles>
-                  {({ handles, getHandleProps }) => (
-                    <div className="slider-handles">
-                      {handles.map(handle => (
-                        <RecorderHandle
-                          key={handle.id}
-                          handle={handle}
-                          domain={[0, 100]}
-                          getHandleProps={getHandleProps}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </Handles>
-                <Tracks>
-                  {({ tracks, getTrackProps }) => (
-                    <div className="slider-tracks">
-                      {tracks.map(({ id, source, target }) => (
-                        <Track
-                          key={id}
-                          source={source}
-                          target={target}
-                          getTrackProps={getTrackProps}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </Tracks>
-              </Slider> */}
-            </Flex>
-            <ButtonRound
-              svg={StopIcon}
-              svgStyle={{
-                width: "1rem",
-                height: "1rem",
-                cursor: "pointer"
-              }}
-              width="28px"
-              height="28px"
-              onClick={stopRecord /* should be STEP play */}
-              style={{ backgroundColor: "#202225" }}
-            />
-            <ButtonRound
-              svg={ResetIcon}
-              svgStyle={{
-                width: "1rem",
-                height: "1rem",
-                cursor: "pointer"
-              }}
-              width="28px"
-              height="28px"
-              onClick={stopRecord /* should be resume play */}
-              style={{ backgroundColor: "#202225" }}
-            />
+            </div>
+            <Flex style={{ width: "33%" }}>
+              <ButtonRound
+                svg={ResetIcon}
+                svgStyle={{
+                  width: "1rem",
+                  height: "1rem",
+                  cursor: "pointer"
+                }}
+                width="28px"
+                height="28px"
+                onClick={stopRecord /* should be resume play */}
+                style={{ backgroundColor: "#202225" }}
+              />
 
-            <ButtonRound
-              svg={PauseIcon}
-              svgStyle={{
-                width: "1rem",
-                height: "1rem",
-                cursor: "pointer"
-              }}
-              width="28px"
-              height="28px"
-              onClick={stopRecord /* should be resume play */}
-              style={{ backgroundColor: "#202225" }}
-            />
-            <ButtonRound
-              svg={StopIcon}
-              svgStyle={{
-                width: "1rem",
-                height: "1rem",
-                cursor: "pointer"
-              }}
-              width="28px"
-              height="28px"
-              onClick={stopRecord}
-              style={{ backgroundColor: "#202225" }}
-            />
+              <ButtonRound
+                svg={PauseIcon}
+                svgStyle={{
+                  width: "1rem",
+                  height: "1rem",
+                  cursor: "pointer"
+                }}
+                width="28px"
+                height="28px"
+                onClick={stopRecord /* should be resume play */}
+                style={{ backgroundColor: "#202225" }}
+              />
+              <ButtonRound
+                svg={StopIcon}
+                svgStyle={{
+                  width: "1rem",
+                  height: "1rem",
+                  cursor: "pointer"
+                }}
+                width="28px"
+                height="28px"
+                onClick={stopRecord}
+                style={{ backgroundColor: "#202225" }}
+              />
+            </Flex>
           </Flex>
         </Windowlet>
       ) : (
