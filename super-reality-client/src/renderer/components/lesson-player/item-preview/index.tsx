@@ -264,6 +264,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
           callback={onSucessCallback}
         />
       ) : (

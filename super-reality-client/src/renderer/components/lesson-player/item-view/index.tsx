@@ -91,6 +91,7 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
           callback={onSucess}
         />
       )}
