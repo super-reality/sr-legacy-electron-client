@@ -15,6 +15,7 @@ import {
   cursorChecker,
   restrictMinSize,
   restrictSnapRound,
+  restrictSnapGrid,
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
@@ -22,6 +23,8 @@ import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
 import DialogBox from "../dialog-box";
 import AnchorBox from "../anchor-box";
+import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
+import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -115,19 +118,31 @@ export default function ItemPreview(props: ItemPreviewProps) {
       const startPos = { ...pos };
       const scale = !onSucess ? videoScale : 1;
 
+      const resizeMods: any[] = [restrictSnapRound, restrictMinSize];
+      const dragMods: any[] = [
+        interact.modifiers.restrict({
+          restriction: "parent",
+        }),
+      ];
+
+      if (
+        item.type == "dialog" ||
+        item.type == "image" ||
+        item.type == "video"
+      ) {
+        resizeMods.push(restrictSnapGrid);
+        dragMods.push(restrictSnapGrid);
+      }
+
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictSnapRound, restrictMinSize],
+          modifiers: resizeMods,
           inertia: false,
         } as any)
         .draggable({
           cursorChecker,
-          modifiers: [
-            interact.modifiers.restrict({
-              restriction: "parent",
-            }),
-          ],
+          modifiers: dragMods,
         })
         .on("resizemove", (event) => {
           const div = dragContainer.current;
@@ -138,6 +153,16 @@ export default function ItemPreview(props: ItemPreviewProps) {
             startPos.width = (event.rect.width - 6) / scale;
             startPos.height = (event.rect.height - 6) / scale;
             updateDiv(startPos);
+          }
+
+          if (div && div.parentElement) {
+            startPos.horizontal =
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
+              startPos.x;
+            startPos.vertical =
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
+              startPos.y;
+            updatePosMarker(startPos, item.anchor);
           }
         })
         .on("dragstart", (event) => {
@@ -156,11 +181,22 @@ export default function ItemPreview(props: ItemPreviewProps) {
             startPos.width = (event.rect.width - 6) / scale;
             startPos.height = (event.rect.height - 6) / scale;
             updateDiv(startPos);
+            updatePosMarker(startPos, item.anchor);
           }
         })
         .on("dragmove", (event) => {
+          const div = dragContainer.current;
           startPos.x += event.dx / scale;
           startPos.y += event.dy / scale;
+          if (div && div.parentElement) {
+            startPos.horizontal =
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
+              startPos.x;
+            startPos.vertical =
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
+              startPos.y;
+          }
+          updatePosMarker(startPos, item.anchor);
           updateDiv(startPos);
         })
         .on("resizeend", (event) => {
@@ -180,6 +216,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
+          hidePosMarker();
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
             arg: {
@@ -194,8 +231,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
         .on("dragend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x - 3;
-            startPos.y -= cvResult.y - 3;
+            startPos.x -= cvResult.x;
+            startPos.y -= cvResult.y;
           } else if (div && div.parentElement) {
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
@@ -204,6 +241,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
+          hidePosMarker();
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
             arg: {

@@ -22,6 +22,7 @@
   @include disable-select;
 
   .horizontal-pos {
+    left: 0px;
     width: 100%;
     height: 0px;
     border-top: dotted 2px var(--color-section-separator);
@@ -30,11 +31,31 @@
   }
 
   .vertical-pos {
+    top: 0px;
     width: 0px;
     height: 100%;
     border-left: dotted 2px var(--color-section-separator);
     position: absolute;
     display: none;
+  }
+
+  .xy-pos {
+    top: 0px;
+    width: 0px;
+    height: 100%;
+    border: 1px solid gray;
+    background-color: var(--color-section);
+    position: absolute;
+    display: none;
+    width: 200px;
+    height: 24px;
+    border-radius: 2px;
+
+    .xy-pos-text {
+      text-align: center;
+      margin: auto;
+      font-size: 15px;
+    }
   }
 
   .video-preview-no-video {
