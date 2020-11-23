@@ -18,12 +18,13 @@ interface DialogBoxProps {
   };
   style?: CSSProperties;
   text: string;
+  trigger: null | number;
   callback?: (trigger: number) => void;
 }
 
 const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
   (props, forwardedRef) => {
-    const { text, style, pos, callback } = props;
+    const { text, trigger, style, pos, callback } = props;
 
     useEffect(() => {
       getTTS(text, true);
@@ -43,18 +44,20 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
       >
         <div className="dialog-text">{text}</div>
         <Flex style={{ justifyContent: "center" }}>
-          <ButtonSimple
-            width="200px"
-            height="24px"
-            margin="0 16px 0 0"
-            onClick={
-              callback
-                ? () => callback(ItemImageTriggers["Click Ok button"])
-                : voidFunction
-            }
-          >
-            Ok
-          </ButtonSimple>
+          {trigger && (
+            <ButtonSimple
+              width="200px"
+              height="24px"
+              margin="0 16px 0 0"
+              onClick={
+                callback
+                  ? () => callback(ItemImageTriggers["Click Ok button"])
+                  : voidFunction
+              }
+            >
+              Ok
+            </ButtonSimple>
+          )}
           <ButtonRound
             width="40px"
             height="40px"

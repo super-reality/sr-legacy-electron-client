@@ -275,6 +275,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           pos={pos}
           style={style}
           text={item.text}
+          trigger={item.trigger}
           callback={onSucessCallback}
         />
       ) : (
