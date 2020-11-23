@@ -56,6 +56,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
         type: "CREATE_LESSON_V2_SETANCHOR",
         arg: { anchor: newData },
       });
+      updateAnchor({ ...data }, anchor._id);
     },
     [anchor, dispatch]
   );
