@@ -15,6 +15,8 @@ import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 import BaseSlider from "../../base-slider";
 
+import "./index.scss";
+
 const leftButtonId = 1;
 const rightButtonId = 2;
 const wheelButtonId = 3;
@@ -317,7 +319,16 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               alignItems: "center"
             }}
           >
-            <Flex style={{ width: "25%" }}>
+            <Flex
+              style={{
+                width: "25%",
+                backgroundColor: "#202225",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 28,
+                borderRadius: 4
+              }}
+            >
               {recorder.currentTimer.length ? (
                 <p style={{ margin: 0 }}>
                   {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
