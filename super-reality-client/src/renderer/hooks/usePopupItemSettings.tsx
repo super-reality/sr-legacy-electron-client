@@ -37,7 +37,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
   const { id, name, url } = item;
 
   const [isHover, setIsHover] = useState("");
-  const effectOneRef = useRef<HTMLDivElement>(null);
 
   const onHover = useCallback((e) => {
     e.preventDefault();
@@ -60,7 +59,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
       key={name}
       id={id}
       type="button"
-      // ref={effectOneRef}
       onMouseEnter={onHover}
       onMouseLeave={onHoverEnd}
       onClick={() => {
@@ -71,7 +69,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
         <embed
           style={{
             pointerEvents: "none",
-            transition: "all 500ms ease-in-out",
           }}
           src={url}
           width="200"
@@ -82,7 +79,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
           style={{
             cursor: "pointer",
             pointerEvents: "none",
-            transition: "all 500ms ease-in-out",
           }}
           width="200px"
           height="200px"
@@ -98,7 +94,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
   const [value, setValue] = useState("");
   const [preview, setPreview] = useState("");
   const [fxItems, setFXItems] = useState<EffectDB[]>();
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(["Pop"]);
 
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -110,46 +106,48 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
 
   // filter the FX
 
-  const handleSearch = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      let tagsArray: Array<string> = [];
-      let currentEffects: EffectDB[] = [];
-      let newEffects: EffectDB[] = [];
-      // if value not "" filter the items
-      if (event.currentTarget.value != "") {
-        // current FX list
-        Object.keys(effectDB).forEach((key) => {
-          effectDB[key].tags.forEach((tag) => {
-            if (!tagsArray.includes(tag)) {
-              tagsArray.push(tag);
-            }
-          });
-        });
+  // const handleSearch = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     let tagsArray: Array<string> = [];
+  //     let currentEffects: EffectDB[] = [];
+  //     let newEffects: EffectDB[] = [];
+  //     // if value not "" filter the items
+  //     if (event.currentTarget.value != "") {
+  //       // current FX list
+  //       Object.keys(effectDB).forEach((key) => {
+  //         effectDB[key].tags.forEach((tag) => {
+  //           if (!tagsArray.includes(tag)) {
+  //             tagsArray.push(tag);
+  //           }
+  //         });
+  //       });
+  // if(tagsArray){
 
-        const filteredTags = tagsArray.filter(
-          (tagItem) => tagItem == event.currentTarget.value
-        );
-        tagsArray = filteredTags;
-        currentEffects = Object.keys(effectDB).map((key) => {
-          return effectDB[key];
-        });
-        newEffects = currentEffects.filter((item) => {
-          // filter the FX
-          return item.tags.some((e) => filteredTags.some((el) => el == e));
-        });
-      } else {
-        newEffects = Object.keys(effectDB).map((key) => {
-          return effectDB[key];
-        });
-      }
-      setTags(tagsArray);
-      setFXItems([...newEffects]);
-      console.log(newEffects);
-      const string = event.currentTarget.value;
-      setValue(string);
-    },
-    []
-  );
+  // }
+  //       const filteredTags = tagsArray.filter(
+  //         (tagItem) => tagItem == event.currentTarget.value
+  //       );
+  //       tagsArray = filteredTags;
+  //       currentEffects = Object.keys(effectDB).map((key) => {
+  //         return effectDB[key];
+  //       });
+  //       newEffects = currentEffects.filter((item) => {
+  //         // filter the FX
+  //         return item.tags.some((e) => filteredTags.some((el) => el == e));
+  //       });
+  //     } else {
+  //       newEffects = Object.keys(effectDB).map((key) => {
+  //         return effectDB[key];
+  //       });
+  //     }
+  //     setTags(tagsArray);
+  //     setFXItems([...newEffects]);
+  //     console.log(newEffects);
+  //     const string = event.currentTarget.value;
+  //     setValue(string);
+  //   },
+  //   []
+  // );
 
   // const filterTags = useCallback(
   //   (tag) => {
@@ -159,7 +157,6 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
   // );
 
   const previewItem = useCallback((id) => {
-    console.log(id);
     setPreview(id);
   }, []);
   // const toggleFullScreen = useCallback((event) => {
@@ -261,7 +258,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             <input
               autoFocus
               className="popup-settings-input-container-input"
-              onChange={handleSearch}
+              onChange={() => {}}
               value={value}
             />
           </div>
