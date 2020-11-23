@@ -1,3 +1,6 @@
+import reduxAction from "../../../../redux/reduxAction";
+import store from "../../../../redux/stores/renderer";
+
 const fs = require("fs");
 
 export default class CVEditor {
@@ -42,6 +45,10 @@ export default class CVEditor {
       this._canvas.width,
       this._canvas.height
     );
+    reduxAction(store.dispatch, {
+      type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+      arg: null,
+    });
   }
 }
 

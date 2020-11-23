@@ -65,7 +65,7 @@ export default async function generateDialogues(
     const seconds = timestampTime / 1000;
     if (data.type == "left_click" || data.type == "right_click") {
       audioPieces.push({
-        time: seconds,
+        time: last,
         step: stepName,
         name: itemName,
         text: "",
@@ -74,7 +74,7 @@ export default async function generateDialogues(
     last = seconds;
   });
 
-  setStatus(`Audio triming (0/${audioPieces.length})`);
+  setStatus(`Audio triming (-/${audioPieces.length})`);
   // Chain promises to call STT and get the strings
 
   for (let index = 0; index < audioPieces.length; index += 1) {
@@ -84,7 +84,7 @@ export default async function generateDialogues(
     const to = audioPieces[index + 1]?.time ?? last;
 
     console.log(`trimAudio from ${from} to ${to} (${to - from})`);
-    setStatus(`Audio triming (${index}/${audioPieces.length})`);
+    setStatus(`Audio triming (${index + 1}/${audioPieces.length})`);
     // eslint-disable-next-line no-await-in-loop
     await trimAudio(
       `${from}`,

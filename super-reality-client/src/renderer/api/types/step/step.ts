@@ -5,4 +5,6 @@ export interface IStep {
   name: string;
   anchor: string | null;
   items: IDName[];
+  recordingId?: string;
+  recordingTimestamp?: string;
 }

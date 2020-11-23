@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export default function saveCanvasImage(fileName: string): Promise<void> {
+export default function saveCanvasImage(fileName: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const canvas = document.getElementById("preview-video-canvas") as
       | HTMLCanvasElement
@@ -13,7 +13,7 @@ export default function saveCanvasImage(fileName: string): Promise<void> {
       fs.writeFile(fileName, base64Data, "base64", (err: any) => {
         if (err) reject(err);
         else {
-          resolve();
+          resolve(fileName);
         }
       });
     } else {
