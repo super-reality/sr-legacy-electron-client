@@ -34,37 +34,49 @@ export const restrictSnapRound = interact.modifiers.snap({
 
 export const voidFunction = () => {};
 
-export const effectDB = [
-  {
+interface EffectDB {
+  id: string;
+  name: string;
+  url: string;
+  tags: string[];
+}
+type id = string;
+export const effectDB: Record<id, EffectDB> = {
+  id_1: {
     id: "id_1",
     name: "Rainbow Wavy Circle",
     url: `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`,
+    tags: ["Pop", "Rainbow"],
   },
-];
+  id_2: {
+    id: "id_2",
+    name: "Rainbow Confetti",
+    url: `${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`,
+    tags: ["Pop", "Rainbow"],
+  },
 
-//   {
-//     id: "id_2",
-//     name: "Rainbow Confetti",
-//     url: `${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`,
-//   },
-//   {
-//     id: "id_3",
-//     name: "Rainbow ORB Big",
-//     url: `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`,
-//   },
-//   {
-//     id: "id_4",
-//     name: "Hyperspace1",
-//     url: `${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`,
-//   },
-//   {
-//     id: "id_5",
-//     name: "Hyperspace2",
-//     url: `${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`,
-//   },
-//   {
-//     id: "id_6",
-//     name: "Hyperspace3",
-//     url: `${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`,
-//   },
-// ];
+  id_3: {
+    id: "id_3",
+    name: "Rainbow ORB Big",
+    url: `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`,
+    tags: ["Pop", "Rainbow"],
+  },
+  id_4: {
+    id: "id_4",
+    name: "Hyperspace1",
+    url: `${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`,
+    tags: ["Ambient"],
+  },
+  id_5: {
+    id: "id_5",
+    name: "Hyperspace2",
+    url: `${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`,
+    tags: ["Ambient"],
+  },
+  id_6: {
+    id: "id_6",
+    name: "Hyperspace3",
+    url: `${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`,
+    tags: ["Ambient"],
+  },
+};

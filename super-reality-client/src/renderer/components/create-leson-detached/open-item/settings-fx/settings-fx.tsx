@@ -21,37 +21,8 @@ import ButtonSimple from "../../../button-simple";
 
 import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
 
-// const TestFXItems = [
-//   {
-//     id: "1",
-//     name: "Great Success",
-//     effect: "id_1",
-//     subitems: [
-//       {
-//         id: "id_1",
-//         name: "Stars",
-//         icon: IconStars,
-//         effect: "id_1",
-//       },
-//       {
-//         id: "id_2",
-//         name: "Fireworks",
-//         icon: IconFireworks,
-//         effect: "id_1",
-//       },
-//       {
-//         id: "id_3",
-//         name: "Coins",
-//         icon: IconCoins,
-//         effect: "id_1",
-//       },
-//     ],
-//   },
-// ];
-
 interface SettingsFX {
   name: ItemFX;
-
   // update: (date: Partial<ItemFX>) => void;
 }
 
@@ -64,41 +35,105 @@ interface FXSettingsProps {
 export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const { item, update, style } = props;
   const dispatch = useDispatch();
-  const [open, setOpen] = useState<boolean>(false);
   const [effect, setEffect] = useState("id_1");
-  const [isHover, setIsHover] = useState("");
 
-  const effectOneRef = useRef<HTMLDivElement>(null);
   const effectSecondRef = useRef<HTMLDivElement>(null);
 
-  const openFolder = useCallback(
-    (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-      setOpen(!open);
-    },
-    [open]
-  );
+  // const openFolder = useCallback(
+  //   (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+  //     setOpen(!open);
+  //   },
+  //   [open]
+  // );
 
-  const onHover = useCallback(() => {
-    if (effectOneRef.current && effectOneRef.current.id) {
-      setIsHover(effectOneRef.current.id);
-      console.log(isHover, effectOneRef.current);
-    }
-  }, []);
+  const volume = useRef<HTMLInputElement>(null);
+  const [Popup, open] = usePopupItemSettings();
 
-  const onHoverEnd = useCallback(() => {
-    setIsHover("");
-    console.log(isHover);
-  }, []);
-
-  const toggleFullScreen = useCallback((event) => {
-    event.preventDefault();
-    update({ fullScreen: !item.fullScreen });
-  }, []);
-
-  // const [Popup, open] = usePopupItemSettings();
+  // const onChange = useCallback(() => {
+  //   if (volume.current && volume.current.value) {
+  //     console.log(Number(volume.current.value) / 10);
+  //     const gainValue = Number(volume.current.value) / 10;
+  //     const audioCtx = new window.AudioContext();
+  //     const gainNode = audioCtx.createGain();
+  //     gainNode.gain.value = gainValue;
+  //     console.log(gainNode.gain.value);
+  //   }
+  // }, [volume.current?.value]);
 
   return (
     <>
+      {Popup}
+
+      <div className="settings-item-lable ">
+        <IconAddFX
+          width="16px"
+          height="16px"
+          style={{
+            margin: "3px 5px 3px 0",
+          }}
+        />
+        <div className="item-lable-name">FX</div>
+      </div>
+      <div className="item-settings">
+        <div
+          className="input-name"
+          style={{
+            color: "var(--color--text)",
+          }}
+        >
+          Style
+        </div>
+        <div className="settings-item-icon" onClick={open}>
+          <img
+            width="50px"
+            height="50px"
+            src={IconFXThumbnail}
+            alt="icon-fx"
+            className="settings-subitem-icon"
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+/*
+ <div className="settings-input-container">
+          <div
+            className="input-name"
+            style={{
+              color: "var(--color--text)",
+            }}
+          >
+            Trigger
+          </div>
+          <div className="settings-input-container-input-box">
+            <input
+              className="settings-input-container-input"
+              onChange={() => {}}
+              value="currentInputValue"
+            />
+            <IconTreeDropArrow
+              style={{ margin: "auto" }}
+              fill="var(--color-icon)"
+            />
+          </div>
+        </div>
+////////////////////////
+
+<ButtonSimple
+        style={{
+          margin: "5px",
+          width: "100px",
+        }}
+        onClick={() => {
+          update({ fullScreen: !item.fullScreen });
+        }}
+      >
+        Full Screen
+      </ButtonSimple>
+///////////////
+      <input ref={volume} type="number" onChange={onChange} />
       <Flex style={{ backgroundColor: "var(--color-background)" }}>
         <div className="settings-list">
           <div className="settings-list-item">
@@ -243,98 +278,4 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
           </div>
           <div className="settings-list-item" />
         </div>
-      </Flex>
-    </>
-  );
-}
-
-/*
- {Popup}
-
-      <div className="settings-item-lable ">
-        <IconAddFX
-          width="16px"
-          height="16px"
-          style={{
-            margin: "3px 5px 3px 0",
-          }}
-        />
-        <div className="item-lable-name">FX</div>
-      </div>
-      <div className="item-settings">
-        <div
-          className="input-name"
-          style={{
-            color: "var(--color--text)",
-          }}
-        >
-          Style
-        </div>
-        <div className="settings-item-icon" onClick={open}>
-          <img
-            width="50px"
-            height="50px"
-            src={IconFXThumbnail}
-            alt="icon-fx"
-            className="settings-subitem-icon"
-          />
-        </div>
-        <div className="settings-input-container">
-          <div
-            className="input-name"
-            style={{
-              color: "var(--color--text)",
-            }}
-          >
-            Computer Vision
-          </div>
-          <div className="settings-input-container-input-box">
-            <input
-              className="settings-input-container-input"
-              onChange={() => {}}
-              value="currentInputValue"
-            />
-            <IconTreeDropArrow
-              style={{ margin: "auto" }}
-              fill="var(--color-icon)"
-            />
-          </div>
-        </div>
-        <div className="anchor-preview" />
-        <div className="settings-input-container">
-          <div
-            className="input-name"
-            style={{
-              color: "var(--color--text)",
-            }}
-          >
-            Trigger
-          </div>
-          <div className="settings-input-container-input-box">
-            <input
-              className="settings-input-container-input"
-              onChange={() => {}}
-              value="currentInputValue"
-            />
-            <IconTreeDropArrow
-              style={{ margin: "auto" }}
-              fill="var(--color-icon)"
-            />
-          </div>
-        </div>
-      </div>
-
-
-<ButtonSimple
-        style={{
-          margin: "5px",
-          width: "100px",
-        }}
-        onClick={() => {
-          update({ fullScreen: !item.fullScreen });
-        }}
-      >
-        Full Screen
-      </ButtonSimple>
-
 */

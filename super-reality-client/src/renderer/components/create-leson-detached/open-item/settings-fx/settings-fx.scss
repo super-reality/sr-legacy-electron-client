@@ -1,42 +1,48 @@
 @import "../../../misc.scss";
 
+.container-with-desc {
+    font-size: 13px;
+}
 .settings-item-lable {
     display: flex;
-    margin: 10px;
+}
+.input-name {
+    margin-bottom: 5px;
 }
 .item-settings {
-    margin: 10px 10px 10px 10px;
+    margin: 10px 0 0 0;
     font-size: 13px;
-    .input-name {
-        margin-bottom: 5px;
-    }
-    .settings-item-icon {
-        display: flex;
-        background-color: var(--color-background);
-        width: fit-content;
-        padding: 8px;
-        border-radius: 8px;
+}
 
-        cursor: pointer;
-    }
-    .anchor-preview {
-        background-color: var(--color-background);
-        width: 126px;
-        height: 65px;
-        border-radius: 5px;
-    }
-    .settings-input-container-input-box {
-        display: flex;
-        flex-direction: row;
-        background-color: var(--color-background);
-        border-radius: 5px;
-        padding-right: 5px;
-    }
-    .settings-input-container-input-box,
-    .settings-item-icon,
-    .anchor-preview {
-        margin-bottom: 5px;
-    }
+.settings-item-icon {
+    display: flex;
+    background-color: var(--color-background);
+    width: fit-content;
+    padding: 8px;
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+.anchor-preview {
+    margin: 5px 0;
+    padding: 5px;
+    background-color: var(--color-background);
+    width: fit-content;
+    // width: 126px;
+    // height: 100px;
+    border-radius: 5px;
+}
+.settings-input-container-input-box {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--color-background);
+    border-radius: 5px;
+    padding-right: 5px;
+}
+.settings-input-container-input-box,
+.settings-item-icon,
+.anchor-preview {
+    margin-bottom: 5px;
 }
 
 ul[class^="settings-list"] {
