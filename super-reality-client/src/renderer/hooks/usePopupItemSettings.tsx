@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import ReactCSSTransitionGroup from 'react-transition-group';
+import { setConstantValue } from "typescript";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 
@@ -19,6 +20,12 @@ interface SettingsItem {
   name: string;
   url: string;
 }
+interface EffectDB {
+  id: string;
+  name: string;
+  url: string;
+  tags: string[];
+}
 
 interface SettingsItemProps {
   item: SettingsItem;
@@ -33,10 +40,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
   const effectOneRef = useRef<HTMLDivElement>(null);
 
   const onHover = useCallback((e) => {
-    if (effectOneRef.current && effectOneRef.current.id) {
-      setIsHover(effectOneRef.current.id);
-      // console.log(isHover, effectOneRef.current);
-    }
     e.preventDefault();
     setIsHover(e.target.id);
   }, []);
@@ -92,8 +95,12 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
 
 export default function usePopupItemSettings(): [JSX.Element, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
-  const [item, setItem] = useState("fx");
+  const [value, setValue] = useState("");
   const [preview, setPreview] = useState("");
+  const [fxItems, setFXItems] = useState<EffectDB[]>();
+  const [tags, setTags] = useState<string[]>([]);
+
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useDispatch();
 
@@ -101,28 +108,55 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
     (state: AppState) => state.createLessonV2
   );
 
-  //  const effectItems = Object.keys(effectDB).filter((key) => {
-  //     effectDB[key].tags.includes
-  //     });
-  //   });
-  const tagsArray: Array<string> = [];
-  Object.keys(effectDB).forEach((key): void => {
-    effectDB[key].tags.forEach((tag) => {
-      if (!tagsArray.includes(tag)) {
-        tagsArray.push(tag);
-      }
-    });
-  });
+  // filter the FX
 
-  console.log(tagsArray);
-  const [tags, setTags] = useState(tagsArray);
-  const filterTags = useCallback(
-    (tag) => {
-      const filteredItems = tagsArray.filter((tagItem) => tagItem != tag);
-      setTags([...filteredItems]);
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      let tagsArray: Array<string> = [];
+      let currentEffects: EffectDB[] = [];
+      let newEffects: EffectDB[] = [];
+      // if value not "" filter the items
+      if (event.currentTarget.value != "") {
+        // current FX list
+        Object.keys(effectDB).forEach((key) => {
+          effectDB[key].tags.forEach((tag) => {
+            if (!tagsArray.includes(tag)) {
+              tagsArray.push(tag);
+            }
+          });
+        });
+
+        const filteredTags = tagsArray.filter(
+          (tagItem) => tagItem == event.currentTarget.value
+        );
+        tagsArray = filteredTags;
+        currentEffects = Object.keys(effectDB).map((key) => {
+          return effectDB[key];
+        });
+        newEffects = currentEffects.filter((item) => {
+          // filter the FX
+          return item.tags.some((e) => filteredTags.some((el) => el == e));
+        });
+      } else {
+        newEffects = Object.keys(effectDB).map((key) => {
+          return effectDB[key];
+        });
+      }
+      setTags(tagsArray);
+      setFXItems([...newEffects]);
+      console.log(newEffects);
+      const string = event.currentTarget.value;
+      setValue(string);
     },
-    [tagsArray]
+    []
   );
+
+  // const filterTags = useCallback(
+  //   (tag) => {
+
+  //   },
+  //   [tagsArray]
+  // );
 
   const previewItem = useCallback((id) => {
     console.log(id);
@@ -225,9 +259,10 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         <Flex>
           <div className="popup-settings-input-container">
             <input
+              autoFocus
               className="popup-settings-input-container-input"
-              onChange={() => {}}
-              value="currentInputValue"
+              onChange={handleSearch}
+              value={value}
             />
           </div>
         </Flex>
@@ -245,9 +280,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
                   backgroundColor: "inherit",
                   border: "var(--color-text) solid 1px",
                 }}
-                onClick={() => {
-                  filterTags(tag);
-                }}
+                onClick={() => {}}
               >
                 {tag}
                 <CloseIcon height="10px" width="10px" />

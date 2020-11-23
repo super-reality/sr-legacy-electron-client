@@ -103,7 +103,7 @@ export default function OpenItem(props: OpenItemProps) {
 
   if (!item) return <></>;
   // console.log(item.anchor);
-  console.log(Object.values(treeAnchors));
+  // console.log(Object.values(treeAnchors));
   const anchorPreview = useCallback(() => {}, []);
   return (
     <>
