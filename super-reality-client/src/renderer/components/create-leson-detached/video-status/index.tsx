@@ -27,6 +27,7 @@ import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import updateStep from "../lesson-utils/updateStep";
 import updateAnchor from "../lesson-utils/updateAnchor";
+import useDebounce from "../../../hooks/useDebounce";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -106,6 +107,8 @@ export default function VideoStatus() {
     [dispatch]
   );
 
+  const cvDebouncer = useDebounce(300);
+
   useEffect(() => {
     console.log(
       "Do cv match trigger",
@@ -114,20 +117,33 @@ export default function VideoStatus() {
       currentCanvasSource
     );
     if (currentCanvasSource && anchor) {
-      doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
-        reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-      );
+      // Trigger CV match on current preview canvas
+      cvDebouncer(() => {
+        doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
+          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
+        );
+      });
     } else if (anchor) {
       const videoHidden = document.getElementById(
         "video-hidden"
       ) as HTMLVideoElement;
       if (videoHidden) {
-        doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
-          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-        );
+        cvDebouncer(() => {
+          // trigger cv match on current video/recording
+          doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
+            reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
+          );
+        });
       }
     }
-  }, [dispatch, anchor, currentRecording, triggerCvMatch, currentCanvasSource]);
+  }, [
+    dispatch,
+    cvDebouncer,
+    anchor,
+    currentRecording,
+    triggerCvMatch,
+    currentCanvasSource,
+  ]);
 
   const generateItems = useCallback(() => {
     reduxAction(dispatch, {
