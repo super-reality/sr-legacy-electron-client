@@ -55,7 +55,7 @@ const initialState = {
     index: number;
     value: number;
   }[],
-  recordingCvMatchValue: 995,
+  recordingCvMatchValue: 990,
   recordingCvFrame: -1,
   cropRecording: false,
   cropEditAnchor: null as string | null,
