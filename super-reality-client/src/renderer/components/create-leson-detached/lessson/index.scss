@@ -7,4 +7,11 @@
 .create-lesson-item-container {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.tree-container {
+  flex-direction: column;
+  display: flex;
+  height: calc(100% - 372px);
 }

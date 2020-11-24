@@ -22,7 +22,7 @@ interface ItemViewProps {
 export default function ItemView(props: ItemViewProps) {
   const { anchorId, item, onSucess } = props;
 
-  const { treeAnchors } = useSelector(
+  const { treeAnchors, previewing } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -71,6 +71,10 @@ export default function ItemView(props: ItemViewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
+  if (previewing && item.anchor && cvResult.dist < anchor.cvMatchValue / 1000) {
+    return <></>;
+  }
+
   return (
     <>
       {item && item.type == "focus_highlight" && (
@@ -87,6 +91,7 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
           callback={onSucess}
         />
       )}
@@ -95,6 +100,7 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           text={item.text}
+          trigger={item.trigger}
           callback={onSucess}
         />
       )}

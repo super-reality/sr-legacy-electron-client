@@ -8,7 +8,6 @@ import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
 import newStep from "../lesson-utils/newStep";
 
-import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
 import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
 import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
 import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
@@ -19,29 +18,29 @@ import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { BaseItemType } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
+import ButtonSimple from "../../button-simple";
 
 export default function LessonTreeControls() {
   const dispatch = useDispatch();
-  const { treeCurrentType, treeCurrentId } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    treeCurrentType,
+    treeCurrentId,
+    currentLesson,
+    currentChapter,
+  } = useSelector((state: AppState) => state.createLessonV2);
 
   let childType: TreeTypes = "chapter";
   if (treeCurrentType == "chapter") childType = "step";
   if (treeCurrentType == "step") childType = "item";
 
-  const doAddFolder = useCallback(
-    (name: string) => {
-      // Create chapter
-      if (childType == "chapter") {
-        newChapter(name, treeCurrentId);
-      }
-      // Create step
-      if (childType == "step") {
-        newStep({ name }, treeCurrentId);
-      }
-    },
-    [treeCurrentType, treeCurrentId, dispatch]
+  const doAddStep = useCallback(
+    (name: string) => newStep({ name }, currentChapter),
+    [currentChapter, dispatch]
+  );
+
+  const doAddChapter = useCallback(
+    (name: string) => newChapter(name, currentLesson),
+    [currentLesson, dispatch]
   );
 
   const doAddItem = useCallback(
@@ -53,21 +52,39 @@ export default function LessonTreeControls() {
     [treeCurrentType, treeCurrentId]
   );
 
-  const [FolderInput, openNewFolderInput] = usePopupInput(
-    `Enter new ${childType} name:`,
-    doAddFolder
+  const [ChapterInput, openNewChapterInput] = usePopupInput(
+    `Enter new chapter name:`,
+    doAddChapter
+  );
+
+  const [StepInput, openNewStepInput] = usePopupInput(
+    `Enter new step name:`,
+    doAddStep
   );
 
   return (
-    <Flex style={{ margin: "8px 0" }}>
-      <FolderInput />
+    <Flex style={{ margin: "8px auto", width: "-webkit-fill-available" }}>
+      <ChapterInput />
+      <StepInput />
       {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
-        <ButtonRound
-          onClick={openNewFolderInput}
-          svg={IconAddFolder}
-          width="32px"
-          height="32px"
-        />
+        <>
+          <ButtonSimple
+            onClick={openNewChapterInput}
+            width="170px"
+            height="24px"
+            margin="auto 4px auto auto"
+          >
+            New Chapter
+          </ButtonSimple>
+          <ButtonSimple
+            onClick={openNewStepInput}
+            width="170px"
+            height="24px"
+            margin="auto auto auto 4px"
+          >
+            New Step
+          </ButtonSimple>
+        </>
       ) : (
         <>
           <ButtonRound

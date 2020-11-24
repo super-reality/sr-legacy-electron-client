@@ -13,6 +13,36 @@ import newAnchor from "../lesson-utils/newAnchor";
 import ModalList from "../modal-list";
 import { IStep } from "../../../api/types/step/step";
 import updateStep from "../lesson-utils/updateStep";
+import { IAnchor } from "../../../api/types/anchor/anchor";
+import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+
+function doNewAnchor(url: string, stepId: string) {
+  return newAnchor(
+    {
+      name: "New Anchor",
+      type: "crop",
+      templates: [url],
+      anchorFunction: "or",
+      cvMatchValue: 990,
+      cvCanvas: 50,
+      cvDelay: 100,
+      cvGrayscale: true,
+      cvApplyThreshold: false,
+      cvThreshold: 127,
+    },
+    stepId
+  );
+}
+
+function newAnchorPre(
+  file: string,
+  stepId: string
+): Promise<IAnchor | undefined> {
+  if (file.indexOf("http") == -1) {
+    return uploadFileToS3(file).then((f) => doNewAnchor(f, stepId));
+  }
+  return doNewAnchor(file, stepId);
+}
 
 interface OpenStepProps {
   id: string;
@@ -48,21 +78,7 @@ export default function OpenStep(props: OpenStepProps) {
 
   const callback = useCallback(
     (e) => {
-      newAnchor(
-        {
-          name: "New Anchor",
-          type: "crop",
-          templates: [e],
-          anchorFunction: "or",
-          cvMatchValue: 0,
-          cvCanvas: 50,
-          cvDelay: 100,
-          cvGrayscale: true,
-          cvApplyThreshold: false,
-          cvThreshold: 127,
-        },
-        id
-      );
+      newAnchorPre(e, id);
     },
     [id]
   );

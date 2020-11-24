@@ -9,7 +9,7 @@ import _ from "lodash";
 import { useSelector } from "react-redux";
 import { AppState } from "../redux/stores/renderer";
 import globalData from "../globalData";
-import doCvMatch from "../../utils/doCVMatch";
+import doCvMatch from "../../utils/cv/doCVMatch";
 import { CVResult } from "../../types/utils";
 import { initialCVSettings } from "../redux/static";
 
