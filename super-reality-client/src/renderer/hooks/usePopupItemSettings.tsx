@@ -1,7 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 // import ReactCSSTransitionGroup from 'react-transition-group';
 import { setConstantValue } from "typescript";
+import { filter, values } from "lodash";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 
@@ -91,10 +98,8 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
 
 export default function usePopupItemSettings(): [JSX.Element, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
-  const [value, setValue] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [preview, setPreview] = useState("");
-  const [fxItems, setFXItems] = useState<EffectDB[]>();
-  const [tags, setTags] = useState<string[]>(["Pop"]);
 
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -104,57 +109,92 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
     (state: AppState) => state.createLessonV2
   );
 
-  // filter the FX
+  // get the Tags array from the FX DB
+  // tagsArray.some(
+  //   (el) => el == event.currentTarget.value
+  // )
+  const tagsArray: string[] = [];
+  const currentFXArray = Object.keys(effectDB).map((key) => {
+    return effectDB[key];
+  });
+  const [fxItems, setFXItems] = useState<EffectDB[]>(currentFXArray);
 
-  // const handleSearch = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     let tagsArray: Array<string> = [];
-  //     let currentEffects: EffectDB[] = [];
-  //     let newEffects: EffectDB[] = [];
-  //     // if value not "" filter the items
-  //     if (event.currentTarget.value != "") {
-  //       // current FX list
-  //       Object.keys(effectDB).forEach((key) => {
-  //         effectDB[key].tags.forEach((tag) => {
-  //           if (!tagsArray.includes(tag)) {
-  //             tagsArray.push(tag);
-  //           }
-  //         });
-  //       });
-  // if(tagsArray){
+  const currentTagsArray = Object.keys(effectDB).map((key) => {
+    return effectDB[key].tags;
+  });
+  const reducedTags = currentTagsArray.reduce((a, b) => {
+    return a.concat(b);
+  });
+  const smallTags = reducedTags.reduce(
+    (prev, curr) => {
+      const lc = curr.toLocaleLowerCase();
+      if (prev.indexOf(lc) < 0) {
+        return [...prev, lc];
+      }
+      return [...prev];
+    },
+    [reducedTags[0].toLocaleLowerCase()]
+  );
+  console.log("tagsArray", currentTagsArray, reducedTags);
+  console.log(smallTags);
+  const [tagsState, setTagsState] = useState<string[]>([]);
+  // if (value != "") {}
+  // const currentTag:string[] = effectDB[key].tags.filter((tag) => {
+  //   const tagLC = tag.toLocaleLowerCase();
+  //   if (!tagsArray.includes(tagLC)) {
+  //     tagsArray.push(tagLC);
+  //     return tagLC;
+  //   }
+  //   return currentTag;
+  // });
+  // const onEnter = useCallback((event) => {
+  //   const val = event.target.value;
+  //   if (event.key === "Enter" && val) {
+  //     setTags([...tags, val]);
+  //     setInputValue("");
+  //   }
+  // }, []);
 
-  // }
-  //       const filteredTags = tagsArray.filter(
-  //         (tagItem) => tagItem == event.currentTarget.value
-  //       );
-  //       tagsArray = filteredTags;
-  //       currentEffects = Object.keys(effectDB).map((key) => {
-  //         return effectDB[key];
-  //       });
-  //       newEffects = currentEffects.filter((item) => {
-  //         // filter the FX
-  //         return item.tags.some((e) => filteredTags.some((el) => el == e));
-  //       });
-  //     } else {
-  //       newEffects = Object.keys(effectDB).map((key) => {
-  //         return effectDB[key];
-  //       });
-  //     }
-  //     setTags(tagsArray);
-  //     setFXItems([...newEffects]);
-  //     console.log(newEffects);
-  //     const string = event.currentTarget.value;
-  //     setValue(string);
-  //   },
-  //   []
-  // );
+  const handleSearch = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      let tag: string;
+      const { value } = event.currentTarget;
+      const currentTags = tagsState;
+      if (value != "") {
+        if (smallTags.indexOf(value.toLocaleLowerCase()) >= 0) {
+          console.log(value, smallTags.indexOf(value));
 
-  // const filterTags = useCallback(
-  //   (tag) => {
+          console.log("tags1", tagsState, inputValue, currentTags);
+          setTagsState([...tagsState, value]);
+          console.log("tag added", tagsState);
+        }
+      }
+      const string = value;
 
-  //   },
-  //   [tagsArray]
-  // );
+      setInputValue(string);
+    },
+    []
+  );
+
+  console.log("tags", tagsState, inputValue);
+  useEffect(() => {
+    if (tagsState != []) {
+      const newItems = currentFXArray.filter(({ tags }) => {
+        return tags.some((e) =>
+          tagsState.some((tag) => {
+            const newTag = tag.charAt(0).toUpperCase() + tag.slice(1);
+            console.log(newTag, tags.indexOf(newTag));
+            return newTag == e;
+          })
+        );
+      });
+      console.log("newItems", newItems);
+      setFXItems(newItems);
+    } else {
+      setFXItems(currentFXArray);
+    }
+    console.log("useEF", tagsState);
+  }, [tagsState]);
 
   const previewItem = useCallback((id) => {
     setPreview(id);
@@ -257,9 +297,10 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
           <div className="popup-settings-input-container">
             <input
               autoFocus
+              ref={searchRef}
               className="popup-settings-input-container-input"
-              onChange={() => {}}
-              value={value}
+              onChange={handleSearch}
+              value={inputValue}
             />
           </div>
         </Flex>
@@ -269,7 +310,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             display: "flex",
           }}
         >
-          {tags.map((tag) => {
+          {tagsState.map((tag) => {
             return (
               <ButtonSimple
                 key={tag}
@@ -292,12 +333,12 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             flexWrap: "wrap",
           }}
         >
-          {Object.keys(effectDB).map((key) => {
+          {fxItems.map((key) => {
             // console.log(effectDB[key]);
             return (
               <PopUpSettingsItem
-                key={key}
-                item={effectDB[key]}
+                key={key.name}
+                item={key}
                 callback={previewItem}
               />
             );
@@ -309,3 +350,6 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
 
   return [Element, doOpen];
 }
+/*
+Object.keys(effectDB)
+*/
