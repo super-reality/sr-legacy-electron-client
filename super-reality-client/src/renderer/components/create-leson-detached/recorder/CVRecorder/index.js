@@ -44,6 +44,12 @@ export default class CVRecorder {
     this._stepRecordingName = "";
     this._recordingFullPath = "";
     this._finishCallback = () => {};
+    this._source = async function(){await desktopCapturer.getSources({
+        types: ['window', 'screen']
+      }).then(function (source){
+        return source[0] //default whole desktop source
+      });
+    }
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
@@ -61,6 +67,7 @@ export default class CVRecorder {
     this.resetTimer = this.resetTimer.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
+    this.restart = this.restart.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
   }
@@ -393,87 +400,95 @@ export default class CVRecorder {
 
   // Saves the video file on stop
   handleStop(e) {
-    const videoBlob = new Blob(this._recordedChunks, {
-      type: "video/webm;codecs=vp9",
-    });
-    const readAsArrayBuffer = (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(blob);
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-        reader.onerror = (ev) => {
-          reject(ev.error);
-        };
+    if(!this._recordingRestarted){
+      const videoBlob = new Blob(this._recordedChunks, {
+        type: "video/webm;codecs=vp9",
       });
-    };
-    const injectMetadata = (blob) => {
-      const decoder = new Decoder();
-      const reader = new Reader();
-      reader.logging = false;
-      reader.drop_default_duration = false;
-
-      return readAsArrayBuffer(blob).then((buffer) => {
-        const elms = decoder.decode(buffer);
-        elms.forEach((elm) => {
-          reader.read(elm);
+      const readAsArrayBuffer = (blob) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsArrayBuffer(blob);
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          reader.onerror = (ev) => {
+            reject(ev.error);
+          };
         });
-        reader.stop();
-        const refinedMetadataBuf = tools.makeMetadataSeekable(
-          reader.metadatas,
-          reader.duration,
-          reader.cues
-        );
-        const body = buffer.slice(reader.metadataSize);
-        const result = new Blob([refinedMetadataBuf, body], {
-          type: blob.type,
-        });
+      };
+      const injectMetadata = (blob) => {
+        const decoder = new Decoder();
+        const reader = new Reader();
+        reader.logging = false;
+        reader.drop_default_duration = false;
 
-        return result;
-      });
-    };
-    const seekableVideoBlob = injectMetadata(videoBlob);
-    seekableVideoBlob.then((blob) => {
-      blob.arrayBuffer().then((arrayBuffer) => {
-        const buffer = Buffer.from(arrayBuffer);
-        this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
-        console.log("recording path: ", this._recordingFullPath);
-        if (this._recordingFullPath) {
-          fs.writeFile(this._recordingFullPath, buffer, () => {
-            this.extractClickedImages();
+        return readAsArrayBuffer(blob).then((buffer) => {
+          const elms = decoder.decode(buffer);
+          elms.forEach((elm) => {
+            reader.read(elm);
           });
-        }
+          reader.stop();
+          const refinedMetadataBuf = tools.makeMetadataSeekable(
+            reader.metadatas,
+            reader.duration,
+            reader.cues
+          );
+          const body = buffer.slice(reader.metadataSize);
+          const result = new Blob([refinedMetadataBuf, body], {
+            type: blob.type,
+          });
+
+          return result;
+        });
+      };
+      const seekableVideoBlob = injectMetadata(videoBlob);
+      seekableVideoBlob.then((blob) => {
+        blob.arrayBuffer().then((arrayBuffer) => {
+          const buffer = Buffer.from(arrayBuffer);
+          this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
+          console.log("recording path: ", this._recordingFullPath);
+          if (this._recordingFullPath) {
+            fs.writeFile(this._recordingFullPath, buffer, () => {
+              this.extractClickedImages();
+            });
+          }
+        });
       });
-    });
+    }
   }
 
   handleAudioStop(e) {
-    const audioBlob = new Blob(this._audioRecordedChunks, {
-      type: "audio/webm",
-    });
+    if(!this._recordingRestarted){
+      const audioBlob = new Blob(this._audioRecordedChunks, {
+        type: "audio/webm",
+      });
 
-    audioBlob.arrayBuffer().then((arrayBuffer) => {
-      const buffer = Buffer.from(arrayBuffer);
-      this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
-      this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
-      this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
-      if (this._audioRecordingFullPath) {
-        fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
-          if (err) throw err;
-        });
-      }
-    });
+      audioBlob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer);
+        this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
+        this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
+        this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
+        if (this._audioRecordingFullPath) {
+          fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+    }
   }
 
   // Captures all recorded chunks
   handleDataAvailable(e) {
-    this._recordedChunks.push(e.data);
+    if(!this._recordingRestarted){
+      this._recordedChunks.push(e.data);
+    }
   }
 
   // Captures all recorded chunks
   handleAudioDataAvailable(e) {
-    this._audioRecordedChunks.push(e.data);
+    if(!this._recordingRestarted){
+      this._audioRecordedChunks.push(e.data);
+    }
   }
 
   async captureDesktopStream(sourceId) {
@@ -576,14 +591,14 @@ export default class CVRecorder {
   }
 
   stopTimer() {
-    // _timeStopped = new Date();
     this._differenceValue = 0;
     clearInterval(this._started);
   }
 
   start(source) {
+    this._source = source;
     console.log("started video recording");
-    return this.selectSource(source).then(() => {
+    return this.selectSource(this._source).then(() => {
       this._stepRecordingName = `${Date.now()}.webm`;
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
@@ -622,6 +637,24 @@ export default class CVRecorder {
     this.resumeTimer();
     this._mediaRecorder.resume();
     this._audioMediaRecorder.resume();
+  }
+
+  restart() {
+    this._recordingRestarted = true;
+    this.stopTimer();
+    this.resetTimer();
+    if(!this._recordingStarted){
+      this.resume();
+    }
+    this._audioMediaRecorder.stop();
+    this._mediaRecorder.stop();
+    this.selectSource(this._source).then(() => {
+      this._mediaRecorder.start();
+      this._audioMediaRecorder.start();
+      this._recordingStarted = true;
+      this.startTimer();
+      this._recordingRestarted = false;
+    });
   }
 
   stop() {
