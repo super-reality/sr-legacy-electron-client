@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
 import {
   recordingPath,
@@ -5,7 +6,7 @@ import {
   stepSnapshotPath,
 } from "../../../../electron-constants";
 
-import Browser from "./Browser";
+import Browser from "../Browser";
 /* eslint-disable radix */
 const { desktopCapturer } = require("electron");
 const fs = require("fs");
@@ -46,12 +47,15 @@ export default class CVRecorder {
     this._stepRecordingName = "";
     this._recordingFullPath = "";
     this._finishCallback = () => {};
-    this._source = async function(){await desktopCapturer.getSources({
-        types: ['window', 'screen']
-      }).then(function (source){
-        return source[0] //default whole desktop source
-      });
-    }
+    this._source = () => {
+      return desktopCapturer
+        .getSources({
+          types: ["window", "screen"],
+        })
+        .then((source) => {
+          return source[0]; // default whole desktop source
+        });
+    };
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
@@ -192,33 +196,32 @@ export default class CVRecorder {
     return [];
   }
 
-  async getActiveBrowserTabUrl(eventDetails){
-    await new Promise(async (resolve, reject) => {
-      try{
-          const browser = new Browser()
-          console.log("Queue => value ", eventDetails)
-          if(eventDetails[1] != "" && !this._urlTitleDic[eventDetails[1]]){
-            this._urlTitleDic[eventDetails[1]] = ""  
-            browser.owner = eventDetails[0];
-            browser.title = eventDetails[1];
-            if(browser.checkIfBrowser() !== ""){
-              await browser.getBrowserUrl().then((url)=>{
-                this._urlTitleDic[eventDetails[1]] = "processing" 
-                console.log("url instside processqueue", url)
-                this._urlTitleDic[eventDetails[1]] = url
-                resolve(url);
-              })
-            }else{
-              const url = "";
+  async getActiveBrowserTabUrl(eventDetails) {
+    await new Promise((resolve, reject) => {
+      try {
+        const browser = new Browser();
+        console.log("Queue => value ", eventDetails);
+        if (eventDetails[1] != "" && !this._urlTitleDic[eventDetails[1]]) {
+          this._urlTitleDic[eventDetails[1]] = "";
+          browser.owner = eventDetails[0];
+          browser.title = eventDetails[1];
+          if (browser.checkIfBrowser() !== "") {
+            browser.getBrowserUrl().then((url) => {
+              this._urlTitleDic[eventDetails[1]] = "processing";
+              console.log("url instside processqueue", url);
+              this._urlTitleDic[eventDetails[1]] = url;
               resolve(url);
-            }
+            });
+          } else {
+            const url = "";
+            resolve(url);
           }
-        
+        }
       } catch (e) {
-        console.log("browser error => ", e)
-        reject(e)
+        console.log("browser error => ", e);
+        reject(e);
       }
-    })
+    });
   }
 
   async extractClickedImages() {
@@ -236,20 +239,20 @@ export default class CVRecorder {
         let doubleClick = false;
         let clickType = "";
         let keyboardEvents = {};
-        let contourDic = {};
+        const contourDic = {};
         let processTitle = "";
         let processOwnerName = "";
         let browserTabUrl = "";
-        if(arr[4] !== undefined){
-          keyboardEvents = arr[4]
+        if (arr[4] !== undefined) {
+          keyboardEvents = arr[4];
         }
-        if(arr[5] !== undefined){
-          processTitle = arr[5]
+        if (arr[5] !== undefined) {
+          processTitle = arr[5];
         }
-        if(arr[6] !== undefined){
-          processOwnerName = arr[6]
+        if (arr[6] !== undefined) {
+          processOwnerName = arr[6];
         }
-        let snippedImageName = "";
+        const snippedImageName = "";
         const eventType = arr[3];
         const timestamp = arr[2];
         const yCordinate = arr[1];
@@ -263,24 +266,23 @@ export default class CVRecorder {
         const milliSeconds = timestampFormat[3];
         const interval = seconds * 1000 + parseInt(milliSeconds);
 
-        if(eventType === "left_click"){
-
+        if (eventType === "left_click") {
           cap.set(cv.CAP_PROP_POS_MSEC, interval - 500);
           mainImage = cap.read();
-  
+
           cap.set(cv.CAP_PROP_POS_MSEC, interval);
           const currentImage = cap.read();
-  
+
           const absDiff = mainImage.absdiff(currentImage);
-  
+
           const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
-  
+
           const cannyEdges = grayImg.canny(23, 180, 3);
-  
+
           // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
-  
+
           const cannyEdges2D = cannyEdges.getDataAsArray();
-  
+
           const rightBorderCordiates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
@@ -315,66 +317,79 @@ export default class CVRecorder {
           const bottomBorderY = bottomBorderCordinates[1];
           const snipWindowHeight = bottomBorderY - topBorderY;
           const snipWindowWidth = rightBorderX - leftBorderX;
-  
-          const topLeftCornerX = topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+
+          const topLeftCornerX =
+            topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
           const topLeftCornerY = topBorderY - this._pixelOffset;
-  
+
           const topRightCornerX = rightBorderX + this._pixelOffset;
-          const topRightCornerY = rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
-  
+          const topRightCornerY =
+            rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
+
           const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-          const bottomLeftCornerY = leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
-  
-          const bottomRightCornerX = bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
+          const bottomLeftCornerY =
+            leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+
+          const bottomRightCornerX =
+            bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
           const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-  
+
           const cornerPointsArr = new Array(4);
           cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
           cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-          cornerPointsArr[2] = new cv.Point2(bottomLeftCornerX, bottomLeftCornerY);
+          cornerPointsArr[2] = new cv.Point2(
+            bottomLeftCornerX,
+            bottomLeftCornerY
+          );
           cornerPointsArr[3] = new cv.Point2(
             bottomRightCornerX,
             bottomRightCornerY
           );
-  
-          contourDic["top_left_corner"]  = [topLeftCornerX, topLeftCornerY];
-          contourDic["top_right_corner"] = [topRightCornerX, topRightCornerY];
-          contourDic["bottom_left_corner"] = [bottomLeftCornerX, bottomLeftCornerY];
-          contourDic["bottom_right_corner"] = [bottomRightCornerX, bottomRightCornerY];
-  
+
+          contourDic.top_left_corner = [topLeftCornerX, topLeftCornerY];
+          contourDic.top_right_corner = [topRightCornerX, topRightCornerY];
+          contourDic.bottom_left_corner = [
+            bottomLeftCornerX,
+            bottomLeftCornerY,
+          ];
+          contourDic.bottom_right_corner = [
+            bottomRightCornerX,
+            bottomRightCornerY,
+          ];
         }
-        if( eventType === "left_click"  ||
-            eventType === "right_click" ||
-            eventType === "wheel_click" 
-          ){
-          if(interval - previousInterval < this._doubleClickThreshold){
-            doubleClick = true
+        if (
+          eventType === "left_click" ||
+          eventType === "right_click" ||
+          eventType === "wheel_click"
+        ) {
+          if (interval - previousInterval < this._doubleClickThreshold) {
+            doubleClick = true;
           }
-          if(!doubleClick){
-            clickType = "single"
-          }else{
-            clickType = "double"
+          if (!doubleClick) {
+            clickType = "single";
+          } else {
+            clickType = "double";
           }
-          previousInterval = interval
+          previousInterval = interval;
         }
-        if(this._urlTitleDic[processTitle]){
-          browserTabUrl = this._urlTitleDic[processTitle] 
+        if (this._urlTitleDic[processTitle]) {
+          browserTabUrl = this._urlTitleDic[processTitle];
         }
         jsonMetaData.step_data.push({
-            type: eventType,
-            process_owner: processOwnerName,
-            process_title: processTitle,
-            process_url: browserTabUrl,
-            click_type: clickType, 
-            name: snippedImageName,
-            x_cordinate: xCordinate,
-            y_cordinate: yCordinate,
-            contours: contourDic,
-            time_stamp: timestamp,
-            keyboard_events: keyboardEvents
+          type: eventType,
+          process_owner: processOwnerName,
+          process_title: processTitle,
+          process_url: browserTabUrl,
+          click_type: clickType,
+          name: snippedImageName,
+          x_cordinate: xCordinate,
+          y_cordinate: yCordinate,
+          contours: contourDic,
+          time_stamp: timestamp,
+          keyboard_events: keyboardEvents,
         });
       })
-    ).then(()=>{
+    ).then(() => {
       const json = JSON.stringify(jsonMetaData, null, "  ");
       fs.writeFile(
         `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
@@ -391,7 +406,7 @@ export default class CVRecorder {
 
   // Saves the video file on stop
   handleStop(e) {
-    if(!this._recordingRestarted){
+    if (!this._recordingRestarted) {
       const videoBlob = new Blob(this._recordedChunks, {
         type: "video/webm;codecs=vp9",
       });
@@ -449,7 +464,7 @@ export default class CVRecorder {
   }
 
   handleAudioStop(e) {
-    if(!this._recordingRestarted){
+    if (!this._recordingRestarted) {
       const audioBlob = new Blob(this._audioRecordedChunks, {
         type: "audio/webm",
       });
@@ -470,14 +485,14 @@ export default class CVRecorder {
 
   // Captures all recorded chunks
   handleDataAvailable(e) {
-    if(!this._recordingRestarted){
+    if (!this._recordingRestarted) {
       this._recordedChunks.push(e.data);
     }
   }
 
   // Captures all recorded chunks
   handleAudioDataAvailable(e) {
-    if(!this._recordingRestarted){
+    if (!this._recordingRestarted) {
       this._audioRecordedChunks.push(e.data);
     }
   }
@@ -634,7 +649,7 @@ export default class CVRecorder {
     this._recordingRestarted = true;
     this.stopTimer();
     this.resetTimer();
-    if(!this._recordingStarted){
+    if (!this._recordingStarted) {
       this.resume();
     }
     this._audioMediaRecorder.stop();

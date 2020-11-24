@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 // import iohook from "iohook";
+// import activeWin from "active-win";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
@@ -26,6 +27,33 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
+  const processEvent = useCallback(
+    (x: number, y: number, currentTime, eventType, keyboardDetails) => {
+      // eslint-disable-next-line no-undef
+      const activeWin = __non_webpack_require__("active-win");
+      return activeWin().then((activeWindowDetails: any) => {
+        let title = "";
+        let processOwnerName = "";
+        if (activeWindowDetails != undefined) {
+          title = activeWindowDetails.title;
+          processOwnerName = activeWindowDetails.owner.name;
+        }
+
+        recorder.clickEventDetails = [
+          x,
+          y,
+          currentTime,
+          eventType,
+          keyboardDetails,
+          title,
+          processOwnerName,
+        ];
+        return [processOwnerName, title, currentTime];
+      });
+    },
+    []
+  );
+
   useEffect(() => {
     const get = async () => {
       // eslint-disable-next-line global-require
@@ -48,97 +76,87 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     iohook.load();
     iohook.start();
     iohook.on("mousedown", (event: any) => {
-      const timerOnClick = recorder.currentTimer
-      if(recorder.recordingStarted){
-
-        if(event.button === leftButtonId){
-          processEvent(event.x, event.y, timerOnClick, "left_click", "").then((activeWindowDetails)=>{
-            //if active window title not empty
-            if(activeWindowDetails[1] != ""){
-              recorder.getActiveBrowserTabUrl(activeWindowDetails)
+      const timerOnClick = recorder.currentTimer;
+      if (recorder.recordingStarted) {
+        if (event.button === leftButtonId) {
+          processEvent(event.x, event.y, timerOnClick, "left_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
             }
-          })
+          );
         }
-        if(event.button === rightButtonId){
-          processEvent(event.x, event.y, timerOnClick, "right_click", "").then((activeWindowDetails)=>{
-            //if active window title not empty
-            if(activeWindowDetails[1] != ""){
-              recorder.getActiveBrowserTabUrl(activeWindowDetails)
+        if (event.button === rightButtonId) {
+          processEvent(event.x, event.y, timerOnClick, "right_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
             }
-          })
+          );
         }
-        if(event.button === wheelButtonId){
-          processEvent(event.x, event.y, timerOnClick, "wheel_click", "").then((activeWindowDetails)=>{
-            //if active window title not empty
-            if(activeWindowDetails[1] != ""){
-              recorder.getActiveBrowserTabUrl(activeWindowDetails)
+        if (event.button === wheelButtonId) {
+          processEvent(event.x, event.y, timerOnClick, "wheel_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
             }
-          })
+          );
         }
-        console.log("click registered ==>",timerOnClick);
+        console.log("click registered ==>", timerOnClick);
       }
     });
 
     iohook.on("mouseup", (event: any) => {
-      const timerOnRelease = recorder.currentTimer
-      if(recorder.recordingStarted){
-        if(event.button === leftButtonId){
-          processEvent(event.x, event.y, timerOnRelease, "left_release", "")
+      const timerOnRelease = recorder.currentTimer;
+      if (recorder.recordingStarted) {
+        if (event.button === leftButtonId) {
+          processEvent(event.x, event.y, timerOnRelease, "left_release", "");
         }
-        if(event.button === rightButtonId){
-          processEvent(event.x, event.y, timerOnRelease, "right_release", "")
+        if (event.button === rightButtonId) {
+          processEvent(event.x, event.y, timerOnRelease, "right_release", "");
         }
-        if(event.button === wheelButtonId){
-          processEvent(event.x, event.y, timerOnRelease, "wheel_release", "")
+        if (event.button === wheelButtonId) {
+          processEvent(event.x, event.y, timerOnRelease, "wheel_release", "");
         }
-        console.log("release registered ==>",timerOnRelease);
+        console.log("release registered ==>", timerOnRelease);
       }
     });
 
     iohook.on("mousewheel", (event: any) => {
-      const timerOnScroll = recorder.currentTimer
-      if(recorder.recordingStarted){
-        if(event.rotation === scrollDownId){
-          processEvent(event.x, event.y, timerOnScroll, "scroll_down", "")
-        } 
-        if(event.rotation === scrollUpId){
-          processEvent(event.x, event.y, timerOnScroll, "scroll_up", "")
+      const timerOnScroll = recorder.currentTimer;
+      if (recorder.recordingStarted) {
+        if (event.rotation === scrollDownId) {
+          processEvent(event.x, event.y, timerOnScroll, "scroll_down", "");
         }
-        console.log("mousewheel registered ==>",timerOnScroll);
+        if (event.rotation === scrollUpId) {
+          processEvent(event.x, event.y, timerOnScroll, "scroll_up", "");
+        }
+        console.log("mousewheel registered ==>", timerOnScroll);
       }
     });
 
     iohook.on("keydown", (event: any) => {
-      const timerOnKeydown = recorder.currentTimer
-      if(recorder.recordingStarted){
-        processEvent(event.x, event.y, timerOnKeydown, event.type, event)
-        console.log("keyboard key clicked ==>",timerOnKeydown);
+      const timerOnKeydown = recorder.currentTimer;
+      if (recorder.recordingStarted) {
+        processEvent(event.x, event.y, timerOnKeydown, event.type, event);
+        console.log("keyboard key clicked ==>", timerOnKeydown);
       }
     });
 
     iohook.on("keyup", (event: any) => {
-      const timerOnKeyup = recorder.currentTimer
-      if(recorder.recordingStarted){
-        processEvent(event.x, event.y, timerOnKeyup, event.type, event)
-        console.log("keyboard key released ==>",timerOnKeyup);
+      const timerOnKeyup = recorder.currentTimer;
+      if (recorder.recordingStarted) {
+        processEvent(event.x, event.y, timerOnKeyup, event.type, event);
+        console.log("keyboard key released ==>", timerOnKeyup);
       }
     });
-  }, [recorder]);
-
-  const processEvent = function(x, y, currentTime, eventType, keyboardDetails){
-    const activeWin = require('active-win');
-    return await activeWin().then((activeWindowDetails) => {
-      let title = ""
-      let processOwnerName = ""
-      if (activeWindowDetails != undefined){
-        title = activeWindowDetails.title
-        processOwnerName = activeWindowDetails.owner.name
-      }
-  
-      recorder.clickEventDetails = [x, y, currentTime, eventType, keyboardDetails, title, processOwnerName]
-      return [processOwnerName ,title, currentTime] 
-    })
-  };
+  }, [processEvent, recorder]);
 
   const stopRecord = useCallback(() => {
     // eslint-disable-next-line global-require
