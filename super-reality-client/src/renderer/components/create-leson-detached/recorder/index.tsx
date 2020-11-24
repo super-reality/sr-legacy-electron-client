@@ -27,19 +27,6 @@ interface RecorderProps {
   onFinish: () => void;
 }
 
-const sliderStyle: React.CSSProperties = {
-  position: "relative",
-  width: "100%"
-};
-
-const railStyle: React.CSSProperties = {
-  position: "absolute",
-  width: "100%",
-  height: 3,
-  cursor: "pointer",
-  backgroundColor: "#202225"
-};
-
 export default function Recorder(props: RecorderProps): JSX.Element {
   const { onFinish } = props;
   const [count, setCount] = useState(-1);
@@ -304,7 +291,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       {recording ? (
         <Windowlet
           title="Super Reality Recorder"
-          width={350}
+          width={300}
           height={100}
           onClose={onFinish}
           style={{ backgroundColor: "#2f3136" }}
@@ -334,7 +321,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 <p style={{ margin: 0 }}>00:00:00</p>
               )}
             </Flex>
-            <div
+            {/* <div
               style={{
                 width: "33%",
                 height: 32,
@@ -348,7 +335,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 defaultValues={[50]}
                 style={{ width: "80%" }}
               />
-            </div>
+            </div> */}
             <Flex style={{ width: "33%", justifyContent: "space-between" }}>
               <ButtonRound
                 svg={ResetIcon}
