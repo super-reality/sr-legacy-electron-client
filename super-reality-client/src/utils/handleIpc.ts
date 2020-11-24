@@ -9,6 +9,7 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
+import getBoundsPos from "./getBoundsPos";
 import getDisplayBounds from "./getNewBounds";
 import getPrimaryPos from "./getPrimaryPos";
 
@@ -97,7 +98,7 @@ export default function handleIpc(): void {
 
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
     const pos = arg;
-    const primary = getPrimaryPos(getDisplayBounds());
+    const primary = getBoundsPos(getDisplayBounds());
     pos.x -= primary.x;
     pos.y -= primary.y;
     reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
