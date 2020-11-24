@@ -50,6 +50,7 @@ export default class Browser{
       if(title != ""){
         return await this.createBrowser().then(async ()=>{
           try{
+            title = title.replace("|", "")
             await this._page.goto('https://duckduckgo.com/?q='+ title,{waitUntil: 'networkidle0'});
     
             url = await this._page.evaluate(()=>{
