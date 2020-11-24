@@ -1,14 +1,14 @@
 /* eslint-env jest */
-/*
-jest.mock("../opencv/opencv", () => {
-  // eslint-disable-next-line global-require
-  return require("opencv4nodejs-prebuilt");
-});
-*/
-
 import path from "path";
 import { AppState } from "../../renderer/redux/stores/renderer";
 import doCvMatch from "../cv/doCVMatch";
+
+jest.mock("../opencv/opencv", () => {
+  // eslint-disable-next-line global-require
+  // return require("opencv4nodejs-prebuilt");
+  // eslint-disable-next-line no-undef
+  return __non_webpack_require__("opencv4nodejs-prebuilt");
+});
 
 function isBetween(x: number, min: number, max: number) {
   return x >= min && x <= max;
