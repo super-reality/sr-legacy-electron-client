@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 
+import { Rectangle } from "../../../../types/utils";
+
 export type StepType =
   | "left_click"
   | "right_click"
@@ -12,13 +14,6 @@ export type StepType =
   | "keydown"
   | "keyup";
 
-interface Contour {
-  top_left_corner: Array<number>;
-  top_right_corner: Array<number>;
-  bottom_left_corner: Array<number>;
-  bottom_right_corner: Array<number>;
-}
-
 export interface StepData {
   type: StepType;
   name: string;
@@ -29,7 +24,7 @@ export interface StepData {
   process_title: string;
   process_url: string;
   click_type: string;
-  contours: Contour;
+  contours: Rectangle;
   keyboard_events: {
     shiftKey?: boolean;
     altKey?: boolean;

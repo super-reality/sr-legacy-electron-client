@@ -333,7 +333,7 @@ export default class CVRecorder {
           const bottomRightCornerX =
             bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
           const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-
+          /*
           const cornerPointsArr = new Array(4);
           cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
           cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
@@ -345,17 +345,12 @@ export default class CVRecorder {
             bottomRightCornerX,
             bottomRightCornerY
           );
+          */
 
-          contourDic.top_left_corner = [topLeftCornerX, topLeftCornerY];
-          contourDic.top_right_corner = [topRightCornerX, topRightCornerY];
-          contourDic.bottom_left_corner = [
-            bottomLeftCornerX,
-            bottomLeftCornerY,
-          ];
-          contourDic.bottom_right_corner = [
-            bottomRightCornerX,
-            bottomRightCornerY,
-          ];
+          contourDic.x = topLeftCornerX;
+          contourDic.y = topLeftCornerY;
+          contourDic.width = topRightCornerX - topLeftCornerX;
+          contourDic.height = bottomLeftCornerY - topLeftCornerY;
         }
         if (
           eventType === "left_click" ||
