@@ -78,8 +78,8 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
             pointerEvents: "none",
           }}
           src={url}
-          width="200"
-          height="200"
+          width="150"
+          height="150"
         />
       ) : (
         <img
@@ -87,8 +87,8 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
             cursor: "pointer",
             pointerEvents: "none",
           }}
-          width="200px"
-          height="200px"
+          width="150px"
+          height="150px"
           src={IconFXInList}
         />
       )}
@@ -113,19 +113,23 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
   // tagsArray.some(
   //   (el) => el == event.currentTarget.value
   // )
-  const tagsArray: string[] = [];
+
   const currentFXArray = Object.keys(effectDB).map((key) => {
     return effectDB[key];
   });
   const [fxItems, setFXItems] = useState<EffectDB[]>(currentFXArray);
+  //
+  const lowCaseStartTags = currentFXArray[0].tags.map((tag) => {
+    return tag.toLocaleLowerCase();
+  });
+  const currentTagsArray = currentFXArray.reduce(
+    (prev, curr) => {
+      return [...prev, ...curr.tags];
+    },
+    [...lowCaseStartTags]
+  );
 
-  const currentTagsArray = Object.keys(effectDB).map((key) => {
-    return effectDB[key].tags;
-  });
-  const reducedTags = currentTagsArray.reduce((a, b) => {
-    return a.concat(b);
-  });
-  const smallTags = reducedTags.reduce(
+  const smallTags = currentTagsArray.reduce(
     (prev, curr) => {
       const lc = curr.toLocaleLowerCase();
       if (prev.indexOf(lc) < 0) {
@@ -133,9 +137,9 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       }
       return [...prev];
     },
-    [reducedTags[0].toLocaleLowerCase()]
+    [currentTagsArray[0].toLocaleLowerCase()]
   );
-  console.log("tagsArray", currentTagsArray, reducedTags);
+  console.log("tagsArray", currentTagsArray);
   console.log(smallTags);
   const [tagsState, setTagsState] = useState<string[]>([]);
   // if (value != "") {}
@@ -172,19 +176,23 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       const string = value;
 
       setInputValue(string);
+      console.log("tags", tagsState, inputValue);
     },
     []
   );
 
-  console.log("tags", tagsState, inputValue);
+  const removeTag = useCallback((id) => {
+    const removeItem = [...tagsState.slice(0, id), ...tagsState.slice(id + 1)];
+    setTagsState(removeItem);
+  }, []);
   useEffect(() => {
-    if (tagsState != []) {
+    if (tagsState.length != 0) {
       const newItems = currentFXArray.filter(({ tags }) => {
         return tags.some((e) =>
           tagsState.some((tag) => {
-            const newTag = tag.charAt(0).toUpperCase() + tag.slice(1);
-            console.log(newTag, tags.indexOf(newTag));
-            return newTag == e;
+            // const newTag = tag.charAt(0).toUpperCase() + tag.slice(1);
+            console.log(tag, tags.indexOf(tag));
+            return tag == e;
           })
         );
       });
@@ -231,11 +239,12 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         display: "flex",
         flexDirection: "row",
         backgroundColor: "#1f2124",
-        top: "0px",
+        top: "-100px",
+        left: "150px",
         borderRadius: "15px",
       }}
-      width="100%"
-      height="100%"
+      width="700px"
+      height="500px"
     >
       <div
         className="settings-popup-inner"
@@ -264,11 +273,10 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
               <embed
                 style={{
                   pointerEvents: "none",
-                  transition: "all 500ms ease-in-out",
                 }}
                 src={effectDB[preview].url}
-                width="360px"
-                height="340px"
+                width="200px"
+                height="200px"
               />
               <div className="item-tags">
                 Tags: {effectDB[preview].tags.join(", ")}
@@ -276,8 +284,8 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             </>
           ) : (
             <img
-              width="360px"
-              height="340px"
+              width="200px"
+              height="200px"
               src={IconFXThumbnail}
               alt="Fx Icon"
             />
@@ -310,7 +318,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             display: "flex",
           }}
         >
-          {tagsState.map((tag) => {
+          {tagsState.map((tag, indx) => {
             return (
               <ButtonSimple
                 key={tag}
@@ -318,7 +326,9 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
                   backgroundColor: "inherit",
                   border: "var(--color-text) solid 1px",
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  removeTag(indx);
+                }}
               >
                 {tag}
                 <CloseIcon height="10px" width="10px" />

@@ -46,37 +46,37 @@ export const effectDB: Record<id, EffectDB> = {
     id: "id_1",
     name: "Rainbow Wavy Circle",
     url: `${process.env.PUBLIC_URL}/fx/rainbow-circle-wavy-big/index.html`,
-    tags: ["Pop", "Rainbow"],
+    tags: ["pop", "rainbow"],
   },
   id_2: {
     id: "id_2",
     name: "Rainbow Confetti",
     url: `${process.env.PUBLIC_URL}/fx/rainbow-confetti/index.html`,
-    tags: ["Pop", "Rainbow"],
+    tags: ["pop", "rainbow"],
   },
 
   id_3: {
     id: "id_3",
     name: "Rainbow ORB Big",
     url: `${process.env.PUBLIC_URL}/fx/rainbow-orb-big/index.html`,
-    tags: ["Pop", "Rainbow"],
+    tags: ["pop", "rainbow"],
   },
   id_4: {
     id: "id_4",
     name: "Hyperspace1",
     url: `${process.env.PUBLIC_URL}/fx/hyperspace1/index.html`,
-    tags: ["Ambient"],
+    tags: ["ambient"],
   },
   id_5: {
     id: "id_5",
     name: "Hyperspace2",
     url: `${process.env.PUBLIC_URL}/fx/hyperspace2/index.html`,
-    tags: ["Ambient"],
+    tags: ["ambient"],
   },
   id_6: {
     id: "id_6",
     name: "Hyperspace3",
     url: `${process.env.PUBLIC_URL}/fx/hyperspace3/index.html`,
-    tags: ["Ambient"],
+    tags: ["ambient"],
   },
 };

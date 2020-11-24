@@ -120,11 +120,7 @@ export default function OpenItem(props: OpenItemProps) {
             callback={() => {}}
           />
           <div className="anchor-preview">
-            <img
-              width="120px"
-              height="80px"
-              src="https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1605844330340.png"
-            />
+            <img src="https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1605844330340.png" />
           </div>
 
           <BaseSelect

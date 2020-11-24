@@ -23,7 +23,6 @@ import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
 
 interface SettingsFX {
   name: ItemFX;
-  // update: (date: Partial<ItemFX>) => void;
 }
 
 interface FXSettingsProps {
@@ -39,26 +38,8 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
 
   const effectSecondRef = useRef<HTMLDivElement>(null);
 
-  // const openFolder = useCallback(
-  //   (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-  //     setOpen(!open);
-  //   },
-  //   [open]
-  // );
-
   const volume = useRef<HTMLInputElement>(null);
   const [Popup, open] = usePopupItemSettings();
-
-  // const onChange = useCallback(() => {
-  //   if (volume.current && volume.current.value) {
-  //     console.log(Number(volume.current.value) / 10);
-  //     const gainValue = Number(volume.current.value) / 10;
-  //     const audioCtx = new window.AudioContext();
-  //     const gainNode = audioCtx.createGain();
-  //     gainNode.gain.value = gainValue;
-  //     console.log(gainNode.gain.value);
-  //   }
-  // }, [volume.current?.value]);
 
   return (
     <>
