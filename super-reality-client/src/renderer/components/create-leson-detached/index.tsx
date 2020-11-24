@@ -174,7 +174,7 @@ export default function CreateLessonDetached(): JSX.Element {
     setFocusable(false);
     setTimeout(() => {
       setTopMost(true);
-    }, 1000);
+    }, 2000);
     setMaximize(true);
     setResizable(false);
   }, [dispatch]);
