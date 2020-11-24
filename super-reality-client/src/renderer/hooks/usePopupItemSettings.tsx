@@ -164,14 +164,12 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       let tag: string;
       const { value } = event.currentTarget;
       const currentTags = tagsState;
-      if (value != "") {
-        if (smallTags.indexOf(value.toLocaleLowerCase()) >= 0) {
-          console.log(value, smallTags.indexOf(value));
+      if (value != "" && smallTags.indexOf(value.toLocaleLowerCase()) >= 0) {
+        console.log(value, smallTags.indexOf(value));
 
-          console.log("tags1", tagsState, inputValue, currentTags);
-          setTagsState([...tagsState, value]);
-          console.log("tag added", tagsState);
-        }
+        console.log("tags1", tagsState, inputValue, currentTags);
+        setTagsState([...tagsState, value]);
+        console.log("tag added", tagsState);
       }
       const string = value;
 
