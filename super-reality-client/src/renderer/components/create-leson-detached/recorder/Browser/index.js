@@ -37,7 +37,7 @@ export default class Browser{
     }
   
     async createBrowser(){
-      this._browser = await puppeteer.launch({ headless: false}); // for test disable the headlels mode,
+      this._browser = await puppeteer.launch({ headless: true}); // for test disable the headlels mode,
       this._page = await this._browser.newPage();
       await this._page.setViewport({ width: 1000, height: 800 });
     }
