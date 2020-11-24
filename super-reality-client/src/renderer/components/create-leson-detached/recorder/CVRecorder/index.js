@@ -203,6 +203,7 @@ export default class CVRecorder {
             browser.title = eventDetails[1];
             if(browser.checkIfBrowser() !== ""){
               await browser.getBrowserUrl().then((url)=>{
+                this._urlTitleDic[eventDetails[1]] = "processing" 
                 console.log("url instside processqueue", url)
                 this._urlTitleDic[eventDetails[1]] = url
                 resolve(url);
