@@ -223,7 +223,7 @@ export default class CVRecorder {
   async extractClickedImages() {
     const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
-    const mainImage = cap.read();
+    let mainImage = cap.read();
 
     const jsonMetaData = {
       step_data: [],
@@ -262,20 +262,24 @@ export default class CVRecorder {
         const milliSeconds = timestampFormat[3];
         const interval = seconds * 1000 + parseInt(milliSeconds);
 
-        if (eventType === "left_click") {
+        if(eventType === "left_click"){
+
+          cap.set(cv.CAP_PROP_POS_MSEC, interval - 500);
+          mainImage = cap.read();
+  
           cap.set(cv.CAP_PROP_POS_MSEC, interval);
           const currentImage = cap.read();
-
+  
           const absDiff = mainImage.absdiff(currentImage);
-
+  
           const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
-
+  
           const cannyEdges = grayImg.canny(23, 180, 3);
-
+  
           // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
-
+  
           const cannyEdges2D = cannyEdges.getDataAsArray();
-
+  
           const rightBorderCordiates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
@@ -310,94 +314,33 @@ export default class CVRecorder {
           const bottomBorderY = bottomBorderCordinates[1];
           const snipWindowHeight = bottomBorderY - topBorderY;
           const snipWindowWidth = rightBorderX - leftBorderX;
-
-          const topLeftCornerX =
-            topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+  
+          const topLeftCornerX = topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
           const topLeftCornerY = topBorderY - this._pixelOffset;
-
+  
           const topRightCornerX = rightBorderX + this._pixelOffset;
-          const topRightCornerY =
-            rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
-
+          const topRightCornerY = rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
+  
           const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-          const bottomLeftCornerY =
-            leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
-
-          const bottomRightCornerX =
-            bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
+          const bottomLeftCornerY = leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+  
+          const bottomRightCornerX = bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
           const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-
+  
           const cornerPointsArr = new Array(4);
           cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
           cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-          cornerPointsArr[2] = new cv.Point2(
-            bottomLeftCornerX,
-            bottomLeftCornerY
-          );
+          cornerPointsArr[2] = new cv.Point2(bottomLeftCornerX, bottomLeftCornerY);
           cornerPointsArr[3] = new cv.Point2(
             bottomRightCornerX,
             bottomRightCornerY
           );
-
-          const outputCornerPointsArr = new Array(4);
-          outputCornerPointsArr[0] = new cv.Point2(0, 0);
-          outputCornerPointsArr[1] = new cv.Point2(snipWindowWidth, 0);
-          outputCornerPointsArr[2] = new cv.Point2(0, snipWindowHeight);
-          outputCornerPointsArr[3] = new cv.Point2(
-            snipWindowWidth,
-            snipWindowHeight
-          );
-
-          contourDic.top_left_corner = [topLeftCornerX, topLeftCornerY];
-          contourDic.top_right_corner = [topRightCornerX, topRightCornerY];
-          contourDic.bottom_left_corner = [bottomLeftCornerX, bottomLeftCornerY];
-          contourDic.bottom_right_corner = [
-            bottomRightCornerX,
-            bottomRightCornerY,
-          ];
-
-          const matrix = cv.getPerspectiveTransform(
-            cornerPointsArr,
-            outputCornerPointsArr
-          );
-
-          const dsize = new cv.Size(snipWindowWidth, snipWindowHeight);
-
-          const outputImg = mainImage.warpPerspective(
-            matrix,
-            dsize,
-            cv.INTER_LINEAR,
-            cv.BORDER_CONSTANT
-          );
-
-          snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
-            /:/g,
-            "-"
-          )}.jpeg`;
-          if (
-            !fs.existsSync(
-              `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
-            )
-          ) {
-            fs.mkdir(
-              `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
-              (err) => {
-                if (err) throw err;
-              }
-            );
-          }
-          cv.imwrite(
-            `${this._stepSnapshotPath}${
-              this._stepRecordingName.split(".")[0]
-            }/${snippedImageName}`,
-            outputImg,
-            [parseInt(cv.IMWRITE_JPEG_QUALITY)]
-          );
-          console.log(
-            `saved snipped image ${this._stepSnapshotPath}${
-              this._stepRecordingName.split(".")[0]
-            }/${snippedImageName}`
-          );
+  
+          contourDic["top_left_corner"]  = [topLeftCornerX, topLeftCornerY];
+          contourDic["top_right_corner"] = [topRightCornerX, topRightCornerY];
+          contourDic["bottom_left_corner"] = [bottomLeftCornerX, bottomLeftCornerY];
+          contourDic["bottom_right_corner"] = [bottomRightCornerX, bottomRightCornerY];
+  
         }
         if( eventType === "left_click"  ||
             eventType === "right_click" ||
