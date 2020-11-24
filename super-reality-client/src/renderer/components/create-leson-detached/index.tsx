@@ -172,7 +172,9 @@ export default function CreateLessonDetached(): JSX.Element {
   const setTransparent = useCallback(() => {
     reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
     setFocusable(false);
-    setTopMost(true);
+    setTimeout(() => {
+      setTopMost(true);
+    }, 1000);
     setMaximize(true);
     setResizable(false);
   }, [dispatch]);
