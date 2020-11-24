@@ -248,6 +248,7 @@ export default class CVRecorder {
         if(arr[6] !== undefined){
           processOwnerName = arr[6]
         }
+        let snippedImageName = "";
         const eventType = arr[3];
         const timestamp = arr[2];
         const yCordinate = arr[1];
