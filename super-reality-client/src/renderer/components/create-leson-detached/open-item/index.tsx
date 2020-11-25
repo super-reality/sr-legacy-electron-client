@@ -110,7 +110,21 @@ export default function OpenItem(props: OpenItemProps) {
       {view === "Settings" && item.type == "fx" ? (
         <ItemSettingsContainer>
           <FXSettings item={item} update={doUpdate} />
-          <BaseSelect
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <BaseToggle
+              title="Use Anchor"
+              value={item.anchor}
+              callback={(val) => {
+                doUpdate({ anchor: val });
+              }}
+            />
+          </div>
+
+          {/* <BaseSelect
             title="Computer Vision"
             current="choose the anchor"
             options={anchorsList}
@@ -118,18 +132,24 @@ export default function OpenItem(props: OpenItemProps) {
             //   (a) => treeAnchors[a]
             // )}
             callback={() => {}}
-          />
-          <div className="anchor-preview">
-            {/* <img src="https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1605844330340.png" /> */}
-          </div>
+          /> */}
 
-          <BaseSelect
-            title="Trigger"
-            current={item.trigger}
-            options={Object.values(triggers)}
-            optionFormatter={constantFormat(triggers)}
-            callback={(val) => doUpdate({ trigger: val })}
-          />
+          {/* <div className="anchor-preview">
+            <img src="https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1605844330340.png" />
+          </div> */}
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <BaseSelect
+              title="Trigger"
+              current={item.trigger}
+              options={Object.values(triggers)}
+              optionFormatter={constantFormat(triggers)}
+              callback={(val) => doUpdate({ trigger: val })}
+            />
+          </div>
         </ItemSettingsContainer>
       ) : (
         <>

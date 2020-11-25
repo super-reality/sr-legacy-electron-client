@@ -1,6 +1,6 @@
 .settings-popup-inner {
     background-color: var(--color-section);
-    color: var(-color-text);
+    color: var(--color-text);
     font-size: 13px;
     margin: 10px 0 10px 10px;
     border-radius: 15px;
@@ -9,4 +9,9 @@
 
 .prveiw-fx {
     pointer-events: none;
+    width: 355px;
+    height: 355px;
+}
+.settings-popup-options {
+    margin-top: 15px;
 }

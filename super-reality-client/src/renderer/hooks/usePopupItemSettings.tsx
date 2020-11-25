@@ -64,8 +64,8 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
             borderRadius: "8px",
           }}
           src={url}
-          width="150"
-          height="150"
+          width="175px"
+          height="163px"
         />
       ) : (
         <img
@@ -73,8 +73,8 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
             pointerEvents: "none",
             borderRadius: "8px",
           }}
-          width="150px"
-          height="150px"
+          width="175px"
+          height="163px"
           src={IconFXInList}
         />
       )}
@@ -189,13 +189,19 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
                 backgroundColor: "inherit",
                 border: "var(--color-text) solid 1px",
                 fontSize: "14px",
+                borderRadius: "9px",
+                margin: "5px 10px 5px 0px",
               }}
               onClick={() => {
                 removeTag(indx);
               }}
             >
               {tag}
-              <CloseIcon height="10px" width="10px" />
+              <CloseIcon
+                style={{ marginLeft: "10px" }}
+                height="10px"
+                width="10px"
+              />
             </ButtonSimple>
           );
         })}
@@ -294,18 +300,14 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
                   borderRadius: "8px",
                 }}
                 src={effectDB[preview].url}
-                width="250px"
-                height="250px"
               />
-              <div className="item-tags">
+              <div className="item-tags settings-popup-options">
                 Tags: {effectDB[preview].tags.join(", ")}
               </div>
             </>
           ) : (
             <img
               className="prveiw-fx"
-              width="250px"
-              height="250px"
               src={IconFXThumbnail}
               alt="Fx Icon"
               style={{
@@ -316,7 +318,9 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         </div>
 
         <div className="settings-popup-options">Options</div>
-        <div className="settings-popup-exposed">Expoused Values</div>
+        <div className="settings-popup-exposed settings-popup-options">
+          Expoused Values
+        </div>
       </div>
       <PopUpSettingsSearch callback={previewItem} />
     </Popup>
