@@ -1,14 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import ReactCSSTransitionGroup from 'react-transition-group';
-import { setConstantValue } from "typescript";
-import { filter, values } from "lodash";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 
@@ -21,17 +12,12 @@ import { Item } from "../api/types/item/item";
 import reduxAction from "../redux/reduxAction";
 import updateItem from "../components/create-leson-detached/lesson-utils/updateItem";
 import { AppState } from "../redux/stores/renderer";
+import { EffectDB } from "../../types/utils";
 
 interface SettingsItem {
   id: string;
   name: string;
   url: string;
-}
-interface EffectDB {
-  id: string;
-  name: string;
-  url: string;
-  tags: string[];
 }
 
 interface SettingsItemProps {
@@ -52,10 +38,6 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
 
   const onHoverEnd = useCallback(() => {
     setIsHover("");
-  }, []);
-
-  const preveiwItem = useCallback(() => {
-    callback(id);
   }, []);
 
   return (
@@ -100,12 +82,12 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
 interface PopUpSettingsSerchProps {
   callback: (id: string) => void;
 }
+
 function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
   const { callback } = props;
   const [inputValue, setInputValue] = useState("");
   const [tagsState, setTagsState] = useState<string[]>([]);
 
-  const searchRef = useRef<HTMLInputElement>(null);
   // get the array of items from the FX DB
   const currentFXArray = Object.keys(effectDB).map((key) => {
     return effectDB[key];
@@ -121,6 +103,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     },
     [...currentFXArray[0].tags]
   );
+
   // remove all doublicated tags
   const smallTagsArray = currentTagsArray.reduce(
     (prev, curr) => {
@@ -132,17 +115,13 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     },
     [currentTagsArray[0].toLocaleLowerCase()]
   );
+
   console.log("tagsArray", currentTagsArray);
   console.log(smallTagsArray);
-  // const currentTags: string[] = useMemo(() => {
-  //   if (tagsState.length != 0) {
-  //     return tagsState;
-  //   }
-  //   return currentTags;
-  // }, [tagsState]);
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log("tagsState", tagsState);
-    let tag: string;
+
     event.preventDefault();
     const { value } = event.currentTarget;
 
@@ -164,6 +143,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     const removeItem = [...tagsState.slice(0, id), ...tagsState.slice(id + 1)];
     setTagsState(removeItem);
   };
+
   useEffect(() => {
     if (tagsState.length != 0) {
       const newItems = currentFXArray.filter(({ tags }) => {
@@ -182,6 +162,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     }
     console.log("useEF", tagsState);
   }, [tagsState]);
+
   return (
     <div
       className="settings-popup-inner"
@@ -231,7 +212,6 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
         }}
       >
         {fxItems.map((key) => {
-          // console.log(effectDB[key]);
           return (
             <PopUpSettingsItem key={key.name} item={key} callback={callback} />
           );
@@ -255,10 +235,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
   const previewItem = (id: string): void => {
     setPreview(id);
   };
-  // const toggleFullScreen = useCallback((event) => {
-  //   event.preventDefault();
-  //   update({ fullScreen: !item.fullScreen });
-  // }, []);
+
   const doUpdate = useCallback(
     <T extends Item>(data: Partial<T>) => {
       if (currentItem) {
@@ -272,6 +249,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
     },
     [currentItem, treeItems]
   );
+
   const clickItem = useCallback(() => {
     console.log(preview);
     if (preview != "") {
@@ -352,6 +330,3 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
 
   return [Element, doOpen];
 }
-/*
-Object.keys(effectDB)
-*/
