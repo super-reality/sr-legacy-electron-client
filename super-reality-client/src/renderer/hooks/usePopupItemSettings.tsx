@@ -14,6 +14,9 @@ import updateItem from "../components/create-leson-detached/lesson-utils/updateI
 import { AppState } from "../redux/stores/renderer";
 import { EffectDB } from "../../types/utils";
 
+// styles for the FX
+import "./popup-fx-settings.scss";
+
 interface SettingsItem {
   id: string;
   name: string;
@@ -116,19 +119,11 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     [currentTagsArray[0].toLocaleLowerCase()]
   );
 
-  console.log("tagsArray", currentTagsArray);
-  console.log(smallTagsArray);
-
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("tagsState", tagsState);
-
     event.preventDefault();
     const { value } = event.currentTarget;
 
     if (value != "" && smallTagsArray.indexOf(value.toLocaleLowerCase()) >= 0) {
-      console.log(value, smallTagsArray.indexOf(value));
-
-      console.log("tags1", tagsState, inputValue);
       setTagsState([...tagsState, value]);
       console.log("tag added", tagsState);
     }
@@ -193,6 +188,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
               style={{
                 backgroundColor: "inherit",
                 border: "var(--color-text) solid 1px",
+                fontSize: "14px",
               }}
               onClick={() => {
                 removeTag(indx);
@@ -265,25 +261,21 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
         display: "flex",
         flexDirection: "row",
         backgroundColor: "#1f2124",
-        top: "-100px",
-        left: "150px",
+        top: "-8%",
+        left: "10%",
         borderRadius: "15px",
       }}
-      width="700px"
-      height="500px"
+      width="57%"
+      height="72%"
     >
-      <div
-        className="settings-popup-inner"
-        style={{
-          backgroundColor: "var(--color-section)",
-          color: "var(--color-text-active)",
-        }}
-      >
+      <div className="settings-popup-inner">
         <div
           className="settings-popup-name"
           style={{
             fontSize: "18px",
             fontWeight: "bold",
+            color: "var(--color-text-active)",
+            margin: "0 5px 5px",
           }}
         >
           {preview != "" ? effectDB[preview].name : "FX Name"}
@@ -297,6 +289,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
           {preview != "" ? (
             <>
               <embed
+                className="prveiw-fx"
                 style={{
                   borderRadius: "8px",
                 }}
@@ -310,6 +303,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
             </>
           ) : (
             <img
+              className="prveiw-fx"
               width="250px"
               height="250px"
               src={IconFXThumbnail}
