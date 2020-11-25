@@ -58,7 +58,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           eventType,
           keyboardDetails,
           title,
-          processOwnerName
+          processOwnerName,
         ];
         return [processOwnerName, title, currentTime];
       });
@@ -71,7 +71,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       // eslint-disable-next-line global-require
       const { desktopCapturer } = require("electron");
       const inputSources = await desktopCapturer.getSources({
-        types: ["window", "screen"]
+        types: ["window", "screen"],
       });
       const data: Record<string, any> = {};
       inputSources.forEach((source: any) => {
@@ -191,10 +191,10 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
     desktopCapturer
       .getSources({
-        types: ["window", "screen"]
+        types: ["window", "screen"],
       })
-      .then(all => {
-        const s = all.filter(c => c.name == currentSource)[0] || sources[0];
+      .then((all) => {
+        const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
         console.log(sources, currentSource);
         console.log(s);
         recorder.start(s);
@@ -270,7 +270,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 style={{ width: "200px" }}
                 options={Object.keys(sources)}
                 current={currentSource}
-                callback={name => {
+                callback={(name) => {
                   setCurrentSource(name);
                 }}
               />
@@ -278,7 +278,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 svg={RecordIcon}
                 svgStyle={{
                   width: "36px",
-                  height: "36px"
+                  height: "36px",
                 }}
                 width="48px"
                 height="48px"
@@ -302,7 +302,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
             style={{
               margin: "16px 16px",
               justifyContent: "space-around",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <Flex
@@ -312,7 +312,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 justifyContent: "center",
                 alignItems: "center",
                 height: 28,
-                borderRadius: 4
+                borderRadius: 4,
               }}
             >
               {recorder.currentTimer.length ? (
@@ -344,7 +344,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 svgStyle={{
                   width: "1rem",
                   height: "1rem",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 width="28px"
                 height="28px"
@@ -357,7 +357,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                   svgStyle={{
                     width: "1rem",
                     height: "1rem",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   width="28px"
                   height="28px"
@@ -370,7 +370,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                   svgStyle={{
                     width: "1rem",
                     height: "1rem",
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   width="28px"
                   height="28px"
@@ -383,7 +383,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 svgStyle={{
                   width: "1rem",
                   height: "1rem",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 width="28px"
                 height="28px"
