@@ -21,26 +21,89 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const { onFinish } = props;
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
-  const [sources, setSources] = useState<Record<string, any>>({});
-  const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
+  const [windowSources, setWindowSources] = useState<
+    Electron.DesktopCapturerSource[]
+  >([]);
+  const [screenSources, setScreenSources] = useState<
+    Electron.DesktopCapturerSource[]
+  >([]);
+  const [currentSource, setCurrentSource] = useState<string>("");
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
 
-  useEffect(() => {
-    const get = async () => {
+  const updateSources = useCallback((): Promise<
+    Electron.DesktopCapturerSource[]
+  > => {
+    const update = async () => {
       // eslint-disable-next-line global-require
       const { desktopCapturer } = require("electron");
-      const inputSources = await desktopCapturer.getSources({
-        types: ["window", "screen"],
+
+      // Set windows
+      const allWindowSources = await desktopCapturer.getSources({
+        types: ["window"],
       });
-      const data: Record<string, any> = {};
-      inputSources.forEach((source: any) => {
-        data[source.name as string] = source;
+      const windows: Electron.DesktopCapturerSource[] = [];
+      allWindowSources.forEach((source) => {
+        windows.push(source);
       });
-      setSources(data);
+      setWindowSources(windows);
+
+      // Set screens
+      const allScreenSources = await desktopCapturer.getSources({
+        types: ["screen"],
+      });
+      const screens: Electron.DesktopCapturerSource[] = [];
+      allScreenSources.forEach((source) => {
+        screens.push(source);
+      });
+      setScreenSources(screens);
+
+      return [...screens, ...windows];
     };
 
-    get();
+    return update();
+  }, []);
+
+  useEffect(() => {
+    updateSources().then((a) => {
+      setCurrentSource(a[0].name);
+    });
+  }, [updateSources]);
+
+  const stopRecord = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    remote.globalShortcut.unregister("F10");
+    recorder.stop();
+    // setRecording(false);
+    // eslint-disable-next-line no-undef
+    const iohook = __non_webpack_require__("iohook");
+    iohook.unload();
+    iohook.stop();
+    onFinish();
+  }, [recorder, onFinish]);
+
+  const getCurrentSource = useCallback(
+    (sources: Electron.DesktopCapturerSource[]) => {
+      return (
+        sources.filter((c: any) => c.name == currentSource)[0] ||
+        Object.values(screenSources)[0]
+      );
+    },
+    [currentSource, screenSources]
+  );
+
+  const startRecord = useCallback(() => {
+    // eslint-disable-next-line global-require
+    const { remote } = require("electron");
+    setCount(-1);
+    setRecording(true);
+
+    updateSources().then((all) => {
+      const s = getCurrentSource(all);
+      console.log(s);
+      recorder.start(s);
+    });
 
     // new event listeners using iohook
     // eslint-disable-next-line no-undef
@@ -157,40 +220,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
         console.log("keyboard key released ==>", recorder.currentTimer);
       }
     });
-  }, [recorder]);
-
-  const stopRecord = useCallback(() => {
-    // eslint-disable-next-line global-require
-    const { remote } = require("electron");
-    remote.globalShortcut.unregister("F10");
-    recorder.stop();
-    // setRecording(false);
-    // eslint-disable-next-line no-undef
-    const iohook = __non_webpack_require__("iohook");
-    iohook.unload();
-    iohook.stop();
-    onFinish();
-  }, [recorder, onFinish]);
-
-  const startRecord = useCallback(() => {
-    // eslint-disable-next-line global-require
-    const { remote, desktopCapturer } = require("electron");
-    setCount(-1);
-    setRecording(true);
-
-    desktopCapturer
-      .getSources({
-        types: ["window", "screen"],
-      })
-      .then((all) => {
-        const s = all.filter((c) => c.name == currentSource)[0] || sources[0];
-        console.log(sources, currentSource);
-        console.log(s);
-        recorder.start(s);
-      });
 
     remote.globalShortcut.register("F10", stopRecord);
-  }, [currentSource, sources, recorder]);
+  }, [currentSource, screenSources, windowSources, recorder]);
 
   useEffect(() => {
     if (count > 0) {
@@ -220,17 +252,41 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       {count == -1 && !recording ? (
         <Windowlet
           title="Super Reality Recorder"
-          width={320}
-          height={140}
+          width={540}
+          height={200}
           onClose={onFinish}
         >
           <Flex column style={{ height: "100%" }}>
             <Flex
               style={{ margin: "auto 16px", justifyContent: "space-between" }}
             >
+              <Flex style={{ width: "200px", height: "120px" }}>
+                <Flex
+                  style={{
+                    margin: "auto",
+                    maxHeight: "120px",
+                    maxWidth: "200px",
+                    borderRadius: "2px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {currentSource && (
+                    <img
+                      src={`data:image/jpeg;base64,${getCurrentSource([
+                        ...screenSources,
+                        ...windowSources,
+                      ])
+                        .thumbnail.toPNG()
+                        .toString("base64")}`}
+                    />
+                  )}
+                </Flex>
+              </Flex>
               <ReactSelect
                 style={{ width: "200px" }}
-                options={Object.keys(sources)}
+                options={[...screenSources, ...windowSources].map(
+                  (s) => s.name
+                )}
                 current={currentSource}
                 callback={(name) => {
                   setCurrentSource(name);
@@ -241,6 +297,9 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 svgStyle={{
                   width: "36px",
                   height: "36px",
+                }}
+                style={{
+                  margin: "auto 16px",
                 }}
                 width="48px"
                 height="48px"
