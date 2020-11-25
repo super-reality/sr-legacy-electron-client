@@ -13,9 +13,9 @@ export default function useTransparentFix(debug?: boolean) {
     if (target?.classList?.contains("click-through") || target?.id == "root") {
       setIgnoreMouseEvents(true, { forward: true });
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        setIgnoreMouseEvents(false);
-      }, 500);
+      // timeoutRef.current = setTimeout(() => {
+      //  setIgnoreMouseEvents(false);
+      // }, 500);
     } else {
       setIgnoreMouseEvents(false);
     }
