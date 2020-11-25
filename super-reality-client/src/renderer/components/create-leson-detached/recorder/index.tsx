@@ -215,6 +215,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   const resetRecord = (): void => {
     recorder.restart();
+    setRecording(false);
   };
 
   useEffect(() => {
