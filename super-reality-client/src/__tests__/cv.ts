@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import path from "path";
 import { AppState } from "../renderer/redux/stores/renderer";
-import doCvMatch from "../utils/doCVMatch";
+import doCvMatch from "../utils/cv/doCVMatch";
 
 jest.mock("../opencv/opencv", () => {
   // eslint-disable-next-line global-require

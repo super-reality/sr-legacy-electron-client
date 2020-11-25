@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
 import {
   recordingPath,
@@ -5,6 +6,7 @@ import {
   stepSnapshotPath,
 } from "../../../../electron-constants";
 
+import Browser from "../Browser";
 /* eslint-disable radix */
 const { desktopCapturer } = require("electron");
 const fs = require("fs");
@@ -21,6 +23,7 @@ const cv = require("../../../../../utils/opencv/opencv");
 export default class CVRecorder {
   constructor() {
     this._clickEventDetails = [];
+    this._urlTitleDic = {};
     this._recordedChunks = [];
     this._audioRecordedChunks = [];
     this._stepPath = stepPath;
@@ -44,6 +47,15 @@ export default class CVRecorder {
     this._stepRecordingName = "";
     this._recordingFullPath = "";
     this._finishCallback = () => {};
+    this._source = () => {
+      return desktopCapturer
+        .getSources({
+          types: ["window", "screen"],
+        })
+        .then((source) => {
+          return source[0]; // default whole desktop source
+        });
+    };
 
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
@@ -61,8 +73,10 @@ export default class CVRecorder {
     this.resetTimer = this.resetTimer.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
+    this.restart = this.restart.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
+    this.getActiveBrowserTabUrl = this.getActiveBrowserTabUrl.bind(this);
   }
 
   set finishCallback(value) {
@@ -182,298 +196,300 @@ export default class CVRecorder {
     return [];
   }
 
+  async getActiveBrowserTabUrl(eventDetails) {
+    await new Promise((resolve, reject) => {
+      try {
+        const browser = new Browser();
+        console.log("Queue => value ", eventDetails);
+        if (eventDetails[1] != "" && !this._urlTitleDic[eventDetails[1]]) {
+          this._urlTitleDic[eventDetails[1]] = "";
+          browser.owner = eventDetails[0];
+          browser.title = eventDetails[1];
+          if (browser.checkIfBrowser() !== "") {
+            browser.getBrowserUrl().then((url) => {
+              this._urlTitleDic[eventDetails[1]] = "processing";
+              console.log("url instside processqueue", url);
+              this._urlTitleDic[eventDetails[1]] = url;
+              resolve(url);
+            });
+          } else {
+            const url = "";
+            resolve(url);
+          }
+        }
+      } catch (e) {
+        console.log("browser error => ", e);
+        reject(e);
+      }
+    });
+  }
+
   async extractClickedImages() {
     const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
-    const mainImage = cap.read();
+    let mainImage = cap.read();
 
     const jsonMetaData = {
       step_data: [],
     };
 
     let previousInterval = 0;
-    this._clickEventDetails.forEach(async (arr) => {
-      let doubleClick = false;
-      let clickType = "";
-      let keyboardEvents = {};
-      const contourDic = {};
-      if (arr[4] !== undefined) {
-        [, , , , keyboardEvents] = arr;
-      }
-      let snippedImageName = "";
-      const eventType = arr[3];
-      const timestamp = arr[2];
-      const yCordinate = arr[1];
-      const xCordinate = arr[0];
-      const timestampFormat = timestamp.split(":"); // split it at the colons
-      // minutes are worth 60 seconds. Hours are worth 60 minutes.
-      const seconds =
-        +timestampFormat[0] * 60 * 60 +
-        +timestampFormat[1] * 60 +
-        +timestampFormat[2];
-      const milliSeconds = timestampFormat[3];
-      const interval = seconds * 1000 + parseInt(milliSeconds);
+    await Promise.all(
+      this._clickEventDetails.map(async (arr) => {
+        let doubleClick = false;
+        let clickType = "";
+        let keyboardEvents = {};
+        const contourDic = {};
+        let processTitle = "";
+        let processOwnerName = "";
+        let browserTabUrl = "";
+        if (arr[4] !== undefined) {
+          keyboardEvents = arr[4];
+        }
+        if (arr[5] !== undefined) {
+          processTitle = arr[5];
+        }
+        if (arr[6] !== undefined) {
+          processOwnerName = arr[6];
+        }
+        const snippedImageName = "";
+        const eventType = arr[3];
+        const timestamp = arr[2];
+        const yCordinate = arr[1];
+        const xCordinate = arr[0];
+        const timestampFormat = timestamp.split(":"); // split it at the colons
+        // minutes are worth 60 seconds. Hours are worth 60 minutes.
+        const seconds =
+          +timestampFormat[0] * 60 * 60 +
+          +timestampFormat[1] * 60 +
+          +timestampFormat[2];
+        const milliSeconds = timestampFormat[3];
+        const interval = seconds * 1000 + parseInt(milliSeconds);
 
-      if (eventType === "left_click") {
-        cap.set(cv.CAP_PROP_POS_MSEC, interval);
-        const currentImage = cap.read();
+        if (eventType === "left_click") {
+          cap.set(cv.CAP_PROP_POS_MSEC, interval - 500);
+          mainImage = cap.read();
 
-        const absDiff = mainImage.absdiff(currentImage);
+          cap.set(cv.CAP_PROP_POS_MSEC, interval);
+          const currentImage = cap.read();
 
-        const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
+          const absDiff = mainImage.absdiff(currentImage);
 
-        const cannyEdges = grayImg.canny(23, 180, 3);
+          const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-        // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
+          const cannyEdges = grayImg.canny(23, 180, 3);
 
-        const cannyEdges2D = cannyEdges.getDataAsArray();
+          // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
-        const rightBorderCordiates = this.getWindowsNearestBorderPoint(
-          xCordinate - this._pixelOffset,
-          yCordinate - this._pixelOffset,
-          cannyEdges2D,
-          "right"
-        );
-        const leftBorderCordinates = this.getWindowsNearestBorderPoint(
-          xCordinate - this._pixelOffset,
-          yCordinate - this._pixelOffset,
-          cannyEdges2D,
-          "left"
-        );
-        const topBorderCordinates = this.getWindowsNearestBorderPoint(
-          xCordinate - this._pixelOffset,
-          yCordinate - this._pixelOffset,
-          cannyEdges2D,
-          "top"
-        );
-        const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
-          xCordinate - this._pixelOffset,
-          yCordinate - this._pixelOffset,
-          cannyEdges2D,
-          "bottom"
-        );
-        const rightBorderX = rightBorderCordiates[0];
-        const rightBorderY = rightBorderCordiates[1];
-        const leftBorderX = leftBorderCordinates[0];
-        const leftBorderY = leftBorderCordinates[1];
-        const topBorderX = topBorderCordinates[0];
-        const topBorderY = topBorderCordinates[1];
-        const bottomBorderX = bottomBorderCordinates[0];
-        const bottomBorderY = bottomBorderCordinates[1];
-        const snipWindowHeight = bottomBorderY - topBorderY;
-        const snipWindowWidth = rightBorderX - leftBorderX;
+          const cannyEdges2D = cannyEdges.getDataAsArray();
 
-        const topLeftCornerX =
-          topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
-        const topLeftCornerY = topBorderY - this._pixelOffset;
-
-        const topRightCornerX = rightBorderX + this._pixelOffset;
-        const topRightCornerY =
-          rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
-
-        const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-        const bottomLeftCornerY =
-          leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
-
-        const bottomRightCornerX =
-          bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
-        const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-
-        const cornerPointsArr = new Array(4);
-        cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
-        cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-        cornerPointsArr[2] = new cv.Point2(
-          bottomLeftCornerX,
-          bottomLeftCornerY
-        );
-        cornerPointsArr[3] = new cv.Point2(
-          bottomRightCornerX,
-          bottomRightCornerY
-        );
-
-        const outputCornerPointsArr = new Array(4);
-        outputCornerPointsArr[0] = new cv.Point2(0, 0);
-        outputCornerPointsArr[1] = new cv.Point2(snipWindowWidth, 0);
-        outputCornerPointsArr[2] = new cv.Point2(0, snipWindowHeight);
-        outputCornerPointsArr[3] = new cv.Point2(
-          snipWindowWidth,
-          snipWindowHeight
-        );
-
-        contourDic.top_left_corner = [topLeftCornerX, topLeftCornerY];
-        contourDic.top_right_corner = [topRightCornerX, topRightCornerY];
-        contourDic.bottom_left_corner = [bottomLeftCornerX, bottomLeftCornerY];
-        contourDic.bottom_right_corner = [
-          bottomRightCornerX,
-          bottomRightCornerY,
-        ];
-
-        const matrix = cv.getPerspectiveTransform(
-          cornerPointsArr,
-          outputCornerPointsArr
-        );
-
-        const dsize = new cv.Size(snipWindowWidth, snipWindowHeight);
-
-        const outputImg = mainImage.warpPerspective(
-          matrix,
-          dsize,
-          cv.INTER_LINEAR,
-          cv.BORDER_CONSTANT
-        );
-
-        snippedImageName = `_x-${xCordinate}_y-${yCordinate}_time_${timestamp.replace(
-          /:/g,
-          "-"
-        )}.jpeg`;
-        if (
-          !fs.existsSync(
-            `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`
-          )
-        ) {
-          fs.mkdir(
-            `${this._stepSnapshotPath}${this._stepRecordingName.split(".")[0]}`,
-            (err) => {
-              if (err) throw err;
-            }
+          const rightBorderCordiates = this.getWindowsNearestBorderPoint(
+            xCordinate - this._pixelOffset,
+            yCordinate - this._pixelOffset,
+            cannyEdges2D,
+            "right"
           );
+          const leftBorderCordinates = this.getWindowsNearestBorderPoint(
+            xCordinate - this._pixelOffset,
+            yCordinate - this._pixelOffset,
+            cannyEdges2D,
+            "left"
+          );
+          const topBorderCordinates = this.getWindowsNearestBorderPoint(
+            xCordinate - this._pixelOffset,
+            yCordinate - this._pixelOffset,
+            cannyEdges2D,
+            "top"
+          );
+          const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
+            xCordinate - this._pixelOffset,
+            yCordinate - this._pixelOffset,
+            cannyEdges2D,
+            "bottom"
+          );
+          const rightBorderX = rightBorderCordiates[0];
+          const rightBorderY = rightBorderCordiates[1];
+          const leftBorderX = leftBorderCordinates[0];
+          const leftBorderY = leftBorderCordinates[1];
+          const topBorderX = topBorderCordinates[0];
+          const topBorderY = topBorderCordinates[1];
+          const bottomBorderX = bottomBorderCordinates[0];
+          const bottomBorderY = bottomBorderCordinates[1];
+          const snipWindowHeight = bottomBorderY - topBorderY;
+          const snipWindowWidth = rightBorderX - leftBorderX;
+
+          const topLeftCornerX =
+            topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+          const topLeftCornerY = topBorderY - this._pixelOffset;
+
+          const topRightCornerX = rightBorderX + this._pixelOffset;
+          const topRightCornerY =
+            rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
+
+          const bottomLeftCornerX = leftBorderX - this._pixelOffset;
+          const bottomLeftCornerY =
+            leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+
+          const bottomRightCornerX =
+            bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
+          const bottomRightCornerY = bottomBorderY + this._pixelOffset;
+          /*
+          const cornerPointsArr = new Array(4);
+          cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
+          cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
+          cornerPointsArr[2] = new cv.Point2(
+            bottomLeftCornerX,
+            bottomLeftCornerY
+          );
+          cornerPointsArr[3] = new cv.Point2(
+            bottomRightCornerX,
+            bottomRightCornerY
+          );
+          */
+
+          contourDic.x = topLeftCornerX;
+          contourDic.y = topLeftCornerY;
+          contourDic.width = topRightCornerX - topLeftCornerX;
+          contourDic.height = bottomLeftCornerY - topLeftCornerY;
         }
-        cv.imwrite(
-          `${this._stepSnapshotPath}${
-            this._stepRecordingName.split(".")[0]
-          }/${snippedImageName}`,
-          outputImg,
-          [parseInt(cv.IMWRITE_JPEG_QUALITY)]
-        );
-        console.log(
-          `saved snipped image ${this._stepSnapshotPath}${
-            this._stepRecordingName.split(".")[0]
-          }/${snippedImageName}`
-        );
-      }
-      if (
-        eventType === "left_click" ||
-        eventType === "right_click" ||
-        eventType === "wheel_click"
-      ) {
-        // console.log("Interval Diffrence => ", interval - previousInterval);
-        if (interval - previousInterval < 500) {
-          doubleClick = true;
+        if (
+          eventType === "left_click" ||
+          eventType === "right_click" ||
+          eventType === "wheel_click"
+        ) {
+          if (interval - previousInterval < this._doubleClickThreshold) {
+            doubleClick = true;
+          }
+          if (!doubleClick) {
+            clickType = "single";
+          } else {
+            clickType = "double";
+          }
+          previousInterval = interval;
         }
-        if (!doubleClick) {
-          clickType = "single";
-        } else {
-          clickType = "double";
+        if (this._urlTitleDic[processTitle]) {
+          browserTabUrl = this._urlTitleDic[processTitle];
         }
-        previousInterval = interval;
-      }
-      jsonMetaData.step_data.push({
-        type: eventType,
-        click_type: clickType,
-        name: snippedImageName,
-        x_cordinate: xCordinate,
-        y_cordinate: yCordinate,
-        time_stamp: timestamp,
-        contours: contourDic,
-        keyboard_events: keyboardEvents,
-      });
+        jsonMetaData.step_data.push({
+          type: eventType,
+          process_owner: processOwnerName,
+          process_title: processTitle,
+          process_url: browserTabUrl,
+          click_type: clickType,
+          name: snippedImageName,
+          x_cordinate: xCordinate,
+          y_cordinate: yCordinate,
+          contours: contourDic,
+          time_stamp: timestamp,
+          keyboard_events: keyboardEvents,
+        });
+      })
+    ).then(() => {
+      const json = JSON.stringify(jsonMetaData, null, "  ");
+      fs.writeFile(
+        `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
+        json,
+        "utf8",
+        (err) => {
+          if (err) throw err;
+        }
+      );
+      this._clickEventDetails = [];
+      this._finishCallback(jsonMetaData);
     });
-    const json = JSON.stringify(jsonMetaData, null, "  ");
-    fs.writeFile(
-      `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
-      json,
-      "utf8",
-      (err) => {
-        if (err) throw err;
-      }
-    );
-    this._clickEventDetails = [];
-    this._finishCallback(jsonMetaData);
   }
 
   // Saves the video file on stop
   handleStop(e) {
-    const videoBlob = new Blob(this._recordedChunks, {
-      type: "video/webm;codecs=vp9",
-    });
-    const readAsArrayBuffer = (blob) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsArrayBuffer(blob);
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-        reader.onerror = (ev) => {
-          reject(ev.error);
-        };
+    if (!this._recordingRestarted) {
+      const videoBlob = new Blob(this._recordedChunks, {
+        type: "video/webm;codecs=vp9",
       });
-    };
-    const injectMetadata = (blob) => {
-      const decoder = new Decoder();
-      const reader = new Reader();
-      reader.logging = false;
-      reader.drop_default_duration = false;
-
-      return readAsArrayBuffer(blob).then((buffer) => {
-        const elms = decoder.decode(buffer);
-        elms.forEach((elm) => {
-          reader.read(elm);
+      const readAsArrayBuffer = (blob) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsArrayBuffer(blob);
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          reader.onerror = (ev) => {
+            reject(ev.error);
+          };
         });
-        reader.stop();
-        const refinedMetadataBuf = tools.makeMetadataSeekable(
-          reader.metadatas,
-          reader.duration,
-          reader.cues
-        );
-        const body = buffer.slice(reader.metadataSize);
-        const result = new Blob([refinedMetadataBuf, body], {
-          type: blob.type,
-        });
+      };
+      const injectMetadata = (blob) => {
+        const decoder = new Decoder();
+        const reader = new Reader();
+        reader.logging = false;
+        reader.drop_default_duration = false;
 
-        return result;
-      });
-    };
-    const seekableVideoBlob = injectMetadata(videoBlob);
-    seekableVideoBlob.then((blob) => {
-      blob.arrayBuffer().then((arrayBuffer) => {
-        const buffer = Buffer.from(arrayBuffer);
-        this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
-        console.log("recording path: ", this._recordingFullPath);
-        if (this._recordingFullPath) {
-          fs.writeFile(this._recordingFullPath, buffer, () => {
-            this.extractClickedImages();
+        return readAsArrayBuffer(blob).then((buffer) => {
+          const elms = decoder.decode(buffer);
+          elms.forEach((elm) => {
+            reader.read(elm);
           });
-        }
+          reader.stop();
+          const refinedMetadataBuf = tools.makeMetadataSeekable(
+            reader.metadatas,
+            reader.duration,
+            reader.cues
+          );
+          const body = buffer.slice(reader.metadataSize);
+          const result = new Blob([refinedMetadataBuf, body], {
+            type: blob.type,
+          });
+
+          return result;
+        });
+      };
+      const seekableVideoBlob = injectMetadata(videoBlob);
+      seekableVideoBlob.then((blob) => {
+        blob.arrayBuffer().then((arrayBuffer) => {
+          const buffer = Buffer.from(arrayBuffer);
+          this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
+          console.log("recording path: ", this._recordingFullPath);
+          if (this._recordingFullPath) {
+            fs.writeFile(this._recordingFullPath, buffer, () => {
+              this.extractClickedImages();
+            });
+          }
+        });
       });
-    });
+    }
   }
 
   handleAudioStop(e) {
-    const audioBlob = new Blob(this._audioRecordedChunks, {
-      type: "audio/webm",
-    });
+    if (!this._recordingRestarted) {
+      const audioBlob = new Blob(this._audioRecordedChunks, {
+        type: "audio/webm",
+      });
 
-    audioBlob.arrayBuffer().then((arrayBuffer) => {
-      const buffer = Buffer.from(arrayBuffer);
-      this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
-      this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
-      this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
-      if (this._audioRecordingFullPath) {
-        fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
-          if (err) throw err;
-        });
-      }
-    });
+      audioBlob.arrayBuffer().then((arrayBuffer) => {
+        const buffer = Buffer.from(arrayBuffer);
+        this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
+        this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
+        this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
+        if (this._audioRecordingFullPath) {
+          fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
+            if (err) throw err;
+          });
+        }
+      });
+    }
   }
 
   // Captures all recorded chunks
   handleDataAvailable(e) {
-    this._recordedChunks.push(e.data);
+    if (!this._recordingRestarted) {
+      this._recordedChunks.push(e.data);
+    }
   }
 
   // Captures all recorded chunks
   handleAudioDataAvailable(e) {
-    this._audioRecordedChunks.push(e.data);
+    if (!this._recordingRestarted) {
+      this._audioRecordedChunks.push(e.data);
+    }
   }
 
   async captureDesktopStream(sourceId) {
@@ -576,14 +592,14 @@ export default class CVRecorder {
   }
 
   stopTimer() {
-    // _timeStopped = new Date();
     this._differenceValue = 0;
     clearInterval(this._started);
   }
 
   start(source) {
+    this._source = source;
     console.log("started video recording");
-    return this.selectSource(source).then(() => {
+    return this.selectSource(this._source).then(() => {
       this._stepRecordingName = `${Date.now()}.webm`;
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
@@ -622,6 +638,24 @@ export default class CVRecorder {
     this.resumeTimer();
     this._mediaRecorder.resume();
     this._audioMediaRecorder.resume();
+  }
+
+  restart() {
+    this._recordingRestarted = true;
+    this.stopTimer();
+    this.resetTimer();
+    if (!this._recordingStarted) {
+      this.resume();
+    }
+    this._audioMediaRecorder.stop();
+    this._mediaRecorder.stop();
+    this.selectSource(this._source).then(() => {
+      this._mediaRecorder.start();
+      this._audioMediaRecorder.start();
+      this._recordingStarted = true;
+      this.startTimer();
+      this._recordingRestarted = false;
+    });
   }
 
   stop() {

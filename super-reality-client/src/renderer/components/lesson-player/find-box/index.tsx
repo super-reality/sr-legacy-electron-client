@@ -52,7 +52,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       const mouseEvents = __non_webpack_require__("global-mouse-events");
       const { remote } = require("electron");
 
-      if (clickThrough && callback) {
+      if (callback) {
         const interval = setInterval(() => {
           const mouse = remote.screen.getCursorScreenPoint();
           if (
@@ -66,7 +66,9 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
         }, 500);
         timeoutRef.current = interval;
 
-        mouseEvents.on("mousedown", clickCallback);
+        if (clickThrough) {
+          mouseEvents.on("mousedown", clickCallback);
+        }
       }
 
       return () => {

@@ -1,4 +1,4 @@
-import doCvMatch from "../../../../../utils/doCVMatch";
+import doCvMatch from "../../../../../utils/cv/doCVMatch";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
 import reduxAction from "../../../../redux/reduxAction";

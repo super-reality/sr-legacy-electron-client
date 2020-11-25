@@ -54,7 +54,7 @@ export default function OpenStep(props: OpenStepProps) {
           type: "crop",
           templates: [e],
           anchorFunction: "or",
-          cvMatchValue: 0,
+          cvMatchValue: 990,
           cvCanvas: 50,
           cvDelay: 100,
           cvGrayscale: true,

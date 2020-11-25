@@ -274,7 +274,10 @@ export default function CreateLessonDetached(): JSX.Element {
               style={{ width: "340px" }}
               ref={resizeContainerAnchor}
             >
-              <AnchorEdit setTransparent={setTransparent} />
+              <AnchorEdit
+                anchorId={currentAnchor}
+                setTransparent={setTransparent}
+              />
             </div>
           ) : (
             <></>

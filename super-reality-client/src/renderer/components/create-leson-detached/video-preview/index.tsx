@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import fs from "fs";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
@@ -63,10 +64,18 @@ export default function VideoPreview(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerOutRef = useRef<HTMLDivElement>(null);
 
-  const shouldDisplayPreview = useMemo(
-    () => currentRecording || currentCanvasSource,
-    [currentRecording, currentCanvasSource]
-  );
+  const shouldDisplayPreview = useMemo(() => {
+    const should = currentRecording || currentCanvasSource;
+    if (should && currentCanvasSource && fs.existsSync(currentCanvasSource))
+      return true;
+    if (
+      should &&
+      currentRecording &&
+      fs.existsSync(`${recordingPath}/vid-${currentRecording}.webm`)
+    )
+      return true;
+    return false;
+  }, [currentRecording, currentCanvasSource]);
 
   useEffect(() => {
     setTimeout(() => {
