@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Slider, Rail, Handles, Tracks } from "react-compound-slider";
 // import iohook from "iohook";
 // import activeWin from "active-win";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
@@ -14,7 +13,6 @@ import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
-import BaseSlider from "../../base-slider";
 
 import "./index.scss";
 
@@ -126,7 +124,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const getCurrentSource = useCallback(
     (sources: Electron.DesktopCapturerSource[]) => {
       return (
-        sources.filter((c: any) => c.name == currentSource)[0] ||
+        sources.filter((c) => c.name == currentSource)[0] ||
         Object.values(screenSources)[0]
       );
     },
@@ -233,7 +231,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     });
 
     remote.globalShortcut.register("F10", stopRecord);
-  }, [processEvent, recorder]);
+  }, [processEvent, recorder, updateSources, getCurrentSource]);
 
   const pauseRecord = (): void => {
     recorder.pause();
@@ -355,6 +353,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           width={300}
           height={100}
           onClose={onFinish}
+          initialPosX={98}
+          initialPosY={98}
           style={{ backgroundColor: "#2f3136" }}
         >
           <Flex
