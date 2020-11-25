@@ -124,14 +124,18 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     if (e.key == "Enter" && inputValue != "") {
       const inputArr = inputValue.split(", ");
       console.log(inputArr);
+      const currTagsState = tagsState;
       inputArr.forEach((el) => {
-        console.log(el);
         if (!tagsState.includes(el) && smallTagsArray.includes(el)) {
-          setTagsState([...tagsState, el]);
-          setInputValue("");
+          console.log(el);
           console.log("tag added", tagsState);
+          currTagsState.push(el);
+          // setTagsState([...tagsState, el]);
         }
       });
+      console.log("currTagsState", currTagsState);
+      setTagsState([...currTagsState]);
+      setInputValue("");
     }
   };
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
