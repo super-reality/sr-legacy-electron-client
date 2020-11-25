@@ -198,6 +198,9 @@ export default class CVRecorder {
 
   async getActiveBrowserTabUrl(eventDetails) {
     await new Promise((resolve, reject) => {
+      const a = this._urlTitleDic;
+      resolve("");
+      /*
       try {
         const browser = new Browser();
         console.log("Queue => value ", eventDetails);
@@ -221,6 +224,7 @@ export default class CVRecorder {
         console.log("browser error => ", e);
         reject(e);
       }
+      */
     });
   }
 
