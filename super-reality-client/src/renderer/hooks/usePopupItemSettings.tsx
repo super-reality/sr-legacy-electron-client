@@ -119,14 +119,33 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     [currentTagsArray[0].toLocaleLowerCase()]
   );
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    console.log(e.key);
+    if (e.key == "Enter" && inputValue != "") {
+      const inputArr = inputValue.split(", ");
+      console.log(inputArr);
+      inputArr.forEach((el) => {
+        console.log(el);
+        if (!tagsState.includes(el) && smallTagsArray.includes(el)) {
+          setTagsState([...tagsState, el]);
+          setInputValue("");
+          console.log("tag added", tagsState);
+        }
+      });
+    }
+  };
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const { value } = event.currentTarget;
 
-    if (value != "" && smallTagsArray.indexOf(value.toLocaleLowerCase()) >= 0) {
-      setTagsState([...tagsState, value]);
-      console.log("tag added", tagsState);
-    }
+    // if (
+    //   value != "" &&
+    //   smallTagsArray.indexOf(value.toLocaleLowerCase()) >= 0 &&
+    //   !tagsState.includes(value)
+    // ) {
+    //   setTagsState([...tagsState, value]);
+    //   console.log("tag added", tagsState);
+    // }
     const string = value;
 
     setInputValue(string);
@@ -169,7 +188,8 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
         <input
           autoFocus
           className="popup-settings-input-container-input"
-          onChange={handleSearch}
+          onKeyDown={handleSearch}
+          onChange={handleOnChange}
           value={inputValue}
         />
       </div>
