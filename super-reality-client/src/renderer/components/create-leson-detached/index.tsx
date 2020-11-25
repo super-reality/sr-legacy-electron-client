@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from "react";
 import interact from "interactjs";
 import "./index.scss";
@@ -45,15 +45,15 @@ function setMocks() {
   reduxAction(store.dispatch, {
     type: "CREATE_LESSON_V2_DATA",
     arg: {
-      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }]
-    }
+      lessons: [{ _id: "5f7e0b2bf658117398cb4aca", name: "Test Lesson" }],
+    },
   });
 }
 
 const restrictMinSize =
   interact.modifiers &&
   interact.modifiers.restrictSize({
-    min: { width: 100, height: 100 }
+    min: { width: 100, height: 100 },
   });
 
 function TopBar() {
@@ -102,7 +102,7 @@ export default function CreateLessonDetached(): JSX.Element {
     itemPreview,
     videoNavigation,
     videoDuration,
-    recordingData
+    recordingData,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -127,7 +127,7 @@ export default function CreateLessonDetached(): JSX.Element {
     (n: readonly number[]) => {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
-        arg: { videoNavigation: [...n] }
+        arg: { videoNavigation: [...n] },
       });
     },
     [dispatch]
@@ -155,9 +155,9 @@ export default function CreateLessonDetached(): JSX.Element {
         .resizable({
           edges: { left: false, right: true, bottom: false, top: false },
           modifiers: [restrictMinSize],
-          inertia: true
+          inertia: true,
         } as any)
-        .on("resizemove", event => {
+        .on("resizemove", (event) => {
           const { target } = event;
           target.style.width = `${event.rect.width - 4}px`;
         });
@@ -191,13 +191,13 @@ export default function CreateLessonDetached(): JSX.Element {
   }, []);
 
   const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
-    videoDuration
+    videoDuration,
   ]);
 
   useEffect(() => {
     let json: RecordingJson = {
       step_data: [],
-      spectrum: []
+      spectrum: [],
     };
     if (currentRecording) {
       try {
@@ -211,21 +211,21 @@ export default function CreateLessonDetached(): JSX.Element {
     }
     if (currentRecording) {
       getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
-        data => {
+        (data) => {
           reduxAction(dispatch, {
             type: "SET_RECORDING_DATA",
-            arg: { spectrum: rawAudioToWaveform(data) }
+            arg: { spectrum: rawAudioToWaveform(data) },
           });
         }
       );
     }
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
-      arg: json
+      arg: json,
     });
     reduxAction(dispatch, {
       type: "CLEAR_RECORDING_CV_DATA",
-      arg: null
+      arg: null,
     });
   }, [dispatch, currentRecording]);
 
