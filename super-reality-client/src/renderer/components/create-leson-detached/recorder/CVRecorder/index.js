@@ -640,7 +640,7 @@ export default class CVRecorder {
     this._audioMediaRecorder.resume();
   }
 
-  restart() {
+  delete() {
     this._recordingRestarted = true;
     this.stopTimer();
     this.resetTimer();
