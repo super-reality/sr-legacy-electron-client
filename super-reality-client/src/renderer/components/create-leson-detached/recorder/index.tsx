@@ -203,14 +203,18 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     remote.globalShortcut.register("F10", stopRecord);
   }, [currentSource, sources, recorder, stopRecord]);
 
-  const pauseRecord = () => {
+  const pauseRecord = (): void => {
     recorder.pause();
     setIsPaused(true);
   };
 
-  const resumeRecord = () => {
+  const resumeRecord = (): void => {
     recorder.resume();
     setIsPaused(false);
+  };
+
+  const resetRecord = (): void => {
+    recorder.restart();
   };
 
   useEffect(() => {
@@ -235,7 +239,6 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
   const recordTimer = recorder.currentTimer.split(":");
   const timePassed = [recordTimer[0], recordTimer[1], recordTimer[2]];
-  console.log("this is the current timer", recorder.currentTimer);
   return (
     <>
       {count > -1 && !recording ? (
@@ -298,13 +301,13 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           <Flex
             style={{
               margin: "16px 16px",
-              justifyContent: "space-between",
+              justifyContent: "space-around",
               alignItems: "center"
             }}
           >
             <Flex
               style={{
-                width: "25%",
+                width: "33%",
                 backgroundColor: "#202225",
                 justifyContent: "center",
                 alignItems: "center",
@@ -335,7 +338,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 style={{ width: "80%" }}
               />
             </div> */}
-            <Flex style={{ width: "33%", justifyContent: "space-between" }}>
+            <Flex style={{ width: "40%", justifyContent: "space-between" }}>
               <ButtonRound
                 svg={ResetIcon}
                 svgStyle={{
@@ -345,7 +348,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 }}
                 width="28px"
                 height="28px"
-                onClick={stopRecord /* should be resume play */}
+                onClick={resetRecord}
                 style={{ backgroundColor: "#202225" }}
               />
               {isPaused ? (
