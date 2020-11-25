@@ -1,11 +1,22 @@
+/* eslint-disable react/jsx-props-no-spreading */
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Slider, Rail, Handles, Tracks } from "react-compound-slider";
 // import iohook from "iohook";
+// import activeWin from "active-win";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
+import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
+import { ReactComponent as PauseIcon } from "../../../../assets/svg/pause.svg";
+import { ReactComponent as ResetIcon } from "../../../../assets/svg/restart.svg";
+import { ReactComponent as PlayIcon } from "../../../../assets/svg/play.svg";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import ReactSelect from "../../top-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
+import BaseSlider from "../../base-slider";
+
+import "./index.scss";
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -23,8 +34,37 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   const [recording, setRecording] = useState(false);
   const [sources, setSources] = useState<Record<string, any>>({});
   const [currentSource, setCurrentSource] = useState<string>("Entire Screen");
+  const [ticks, setTicks] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
+
+  const processEvent = useCallback(
+    (x: number, y: number, currentTime, eventType, keyboardDetails) => {
+      // eslint-disable-next-line no-undef
+      const activeWin = __non_webpack_require__("active-win");
+      return activeWin().then((activeWindowDetails: any) => {
+        let title = "";
+        let processOwnerName = "";
+        if (activeWindowDetails != undefined) {
+          title = activeWindowDetails.title;
+          processOwnerName = activeWindowDetails.owner.name;
+        }
+
+        recorder.clickEventDetails = [
+          x,
+          y,
+          currentTime,
+          eventType,
+          keyboardDetails,
+          title,
+          processOwnerName,
+        ];
+        return [processOwnerName, title, currentTime];
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     const get = async () => {
@@ -48,123 +88,94 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     iohook.load();
     iohook.start();
     iohook.on("mousedown", (event: any) => {
+      const timerOnClick = recorder.currentTimer;
       if (recorder.recordingStarted) {
         if (event.button === leftButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "left_click",
-          ];
+          processEvent(event.x, event.y, timerOnClick, "left_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
+            }
+          );
         }
         if (event.button === rightButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "right_click",
-          ];
+          processEvent(event.x, event.y, timerOnClick, "right_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
+            }
+          );
         }
         if (event.button === wheelButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "wheel_click",
-          ];
+          processEvent(event.x, event.y, timerOnClick, "wheel_click", "").then(
+            (activeWindowDetails: any) => {
+              // if active window title not empty
+              if (activeWindowDetails[1] != "") {
+                recorder.getActiveBrowserTabUrl(activeWindowDetails);
+              }
+            }
+          );
         }
-
-        console.log("click registered ==>", recorder.currentTimer);
+        console.log("click registered ==>", timerOnClick);
       }
     });
 
     iohook.on("mouseup", (event: any) => {
+      const timerOnRelease = recorder.currentTimer;
       if (recorder.recordingStarted) {
         if (event.button === leftButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "left_release",
-          ];
+          processEvent(event.x, event.y, timerOnRelease, "left_release", "");
         }
         if (event.button === rightButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "right_release",
-          ];
+          processEvent(event.x, event.y, timerOnRelease, "right_release", "");
         }
         if (event.button === wheelButtonId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "wheel_release",
-          ];
+          processEvent(event.x, event.y, timerOnRelease, "wheel_release", "");
         }
-
-        console.log("release registered ==>", recorder.currentTimer);
+        console.log("release registered ==>", timerOnRelease);
       }
     });
 
     iohook.on("mousewheel", (event: any) => {
+      const timerOnScroll = recorder.currentTimer;
       if (recorder.recordingStarted) {
         if (event.rotation === scrollDownId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "scroll_down",
-          ];
+          processEvent(event.x, event.y, timerOnScroll, "scroll_down", "");
         }
         if (event.rotation === scrollUpId) {
-          recorder.clickEventDetails = [
-            event.x,
-            event.y,
-            recorder.currentTimer,
-            "scroll_up",
-          ];
+          processEvent(event.x, event.y, timerOnScroll, "scroll_up", "");
         }
-        console.log("mousewheel registered ==>", recorder.currentTimer);
+        console.log("mousewheel registered ==>", timerOnScroll);
       }
     });
 
     iohook.on("keydown", (event: any) => {
+      const timerOnKeydown = recorder.currentTimer;
       if (recorder.recordingStarted) {
-        recorder.clickEventDetails = [
-          event.x,
-          event.y,
-          recorder.currentTimer,
-          event.type,
-          event,
-        ];
-        console.log("keyboard key clicked ==>", recorder.currentTimer);
+        processEvent(event.x, event.y, timerOnKeydown, event.type, event);
+        console.log("keyboard key clicked ==>", timerOnKeydown);
       }
     });
 
     iohook.on("keyup", (event: any) => {
-      // console.log(event)
+      const timerOnKeyup = recorder.currentTimer;
       if (recorder.recordingStarted) {
-        recorder.clickEventDetails = [
-          event.x,
-          event.y,
-          recorder.currentTimer,
-          event.type,
-          event,
-        ];
-        console.log("keyboard key released ==>", recorder.currentTimer);
+        processEvent(event.x, event.y, timerOnKeyup, event.type, event);
+        console.log("keyboard key released ==>", timerOnKeyup);
       }
     });
-  }, [recorder]);
+  }, [processEvent, recorder]);
 
   const stopRecord = useCallback(() => {
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.unregister("F10");
     recorder.stop();
-    // setRecording(false);
+    setRecording(false);
     // eslint-disable-next-line no-undef
     const iohook = __non_webpack_require__("iohook");
     iohook.unload();
@@ -190,7 +201,21 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       });
 
     remote.globalShortcut.register("F10", stopRecord);
-  }, [currentSource, sources, recorder]);
+  }, [currentSource, sources, recorder, stopRecord]);
+
+  const pauseRecord = (): void => {
+    recorder.pause();
+    setIsPaused(true);
+  };
+
+  const resumeRecord = (): void => {
+    recorder.resume();
+    setIsPaused(false);
+  };
+
+  const resetRecord = (): void => {
+    recorder.restart();
+  };
 
   useEffect(() => {
     if (count > 0) {
@@ -201,6 +226,19 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     }
   }, [count, startRecord]);
 
+  useEffect(() => {
+    if (recording && !isPaused) {
+      const timer = setInterval(() => {
+        setTicks(new Date().getTime());
+      }, 200);
+
+      return () => clearInterval(timer);
+    }
+    return (): void => {};
+  }, [recording, recorder, isPaused]);
+
+  const recordTimer = recorder.currentTimer.split(":");
+  const timePassed = [recordTimer[0], recordTimer[1], recordTimer[2]];
   return (
     <>
       {count > -1 && !recording ? (
@@ -247,9 +285,112 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 onClick={() => setCount(3)}
               />
             </Flex>
-            <div style={{ margin: "4px auto auto auto" }}>
-              Press F10 to stop recording
-            </div>
+          </Flex>
+        </Windowlet>
+      ) : (
+        <></>
+      )}
+      {recording ? (
+        <Windowlet
+          title="Super Reality Recorder"
+          width={300}
+          height={100}
+          onClose={onFinish}
+          style={{ backgroundColor: "#2f3136" }}
+        >
+          <Flex
+            style={{
+              margin: "16px 16px",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <Flex
+              style={{
+                width: "33%",
+                backgroundColor: "#202225",
+                justifyContent: "center",
+                alignItems: "center",
+                height: 28,
+                borderRadius: 4,
+              }}
+            >
+              {recorder.currentTimer.length ? (
+                <p style={{ margin: 0 }}>
+                  {timePassed[0]}:{timePassed[1]}:{timePassed[2]}
+                </p>
+              ) : (
+                <p style={{ margin: 0 }}>00:00:00</p>
+              )}
+            </Flex>
+            {/* <div
+              style={{
+                width: "33%",
+                height: 32,
+                display: "block",
+                margin: "auto"
+              }}
+            >
+              <BaseSlider
+                domain={[0, 100]}
+                step={1}
+                defaultValues={[50]}
+                style={{ width: "80%" }}
+              />
+            </div> */}
+            <Flex style={{ width: "40%", justifyContent: "space-between" }}>
+              <ButtonRound
+                svg={ResetIcon}
+                svgStyle={{
+                  width: "1rem",
+                  height: "1rem",
+                  cursor: "pointer",
+                }}
+                width="28px"
+                height="28px"
+                onClick={resetRecord}
+                style={{ backgroundColor: "#202225" }}
+              />
+              {isPaused ? (
+                <ButtonRound
+                  svg={PlayIcon}
+                  svgStyle={{
+                    width: "1rem",
+                    height: "1rem",
+                    cursor: "pointer",
+                  }}
+                  width="28px"
+                  height="28px"
+                  onClick={resumeRecord}
+                  style={{ backgroundColor: "#202225" }}
+                />
+              ) : (
+                <ButtonRound
+                  svg={PauseIcon}
+                  svgStyle={{
+                    width: "1rem",
+                    height: "1rem",
+                    cursor: "pointer",
+                  }}
+                  width="28px"
+                  height="28px"
+                  onClick={pauseRecord}
+                  style={{ backgroundColor: "#202225" }}
+                />
+              )}
+              <ButtonRound
+                svg={StopIcon}
+                svgStyle={{
+                  width: "1rem",
+                  height: "1rem",
+                  cursor: "pointer",
+                }}
+                width="28px"
+                height="28px"
+                onClick={stopRecord /* should be resume play */}
+                style={{ backgroundColor: "#202225" }}
+              />
+            </Flex>
           </Flex>
         </Windowlet>
       ) : (
