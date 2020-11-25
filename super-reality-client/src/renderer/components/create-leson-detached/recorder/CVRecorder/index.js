@@ -3,7 +3,7 @@
 import {
   recordingPath,
   stepPath,
-  stepSnapshotPath
+  stepSnapshotPath,
 } from "../../../../electron-constants";
 
 import Browser from "../Browser";
@@ -50,9 +50,9 @@ export default class CVRecorder {
     this._source = () => {
       return desktopCapturer
         .getSources({
-          types: ["window", "screen"]
+          types: ["window", "screen"],
         })
-        .then(source => {
+        .then((source) => {
           return source[0]; // default whole desktop source
         });
     };
@@ -206,7 +206,7 @@ export default class CVRecorder {
           browser.owner = eventDetails[0];
           browser.title = eventDetails[1];
           if (browser.checkIfBrowser() !== "") {
-            browser.getBrowserUrl().then(url => {
+            browser.getBrowserUrl().then((url) => {
               this._urlTitleDic[eventDetails[1]] = "processing";
               console.log("url instside processqueue", url);
               this._urlTitleDic[eventDetails[1]] = url;
@@ -230,12 +230,12 @@ export default class CVRecorder {
     let mainImage = cap.read();
 
     const jsonMetaData = {
-      step_data: []
+      step_data: [],
     };
 
     let previousInterval = 0;
     await Promise.all(
-      this._clickEventDetails.map(async arr => {
+      this._clickEventDetails.map(async (arr) => {
         let doubleClick = false;
         let clickType = "";
         let keyboardEvents = {};
@@ -287,25 +287,25 @@ export default class CVRecorder {
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "right"
+            "right",
           );
           const leftBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "left"
+            "left",
           );
           const topBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "top"
+            "top",
           );
           const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "bottom"
+            "bottom",
           );
           const rightBorderX = rightBorderCordiates[0];
           const rightBorderY = rightBorderCordiates[1];
@@ -381,18 +381,18 @@ export default class CVRecorder {
           y_cordinate: yCordinate,
           contours: contourDic,
           time_stamp: timestamp,
-          keyboard_events: keyboardEvents
+          keyboard_events: keyboardEvents,
         });
-      })
+      }),
     ).then(() => {
       const json = JSON.stringify(jsonMetaData, null, "  ");
       fs.writeFile(
         `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
         json,
         "utf8",
-        err => {
+        (err) => {
           if (err) throw err;
-        }
+        },
       );
       this._clickEventDetails = [];
       this._finishCallback(jsonMetaData);
@@ -403,48 +403,48 @@ export default class CVRecorder {
   handleStop(e) {
     if (!this._recordingRestarted) {
       const videoBlob = new Blob(this._recordedChunks, {
-        type: "video/webm;codecs=vp9"
+        type: "video/webm;codecs=vp9",
       });
-      const readAsArrayBuffer = blob => {
+      const readAsArrayBuffer = (blob) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsArrayBuffer(blob);
           reader.onloadend = () => {
             resolve(reader.result);
           };
-          reader.onerror = ev => {
+          reader.onerror = (ev) => {
             reject(ev.error);
           };
         });
       };
-      const injectMetadata = blob => {
+      const injectMetadata = (blob) => {
         const decoder = new Decoder();
         const reader = new Reader();
         reader.logging = false;
         reader.drop_default_duration = false;
 
-        return readAsArrayBuffer(blob).then(buffer => {
+        return readAsArrayBuffer(blob).then((buffer) => {
           const elms = decoder.decode(buffer);
-          elms.forEach(elm => {
+          elms.forEach((elm) => {
             reader.read(elm);
           });
           reader.stop();
           const refinedMetadataBuf = tools.makeMetadataSeekable(
             reader.metadatas,
             reader.duration,
-            reader.cues
+            reader.cues,
           );
           const body = buffer.slice(reader.metadataSize);
           const result = new Blob([refinedMetadataBuf, body], {
-            type: blob.type
+            type: blob.type,
           });
 
           return result;
         });
       };
       const seekableVideoBlob = injectMetadata(videoBlob);
-      seekableVideoBlob.then(blob => {
-        blob.arrayBuffer().then(arrayBuffer => {
+      seekableVideoBlob.then((blob) => {
+        blob.arrayBuffer().then((arrayBuffer) => {
           const buffer = Buffer.from(arrayBuffer);
           this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
           console.log("recording path: ", this._recordingFullPath);
@@ -461,16 +461,16 @@ export default class CVRecorder {
   handleAudioStop(e) {
     if (!this._recordingRestarted) {
       const audioBlob = new Blob(this._audioRecordedChunks, {
-        type: "audio/webm"
+        type: "audio/webm",
       });
 
-      audioBlob.arrayBuffer().then(arrayBuffer => {
+      audioBlob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
         this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
         this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
         this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
         if (this._audioRecordingFullPath) {
-          fs.writeFile(this._audioRecordingFullPath, buffer, err => {
+          fs.writeFile(this._audioRecordingFullPath, buffer, (err) => {
             if (err) throw err;
           });
         }
@@ -501,17 +501,17 @@ export default class CVRecorder {
             video: {
               mandatory: {
                 chromeMediaSource: "desktop",
-                chromeMediaSourceId: sourceId
-              }
-            }
+                chromeMediaSourceId: sourceId,
+              },
+            },
           });
           const constraintsAudio = { audio: true };
           this._audioStream = await navigator.mediaDevices.getUserMedia(
-            constraintsAudio
+            constraintsAudio,
           );
           const combinedStream = new MediaStream([
             ...videoStream.getVideoTracks(),
-            ...this._audioStream.getAudioTracks()
+            ...this._audioStream.getAudioTracks(),
           ]);
           resolve(combinedStream);
         } catch (e) {
@@ -523,13 +523,13 @@ export default class CVRecorder {
 
   // Change the videoSource window to record
   selectSource(source) {
-    return this.captureDesktopStream(source.id).then(newStream => {
+    return this.captureDesktopStream(source.id).then((newStream) => {
       return new Promise((resolve, reject) => {
         try {
           this.stream = newStream;
           this._videoElement = document.createElement("video");
           this._videoElement.srcObject = this.stream;
-          this._videoElement.onloadedmetadata = e => {
+          this._videoElement.onloadedmetadata = (e) => {
             // console.log(e);
             this._videoElement.play();
             this._videoElement.muted = true;
@@ -542,7 +542,7 @@ export default class CVRecorder {
             const audioOptions = { mimeType: "audio/webm" };
             this._audioMediaRecorder = new MediaRecorder(
               this._audioStream,
-              audioOptions
+              audioOptions,
             );
 
             // Register Event Handlers
@@ -564,7 +564,7 @@ export default class CVRecorder {
   clockRunning() {
     const currentTime = new Date() - this._differenceValue;
     const timeElapsed = new Date(
-      currentTime - this._timeBegan - this._stoppedDuration
+      currentTime - this._timeBegan - this._stoppedDuration,
     );
     const hour = timeElapsed.getUTCHours();
     const min = timeElapsed.getUTCMinutes();
