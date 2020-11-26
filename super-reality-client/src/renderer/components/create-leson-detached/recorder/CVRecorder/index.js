@@ -73,7 +73,7 @@ export default class CVRecorder {
     this.resetTimer = this.resetTimer.bind(this);
     this.pause = this.pause.bind(this);
     this.resume = this.resume.bind(this);
-    this.restart = this.restart.bind(this);
+    this.delete = this.delete.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
     this.getActiveBrowserTabUrl = this.getActiveBrowserTabUrl.bind(this);
@@ -291,25 +291,25 @@ export default class CVRecorder {
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "right",
+            "right"
           );
           const leftBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "left",
+            "left"
           );
           const topBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "top",
+            "top"
           );
           const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
             xCordinate - this._pixelOffset,
             yCordinate - this._pixelOffset,
             cannyEdges2D,
-            "bottom",
+            "bottom"
           );
           const rightBorderX = rightBorderCordiates[0];
           const rightBorderY = rightBorderCordiates[1];
@@ -387,7 +387,7 @@ export default class CVRecorder {
           time_stamp: timestamp,
           keyboard_events: keyboardEvents,
         });
-      }),
+      })
     ).then(() => {
       const json = JSON.stringify(jsonMetaData, null, "  ");
       fs.writeFile(
@@ -396,7 +396,7 @@ export default class CVRecorder {
         "utf8",
         (err) => {
           if (err) throw err;
-        },
+        }
       );
       this._clickEventDetails = [];
       this._finishCallback(jsonMetaData);
@@ -436,7 +436,7 @@ export default class CVRecorder {
           const refinedMetadataBuf = tools.makeMetadataSeekable(
             reader.metadatas,
             reader.duration,
-            reader.cues,
+            reader.cues
           );
           const body = buffer.slice(reader.metadataSize);
           const result = new Blob([refinedMetadataBuf, body], {
@@ -511,7 +511,7 @@ export default class CVRecorder {
           });
           const constraintsAudio = { audio: true };
           this._audioStream = await navigator.mediaDevices.getUserMedia(
-            constraintsAudio,
+            constraintsAudio
           );
           const combinedStream = new MediaStream([
             ...videoStream.getVideoTracks(),
@@ -546,7 +546,7 @@ export default class CVRecorder {
             const audioOptions = { mimeType: "audio/webm" };
             this._audioMediaRecorder = new MediaRecorder(
               this._audioStream,
-              audioOptions,
+              audioOptions
             );
 
             // Register Event Handlers
@@ -568,7 +568,7 @@ export default class CVRecorder {
   clockRunning() {
     const currentTime = new Date() - this._differenceValue;
     const timeElapsed = new Date(
-      currentTime - this._timeBegan - this._stoppedDuration,
+      currentTime - this._timeBegan - this._stoppedDuration
     );
     const hour = timeElapsed.getUTCHours();
     const min = timeElapsed.getUTCMinutes();
