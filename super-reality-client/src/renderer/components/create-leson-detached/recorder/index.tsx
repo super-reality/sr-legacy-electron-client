@@ -58,35 +58,35 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           keyboardDetails
         );
         try {
-          console.log(recorder, recorder.recordingStarted);
           if (!recorder.recordingStarted) reject();
+          else {
+            // eslint-disable-next-line no-undef
+            const activeWin = __non_webpack_require__("active-win");
+            activeWin().then((activeWindowDetails: any) => {
+              let title = "";
+              let processOwnerName = "";
+              if (activeWindowDetails != undefined) {
+                title = activeWindowDetails.title;
+                processOwnerName = activeWindowDetails.owner.name;
+              }
+
+              recorder.clickEventDetails = [
+                x,
+                y,
+                currentTime,
+                eventType,
+                keyboardDetails,
+                title,
+                processOwnerName,
+              ];
+
+              if (title == "") reject(new Error("No title"));
+              else resolve([processOwnerName, title, currentTime]);
+            });
+          }
         } catch (e) {
           reject(e);
         }
-
-        // eslint-disable-next-line no-undef
-        const activeWin = __non_webpack_require__("active-win");
-        activeWin().then((activeWindowDetails: any) => {
-          let title = "";
-          let processOwnerName = "";
-          if (activeWindowDetails != undefined) {
-            title = activeWindowDetails.title;
-            processOwnerName = activeWindowDetails.owner.name;
-          }
-
-          recorder.clickEventDetails = [
-            x,
-            y,
-            currentTime,
-            eventType,
-            keyboardDetails,
-            title,
-            processOwnerName,
-          ];
-
-          if (title == "") reject();
-          else resolve([processOwnerName, title, currentTime]);
-        });
       });
     },
     [recorder]
@@ -139,6 +139,11 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     setRecording(false);
     // eslint-disable-next-line no-undef
     const iohook = __non_webpack_require__("iohook");
+    iohook.removeAllListeners("mousedown");
+    iohook.removeAllListeners("mouseup");
+    iohook.removeAllListeners("mousewheel");
+    iohook.removeAllListeners("keydown");
+    iohook.removeAllListeners("keyup");
     iohook.unload();
     iohook.stop();
     onFinish();
