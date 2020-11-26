@@ -66,7 +66,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
         return [processOwnerName, title, currentTime];
       });
     },
-    []
+    [],
   );
 
   const updateSources = useCallback((): Promise<
@@ -158,7 +158,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               if (activeWindowDetails[1] != "") {
                 recorder.getActiveBrowserTabUrl(activeWindowDetails);
               }
-            }
+            },
           );
         }
         if (event.button === rightButtonId) {
@@ -168,7 +168,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               if (activeWindowDetails[1] != "") {
                 recorder.getActiveBrowserTabUrl(activeWindowDetails);
               }
-            }
+            },
           );
         }
         if (event.button === wheelButtonId) {
@@ -178,7 +178,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
               if (activeWindowDetails[1] != "") {
                 recorder.getActiveBrowserTabUrl(activeWindowDetails);
               }
-            }
+            },
           );
         }
         console.log("click registered ==>", timerOnClick);
@@ -244,7 +244,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
   };
 
   const resetRecord = (): void => {
-    recorder.restart();
+    recorder.delete();
+    setRecording(false);
   };
 
   useEffect(() => {
