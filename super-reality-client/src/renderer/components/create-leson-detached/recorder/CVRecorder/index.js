@@ -205,7 +205,12 @@ export default class CVRecorder {
     };
 
     let previousInterval = 0;
-    await Promise.all(this._titlesQueue.map(getWebsiteUrlByTitle));
+    for (let index = 0; index < this._titlesQueue.length; index += 1) {
+      const title = this._titlesQueue[index];
+      // eslint-disable-next-line no-await-in-loop
+      await getWebsiteUrlByTitle(title);
+    }
+
     await Promise.all(
       this._clickEventDetails.map(async (arr) => {
         let doubleClick = false;

@@ -20,10 +20,10 @@ function handleIpcSwitch(_event, method, msg) {
         dialog.showMessageBox({ message: msg.arg });
         break;
       case "getUrlbyTitle":
-        puppeteer.getDuckDuckGoUrl(msg.arg).then((url) => {
-          _event.sender.send(msg.responseChannel, {
+        puppeteer.getDuckDuckGoUrl(msg.arg.title).then((url) => {
+          _event.sender.send(msg.arg.responseChannel, {
             url,
-            title: msg.arg,
+            title: msg.arg.title,
           });
         });
         break;
