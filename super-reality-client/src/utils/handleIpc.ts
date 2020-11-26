@@ -7,6 +7,7 @@ import {
   ipcMsgCvResult,
   IpcMsgPythocExec,
   IpcMsgPythocResponse,
+  IpcMsgUrlByTitleResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
 import getBoundsPos from "./getBoundsPos";
@@ -45,6 +46,24 @@ function makeIpcListener<T extends IpcMsg>(
   const { ipcRenderer } = require("electron");
   ipcRenderer.removeAllListeners(channel);
   ipcRenderer.on(channel, fn);
+}
+
+/**
+ * Utility function to create an ipc listener for once. WARNING: This function removes all previous listeners on that channel!
+ * @param channel IPC channel to listen.
+ * @param fn function to execute.
+ */
+export function makeIpcListenerOnce<T extends IpcMsg>(
+  channel: T["method"]
+): Promise<T["arg"]> {
+  return new Promise((resolve) => {
+    // eslint-disable-next-line global-require
+    const { ipcRenderer } = require("electron");
+    ipcRenderer.removeAllListeners(channel);
+    ipcRenderer.once(channel, (e: Electron.IpcRendererEvent, arg: T["arg"]) => {
+      resolve(arg);
+    });
+  });
 }
 
 export default function handleIpc(): void {
