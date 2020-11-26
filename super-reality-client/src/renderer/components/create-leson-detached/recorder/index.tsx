@@ -15,6 +15,7 @@ import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
 import "./index.scss";
+import getWebsiteUrlByTitle from "../../../../utils/getWebsiteUrlByTitle";
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -181,19 +182,19 @@ export default function Recorder(props: RecorderProps): JSX.Element {
       const timerOnClick = recorder.currentTimer;
       if (event.button === leftButtonId) {
         processEvent(event.x, event.y, timerOnClick, "left_click", "")
-          .then(recorder.getActiveBrowserTabUrl)
+          .then((arr) => recorder.titlesQueue.push(arr[1]))
           .catch(console.error);
       }
 
       if (event.button === rightButtonId) {
         processEvent(event.x, event.y, timerOnClick, "right_click", "")
-          .then(recorder.getActiveBrowserTabUrl)
+          .then((arr) => recorder.titlesQueue.push(arr[1]))
           .catch(console.error);
       }
 
       if (event.button === wheelButtonId) {
         processEvent(event.x, event.y, timerOnClick, "wheel_click", "")
-          .then(recorder.getActiveBrowserTabUrl)
+          .then((arr) => recorder.titlesQueue.push(arr[1]))
           .catch(console.error);
       }
     });

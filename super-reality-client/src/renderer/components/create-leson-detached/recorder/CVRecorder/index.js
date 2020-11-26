@@ -1,29 +1,25 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
+import getWebsiteUrlByTitle from "../../../../../utils/getWebsiteUrlByTitle";
 import {
   recordingPath,
   stepPath,
   stepSnapshotPath,
 } from "../../../../electron-constants";
+import globalData from "../../../../globalData";
 
-import Browser from "../Browser";
 /* eslint-disable radix */
 const { desktopCapturer } = require("electron");
 const fs = require("fs");
-// eslint-disable-next-line no-undef
 
-/*
-need to install the following dependency
-npm install ts-ebml --save
-*/
 const { Decoder, Encoder, tools, Reader } = require("ts-ebml");
 const _ = require("lodash"); // allows fast array transformations in javascript
 const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
   constructor() {
+    this._titlesQueue = [];
     this._clickEventDetails = [];
-    this._urlTitleDic = {};
     this._recordedChunks = [];
     this._audioRecordedChunks = [];
     this._stepPath = stepPath;
@@ -85,6 +81,10 @@ export default class CVRecorder {
 
   get finishCallback() {
     return this._finishCallback;
+  }
+
+  get titlesQueue() {
+    return this._titlesQueue;
   }
 
   get clickEventDetails() {
@@ -196,38 +196,6 @@ export default class CVRecorder {
     return [];
   }
 
-  async getActiveBrowserTabUrl(eventDetails) {
-    await new Promise((resolve, reject) => {
-      const a = this._urlTitleDic;
-      resolve("");
-      /*
-      try {
-        const browser = new Browser();
-        console.log("Queue => value ", eventDetails);
-        if (eventDetails[1] != "" && !this._urlTitleDic[eventDetails[1]]) {
-          this._urlTitleDic[eventDetails[1]] = "";
-          browser.owner = eventDetails[0];
-          browser.title = eventDetails[1];
-          if (browser.checkIfBrowser() !== "") {
-            browser.getBrowserUrl().then((url) => {
-              this._urlTitleDic[eventDetails[1]] = "processing";
-              console.log("url instside processqueue", url);
-              this._urlTitleDic[eventDetails[1]] = url;
-              resolve(url);
-            });
-          } else {
-            const url = "";
-            resolve(url);
-          }
-        }
-      } catch (e) {
-        console.log("browser error => ", e);
-        reject(e);
-      }
-      */
-    });
-  }
-
   async extractClickedImages() {
     const cap = new cv.VideoCapture(this._recordingFullPath);
     cap.set(cv.CAP_PROP_POS_MSEC, 500);
@@ -238,6 +206,7 @@ export default class CVRecorder {
     };
 
     let previousInterval = 0;
+    await Promise.all(this._titlesQueue.map(getWebsiteUrlByTitle));
     await Promise.all(
       this._clickEventDetails.map(async (arr) => {
         let doubleClick = false;
@@ -371,8 +340,8 @@ export default class CVRecorder {
           }
           previousInterval = interval;
         }
-        if (this._urlTitleDic[processTitle]) {
-          browserTabUrl = this._urlTitleDic[processTitle];
+        if (globalData.titleUrlDictionary[processTitle]) {
+          browserTabUrl = globalData.titleUrlDictionary[processTitle];
         }
         jsonMetaData.step_data.push({
           type: eventType,
@@ -602,6 +571,7 @@ export default class CVRecorder {
 
   start(source) {
     this._source = source;
+    this._titlesQueue = [];
     console.log("started video recording");
     return this.selectSource(this._source).then(() => {
       this._stepRecordingName = `${Date.now()}.webm`;
