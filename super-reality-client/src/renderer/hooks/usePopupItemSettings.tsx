@@ -82,12 +82,16 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
   );
 }
 
-interface PopUpSettingsSerchProps {
-  callback: (id: string) => void;
+interface FXPopUpSettingsProps {
+  previewItem: (id: string) => void;
+  preview: string;
+  clickOk: () => void;
+  clickCancel: () => void;
+  // inputComponent: JSX.Element;
 }
 
-function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
-  const { callback } = props;
+function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
+  const { preview, previewItem, clickOk, clickCancel } = props;
 
   const [inputValue, setInputValue] = useState("");
   const [filters, setFilters] = useState<string[]>([]);
@@ -137,6 +141,14 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
       setFXItems(currentFXArray);
     }
   };
+
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const { value } = event.currentTarget;
+    setInputValue(value);
+    console.log("inputValue", inputValue);
+  };
+
   const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // check if the Enter pressed
     if (e.key == "Enter" && inputValue != "") {
@@ -161,11 +173,11 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     }
   };
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    const { value } = event.currentTarget;
-    setInputValue(value);
-    console.log("inputValue", inputValue);
+  const addTag = (tag: string) => {
+    const newFilters = [tag];
+    setFilters([...newFilters]);
+    console.log(newFilters);
+    filterItemsArray(currentFXArray, newFilters);
   };
 
   const removeItem = (id: number, itemsArr: string[]) => {
@@ -181,135 +193,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
   };
 
   return (
-    <div
-      className="settings-popup-inner"
-      style={{
-        backgroundColor: "var(--color-section)",
-      }}
-    >
-      <div className="popup-settings-input-container">
-        <input
-          autoFocus
-          className="popup-settings-input-container-input"
-          onKeyDown={handleSearch}
-          onChange={handleOnChange}
-          value={inputValue}
-        />
-      </div>
-
-      <div
-        className="settings-popup-tags-container"
-        style={{
-          display: "flex",
-          height: "35px",
-        }}
-      >
-        <ButtonSimple
-          style={{
-            border: "var(--color-text) solid 1px",
-            fontSize: "14px",
-            borderRadius: "9px",
-            margin: "5px 10px 5px 0px",
-          }}
-          onClick={clearAllFilters}
-        >
-          Remove filters
-        </ButtonSimple>
-        {filters.map((filter, indx) => {
-          return (
-            <ButtonSimple
-              key={filter}
-              style={{
-                backgroundColor: "inherit",
-                border: "var(--color-text) solid 1px",
-                fontSize: "14px",
-                borderRadius: "9px",
-                margin: "5px 10px 5px 0px",
-              }}
-              onClick={() => {
-                removeItem(indx, filters);
-              }}
-            >
-              {filter}
-              <CloseIcon
-                style={{ marginLeft: "10px" }}
-                height="10px"
-                width="10px"
-              />
-            </ButtonSimple>
-          );
-        })}
-      </div>
-
-      <Flex
-        style={{
-          overflow: "auto",
-          maxHeight: "85%",
-          flexWrap: "wrap",
-          // justifyContent: "space-between",
-        }}
-      >
-        {fxItems.map((key) => {
-          return (
-            <PopUpSettingsItem key={key.name} item={key} callback={callback} />
-          );
-        })}
-      </Flex>
-    </div>
-  );
-}
-
-export default function usePopupItemSettings(): [JSX.Element, () => void] {
-  const [Popup, doOpen, close] = usePopup(false);
-  const [preview, setPreview] = useState("");
-
-  const dispatch = useDispatch();
-
-  const { treeItems, currentItem } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  // set the preview item
-  const previewItem = (id: string): void => {
-    setPreview(id);
-  };
-
-  const doUpdate = useCallback(
-    <T extends Item>(data: Partial<T>) => {
-      if (currentItem) {
-        const updatedItem = { ...treeItems[currentItem], ...data };
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETITEM",
-          arg: { item: updatedItem },
-        });
-        updateItem(updatedItem, currentItem);
-      }
-    },
-    [currentItem, treeItems]
-  );
-
-  const clickItem = useCallback(() => {
-    console.log(preview);
-    if (preview != "") {
-      doUpdate({ effect: preview });
-      setPreview("");
-    }
-    close();
-  }, [close, preview]);
-
-  const Element = (
-    <Popup
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        backgroundColor: "#1f2124",
-        top: "-8%",
-        left: "10%",
-        borderRadius: "15px",
-      }}
-      width="57%"
-      height="72%"
-    >
+    <>
       <div className="settings-popup-inner">
         <div
           className="settings-popup-name"
@@ -326,7 +210,6 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
           style={{
             cursor: "pointer",
           }}
-          onClick={clickItem}
         >
           {preview != "" ? (
             <>
@@ -350,14 +233,213 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
           )}
         </div>
         <div className="item-tags settings-popup-options">
-          Tags: {preview != "" && effectDB[preview].tags.join(", ")}
+          Tags:{" "}
+          {preview != "" &&
+            effectDB[preview].tags.map((tag) => {
+              return (
+                <span
+                  key={tag}
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "5px",
+                    border: "var(--color-text) solid 1px",
+                    borderRadius: "3px",
+                    padding: "0 3px",
+                  }}
+                  onClick={() => {
+                    addTag(tag);
+                  }}
+                >
+                  {tag}
+                </span>
+              );
+            })}
         </div>
         <div className="settings-popup-options">Options</div>
         <div className="settings-popup-exposed settings-popup-options">
           Expoused Values
         </div>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            margin: "8px",
+          }}
+        >
+          <ButtonSimple
+            style={{
+              margin: "8px",
+            }}
+            onClick={clickOk}
+          >
+            {" "}
+            Ok{" "}
+          </ButtonSimple>
+          <ButtonSimple
+            style={{
+              margin: "8px",
+            }}
+            onClick={clickCancel}
+          >
+            {" "}
+            Cancel{" "}
+          </ButtonSimple>
+        </div>
       </div>
-      <PopUpSettingsSearch callback={previewItem} />
+      <div
+        className="settings-popup-inner"
+        style={{
+          backgroundColor: "var(--color-section)",
+        }}
+      >
+        <SettingsInput
+          handleSearch={handleSearch}
+          handleOnChange={handleOnChange}
+          inputValue={inputValue}
+        />
+        <div
+          className="settings-popup-tags-container"
+          style={{
+            display: "flex",
+            height: "35px",
+          }}
+        >
+          <ButtonSimple
+            style={{
+              border: "var(--color-text) solid 1px",
+              fontSize: "14px",
+              borderRadius: "9px",
+              margin: "5px 10px 5px 0px",
+            }}
+            onClick={clearAllFilters}
+          >
+            Remove filters
+          </ButtonSimple>
+          {filters.map((filter, indx) => {
+            return (
+              <ButtonSimple
+                key={filter}
+                style={{
+                  backgroundColor: "inherit",
+                  border: "var(--color-text) solid 1px",
+                  fontSize: "14px",
+                  borderRadius: "9px",
+                  margin: "5px 10px 5px 0px",
+                }}
+                onClick={() => {
+                  removeItem(indx, filters);
+                }}
+              >
+                {filter}
+                <CloseIcon
+                  style={{ marginLeft: "10px" }}
+                  height="10px"
+                  width="10px"
+                />
+              </ButtonSimple>
+            );
+          })}
+        </div>
+
+        <Flex
+          style={{
+            overflow: "auto",
+            maxHeight: "85%",
+            flexWrap: "wrap",
+          }}
+        >
+          {fxItems.map((key) => {
+            return (
+              <PopUpSettingsItem
+                key={key.name}
+                item={key}
+                callback={previewItem}
+              />
+            );
+          })}
+        </Flex>
+      </div>
+    </>
+  );
+}
+
+interface SettingsInputProps {
+  handleSearch: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  inputValue: string;
+}
+function SettingsInput(props: SettingsInputProps): JSX.Element {
+  const { handleSearch, handleOnChange, inputValue } = props;
+  return (
+    <div className="popup-settings-input-container">
+      <input
+        autoFocus
+        className="popup-settings-input-container-input"
+        onKeyDown={handleSearch}
+        onChange={handleOnChange}
+        value={inputValue}
+      />
+    </div>
+  );
+}
+
+export default function usePopupItemSettings(): [JSX.Element, () => void] {
+  const [Popup, doOpen, close] = usePopup(false);
+  const [preview, setPreview] = useState("");
+
+  const dispatch = useDispatch();
+
+  const { treeItems, currentItem } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+
+  // set the preview item
+  const previewItem = (id: string): void => {
+    setPreview(id);
+  };
+
+  const doUpdate = useCallback(
+    <T extends Item>(data: Partial<T>) => {
+      if (currentItem && data) {
+        const updatedItem = { ...treeItems[currentItem], ...data };
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETITEM",
+          arg: { item: updatedItem },
+        });
+        updateItem(updatedItem, currentItem);
+      }
+    },
+    [currentItem, treeItems]
+  );
+
+  const clickOk = useCallback(() => {
+    console.log(preview);
+    if (preview != "") {
+      doUpdate({ effect: preview });
+      setPreview("");
+    }
+    close();
+  }, [close, preview]);
+
+  const Element = (
+    <Popup
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        backgroundColor: "#1f2124",
+        top: "-8%",
+        left: "10%",
+        borderRadius: "15px",
+      }}
+      width="57%"
+      height="72%"
+    >
+      <FXPopUpSettings
+        previewItem={previewItem}
+        clickOk={clickOk}
+        preview={preview}
+        clickCancel={close}
+      />
     </Popup>
   );
 

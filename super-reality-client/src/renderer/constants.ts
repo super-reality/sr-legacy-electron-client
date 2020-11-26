@@ -54,7 +54,7 @@ export const effectDB: Record<string, EffectDB> = {
     id: "id_3",
     name: "Rainbow ORB Big",
     url: `${fxDirectory}/rainbow-orb-big/index.html`,
-    tags: ["pop", "rainbow"],
+    tags: ["rainbow"],
   },
   id_4: {
     id: "id_4",
