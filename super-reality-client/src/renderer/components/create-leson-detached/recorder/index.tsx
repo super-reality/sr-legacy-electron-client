@@ -81,8 +81,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 processOwnerName,
               ];
 
-              if (title == "") reject(new Error("No title"));
-              else resolve([processOwnerName, title, currentTime]);
+              resolve([processOwnerName, title, currentTime]);
             });
           }
         } catch (e) {

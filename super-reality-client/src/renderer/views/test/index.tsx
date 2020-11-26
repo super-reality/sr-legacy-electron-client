@@ -24,7 +24,10 @@ export default function Test(): JSX.Element {
   const duckduckgoTest = useCallback(() => {
     ipcSend({
       method: "getUrlbyTitle",
-      arg: "puppeteer-in-electron - npm",
+      arg: {
+        title: "puppeteer-in-electron - npm",
+        responseChannel: "getUrlbyTitleResponse",
+      },
     });
     makeIpcListenerOnce<IpcMsgUrlByTitleResponse>("getUrlbyTitleResponse").then(
       (arg) => {

@@ -26,7 +26,10 @@ export interface IpcMsgPopup extends IpcMsg {
 
 export interface IpcMsgUrlByTitle extends IpcMsg {
   method: "getUrlbyTitle";
-  arg: string;
+  arg: {
+    title: string;
+    responseChannel: string;
+  };
 }
 
 export interface IpcMsgUrlByTitleResponse extends IpcMsg {

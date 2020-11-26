@@ -72,7 +72,6 @@ export default class CVRecorder {
     this.delete = this.delete.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
-    this.getActiveBrowserTabUrl = this.getActiveBrowserTabUrl.bind(this);
   }
 
   set finishCallback(value) {

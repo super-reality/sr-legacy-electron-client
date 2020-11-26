@@ -21,7 +21,7 @@ function handleIpcSwitch(_event, method, msg) {
         break;
       case "getUrlbyTitle":
         puppeteer.getDuckDuckGoUrl(msg.arg).then((url) => {
-          _event.sender.send("getUrlbyTitleResponse", {
+          _event.sender.send(msg.responseChannel, {
             url,
             title: msg.arg,
           });

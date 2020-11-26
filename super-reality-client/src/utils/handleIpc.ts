@@ -49,17 +49,16 @@ function makeIpcListener<T extends IpcMsg>(
 }
 
 /**
- * Utility function to create an ipc listener for once. WARNING: This function removes all previous listeners on that channel!
+ * Utility function to create an ipc listener for once.
  * @param channel IPC channel to listen.
  * @param fn function to execute.
  */
 export function makeIpcListenerOnce<T extends IpcMsg>(
-  channel: T["method"]
+  channel: T["method"] | string
 ): Promise<T["arg"]> {
   return new Promise((resolve) => {
     // eslint-disable-next-line global-require
     const { ipcRenderer } = require("electron");
-    ipcRenderer.removeAllListeners(channel);
     ipcRenderer.once(channel, (e: Electron.IpcRendererEvent, arg: T["arg"]) => {
       resolve(arg);
     });
