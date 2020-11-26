@@ -57,7 +57,12 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           eventType,
           keyboardDetails
         );
-        if (!recorder.recordingStarted) reject();
+        try {
+          console.log(recorder, recorder.recordingStarted);
+          if (!recorder.recordingStarted) reject();
+        } catch (e) {
+          reject(e);
+        }
 
         // eslint-disable-next-line no-undef
         const activeWin = __non_webpack_require__("active-win");
@@ -170,21 +175,21 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     iohook.on("mousedown", (event: any) => {
       const timerOnClick = recorder.currentTimer;
       if (event.button === leftButtonId) {
-        processEvent(event.x, event.y, timerOnClick, "left_click", "").then(
-          recorder.getActiveBrowserTabUrl
-        );
+        processEvent(event.x, event.y, timerOnClick, "left_click", "")
+          .then(recorder.getActiveBrowserTabUrl)
+          .catch(console.error);
       }
 
       if (event.button === rightButtonId) {
-        processEvent(event.x, event.y, timerOnClick, "right_click", "").then(
-          recorder.getActiveBrowserTabUrl
-        );
+        processEvent(event.x, event.y, timerOnClick, "right_click", "")
+          .then(recorder.getActiveBrowserTabUrl)
+          .catch(console.error);
       }
 
       if (event.button === wheelButtonId) {
-        processEvent(event.x, event.y, timerOnClick, "wheel_click", "").then(
-          recorder.getActiveBrowserTabUrl
-        );
+        processEvent(event.x, event.y, timerOnClick, "wheel_click", "")
+          .then(recorder.getActiveBrowserTabUrl)
+          .catch(console.error);
       }
     });
 
