@@ -90,14 +90,55 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
   const { callback } = props;
   const [inputValue, setInputValue] = useState("");
   const [tagsState, setTagsState] = useState<string[]>([]);
+  const [filters, setFilters] = useState<string[]>([]);
 
   // get the array of items from the FX DB
   const currentFXArray = Object.keys(effectDB).map((key) => {
     return effectDB[key];
   });
+  const [fxItems, setFXItems] = useState<EffectDB[]>(currentFXArray);
+  const [filteredItems, setFilteredItems] = useState<EffectDB[]>(
+    currentFXArray
+  );
+
+  // const getValuesArray = (item: EffectDB) => {
+  //   return Object.values(item).map((el) => {
+  //     if (typeof el == "object") {
+  //       return el.join();
+  //     }
+  //     return el;
+  //   });
+  // };
+  const checkValues = (item: EffectDB, searchValue: string): boolean => {
+    const allValues: string[] = Object.values(item).reduce((prev, curr) => {
+      if (typeof curr == "object") {
+        const lc = curr.map((el: string) => el.toLocaleLowerCase());
+        return [...prev, ...lc];
+      }
+      const lc = curr.toLocaleLowerCase();
+      return [...prev, lc];
+    }, []);
+
+    const testRegex = RegExp(searchValue, "g");
+    console.log(
+      "test check",
+      allValues,
+      allValues.some((el) => testRegex.test(el))
+    );
+    return allValues.some((el) => testRegex.test(el));
+  };
+  // console.log(
+  //   "test values",
+  //   Object.values(currentFXArray[0]).reduce((prev, curr) => {
+  //     if (typeof curr == "object") {
+  //       return [...prev, ...curr];
+  //     }
+  //     return [...prev, curr];
+  //   }, [])
+  // );
+  // console.log("checkValues", checkValues(currentFXArray[0], "rainbow"));
 
   // initial state of the FX items to show
-  const [fxItems, setFXItems] = useState<EffectDB[]>(currentFXArray);
 
   // get all tags arrays from the FX DB
   const currentTagsArray = currentFXArray.reduce(
@@ -118,23 +159,38 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     },
     [currentTagsArray[0].toLocaleLowerCase()]
   );
-
+  const clearAllFilters = () => {
+    setTagsState([]);
+    setFilters([]);
+    setFXItems(currentFXArray);
+    setFilteredItems(currentFXArray);
+  };
+  console.log(fxItems);
   const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // e.preventDefault();
     console.log(e.key);
     if (e.key == "Enter" && inputValue != "") {
       const inputArr = inputValue.split(", ");
       console.log(inputArr);
       const currTagsState = tagsState;
+      // let newFXArray = currentFXArray;
       inputArr.forEach((el) => {
         if (!tagsState.includes(el) && smallTagsArray.includes(el)) {
           console.log(el);
           console.log("tag added", tagsState);
           currTagsState.push(el);
-          // setTagsState([...tagsState, el]);
+        } else {
+          const newFXArray = currentFXArray.filter((item) => {
+            return checkValues(item, el);
+          });
+          console.log("newFXArray search", newFXArray);
+          setFilteredItems([...newFXArray]);
+          setFilters([...filters, el]);
         }
       });
-      console.log("currTagsState", currTagsState);
+      // setFXItems([...newFXArray]);
       setTagsState([...currTagsState]);
+      console.log("TagsState", tagsState);
       setInputValue("");
     }
   };
@@ -156,19 +212,23 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
     console.log("tags", tagsState, inputValue);
   };
 
-  const removeTag = (id: number) => {
+  const removeItem = (id: number, itemsArr: string[], switcher?: string) => {
     console.log("remove tag", id);
-    const removeItem = [...tagsState.slice(0, id), ...tagsState.slice(id + 1)];
-    setTagsState(removeItem);
+    const newItem = [...itemsArr.slice(0, id), ...itemsArr.slice(id + 1)];
+    if (switcher == "tag") {
+      setTagsState(newItem);
+    } else if (switcher == "filter") {
+      setFilters(newItem);
+    }
   };
 
   useEffect(() => {
     if (tagsState.length != 0) {
-      const newItems = currentFXArray.filter(({ tags }) => {
+      const newItems = filteredItems.filter(({ tags }) => {
         return tags.some((e) =>
           tagsState.some((tag) => {
             // const newTag = tag.charAt(0).toUpperCase() + tag.slice(1);
-            console.log(tag, tags.indexOf(tag));
+
             return tag == e;
           })
         );
@@ -176,7 +236,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
       console.log("newItems", newItems);
       setFXItems(newItems);
     } else {
-      setFXItems(currentFXArray);
+      setFXItems(filteredItems);
     }
     console.log("useEF", tagsState);
   }, [tagsState]);
@@ -217,7 +277,7 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
                 margin: "5px 10px 5px 0px",
               }}
               onClick={() => {
-                removeTag(indx);
+                removeItem(indx, tagsState, "tag");
               }}
             >
               {tag}
@@ -230,11 +290,45 @@ function PopUpSettingsSearch(props: PopUpSettingsSerchProps): JSX.Element {
           );
         })}
       </div>
+      <div
+        className="settings-popup-tags-container"
+        style={{
+          display: "flex",
+          height: "35px",
+        }}
+      >
+        {filters.map((tag, indx) => {
+          return (
+            <ButtonSimple
+              key={tag}
+              style={{
+                backgroundColor: "inherit",
+                border: "var(--color-text) solid 1px",
+                fontSize: "14px",
+                borderRadius: "9px",
+                margin: "5px 10px 5px 0px",
+              }}
+              onClick={() => {
+                removeItem(indx, filters, "filter");
+              }}
+            >
+              {tag}
+              <CloseIcon
+                style={{ marginLeft: "10px" }}
+                height="10px"
+                width="10px"
+              />
+            </ButtonSimple>
+          );
+        })}
+      </div>
+      <ButtonSimple onClick={clearAllFilters}> Remove filters</ButtonSimple>
       <Flex
         style={{
           overflow: "auto",
           height: "85%",
           flexWrap: "wrap",
+          justifyContent: "space-between",
         }}
       >
         {fxItems.map((key) => {

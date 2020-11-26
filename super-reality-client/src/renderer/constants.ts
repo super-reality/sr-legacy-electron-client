@@ -58,19 +58,19 @@ export const effectDB: Record<string, EffectDB> = {
   },
   id_4: {
     id: "id_4",
-    name: "Hyperspace1",
+    name: "Hyperspace 1",
     url: `${fxDirectory}/hyperspace1/index.html`,
     tags: ["ambient"],
   },
   id_5: {
     id: "id_5",
-    name: "Hyperspace2",
+    name: "Hyperspace 2",
     url: `${fxDirectory}/hyperspace2/index.html`,
     tags: ["ambient"],
   },
   id_6: {
     id: "id_6",
-    name: "Hyperspace3",
+    name: "Hyperspace 3",
     url: `${fxDirectory}/hyperspace3/index.html`,
     tags: ["ambient"],
   },
