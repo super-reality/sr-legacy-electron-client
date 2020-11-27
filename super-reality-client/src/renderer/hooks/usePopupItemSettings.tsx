@@ -194,7 +194,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
 
   return (
     <>
-      <div className="settings-popup-inner">
+      <div style={{ marginRight: "0px" }} className="settings-popup-inner">
         <div
           className="settings-popup-name"
           style={{
@@ -263,26 +263,29 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
           style={{
             display: "flex",
             width: "100%",
-            margin: "8px",
+            marginTop: "17%",
           }}
         >
           <ButtonSimple
             style={{
-              margin: "8px",
+              margin: "auto 5px auto auto",
             }}
+            width="-webkit-fill-available"
+            height="35px"
             onClick={clickOk}
           >
-            {" "}
-            Ok{" "}
+            Ok
           </ButtonSimple>
           <ButtonSimple
             style={{
-              margin: "8px",
+              margin: "auto auto auto 5px",
+              // width: "-webkit-fill-available",
             }}
+            width="-webkit-fill-available"
+            height="35px"
             onClick={clickCancel}
           >
-            {" "}
-            Cancel{" "}
+            Cancel
           </ButtonSimple>
         </div>
       </div>
@@ -309,7 +312,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
               border: "var(--color-text) solid 1px",
               fontSize: "14px",
               borderRadius: "9px",
-              margin: "5px 10px 5px 0px",
+              margin: "5px 10px 5px 5px",
             }}
             onClick={clearAllFilters}
           >
@@ -373,6 +376,9 @@ function SettingsInput(props: SettingsInputProps): JSX.Element {
   return (
     <div className="popup-settings-input-container">
       <input
+      style={{
+        borderRadius: "8px",
+      }}
         autoFocus
         className="popup-settings-input-container-input"
         onKeyDown={handleSearch}
