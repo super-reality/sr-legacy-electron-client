@@ -157,7 +157,10 @@ export default function VideoStatus() {
       .then((data) => generateDialogues(data))
       .then((data) => generateClicks(data, anchor))
       .then(() => generationDone())
-      .catch((e) => setStatus(`Error generating`));
+      .catch((e) => {
+        console.error(e);
+        setStatus(`Error generating`);
+      });
   }, [anchor]);
 
   const checkAnchor = useCallback(() => {
