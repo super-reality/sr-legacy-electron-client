@@ -205,14 +205,18 @@ export default class CVRecorder {
     };
 
     let previousInterval = 0;
+    console.log("this._titlesQueue", this._titlesQueue);
     for (let index = 0; index < this._titlesQueue.length; index += 1) {
       const title = this._titlesQueue[index];
+      console.log(title, index);
       // eslint-disable-next-line no-await-in-loop
       await getWebsiteUrlByTitle(title);
     }
 
+    console.log("this._clickEventDetails", this._clickEventDetails);
     await Promise.all(
-      this._clickEventDetails.map(async (arr) => {
+      this._clickEventDetails.map(async (arr, i) => {
+        console.log(i, arr);
         let doubleClick = false;
         let clickType = "";
         let keyboardEvents = {};
