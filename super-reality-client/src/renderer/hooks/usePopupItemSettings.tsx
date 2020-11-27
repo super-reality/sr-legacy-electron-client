@@ -376,9 +376,9 @@ function SettingsInput(props: SettingsInputProps): JSX.Element {
   return (
     <div className="popup-settings-input-container">
       <input
-      style={{
-        borderRadius: "8px",
-      }}
+        style={{
+          borderRadius: "8px",
+        }}
         autoFocus
         className="popup-settings-input-container-input"
         onKeyDown={handleSearch}
