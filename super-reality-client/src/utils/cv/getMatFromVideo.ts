@@ -1,4 +1,4 @@
-import * as cv from "../opencv/opencv";
+import cv from "../opencv/opencv";
 
 export default function getMatFromVideo(
   videoElement: HTMLVideoElement,

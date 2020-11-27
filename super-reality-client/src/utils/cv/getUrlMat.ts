@@ -1,5 +1,5 @@
 import getImage from "../getImage";
-import * as cv from "../opencv/opencv";
+import cv from "../opencv/opencv";
 
 export default function getUrlMat(image: string): Promise<cv.Mat> {
   return new Promise((resolve, reject) => {

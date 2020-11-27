@@ -5,7 +5,7 @@ import getLocalMat from "./getLocalMat";
 import getMatFromVideo from "./getMatFromVideo";
 import getUrlMat from "./getUrlMat";
 import matToCanvas from "./matToCanvas";
-import * as cv from "../opencv/opencv";
+import cv from "../opencv/opencv";
 
 export default function doCvMatch(
   images: string[],
