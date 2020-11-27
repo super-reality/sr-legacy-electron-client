@@ -8,8 +8,8 @@ import App from "./renderer/App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
 import handleIpc from "./utils/handleIpc";
-import isElectron from "./utils/isElectron";
-import createDataDirs from "./utils/createDataDirs";
+import isElectron from "./utils/electron/isElectron";
+import createDataDirs from "./utils/files/createDataDirs";
 
 if (isElectron()) {
   createDataDirs();

@@ -1,4 +1,4 @@
-import getSTT from "../../../../../utils/getSTT";
+import getSTT from "../../../../../utils/api/getSTT";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import trimAudio from "../../../../../utils/trimAudio";
 import { recordingPath, tempPath } from "../../../../electron-constants";

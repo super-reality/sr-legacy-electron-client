@@ -1,5 +1,5 @@
 import fs from "fs";
-import setLoading from "../renderer/redux/utils/setLoading";
+import setLoading from "../../renderer/redux/utils/setLoading";
 
 export default function getSTT(audioFile: string): Promise<any> {
   // setLoading(true);

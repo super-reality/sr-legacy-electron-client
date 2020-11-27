@@ -5,7 +5,7 @@ import {
   stepPath,
   stepSnapshotPath,
   tempPath,
-} from "../renderer/electron-constants";
+} from "../../renderer/electron-constants";
 
 function makeDataDir(dir: string) {
   if (!fs.existsSync(dir)) {

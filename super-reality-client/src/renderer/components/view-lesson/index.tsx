@@ -21,13 +21,13 @@ import LessonActive from "../lesson-active";
 import createDetachedWindow from "../../../utils/createDetachedWindow";
 import { AppState } from "../../redux/stores/renderer";
 import LessonGet, { ILessonGet } from "../../api/types/lesson/get";
-import isElectron from "../../../utils/isElectron";
+import isElectron from "../../../utils/electron/isElectron";
 import useDataGet from "../../hooks/useDataGet";
 import Step from "../step";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../flex";
 import { InitalFnOptions } from "../../api/types/step-old/step";
-import getTTS from "../../../utils/getTTS";
+import getTTS from "../../../utils/api/getTTS";
 import { initialCVSettings } from "../../redux/static";
 
 interface ViewLessonProps {

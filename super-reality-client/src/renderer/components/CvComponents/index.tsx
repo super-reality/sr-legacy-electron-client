@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { captureDesktopStream } from "../../../utils/capture";
-import getDisplayBounds from "../../../utils/getNewBounds";
+import getDisplayBounds from "../../../utils/electron/getNewBounds";
 import { AppState } from "../../redux/stores/renderer";
 
 export default function CvComponents() {

@@ -1,4 +1,4 @@
-import userDataPath from "../utils/userDataPath";
+import userDataPath from "../utils/files/userDataPath";
 
 const userData = userDataPath();
 

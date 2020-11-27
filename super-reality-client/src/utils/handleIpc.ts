@@ -9,10 +9,10 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getBoundsPos from "./getBoundsPos";
-import getDisplayBounds from "./getNewBounds";
+import getBoundsPos from "./electron/getBoundsPos";
+import getDisplayBounds from "./electron/getNewBounds";
 
-import getWindowId from "./getWindowId";
+import getWindowId from "./electron/getWindowId";
 
 interface DetachLesson {
   type: "LESSON_VIEW";

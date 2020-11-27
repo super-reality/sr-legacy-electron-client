@@ -1,10 +1,10 @@
 import Axios from "axios";
 import fs from "fs";
-import handleGetTTS from "../renderer/api/handleGetTTS";
+import handleGetTTS from "../../renderer/api/handleGetTTS";
 // import setLoading from "../renderer/redux/utils/setLoading";
 import downloadFile from "./downloadFIle";
-import md5 from "./md5";
-import playSound from "./playSound";
+import md5 from "../md5";
+import playSound from "../playSound";
 
 export default function getTTS(text: string, play?: boolean): Promise<void> {
   // eslint-disable-next-line global-require

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { nativeImage } from "electron";
 import { Rectangle } from "../types/utils";
-import userDataPath from "./userDataPath";
+import userDataPath from "./files/userDataPath";
 
 export default function cropImage(
   fileName: string,

@@ -11,7 +11,7 @@ import { ReactComponent as UnmuteIcon } from "../../../../assets/svg/unmute.svg"
 import { ReactComponent as TTSIcon } from "../../../../assets/svg/add-tts.svg";
 import Flex from "../../flex";
 import "./index.scss";
-import getTTS from "../../../../utils/getTTS";
+import getTTS from "../../../../utils/api/getTTS";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 

@@ -1,4 +1,4 @@
-import { Rectangle } from "../types/utils";
+import { Rectangle } from "../../types/utils";
 
 export default function getDisplayBounds(): Rectangle {
   // eslint-disable-next-line global-require
