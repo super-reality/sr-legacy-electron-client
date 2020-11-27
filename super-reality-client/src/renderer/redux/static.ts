@@ -2,8 +2,8 @@
 
 const initialCVSettings = {
   cvMatchValue: 990,
-  cvCanvas: 50,
-  cvDelay: 100,
+  cvCanvas: 100,
+  cvDelay: 50,
   cvGrayscale: true as boolean,
   cvApplyThreshold: false as boolean,
   cvThreshold: 127,
