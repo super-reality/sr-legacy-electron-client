@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import path from "path";
-import { AppState } from "../../renderer/redux/stores/renderer";
-import doCvMatch from "../cv/doCVMatch";
+import { AppState } from "../renderer/redux/stores/renderer";
+import doCvMatch from "../utils/cv/doCVMatch";
 
 function isBetween(x: number, min: number, max: number) {
   return x >= min && x <= max;
