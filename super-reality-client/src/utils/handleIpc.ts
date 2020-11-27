@@ -11,7 +11,6 @@ import {
 import createBackgroundProcess from "./createBackgroundProcess";
 import getBoundsPos from "./getBoundsPos";
 import getDisplayBounds from "./getNewBounds";
-import getPrimaryPos from "./getPrimaryPos";
 
 import getWindowId from "./getWindowId";
 
@@ -45,6 +44,23 @@ function makeIpcListener<T extends IpcMsg>(
   const { ipcRenderer } = require("electron");
   ipcRenderer.removeAllListeners(channel);
   ipcRenderer.on(channel, fn);
+}
+
+/**
+ * Utility function to create an ipc listener for once.
+ * @param channel IPC channel to listen.
+ * @param fn function to execute.
+ */
+export function makeIpcListenerOnce<T extends IpcMsg>(
+  channel: T["method"] | string
+): Promise<T["arg"]> {
+  return new Promise((resolve) => {
+    // eslint-disable-next-line global-require
+    const { ipcRenderer } = require("electron");
+    ipcRenderer.once(channel, (e: Electron.IpcRendererEvent, arg: T["arg"]) => {
+      resolve(arg);
+    });
+  });
 }
 
 export default function handleIpc(): void {
@@ -96,6 +112,7 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_CV_SETTINGS", arg });
   });
 
+  ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
     const pos = arg;
     const primary = getBoundsPos(getDisplayBounds());

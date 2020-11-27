@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import "./index.scss";
 import ButtonSimple from "../../components/button-simple";
 import createLessonInterface from "../../../utils/createLessonInterface";
-import globalData from "../../globalData";
 import ipcSend from "../../../utils/ipcSend";
 
 export default function Test(): JSX.Element {

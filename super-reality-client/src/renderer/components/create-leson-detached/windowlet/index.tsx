@@ -16,11 +16,22 @@ interface WindowletProps {
   style?: CSSProperties;
   width?: number;
   height?: number;
+  initialPosX?: number;
+  initialPosY?: number;
   onClose: () => void;
 }
 
 export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
-  const { children, style, title, height, width, onClose } = props;
+  const {
+    children,
+    style,
+    title,
+    height,
+    width,
+    onClose,
+    initialPosX,
+    initialPosY,
+  } = props;
   const dragContainer = useRef<HTMLDivElement>(null);
   const resizeContainer = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<boolean>(false);
@@ -50,12 +61,32 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     if (resizeContainer.current) {
       resizeContainer.current.style.width = `${width || 400}px`;
       resizeContainer.current.style.height = `${height || 200}px`;
-      resizeContainer.current.style.left = `${
-        window.screen.width / 2 - (width || 400) / 2
-      }px`;
-      resizeContainer.current.style.top = `${
-        window.screen.height / 2 - (height || 200) / 2
-      }px`;
+
+      const screenWidth =
+        document.getElementById("root")?.offsetWidth || window.screen.width;
+      const screenHeight =
+        document.getElementById("root")?.offsetHeight || window.screen.height;
+      const windowletWidth = width || 400;
+      const windowletHeight = height || 200;
+
+      if (initialPosX) {
+        resizeContainer.current.style.left = `${
+          ((screenWidth - windowletWidth) / 100) * initialPosX
+        }px`;
+      } else {
+        resizeContainer.current.style.left = `${
+          screenWidth / 2 - windowletWidth / 2
+        }px`;
+      }
+      if (initialPosY) {
+        resizeContainer.current.style.top = `${
+          ((screenHeight - windowletHeight) / 100) * initialPosY
+        }px`;
+      } else {
+        resizeContainer.current.style.top = `${
+          screenHeight / 2 - windowletHeight / 2
+        }px`;
+      }
     }
   }, []);
 

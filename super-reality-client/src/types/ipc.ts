@@ -9,7 +9,9 @@ export type IpcMethods =
   | "pythonExec"
   | "pythonResponse"
   | "cv"
-  | "cvResult";
+  | "cvResult"
+  | "getUrlbyTitle"
+  | "getUrlbyTitleResponse";
 
 export interface IpcMsg {
   method: IpcMethods;
@@ -20,6 +22,22 @@ export interface IpcMsg {
 export interface IpcMsgPopup extends IpcMsg {
   method: "popup";
   arg: string;
+}
+
+export interface IpcMsgUrlByTitle extends IpcMsg {
+  method: "getUrlbyTitle";
+  arg: {
+    title: string;
+    responseChannel: string;
+  };
+}
+
+export interface IpcMsgUrlByTitleResponse extends IpcMsg {
+  method: "getUrlbyTitleResponse";
+  arg: {
+    url: string;
+    title: string;
+  };
 }
 
 export interface IpcMsgPythocExec extends IpcMsg {
@@ -47,4 +65,6 @@ export type IpcArgument =
   | IpcMsgPythocExec
   | IpcMsgPythocResponse
   | ipcMsgCv
-  | ipcMsgCvResult;
+  | ipcMsgCvResult
+  | IpcMsgUrlByTitle
+  | IpcMsgUrlByTitleResponse;
