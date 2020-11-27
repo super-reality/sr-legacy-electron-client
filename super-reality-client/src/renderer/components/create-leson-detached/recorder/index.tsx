@@ -1,8 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-// import iohook from "iohook";
-// import activeWin from "active-win";
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
 import { ReactComponent as PauseIcon } from "../../../../assets/svg/pause.svg";
@@ -15,7 +12,9 @@ import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
 import "./index.scss";
-import getWebsiteUrlByTitle from "../../../../utils/getWebsiteUrlByTitle";
+
+// eslint-disable-next-line no-undef
+const activeWin = __non_webpack_require__("active-win");
 
 const leftButtonId = 1;
 const rightButtonId = 2;
@@ -61,8 +60,6 @@ export default function Recorder(props: RecorderProps): JSX.Element {
         try {
           if (!recorder.recordingStarted) reject();
           else {
-            // eslint-disable-next-line no-undef
-            const activeWin = __non_webpack_require__("active-win");
             activeWin().then((activeWindowDetails: any) => {
               let title = "";
               let processOwnerName = "";
