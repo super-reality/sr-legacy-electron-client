@@ -7,14 +7,12 @@ import {
   ipcMsgCvResult,
   IpcMsgPythocExec,
   IpcMsgPythocResponse,
-  IpcMsgUrlByTitleResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getBoundsPos from "./getBoundsPos";
-import getDisplayBounds from "./getNewBounds";
-import getPrimaryPos from "./getPrimaryPos";
+import getBoundsPos from "./electron/getBoundsPos";
+import getDisplayBounds from "./electron/getNewBounds";
 
-import getWindowId from "./getWindowId";
+import getWindowId from "./electron/getWindowId";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -114,6 +112,7 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_CV_SETTINGS", arg });
   });
 
+  ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
     const pos = arg;
     const primary = getBoundsPos(getDisplayBounds());

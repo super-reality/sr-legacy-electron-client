@@ -2,9 +2,9 @@ import { exec } from "child_process";
 import os from "os";
 import fs from "fs";
 import path from "path";
-import getPrimaryPos from "./getPrimaryPos";
-import getPrimarySize from "./getPrimarySize";
-import getDisplayBounds from "./getNewBounds";
+import getPrimaryPos from "./electron/getPrimaryPos";
+import getPrimarySize from "./electron/getPrimarySize";
+import getDisplayBounds from "./electron/getNewBounds";
 
 function captureCommand(filePath: string) {
   // eslint-disable-next-line global-require

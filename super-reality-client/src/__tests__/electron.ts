@@ -54,14 +54,6 @@ async function testFor(width: number, height: number) {
     height: height,
   });
 
-  // Test pages
-  for (let i = 0; i < 5; i += 1) {
-    await page.goto(`http://localhost:3000/tests/${i}`);
-    await page.waitFor(1000);
-    const img = await page.screenshot();
-    expect(img).toMatchImageSnapshot(matchConfig);
-  }
-
   // Go to root / splash
   await page.goto("http://localhost:3000");
   await page.waitForSelector("#root > div > div.button-simple.undefined");

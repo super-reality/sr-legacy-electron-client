@@ -14,7 +14,7 @@ import ModalList from "../modal-list";
 import { IStep } from "../../../api/types/step/step";
 import updateStep from "../lesson-utils/updateStep";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 
 function doNewAnchor(url: string, stepId: string) {
   return newAnchor(

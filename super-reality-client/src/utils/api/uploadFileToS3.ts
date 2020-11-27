@@ -1,9 +1,9 @@
 import fs from "fs";
 import axios from "axios";
-import { API_URL } from "../renderer/constants";
-import FileUpload from "../renderer/api/types/file/upload";
-import { ApiError } from "../renderer/api/types";
-import handleFileUpload from "../renderer/api/handleFileUpload";
+import { API_URL } from "../../renderer/constants";
+import FileUpload from "../../renderer/api/types/file/upload";
+import { ApiError } from "../../renderer/api/types";
+import handleFileUpload from "../../renderer/api/handleFileUpload";
 
 export default function uploadFileToS3(
   localFileName: string,

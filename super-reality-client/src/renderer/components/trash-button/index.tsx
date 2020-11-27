@@ -3,7 +3,7 @@ import "../buttons.scss";
 
 import { ReactComponent as TrashIcon } from "../../../assets/svg/trash.svg";
 import usePopupModal from "../../hooks/usePopupModal";
-import deleteItem from "../../../utils/deleteItem";
+import deleteItem from "../../../utils/api/deleteItem";
 
 interface TrashProps {
   style?: CSSProperties;

@@ -1,4 +1,4 @@
-const { default: isElectron } = require("../isElectron");
+const { default: isElectron } = require("../electron/isElectron");
 
 let opencv = {};
 if (isElectron()) {

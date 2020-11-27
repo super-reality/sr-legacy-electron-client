@@ -23,7 +23,7 @@ import SubjectSearchParent from "../../../api/types/subject/search-parent";
 import { ISubject } from "../../../api/types/subject/subject";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
-import uploadMany from "../../../../utils/uploadMany";
+import uploadMany from "../../../../utils/api/uploadMany";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";
