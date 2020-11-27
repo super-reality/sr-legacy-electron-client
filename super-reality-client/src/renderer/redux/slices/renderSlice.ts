@@ -4,12 +4,21 @@ import { CVResult } from "../../../types/utils";
 
 export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 
+export const MODE_TRANSPARENT = 1;
+export const MODE_SOLID = 2;
+export const MODE_VOID = 3;
+
+export type UI_MODES =
+  | typeof MODE_TRANSPARENT
+  | typeof MODE_SOLID
+  | typeof MODE_VOID;
+
 const initialState = {
   yScroll: 0,
   yScrollMoveTo: undefined as number | undefined,
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
-  overlayTransparent: false as boolean,
+  overlayTransparent: MODE_SOLID as UI_MODES,
   cvResult: {
     dist: 0,
     sizeFactor: 0,
@@ -32,7 +41,7 @@ const renderSlice = createSlice({
     },
     setOverlayTransparent: (
       state: RenderState,
-      action: PayloadAction<boolean>
+      action: PayloadAction<UI_MODES>
     ): void => {
       state.overlayTransparent = action.payload;
     },
