@@ -17,7 +17,7 @@ import BaseSelect from "../../base-select";
 import { ICollection } from "../../../api/types/collection/collection";
 import setLoading from "../../../redux/utils/setLoading";
 import usePopupValidation from "../../../hooks/usePopupValidation";
-import uploadMany from "../../../../utils/uploadMany";
+import uploadMany from "../../../../utils/api/uploadMany";
 import makeValidation, {
   ValidationFields,
 } from "../../../../utils/makeValidation";

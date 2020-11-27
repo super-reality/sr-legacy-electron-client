@@ -4,7 +4,7 @@ import path from "path";
 import url from "url";
 import { voidFunction } from "../renderer/constants";
 import store from "../renderer/redux/stores/renderer";
-import isElectron from "./isElectron";
+import isElectron from "./electron/isElectron";
 
 export default function createLessonInterface(
   props: any,

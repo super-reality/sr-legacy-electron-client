@@ -1,7 +1,9 @@
-import globalData from "../renderer/globalData";
+import globalData from "../../renderer/globalData";
 import getDisplayBounds from "./getNewBounds";
 import setFocusable from "./setFocusable";
 
+// CURRENTLY UNUSED
+// Resizes the window to use the all of the displays area
 export default function setFullBounds(set: boolean) {
   // eslint-disable-next-line global-require
   const { remote } = require("electron");

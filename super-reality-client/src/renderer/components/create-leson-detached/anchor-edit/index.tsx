@@ -20,7 +20,7 @@ import ButtonSimple from "../../button-simple";
 import ButtonRound from "../../button-round";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import AnchorEditSliders from "../anchor-edit-sliders";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
 

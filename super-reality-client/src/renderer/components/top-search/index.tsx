@@ -22,7 +22,7 @@ import useSelectHeader from "../../hooks/useSelectHeader";
 import Category from "../../../types/collections";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import TeacherBotTop from "../teacherbot-top";
-import isElectron from "../../../utils/isElectron";
+import isElectron from "../../../utils/electron/isElectron";
 
 interface TopNavItemProps {
   style?: CSSProperties;

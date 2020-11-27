@@ -6,7 +6,7 @@ import { ReactComponent as TrashButton } from "../../../../assets/svg/trash.svg"
 import { ReactComponent as EditButton } from "../../../../assets/svg/edit.svg";
 import usePopupImage from "../../../hooks/usePopupImage";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 
 interface TemplatesListProps {
   anchor: IAnchor;

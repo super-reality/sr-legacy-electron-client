@@ -4,7 +4,7 @@ import path from "path";
 import url from "url";
 import { DetachArg } from "./handleIpc";
 import store from "../renderer/redux/stores/renderer";
-import isElectron from "./isElectron";
+import isElectron from "./electron/isElectron";
 import { voidFunction } from "../renderer/constants";
 
 export default function createDetachedWindow(

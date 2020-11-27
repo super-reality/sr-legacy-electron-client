@@ -1,7 +1,7 @@
 import Axios from "axios";
-import setLoading from "../renderer/redux/utils/setLoading";
-import { ApiError, ApiOk } from "../renderer/api/types";
-import { API_URL } from "../renderer/constants";
+import setLoading from "../../renderer/redux/utils/setLoading";
+import { ApiError, ApiOk } from "../../renderer/api/types";
+import { API_URL } from "../../renderer/constants";
 
 export default function deleteItem(type: string, id: string): Promise<void> {
   setLoading(true);
