@@ -17,7 +17,6 @@ export function captureDesktopStream(): Promise<MediaStream> {
             },
           } as any,
         });
-        console.log(stream);
         resolve(stream);
       } catch (e) {
         console.error(e);

@@ -7,8 +7,10 @@ import {
   ipcMsgCvResult,
   IpcMsgPythocExec,
   IpcMsgPythocResponse,
+  IpcMsgUrlByTitleResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
+import getBoundsPos from "./getBoundsPos";
 import getDisplayBounds from "./getNewBounds";
 import getPrimaryPos from "./getPrimaryPos";
 
@@ -44,6 +46,23 @@ function makeIpcListener<T extends IpcMsg>(
   const { ipcRenderer } = require("electron");
   ipcRenderer.removeAllListeners(channel);
   ipcRenderer.on(channel, fn);
+}
+
+/**
+ * Utility function to create an ipc listener for once.
+ * @param channel IPC channel to listen.
+ * @param fn function to execute.
+ */
+export function makeIpcListenerOnce<T extends IpcMsg>(
+  channel: T["method"] | string
+): Promise<T["arg"]> {
+  return new Promise((resolve) => {
+    // eslint-disable-next-line global-require
+    const { ipcRenderer } = require("electron");
+    ipcRenderer.once(channel, (e: Electron.IpcRendererEvent, arg: T["arg"]) => {
+      resolve(arg);
+    });
+  });
 }
 
 export default function handleIpc(): void {
@@ -97,7 +116,7 @@ export default function handleIpc(): void {
 
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
     const pos = arg;
-    const primary = getPrimaryPos(getDisplayBounds());
+    const primary = getBoundsPos(getDisplayBounds());
     pos.x -= primary.x;
     pos.y -= primary.y;
     reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });

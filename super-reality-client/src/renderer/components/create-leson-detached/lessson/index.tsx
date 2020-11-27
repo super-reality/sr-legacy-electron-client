@@ -13,6 +13,8 @@ import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.sv
 import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
 import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
 import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
+
+import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import store, { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import OpenStep from "../open-step";
@@ -126,33 +128,50 @@ export default function Lesson(props: LessonProps): JSX.Element {
 
   return (
     <>
-      <Tabs buttons={sections} initial={view} callback={setViewPre} />
-      <TabsContainer
+      <div
+        className="tree-container"
         style={{
-          height: "-webkit-fill-available",
-          flexGrow: 2,
-          overflow: "auto",
+          height: `calc(100% - ${view == "Recordings" ? "80px" : "372px"})`,
         }}
       >
-        {view == "Lessons" && <LessonTree />}
-        {view == "Recordings" && (
-          <RecordingsView createRecorder={createRecorder} />
-        )}
-      </TabsContainer>
+        <Tabs buttons={sections} initial={view} callback={setViewPre} />
+        <TabsContainer
+          style={{
+            height: "-webkit-fill-available",
+            flexGrow: 2,
+            overflow: "auto",
+          }}
+        >
+          {view == "Lessons" && <LessonTree />}
+          {view == "Recordings" && <RecordingsView />}
+        </TabsContainer>
+      </div>
+      {view == "Recordings" && (
+        <ButtonRound
+          svg={RecordIcon}
+          width="48px"
+          height="48px"
+          svgStyle={{ width: "32px", height: "32px" }}
+          style={{ margin: "16px auto" }}
+          onClick={createRecorder}
+        />
+      )}
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">
           <LessonTreeControls />
         </div>
       )}
-      {treeCurrentType == "item" && view == "Lessons" && (
-        <OpenItem id={treeCurrentId} />
-      )}
-      {treeCurrentType == "step" && view == "Lessons" && (
-        <OpenStep id={treeCurrentId} />
-      )}
+      <div className="settings-container">
+        {treeCurrentType == "item" && view == "Lessons" && (
+          <OpenItem id={treeCurrentId} />
+        )}
+        {treeCurrentType == "step" && view == "Lessons" && (
+          <OpenStep id={treeCurrentId} />
+        )}
+      </div>
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">
-          <Flex style={{ marginTop: "auto" }}>
+          <Flex style={{ margin: "auto" }}>
             <ButtonRound
               width="36px"
               height="36px"
@@ -185,34 +204,6 @@ export default function Lesson(props: LessonProps): JSX.Element {
               onClick={doPreview}
               svg={ButtonPlay}
               style={{ marginRight: "8px" }}
-            />
-            <ButtonRound
-              width="36px"
-              height="36px"
-              onClick={() => {}}
-              svg={ButtonFolder}
-              style={{ marginLeft: "auto" }}
-            />
-            <ButtonRound
-              width="36px"
-              height="36px"
-              onClick={() => {}}
-              svg={ButtonCopy}
-              style={{ marginLeft: "8px" }}
-            />
-            <ButtonRound
-              width="36px"
-              height="36px"
-              onClick={() => {}}
-              svg={ButtonPaste}
-              style={{ marginLeft: "8px" }}
-            />
-            <ButtonRound
-              width="36px"
-              height="36px"
-              onClick={() => {}}
-              svg={ButtonCut}
-              style={{ marginLeft: "8px" }}
             />
           </Flex>
         </div>

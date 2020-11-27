@@ -1,0 +1,22 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'i' ]
+2 info using npm@2.15.1
+3 info using node@v0.12.14
+4 verbose readDependencies loading dependencies from C:\Users\Admin\super-reality-client\package.json
+5 error install Couldn't read dependencies
+6 verbose stack Error: ENOENT, open 'C:\Users\Admin\super-reality-client\package.json'
+6 verbose stack     at Error (native)
+7 verbose cwd C:\Users\Admin\super-reality-client
+8 error Windows_NT 10.0.18363
+9 error argv "C:\\Program Files (x86)\\nodejs\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "i"
+10 error node v0.12.14
+11 error npm  v2.15.1
+12 error path C:\Users\Admin\super-reality-client\package.json
+13 error code ENOPACKAGEJSON
+14 error errno -4058
+15 error package.json ENOENT, open 'C:\Users\Admin\super-reality-client\package.json'
+15 error package.json This is most likely not a problem with npm itself.
+15 error package.json npm can't find a package.json file in your current directory.
+16 verbose exit [ -4058, true ]

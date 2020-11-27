@@ -33,6 +33,12 @@ export const restrictSnapRound = interact.modifiers.snap({
   relativePoints: [{ x: 0, y: 0 }],
 });
 
+export const restrictSnapGrid = interact.modifiers.snap({
+  targets: [interact.createSnapGrid({ x: 16, y: 16 })],
+  range: Infinity,
+  relativePoints: [{ x: 0, y: 0 }],
+});
+
 export const voidFunction = () => {};
 
 const fxDirectory = `${process.env.PUBLIC_URL}/fx`;

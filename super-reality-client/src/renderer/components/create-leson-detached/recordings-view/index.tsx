@@ -2,19 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import ModalList from "../modal-list";
-import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import { AppState } from "../../../redux/stores/renderer";
 import { voidFunction } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
-import ButtonRound from "../../button-round";
 import { stepSnapshotPath } from "../../../electron-constants";
 
-interface RecordingsViewProps {
-  createRecorder: () => void;
-}
-
-export default function RecordingsView(props: RecordingsViewProps) {
-  const { createRecorder } = props;
+export default function RecordingsView() {
   const [videos, setVideos] = useState<string[]>([]);
   const dispatch = useDispatch();
   const { currentRecording } = useSelector(
@@ -61,14 +54,6 @@ export default function RecordingsView(props: RecordingsViewProps) {
         selected={current}
         setCurrent={voidFunction}
         open={setOpen}
-      />
-      <ButtonRound
-        svg={RecordIcon}
-        width="48px"
-        height="48px"
-        svgStyle={{ width: "32px", height: "32px" }}
-        style={{ margin: "16px auto" }}
-        onClick={createRecorder}
       />
     </div>
   );

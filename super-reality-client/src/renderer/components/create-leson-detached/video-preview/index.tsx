@@ -295,9 +295,12 @@ export default function VideoPreview(): JSX.Element {
         />
         <div
           key={`ver-${item?._id}` || ""}
-          id="horizontal-pos"
+          id="vertical-pos"
           className="vertical-pos"
         />
+        <div key={`xy-${item?._id}` || ""} id="xy-pos" className="xy-pos">
+          <div id="xy-pos-text" className="xy-pos-text" />
+        </div>
         <img ref={anchorImageRef} style={{ display: "none" }} />
         {item && currentItem && currentStep && !cropRecording && (
           <>

@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import "./index.scss";
 import ButtonSimple from "../../components/button-simple";
 import createLessonInterface from "../../../utils/createLessonInterface";
-import globalData from "../../globalData";
 import ipcSend from "../../../utils/ipcSend";
+import { IpcMsgUrlByTitleResponse } from "../../../types/ipc";
+import { makeIpcListenerOnce } from "../../../utils/handleIpc";
 
 export default function Test(): JSX.Element {
   const onCLose = useCallback(() => console.log("Closed!"), []);
@@ -20,6 +21,21 @@ export default function Test(): JSX.Element {
     });
   }, []);
 
+  const duckduckgoTest = useCallback(() => {
+    ipcSend({
+      method: "getUrlbyTitle",
+      arg: {
+        title: "puppeteer-in-electron - npm",
+        responseChannel: "getUrlbyTitleResponse",
+      },
+    });
+    makeIpcListenerOnce<IpcMsgUrlByTitleResponse>("getUrlbyTitleResponse").then(
+      (arg) => {
+        console.log("getUrlbyTitleResponse: ", arg);
+      }
+    );
+  }, []);
+
   return (
     <div className="mid">
       <ButtonSimple width="200px" height="24px" margin="auto" onClick={onClick}>
@@ -33,6 +49,15 @@ export default function Test(): JSX.Element {
         onClick={pythonTest}
       >
         Test python background
+      </ButtonSimple>
+
+      <ButtonSimple
+        width="200px"
+        height="24px"
+        margin="auto"
+        onClick={duckduckgoTest}
+      >
+        Test duckduckgo
       </ButtonSimple>
     </div>
   );
