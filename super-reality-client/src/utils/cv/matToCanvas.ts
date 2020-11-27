@@ -1,4 +1,4 @@
-import cv from "../opencv/opencv";
+import * as cv from "../opencv/opencv";
 
 export default function matToCanvas(mat: cv.Mat, id: string): void {
   // convert your image to rgba color space

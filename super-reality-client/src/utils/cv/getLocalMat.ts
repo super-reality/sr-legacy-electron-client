@@ -1,4 +1,4 @@
-import cv from "../opencv/opencv";
+import * as cv from "../opencv/opencv";
 
 export default function getLocalMat(image: string): Promise<cv.Mat> {
   return new Promise((resolve, reject) => {
