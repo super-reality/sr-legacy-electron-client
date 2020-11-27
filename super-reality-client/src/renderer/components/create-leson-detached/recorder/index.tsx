@@ -443,7 +443,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
                 }}
                 width="28px"
                 height="28px"
-                onClick={stopRecord /* should be resume play */}
+                onClick={() => setTimeout(stopRecord, 1000)}
                 style={{ backgroundColor: "#202225" }}
               />
             </Flex>
