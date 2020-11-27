@@ -2,7 +2,7 @@
 import path from "path";
 import Axios from "axios";
 import getFileExt from "../files/getFileExt";
-import getFileSha1 from "../getFileSha1";
+import getFileSha1 from "../files/getFileSha1";
 import SignIn from "../../renderer/api/types/auth/signin";
 import { API_URL } from "../../renderer/constants";
 import { ApiError } from "../../renderer/api/types";
