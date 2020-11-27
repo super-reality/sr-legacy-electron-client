@@ -152,17 +152,21 @@ export default function VideoStatus() {
       arg: null,
     });
 
-    setStatus(`Generating`);
-    const generatedData = generateBaseData();
-    generateSteps(generatedData)
-      .then((data) => generateDialogues(data))
-      .then((data) => generateClicks(data, anchor))
-      .then(() => generationDone())
-      .catch((e) => {
-        console.error(e);
-        clearTempFolder();
-        setStatus(`Error generating`);
-      });
+    if (anchor) {
+      setStatus(`Generating`);
+      const generatedData = generateBaseData();
+      generateSteps(generatedData)
+        .then((data) => generateDialogues(data))
+        .then((data) => generateClicks(data, anchor))
+        .then(() => generationDone())
+        .catch((e) => {
+          console.error(e);
+          clearTempFolder();
+          setStatus(`Error generating`);
+        });
+    } else {
+      setStatus(`No anchor selected`);
+    }
   }, [anchor]);
 
   const checkAnchor = useCallback(() => {
