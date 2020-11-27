@@ -14,7 +14,6 @@ import { GeneratedData } from "./types";
 
 function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {
   const itemToSet: Partial<ItemFocus> = {
-    trigger: 1,
     anchor: true,
     focus: "Mouse Point",
     name: `${data.type} ${data.time_stamp}`,
