@@ -205,6 +205,8 @@ export default class CVRecorder {
     };
 
     let previousInterval = 0;
+    this._titlesQueue = [...new Set(this._titlesQueue)];
+
     console.log("this._titlesQueue", this._titlesQueue);
     for (let index = 0; index < this._titlesQueue.length; index += 1) {
       const title = this._titlesQueue[index];
@@ -438,9 +440,11 @@ export default class CVRecorder {
           this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
           console.log("recording path: ", this._recordingFullPath);
           if (this._recordingFullPath) {
-            fs.writeFile(this._recordingFullPath, buffer, () => {
-              this.extractClickedImages();
-            });
+            fs.writeFile(
+              this._recordingFullPath,
+              buffer,
+              this.extractClickedImages
+            );
           }
         });
       });
