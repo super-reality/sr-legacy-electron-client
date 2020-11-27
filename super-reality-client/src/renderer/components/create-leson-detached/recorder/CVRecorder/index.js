@@ -214,9 +214,11 @@ export default class CVRecorder {
     }
 
     console.log("this._clickEventDetails", this._clickEventDetails);
-    await Promise.all(
-      this._clickEventDetails.map(async (arr, i) => {
-        console.log(i, arr);
+    for (let index = 0; index < this._clickEventDetails.length; index += 1) {
+      const arr = this._clickEventDetails[index];
+
+      console.log(index, arr);
+      try {
         let doubleClick = false;
         let clickType = "";
         let keyboardEvents = {};
@@ -315,17 +317,17 @@ export default class CVRecorder {
             bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
           const bottomRightCornerY = bottomBorderY + this._pixelOffset;
           /*
-          const cornerPointsArr = new Array(4);
-          cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
-          cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-          cornerPointsArr[2] = new cv.Point2(
-            bottomLeftCornerX,
-            bottomLeftCornerY
-          );
-          cornerPointsArr[3] = new cv.Point2(
-            bottomRightCornerX,
-            bottomRightCornerY
-          );
+            const cornerPointsArr = new Array(4);
+            cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
+            cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
+            cornerPointsArr[2] = new cv.Point2(
+              bottomLeftCornerX,
+              bottomLeftCornerY
+            );
+            cornerPointsArr[3] = new cv.Point2(
+              bottomRightCornerX,
+              bottomRightCornerY
+            );
           */
 
           contourDic.x = topLeftCornerX;
@@ -333,6 +335,7 @@ export default class CVRecorder {
           contourDic.width = topRightCornerX - topLeftCornerX;
           contourDic.height = bottomLeftCornerY - topLeftCornerY;
         }
+
         if (
           eventType === "left_click" ||
           eventType === "right_click" ||
@@ -348,9 +351,11 @@ export default class CVRecorder {
           }
           previousInterval = interval;
         }
+
         if (globalData.titleUrlDictionary[processTitle]) {
           browserTabUrl = globalData.titleUrlDictionary[processTitle];
         }
+
         jsonMetaData.step_data.push({
           type: eventType,
           process_owner: processOwnerName,
@@ -364,20 +369,23 @@ export default class CVRecorder {
           time_stamp: timestamp,
           keyboard_events: keyboardEvents,
         });
-      })
-    ).then(() => {
-      const json = JSON.stringify(jsonMetaData, null, "  ");
-      fs.writeFile(
-        `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
-        json,
-        "utf8",
-        (err) => {
-          if (err) throw err;
-        }
-      );
-      this._clickEventDetails = [];
-      this._finishCallback(jsonMetaData);
-    });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const json = JSON.stringify(jsonMetaData, null, "  ");
+    fs.writeFile(
+      `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
+      json,
+      "utf8",
+      (err) => {
+        if (err) throw err;
+      }
+    );
+
+    this._clickEventDetails = [];
+    this._finishCallback(jsonMetaData);
   }
 
   // Saves the video file on stop
