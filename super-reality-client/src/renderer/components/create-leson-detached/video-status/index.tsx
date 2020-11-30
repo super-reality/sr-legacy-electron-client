@@ -29,6 +29,7 @@ import updateStep from "../lesson-utils/updateStep";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
+import logger from "../../../../utils/logger";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -160,6 +161,7 @@ export default function VideoStatus() {
         .then((data) => generateClicks(data, anchor))
         .then(() => generationDone())
         .catch((e) => {
+          logger("error", e);
           console.error(e);
           clearTempFolder();
           setStatus(`Error generating`);
