@@ -1,5 +1,9 @@
 /* eslint-disable radix */
 
+/**
+ * Coverts a timestamp in the format "HH:MM:SS:mmm" to miliseconds
+ * It also accepts formats like "MM:SS:mmm" and "SS:mmm"
+ */
 export default function timestampToTime(timestamp: string): number {
   // return parseInt(timestamp.replace(/:/g, ""));
 
