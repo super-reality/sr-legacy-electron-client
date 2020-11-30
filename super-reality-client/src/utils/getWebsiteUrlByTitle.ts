@@ -4,8 +4,15 @@ import { makeIpcListenerOnce } from "./handleIpc";
 import ipcSend from "./ipcSend";
 
 export default function getWebsiteUrlByTitle(
-  title: string
+  originalTitle: string
 ): Promise<IpcMsgUrlByTitleResponse["arg"]> {
+  // Browsers like to add their name to the titles, we have to remove them all
+  const replace = [" - Brave", " - Google Chrome"];
+  let title = originalTitle;
+  replace.forEach((str) => {
+    title = title.replace(str, "");
+  });
+
   if (globalData.titleUrlDictionary[title]) {
     return new Promise((resolve) => {
       resolve({ title, url: globalData.titleUrlDictionary[title] });
