@@ -213,6 +213,10 @@ export default function VideoStatus() {
       .then((a) => {
         if (a) {
           reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: { currentAnchor: a._id },
+          });
+          reduxAction(dispatch, {
             type: "SET_RECORDING_DATA",
             arg: {
               anchor: a._id,
