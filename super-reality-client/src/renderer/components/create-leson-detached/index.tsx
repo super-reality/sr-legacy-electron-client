@@ -217,18 +217,22 @@ export default function CreateLessonDetached(): JSX.Element {
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
-        console.error(e);
+        console.warn(
+          `.json for recording ${currentRecording} does not exist! Some data about it might be unavailable.`
+        );
       }
-    }
-    if (currentRecording) {
-      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
-        (data) => {
+      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`)
+        .then((data) => {
           reduxAction(dispatch, {
             type: "SET_RECORDING_DATA",
             arg: { spectrum: rawAudioToWaveform(data) },
           });
-        }
-      );
+        })
+        .catch((e) => {
+          console.warn(
+            `recording ${currentRecording} does not have any local audio files.`
+          );
+        });
     }
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
