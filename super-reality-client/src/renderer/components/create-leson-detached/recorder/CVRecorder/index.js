@@ -256,86 +256,69 @@ export default class CVRecorder {
           mainImage = cap.read();
 
           cap.set(cv.CAP_PROP_POS_MSEC, interval);
+
           const currentImage = cap.read();
 
-          const absDiff = mainImage.absdiff(currentImage);
+          if (currentImage.cols !== 0 && currentImage.rows !== 0) {
+            const absDiff = mainImage.absdiff(currentImage);
 
-          const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
+            const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-          const cannyEdges = grayImg.canny(23, 180, 3);
+            const cannyEdges = grayImg.canny(23, 180, 3);
 
-          // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
+            // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
-          const cannyEdges2D = cannyEdges.getDataAsArray();
+            const cannyEdges2D = cannyEdges.getDataAsArray();
 
-          const rightBorderCordiates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "right"
-          );
-          const leftBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "left"
-          );
-          const topBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "top"
-          );
-          const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "bottom"
-          );
-          const rightBorderX = rightBorderCordiates[0];
-          const rightBorderY = rightBorderCordiates[1];
-          const leftBorderX = leftBorderCordinates[0];
-          const leftBorderY = leftBorderCordinates[1];
-          const topBorderX = topBorderCordinates[0];
-          const topBorderY = topBorderCordinates[1];
-          const bottomBorderX = bottomBorderCordinates[0];
-          const bottomBorderY = bottomBorderCordinates[1];
-          const snipWindowHeight = bottomBorderY - topBorderY;
-          const snipWindowWidth = rightBorderX - leftBorderX;
-
-          const topLeftCornerX =
-            topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
-          const topLeftCornerY = topBorderY - this._pixelOffset;
-
-          const topRightCornerX = rightBorderX + this._pixelOffset;
-          const topRightCornerY =
-            rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
-
-          const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-          const bottomLeftCornerY =
-            leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
-
-          const bottomRightCornerX =
-            bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
-          const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-          /*
-            const cornerPointsArr = new Array(4);
-            cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
-            cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-            cornerPointsArr[2] = new cv.Point2(
-              bottomLeftCornerX,
-              bottomLeftCornerY
+            const rightBorderCordiates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "right"
             );
-            cornerPointsArr[3] = new cv.Point2(
-              bottomRightCornerX,
-              bottomRightCornerY
-            );
-          */
 
-          contourDic.x = topLeftCornerX;
-          contourDic.y = topLeftCornerY;
-          contourDic.width = topRightCornerX - topLeftCornerX;
-          contourDic.height = bottomLeftCornerY - topLeftCornerY;
+            const leftBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "left"
+            );
+
+            const topBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "top"
+            );
+
+            const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "bottom"
+            );
+
+            const rightBorderX = rightBorderCordiates[0];
+            const leftBorderX = leftBorderCordinates[0];
+            const leftBorderY = leftBorderCordinates[1];
+            const topBorderX = topBorderCordinates[0];
+            const topBorderY = topBorderCordinates[1];
+            const bottomBorderY = bottomBorderCordinates[1];
+
+            const topLeftCornerX =
+              topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+            const topLeftCornerY = topBorderY - this._pixelOffset;
+
+            const topRightCornerX = rightBorderX + this._pixelOffset;
+
+            const bottomLeftCornerY =
+              leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+
+            contourDic.x = topLeftCornerX;
+            contourDic.y = topLeftCornerY;
+            contourDic.width = topRightCornerX - topLeftCornerX;
+            contourDic.height = bottomLeftCornerY - topLeftCornerY;
+          }
         }
 
         if (
@@ -396,6 +379,7 @@ export default class CVRecorder {
       const videoBlob = new Blob(this._recordedChunks, {
         type: "video/webm;codecs=vp9",
       });
+
       const readAsArrayBuffer = (blob) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -408,6 +392,7 @@ export default class CVRecorder {
           };
         });
       };
+
       const injectMetadata = (blob) => {
         const decoder = new Decoder();
         const reader = new Reader();
@@ -433,6 +418,7 @@ export default class CVRecorder {
           return result;
         });
       };
+
       const seekableVideoBlob = injectMetadata(videoBlob);
       seekableVideoBlob.then((blob) => {
         blob.arrayBuffer().then((arrayBuffer) => {
