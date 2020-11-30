@@ -207,19 +207,14 @@ export default class CVRecorder {
     let previousInterval = 0;
     this._titlesQueue = [...new Set(this._titlesQueue)];
 
-    console.log("this._titlesQueue", this._titlesQueue);
     for (let index = 0; index < this._titlesQueue.length; index += 1) {
       const title = this._titlesQueue[index];
-      console.log(title, index);
       // eslint-disable-next-line no-await-in-loop
       await getWebsiteUrlByTitle(title);
     }
 
-    console.log("this._clickEventDetails", this._clickEventDetails);
     for (let index = 0; index < this._clickEventDetails.length; index += 1) {
       const arr = this._clickEventDetails[index];
-
-      console.log(index, arr);
       try {
         let doubleClick = false;
         let clickType = "";
