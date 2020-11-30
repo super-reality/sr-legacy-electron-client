@@ -26,7 +26,7 @@ test("Can get a file sha1 hash", () => {
   expect(getFileSha1(file)).toBe("7b9d27774fa36de33529ff6b2487cef0bee6d75a");
 });
 
-test("Formtas constants", () => {
+test("Formats constants", () => {
   expect(constantFormat(DifficultyOptions)(DifficultyOptions.Intro)).toBe(
     "Intro"
   );

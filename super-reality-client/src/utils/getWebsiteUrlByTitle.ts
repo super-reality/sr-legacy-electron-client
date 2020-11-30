@@ -7,7 +7,12 @@ export default function getWebsiteUrlByTitle(
   originalTitle: string
 ): Promise<IpcMsgUrlByTitleResponse["arg"]> {
   // Browsers like to add their name to the titles, we have to remove them all
-  const replace = [" - Brave", " - Google Chrome"];
+  const replace = [
+    " - Brave",
+    " - Google Chrome",
+    " - Microsoft Edge",
+    " - Mozilla Firefox",
+  ];
   let title = originalTitle;
   replace.forEach((str) => {
     title = title.replace(str, "");
