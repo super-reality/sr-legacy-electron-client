@@ -211,7 +211,7 @@ function TreeFolder(props: TreeFolderProps) {
       document.onkeydown = keyListeners;
       setSelected(true);
     },
-    [dispatch, open]
+    [dispatch, open, keyListeners]
   );
 
   useEffect(() => {
@@ -324,6 +324,7 @@ function TreeItem(props: TreeItemProps) {
     if (e.key === "Delete") {
       onDelete("item", id, parentId);
     }
+    /*
     if (e.ctrlKey && e.key === "c") {
       console.log(`copy ${id}`);
     }
@@ -333,6 +334,7 @@ function TreeItem(props: TreeItemProps) {
     if (e.ctrlKey && e.key === "v") {
       console.log(`paste on ${id}`);
     }
+    */
   }, []);
 
   const doOpen = useCallback(() => {
@@ -353,7 +355,7 @@ function TreeItem(props: TreeItemProps) {
     }
     document.onkeydown = keyListeners;
     setSelected(true);
-  }, [dispatch, id]);
+  }, [dispatch, id, keyListeners]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
