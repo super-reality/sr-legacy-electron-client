@@ -51,13 +51,23 @@ export default function StepView(props: StepViewProps) {
     [itemsState]
   );
 
+  const itemKeys: Record<string, number> = {};
+
   return (
     <>
-      {Object.keys(itemsState).map((itemId) => {
+      {Object.keys(itemsState).map((itemId, index) => {
         const item: Item | undefined = treeItems[itemId];
+        if (item?.type) {
+          if (itemKeys[item?.type]) {
+            itemKeys[item?.type] += 1;
+          } else {
+            itemKeys[item?.type] = 0;
+          }
+        }
         return item && (itemsState[itemId] == false || item.trigger == null) ? (
           <ItemView
-            key={item._id}
+            // eslint-disable-next-line react/no-array-index-key
+            key={`item-box-${item.type}-${itemKeys[item.type]}`}
             item={item}
             anchorId={step.anchor || ""}
             onSucess={(trigger: number | null) => {

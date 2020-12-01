@@ -12,6 +12,7 @@ import ImageBox from "../image.box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import DialogBox from "../dialog-box";
+import { Rectangle } from "../../../../types/utils";
 
 interface ItemViewProps {
   item: Item;
@@ -26,7 +27,7 @@ export default function ItemView(props: ItemViewProps) {
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
-  const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [pos, setPos] = useState<Rectangle | null>(null);
   const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
@@ -65,13 +66,17 @@ export default function ItemView(props: ItemViewProps) {
     ) {
       onSucess(ItemFocusTriggers["Target found"]);
     }
-  }, [anchor, cvResult, item, onSucess]);
+  }, [anchor, cvResult, onSucess]);
 
   useEffect(() => {
     updatePos();
   }, [cvResult, updatePos]);
 
   if (previewing && item.anchor && cvResult.dist < anchor.cvMatchValue / 1000) {
+    return <></>;
+  }
+
+  if (!pos) {
     return <></>;
   }
 
