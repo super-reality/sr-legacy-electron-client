@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Item } from "../../../api/types/item/item";
+import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 import { IStep } from "../../../api/types/step/step";
 import { AppState } from "../../../redux/stores/renderer";
 import ItemView from "../item-view";
@@ -18,6 +18,7 @@ export default function StepView(props: StepViewProps) {
     (state: AppState) => state.createLessonV2
   );
   const [itemsState, setItemsState] = useState<ItemsState>({});
+  const [itemsShow, setItemsShow] = useState<ItemsState>({});
 
   const step: IStep | undefined = useMemo(
     () => treeSteps[stepId] || undefined,
@@ -26,14 +27,17 @@ export default function StepView(props: StepViewProps) {
 
   useEffect(() => {
     const state: ItemsState = {};
+    const show: ItemsState = {};
     step.items.forEach((i) => {
       const item: Item | undefined = treeItems[i._id];
       state[i._id] = false;
+      show[i._id] = true;
       if (item && item.trigger == null) {
         state[i._id] = true;
       }
     });
     setItemsState(state);
+    setItemsShow(show);
   }, [step]);
 
   const itemSuceeded = useCallback(
@@ -51,34 +55,41 @@ export default function StepView(props: StepViewProps) {
     [itemsState]
   );
 
-  const itemKeys: Record<string, number> = {};
+  const itemSucess = useCallback(
+    (trigger: number | null, item: Item) => {
+      if (
+        previewing &&
+        trigger == item.trigger &&
+        itemsState[item._id] == false
+      ) {
+        itemSuceeded(item._id, trigger);
+      }
+      if (
+        previewing &&
+        item.type == "focus_highlight" &&
+        trigger == ItemFocusTriggers["Hover target"] &&
+        item.trigger !== ItemFocusTriggers["Click target"]
+      ) {
+        const showState = { ...itemsShow };
+        showState[item._id] = false;
+        setItemsShow(showState);
+      }
+    },
+    [itemsState, itemsShow]
+  );
 
   return (
     <>
-      {Object.keys(itemsState).map((itemId, index) => {
+      {Object.keys(itemsState).map((itemId) => {
         const item: Item | undefined = treeItems[itemId];
-        if (item?.type) {
-          if (itemKeys[item?.type]) {
-            itemKeys[item?.type] += 1;
-          } else {
-            itemKeys[item?.type] = 0;
-          }
-        }
-        return item && (itemsState[itemId] == false || item.trigger == null) ? (
+        return item &&
+          (itemsState[itemId] == false || item.trigger == null) &&
+          itemsShow[itemId] ? (
           <ItemView
-            // eslint-disable-next-line react/no-array-index-key
-            key={`item-box-${item.type}-${itemKeys[item.type]}`}
+            key={`item-box-${item._id}`}
             item={item}
             anchorId={step.anchor || ""}
-            onSucess={(trigger: number | null) => {
-              if (
-                previewing &&
-                trigger == item.trigger &&
-                itemsState[itemId] == false
-              ) {
-                itemSuceeded(itemId, trigger);
-              }
-            }}
+            onSucess={(trigger: number | null) => itemSucess(trigger, item)}
           />
         ) : (
           <React.Fragment
