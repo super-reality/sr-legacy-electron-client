@@ -11,6 +11,7 @@ import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
 import constantFormat from "../constantFormat";
 import createDataDirs from "../files/createDataDirs";
 import timestampToTime from "../timestampToTime";
+import getBoundsPos from "../electron/getBoundsPos";
 
 jest.setTimeout(30000);
 
@@ -73,4 +74,16 @@ test("Can parse timestamps", () => {
   expect(timestampToTime("0:0:0:0")).toBe(0);
   expect(timestampToTime("0")).toBe(0);
   expect(timestampToTime("10:0")).toBe(10000);
+});
+
+test("Can get bounds properly", () => {
+  // bounds of all screens
+  const bounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
+  // position of window on screen (fullscreen)
+  const windowBounds = { x: 0, y: 0, width: 1920, height: 1050 };
+
+  expect(getBoundsPos(bounds, windowBounds)).toStrictEqual({
+    x: 1600,
+    y: 1080,
+  });
 });
