@@ -47,10 +47,12 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
     <button
       style={{
         cursor: "pointer",
-        width: "calc(25% - 5px)",
-        height: "calc(25% - 5px)",
+        width: "calc(25% - 10px)",
+        height: "calc(25% - 10px)",
         minWidth: "100px",
         minHeight: "85px",
+        padding: "0px",
+        margin: "5px",
       }}
       key={name}
       id={id}
