@@ -95,8 +95,10 @@ function createWindow() {
     setTimeout(() => {
       const bounds = getDisplayBounds();
       mainWindow.setSize(bounds.width, bounds.height);
-      sendReady();
     }, 1000);
+    setTimeout(() => {
+      sendReady();
+    }, 1500);
   });
 
   mainIpcInitialize(puppeteer);
