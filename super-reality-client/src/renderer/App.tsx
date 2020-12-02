@@ -20,8 +20,8 @@ import Windowlet from "./components/create-leson-detached/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import getPrimaryPos from "../utils/electron/getPrimaryPos";
-import getDisplaySize from "../utils/electron/getDisplaySize";
 import getDisplayBounds from "../utils/electron/getDisplayBounds";
+import getPrimarySize from "../utils/electron/getPrimarySize";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -63,7 +63,7 @@ export default function App(): JSX.Element {
     return <></>;
   }
 
-  const primarySize = getDisplaySize();
+  const primarySize = getPrimarySize();
   const primaryPos = getPrimaryPos(getDisplayBounds());
   const left = `${primaryPos.x + primarySize.width / 2 - 150}px`;
   const top = `${primaryPos.y + primarySize.height / 2 - 350}px`;

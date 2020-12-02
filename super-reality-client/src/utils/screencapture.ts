@@ -56,7 +56,7 @@ export default function screencapture(
   capture(filePath, (err: any, imagePath: string) => {
     const displays = getDisplayBounds();
     const pos = getPrimaryPos(displays);
-    const size = getPrimarySize(displays);
+    const size = getPrimarySize();
     // eslint-disable-next-line global-require
     const { nativeImage } = require("electron");
 
