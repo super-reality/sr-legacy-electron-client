@@ -47,6 +47,10 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
     <button
       style={{
         cursor: "pointer",
+        width: "calc(25% - 5px)",
+        height: "calc(25% - 5px)",
+        minWidth: "100px",
+        minHeight: "85px",
       }}
       key={name}
       id={id}
@@ -62,19 +66,19 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
           style={{
             pointerEvents: "none",
             borderRadius: "8px",
+            width: "100%",
+            height: "100%",
           }}
           src={url}
-          width="175px"
-          height="163px"
         />
       ) : (
         <img
           style={{
             pointerEvents: "none",
             borderRadius: "8px",
+            width: "100%",
+            height: "100%",
           }}
-          width="175px"
-          height="163px"
           src={IconFXInList}
         />
       )}
@@ -196,74 +200,81 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
     <>
       <div style={{ marginRight: "0px" }} className="settings-popup-inner">
         <div
-          className="settings-popup-name"
           style={{
-            fontSize: "18px",
-            fontWeight: "bold",
-            color: "var(--color-text-active)",
-            margin: "0 5px 5px",
+            height: "85%",
           }}
         >
-          {preview != "" ? effectDB[preview].name : "FX Name"}
-        </div>
-        <div
-          style={{
-            cursor: "pointer",
-          }}
-        >
-          {preview != "" ? (
-            <>
-              <embed
+          <div
+            className="settings-popup-name"
+            style={{
+              fontSize: "18px",
+              fontWeight: "bold",
+              color: "var(--color-text-active)",
+              margin: "0 5px 5px",
+            }}
+          >
+            {preview != "" ? effectDB[preview].name : "FX Name"}
+          </div>
+          <div
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            {preview != "" ? (
+              <>
+                <embed
+                  className="prveiw-fx"
+                  style={{
+                    borderRadius: "8px",
+                  }}
+                  src={effectDB[preview].url}
+                />
+              </>
+            ) : (
+              <img
                 className="prveiw-fx"
+                src={IconFXThumbnail}
+                alt="Fx Icon"
                 style={{
                   borderRadius: "8px",
                 }}
-                src={effectDB[preview].url}
               />
-            </>
-          ) : (
-            <img
-              className="prveiw-fx"
-              src={IconFXThumbnail}
-              alt="Fx Icon"
-              style={{
-                borderRadius: "8px",
-              }}
-            />
-          )}
+            )}
+          </div>
+          <div className="item-tags settings-popup-options">
+            Tags:{" "}
+            {preview != "" &&
+              effectDB[preview].tags.map((tag) => {
+                return (
+                  <span
+                    key={tag}
+                    style={{
+                      cursor: "pointer",
+                      marginLeft: "5px",
+                      border: "var(--color-text) solid 1px",
+                      borderRadius: "3px",
+                      padding: "0 3px",
+                    }}
+                    onClick={() => {
+                      addTag(tag);
+                    }}
+                  >
+                    {tag}
+                  </span>
+                );
+              })}
+          </div>
+          <div className="settings-popup-options">Options</div>
+          <div className="settings-popup-exposed settings-popup-options">
+            Expoused Values
+          </div>
         </div>
-        <div className="item-tags settings-popup-options">
-          Tags:{" "}
-          {preview != "" &&
-            effectDB[preview].tags.map((tag) => {
-              return (
-                <span
-                  key={tag}
-                  style={{
-                    cursor: "pointer",
-                    marginLeft: "5px",
-                    border: "var(--color-text) solid 1px",
-                    borderRadius: "3px",
-                    padding: "0 3px",
-                  }}
-                  onClick={() => {
-                    addTag(tag);
-                  }}
-                >
-                  {tag}
-                </span>
-              );
-            })}
-        </div>
-        <div className="settings-popup-options">Options</div>
-        <div className="settings-popup-exposed settings-popup-options">
-          Expoused Values
-        </div>
+
         <div
           style={{
             display: "flex",
             width: "100%",
-            marginTop: "17%",
+            marginTop: "10%",
           }}
         >
           <ButtonSimple
