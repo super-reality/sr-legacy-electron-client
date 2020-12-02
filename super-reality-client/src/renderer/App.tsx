@@ -16,6 +16,8 @@ import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
+import Windowlet from "./components/create-leson-detached/windowlet";
+import closeWindow from "../utils/electron/closeWindow";
 
 export default function App(): JSX.Element {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
@@ -52,29 +54,33 @@ export default function App(): JSX.Element {
     return <BackgroundController />;
   }
 
-  return isAuthenticated ? (
-    <>
-      <TopSearch />
-      <Loading state={isLoading} />
-      <div onScroll={handleScroll} ref={scrollRef} className="content">
-        <div className="content-wrapper">
+  return (
+    <Windowlet title="Super Reality" onClose={closeWindow}>
+      {isAuthenticated ? (
+        <>
+          <TopSearch />
+          <Loading state={isLoading} />
+          <div onScroll={handleScroll} ref={scrollRef} className="content">
+            <div className="content-wrapper">
+              <Switch>
+                <Route path="/discover" component={Discover} />
+                <Route path="/learn" component={Learn} />
+                <Route path="/teach" component={Test} />
+                <Route path="/create" component={Create} />
+                <Route path="/profile" component={Profile} />
+              </Switch>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <Loading state={isPending} />
           <Switch>
-            <Route path="/discover" component={Discover} />
-            <Route path="/learn" component={Learn} />
-            <Route path="/teach" component={Test} />
-            <Route path="/create" component={Create} />
-            <Route path="/profile" component={Profile} />
+            <Route exact path="/tests/:id" component={Tests} />
+            <Route path="*" component={Splash} />
           </Switch>
-        </div>
-      </div>
-    </>
-  ) : (
-    <>
-      <Loading state={isPending} />
-      <Switch>
-        <Route exact path="/tests/:id" component={Tests} />
-        <Route path="*" component={Splash} />
-      </Switch>
-    </>
+        </>
+      )}
+    </Windowlet>
   );
 }
