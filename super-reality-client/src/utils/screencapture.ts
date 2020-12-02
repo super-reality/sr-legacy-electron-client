@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import getPrimaryPos from "./electron/getPrimaryPos";
 import getPrimarySize from "./electron/getPrimarySize";
-import getDisplayBounds from "./electron/getNewBounds";
+import getDisplayBounds from "./electron/getDisplayBounds";
 
 function captureCommand(filePath: string) {
   // eslint-disable-next-line global-require

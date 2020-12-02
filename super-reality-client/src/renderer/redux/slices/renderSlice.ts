@@ -19,6 +19,7 @@ const initialState = {
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
   overlayTransparent: MODE_SOLID as UI_MODES,
+  ready: false,
   cvResult: {
     dist: 0,
     sizeFactor: 0,
@@ -67,6 +68,9 @@ const renderSlice = createSlice({
     ): void => {
       state.cvResult = action.payload;
     },
+    setReady: (state: RenderState, action: PayloadAction<boolean>): void => {
+      state.ready = action.payload;
+    },
   },
 });
 
@@ -76,6 +80,7 @@ export const {
   setYScrollMoveTo,
   setTopInput,
   setCvResult,
+  setReady,
 } = renderSlice.actions;
 
 export default renderSlice;

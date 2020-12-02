@@ -10,7 +10,7 @@ import {
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
 import getBoundsPos from "./electron/getBoundsPos";
-import getDisplayBounds from "./electron/getNewBounds";
+import getDisplayBounds from "./electron/getDisplayBounds";
 
 import getWindowId from "./electron/getWindowId";
 
@@ -74,6 +74,11 @@ export default function handleIpc(): void {
     console.log("Register on IPC as: renderer");
     ipcRenderer.send("ipc_register", "renderer", getWindowId());
     createBackgroundProcess();
+  });
+
+  ipcRenderer.removeAllListeners("rendererReady");
+  ipcRenderer.on("rendererReady", () => {
+    reduxAction(store.dispatch, { type: "SET_READY", arg: true });
   });
 
   ipcRenderer.removeAllListeners("detached");

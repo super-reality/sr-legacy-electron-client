@@ -18,6 +18,8 @@ interface WindowletProps {
   height?: number;
   initialPosX?: number;
   initialPosY?: number;
+  initialLeft?: string;
+  initialTop?: string;
   onClose: () => void;
 }
 
@@ -31,6 +33,8 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     onClose,
     initialPosX,
     initialPosY,
+    initialLeft,
+    initialTop,
   } = props;
   const dragContainer = useRef<HTMLDivElement>(null);
   const resizeContainer = useRef<HTMLDivElement>(null);
@@ -86,6 +90,13 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
         resizeContainer.current.style.top = `${
           screenHeight / 2 - windowletHeight / 2
         }px`;
+      }
+
+      if (initialLeft) {
+        resizeContainer.current.style.left = initialLeft;
+      }
+      if (initialTop) {
+        resizeContainer.current.style.top = initialTop;
       }
     }
   }, []);

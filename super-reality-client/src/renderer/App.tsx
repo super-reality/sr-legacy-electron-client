@@ -18,10 +18,16 @@ import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
 import Windowlet from "./components/create-leson-detached/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
+import useTransparentFix from "./hooks/useTransparentFix";
+import getPrimaryPos from "../utils/electron/getPrimaryPos";
+import getDisplaySize from "../utils/electron/getDisplaySize";
+import getDisplayBounds from "../utils/electron/getDisplayBounds";
 
 export default function App(): JSX.Element {
+  useTransparentFix();
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
+  const isReady = useSelector((state: AppState) => state.render.ready);
 
   const { isLoading, detached, background } = useSelector(
     (state: AppState) => state.commonProps
@@ -53,22 +59,44 @@ export default function App(): JSX.Element {
   if (background) {
     return <BackgroundController />;
   }
+  if (!isReady) {
+    return <></>;
+  }
+
+  const primarySize = getDisplaySize();
+  const primaryPos = getPrimaryPos(getDisplayBounds());
+  const left = `${primaryPos.x + primarySize.width / 2 - 150}px`;
+  const top = `${primaryPos.y + primarySize.height / 2 - 350}px`;
 
   return (
-    <Windowlet title="Super Reality" onClose={closeWindow}>
+    <Windowlet
+      width={300}
+      height={700}
+      initialLeft={left}
+      initialTop={top}
+      title="Super Reality"
+      onClose={closeWindow}
+    >
       {isAuthenticated ? (
         <>
-          <TopSearch />
-          <Loading state={isLoading} />
-          <div onScroll={handleScroll} ref={scrollRef} className="content">
-            <div className="content-wrapper">
-              <Switch>
-                <Route path="/discover" component={Discover} />
-                <Route path="/learn" component={Learn} />
-                <Route path="/teach" component={Test} />
-                <Route path="/create" component={Create} />
-                <Route path="/profile" component={Profile} />
-              </Switch>
+          <div
+            style={{
+              overflow: "hidden",
+              margin: "0",
+            }}
+          >
+            <TopSearch />
+            <Loading state={isLoading} />
+            <div onScroll={handleScroll} ref={scrollRef} className="content">
+              <div className="content-wrapper">
+                <Switch>
+                  <Route path="/discover" component={Discover} />
+                  <Route path="/learn" component={Learn} />
+                  <Route path="/teach" component={Test} />
+                  <Route path="/create" component={Create} />
+                  <Route path="/profile" component={Profile} />
+                </Switch>
+              </div>
             </div>
           </div>
         </>

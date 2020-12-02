@@ -32,7 +32,7 @@ export default function createLessonInterface(
   });
 
   newWindow.removeMenu();
-  newWindow.setVisibleOnAllWorkspaces(true);
+  // newWindow.setVisibleOnAllWorkspaces(true);
 
   const proc: any = process;
   newWindow.loadURL(

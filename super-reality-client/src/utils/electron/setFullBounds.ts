@@ -1,5 +1,5 @@
 import globalData from "../../renderer/globalData";
-import getDisplayBounds from "./getNewBounds";
+import getDisplayBounds from "./getDisplayBounds";
 import setFocusable from "./setFocusable";
 
 // CURRENTLY UNUSED

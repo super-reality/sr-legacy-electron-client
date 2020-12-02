@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 
-import getDisplayBounds from "./electron/getNewBounds";
+import getDisplayBounds from "./electron/getDisplayBounds";
 
 export function captureDesktopStream(): Promise<MediaStream> {
   const { desktopCapturer } = require("electron");

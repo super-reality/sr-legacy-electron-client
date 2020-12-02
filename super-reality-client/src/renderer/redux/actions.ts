@@ -22,6 +22,7 @@ export const actions = {
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
   SET_CV_RESULT: renderSlice.setCvResult,
+  SET_READY: renderSlice.setReady,
   SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
   CLEAR_RECORDING_CV_DATA: createLessonSliceV2.clearRecordingCVData,
   SET_RECORDING_CV_DATA: createLessonSliceV2.setRecordingCVData,
