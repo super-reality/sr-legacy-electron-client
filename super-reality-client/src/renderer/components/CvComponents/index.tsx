@@ -38,16 +38,16 @@ export default function CvComponents() {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <video
-        style={{ width: "300px", height: "210px" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
         id="videoOutput"
         playsInline
         muted
         ref={videoElement}
       />
       <canvas
-        style={{ width: "300px" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
         id="canvasOutput"
         ref={canvasEl}
         width={cvCanvas}
@@ -55,7 +55,7 @@ export default function CvComponents() {
       />
       <canvas
         id="canvasTestOutput"
-        style={{ width: "300px", margin: "auto" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
       />
     </div>
   );
