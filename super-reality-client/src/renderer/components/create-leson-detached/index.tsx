@@ -37,6 +37,9 @@ import { getRawAudioData } from "./recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "./windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
+import getPrimarySize from "../../../utils/electron/getPrimarySize";
+import getPrimaryPos from "../../../utils/electron/getPrimaryPos";
+import getDisplayBounds from "../../../utils/electron/getDisplayBounds";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -268,8 +271,12 @@ export default function CreateLessonDetached(): JSX.Element {
     );
   }
 
+  const primarySize = getPrimarySize();
+
   return (
     <Windowlet
+      width={primarySize.width}
+      height={primarySize.height}
       title="Super Reality"
       onClose={() => {
         reduxAction(dispatch, {

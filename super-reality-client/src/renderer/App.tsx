@@ -60,11 +60,6 @@ export default function App(): JSX.Element {
     return <></>;
   }
 
-  const primarySize = getPrimarySize();
-  const primaryPos = getPrimaryPos(getDisplayBounds());
-  const left = `${primaryPos.x + primarySize.width / 2 - 150}px`;
-  const top = `${primaryPos.y + primarySize.height / 2 - 350}px`;
-
   return (
     <>
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
@@ -72,8 +67,6 @@ export default function App(): JSX.Element {
         <Windowlet
           width={300}
           height={700}
-          initialLeft={left}
-          initialTop={top}
           title="Super Reality"
           onClose={closeWindow}
         >

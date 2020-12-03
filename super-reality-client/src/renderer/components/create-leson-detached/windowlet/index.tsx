@@ -10,6 +10,9 @@ import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
 import { cursorChecker, restrictMinSize } from "../../../constants";
+import getPrimarySize from "../../../../utils/electron/getPrimarySize";
+import getPrimaryPos from "../../../../utils/electron/getPrimaryPos";
+import getDisplayBounds from "../../../../utils/electron/getDisplayBounds";
 
 interface WindowletProps {
   title: string;
@@ -66,29 +69,36 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       resizeContainer.current.style.width = `${width || 400}px`;
       resizeContainer.current.style.height = `${height || 200}px`;
 
+      const primarySize = getPrimarySize();
+      const primaryPos = getPrimaryPos(getDisplayBounds());
+
       const screenWidth =
-        document.getElementById("root")?.offsetWidth || window.screen.width;
+        primarySize?.width ||
+        document.getElementById("root")?.offsetWidth ||
+        window.screen.width;
       const screenHeight =
-        document.getElementById("root")?.offsetHeight || window.screen.height;
+        primarySize?.height ||
+        document.getElementById("root")?.offsetHeight ||
+        window.screen.height;
       const windowletWidth = width || 400;
       const windowletHeight = height || 200;
 
       if (initialPosX) {
         resizeContainer.current.style.left = `${
-          ((screenWidth - windowletWidth) / 100) * initialPosX
+          primaryPos.x + ((screenWidth - windowletWidth) / 100) * initialPosX
         }px`;
       } else {
         resizeContainer.current.style.left = `${
-          screenWidth / 2 - windowletWidth / 2
+          primaryPos.x + screenWidth / 2 - windowletWidth / 2
         }px`;
       }
       if (initialPosY) {
         resizeContainer.current.style.top = `${
-          ((screenHeight - windowletHeight) / 100) * initialPosY
+          primaryPos.y + ((screenHeight - windowletHeight) / 100) * initialPosY
         }px`;
       } else {
         resizeContainer.current.style.top = `${
-          screenHeight / 2 - windowletHeight / 2
+          primaryPos.y + screenHeight / 2 - windowletHeight / 2
         }px`;
       }
 
