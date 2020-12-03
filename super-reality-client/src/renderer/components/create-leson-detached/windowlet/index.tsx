@@ -88,11 +88,11 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
 
       if (initialPosX) {
         resizeContainer.current.style.left = `${
-          primaryPos.x + ((screenWidth - windowletWidth) / 100) * initialPosX
+          ((screenWidth - windowletWidth) / 100) * initialPosX
         }px`;
       } else {
         resizeContainer.current.style.left = `${
-          primaryPos.x + screenWidth / 2 - windowletWidth / 2
+          screenWidth / 2 - windowletWidth / 2
         }px`;
       }
       if (initialPosY) {
