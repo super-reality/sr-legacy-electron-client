@@ -5,12 +5,16 @@ const {
   BrowserWindow,
   screen,
   protocol,
+  Menu,
+  Tray,
 } = require("electron");
 const path = require("path");
 const url = require("url");
 const mainIpcInitialize = require("./ipcHandlers");
 const installDevTools = require("./devtools");
 const Puppeteer = require("./puppeteer");
+
+let tray = null;
 
 const puppeteer = new Puppeteer();
 
@@ -26,6 +30,25 @@ function sendInit() {
 function sendReady() {
   console.log("Renderer Ready signal");
   mainWindow.webContents.send("rendererReady", true);
+}
+
+function showWindow() {
+  if (mainWindow) {
+    if (!mainWindow.isVisible() || mainWindow.isMinimized()) mainWindow.show();
+    else mainWindow.moveTop();
+  }
+}
+
+function toggleWindow() {
+  if (mainWindow && mainWindow.isVisible()) {
+    if (!mainWindow.isMinimized()) {
+      mainWindow.minimize();
+    } else {
+      showWindow();
+    }
+  } else {
+    showWindow();
+  }
 }
 
 function getDisplayBounds() {
@@ -71,9 +94,31 @@ function createWindow() {
         slashes: true,
       })
   );
-  // mainWindow.webContents.openDevTools();
+
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
+
+  const iconPath = "logo192.png";
+
+  tray = new Tray(path.join(__dirname, iconPath));
+  tray.on("double-click", toggleWindow);
+  tray.setToolTip("Super Reality");
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Show",
+      click: () => {
+        showWindow();
+      },
+    },
+    {
+      label: "Quit",
+      click: () => {
+        console.log("Bye bye!");
+        app.quit();
+      },
+    },
+  ]);
+  tray.setContextMenu(contextMenu);
 
   mainWindow.on("closed", () => {
     app.quit();
