@@ -78,14 +78,20 @@ test("Can parse timestamps", () => {
 });
 
 test("Can get bounds properly", () => {
-  // bounds of all screens
   const bounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
-  // position of window on screen (fullscreen)
   const windowBounds = { x: 0, y: 0, width: 1920, height: 1050 };
 
   expect(getBoundsPos(bounds, windowBounds)).toStrictEqual({
     x: 1600,
     y: 1080,
+  });
+
+  const boundsShifted = { x: -1600, y: 0, width: 5440, height: 2160 };
+  const windowBoundsShifted = { x: 0, y: 0, width: 1920, height: 1080 };
+
+  expect(getBoundsPos(boundsShifted, windowBoundsShifted)).toStrictEqual({
+    x: 1600,
+    y: 0,
   });
 });
 
