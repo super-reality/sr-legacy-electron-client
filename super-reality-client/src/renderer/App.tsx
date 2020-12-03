@@ -14,11 +14,9 @@ import BackgroundController from "./BackgroundController";
 import Windowlet from "./components/create-leson-detached/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
-import getPrimaryPos from "../utils/electron/getPrimaryPos";
-import getDisplayBounds from "../utils/electron/getDisplayBounds";
-import getPrimarySize from "../utils/electron/getPrimarySize";
 import CreateLessonDetached from "./components/create-leson-detached";
 import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
+import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
 
 export default function App(): JSX.Element {
@@ -62,7 +60,7 @@ export default function App(): JSX.Element {
   }
 
   return (
-    <>
+    <ErrorBoundary>
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
       {appMode == MODE_HOME && (
         <Windowlet
@@ -103,6 +101,6 @@ export default function App(): JSX.Element {
           )}
         </Windowlet>
       )}
-    </>
+    </ErrorBoundary>
   );
 }
