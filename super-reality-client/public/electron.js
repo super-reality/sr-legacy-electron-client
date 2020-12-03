@@ -51,8 +51,8 @@ function toggleWindow() {
   }
 }
 
-function getDisplayBounds() {
-  return screen.getPrimaryDisplay().bounds;
+function getDisplay() {
+  return screen.getPrimaryDisplay();
 }
 
 function createWindow() {
@@ -120,12 +120,12 @@ function createWindow() {
       mainWindow.setPosition(0, 0);
     }, 500);
     setTimeout(() => {
-      const bounds = getDisplayBounds();
-      mainWindow.setPosition(bounds.x, bounds.y);
+      const bounds = getDisplay();
+      mainWindow.setPosition(bounds.bounds.x, bounds.bounds.y);
     }, 1000);
     setTimeout(() => {
-      const bounds = getDisplayBounds();
-      mainWindow.setSize(bounds.width, bounds.height);
+      const bounds = getDisplay();
+      mainWindow.setSize(bounds.workArea.width, bounds.workArea.height);
     }, 1500);
     setTimeout(() => {
       sendReady();

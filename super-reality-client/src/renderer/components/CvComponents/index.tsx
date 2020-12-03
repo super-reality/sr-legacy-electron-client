@@ -12,9 +12,6 @@ export default function CvComponents() {
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        const fullBounds = getDisplayBounds();
-        videoElement.current.width = fullBounds.width;
-        videoElement.current.height = fullBounds.height;
         videoElement.current.srcObject = await captureDesktopStream();
 
         return new Promise((resolve) => {

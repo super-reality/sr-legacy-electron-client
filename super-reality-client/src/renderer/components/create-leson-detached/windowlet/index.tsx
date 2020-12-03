@@ -11,9 +11,9 @@ import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
 import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
 import { cursorChecker, restrictMinSize } from "../../../constants";
-import getPrimarySize from "../../../../utils/electron/getPrimarySize";
 import getPrimaryPos from "../../../../utils/electron/getPrimaryPos";
 import getDisplayBounds from "../../../../utils/electron/getDisplayBounds";
+import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
 
 interface WindowletProps {
   title: string;
@@ -72,7 +72,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       resizeContainer.current.style.width = `${width || 400}px`;
       resizeContainer.current.style.height = `${height || 200}px`;
 
-      const primarySize = getPrimarySize();
+      const primarySize = getPrimaryMonitor().workArea;
       const primaryPos = getPrimaryPos(getDisplayBounds());
 
       const screenWidth =

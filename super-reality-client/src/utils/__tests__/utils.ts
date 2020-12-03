@@ -12,6 +12,7 @@ import constantFormat from "../constantFormat";
 import createDataDirs from "../files/createDataDirs";
 import timestampToTime from "../timestampToTime";
 import getBoundsPos from "../electron/getBoundsPos";
+import getDisplayBounds from "../electron/getDisplayBounds";
 
 jest.setTimeout(30000);
 
@@ -42,7 +43,7 @@ test("Formats constants", () => {
   );
   expect(constantFormat(DifficultyOptions)(10)).toBe(undefined);
 });
-
+/*
 test("Can log in", async (done) => {
   const payload = {
     username: "manwe@gmail.com",
@@ -62,7 +63,7 @@ test("Can log in", async (done) => {
   // Axios.defaults.headers.post.Authorization = `Bearer ${token}`;
   done();
 });
-
+*/
 test("Can create data directories", () => {
   expect(createDataDirs()).toBe(true);
 });
@@ -85,5 +86,46 @@ test("Can get bounds properly", () => {
   expect(getBoundsPos(bounds, windowBounds)).toStrictEqual({
     x: 1600,
     y: 1080,
+  });
+});
+
+test("Can get display bounds properly", () => {
+  const displays = [
+    {
+      bounds: { x: 0, y: 1080, width: 1920, height: 1080 }, // 1
+    },
+    {
+      bounds: { x: 1920, y: 666, width: 1920, height: 1080 }, // 2
+    },
+    {
+      bounds: { x: 0, y: 0, width: 1920, height: 1080 }, // 4
+    },
+    {
+      bounds: { x: -1600, y: 368, width: 1600, height: 900 }, // 3
+    },
+    {
+      bounds: { x: -1280, y: 1268, width: 1280, height: 721 }, // 5
+    },
+  ];
+  expect(getDisplayBounds(displays as any)).toStrictEqual({
+    x: -1600,
+    y: 0,
+    width: 5440,
+    height: 2160,
+  });
+
+  const displaysTwo = [
+    {
+      bounds: { x: 0, y: 0, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: -1920, y: 1, width: 1920, height: 1080 },
+    },
+  ];
+  expect(getDisplayBounds(displaysTwo as any)).toStrictEqual({
+    x: -1920,
+    y: 0,
+    width: 3840,
+    height: 1081,
   });
 });

@@ -1,11 +1,10 @@
 import { Rectangle } from "../../types/utils";
+import getPrimaryMonitor from "./getPrimaryMonitor";
 
 export default function getPrimaryPos(
   bounds: Rectangle
 ): { x: number; y: number } {
-  // eslint-disable-next-line global-require
-  const { remote } = require("electron");
-  const primaryBounds = remote.screen.getPrimaryDisplay().bounds;
+  const primaryBounds = getPrimaryMonitor().bounds;
   console.log("bounds", bounds);
   console.log("primaryBounds", primaryBounds);
   const primaryPos = { x: 0, y: 0 };
