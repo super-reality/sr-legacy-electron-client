@@ -81,7 +81,7 @@ a:focus, a:hover, a:visited, a:link, a:active {
 
 .content {
   overflow: auto;
-  height: calc(100vh - 45px);
+  height: calc(100% - 45px);
 }
 
 .content-detached {

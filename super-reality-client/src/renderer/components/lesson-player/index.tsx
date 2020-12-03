@@ -93,7 +93,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
           anchorId: anchor._id,
           // cvMatchValue: 0,
           cvTemplates: anchor.templates,
-          cvTo: "LESSON_CREATE",
+          cvTo: "renderer",
         },
         to: "background",
       });

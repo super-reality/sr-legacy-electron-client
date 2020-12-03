@@ -87,18 +87,18 @@ function createWindow() {
     setTimeout(() => {
       mainWindow.setSize(1000, 1000);
       mainWindow.setPosition(0, 0);
-    }, 250);
-    setTimeout(() => {
-      const bounds = getDisplayBounds();
-      mainWindow.setPosition(bounds.x, bounds.y);
     }, 500);
     setTimeout(() => {
       const bounds = getDisplayBounds();
-      mainWindow.setSize(bounds.width, bounds.height);
+      mainWindow.setPosition(bounds.x, bounds.y);
     }, 1000);
     setTimeout(() => {
-      sendReady();
+      const bounds = getDisplayBounds();
+      mainWindow.setSize(bounds.width, bounds.height);
     }, 1500);
+    setTimeout(() => {
+      sendReady();
+    }, 2000);
   });
 
   mainIpcInitialize(puppeteer);

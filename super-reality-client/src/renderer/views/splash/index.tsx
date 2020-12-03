@@ -46,7 +46,7 @@ export default function Splash(): JSX.Element {
       type: "AUTH_VALID",
       arg: true,
     });
-    history.push(`/discover/${Category.Collection}`);
+    history.push(`/test`);
   }, [dispatch]);
 
   const fadeOutSpring = useSpring({

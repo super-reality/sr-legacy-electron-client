@@ -28,13 +28,12 @@ type Sections = "Lessons" | "Recordings";
 const sections: Sections[] = ["Lessons", "Recordings"];
 
 interface LessonProps {
-  setTransparent: () => void;
   createRecorder: () => void;
 }
 
 export default function Lesson(props: LessonProps): JSX.Element {
   const dispatch = useDispatch();
-  const { setTransparent, createRecorder } = props;
+  const { createRecorder } = props;
   const [view, setView] = useState<Sections>(sections[0]);
   const { treeCurrentType, treeCurrentId } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -105,9 +104,8 @@ export default function Lesson(props: LessonProps): JSX.Element {
         previewOne: true,
       },
     });
-    setTransparent();
     doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, setTransparent, doPreviewCurrentToNumber]);
+  }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
   const doPreview = useCallback(() => {
     reduxAction(dispatch, {
@@ -122,9 +120,8 @@ export default function Lesson(props: LessonProps): JSX.Element {
         previewOne: false,
       },
     });
-    setTransparent();
     doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, setTransparent, doPreviewCurrentToNumber]);
+  }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
   return (
     <>

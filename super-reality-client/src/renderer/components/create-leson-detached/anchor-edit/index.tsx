@@ -26,11 +26,10 @@ import useDebounce from "../../../hooks/useDebounce";
 
 interface AnchorEditProps {
   anchorId: string | undefined;
-  setTransparent: () => void;
 }
 
 export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
-  const { setTransparent, anchorId } = props;
+  const { anchorId } = props;
   const dispatch = useDispatch();
   const closeAnchorEdit = useCallback(() => {
     reduxAction(dispatch, {
@@ -95,8 +94,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
         anchorTestView: true,
       },
     });
-    setTransparent();
-  }, [dispatch, setTransparent]);
+  }, [dispatch]);
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
 

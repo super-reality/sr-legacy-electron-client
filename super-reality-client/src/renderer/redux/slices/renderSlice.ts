@@ -4,13 +4,13 @@ import { CVResult } from "../../../types/utils";
 
 export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 
-export const MODE_TRANSPARENT = 1;
-export const MODE_SOLID = 2;
+export const MODE_HOME = 1;
+export const MODE_LESSON_CREATOR = 2;
 export const MODE_VOID = 3;
 
 export type UI_MODES =
-  | typeof MODE_TRANSPARENT
-  | typeof MODE_SOLID
+  | typeof MODE_HOME
+  | typeof MODE_LESSON_CREATOR
   | typeof MODE_VOID;
 
 const initialState = {
@@ -18,7 +18,7 @@ const initialState = {
   yScrollMoveTo: undefined as number | undefined,
   yScrollDelta: 0,
   topInputStates: {} as Record<string, string>,
-  overlayTransparent: MODE_SOLID as UI_MODES,
+  appMode: MODE_HOME as UI_MODES,
   ready: false,
   cvResult: {
     dist: 0,
@@ -40,11 +40,8 @@ const renderSlice = createSlice({
       state.yScrollDelta = state.yScroll - action.payload;
       state.yScroll = action.payload;
     },
-    setOverlayTransparent: (
-      state: RenderState,
-      action: PayloadAction<UI_MODES>
-    ): void => {
-      state.overlayTransparent = action.payload;
+    setAppMode: (state: RenderState, action: PayloadAction<UI_MODES>): void => {
+      state.appMode = action.payload;
     },
     setYScrollMoveTo: (
       state: RenderState,
@@ -76,7 +73,7 @@ const renderSlice = createSlice({
 
 export const {
   setYScroll,
-  setOverlayTransparent,
+  setAppMode,
   setYScrollMoveTo,
   setTopInput,
   setCvResult,
