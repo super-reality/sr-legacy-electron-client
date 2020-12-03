@@ -136,7 +136,6 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: [restrictMinSize],
-          inertia: true,
         } as any)
         .on("resizemove", (event) => {
           const { target } = event;
