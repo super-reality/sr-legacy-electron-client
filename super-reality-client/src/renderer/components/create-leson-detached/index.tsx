@@ -21,7 +21,6 @@ import Lesson from "./lessson";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import closeWindow from "../../../utils/electron/closeWindow";
-import toggleMaximize from "../../../utils/electron/toggleMaximize";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
@@ -58,11 +57,11 @@ const restrictMinSize =
 
 function TopBar() {
   const onMinimize = useCallback(() => {
-    minimizeWindow();
+    //
   }, []);
 
   const onMaximize = useCallback(() => {
-    toggleMaximize();
+    //
   }, []);
 
   const onCLose = useCallback(() => {
@@ -278,6 +277,7 @@ export default function CreateLessonDetached(): JSX.Element {
       width={primarySize.width}
       height={primarySize.height}
       title="Super Reality"
+      onMinimize={minimizeWindow}
       onClose={() => {
         reduxAction(dispatch, {
           type: "SET_APP_MODE",

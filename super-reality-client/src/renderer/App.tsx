@@ -19,6 +19,7 @@ import getDisplayBounds from "../utils/electron/getDisplayBounds";
 import getPrimarySize from "../utils/electron/getPrimarySize";
 import CreateLessonDetached from "./components/create-leson-detached";
 import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
+import minimizeWindow from "../utils/electron/minimizeWindow";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -68,6 +69,7 @@ export default function App(): JSX.Element {
           width={300}
           height={700}
           title="Super Reality"
+          onMinimize={minimizeWindow}
           onClose={closeWindow}
         >
           {isAuthenticated ? (

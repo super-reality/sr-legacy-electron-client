@@ -137,17 +137,42 @@
     background-color: rgba(0, 0, 0, 0.3);
     touch-action: none;
     display: flex;
+    justify-content: space-between;
 
-    .close {
-      margin-left: auto;
+    .buttons {
       display: flex;
-      width: 24px;
-      height: 100%;
-      cursor: auto;
-    }
+      -webkit-app-region: no-drag;
+      text-align: center;
+      line-height: 24px;
 
-    .close:hover {
-      background-color: var(--color-red);
+      .minimize {
+        width: 34px;
+        height: 100%;
+        display: flex;
+        cursor: auto;
+      }
+
+      .maximize {
+        width: 34px;
+        height: 100%;
+        display: flex;
+      }
+
+      .minimize:hover,
+      .maximize:hover {
+        background-color: var(--color-button);
+      }
+
+      .close {
+        display: flex;
+        width: 24px;
+        height: 100%;
+        cursor: auto;
+      }
+
+      .close:hover {
+        background-color: var(--color-red);
+      }
     }
   }
 }

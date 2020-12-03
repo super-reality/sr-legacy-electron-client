@@ -9,6 +9,7 @@ import React, {
 import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
+import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
 import { cursorChecker, restrictMinSize } from "../../../constants";
 import getPrimarySize from "../../../../utils/electron/getPrimarySize";
 import getPrimaryPos from "../../../../utils/electron/getPrimaryPos";
@@ -24,6 +25,7 @@ interface WindowletProps {
   initialLeft?: string;
   initialTop?: string;
   onClose: () => void;
+  onMinimize?: () => void;
 }
 
 export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
@@ -33,6 +35,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     title,
     height,
     width,
+    onMinimize,
     onClose,
     initialPosX,
     initialPosY,
@@ -169,8 +172,15 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     >
       <div ref={dragContainer} className="title-bar">
         <div>{title}</div>
-        <div className="close" onClick={() => setState(false)}>
-          <CloseIcon style={{ margin: "auto" }} fill="var(--color-icon" />
+        <div className="buttons">
+          {onMinimize && (
+            <div className="minimize" onClick={onMinimize}>
+              <MinimizeIcon style={{ margin: "auto" }} />
+            </div>
+          )}
+          <div className="close" onClick={() => setState(false)}>
+            <CloseIcon style={{ margin: "auto" }} fill="var(--color-icon)" />
+          </div>
         </div>
       </div>
       <div style={{ height: "calc(100% - 24px)" }}>{children}</div>
