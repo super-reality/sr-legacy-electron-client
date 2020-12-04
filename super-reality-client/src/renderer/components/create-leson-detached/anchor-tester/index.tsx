@@ -3,7 +3,7 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
-import Windowlet from "../windowlet";
+import Windowlet from "../../windowlet";
 import Flex from "../../flex";
 import AnchorEditSliders from "../anchor-edit-sliders";
 import { IAnchor } from "../../../api/types/anchor/anchor";

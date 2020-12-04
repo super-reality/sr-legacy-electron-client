@@ -11,7 +11,7 @@ import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
-import Windowlet from "./components/create-leson-detached/windowlet";
+import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import CreateLessonDetached from "./components/create-leson-detached";

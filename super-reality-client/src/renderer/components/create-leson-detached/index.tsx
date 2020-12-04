@@ -34,7 +34,7 @@ import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "./recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
-import Windowlet from "./windowlet";
+import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 

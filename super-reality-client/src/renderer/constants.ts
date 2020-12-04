@@ -38,4 +38,14 @@ export const restrictSnapGrid = interact.modifiers.snap({
   relativePoints: [{ x: 0, y: 0 }],
 });
 
+export const restrictToParent = interact.modifiers.restrict({
+  restriction: "parent",
+  elementRect: { left: 0, right: 0, top: 1, bottom: 1 },
+});
+
+export const restrictRoot = interact.modifiers.restrict({
+  restriction: document.getElementById("root") as HTMLElement,
+  elementRect: { left: 0, right: 1, top: 0, bottom: 1 },
+});
+
 export const voidFunction = () => {};
