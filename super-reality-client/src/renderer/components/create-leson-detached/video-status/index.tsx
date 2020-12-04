@@ -28,6 +28,8 @@ import { IAnchor } from "../../../api/types/anchor/anchor";
 import updateStep from "../lesson-utils/updateStep";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
+import clearTempFolder from "../lesson-utils/clearTempFolder";
+import logger from "../../../../utils/logger";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -36,8 +38,8 @@ function doNewAnchor(url: string) {
     templates: [url],
     anchorFunction: "or",
     cvMatchValue: 990,
-    cvCanvas: 50,
-    cvDelay: 100,
+    cvCanvas: 100,
+    cvDelay: 50,
     cvGrayscale: true,
     cvApplyThreshold: false,
     cvThreshold: 127,
@@ -151,13 +153,22 @@ export default function VideoStatus() {
       arg: null,
     });
 
-    setStatus(`Generating`);
-    const generatedData = generateBaseData();
-    generateSteps(generatedData)
-      .then((data) => generateDialogues(data))
-      .then((data) => generateClicks(data, anchor))
-      .then(() => generationDone())
-      .catch((e) => setStatus(`Error generating`));
+    if (anchor) {
+      setStatus(`Generating`);
+      const generatedData = generateBaseData();
+      generateSteps(generatedData)
+        .then((data) => generateDialogues(data))
+        .then((data) => generateClicks(data, anchor))
+        .then(() => generationDone())
+        .catch((e) => {
+          logger("error", e);
+          console.error(e);
+          clearTempFolder();
+          setStatus(`Error generating`);
+        });
+    } else {
+      setStatus(`No anchor selected`);
+    }
   }, [anchor]);
 
   const checkAnchor = useCallback(() => {
@@ -201,6 +212,10 @@ export default function VideoStatus() {
       .then(newAnchorPre)
       .then((a) => {
         if (a) {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: { currentAnchor: a._id },
+          });
           reduxAction(dispatch, {
             type: "SET_RECORDING_DATA",
             arg: {

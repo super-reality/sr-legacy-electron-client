@@ -1,19 +1,9 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useSelector } from "react-redux";
+import React, { CSSProperties, useCallback, useEffect, useRef } from "react";
+import { animated, useSpring } from "react-spring";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
-import {
-  ItemFocus,
-  ItemFocusTriggers,
-  ItemFXTriggers,
-} from "../../../api/types/item/item";
+import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
@@ -89,17 +79,21 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       };
     }, [pos, callback]);
 
+    const spring = useSpring({
+      left: `${pos.x - 3}px`,
+      top: `${pos.y - 3}px`,
+      width: `${pos.width}px`,
+      height: `${pos.height}px`,
+    }) as any;
+
     return (
-      <div
+      <animated.div
         ref={forwardedRef}
         className={`find-box ${
           clickThrough ? "click-through" : ""
         } ${computedType}`}
         style={{
-          left: `${pos.x - 3}px`,
-          top: `${pos.y - 3}px`,
-          width: `${pos.width}px`,
-          height: `${pos.height}px`,
+          ...spring,
           ...style,
         }}
         onClick={

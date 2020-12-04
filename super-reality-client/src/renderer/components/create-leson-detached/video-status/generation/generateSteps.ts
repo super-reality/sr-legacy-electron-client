@@ -9,7 +9,7 @@ function onlyUnique(value: any, index: number, self: Array<any>) {
   return self.indexOf(value) === index;
 }
 
-export default function generateSteps(
+export default async function generateSteps(
   baseData: GeneratedData
 ): Promise<GeneratedData> {
   const {
@@ -30,8 +30,13 @@ export default function generateSteps(
   setStatus(`Generating steps`);
 
   const stepNameToStep: Record<string, IStep> = {};
-  uniqueSteps.map((stepName) => {
-    return newStep(
+
+  for (let index = 0; index < uniqueSteps.length; index += 1) {
+    const stepName = uniqueSteps[index];
+    setStatus(`Generating steps (${index}/${uniqueSteps.length})`);
+
+    // eslint-disable-next-line no-await-in-loop
+    await newStep(
       {
         name: stepName,
         anchor: recordingData.anchor,
@@ -44,10 +49,8 @@ export default function generateSteps(
         stepNameToStep[stepName] = step;
       }
     });
-  });
+  }
 
-  return Promise.all(uniqueSteps).then(() => {
-    console.log("Steps name to data:", stepNameToStep);
-    return { ...baseData, steps: stepNameToStep };
-  });
+  console.log("Steps name to data:", stepNameToStep);
+  return { ...baseData, steps: stepNameToStep };
 }

@@ -205,14 +205,17 @@ export default class CVRecorder {
     };
 
     let previousInterval = 0;
+    this._titlesQueue = [...new Set(this._titlesQueue)];
+
     for (let index = 0; index < this._titlesQueue.length; index += 1) {
       const title = this._titlesQueue[index];
       // eslint-disable-next-line no-await-in-loop
       await getWebsiteUrlByTitle(title);
     }
 
-    await Promise.all(
-      this._clickEventDetails.map(async (arr) => {
+    for (let index = 0; index < this._clickEventDetails.length; index += 1) {
+      const arr = this._clickEventDetails[index];
+      try {
         let doubleClick = false;
         let clickType = "";
         let keyboardEvents = {};
@@ -248,87 +251,71 @@ export default class CVRecorder {
           mainImage = cap.read();
 
           cap.set(cv.CAP_PROP_POS_MSEC, interval);
+
           const currentImage = cap.read();
 
-          const absDiff = mainImage.absdiff(currentImage);
+          if (currentImage.cols !== 0 && currentImage.rows !== 0) {
+            const absDiff = mainImage.absdiff(currentImage);
 
-          const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
+            const grayImg = absDiff.cvtColor(cv.COLOR_BGRA2GRAY);
 
-          const cannyEdges = grayImg.canny(23, 180, 3);
+            const cannyEdges = grayImg.canny(23, 180, 3);
 
-          // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
+            // cv.imwrite("snapshots/"+"_x-" + xCordinate + "_y-" + yCordinate+ "_time_"+ timestamp.replace(/:/g,"-") + "canny.jpeg", cannyEdges, [parseInt(cv.IMWRITE_JPEG_QUALITY)])
 
-          const cannyEdges2D = cannyEdges.getDataAsArray();
+            const cannyEdges2D = cannyEdges.getDataAsArray();
 
-          const rightBorderCordiates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "right"
-          );
-          const leftBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "left"
-          );
-          const topBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "top"
-          );
-          const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
-            xCordinate - this._pixelOffset,
-            yCordinate - this._pixelOffset,
-            cannyEdges2D,
-            "bottom"
-          );
-          const rightBorderX = rightBorderCordiates[0];
-          const rightBorderY = rightBorderCordiates[1];
-          const leftBorderX = leftBorderCordinates[0];
-          const leftBorderY = leftBorderCordinates[1];
-          const topBorderX = topBorderCordinates[0];
-          const topBorderY = topBorderCordinates[1];
-          const bottomBorderX = bottomBorderCordinates[0];
-          const bottomBorderY = bottomBorderCordinates[1];
-          const snipWindowHeight = bottomBorderY - topBorderY;
-          const snipWindowWidth = rightBorderX - leftBorderX;
+            const rightBorderCordiates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "right"
+            );
 
-          const topLeftCornerX =
-            topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
-          const topLeftCornerY = topBorderY - this._pixelOffset;
+            const leftBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "left"
+            );
 
-          const topRightCornerX = rightBorderX + this._pixelOffset;
-          const topRightCornerY =
-            rightBorderY - (rightBorderY - topBorderY) - this._pixelOffset;
+            const topBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "top"
+            );
 
-          const bottomLeftCornerX = leftBorderX - this._pixelOffset;
-          const bottomLeftCornerY =
-            leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+            const bottomBorderCordinates = this.getWindowsNearestBorderPoint(
+              xCordinate - this._pixelOffset,
+              yCordinate - this._pixelOffset,
+              cannyEdges2D,
+              "bottom"
+            );
 
-          const bottomRightCornerX =
-            bottomBorderX + (rightBorderX - bottomBorderX) + this._pixelOffset;
-          const bottomRightCornerY = bottomBorderY + this._pixelOffset;
-          /*
-          const cornerPointsArr = new Array(4);
-          cornerPointsArr[0] = new cv.Point2(topLeftCornerX, topLeftCornerY);
-          cornerPointsArr[1] = new cv.Point2(topRightCornerX, topRightCornerY);
-          cornerPointsArr[2] = new cv.Point2(
-            bottomLeftCornerX,
-            bottomLeftCornerY
-          );
-          cornerPointsArr[3] = new cv.Point2(
-            bottomRightCornerX,
-            bottomRightCornerY
-          );
-          */
+            const rightBorderX = rightBorderCordiates[0];
+            const leftBorderX = leftBorderCordinates[0];
+            const leftBorderY = leftBorderCordinates[1];
+            const topBorderX = topBorderCordinates[0];
+            const topBorderY = topBorderCordinates[1];
+            const bottomBorderY = bottomBorderCordinates[1];
 
-          contourDic.x = topLeftCornerX;
-          contourDic.y = topLeftCornerY;
-          contourDic.width = topRightCornerX - topLeftCornerX;
-          contourDic.height = bottomLeftCornerY - topLeftCornerY;
+            const topLeftCornerX =
+              topBorderX - (topBorderX - leftBorderX) - this._pixelOffset;
+            const topLeftCornerY = topBorderY - this._pixelOffset;
+
+            const topRightCornerX = rightBorderX + this._pixelOffset;
+
+            const bottomLeftCornerY =
+              leftBorderY + (bottomBorderY - leftBorderY) + this._pixelOffset;
+
+            contourDic.x = topLeftCornerX;
+            contourDic.y = topLeftCornerY;
+            contourDic.width = topRightCornerX - topLeftCornerX;
+            contourDic.height = bottomLeftCornerY - topLeftCornerY;
+          }
         }
+
         if (
           eventType === "left_click" ||
           eventType === "right_click" ||
@@ -344,9 +331,11 @@ export default class CVRecorder {
           }
           previousInterval = interval;
         }
+
         if (globalData.titleUrlDictionary[processTitle]) {
           browserTabUrl = globalData.titleUrlDictionary[processTitle];
         }
+
         jsonMetaData.step_data.push({
           type: eventType,
           process_owner: processOwnerName,
@@ -360,20 +349,23 @@ export default class CVRecorder {
           time_stamp: timestamp,
           keyboard_events: keyboardEvents,
         });
-      })
-    ).then(() => {
-      const json = JSON.stringify(jsonMetaData, null, "  ");
-      fs.writeFile(
-        `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
-        json,
-        "utf8",
-        (err) => {
-          if (err) throw err;
-        }
-      );
-      this._clickEventDetails = [];
-      this._finishCallback(jsonMetaData);
-    });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const json = JSON.stringify(jsonMetaData, null, "  ");
+    fs.writeFile(
+      `${this._stepSnapshotPath}/${this._stepRecordingName}.json`,
+      json,
+      "utf8",
+      (err) => {
+        if (err) throw err;
+      }
+    );
+
+    this._clickEventDetails = [];
+    this._finishCallback(jsonMetaData);
   }
 
   // Saves the video file on stop
@@ -382,6 +374,7 @@ export default class CVRecorder {
       const videoBlob = new Blob(this._recordedChunks, {
         type: "video/webm;codecs=vp9",
       });
+
       const readAsArrayBuffer = (blob) => {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -394,6 +387,7 @@ export default class CVRecorder {
           };
         });
       };
+
       const injectMetadata = (blob) => {
         const decoder = new Decoder();
         const reader = new Reader();
@@ -419,6 +413,7 @@ export default class CVRecorder {
           return result;
         });
       };
+
       const seekableVideoBlob = injectMetadata(videoBlob);
       seekableVideoBlob.then((blob) => {
         blob.arrayBuffer().then((arrayBuffer) => {
@@ -426,9 +421,11 @@ export default class CVRecorder {
           this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
           console.log("recording path: ", this._recordingFullPath);
           if (this._recordingFullPath) {
-            fs.writeFile(this._recordingFullPath, buffer, () => {
-              this.extractClickedImages();
-            });
+            fs.writeFile(
+              this._recordingFullPath,
+              buffer,
+              this.extractClickedImages
+            );
           }
         });
       });

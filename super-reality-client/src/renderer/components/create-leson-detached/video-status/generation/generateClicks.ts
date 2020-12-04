@@ -14,16 +14,15 @@ import { GeneratedData } from "./types";
 
 function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {
   const itemToSet: Partial<ItemFocus> = {
-    trigger: 1,
     anchor: true,
-    focus: "Mouse Point",
+    focus: "Rectangle",
     name: `${data.type} ${data.time_stamp}`,
     type: "focus_highlight",
     relativePos: {
-      width: 128,
-      height: 128,
-      x: (data.x_cordinate ? data.x_cordinate - cvResult.x : 0) - 64,
-      y: (data.y_cordinate ? data.y_cordinate - cvResult.y : 0) - 64,
+      width: data.contours.width + 10,
+      height: data.contours.height + 10,
+      x: data.contours.x - cvResult.x - 5,
+      y: data.contours.y - cvResult.y - 5,
     },
   };
 

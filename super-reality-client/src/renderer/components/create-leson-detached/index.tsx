@@ -39,6 +39,11 @@ import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "./recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
+import {
+  MODE_SOLID,
+  MODE_TRANSPARENT,
+  MODE_VOID,
+} from "../../redux/slices/renderSlice";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -170,19 +175,21 @@ export default function CreateLessonDetached(): JSX.Element {
   }, [overlayTransparent, resizeContainer]);
 
   const setTransparent = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
-    // setInterval(() => {
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: MODE_VOID });
     setFocusable(false);
-    // }, 100);
     setTimeout(() => {
       setTopMost(true);
+      reduxAction(dispatch, {
+        type: "SET_OVERLAY_TRANSPARENT",
+        arg: MODE_TRANSPARENT,
+      });
     }, 2000);
     setMaximize(true);
     setResizable(false);
   }, [dispatch]);
 
   const setSolid = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: false });
+    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: MODE_SOLID });
     setFocusable(true);
     setTopMost(false);
     setMaximize(false);
@@ -210,18 +217,22 @@ export default function CreateLessonDetached(): JSX.Element {
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
-        console.error(e);
+        console.warn(
+          `.json for recording ${currentRecording} does not exist! Some data about it might be unavailable.`
+        );
       }
-    }
-    if (currentRecording) {
-      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`).then(
-        (data) => {
+      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`)
+        .then((data) => {
           reduxAction(dispatch, {
             type: "SET_RECORDING_DATA",
             arg: { spectrum: rawAudioToWaveform(data) },
           });
-        }
-      );
+        })
+        .catch((e) => {
+          console.warn(
+            `recording ${currentRecording} does not have any local audio files.`
+          );
+        });
     }
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
@@ -233,78 +244,82 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  return overlayTransparent ? (
-    <div className="transparent-container click-through">
-      {openRecorder && (
-        <Recorder
-          onFinish={() => {
-            setOpenRecorder(false);
-            setSolid();
-          }}
-        />
-      )}
-      {anchorTestView && (
-        <>
-          <AnchorTester
+  if (overlayTransparent == MODE_TRANSPARENT)
+    return (
+      <div className="transparent-container click-through">
+        {openRecorder && (
+          <Recorder
             onFinish={() => {
+              setOpenRecorder(false);
               setSolid();
             }}
           />
-        </>
-      )}
-
-      {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
-        currentLesson && (
-          <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
         )}
-    </div>
-  ) : (
-    <div className="solid-container">
-      <TopBar />
-      <div className="main-container">
-        <div className="edit">
-          <div
-            className="creator"
-            style={{ width: "340px" }}
-            ref={resizeContainer}
-          >
-            <Lesson
-              createRecorder={createRecorder}
-              setTransparent={setTransparent}
+        {anchorTestView && (
+          <>
+            <AnchorTester
+              onFinish={() => {
+                setSolid();
+              }}
             />
-          </div>
-          {currentAnchor !== undefined ? (
+          </>
+        )}
+        {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
+          currentLesson && (
+            <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
+          )}
+      </div>
+    );
+  if (overlayTransparent == MODE_SOLID) {
+    return (
+      <div className="solid-container">
+        <TopBar />
+        <div className="main-container">
+          <div className="edit">
             <div
-              className="anchor-edit"
+              className="creator"
               style={{ width: "340px" }}
-              ref={resizeContainerAnchor}
+              ref={resizeContainer}
             >
-              <AnchorEdit
-                anchorId={currentAnchor}
+              <Lesson
+                createRecorder={createRecorder}
                 setTransparent={setTransparent}
               />
             </div>
-          ) : (
-            <></>
-          )}
-          <div className="preview">
-            <VideoPreview />
+            {currentAnchor !== undefined ? (
+              <div
+                className="anchor-edit"
+                style={{ width: "340px" }}
+                ref={resizeContainerAnchor}
+              >
+                <AnchorEdit
+                  anchorId={currentAnchor}
+                  setTransparent={setTransparent}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="preview">
+              <VideoPreview />
+            </div>
+          </div>
+          <div className="nav">
+            <VideoStatus />
+            <VideoNavigation
+              domain={videoNavDomain}
+              defaultValues={videoNavigation}
+              ticksNumber={100}
+              callback={debounceVideoNav}
+              slideCallback={debounceVideoNav}
+            />
+            <VideoData />
+            {meoizedSpectrum}
           </div>
         </div>
-        <div className="nav">
-          <VideoStatus />
-          <VideoNavigation
-            domain={videoNavDomain}
-            defaultValues={videoNavigation}
-            ticksNumber={100}
-            callback={debounceVideoNav}
-            slideCallback={debounceVideoNav}
-          />
-          <VideoData />
-          {meoizedSpectrum}
-        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return <></>;
 }
 /* eslint-disable dot-notation */
