@@ -120,6 +120,30 @@ test("Can get display bounds properly", () => {
     height: 2160,
   });
 
+  const displaysPrimaryChange = [
+    {
+      bounds: { x: 0, y: 0, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: 1920, y: -417, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: 0, y: -1080, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: -1600, y: -900, width: 1600, height: 900 },
+    },
+    {
+      bounds: { x: -1280, y: 188, width: 1280, height: 721 },
+    },
+  ];
+  expect(getDisplayBounds(displaysPrimaryChange as any)).toStrictEqual({
+    x: -1600,
+    y: -1080,
+    width: 5440,
+    height: 2160,
+  });
+
   const displaysTwo = [
     {
       bounds: { x: 0, y: 0, width: 1920, height: 1080 },
