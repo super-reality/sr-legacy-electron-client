@@ -8,10 +8,9 @@ import React, {
   useState,
 } from "react";
 import { animated, useSpring } from "react-spring";
-import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
 import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
-import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 
 export type FindBoxType = "anchor" | "target";
@@ -64,11 +63,12 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       if (callback) {
         const interval = setInterval(() => {
           const mouse = remote.screen.getCursorScreenPoint();
+          const diplayPos = getPrimaryMonitor().bounds;
           if (
-            mouse.x > pos.x &&
-            mouse.y > pos.y &&
-            mouse.x < pos.x + pos.width &&
-            mouse.y < pos.y + pos.height
+            mouse.x > diplayPos.x + pos.x &&
+            mouse.y > diplayPos.y + pos.y &&
+            mouse.x < diplayPos.x + pos.x + pos.width &&
+            mouse.y < diplayPos.y + pos.y + pos.height
           ) {
             callback(ItemFocusTriggers["Hover target"]);
           }
