@@ -79,8 +79,9 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       resizeContainer.current.style.width = `${width || 400}px`;
       resizeContainer.current.style.height = `${height || 200}px`;
 
-      const primarySize = getPrimaryMonitor().workArea;
-      const primaryPos = getPrimaryPos(getDisplayBounds());
+      const display = getPrimaryMonitor();
+      const primarySize = display.workArea;
+      const primaryPos = display.bounds;
 
       const screenWidth =
         primarySize?.width ||
@@ -90,6 +91,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
         primarySize?.height ||
         document.getElementById("root")?.offsetHeight ||
         window.screen.height;
+
       const windowletWidth = width || 400;
       const windowletHeight = height || 200;
 

@@ -11,7 +11,7 @@ import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
 import constantFormat from "../constantFormat";
 import createDataDirs from "../files/createDataDirs";
 import timestampToTime from "../timestampToTime";
-import getBoundsPos from "../electron/getBoundsPos";
+import getDisplayPosition from "../electron/getDisplayPosition";
 import getDisplayBounds from "../electron/getDisplayBounds";
 
 jest.setTimeout(30000);
@@ -78,25 +78,56 @@ test("Can parse timestamps", () => {
 });
 
 test("Can get bounds properly", () => {
-  const bounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
-  const windowBounds = { x: 0, y: 0, width: 1920, height: 1050 };
+  const nickBounds = { x: 0, y: -1080, width: 3863, height: 2160 };
+  const nickDisplay = { x: 0, y: 0, width: 1920, height: 1080 };
 
-  expect(getBoundsPos(bounds, windowBounds)).toStrictEqual({
+  expect(getDisplayPosition(nickBounds, nickDisplay)).toStrictEqual({
+    x: 0,
+    y: 1080,
+  });
+
+  const manweBounds = { x: -1920, y: 0, width: 2160, height: 1080 };
+  const manweDisplay = { x: 0, y: 0, width: 1920, height: 1080 };
+
+  expect(getDisplayPosition(manweBounds, manweDisplay)).toStrictEqual({
+    x: 1920,
+    y: 0,
+  });
+
+  const jamieBounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
+  const jamioeDisplay = { x: 0, y: 0, width: 1920, height: 1050 };
+
+  expect(getDisplayPosition(jamieBounds, jamioeDisplay)).toStrictEqual({
     x: 1600,
     y: 1080,
   });
 
-  const boundsShifted = { x: -1600, y: 0, width: 5440, height: 2160 };
-  const windowBoundsShifted = { x: 0, y: 0, width: 1920, height: 1080 };
+  const jamieBoundsShifted = { x: -1600, y: 0, width: 5440, height: 2160 };
+  const jamieDisplayShifted = { x: 0, y: 0, width: 1920, height: 1080 };
 
-  expect(getBoundsPos(boundsShifted, windowBoundsShifted)).toStrictEqual({
+  expect(
+    getDisplayPosition(jamieBoundsShifted, jamieDisplayShifted)
+  ).toStrictEqual({
     x: 1600,
     y: 0,
   });
 });
 
 test("Can get display bounds properly", () => {
-  const displays = [
+  const displaysNick = [
+    { bounds: { x: 0, y: 0, width: 1920, height: 1080 } },
+    { bounds: { x: 1924, y: 0, width: 1920, height: 1080 } },
+    { bounds: { x: 23, y: -1080, width: 3840, height: 1080 } },
+  ];
+
+  expect(getDisplayBounds(displaysNick as any)).toStrictEqual({
+    x: 0,
+    y: -1080,
+    width: 3863,
+    height: 2160,
+  });
+
+  const displaysJamie = [
     {
       bounds: { x: 0, y: 1080, width: 1920, height: 1080 }, // 1
     },
@@ -113,7 +144,8 @@ test("Can get display bounds properly", () => {
       bounds: { x: -1280, y: 1268, width: 1280, height: 721 }, // 5
     },
   ];
-  expect(getDisplayBounds(displays as any)).toStrictEqual({
+
+  expect(getDisplayBounds(displaysJamie as any)).toStrictEqual({
     x: -1600,
     y: 0,
     width: 5440,

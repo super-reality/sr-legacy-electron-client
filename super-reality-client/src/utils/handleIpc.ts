@@ -9,7 +9,7 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getBoundsPos from "./electron/getBoundsPos";
+import getDisplayPosition from "./electron/getDisplayPosition";
 import getDisplayBounds from "./electron/getDisplayBounds";
 
 import getWindowId from "./electron/getWindowId";
@@ -121,7 +121,9 @@ export default function handleIpc(): void {
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
     const pos = arg;
     console.log("cv absolute pos", { x: pos.x, y: pos.y });
-    const primary = getBoundsPos(getDisplayBounds());
+    console.log("getDisplayBounds()", getDisplayBounds());
+    const primary = getDisplayPosition(getDisplayBounds());
+    console.log("getDisplayPosition(getDisplayBounds())", primary);
     pos.x -= primary.x;
     pos.y -= primary.y;
     console.log("cv relative pos", { x: pos.x, y: pos.y });
