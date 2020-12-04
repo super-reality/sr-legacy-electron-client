@@ -14,11 +14,8 @@ import {
   cursorChecker,
   restrictMinSize,
   restrictRoot,
-  restrictToParent,
   voidFunction,
 } from "../../constants";
-import getPrimaryPos from "../../../utils/electron/getPrimaryPos";
-import getDisplayBounds from "../../../utils/electron/getDisplayBounds";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import clamp from "../../../utils/clamp";
 
