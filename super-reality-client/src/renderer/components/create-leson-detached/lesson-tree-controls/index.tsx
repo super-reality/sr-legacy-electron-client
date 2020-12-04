@@ -2,21 +2,21 @@ import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import usePopupInput from "../../../hooks/usePopupInput";
 import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
 import newStep from "../lesson-utils/newStep";
 
 import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
-import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
+import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
 import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType } from "../../../api/types/item/item";
+import { BaseItemType, ItemFX } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
 import ButtonSimple from "../../button-simple";
 
@@ -116,8 +116,8 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddTeach}
+            onClick={() => doAddItem("fx")}
+            svg={IconAddFX}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}

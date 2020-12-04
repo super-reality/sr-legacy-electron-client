@@ -28,6 +28,11 @@ export const ItemDialogTriggers = {
   None: null,
 };
 
+export const ItemFXTriggers = {
+  "On fx end": 1,
+  None: null,
+};
+
 export interface IAbsolutePos {
   vertical?: number; // In % of screen, not used for anchors
   horizontal?: number; // In % of screen, not used for anchors
@@ -42,7 +47,8 @@ export type BaseItemType =
   | "audio"
   | "video"
   | "image"
-  | "dialog";
+  | "dialog"
+  | "fx";
 
 export interface BaseItem {
   _id: string;
@@ -61,6 +67,11 @@ export interface ItemFocus extends BaseItem {
   trigger: ValueOf<typeof ItemFocusTriggers>;
 }
 
+export interface ItemFX extends BaseItem {
+  type: "fx";
+  effect: string;
+  fullScreen: boolean;
+}
 export interface ItemAudio extends BaseItem {
   type: "audio";
   showPopup: boolean;
@@ -88,4 +99,10 @@ export interface ItemDialog extends BaseItem {
   trigger: ValueOf<typeof ItemDialogTriggers>;
 }
 
-export type Item = ItemFocus | ItemAudio | ItemImage | ItemVideo | ItemDialog;
+export type Item =
+  | ItemFocus
+  | ItemAudio
+  | ItemImage
+  | ItemVideo
+  | ItemDialog
+  | ItemFX;

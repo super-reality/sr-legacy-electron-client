@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import React, {
   useCallback,
   useEffect,
@@ -96,6 +95,7 @@ export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
   const { overlayTransparent } = useSelector((state: AppState) => state.render);
+
   const {
     currentAnchor,
     currentRecording,
@@ -322,3 +322,4 @@ export default function CreateLessonDetached(): JSX.Element {
   }
   return <></>;
 }
+/* eslint-disable dot-notation */

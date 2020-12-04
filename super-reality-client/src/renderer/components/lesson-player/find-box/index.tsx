@@ -5,6 +5,7 @@ import { animated, useSpring } from "react-spring";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
+import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 
 export type FindBoxType = "anchor" | "target";

@@ -1,0 +1,24 @@
+@import "../index.scss";
+
+.fx-box {
+  @include item-base;
+  // @include item-solid;
+  background-color: transparent;
+  border: var(--color-blue) solid 2px;
+  box-sizing: border-box;
+
+  .fx-iframe {
+    position: relative;
+    border: none;
+    height: inherit;
+    pointer-events: none;
+    margin: 0px;
+    @include item-base;
+    background-color: transparent;
+  }
+}
+
+.popup-container {
+  background-color: transparent;
+  border-radius: 15px;
+}
