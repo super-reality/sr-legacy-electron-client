@@ -103,14 +103,8 @@ export default function OpenItem(props: OpenItemProps) {
   const anchorPreview = useCallback(() => {}, []);
   return (
     <>
-      <Tabs
-        buttons={itemModalOptions}
-        initial={view}
-        callback={setView}
-        style={{ width: "-webkit-fill-available", height: "42px" }}
-      />
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        {view === "Settings" && (
+        <Flex column>
           <div
             style={{
               display: "grid",
@@ -132,30 +126,25 @@ export default function OpenItem(props: OpenItemProps) {
               }}
             />
           </div>
-        )}
-        {view === "Settings" && item.type == "focus_highlight" && (
+          <BaseSelect
+            title="Trigger"
+            current={item.trigger}
+            options={Object.values(triggers)}
+            optionFormatter={constantFormat(triggers)}
+            callback={(val) => doUpdate({ trigger: val })}
+          />
+        </Flex>
+
+        {item.type == "focus_highlight" && (
           <SettingsFocusHighlight item={item} update={doUpdate} />
         )}
-        {view === "Settings" && item.type == "image" && (
+        {item.type == "image" && (
           <SettingsImage item={item} update={doUpdate} />
         )}
-        {view === "Settings" && item.type == "dialog" && (
+        {item.type == "dialog" && (
           <SettingsDialog item={item} update={doUpdate} />
         )}
-        {view === "Settings" && item.type == "fx" && (
-          <FXSettings item={item} update={doUpdate} />
-        )}
-        {view === "Trigger" && (
-          <Flex column style={{ width: "-webkit-fill-available" }}>
-            <BaseSelect
-              title="Trigger"
-              current={item.trigger}
-              options={Object.values(triggers)}
-              optionFormatter={constantFormat(triggers)}
-              callback={(val) => doUpdate({ trigger: val })}
-            />
-          </Flex>
-        )}
+        {item.type == "fx" && <FXSettings item={item} update={doUpdate} />}
       </TabsContainer>
     </>
   );
