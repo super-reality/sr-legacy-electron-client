@@ -104,8 +104,15 @@ export default function OpenStep(props: OpenStepProps) {
         callback={setView}
         style={{ width: "-webkit-fill-available", height: "42px" }}
       />
-      <TabsContainer style={{ height: "200px", overflow: "auto" }}>
-        {view === "Settings" && <div />}
+      <TabsContainer style={{ height: "600px", overflow: "auto" }}>
+        {view === "Settings" && (
+          <>
+            {/* {item.type == "focus_highlight" && (
+          <SettingsFocusHighlight item={item} update={doUpdate} />
+        )} */}
+            <div> Settings</div>
+          </>
+        )}
         {view === "Anchor" && (
           <>
             <Flex

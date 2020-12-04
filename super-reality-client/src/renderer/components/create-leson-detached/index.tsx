@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import React, {
   useCallback,
   useEffect,
@@ -87,6 +86,7 @@ function TopBar() {
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
+
   const {
     currentAnchor,
     currentRecording,
@@ -323,3 +323,4 @@ export default function CreateLessonDetached(): JSX.Element {
     </Windowlet>
   );
 }
+/* eslint-disable dot-notation */

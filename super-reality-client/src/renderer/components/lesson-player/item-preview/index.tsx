@@ -21,6 +21,7 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import FXBox from "../fx-box/fx-box";
 import DialogBox from "../dialog-box";
 import AnchorBox from "../anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
@@ -45,6 +46,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -270,6 +272,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
+  // set full screen for the effect
+  // if (
+  //   item &&
+  //   item.type == "fx" &&
+  //   item.fullScreen &&
+  //   dragContainer.current?.parentElement
+  // ) {
+  //   console.log("item.fullScreen", dragContainer.current.parentElement);
+  //   pos.width = dragContainer.current.parentElement.offsetWidth;
+  //   pos.height = dragContainer.current.parentElement.offsetHeight;
+  //   pos.x = 0;
+  //   pos.y = 0;
+  // }
   if (
     previewing &&
     item &&
@@ -319,6 +334,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
         />
       ) : (
         <></>
+      )}
+      {item && item.type == "fx" && (
+        <FXBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          effect={item.effect}
+          callback={onSucessCallback}
+        />
       )}
     </>
   );

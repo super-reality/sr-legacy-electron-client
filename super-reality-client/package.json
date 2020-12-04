@@ -121,6 +121,13 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "./public/fx/",
+        "to": "fx",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "directories": {
