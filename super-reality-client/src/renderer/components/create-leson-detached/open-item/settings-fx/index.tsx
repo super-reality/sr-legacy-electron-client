@@ -29,16 +29,6 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
   return (
     <>
       {Popup}
-      <div className="settings-item-lable ">
-        <IconAddFX
-          width="16px"
-          height="16px"
-          style={{
-            margin: "3px 5px 3px 0",
-          }}
-        />
-        <div className="item-lable-name">FX</div>
-      </div>
       <div className="item-settings">
         <div
           className="input-name"
