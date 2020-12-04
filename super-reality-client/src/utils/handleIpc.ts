@@ -119,14 +119,7 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
-    const pos = arg;
-    console.log("cv absolute pos", { x: pos.x, y: pos.y });
-    console.log("getDisplayBounds()", getDisplayBounds());
-    const primary = getDisplayPosition(getDisplayBounds());
-    console.log("getDisplayPosition(getDisplayBounds())", primary);
-    pos.x -= primary.x;
-    pos.y -= primary.y;
-    console.log("cv relative pos", { x: pos.x, y: pos.y });
-    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
+    console.log("cv pos", { x: arg.x, y: arg.y });
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
   });
 }

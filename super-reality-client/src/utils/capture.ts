@@ -1,25 +1,28 @@
-/* eslint-disable global-require */
+import getPrimaryMonitor from "./electron/getPrimaryMonitor";
 
-import getDisplayBounds from "./electron/getDisplayBounds";
-
-export function captureDesktopStream(): Promise<MediaStream> {
+export function capturePrimaryStream(): Promise<MediaStream> {
+  // eslint-disable-next-line global-require
   const { desktopCapturer } = require("electron");
-  const bounds = getDisplayBounds();
+
+  const primaryId = `${getPrimaryMonitor().id}`;
+
   return new Promise((resolve, reject) => {
-    desktopCapturer.getSources({ types: ["screen"] }).then(async () => {
+    desktopCapturer.getSources({ types: ["screen"] }).then(async (sources) => {
+      const sourceId = sources.filter(
+        (source) => source.display_id == primaryId
+      )[0].id;
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        const videoStream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
           video: {
             mandatory: {
-              minWidth: bounds.width,
-              minHeight: bounds.height,
               chromeMediaSource: "desktop",
+              chromeMediaSourceId: sourceId,
             },
           } as any,
         });
-        resolve(stream);
+        resolve(videoStream);
       } catch (e) {
-        console.error(e);
         reject(e);
       }
     });
@@ -27,7 +30,7 @@ export function captureDesktopStream(): Promise<MediaStream> {
 }
 
 export function capture(): void {
-  captureDesktopStream().then((stream) => {
+  capturePrimaryStream().then((stream) => {
     const video = document.createElement("video");
     video.srcObject = stream;
   });

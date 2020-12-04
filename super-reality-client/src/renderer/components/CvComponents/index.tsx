@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { captureDesktopStream } from "../../../utils/capture";
+import { capturePrimaryStream } from "../../../utils/capture";
 import getDisplayBounds from "../../../utils/electron/getDisplayBounds";
 import { AppState } from "../../redux/stores/renderer";
 
@@ -12,7 +12,7 @@ export default function CvComponents() {
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        videoElement.current.srcObject = await captureDesktopStream();
+        videoElement.current.srcObject = await capturePrimaryStream();
 
         return new Promise((resolve) => {
           if (videoElement.current) {
