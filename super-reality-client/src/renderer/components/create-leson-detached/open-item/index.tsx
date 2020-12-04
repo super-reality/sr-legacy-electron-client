@@ -20,15 +20,11 @@ import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
 import BaseToggle from "../../base-toggle";
-import FXSettings from "./settings-fx/settings-fx";
+import FXSettings from "./settings-fx";
 import SettingsDialog from "./settings-dialog";
 import ButtonRound from "../../button-round";
 
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
-
-// New  Settings Style
-import ItemSettingsContainer from "./settings-container";
-import "./settings-fx/settings-fx.scss";
 
 interface OpenItemProps {
   id: string;
@@ -107,14 +103,27 @@ export default function OpenItem(props: OpenItemProps) {
   const anchorPreview = useCallback(() => {}, []);
   return (
     <>
-      {view === "Settings" && item.type == "fx" ? (
-        <ItemSettingsContainer>
-          <FXSettings item={item} update={doUpdate} />
+      <Tabs
+        buttons={itemModalOptions}
+        initial={view}
+        callback={setView}
+        style={{ width: "-webkit-fill-available", height: "42px" }}
+      />
+      <TabsContainer style={{ height: "200px", overflow: "auto" }}>
+        {view === "Settings" && (
           <div
             style={{
-              marginTop: "10px",
+              display: "grid",
+              gridTemplateColumns: "32px auto",
+              gap: "8px",
             }}
           >
+            <ButtonRound
+              width="32px"
+              height="32px"
+              svg={AnchorIcon}
+              onClick={openParentAnchor}
+            />
             <BaseToggle
               title="Use Anchor"
               value={item.anchor}
@@ -123,25 +132,21 @@ export default function OpenItem(props: OpenItemProps) {
               }}
             />
           </div>
-
-          {/* <BaseSelect
-            title="Computer Vision"
-            current="choose the anchor"
-            options={anchorsList}
-            // optionFormatter={Object.keys(treeAnchors).map(
-            //   (a) => treeAnchors[a]
-            // )}
-            callback={() => {}}
-          /> */}
-
-          {/* <div className="anchor-preview">
-            <img src="https://s3.us-west-1.amazonaws.com/openverse-lms/lesson-1605844330340.png" />
-          </div> */}
-          <div
-            style={{
-              marginTop: "10px",
-            }}
-          >
+        )}
+        {view === "Settings" && item.type == "focus_highlight" && (
+          <SettingsFocusHighlight item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "image" && (
+          <SettingsImage item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "dialog" && (
+          <SettingsDialog item={item} update={doUpdate} />
+        )}
+        {view === "Settings" && item.type == "fx" && (
+          <FXSettings item={item} update={doUpdate} />
+        )}
+        {view === "Trigger" && (
+          <Flex column style={{ width: "-webkit-fill-available" }}>
             <BaseSelect
               title="Trigger"
               current={item.trigger}
@@ -149,65 +154,9 @@ export default function OpenItem(props: OpenItemProps) {
               optionFormatter={constantFormat(triggers)}
               callback={(val) => doUpdate({ trigger: val })}
             />
-          </div>
-        </ItemSettingsContainer>
-      ) : (
-        <>
-          <Tabs
-            buttons={itemModalOptions}
-            initial={view}
-            callback={setView}
-            style={{ width: "-webkit-fill-available", height: "42px" }}
-          />
-          <TabsContainer
-            style={{ minHeight: "270px", height: "400px", overflow: "auto" }}
-          >
-            {view === "Settings" && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "32px auto",
-                  gap: "8px",
-                }}
-              >
-                <ButtonRound
-                  width="32px"
-                  height="32px"
-                  svg={AnchorIcon}
-                  onClick={openParentAnchor}
-                />
-                <BaseToggle
-                  title="Use Anchor"
-                  value={item.anchor}
-                  callback={(val) => {
-                    doUpdate({ anchor: val });
-                  }}
-                />
-              </div>
-            )}
-            {view === "Settings" && item.type == "focus_highlight" && (
-              <SettingsFocusHighlight item={item} update={doUpdate} />
-            )}
-            {view === "Settings" && item.type == "image" && (
-              <SettingsImage item={item} update={doUpdate} />
-            )}
-            {view === "Settings" && item.type == "dialog" && (
-              <SettingsDialog item={item} update={doUpdate} />
-            )}
-            {view === "Trigger" && (
-              <Flex column style={{ width: "-webkit-fill-available" }}>
-                <BaseSelect
-                  title="Trigger"
-                  current={item.trigger}
-                  options={Object.values(triggers)}
-                  optionFormatter={constantFormat(triggers)}
-                  callback={(val) => doUpdate({ trigger: val })}
-                />
-              </Flex>
-            )}
-          </TabsContainer>
-        </>
-      )}
+          </Flex>
+        )}
+      </TabsContainer>
     </>
   );
 }

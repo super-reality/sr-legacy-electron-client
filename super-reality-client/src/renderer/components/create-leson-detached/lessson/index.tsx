@@ -158,14 +158,12 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <LessonTreeControls />
         </div>
       )}
-      <div className="settings-container">
-        {treeCurrentType == "item" && view == "Lessons" && (
-          <OpenItem id={treeCurrentId} />
-        )}
-        {treeCurrentType == "step" && view == "Lessons" && (
-          <OpenStep id={treeCurrentId} />
-        )}
-      </div>
+      {treeCurrentType == "item" && view == "Lessons" && (
+        <OpenItem id={treeCurrentId} />
+      )}
+      {treeCurrentType == "step" && view == "Lessons" && (
+        <OpenStep id={treeCurrentId} />
+      )}
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">
           <Flex style={{ margin: "auto" }}>

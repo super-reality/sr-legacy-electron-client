@@ -72,6 +72,7 @@ export interface ItemFX extends BaseItem {
   effect: string;
   fullScreen: boolean;
 }
+
 export interface ItemAudio extends BaseItem {
   type: "audio";
   showPopup: boolean;
