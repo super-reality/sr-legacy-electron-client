@@ -596,8 +596,6 @@ export default class CVRecorder {
     this._child = exec(this._ffmpegCommand, (err) => {
       if (err) {
         console.error(err)
-      } else {
-        console.info('Recording Without Cursor started')
       }
     })
   }
