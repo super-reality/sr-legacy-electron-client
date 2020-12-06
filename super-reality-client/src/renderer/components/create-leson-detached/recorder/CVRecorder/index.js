@@ -53,6 +53,10 @@ export default class CVRecorder {
         });
     };
 
+    this._child = null;
+    this._ffmpegCommand = null;
+
+    
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -72,6 +76,8 @@ export default class CVRecorder {
     this.delete = this.delete.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
+    this.startRecordingWithoutCursor = this.startRecordingWithoutCursor.bind(this);
+    this.stopRecordingWithoutCursor = this.stopRecordingWithoutCursor.bind(this);
   }
 
   set finishCallback(value) {
@@ -132,6 +138,8 @@ export default class CVRecorder {
 
     this._maxPixelStepLimit = value;
   }
+
+  
 
   getWindowsNearestBorderPoint(startX, startY, img, direction) {
     let move = true;
@@ -368,6 +376,8 @@ export default class CVRecorder {
     this._finishCallback(jsonMetaData);
   }
 
+  
+
   // Saves the video file on stop
   handleStop(e) {
     if (!this._recordingRestarted) {
@@ -570,12 +580,39 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
+  startRecordingWithoutCursor(){
+    this._ffmpegCommand = shell([
+      pathToFfmpeg,
+      '-framerate', '30', // frames per second
+      '-f', 'gdigrab',    // grabs stream from screen
+      '-draw_mouse', '0', // 0 hides and 1 shows cursor
+      '-i', 'desktop',    // grabs whole desktop  title="window name" for a particular window
+      '-c:v', 'libx264rgb',  // encoder
+      '-crf', '0',   // Constant rate factor (0 for lossless recording )
+      '-preset', 'ultrafast',   // compression factor 'ultrafast' for worst compression
+      `${this._recordingPath}vid-hidecursor-${this._stepRecordingName}.mkv`  
+    ])
+
+    this._child = exec(this._ffmpegCommand, (err) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.info('Recording Without Cursor started')
+      }
+    })
+  }
+
+  stopRecordingWithoutCursor(){
+    this._child.stdin.write('q')
+  }
+
   start(source) {
     this._source = source;
     this._titlesQueue = [];
     console.log("started video recording");
     return this.selectSource(this._source).then(() => {
       this._stepRecordingName = `${Date.now()}.webm`;
+      this.startRecordingWithoutCursor();
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
       this._recordingStarted = true;
@@ -637,6 +674,7 @@ export default class CVRecorder {
     this._recordingStarted = false;
     this.stopTimer();
     this.resetTimer();
+    this.stopRecordingWithoutCursor();
     this._mediaRecorder.stop();
     this._audioMediaRecorder.stop();
   }
