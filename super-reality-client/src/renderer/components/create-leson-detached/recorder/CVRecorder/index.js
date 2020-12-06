@@ -428,7 +428,7 @@ export default class CVRecorder {
       seekableVideoBlob.then((blob) => {
         blob.arrayBuffer().then((arrayBuffer) => {
           const buffer = Buffer.from(arrayBuffer);
-          this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}`;
+          this._recordingFullPath = `${this._recordingPath}vid-${this._stepRecordingName}.webm`;
           console.log("recording path: ", this._recordingFullPath);
           if (this._recordingFullPath) {
             fs.writeFile(
@@ -450,7 +450,7 @@ export default class CVRecorder {
 
       audioBlob.arrayBuffer().then((arrayBuffer) => {
         const buffer = Buffer.from(arrayBuffer);
-        this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}`;
+        this._audioRecordingFullPath = `${this._recordingPath}aud-${this._stepRecordingName}.webm`;
         this._fileNameAndExtension = this._audioRecordingFullPath.split(".");
         this._audioRecordingFullPath = `${this._fileNameAndExtension[0]}.webm`;
         if (this._audioRecordingFullPath) {
@@ -611,7 +611,7 @@ export default class CVRecorder {
     this._titlesQueue = [];
     console.log("started video recording");
     return this.selectSource(this._source).then(() => {
-      this._stepRecordingName = `${Date.now()}.webm`;
+      this._stepRecordingName = `${Date.now()}`;
       this.startRecordingWithoutCursor();
       this._mediaRecorder.start();
       this._audioMediaRecorder.start();
