@@ -1,5 +1,6 @@
 import interact from "interactjs";
 import { EffectDB } from "../types/utils";
+import getPublicPath from "../utils/electron/getPublicPath";
 
 // eslint-disable-next-line import/prefer-default-export
 export const API_URL = "http://54.183.151.100:3000/api/v1/";
@@ -51,7 +52,7 @@ export const restrictRoot = interact.modifiers.restrict({
 
 export const voidFunction = () => {};
 
-const fxDirectory = `${process.env.PUBLIC_URL}/fx`;
+const fxDirectory = `${getPublicPath()}/fx`;
 
 export const effectDB: Record<string, EffectDB> = {
   id_1: {

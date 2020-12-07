@@ -5,16 +5,11 @@ import path from "path";
 import getDisplayBounds from "./electron/getDisplayBounds";
 import getDisplayPosition from "./electron/getDisplayPosition";
 import getPrimaryMonitor from "./electron/getPrimaryMonitor";
+import getPublicPath from "./electron/getPublicPath";
 
 function captureCommand(filePath: string) {
-  // eslint-disable-next-line global-require
-  const { remote } = require("electron");
-
-  const proc: any = process;
   // freeware nircmd http://www.nirsoft.net/utils/nircmd.html
-  const nircmdc = remote.app.isPackaged
-    ? path.join(proc.resourcesPath, "extra", "nircmdc.exe")
-    : path.join(remote.app.getAppPath(), "public", "extra", "nircmdc.exe");
+  const nircmdc = path.join(getPublicPath(), "extra", "nircmdc.exe");
 
   switch (os.platform()) {
     case "win32":
