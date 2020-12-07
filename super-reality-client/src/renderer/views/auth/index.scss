@@ -1,19 +1,21 @@
 @import "../../components/misc.scss";
 
+.auth-scroller {
+  display: flex;
+  width: 200%;
+}
+
 .auth-container {
   display: flex;
-  border-radius: 4px;
   overflow: auto;
   flex-direction: column;
-  width: calc(100% - 24px);
+  width: 50%;
   max-width: 400px;
   max-height: 100%;
   margin: auto;
   font-size: 18px;
-  @include hard-shadow;
 
   fieldset {
-    background-color: var(--color-section);
     border: 0;
     padding-block-end: 8px;
     padding-block-start: 16px;
@@ -33,6 +35,23 @@
       opacity: 0.75;
       margin-bottom: 8px;
       display: block;
+    }
+  }
+
+  .actions-container {
+    margin-top: 16px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    a {
+      color: var(--color-text-active);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
