@@ -4,11 +4,9 @@ import { useHistory } from "react-router-dom";
 import { animated, useSpring } from "react-spring";
 import { useDispatch } from "react-redux";
 import ButtonSimple from "../../components/button-simple";
-import topTitle from "../../../assets/images/logo.png";
 import MuteButton from "../../components/mute-button";
 import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
-import Category from "../../../types/collections";
 
 export default function Splash(): JSX.Element {
   const history = useHistory();
@@ -63,12 +61,9 @@ export default function Splash(): JSX.Element {
     <animated.div style={fadeOutSpring} className="splash-container">
       <animated.div style={upSpring} className="splash-shadow-top" />
       <animated.div style={downSpring} className="splash-shadow-bottom" />
-      <video muted={mute} loop autoPlay>
+      <video muted={mute} loop={false} autoPlay>
         <source src="loading.mp4" type="video/mp4" />
       </video>
-      <div className="splash-logo">
-        <img src={topTitle} />
-      </div>
       <div className="splash-elements">
         <animated.div style={{ ...authSpring }}>
           <Auth onAuth={beginAuth} />

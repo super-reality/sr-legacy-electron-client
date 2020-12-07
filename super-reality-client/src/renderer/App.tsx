@@ -64,8 +64,8 @@ export default function App(): JSX.Element {
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
       {appMode == MODE_HOME && (
         <Windowlet
-          width={300}
-          height={700}
+          width={1000}
+          height={600}
           title="Super Reality"
           onMinimize={minimizeWindow}
           onClose={closeWindow}
