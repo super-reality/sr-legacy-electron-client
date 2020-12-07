@@ -1,0 +1,63 @@
+@import "../misc.scss";
+
+.window-container {
+  position: absolute;
+  min-width: 100px;
+  min-height: 100px;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  @include mid-shadow;
+
+  .title-bar {
+    font-size: 14px;
+    line-height: 24px;
+    padding-left: 8px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0.3);
+    touch-action: none;
+    display: flex;
+    justify-content: space-between;
+
+    .buttons {
+      display: flex;
+      -webkit-app-region: no-drag;
+      text-align: center;
+      line-height: 24px;
+
+      .minimize {
+        width: 34px;
+        height: 100%;
+        display: flex;
+        cursor: auto;
+      }
+
+      .maximize {
+        width: 34px;
+        height: 100%;
+        display: flex;
+      }
+
+      .minimize:hover,
+      .maximize:hover {
+        background-color: var(--color-button);
+      }
+
+      .close {
+        display: flex;
+        width: 24px;
+        height: 100%;
+        cursor: auto;
+      }
+
+      .close:hover {
+        background-color: var(--color-red);
+      }
+    }
+  }
+
+  .window-content-container {
+    height: calc(100% - 24px);
+    overflow: hidden;
+  }
+}

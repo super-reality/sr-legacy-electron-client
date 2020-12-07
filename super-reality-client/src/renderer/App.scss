@@ -1,5 +1,13 @@
 @import "./components/misc.scss";
 
+.click-on {
+  pointer-events: all;
+}
+
+.click-through {
+  pointer-events: none;
+}
+
 :root {
   --color-background: #202225;
   --color-background-dark: #1c1e21;

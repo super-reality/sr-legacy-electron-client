@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import "./index.scss";
 import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../assets/svg/win-close.svg";
@@ -194,7 +195,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
           </div>
         </div>
       </div>
-      <div style={{ height: "calc(100% - 24px)" }}>{children}</div>
+      <div className="window-content-container">{children}</div>
     </animated.div>
   );
 }
