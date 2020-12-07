@@ -12,14 +12,10 @@ import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
-import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
-import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
-import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
 
 import Lesson from "./lessson";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
-import closeWindow from "../../../utils/electron/closeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
@@ -51,37 +47,6 @@ const restrictMinSize =
   interact.modifiers.restrictSize({
     min: { width: 100, height: 100 },
   });
-
-function TopBar() {
-  const onMinimize = useCallback(() => {
-    //
-  }, []);
-
-  const onMaximize = useCallback(() => {
-    //
-  }, []);
-
-  const onCLose = useCallback(() => {
-    closeWindow();
-  }, []);
-
-  return (
-    <div className="top-bar">
-      <div className="name">Super Reality</div>
-      <div className="buttons">
-        <div className="minimize" onClick={onMinimize}>
-          <ButtonMinimize style={{ margin: "auto" }} />
-        </div>
-        <div className="maximize" onClick={onMaximize}>
-          <ButtonMaximize style={{ margin: "auto" }} />
-        </div>
-        <div className="close" onClick={onCLose}>
-          <ButtonClose style={{ margin: "auto" }} />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
