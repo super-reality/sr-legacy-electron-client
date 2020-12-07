@@ -42,16 +42,21 @@ export default function Splash(): JSX.Element {
   }, []);
 
   return (
-    <animated.div style={fadeOutSpring} className="splash-container">
-      <video muted={mute} loop={false} autoPlay>
-        <source src="loading.mp4" type="video/mp4" />
-      </video>
-      <div className="splash-mute">
-        <MuteButton state={mute} callback={onMute} />
-      </div>
-      <animated.div style={{ ...authSpring }} className="splash-elements">
-        <Auth onAuth={beginAuth} />
+    <>
+      <animated.div style={fadeOutSpring} className="splash-container">
+        <div className="video-container">
+          <video muted={mute} loop={false} autoPlay>
+            <source src="loading.mp4" type="video/mp4" />
+          </video>
+
+          <div className="splash-mute">
+            <MuteButton state={mute} callback={onMute} />
+          </div>
+        </div>
+        <animated.div style={{ ...authSpring }} className="splash-elements">
+          <Auth onAuth={beginAuth} />
+        </animated.div>
       </animated.div>
-    </animated.div>
+    </>
   );
 }

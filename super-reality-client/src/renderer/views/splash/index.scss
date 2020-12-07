@@ -5,17 +5,24 @@
   display: flex;
   justify-content: flex-end;
 
-  video {
-    object-fit: cover;
-    display: block;
-    height: 100%;
-    margin: auto;
+  .video-container {
+    width: -webkit-fill-available;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+
+    video {
+      object-fit: cover;
+      display: block;
+      height: 100%;
+      margin: auto;
+    }  
   }
 
   .splash-elements {
     overflow: hidden;
     position: relative;
-    width: auto;
+    width: 400px;
     min-width: 400px;
     height: 100%;
     display: flex;
@@ -24,16 +31,16 @@
     background-color: var(--color-section);
   }
 
-  .splash-mute {
-    margin: 8px;
-    display: flex;
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-  }
-
   .splash-button {
     width: 100%;
     position: absolute;
   }
+}
+
+.splash-mute {
+  margin: 8px;
+  display: flex;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
 }
