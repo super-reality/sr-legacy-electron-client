@@ -125,6 +125,7 @@ export default function ItemView(props: ItemViewProps) {
       {item && item.type == "fx" && (
         <FXBox
           pos={pos}
+          clickThrough
           style={{ ...style, border: "none" }}
           effect={item.effect}
           callback={onSucess}

@@ -13,19 +13,20 @@ interface FXBoxProps {
   };
   style?: CSSProperties;
   effect: string;
+  clickThrough?: boolean;
   callback?: (trigger: number) => void;
 }
 
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
-    const { effect, style, pos, callback } = props;
+    const { effect, style, pos, clickThrough, callback } = props;
     const srcFX = effectDB[effect].url;
 
     return (
       <>
         <div
           ref={forwardedRef}
-          className="fx-box click-through"
+          className={`fx-box ${clickThrough ? "click-through" : ""}`}
           style={{
             left: `${pos.x}px`,
             top: `${pos.y}px`,
