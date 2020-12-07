@@ -25,7 +25,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
       <>
         <div
           ref={forwardedRef}
-          className="fx-box"
+          className="fx-box click-through"
           style={{
             left: `${pos.x}px`,
             top: `${pos.y}px`,
