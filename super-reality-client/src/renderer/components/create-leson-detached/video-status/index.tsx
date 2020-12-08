@@ -73,9 +73,9 @@ export default function VideoStatus() {
     cropEditAnchor,
     cropEditAnchorMode,
     cropRecordingPos,
-    canvasSource,
     currentRecording,
-    currentCanvasSource,
+    canvasSourceType,
+    canvasSource,
     status,
     triggerCvMatch,
   } = useSelector((state: AppState) => state.createLessonV2);
@@ -116,12 +116,13 @@ export default function VideoStatus() {
       "Do cv match trigger",
       currentRecording,
       triggerCvMatch,
-      currentCanvasSource
+      canvasSourceType,
+      canvasSource
     );
-    if (currentCanvasSource && anchor) {
+    if (canvasSourceType == "file" && canvasSource && anchor) {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
-        doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
+        doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
       });
@@ -144,7 +145,8 @@ export default function VideoStatus() {
     anchor,
     currentRecording,
     triggerCvMatch,
-    currentCanvasSource,
+    canvasSourceType,
+    canvasSource,
   ]);
 
   const generateItems = useCallback(() => {
