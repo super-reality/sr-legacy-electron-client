@@ -32,3 +32,15 @@ export interface EffectDB {
   url: string;
   tags: string[];
 }
+
+export interface EffectAction {
+  name: string;
+}
+
+export interface EffectData {
+  name: string;
+  tags: string[];
+  parameters: [];
+  actions: EffectAction[];
+  url: string;
+}

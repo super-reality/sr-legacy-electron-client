@@ -29,6 +29,7 @@ module.exports = {
     app: {
       getVersion: () => "1.0.0",
       getPath: () => "src\\assets",
+      getAppPath: () => "",
     },
     screen: {
       getPrimaryDisplay: getPrimaryDisplayMock,

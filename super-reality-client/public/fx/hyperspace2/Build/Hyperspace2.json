@@ -1,6 +1,6 @@
 {
-"companyName": "DefaultCompany",
-"productName": "Transparency",
+"companyName": "Super Reality",
+"productName": "Super Reality Unity Tools",
 "productVersion": "0.1",
 "dataUrl": "Hyperspace2.data.unityweb",
 "wasmCodeUrl": "Hyperspace2.wasm.code.unityweb",
@@ -8,9 +8,9 @@
 "graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
 "webglContextAttributes": {"preserveDrawingBuffer": false},
 "splashScreenStyle": "Dark",
-"backgroundColor": "transparent",
+"backgroundColor": "#231F20",
 "cacheControl": {"default": "must-revalidate"},
 "developmentBuild": false,
 "multithreading": false,
-"unityVersion": "2019.4.13f1"
+"unityVersion": "2019.4.15f1"
 }

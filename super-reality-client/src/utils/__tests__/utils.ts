@@ -1,12 +1,7 @@
 /* eslint-env jest */
 import path from "path";
-import Axios from "axios";
 import getFileExt from "../files/getFileExt";
 import getFileSha1 from "../files/getFileSha1";
-import SignIn from "../../renderer/api/types/auth/signin";
-import { API_URL } from "../../renderer/constants";
-import { ApiError } from "../../renderer/api/types";
-import handleAuthError from "../../renderer/api/handleAuthError";
 import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
 import constantFormat from "../constantFormat";
 import createDataDirs from "../files/createDataDirs";
@@ -65,7 +60,7 @@ test("Can log in", async (done) => {
 });
 */
 test("Can create data directories", () => {
-  expect(createDataDirs()).toBe(true);
+  return expect(createDataDirs()).resolves.toBe(true);
 });
 
 test("Can parse timestamps", () => {
