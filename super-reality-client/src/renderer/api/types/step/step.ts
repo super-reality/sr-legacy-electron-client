@@ -7,5 +7,5 @@ export interface IStep {
   items: IDName[];
   recordingId?: string;
   recordingTimestamp?: string;
-  snapshot?: string;
+  snapShot?: string;
 }

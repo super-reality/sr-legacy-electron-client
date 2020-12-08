@@ -164,6 +164,18 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
+    if (canvasSourceType == "url" && canvasSource && videoCanvasRef) {
+      const img = new Image();
+      img.onload = () => {
+        const ctx = videoCanvasRef.current?.getContext("2d");
+        if (ctx && videoCanvasRef.current) {
+          videoCanvasRef.current.width = img.width;
+          videoCanvasRef.current.height = img.height;
+          ctx.drawImage(img, 0, 0);
+        }
+      };
+      img.src = canvasSource;
+    }
   }, [
     dispatch,
     currentRecording,
@@ -180,8 +192,8 @@ export default function VideoPreview(): JSX.Element {
         ...store.getState().createLessonV2.videoNavigation,
       ] || [0, 0, 0];
       nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
-      if (st.snapshot) {
-        setCanvasSource("url", st.snapshot);
+      if (st.snapShot) {
+        setCanvasSource("url", st.snapShot);
       } else if (st.recordingId) {
         setCanvasSource("recording", st.recordingId);
         reduxAction(dispatch, {
