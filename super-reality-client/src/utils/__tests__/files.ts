@@ -11,6 +11,7 @@ test("Can get effects data", () => {
     tags: ["Debug", "Green", "Particles", "Purple"],
     parameters: [],
     actions: [{ name: "Start" }, { name: "Stop" }],
+    id: "hyperspace2",
     url: "public\\fx\\hyperspace2\\index.html",
   });
   expect(

@@ -14,6 +14,7 @@ export function getEffectData(
     try {
       obj = JSON.parse(data);
       if (obj) {
+        obj.id = name;
         obj.url = path.join(dir, name, "index.html");
       }
     } catch (e) {
