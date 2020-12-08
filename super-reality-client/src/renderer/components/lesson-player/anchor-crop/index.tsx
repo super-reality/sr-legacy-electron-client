@@ -2,17 +2,19 @@ import interact from "interactjs";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import FindBox from "../find-box";
 import {
   cursorChecker,
   restrictMinSize,
+  restrictSnapRound,
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
+import { IAbsolutePos } from "../../../api/types/item/item";
+import AnchorBox from "../anchor-box";
 
 export default function AnchorCrop() {
   const dispatch = useDispatch();
-  const { cropRecordingPos } = useSelector(
+  const { cropRecordingPos, videoScale } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -30,84 +32,76 @@ export default function AnchorCrop() {
     [dispatch]
   );
 
+  function updateDiv(startPos: IAbsolutePos) {
+    const div = dragContainer.current;
+    if (div) {
+      div.style.left = `${Math.round(startPos.x)}px`;
+      div.style.top = `${Math.round(startPos.y)}px`;
+      div.style.width = `${Math.round(startPos.width)}px`;
+      div.style.height = `${Math.round(startPos.height)}px`;
+    }
+  }
+
   useEffect(() => {
     if (dragContainer.current) {
       const startPos = { ...cropRecordingPos };
+      const scale = videoScale;
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictMinSize],
-          inertia: true,
+          modifiers: [restrictSnapRound, restrictMinSize],
+          inertia: false,
         } as any)
-        .on("resizemove", (event) => {
-          const { target } = event;
-          const x = parseFloat(target.style.left) + event.deltaRect.left;
-          const y = parseFloat(target.style.top) + event.deltaRect.top;
-          // fix for interact.js adding 4px to height/width on resize
-          const edge = 4;
-          startPos.width = event.rect.width - edge;
-          startPos.height = event.rect.height - edge;
-          target.style.width = `${event.rect.width - edge}px`;
-          target.style.height = `${event.rect.height - edge}px`;
-          target.style.left = `${x}px`;
-          target.style.top = `${y}px`;
-        })
         .draggable({
           cursorChecker,
           modifiers: [
+            restrictSnapRound,
             interact.modifiers.restrict({
               restriction: "parent",
             }),
           ],
         })
+        .on("resizemove", (event) => {
+          const div = dragContainer.current;
+          if (div) {
+            const delta = event.deltaRect;
+            startPos.x = div.offsetLeft + delta.left / scale;
+            startPos.y = div.offsetTop + delta.top / scale;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
+          }
+        })
         .on("dragstart", (event) => {
-          if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            updateDiv(startPos);
           }
         })
         .on("resizestart", (event) => {
-          if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0) -
-              2;
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0) -
-              2;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
           }
         })
         .on("dragmove", (event) => {
-          if (dragContainer.current) {
-            startPos.x += event.dx;
-            startPos.y += event.dy;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
-          }
+          startPos.x += event.dx / scale;
+          startPos.y += event.dy / scale;
+          updateDiv(startPos);
         })
         .on("resizeend", (event) => {
-          if (dragContainer.current && dragContainer.current.parentElement) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0) +
-              1;
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0) +
-              1;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div && div.parentElement) {
+            startPos.x = div.offsetLeft + 3;
+            startPos.y = div.offsetTop + 3;
+            setPos(startPos);
           }
-          setPos(startPos);
         })
         .on("dragend", () => {
           startPos.x += 3;
@@ -120,11 +114,7 @@ export default function AnchorCrop() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, cropRecordingPos]);
+  }, [dispatch, cvResult, cropRecordingPos, videoScale]);
 
-  return (
-    <>
-      <FindBox ref={dragContainer} type="anchor" pos={cropRecordingPos} />
-    </>
-  );
+  return <AnchorBox ref={dragContainer} pos={cropRecordingPos} />;
 }

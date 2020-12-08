@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import React, {
   useCallback,
   useEffect,
@@ -13,19 +12,10 @@ import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
-import setTopMost from "../../../utils/setTopMost";
-import setMaximize from "../../../utils/setMaximize";
-import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
-import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
-import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
 
-import setFocusable from "../../../utils/setFocusable";
-import setResizable from "../../../utils/setResizable";
 import Lesson from "./lessson";
 import Recorder from "./recorder";
-import minimizeWindow from "../../../utils/minimizeWindow";
-import closeWindow from "../../../utils/closeWindow";
-import toggleMaximize from "../../../utils/toggleMaximize";
+import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
@@ -33,10 +23,15 @@ import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-import userDataPath from "../../../utils/userDataPath";
 import { RecordingJson } from "./recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
+import { recordingPath, stepSnapshotPath } from "../../electron-constants";
+import { getRawAudioData } from "./recorder/CVEditor";
+import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
+import Windowlet from "../windowlet";
+import { MODE_HOME } from "../../redux/slices/renderSlice";
+import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -53,44 +48,14 @@ const restrictMinSize =
     min: { width: 100, height: 100 },
   });
 
-function TopBar() {
-  const onMinimize = useCallback(() => {
-    minimizeWindow();
-  }, []);
-
-  const onMaximize = useCallback(() => {
-    toggleMaximize();
-  }, []);
-
-  const onCLose = useCallback(() => {
-    closeWindow();
-  }, []);
-
-  return (
-    <div className="top-bar">
-      <div className="name">Super Reality</div>
-      <div className="buttons">
-        <div className="minimize" onClick={onMinimize}>
-          <ButtonMinimize style={{ margin: "auto" }} />
-        </div>
-        <div className="maximize" onClick={onMaximize}>
-          <ButtonMaximize style={{ margin: "auto" }} />
-        </div>
-        <div className="close" onClick={onCLose}>
-          <ButtonClose style={{ margin: "auto" }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
-  const { overlayTransparent } = useSelector((state: AppState) => state.render);
+
   const {
     currentAnchor,
     currentRecording,
+    currentLesson,
     anchorTestView,
     lessonPreview,
     chapterPreview,
@@ -98,10 +63,26 @@ export default function CreateLessonDetached(): JSX.Element {
     itemPreview,
     videoNavigation,
     videoDuration,
+    recordingData,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
+
+  const meoizedSpectrum = useMemo(() => {
+    return (
+      <div className="spectrum-container">
+        {recordingData.spectrum.map((n, i) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={`spectrum-key-${i}`}
+            className="spectrum-bar"
+            style={{ height: `${n * 100}%` }}
+          />
+        ))}
+      </div>
+    );
+  }, [recordingData]);
 
   const setVideoNavPos = useCallback(
     (n: readonly number[]) => {
@@ -147,26 +128,9 @@ export default function CreateLessonDetached(): JSX.Element {
       };
     }
     return voidFunction;
-  }, [overlayTransparent, resizeContainer]);
-
-  const setTransparent = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: true });
-    setFocusable(false);
-    setTopMost(true);
-    setMaximize(true);
-    setResizable(false);
-  }, [dispatch]);
-
-  const setSolid = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: false });
-    setFocusable(true);
-    setTopMost(false);
-    setMaximize(false);
-    setResizable(true);
-  }, [dispatch]);
+  }, [resizeContainer]);
 
   const createRecorder = useCallback(() => {
-    setTransparent();
     setOpenRecorder(true);
   }, []);
 
@@ -175,21 +139,33 @@ export default function CreateLessonDetached(): JSX.Element {
   ]);
 
   useEffect(() => {
-    const userData = userDataPath();
     let json: RecordingJson = {
       step_data: [],
+      spectrum: [],
     };
     if (currentRecording) {
       try {
         const file = fs
-          .readFileSync(
-            `${userData}/step/snapshots/${currentRecording}.webm.json`
-          )
+          .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
-        console.error(e);
+        console.warn(
+          `.json for recording ${currentRecording} does not exist! Some data about it might be unavailable.`
+        );
       }
+      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "SET_RECORDING_DATA",
+            arg: { spectrum: rawAudioToWaveform(data) },
+          });
+        })
+        .catch((e) => {
+          console.warn(
+            `recording ${currentRecording} does not have any local audio files.`
+          );
+        });
     }
     reduxAction(dispatch, {
       type: "SET_RECORDING_DATA",
@@ -201,32 +177,77 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  return overlayTransparent ? (
-    <div className="transparent-container click-through">
-      {openRecorder && (
-        <Recorder
-          onFinish={() => {
-            setOpenRecorder(false);
-            setSolid();
-          }}
-        />
-      )}
-      {anchorTestView && (
-        <>
-          <AnchorTester
+  const isTransparent =
+    openRecorder ||
+    anchorTestView ||
+    lessonPreview ||
+    chapterPreview ||
+    stepPreview ||
+    itemPreview;
+
+  if (isTransparent) {
+    return (
+      <>
+        {openRecorder && (
+          <Recorder
             onFinish={() => {
-              setSolid();
+              setOpenRecorder(false);
             }}
           />
-        </>
-      )}
-      {(lessonPreview || chapterPreview || stepPreview || itemPreview) && (
-        <LessonPlayer onFinish={setSolid} />
-      )}
-    </div>
-  ) : (
-    <div className="solid-container">
-      <TopBar />
+        )}
+        {anchorTestView && (
+          <>
+            <AnchorTester
+              onFinish={() => {
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_DATA",
+                  arg: {
+                    anchorTestView: false,
+                  },
+                });
+              }}
+            />
+          </>
+        )}
+        {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
+          currentLesson && (
+            <LessonPlayer
+              lessonId={currentLesson}
+              onFinish={() => {
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_DATA",
+                  arg: {
+                    lessonPreview: false,
+                    chapterPreview: false,
+                    stepPreview: false,
+                    itemPreview: false,
+                    anchorTestView: false,
+                    previewing: false,
+                    previewOne: false,
+                  },
+                });
+              }}
+            />
+          )}
+      </>
+    );
+  }
+
+  const primarySize = getPrimaryMonitor().workArea;
+
+  return (
+    <Windowlet
+      width={primarySize.width}
+      height={primarySize.height}
+      title="Super Reality"
+      onMinimize={minimizeWindow}
+      onClose={() => {
+        reduxAction(dispatch, {
+          type: "SET_APP_MODE",
+          arg: MODE_HOME,
+        });
+      }}
+    >
       <div className="main-container">
         <div className="edit">
           <div
@@ -234,10 +255,7 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson
-              createRecorder={createRecorder}
-              setTransparent={setTransparent}
-            />
+            <Lesson createRecorder={createRecorder} />
           </div>
           {currentAnchor !== undefined ? (
             <div
@@ -245,7 +263,7 @@ export default function CreateLessonDetached(): JSX.Element {
               style={{ width: "340px" }}
               ref={resizeContainerAnchor}
             >
-              <AnchorEdit setTransparent={setTransparent} />
+              <AnchorEdit anchorId={currentAnchor} />
             </div>
           ) : (
             <></>
@@ -264,8 +282,10 @@ export default function CreateLessonDetached(): JSX.Element {
             slideCallback={debounceVideoNav}
           />
           <VideoData />
+          {meoizedSpectrum}
         </div>
       </div>
-    </div>
+    </Windowlet>
   );
 }
+/* eslint-disable dot-notation */

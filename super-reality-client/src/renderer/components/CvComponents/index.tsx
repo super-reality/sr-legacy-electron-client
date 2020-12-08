@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { captureDesktopStream } from "../../../utils/capture";
-import getDisplayBounds from "../../../utils/getNewBounds";
+import { capturePrimaryStream } from "../../../utils/capture";
+import getDisplayBounds from "../../../utils/electron/getDisplayBounds";
 import { AppState } from "../../redux/stores/renderer";
 
 export default function CvComponents() {
@@ -12,10 +12,7 @@ export default function CvComponents() {
   useEffect(() => {
     async function initVideoStream() {
       if (videoElement.current) {
-        const fullBounds = getDisplayBounds();
-        videoElement.current.width = fullBounds.width;
-        videoElement.current.height = fullBounds.height;
-        videoElement.current.srcObject = await captureDesktopStream();
+        videoElement.current.srcObject = await capturePrimaryStream();
 
         return new Promise((resolve) => {
           if (videoElement.current) {
@@ -38,16 +35,16 @@ export default function CvComponents() {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <video
-        style={{ width: "300px", height: "210px" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
         id="videoOutput"
         playsInline
         muted
         ref={videoElement}
       />
       <canvas
-        style={{ width: "300px" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
         id="canvasOutput"
         ref={canvasEl}
         width={cvCanvas}
@@ -55,7 +52,7 @@ export default function CvComponents() {
       />
       <canvas
         id="canvasTestOutput"
-        style={{ width: "300px", margin: "auto" }}
+        style={{ width: "600px", height: "auto", margin: "0 auto" }}
       />
     </div>
   );

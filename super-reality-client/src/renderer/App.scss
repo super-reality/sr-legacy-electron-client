@@ -1,22 +1,30 @@
 @import "./components/misc.scss";
 
+.click-on {
+  pointer-events: all;
+}
+
+.click-through {
+  pointer-events: none;
+}
+
 :root {
   --color-background: #202225;
   --color-background-dark: #1c1e21;
-  --color-section: #2F3136;
+  --color-section: #2f3136;
 
-  --color-button: #36393F;
+  --color-button: #36393f;
   --color-button-hover: #47494d;
-  --color-text: #BBBBBB;
-  --color-text-active: #FAA61A;
-  --color-icon: #A8ABAF;
+  --color-text: #bbbbbb;
+  --color-text-active: #faa61a;
+  --color-icon: #a8abaf;
 
-  --color-checked: #43B581;
-  --color-green: #43B581;
-  --color-red: #F04747;
+  --color-checked: #43b581;
+  --color-green: #43b581;
+  --color-red: #f04747;
   --color-blue: #47a2ff;
 
-  --color-section-separator: #393C43;
+  --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
 
   --color-section-hover: #444e58;
@@ -24,7 +32,7 @@
   --color-background-hover: #43494c;
   --color-text-disabled: #808284;
   --color-text-dark: #242526;
-  --color-separator:#6f6f6f;
+  --color-separator: #6f6f6f;
 }
 
 body {
@@ -33,21 +41,21 @@ body {
   width: -webkit-fill-available;
   height: -webkit-fill-available;
   margin: 0px;
-  background-color: var(--color-background);
   font-family: Roboto;
 }
 
 button {
   border-style: none;
   -webkit-appearance: none;
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0, 0, 0, 0);
 
   &:focus {
     outline: none;
   }
 }
 
-input, textarea {
+input,
+textarea {
   font-family: sans-serif;
   background: var(--color-background);
   border: 1px solid var(--color-background);
@@ -63,12 +71,19 @@ textarea {
   padding: 8px;
 }
 
-input:active, input:focus, textarea:active, textarea:focus {
+input:active,
+input:focus,
+textarea:active,
+textarea:focus {
   border: 1px solid var(--color-background-hover);
   outline: none;
 }
 
-a:focus, a:hover, a:visited, a:link, a:active {
+a:focus,
+a:hover,
+a:visited,
+a:link,
+a:active {
   text-decoration: none;
 }
 
@@ -82,7 +97,7 @@ a:focus, a:hover, a:visited, a:link, a:active {
 
 .content {
   overflow: auto;
-  height: calc(100vh - 45px);
+  height: calc(100% - 45px);
 }
 
 .content-detached {
@@ -100,7 +115,16 @@ a:focus, a:hover, a:visited, a:link, a:active {
   }
 }
 
+::-webkit-resizer {
+  background: #1b1c1d;
+}
+
+::-webkit-scrollbar-corner {
+  background: #1b1c1d;
+}
+
 ::-webkit-scrollbar {
+  background: #1b1c1d;
   height: 8px;
   width: 8px;
 }
@@ -122,15 +146,43 @@ a:focus, a:hover, a:visited, a:link, a:active {
   }
 }
 
-.animation-container{
+.animation-container {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
 
-.animation-el{
+.animation-el {
   position: absolute;
   width: 100%;
   height: 100%;
   display: flex;
+}
+
+.error-boundary {
+  .error-info-top {
+    background-color: var(--color-r);
+    border-radius: 3px 3px 0 0;
+    padding: 24px;
+    height: 48px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .error-info-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .error-info-text {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .error-info-bottom {
+    border-radius: 3px;
+    padding: 6px;
+    height: calc(100% - 112px);
+    overflow: scroll;
+  }
 }

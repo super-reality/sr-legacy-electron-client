@@ -7,6 +7,8 @@ import { Item } from "../../api/types/item/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
 import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
+import idNamePos from "../../../utils/idNamePos";
+import idInIdName from "../../../utils/idInIdName";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
@@ -33,44 +35,43 @@ const initialState = {
   currentItem: undefined as undefined | string,
   currentStep: undefined as undefined | string,
   currentChapter: undefined as undefined | string,
+  currentLesson: undefined as undefined | string,
   currentSubView: "none" as TreeTypes,
   anchorTestView: false,
   lessonPreview: false,
   chapterPreview: false,
   stepPreview: false,
   itemPreview: false,
+  previewing: false,
   previewOne: false,
+  videoScale: 1,
+  videoPos: { x: 0, y: 0 },
+  triggerCvMatch: 0,
   recordingData: {
     step_data: [],
+    spectrum: [],
   } as RecordingJson,
   recordingCvMatches: [] as {
     index: number;
     value: number;
   }[],
-  recordingCvMatchValue: 995,
+  recordingCvMatchValue: 990,
   recordingCvFrame: -1,
   cropRecording: false,
+  cropEditAnchor: null as string | null,
+  cropEditAnchorMode: 0,
   cropRecordingPos: {
     x: 0,
     y: 0,
     width: 100,
     height: 100,
   },
+  currentCanvasSource: undefined as string | undefined,
+  canvasSource: "no source" as string,
+  status: "-",
 };
 
 type InitialState = typeof initialState;
-
-function idInIdName(arr: IDName[], id: string): boolean {
-  return arr.filter((d) => d._id == id).length > 0;
-}
-
-function idNamePos(arr: IDName[], id: string): number {
-  let ret = -1;
-  arr.forEach((d, i) => {
-    if (d._id == id) ret = i;
-  });
-  return ret;
-}
 
 const createLessonSlice = createSlice({
   name: "createLessonV2",
@@ -82,6 +83,12 @@ const createLessonSlice = createSlice({
     ): void => {
       state.recordingCvFrame = 0;
       state.recordingCvMatches = [];
+    },
+    doTriggerCvMatch: (
+      state: InitialState,
+      action: PayloadAction<null>
+    ): void => {
+      state.triggerCvMatch = new Date().getTime();
     },
     setRecordingCVData: (
       state: InitialState,
@@ -370,6 +377,7 @@ export const {
   setAnchor,
   setOpenTree,
   selectEvent,
+  doTriggerCvMatch,
 } = createLessonSlice.actions;
 
 export default createLessonSlice;

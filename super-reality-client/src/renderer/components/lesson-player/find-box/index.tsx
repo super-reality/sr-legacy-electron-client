@@ -1,7 +1,14 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useCallback, useEffect, useRef } from "react";
-import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { animated, useSpring } from "react-spring";
+import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
 import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
 import "./index.scss";
@@ -16,19 +23,19 @@ interface FindBoxProps {
     height: number;
   };
   style?: CSSProperties;
-  type: ItemFocus["focus"] | "anchor";
+  type: ItemFocus["focus"];
   ref?: React.RefObject<HTMLDivElement>;
-  clicktThrough?: boolean;
+  clickThrough?: boolean;
   callback?: (trigger: number) => void;
 }
 
 const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
   (props, forwardedRef) => {
-    const { type, pos, style, clicktThrough, callback } = props;
+    const { type, pos, style, clickThrough, callback } = props;
+    const [opacity, setOpacity] = useState(0);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     let computedType = "type";
-    if (type == "anchor") computedType = "anchor";
     if (type == "Mouse Point") computedType = "mouse";
     if (type == "Rectangle") computedType = "rectangle";
     if (type == "Area highlight") computedType = "area";
@@ -53,21 +60,24 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       const mouseEvents = __non_webpack_require__("global-mouse-events");
       const { remote } = require("electron");
 
-      if (clicktThrough && callback) {
+      if (callback) {
         const interval = setInterval(() => {
           const mouse = remote.screen.getCursorScreenPoint();
+          const diplayPos = getPrimaryMonitor().bounds;
           if (
-            mouse.x > pos.x &&
-            mouse.y > pos.y &&
-            mouse.x < pos.x + pos.width &&
-            mouse.y < pos.y + pos.height
+            mouse.x > diplayPos.x + pos.x &&
+            mouse.y > diplayPos.y + pos.y &&
+            mouse.x < diplayPos.x + pos.x + pos.width &&
+            mouse.y < diplayPos.y + pos.y + pos.height
           ) {
             callback(ItemFocusTriggers["Hover target"]);
           }
-        }, 500);
+        }, 50);
         timeoutRef.current = interval;
 
-        mouseEvents.on("mousedown", clickCallback);
+        if (clickThrough) {
+          mouseEvents.on("mousedown", clickCallback);
+        }
       }
 
       return () => {
@@ -76,17 +86,26 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
       };
     }, [pos, callback]);
 
+    const spring = useSpring({
+      left: `${pos.x - 3}px`,
+      top: `${pos.y - 3}px`,
+      width: `${pos.width}px`,
+      height: `${pos.height}px`,
+      opacity,
+    }) as any;
+
+    useEffect(() => {
+      setTimeout(() => setOpacity(1), 1000);
+    }, []);
+
     return (
-      <div
+      <animated.div
         ref={forwardedRef}
         className={`find-box ${
-          clicktThrough ? "click-through" : ""
+          clickThrough ? "click-through" : ""
         } ${computedType}`}
         style={{
-          left: `${pos.x - 3}px`,
-          top: `${pos.y - 3}px`,
-          width: `${pos.width}px`,
-          height: `${pos.height}px`,
+          ...spring,
           ...style,
         }}
         onClick={
@@ -94,14 +113,7 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
             ? () => callback(ItemFocusTriggers["Click target"])
             : voidFunction
         }
-      >
-        {type == "anchor" && pos.width > 150 && pos.height > 150 && (
-          <AnchorIcon
-            fill="var(--color-red)"
-            style={{ opacity: 0.66, margin: "auto" }}
-          />
-        )}
-      </div>
+      />
     );
   }
 );

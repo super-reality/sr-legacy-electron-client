@@ -14,23 +14,39 @@ import ImageBox from "../image.box";
 import {
   cursorChecker,
   restrictMinSize,
+  restrictSnapRound,
+  restrictSnapGrid,
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import FXBox from "../fx-box/fx-box";
+import DialogBox from "../dialog-box";
+import AnchorBox from "../anchor-box";
+import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
+import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
 
-export default function ItemPreview() {
+interface ItemPreviewProps {
+  itemId: string;
+  stepId: string;
+  showAnchor: boolean;
+  onSucess?: () => void;
+}
+
+export default function ItemPreview(props: ItemPreviewProps) {
+  const { itemId, stepId, showAnchor } = props;
+  const { onSucess } = props;
   const dispatch = useDispatch();
   const {
-    currentAnchor,
-    currentItem,
-    currentStep,
+    previewing,
     treeItems,
     treeSteps,
     treeAnchors,
+    videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -40,21 +56,21 @@ export default function ItemPreview() {
   });
   const [style, setStyle] = useState<CSSProperties>({});
 
-  const item = useMemo(
-    () => (currentItem ? treeItems[currentItem] : undefined),
-    [currentItem, treeItems]
-  );
+  const item = useMemo(() => (itemId ? treeItems[itemId] : undefined), [
+    itemId,
+    treeItems,
+  ]);
 
-  const step = useMemo(
-    () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, treeSteps]
-  );
+  const step = useMemo(() => (stepId ? treeSteps[stepId] : undefined), [
+    stepId,
+    treeSteps,
+  ]);
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor || currentAnchor;
+    const anchorId = step?.anchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [step, currentAnchor, treeAnchors]);
+  }, [step, treeAnchors]);
 
   const updatePos = useCallback(() => {
     const newPos = {
@@ -89,100 +105,120 @@ export default function ItemPreview() {
     updatePos();
   }, [cvResult, updatePos]);
 
+  function updateDiv(startPos: IAbsolutePos) {
+    const div = dragContainer.current;
+    if (div) {
+      div.style.left = `${Math.round(startPos.x)}px`;
+      div.style.top = `${Math.round(startPos.y)}px`;
+      div.style.width = `${Math.round(startPos.width)}px`;
+      div.style.height = `${Math.round(startPos.height)}px`;
+    }
+  }
+
   useEffect(() => {
     if (dragContainer.current && item && step) {
       const startPos = { ...pos };
+      const scale = !onSucess ? videoScale : 1;
+
+      const resizeMods: any[] = [restrictSnapRound, restrictMinSize];
+      const dragMods: any[] = [
+        interact.modifiers.restrict({
+          restriction: "parent",
+        }),
+      ];
+
+      if (
+        item.type == "dialog" ||
+        item.type == "image" ||
+        item.type == "video"
+      ) {
+        resizeMods.push(restrictSnapGrid);
+        dragMods.push(restrictSnapGrid);
+      }
+
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
-          modifiers: [restrictMinSize],
-          inertia: true,
+          modifiers: resizeMods,
+          inertia: false,
         } as any)
-        .on("resizemove", (event) => {
-          const { target } = event;
-          const x = parseFloat(target.style.left) + event.deltaRect.left;
-          const y = parseFloat(target.style.top) + event.deltaRect.top;
-          // fix for interact.js adding 4px to height/width on resize
-          const edge = item.type == "focus_highlight" ? 4 : 0;
-          startPos.width = event.rect.width - edge;
-          startPos.height = event.rect.height - edge;
-          target.style.width = `${event.rect.width - edge}px`;
-          target.style.height = `${event.rect.height - edge}px`;
-          target.style.left = `${x}px`;
-          target.style.top = `${y}px`;
-        })
         .draggable({
           cursorChecker,
-          modifiers: [
-            interact.modifiers.restrict({
-              restriction: "parent",
-            }),
-          ],
+          modifiers: dragMods,
+        })
+        .on("resizemove", (event) => {
+          const div = dragContainer.current;
+          if (div) {
+            const delta = event.deltaRect;
+            startPos.x = div.offsetLeft + delta.left / scale;
+            startPos.y = div.offsetTop + delta.top / scale;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
+          }
+
+          if (div && div.parentElement) {
+            startPos.horizontal =
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
+              startPos.x;
+            startPos.vertical =
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
+              startPos.y;
+            updatePosMarker(startPos, item.anchor);
+          }
         })
         .on("dragstart", (event) => {
-          if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            updateDiv(startPos);
           }
         })
         .on("resizestart", (event) => {
-          if (dragContainer.current) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0);
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0);
-            const edge = item.type == "focus_highlight" ? 6 : 0;
-            startPos.width += edge;
-            startPos.height += edge;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          if (div) {
+            startPos.x = div.offsetLeft || 0;
+            startPos.y = div.offsetTop || 0;
+            startPos.width = (event.rect.width - 6) / scale;
+            startPos.height = (event.rect.height - 6) / scale;
+            updateDiv(startPos);
+            updatePosMarker(startPos, item.anchor);
           }
         })
         .on("dragmove", (event) => {
-          if (dragContainer.current) {
-            startPos.x += event.dx;
-            startPos.y += event.dy;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          const div = dragContainer.current;
+          startPos.x += event.dx / scale;
+          startPos.y += event.dy / scale;
+          if (div && div.parentElement) {
+            startPos.horizontal =
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
+              startPos.x;
+            startPos.vertical =
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
+              startPos.y;
           }
+          updatePosMarker(startPos, item.anchor);
+          updateDiv(startPos);
         })
         .on("resizeend", (event) => {
+          const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
-          } else if (
-            dragContainer.current &&
-            dragContainer.current.parentElement
-          ) {
-            startPos.x =
-              event.rect.left -
-              (dragContainer.current.parentElement?.offsetLeft || 0) +
-              3;
-            startPos.y =
-              event.rect.top -
-              (dragContainer.current.parentElement?.offsetTop || 0) +
-              3;
-            dragContainer.current.style.left = `${startPos.x}px`;
-            dragContainer.current.style.top = `${startPos.y}px`;
+          } else if (div && div.parentElement) {
+            if (!onSucess) {
+              // startPos.width /= scale;
+              // startPos.height /= scale;
+            }
             startPos.horizontal =
-              (100 /
-                (dragContainer.current.parentElement.offsetWidth -
-                  startPos.width)) *
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
             startPos.vertical =
-              (100 /
-                (dragContainer.current.parentElement.offsetHeight -
-                  startPos.height)) *
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
+          hidePosMarker();
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
             arg: {
@@ -195,24 +231,19 @@ export default function ItemPreview() {
           updateItem({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
+          const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x - 3;
-            startPos.y -= cvResult.y - 3;
-          } else if (
-            dragContainer.current &&
-            dragContainer.current.parentElement
-          ) {
+            startPos.x -= cvResult.x;
+            startPos.y -= cvResult.y;
+          } else if (div && div.parentElement) {
             startPos.horizontal =
-              (100 /
-                (dragContainer.current.parentElement.offsetWidth -
-                  startPos.width)) *
+              (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
             startPos.vertical =
-              (100 /
-                (dragContainer.current.parentElement.offsetHeight -
-                  startPos.height)) *
+              (100 / (div.parentElement.offsetHeight - startPos.height)) *
               startPos.y;
           }
+          hidePosMarker();
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETITEM",
             arg: {
@@ -230,27 +261,87 @@ export default function ItemPreview() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, pos, step, item]);
+  }, [dispatch, cvResult, pos, step, item, videoScale]);
+
+  const onSucessCallback = useCallback(
+    (trigger: number | null) => {
+      if (item && onSucess && trigger == item.trigger) {
+        onSucess();
+      }
+    },
+    [item]
+  );
+
+  // set full screen for the effect
+  // if (
+  //   item &&
+  //   item.type == "fx" &&
+  //   item.fullScreen &&
+  //   dragContainer.current?.parentElement
+  // ) {
+  //   console.log("item.fullScreen", dragContainer.current.parentElement);
+  //   pos.width = dragContainer.current.parentElement.offsetWidth;
+  //   pos.height = dragContainer.current.parentElement.offsetHeight;
+  //   pos.x = 0;
+  //   pos.y = 0;
+  // }
+  if (
+    previewing &&
+    item &&
+    item.anchor &&
+    anchor &&
+    cvResult.dist < anchor.cvMatchValue / 1000
+  ) {
+    return <></>;
+  }
 
   return (
     <>
-      {step?.anchor && item?.anchor && anchor && cvResult && (
-        <FindBox clicktThrough type="anchor" pos={cvResult} />
+      {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
+        <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
-      {item && item.type == "focus_highlight" && (
+      {item && item.type == "focus_highlight" ? (
         <FindBox
           ref={dragContainer}
           pos={pos}
           style={style}
           type={item.focus}
+          callback={onSucessCallback}
         />
+      ) : (
+        <></>
       )}
-      {item && item.type == "image" && (
+      {item && item.type == "image" ? (
         <ImageBox
           ref={dragContainer}
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
+          callback={onSucessCallback}
+        />
+      ) : (
+        <></>
+      )}
+      {item && item.type == "dialog" ? (
+        <DialogBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          text={item.text}
+          trigger={item.trigger}
+          callback={onSucessCallback}
+        />
+      ) : (
+        <></>
+      )}
+      {item && item.type == "fx" && (
+        <FXBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          effect={item.effect}
+          callback={onSucessCallback}
         />
       )}
     </>

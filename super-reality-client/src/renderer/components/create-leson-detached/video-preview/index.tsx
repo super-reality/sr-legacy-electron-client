@@ -1,70 +1,119 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import fs from "fs";
-import { useMeasure } from "react-use";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../../../redux/stores/renderer";
+import interact from "interactjs";
+import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
-import userDataPath from "../../../../utils/userDataPath";
 import AnchorCrop from "../../lesson-player/anchor-crop";
-import FindBox from "../../lesson-player/find-box";
+import { cursorChecker, voidFunction } from "../../../constants";
+import { recordingPath } from "../../../electron-constants";
+import StepView from "../../lesson-player/step-view";
+import AnchorBox from "../../lesson-player/anchor-box";
+import EditAnchorButton from "./edit-anchor-button";
+import timestampToTime from "../../../../utils/timestampToTime";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
   const {
-    recordingData,
     videoNavigation,
     currentRecording,
     currentAnchor,
     currentStep,
     currentItem,
-    treeAnchors,
     treeItems,
     treeSteps,
     cropRecording,
+    videoScale,
+    videoPos,
+    canvasSource,
+    currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
-  const horPor = useRef<HTMLDivElement>(null);
-  const vertPos = useRef<HTMLDivElement>(null);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
 
-  // eslint-disable-next-line global-require
-  const { remote, nativeImage } = require("electron") as any;
-  const userData = userDataPath();
-  const fileName = `${userData}/capture.png`;
-  const output = `${userData}/crop.png`;
-  const [crop, setCrop] = useState<any>({});
-
-  const doClick = useCallback(async () => {
-    const image = nativeImage.createFromPath(fileName).crop({
-      x: crop.x,
-      y: crop.y,
-      width: crop.width,
-      height: crop.height,
-    });
-    // console.log(image);
-    fs.writeFile(output, image.toPNG(), {}, () => {
-      remote.getCurrentWindow().close();
-    });
-  }, [crop]);
-
-  const [containerRef, { width, height }] = useMeasure<HTMLDivElement>();
-
-  const cvEditor: any = useMemo(
-    () => new CVEditor(videoHiddenRef.current, videoCanvasRef.current),
-    []
+  const setVideoPos = useCallback(
+    (arg: { x: number; y: number }) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          videoPos: arg,
+        },
+      });
+    },
+    [dispatch]
   );
+
+  const setVideoScale = useCallback(
+    (arg: number) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          videoScale: arg,
+        },
+      });
+    },
+    [dispatch]
+  );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerOutRef = useRef<HTMLDivElement>(null);
+
+  const shouldDisplayPreview = useMemo(() => {
+    const should = currentRecording || currentCanvasSource;
+    if (should && currentCanvasSource && fs.existsSync(currentCanvasSource))
+      return true;
+    if (
+      should &&
+      currentRecording &&
+      fs.existsSync(`${recordingPath}/vid-${currentRecording}.webm`)
+    )
+      return true;
+    return false;
+  }, [currentRecording, currentCanvasSource]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (containerOutRef.current && videoCanvasRef.current) {
+        const containerWidth =
+          shouldDisplayPreview && videoCanvasRef.current
+            ? videoCanvasRef.current.width
+            : 1920;
+        const containerHeight =
+          shouldDisplayPreview && videoCanvasRef.current
+            ? videoCanvasRef.current.height
+            : 1080;
+        const innherWidth = containerOutRef.current.offsetWidth - 16;
+        const innherHeight = containerOutRef.current.offsetHeight - 16;
+        const scale = Math.min(
+          (1 / containerWidth) * innherWidth,
+          (1 / containerHeight) * innherHeight
+        );
+        const xPos = (innherWidth - containerWidth) / 2 + 8;
+        const yPos = (innherHeight - containerHeight) / 2 + 8;
+
+        const newScale = Math.round(scale * 10) / 10;
+        if (newScale < 4 && newScale > 0.1) {
+          setVideoScale(newScale);
+          setVideoPos({ x: xPos, y: yPos });
+        }
+      }
+    }, 500);
+  }, [
+    currentRecording,
+    containerOutRef,
+    videoCanvasRef,
+    setVideoScale,
+    setVideoPos,
+    shouldDisplayPreview,
+  ]);
+
+  const cvEditor: any = useMemo(() => new CVEditor(), []);
 
   const item = useMemo(
     () => (currentItem ? treeItems[currentItem] : undefined),
@@ -77,8 +126,13 @@ export default function VideoPreview(): JSX.Element {
   );
 
   useEffect(() => {
-    if (step?.anchor && anchorImageRef.current && !recordingData.anchor) {
-      const anchor = treeAnchors[step?.anchor];
+    if (
+      !shouldDisplayPreview &&
+      step?.anchor &&
+      anchorImageRef.current &&
+      containerRef.current
+    ) {
+      const anchor = store.getState().createLessonV2.treeAnchors[step?.anchor];
       [anchorImageRef.current.src] = anchor?.templates || "";
       if (anchor) {
         reduxAction(dispatch, {
@@ -87,8 +141,12 @@ export default function VideoPreview(): JSX.Element {
             id: anchor._id,
             width: anchorImageRef.current.width,
             height: anchorImageRef.current.height,
-            x: width / 2 - anchorImageRef.current.width / 2,
-            y: height / 2 - anchorImageRef.current.height / 2,
+            x:
+              containerRef.current.offsetWidth / 2 -
+              anchorImageRef.current.width / 2,
+            y:
+              containerRef.current.offsetHeight / 2 -
+              anchorImageRef.current.height / 2,
             sizeFactor: 1,
             dist: 0,
             time: 0,
@@ -96,13 +154,15 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
-  }, [dispatch, treeAnchors, width, height, step, recordingData]);
+  }, [dispatch, currentRecording, canvasSource, shouldDisplayPreview, step]);
 
   useEffect(() => {
     if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
-      cvEditor.canvasElement = videoCanvasRef.current;
-      cvEditor.videoElement = videoHiddenRef.current;
-      videoHiddenRef.current.src = `${userDataPath()}/step/media/vid-${currentRecording}.webm`;
+      if (videoCanvasRef.current)
+        cvEditor.canvasElement = videoCanvasRef.current;
+      if (videoHiddenRef.current)
+        cvEditor.videoElement = videoHiddenRef.current;
+      videoHiddenRef.current.src = `${recordingPath}/vid-${currentRecording}.webm`;
       videoHiddenRef.current.addEventListener("loadeddata", () => {
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
@@ -120,6 +180,34 @@ export default function VideoPreview(): JSX.Element {
   }, [dispatch, currentRecording, videoCanvasRef, videoHiddenRef]);
 
   useEffect(() => {
+    const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
+    if (currentStep && st) {
+      const nav: number[] = [
+        ...store.getState().createLessonV2.videoNavigation,
+      ] || [0, 0, 0];
+      nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          currentRecording: st.recordingId,
+          currentCanvasSource: undefined,
+          canvasSource: `step ${st.name}`,
+          videoNavigation: nav,
+        },
+      });
+    } else {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          currentRecording: undefined,
+          currentCanvasSource: undefined,
+          canvasSource: `no source`,
+        },
+      });
+    }
+  }, [currentStep, videoCanvasRef]);
+
+  useEffect(() => {
     if (
       videoHiddenRef.current &&
       videoHiddenRef.current?.currentTime !== videoNavigation[1]
@@ -128,46 +216,115 @@ export default function VideoPreview(): JSX.Element {
     }
   }, [videoNavigation]);
 
+  useEffect(() => {
+    if (containerRef.current) {
+      const newPos = { ...videoPos };
+      interact(containerRef.current)
+        .draggable({
+          cursorChecker,
+        })
+        .on("dragmove", (event) => {
+          if (containerRef.current) {
+            newPos.x += event.dx;
+            newPos.y += event.dy;
+            containerRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
+          }
+        })
+        .on("dragend", (event) => {
+          setVideoPos(newPos);
+        });
+
+      return (): void => {
+        if (containerRef.current) interact(containerRef.current).unset();
+      };
+    }
+    return voidFunction;
+  }, [containerRef, videoScale, videoPos]);
+
+  const doScale = useCallback(
+    (e: React.WheelEvent<HTMLDivElement>) => {
+      const newScale = videoScale + e.deltaY / -1000;
+
+      if (videoScale > 0.1 && newScale < 4) {
+        setVideoScale(newScale);
+        /*
+        if (containerOutRef.current) {
+          const containerWidth = videoCanvasRef.current?.width ?? 1920;
+          const containerHeight = videoCanvasRef.current?.height ?? 1080;
+          const innherWidth = containerOutRef.current.offsetWidth;
+          const innherHeight = containerOutRef.current.offsetHeight;
+        }
+        */
+      }
+    },
+    [videoScale]
+  );
+
   return (
-    <div ref={containerRef} className="video-preview-container">
-      {!currentRecording && (
-        <div className="video-preview-no-video">
-          {`Select a recording to ${
-            cropRecording ? "crop an anchor" : "preview"
-          }`}
-        </div>
-      )}
-      {currentRecording && (
-        <>
-          <canvas
-            ref={videoCanvasRef}
-            id="preview-video-canvas"
-            className="video-preview-video"
-          />
+    <div className="video-preview-container-out" ref={containerOutRef}>
+      <div
+        ref={containerRef}
+        className="video-preview-container"
+        onWheel={doScale}
+        style={{
+          transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
+        }}
+      >
+        <canvas
+          style={{
+            display: shouldDisplayPreview ? "block" : "none",
+          }}
+          ref={videoCanvasRef}
+          id="preview-video-canvas"
+          className="video-preview-video"
+        />
+        {shouldDisplayPreview ? (
           <video
             ref={videoHiddenRef}
             muted
             id="video-hidden"
             style={{ display: "none" }}
           />
-        </>
-      )}
-      <div
-        key={`hor-${item?._id}` || ""}
-        ref={horPor}
-        className="horizontal-pos"
-      />
-      <div
-        key={`ver-${item?._id}` || ""}
-        ref={vertPos}
-        className="vertical-pos"
-      />
-      <img ref={anchorImageRef} style={{ display: "none" }} />
-      {item && !cropRecording && <ItemPreview />}
-      {!cropRecording && (currentRecording || currentAnchor) && (
-        <FindBox clicktThrough type="anchor" pos={cvResult} />
-      )}
-      {cropRecording && <AnchorCrop />}
+        ) : (
+          <div className="video-preview-no-video">Nothing to preview</div>
+        )}
+        <div
+          key={`hor-${item?._id}` || ""}
+          id="horizontal-pos"
+          className="horizontal-pos"
+        />
+        <div
+          key={`ver-${item?._id}` || ""}
+          id="vertical-pos"
+          className="vertical-pos"
+        />
+        <div key={`xy-${item?._id}` || ""} id="xy-pos" className="xy-pos">
+          <div id="xy-pos-text" className="xy-pos-text" />
+        </div>
+        <img ref={anchorImageRef} style={{ display: "none" }} />
+        {item && currentItem && currentStep && !cropRecording && (
+          <>
+            <AnchorBox pos={cvResult} />
+            <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
+            <ItemPreview
+              showAnchor={false}
+              stepId={currentStep}
+              itemId={currentItem}
+            />
+          </>
+        )}
+        {step && !currentItem && currentStep && !cropRecording && (
+          <>
+            <AnchorBox pos={cvResult} />
+            <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
+            <StepView stepId={currentStep} onSucess={() => {}} />
+          </>
+        )}
+        {cropRecording && <AnchorCrop />}
+        {!item && !cropRecording && (currentRecording || currentAnchor) && (
+          <AnchorBox pos={cvResult} />
+        )}
+      </div>
     </div>
   );
 }

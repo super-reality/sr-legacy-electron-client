@@ -10,6 +10,10 @@ import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
 import ImageBox from "../image.box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
+import { IAnchor } from "../../../api/types/anchor/anchor";
+import DialogBox from "../dialog-box";
+import FXBox from "../fx-box";
+import { Rectangle } from "../../../../types/utils";
 
 interface ItemViewProps {
   item: Item;
@@ -20,43 +24,53 @@ interface ItemViewProps {
 export default function ItemView(props: ItemViewProps) {
   const { anchorId, item, onSucess } = props;
 
-  const { treeAnchors } = useSelector(
+  const { treeAnchors, previewing } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
-  const [pos, setPos] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [pos, setPos] = useState<Rectangle | null>(null);
   const [style, setStyle] = useState<CSSProperties>({});
 
   // Get item's anchor or just the one in use
-  const anchor = useMemo(() => treeAnchors[anchorId] || undefined, [anchorId]);
+  const anchor: IAnchor | undefined = useMemo(
+    () => treeAnchors[anchorId] || undefined,
+    [anchorId]
+  );
 
   const updatePos = useCallback(() => {
-    const newPos = {
-      x: anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
-      y: anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
-      width: item?.relativePos.width || 400,
-      height: item?.relativePos.height || 300,
-    };
-    setPos(newPos);
+    const cvFound =
+      cvResult.dist > 0 &&
+      item &&
+      anchor &&
+      cvResult.dist < anchor.cvMatchValue / 100;
 
-    const newStyle = !anchor
+    const newPos = {
+      x: anchor && item.anchor ? cvResult.x + (item.relativePos.x || 0) : 0,
+      y: anchor && item.anchor ? cvResult.y + (item.relativePos.y || 0) : 0,
+      width: item.relativePos.width || 400,
+      height: item.relativePos.height || 300,
+    };
+
+    const newStyle = !item.anchor
       ? {
-          left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
-            item?.relativePos.horizontal || 0
+          left: `calc((100% - ${item.relativePos.width}px) / 100 * ${
+            item.relativePos.horizontal || 0
           })`,
-          top: `calc((100% - ${item?.relativePos.height}px) / 100 * ${
-            item?.relativePos.vertical || 0
+          top: `calc((100% - ${item.relativePos.height}px) / 100 * ${
+            item.relativePos.vertical || 0
           })`,
         }
       : {};
-    setStyle(newStyle);
 
     if (
-      cvResult.dist > 0 &&
-      item &&
-      item.type == "focus_highlight" &&
-      cvResult.dist < anchor.cvMatchValue / 100
+      item.type !== "focus_highlight" ||
+      (cvFound && item.type == "focus_highlight")
     ) {
+      setPos(newPos);
+      setStyle(newStyle);
+    }
+
+    if (cvFound && item.type == "focus_highlight") {
       onSucess(ItemFocusTriggers["Target found"]);
     }
   }, [anchor, cvResult, item, onSucess]);
@@ -65,11 +79,25 @@ export default function ItemView(props: ItemViewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
+  if (
+    item &&
+    anchor &&
+    previewing &&
+    item.anchor &&
+    cvResult.dist < anchor.cvMatchValue / 1000
+  ) {
+    return <></>;
+  }
+
+  if (!pos) {
+    return <></>;
+  }
+
   return (
     <>
       {item && item.type == "focus_highlight" && (
         <FindBox
-          clicktThrough
+          clickThrough
           pos={pos}
           style={style}
           type={item.focus}
@@ -81,6 +109,25 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           style={style}
           image={item.url}
+          trigger={item.trigger}
+          callback={onSucess}
+        />
+      )}
+      {item && item.type == "dialog" && (
+        <DialogBox
+          pos={pos}
+          style={style}
+          text={item.text}
+          trigger={item.trigger}
+          callback={onSucess}
+        />
+      )}
+      {item && item.type == "fx" && (
+        <FXBox
+          pos={pos}
+          clickThrough
+          style={{ ...style, border: "none" }}
+          effect={item.effect}
           callback={onSucess}
         />
       )}

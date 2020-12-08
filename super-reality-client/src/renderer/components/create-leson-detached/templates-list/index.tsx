@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./index.scss";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import ButtonRound from "../../button-round";
@@ -6,45 +6,36 @@ import { ReactComponent as TrashButton } from "../../../../assets/svg/trash.svg"
 import { ReactComponent as EditButton } from "../../../../assets/svg/edit.svg";
 import usePopupImage from "../../../hooks/usePopupImage";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 
 interface TemplatesListProps {
-  templates: string[];
+  anchor: IAnchor;
   update: (data: Partial<IAnchor>) => void;
 }
 
 export default function TemplatesList(props: TemplatesListProps): JSX.Element {
-  const { templates, update } = props;
-  const [temp, setTemp] = useState(templates);
   const [editIndex, setEditIndex] = useState(-1);
-
-  useEffect(() => {
-    setTemp(templates);
-  }, [templates]);
+  const { anchor, update } = props;
 
   const insertImage = useCallback(
     (image: string) => {
       uploadFileToS3(image).then((url) => {
-        const images = [...temp];
-        images.splice(editIndex, 1, url);
-        setTemp(images);
+        const imgArr = [...anchor.templates];
+        imgArr.splice(editIndex, 1, url);
+        update({ templates: imgArr });
       });
     },
-    [editIndex, temp]
+    [editIndex, update, anchor]
   );
 
   const removeImage = useCallback(
     (index: number) => {
-      const imgArr = [...temp];
+      const imgArr = [...anchor.templates];
       imgArr.splice(index, 1);
-      setTemp(imgArr);
+      update({ templates: imgArr });
     },
-    [temp]
+    [update, anchor]
   );
-
-  useEffect(() => {
-    update({ templates: temp });
-  }, [temp]);
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
   const [Image, openImage] = usePopupImage();
@@ -54,7 +45,7 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
       {Popup}
       <Image />
       <div className="templates-list-container">
-        {temp.map((image, i) => {
+        {anchor.templates.map((image, i) => {
           return (
             <div
               className="template-item"

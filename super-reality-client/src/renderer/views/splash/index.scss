@@ -1,63 +1,46 @@
 .splash-container {
   width: 100%;
   height: 100%;
-  justify-content: center;
   overflow: hidden;
   display: flex;
+  justify-content: flex-end;
 
-  .splash-shadow-top {
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
-  }
+  .video-container {
+    width: -webkit-fill-available;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
 
-  .splash-shadow-bottom {
-    width: 100%;
-    height: 200px;
-    position: absolute;
-    bottom: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
-  }
-
-  .splash-logo {
-    position: absolute;
-    width: calc(100% - 24px);
-    max-width: 400px;
-    top: 32px;
-
-    img {
-      width: 100%;
-    }
-  }
-
-  video {
-    object-fit: cover;
-    display: block;
-    height: 102%;
-    margin: auto;
+    video {
+      object-fit: cover;
+      display: block;
+      height: 100%;
+      margin: auto;
+    }  
   }
 
   .splash-elements {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: calc(100% - 128px);
+    overflow: hidden;
+    position: relative;
+    width: 400px;
+    min-width: 400px;
+    height: 100%;
     display: flex;
     justify-content: center;
     flex-direction: column;
-
-    .splash-mute {
-      margin: 8px;
-      display: flex;
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-    }
+    background-color: var(--color-section);
   }
 
   .splash-button {
     width: 100%;
     position: absolute;
   }
+}
+
+.splash-mute {
+  margin: 8px;
+  display: flex;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
 }

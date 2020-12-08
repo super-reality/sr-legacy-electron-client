@@ -6,7 +6,7 @@ import "react-image-crop/lib/ReactCrop.scss";
 import ButtonSimple from "../button-simple";
 import logger from "../../../utils/logger";
 import { voidFunction } from "../../constants";
-import userDataPath from "../../../utils/userDataPath";
+import userDataPath from "../../../utils/files/userDataPath";
 
 export default function SnipingTool() {
   // eslint-disable-next-line global-require

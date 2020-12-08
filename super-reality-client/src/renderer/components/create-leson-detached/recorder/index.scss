@@ -1,0 +1,26 @@
+// .railOuter {
+//   border-radius: 0;
+// }
+
+// .railInner {
+//   border-radius: 0;
+//   height: 4px;
+//   background-color: #202225;
+// }
+
+// .handle {
+//   width: 12px;
+//   height: 28px;
+//   border-radius: 4px;
+// }
+
+// .track {
+//   opacity: 0;
+//   border-radius: 0;
+// }
+
+.button-round {
+  &:hover {
+    opacity: 0.5;
+  }
+}

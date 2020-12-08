@@ -20,7 +20,9 @@
   }
 
   &.rectangle {
-    background-color: #47a3ff17;
+    box-shadow: var(--color-blue) 0px 0px 13px 1px;
+    border-radius: 4px;
+    background-color: #ffffff00;
     border: solid var(--color-blue) 3px;
   }
 }

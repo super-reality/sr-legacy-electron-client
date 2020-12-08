@@ -1,15 +1,19 @@
+import reduxAction from "../../../../redux/reduxAction";
+import store from "../../../../redux/stores/renderer";
+
+const fs = require("fs");
+
 export default class CVEditor {
-  constructor(video, canvas) {
+  constructor() {
     this._vid = null;
     this._canvas = null;
     this._context = null;
-    this.canvasElement = canvas;
-    this.videoElement = video;
+    this.canvasElement = null;
+    this.videoElement = null;
   }
 
   set videoElement(elem) {
     if (!elem) {
-      console.error("video element undefined/null");
       return;
     }
 
@@ -19,7 +23,6 @@ export default class CVEditor {
 
   set canvasElement(elem) {
     if (!elem) {
-      console.error("canvas element undefined/null");
       return;
     }
     this._canvas = elem;
@@ -42,5 +45,31 @@ export default class CVEditor {
       this._canvas.width,
       this._canvas.height
     );
+    reduxAction(store.dispatch, {
+      type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+      arg: null,
+    });
   }
+}
+
+export function getRawAudioData(pathToAudio) {
+  return new Promise((resolve, reject) => {
+    try {
+      fs.readFile(pathToAudio, (err, buffer) => {
+        const audioBlob = new window.Blob([new Uint8Array(buffer)]);
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+          const arrayBuffer = fileReader.result;
+          const audioContext = new AudioContext();
+          // Convert array buffer into audio buffer
+          audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+            resolve(audioBuffer.getChannelData(0));
+          });
+        };
+        fileReader.readAsArrayBuffer(audioBlob);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
 }

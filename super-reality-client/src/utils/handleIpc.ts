@@ -9,10 +9,10 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getDisplayBounds from "./getNewBounds";
-import getPrimaryPos from "./getPrimaryPos";
+import getDisplayPosition from "./electron/getDisplayPosition";
+import getDisplayBounds from "./electron/getDisplayBounds";
 
-import getWindowId from "./getWindowId";
+import getWindowId from "./electron/getWindowId";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -46,6 +46,23 @@ function makeIpcListener<T extends IpcMsg>(
   ipcRenderer.on(channel, fn);
 }
 
+/**
+ * Utility function to create an ipc listener for once.
+ * @param channel IPC channel to listen.
+ * @param fn function to execute.
+ */
+export function makeIpcListenerOnce<T extends IpcMsg>(
+  channel: T["method"] | string
+): Promise<T["arg"]> {
+  return new Promise((resolve) => {
+    // eslint-disable-next-line global-require
+    const { ipcRenderer } = require("electron");
+    ipcRenderer.once(channel, (e: Electron.IpcRendererEvent, arg: T["arg"]) => {
+      resolve(arg);
+    });
+  });
+}
+
 export default function handleIpc(): void {
   console.log("Initialize IPC handlers");
   // eslint-disable-next-line global-require
@@ -57,6 +74,11 @@ export default function handleIpc(): void {
     console.log("Register on IPC as: renderer");
     ipcRenderer.send("ipc_register", "renderer", getWindowId());
     createBackgroundProcess();
+  });
+
+  ipcRenderer.removeAllListeners("rendererReady");
+  ipcRenderer.on("rendererReady", () => {
+    reduxAction(store.dispatch, { type: "SET_READY", arg: true });
   });
 
   ipcRenderer.removeAllListeners("detached");
@@ -95,11 +117,9 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_CV_SETTINGS", arg });
   });
 
+  ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
-    const pos = arg;
-    const primary = getPrimaryPos(getDisplayBounds());
-    pos.x -= primary.x;
-    pos.y -= primary.y;
-    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
+    console.log("cv pos", { x: arg.x, y: arg.y });
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
   });
 }

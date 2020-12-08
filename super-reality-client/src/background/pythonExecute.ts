@@ -1,22 +1,15 @@
 import path from "path";
 import { PythonShell } from "python-shell";
+import getPublicPath from "../utils/electron/getPublicPath";
 import ipcSend from "../utils/ipcSend";
 
 export default function pythonExecute(args: any): void {
-  // eslint-disable-next-line global-require
-  const { remote } = require("electron");
-
-  const proc: any = process;
-  const publicPath = remote.app.isPackaged
-    ? path.join(proc.resourcesPath)
-    : path.join(remote.app.getAppPath(), "public");
-
   const options = {
     args,
   };
 
   PythonShell.run(
-    path.join(publicPath, "python", "test.py"),
+    path.join(getPublicPath(), "python", "test.py"),
     options,
     (err, results) => {
       if (err) throw err;

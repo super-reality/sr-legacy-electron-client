@@ -1,3 +1,5 @@
+@import "../misc.scss";
+
 .transparent-container {
   width: 100%;
   height: 100%;
@@ -76,13 +78,12 @@
   .edit {
     display: flex;
     grid-area: edit;
-    overflow: auto;
+    overflow: hidden;
 
     .creator {
       min-width: 300px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      grid-template-rows: auto 32px 200px 32px;
+      grid-gap: 8px;
       border-right: 1px solid var(--color-section);
     }
 
@@ -98,7 +99,6 @@
       width: auto;
       flex-grow: 2;
       margin-left: 5px;
-      border-radius: 4px;
       background-color: var(--color-background-dark);
       overflow: hidden;
     }
@@ -110,46 +110,23 @@
   }
 }
 
-.click-on {
-  pointer-events: all;
-}
-/*
-.click-through {
-  pointer-events: none;
-}
-*/
-
 .name {
   padding-left: 8px;
   margin-right: auto;
 }
 
-.window-container {
+.spectrum-container {
+  width: calc(100% - 28px);
+  height: 36px;
   position: absolute;
-  min-width: 100px;
-  min-height: 100px;
-  background-color: var(--color-background);
   display: flex;
-  flex-direction: column;
+  margin-left: 8px;
+  margin-top: -39px;
+  align-items: center;
 
-  .title-bar {
-    font-size: 14px;
-    line-height: 24px;
-    padding-left: 8px;
-    height: 24px;
-    background-color: rgba(0, 0, 0, 0.3);
+  .spectrum-bar {
+    width: -webkit-fill-available;
+    background: var(--color-background-hover);
     display: flex;
-
-    .close {
-      margin-left: auto;
-      display: flex;
-      width: 24px;
-      height: 100%;
-      cursor: auto;
-    }
-
-    .close:hover {
-      background-color: var(--color-red);
-    }
   }
 }

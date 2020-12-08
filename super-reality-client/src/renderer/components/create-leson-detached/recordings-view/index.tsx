@@ -2,48 +2,51 @@ import React, { useCallback, useEffect, useState } from "react";
 import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import ModalList from "../modal-list";
-import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
-import userDataPath from "../../../../utils/userDataPath";
 import { AppState } from "../../../redux/stores/renderer";
 import { voidFunction } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
-import ButtonRound from "../../button-round";
+import { stepSnapshotPath } from "../../../electron-constants";
+import deleteSelectedRecording from "../lesson-utils/deleteSelectedRecording";
 
-interface RecordingsViewProps {
-  createRecorder: () => void;
-}
-
-export default function RecordingsView(props: RecordingsViewProps) {
-  const { createRecorder } = props;
+export default function RecordingsView() {
   const [videos, setVideos] = useState<string[]>([]);
   const dispatch = useDispatch();
   const { currentRecording } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
+  const keyListeners = useCallback((e: KeyboardEvent) => {
+    if (e.key === "Delete") {
+      deleteSelectedRecording();
+    }
+  }, []);
+
   const setOpen = useCallback(
     (id: string | null) => {
-      if (id)
+      if (id) {
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
             currentRecording: id,
+            currentCanvasSource: undefined,
+            canvasSource: `recording ${id}`,
           },
         });
+        document.onkeydown = keyListeners;
+      }
     },
-    [dispatch]
+    [dispatch, keyListeners]
   );
 
   useEffect(() => {
-    const userData = userDataPath();
     const newFiles: string[] = [];
-    const files = fs.readdirSync(`${userData}/step/snapshots/`);
+    const files = fs.readdirSync(stepSnapshotPath);
     files
       .filter((f) => f.indexOf(".webm.json") > -1)
       .map((f) => f.replace(".webm.json", ""))
       .forEach((f) => newFiles.push(f));
     setVideos(newFiles);
-  }, []);
+  }, [currentRecording]);
 
   const current = currentRecording || "";
 
@@ -60,14 +63,6 @@ export default function RecordingsView(props: RecordingsViewProps) {
         selected={current}
         setCurrent={voidFunction}
         open={setOpen}
-      />
-      <ButtonRound
-        svg={RecordIcon}
-        width="48px"
-        height="48px"
-        svgStyle={{ width: "32px", height: "32px" }}
-        style={{ margin: "16px auto" }}
-        onClick={createRecorder}
       />
     </div>
   );

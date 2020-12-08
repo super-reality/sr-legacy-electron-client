@@ -20,16 +20,16 @@ import ButtonSimple from "../../button-simple";
 import ButtonRound from "../../button-round";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import AnchorEditSliders from "../anchor-edit-sliders";
-import uploadFileToS3 from "../../../../utils/uploadFileToS3";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
 
 interface AnchorEditProps {
-  setTransparent: () => void;
+  anchorId: string | undefined;
 }
 
 export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
-  const { setTransparent } = props;
+  const { anchorId } = props;
   const dispatch = useDispatch();
   const closeAnchorEdit = useCallback(() => {
     reduxAction(dispatch, {
@@ -38,29 +38,37 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     });
   }, [dispatch]);
 
-  const { currentAnchor, treeAnchors } = useSelector(
+  const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
   const anchor = useMemo(() => {
-    return treeAnchors[currentAnchor || ""] || null;
-  }, [treeAnchors, currentAnchor]);
+    return treeAnchors[anchorId || ""] || null;
+  }, [treeAnchors, anchorId]);
 
   const [anchorName, setAnchorName] = useState(anchor.name || "New Anchor");
-  const debouncer = useDebounce(1000);
 
   const update = useCallback(
     (data: Partial<IAnchor>) => {
-      // Debouce api update, 1 second (should make a debounce hook??)
-      console.log(data);
       const newData = { ...anchor, ...data };
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_SETANCHOR",
         arg: { anchor: newData },
       });
-      debouncer(() => updateAnchor(data, anchor._id));
+      updateAnchor({ ...data }, anchor._id);
     },
-    [anchor, debouncer, dispatch]
+    [anchor, dispatch]
+  );
+
+  const debouncer = useDebounce(1000);
+
+  const debouncedUpdate = useCallback(
+    (data: Partial<IAnchor>) => {
+      debouncer(() => {
+        update(data);
+      });
+    },
+    [debouncer, update]
   );
 
   const insertImage = useCallback(
@@ -76,10 +84,17 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const doTest = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
-      arg: { anchorTestView: true },
+      arg: {
+        previewing: false,
+        previewOne: false,
+        lessonPreview: false,
+        chapterPreview: false,
+        stepPreview: false,
+        itemPreview: false,
+        anchorTestView: true,
+      },
     });
-    setTransparent();
-  }, [dispatch, setTransparent]);
+  }, [dispatch]);
 
   const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
 
@@ -138,15 +153,11 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
           onClick={open}
         />
       </Flex>
-      <TemplatesList
-        key={anchor._id}
-        update={update}
-        templates={anchor.templates}
-      />
+      <TemplatesList key={anchor._id} update={update} anchor={anchor} />
       <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
         Test Anchor
       </ButtonSimple>
-      <AnchorEditSliders anchor={anchor} update={update} />
+      <AnchorEditSliders anchor={anchor} update={debouncedUpdate} />
     </div>
   );
 }

@@ -22,7 +22,8 @@ export const actions = {
   SET_YSCROLL_MOVE: renderSlice.setYScrollMoveTo,
   SET_TOP_INPUT: renderSlice.setTopInput,
   SET_CV_RESULT: renderSlice.setCvResult,
-  SET_OVERLAY_TRANSPARENT: renderSlice.setOverlayTransparent,
+  SET_READY: renderSlice.setReady,
+  SET_APP_MODE: renderSlice.setAppMode,
   CLEAR_RECORDING_CV_DATA: createLessonSliceV2.clearRecordingCVData,
   SET_RECORDING_CV_DATA: createLessonSliceV2.setRecordingCVData,
   SET_RECORDING_DATA: createLessonSliceV2.setRecordingData,
@@ -40,6 +41,7 @@ export const actions = {
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
   CREATE_LESSON_V2_SET_TEMPITEM: createLessonSliceV2.setTempItem,
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
+  CREATE_LESSON_V2_TRIGGER_CV_MATCH: createLessonSliceV2.doTriggerCvMatch,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
   CREATE_LESSON_STEP: createLessonSlice.addStep,
@@ -67,6 +69,7 @@ export const actions = {
   SET_LESSON_PLAYER_DATA: lessonPlayerSlice.setLessonPlayerData,
   RESET_LESSON_PLAYER: lessonPlayerSlice.reset,
   SET_LESSON_PLAYING: lessonPlayerSlice.setPlaying,
+  SET_TTS: lessonPlayerSlice.setTTS,
 };
 
 export type ActionKeys = keyof typeof actions;

@@ -9,10 +9,12 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/ffmpeg-static": "^3.0.0",
     "@types/jest-image-snapshot": "^3.1.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@welldone-software/why-did-you-render": "^5.0.0-alpha.2",
+    "active-win": "^6.2.0",
     "any-shell-escape": "^0.1.1",
     "autoprefixer": "^9.8.0",
     "axios": "^0.19.2",
@@ -24,13 +26,10 @@
     "electron-devtools-installer": "^3.1.1",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.2.4",
-    "ffmpeg-static": "^4.2.7",
     "global-mouse-events": "^1.0.3",
-    "handbrake-js": "^5.0.0",
     "howler": "^2.2.0",
     "interactjs": "^1.9.22",
     "iohook": "^0.6.6",
-    "json-rpc3": "^0.2.1",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "lodash-move": "^1.1.1",
@@ -38,6 +37,9 @@
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
     "opencv4nodejs-prebuilt": "^5.3.0-3",
+    "puppeteer": "^5.2.1",
+    "puppeteer-core": "^5.5.0",
+    "puppeteer-in-electron": "^3.0.3",
     "python-shell": "^2.0.2",
     "react": "^16.13.1",
     "react-autosuggest": "^10.0.2",
@@ -83,7 +85,8 @@
     "release": "npm run react-build && electron-builder --publish=always",
     "build": "npm run electron-rebuild && npm run react-build && npm run electron-build",
     "electron-rebuild": "electron-rebuild",
-    "pre-build-iohook": "copyfiles -f iohooks/** node_modules/iohook/builds/electron-v80-win32-x64/build/Release"
+    "pre-build-iohook-win": "copyfiles -f iohooks/** node_modules/iohook/builds/electron-v80-win32-x64/build/Release",
+    "postinstall": "node add-ffmpeg.js"
   },
   "build": {
     "appId": "com.super.reality.client",
@@ -115,6 +118,13 @@
       {
         "from": "./public/extra/",
         "to": "extra",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./public/fx/",
+        "to": "fx",
         "filter": [
           "**/*"
         ]
@@ -176,6 +186,7 @@
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
     "expect-puppeteer": "^4.4.0",
+    "ffmpeg-static": "^4.2.7",
     "foreman": "^3.0.1",
     "glob": "^7.1.6",
     "imgur": "^0.3.1",
@@ -185,7 +196,6 @@
     "native-addon-loader": "^2.0.1",
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
-    "puppeteer": "^5.2.1",
     "react-test-renderer": "^16.13.1"
   }
 }

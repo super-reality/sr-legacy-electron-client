@@ -1,16 +1,21 @@
 import React, { useCallback } from "react";
 import "./index.scss";
+import { useDispatch } from "react-redux";
 import ButtonSimple from "../../components/button-simple";
-import createLessonInterface from "../../../utils/createLessonInterface";
-import globalData from "../../globalData";
 import ipcSend from "../../../utils/ipcSend";
+import reduxAction from "../../redux/reduxAction";
+import { MODE_LESSON_CREATOR } from "../../redux/slices/renderSlice";
 
 export default function Test(): JSX.Element {
+  const dispatch = useDispatch();
   const onCLose = useCallback(() => console.log("Closed!"), []);
 
   const onClick = useCallback(() => {
-    createLessonInterface({}).then(onCLose);
-  }, []);
+    reduxAction(dispatch, {
+      type: "SET_APP_MODE",
+      arg: MODE_LESSON_CREATOR,
+    });
+  }, [dispatch]);
 
   const pythonTest = useCallback(() => {
     ipcSend({

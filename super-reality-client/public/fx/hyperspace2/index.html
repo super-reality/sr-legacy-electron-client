@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Super Reality Unity Tools</title>
+        <style>
+            body {
+                margin: 0;
+            }
+            #unity {
+                width: 100vw;
+                height: 100vh;
+                background: transparent !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="unity"></div>
+        <script src="Build/UnityLoader.js"></script>
+        <script>
+            const progress = (unityInstance, progress) => undefined;
+            const unityInstance = UnityLoader.instantiate("unity", "Build/Hyperspace2.json",{onProgress: progress});
+        </script>
+    </body>
+</html>

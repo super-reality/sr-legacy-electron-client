@@ -3,34 +3,33 @@ import { ValueOf } from "../../../../types/utils";
 export const ItemFocusTriggers = {
   "Click target": 1,
   "Hover target": 2,
-  "Click Next button": 3,
   "Target found": 4,
   None: null,
 };
 
 export const ItemAudioTriggers = {
   "Audio finish": 1,
-  "Click Next button": 2,
   None: null,
 };
 
 export const ItemImageTriggers = {
   "Click Ok button": 1,
-  "Click Next button": 2,
   None: null,
 };
 
 export const ItemVideoTriggers = {
   "Click Ok button": 1,
   "On video end": 2,
-  "Click Next button": 3,
   None: null,
 };
 
 export const ItemDialogTriggers = {
   "Click Ok button": 1,
-  "On video end": 2,
-  "Click Next button": 3,
+  None: null,
+};
+
+export const ItemFXTriggers = {
+  "On fx end": 1,
   None: null,
 };
 
@@ -48,7 +47,8 @@ export type BaseItemType =
   | "audio"
   | "video"
   | "image"
-  | "dialog";
+  | "dialog"
+  | "fx";
 
 export interface BaseItem {
   _id: string;
@@ -65,6 +65,12 @@ export interface ItemFocus extends BaseItem {
   type: "focus_highlight";
   focus: "Mouse Point" | "Rectangle" | "Area highlight";
   trigger: ValueOf<typeof ItemFocusTriggers>;
+}
+
+export interface ItemFX extends BaseItem {
+  type: "fx";
+  effect: string;
+  fullScreen: boolean;
 }
 
 export interface ItemAudio extends BaseItem {
@@ -90,8 +96,14 @@ export interface ItemVideo extends BaseItem {
 
 export interface ItemDialog extends BaseItem {
   type: "dialog";
-  url: string;
+  text: string;
   trigger: ValueOf<typeof ItemDialogTriggers>;
 }
 
-export type Item = ItemFocus | ItemAudio | ItemImage | ItemVideo | ItemDialog;
+export type Item =
+  | ItemFocus
+  | ItemAudio
+  | ItemImage
+  | ItemVideo
+  | ItemDialog
+  | ItemFX;

@@ -2,46 +2,45 @@ import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import usePopupInput from "../../../hooks/usePopupInput";
 import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
 import newStep from "../lesson-utils/newStep";
 
-import { ReactComponent as IconAddFolder } from "../../../../assets/svg/add-folder.svg";
 import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
-import { ReactComponent as IconAddTeach } from "../../../../assets/svg/add-teach.svg";
+import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
-import { ReactComponent as IconAddClip } from "../../../../assets/svg/add-clip.svg";
+import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType } from "../../../api/types/item/item";
+import { BaseItemType, ItemFX } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
+import ButtonSimple from "../../button-simple";
 
 export default function LessonTreeControls() {
   const dispatch = useDispatch();
-  const { treeCurrentType, treeCurrentId } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const {
+    treeCurrentType,
+    treeCurrentId,
+    currentLesson,
+    currentChapter,
+  } = useSelector((state: AppState) => state.createLessonV2);
 
   let childType: TreeTypes = "chapter";
   if (treeCurrentType == "chapter") childType = "step";
   if (treeCurrentType == "step") childType = "item";
 
-  const doAddFolder = useCallback(
-    (name: string) => {
-      // Create chapter
-      if (childType == "chapter") {
-        newChapter(name, treeCurrentId);
-      }
-      // Create step
-      if (childType == "step") {
-        newStep({ name }, treeCurrentId);
-      }
-    },
-    [treeCurrentType, treeCurrentId, dispatch]
+  const doAddStep = useCallback(
+    (name: string) => newStep({ name }, currentChapter),
+    [currentChapter, dispatch]
+  );
+
+  const doAddChapter = useCallback(
+    (name: string) => newChapter(name, currentLesson),
+    [currentLesson, dispatch]
   );
 
   const doAddItem = useCallback(
@@ -53,21 +52,39 @@ export default function LessonTreeControls() {
     [treeCurrentType, treeCurrentId]
   );
 
-  const [FolderInput, openNewFolderInput] = usePopupInput(
-    `Enter new ${childType} name:`,
-    doAddFolder
+  const [ChapterInput, openNewChapterInput] = usePopupInput(
+    `Enter new chapter name:`,
+    doAddChapter
+  );
+
+  const [StepInput, openNewStepInput] = usePopupInput(
+    `Enter new step name:`,
+    doAddStep
   );
 
   return (
-    <Flex style={{ margin: "8px 0" }}>
-      <FolderInput />
+    <Flex style={{ margin: "8px auto", width: "-webkit-fill-available" }}>
+      <ChapterInput />
+      <StepInput />
       {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
-        <ButtonRound
-          onClick={openNewFolderInput}
-          svg={IconAddFolder}
-          width="32px"
-          height="32px"
-        />
+        <>
+          <ButtonSimple
+            onClick={openNewChapterInput}
+            width="170px"
+            height="24px"
+            margin="auto 4px auto auto"
+          >
+            New Chapter
+          </ButtonSimple>
+          <ButtonSimple
+            onClick={openNewStepInput}
+            width="170px"
+            height="24px"
+            margin="auto auto auto 4px"
+          >
+            New Step
+          </ButtonSimple>
+        </>
       ) : (
         <>
           <ButtonRound
@@ -78,7 +95,7 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("audio")}
+            onClick={() => doAddItem("focus_highlight")}
             svg={IconAddTTS}
             width="32px"
             height="32px"
@@ -99,8 +116,8 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddTeach}
+            onClick={() => doAddItem("fx")}
+            svg={IconAddFX}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
@@ -113,8 +130,8 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddClip}
+            onClick={() => doAddItem("dialog")}
+            svg={IconAddDialog}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}

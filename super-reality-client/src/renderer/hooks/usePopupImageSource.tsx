@@ -3,11 +3,10 @@ import { useDispatch } from "react-redux";
 import usePopup from "./usePopup";
 import ButtonSimple from "../components/button-simple";
 import "../components/popups.scss";
-import isElectron from "../../utils/isElectron";
+import isElectron from "../../utils/electron/isElectron";
 import useMediaInsert from "./useMediaInsert";
 import useMediaSniper from "./useMediaSniper";
 import { InputChangeEv } from "../../types/utils";
-import closeFindBox from "../../utils/closeFindBox";
 import reduxAction from "../redux/reduxAction";
 
 type Modes = "Buttons" | "Input";
@@ -46,7 +45,6 @@ export default function usePopupImageSource(
     // eslint-disable-next-line global-require
     const { remote } = require("electron");
     remote.globalShortcut.register("Shift+C", () => {
-      closeFindBox();
       openSniper();
       unregister();
     });

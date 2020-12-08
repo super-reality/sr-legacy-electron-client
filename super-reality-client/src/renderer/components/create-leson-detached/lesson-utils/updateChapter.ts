@@ -23,5 +23,8 @@ export default function updateChapter(
     _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )
     .then(handleChapterUpdate)
-    .catch(console.error);
+    .catch((e) => {
+      console.error(e);
+      return undefined;
+    });
 }

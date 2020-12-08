@@ -1,9 +1,22 @@
 // eslint-disable-next-line import/no-unresolved
-const { app, globalShortcut, BrowserWindow, protocol } = require("electron");
+const {
+  app,
+  globalShortcut,
+  BrowserWindow,
+  screen,
+  protocol,
+  Menu,
+  Tray,
+} = require("electron");
 const path = require("path");
 const url = require("url");
 const mainIpcInitialize = require("./ipcHandlers");
 const installDevTools = require("./devtools");
+const Puppeteer = require("./puppeteer");
+
+let tray = null;
+
+const puppeteer = new Puppeteer();
 
 let mainWindow;
 
@@ -14,11 +27,44 @@ function sendInit() {
   mainWindow.webContents.send("rendererInit", true);
 }
 
+function sendReady() {
+  console.log("Renderer Ready signal");
+  mainWindow.webContents.send("rendererReady", true);
+}
+
+function showWindow() {
+  if (mainWindow) {
+    if (!mainWindow.isVisible() || mainWindow.isMinimized()) mainWindow.show();
+    else mainWindow.moveTop();
+  }
+}
+
+function toggleWindow() {
+  if (mainWindow && mainWindow.isVisible()) {
+    if (!mainWindow.isMinimized()) {
+      mainWindow.minimize();
+    } else {
+      showWindow();
+    }
+  } else {
+    showWindow();
+  }
+}
+
+function getDisplay() {
+  return screen.getPrimaryDisplay();
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    backgroundColor: "#242526",
-    width: 350,
-    height: 800,
+    transparent: true,
+    resizable: false,
+    focusable: true,
+    show: false,
+    frame: false,
+    width: 1024,
+    height: 768,
+    acceptFirstMouse: true,
     alwaysOnTop: true,
     webPreferences: {
       webSecurity: false,
@@ -34,22 +80,66 @@ function createWindow() {
         slashes: true,
       })
   );
-  // mainWindow.webContents.openDevTools();
+
   mainWindow.removeMenu();
   globalShortcut.register("Alt+Shift+D", () => mainWindow.toggleDevTools());
+
+  const iconPath = "logo192.png";
+
+  tray = new Tray(path.join(__dirname, iconPath));
+  tray.on("double-click", toggleWindow);
+  tray.setToolTip("Super Reality");
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Show",
+      click: () => {
+        showWindow();
+      },
+    },
+    {
+      label: "Quit",
+      click: () => {
+        console.log("Bye bye!");
+        app.quit();
+      },
+    },
+  ]);
+  tray.setContextMenu(contextMenu);
 
   mainWindow.on("closed", () => {
     app.quit();
   });
 
   mainWindow.webContents.once("dom-ready", () => {
+    mainWindow.show();
+    mainWindow.focus();
     sendInit();
+
+    setTimeout(() => {
+      mainWindow.setSize(1000, 1000);
+      mainWindow.setPosition(0, 0);
+    }, 500);
+    setTimeout(() => {
+      const bounds = getDisplay();
+      mainWindow.setPosition(bounds.bounds.x, bounds.bounds.y);
+    }, 1000);
+    setTimeout(() => {
+      const bounds = getDisplay();
+      mainWindow.setSize(bounds.workArea.width, bounds.workArea.height);
+    }, 1500);
+    setTimeout(() => {
+      sendReady();
+    }, 2000);
   });
 
-  mainIpcInitialize();
+  mainIpcInitialize(puppeteer);
   if (!app.isPackaged) {
     installDevTools();
   }
+}
+
+function preCreateWindow() {
+  setTimeout(createWindow, 1000);
 }
 
 app.whenReady().then(() => {
@@ -59,7 +149,7 @@ app.whenReady().then(() => {
   });
 });
 
-app.on("ready", createWindow);
+app.on("ready", preCreateWindow);
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -69,6 +159,6 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (mainWindow === null) {
-    createWindow();
+    preCreateWindow();
   }
 });
