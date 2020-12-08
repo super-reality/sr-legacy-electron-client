@@ -142,31 +142,27 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
+
+    if (videoCanvasRef.current) cvEditor.canvasElement = videoCanvasRef.current;
+    if (videoHiddenRef.current) cvEditor.videoElement = videoHiddenRef.current;
+    //
     if (
-      (canvasSourceType == "recording" || canvasSource) &&
-      videoCanvasRef.current &&
+      canvasSourceType == "recording" &&
+      canvasSource &&
       videoHiddenRef.current
     ) {
-      if (videoCanvasRef.current)
-        cvEditor.canvasElement = videoCanvasRef.current;
-      if (videoHiddenRef.current)
-        cvEditor.videoElement = videoHiddenRef.current;
-      videoHiddenRef.current.src = `${recordingPath}/vid-${
-        currentRecording || canvasSource
-      }.webm`;
-      videoHiddenRef.current.addEventListener("loadeddata", () => {
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            videoDuration: videoHiddenRef.current?.duration || 10,
-            videoNavigation: [
-              0,
-              Math.round((videoHiddenRef.current?.duration || 10) * 500),
-              (videoHiddenRef.current?.duration || 10) * 1000,
-            ],
-          },
+      const newSrc = `${recordingPath}/vid-${canvasSource}.webm`;
+      if (videoHiddenRef.current.src !== newSrc) {
+        videoHiddenRef.current.src = newSrc;
+        videoHiddenRef.current.addEventListener("loadeddata", () => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              videoDuration: videoHiddenRef.current?.duration || 10,
+            },
+          });
         });
-      });
+      }
     }
   }, [
     dispatch,

@@ -20,7 +20,7 @@ export default function setCanvasSource(
     fs.existsSync(`${recordingPath}/vid-${source}.webm`)
   ) {
     ok = true;
-    canvasSourceDesc = `recording ${canvasSourceDesc}`;
+    canvasSourceDesc = `recording ${source}`;
   }
   if (type == "url") {
     ok = true;

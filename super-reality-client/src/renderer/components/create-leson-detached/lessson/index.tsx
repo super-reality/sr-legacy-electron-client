@@ -41,18 +41,6 @@ export default function Lesson(props: LessonProps): JSX.Element {
 
   const setViewPre = useCallback(
     (arg: Sections) => {
-      /*
-      // Disabled this because now recording navigation is used on lesson view
-      // as well to preview the steps images.
-      if (arg == "Lessons") {
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            currentRecording: undefined,
-          },
-        });
-      }
-      */
       setView(arg);
     },
     [dispatch]

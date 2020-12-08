@@ -75,6 +75,7 @@ export default function VideoStatus() {
     cropRecordingPos,
     currentRecording,
     canvasSourceType,
+    canvasSourceDesc,
     canvasSource,
     status,
     triggerCvMatch,
@@ -113,8 +114,7 @@ export default function VideoStatus() {
 
   useEffect(() => {
     console.log(
-      "Do cv match trigger",
-      currentRecording,
+      "Do cv match trigger:",
       triggerCvMatch,
       canvasSourceType,
       canvasSource
@@ -143,7 +143,6 @@ export default function VideoStatus() {
     dispatch,
     cvDebouncer,
     anchor,
-    currentRecording,
     triggerCvMatch,
     canvasSourceType,
     canvasSource,
@@ -460,7 +459,7 @@ export default function VideoStatus() {
       )}
       <div
         style={{ fontFamily: "monospace", marginLeft: "auto" }}
-      >{`${canvasSource} / ${status}`}</div>
+      >{`${canvasSourceDesc} / ${status}`}</div>
       <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
     </div>
   );

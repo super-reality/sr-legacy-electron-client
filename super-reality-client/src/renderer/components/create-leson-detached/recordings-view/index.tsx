@@ -7,6 +7,7 @@ import { voidFunction } from "../../../constants";
 import { stepSnapshotPath } from "../../../electron-constants";
 import deleteSelectedRecording from "../lesson-utils/deleteSelectedRecording";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";
+import reduxAction from "../../../redux/reduxAction";
 
 export default function RecordingsView() {
   const [videos, setVideos] = useState<string[]>([]);
@@ -24,6 +25,12 @@ export default function RecordingsView() {
   const setOpen = useCallback(
     (id: string | null) => {
       if (id) {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
+            currentRecording: id,
+          },
+        });
         setCanvasSource("recording", id);
         document.onkeydown = keyListeners;
       }
