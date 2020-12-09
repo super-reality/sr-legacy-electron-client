@@ -140,6 +140,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: resizeMods,
+          margin: 16,
           inertia: false,
         } as any)
         .draggable({

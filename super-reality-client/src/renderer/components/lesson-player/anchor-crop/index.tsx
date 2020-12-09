@@ -50,6 +50,7 @@ export default function AnchorCrop() {
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: [restrictSnapRound, restrictMinSize],
+          margin: 16,
           inertia: false,
         } as any)
         .draggable({
