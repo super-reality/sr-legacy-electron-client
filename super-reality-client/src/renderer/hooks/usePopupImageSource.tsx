@@ -13,10 +13,10 @@ type Modes = "Buttons" | "Input";
 
 export default function usePopupImageSource(
   callback: (url: string) => void,
-  snip: boolean = false,
-  url: boolean = false,
-  disk: boolean = false,
-  recording: boolean = false
+  snip: false,
+  url: false,
+  disk: false,
+  recording: false
 ): [JSX.Element, () => void] {
   const dispatch = useDispatch();
   const [Popup, doOpen, close] = usePopup(false);

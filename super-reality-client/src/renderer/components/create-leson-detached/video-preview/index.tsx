@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import fs from "fs";
+import path from "path";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
@@ -10,7 +11,7 @@ import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
-import { recordingPath } from "../../../electron-constants";
+import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../lesson-player/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
@@ -165,16 +166,14 @@ export default function VideoPreview(): JSX.Element {
       }
     }
     if (canvasSourceType == "url" && canvasSource && videoCanvasRef) {
-      const img = new Image();
-      img.onload = () => {
-        const ctx = videoCanvasRef.current?.getContext("2d");
-        if (ctx && videoCanvasRef.current) {
-          videoCanvasRef.current.width = img.width;
-          videoCanvasRef.current.height = img.height;
-          ctx.drawImage(img, 0, 0);
-        }
-      };
-      img.src = canvasSource;
+      const fileName = canvasSource.split("/")?.pop() || "";
+      const file = path.join(itemsPath, fileName);
+      if (!fs.existsSync(file)) {
+        // eslint-disable-next-line global-require
+        const { nativeImage } = require("electron");
+        const image = nativeImage.createFromDataURL(canvasSource);
+        fs.writeFileSync(file, image.toPNG());
+      }
     }
   }, [
     dispatch,
@@ -232,7 +231,7 @@ export default function VideoPreview(): JSX.Element {
             containerRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
           }
         })
-        .on("dragend", (event) => {
+        .on("dragend", () => {
           setVideoPos(newPos);
         });
 
@@ -319,7 +318,7 @@ export default function VideoPreview(): JSX.Element {
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
-            <StepView stepId={currentStep} onSucess={() => {}} />
+            <StepView stepId={currentStep} onSucess={voidFunction} />
           </>
         )}
         {cropRecording && <AnchorCrop />}

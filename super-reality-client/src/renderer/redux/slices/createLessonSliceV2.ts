@@ -82,14 +82,14 @@ const createLessonSlice = createSlice({
   reducers: {
     clearRecordingCVData: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.recordingCvFrame = 0;
       state.recordingCvMatches = [];
     },
     doTriggerCvMatch: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.triggerCvMatch = new Date().getTime();
     },
@@ -355,7 +355,7 @@ const createLessonSlice = createSlice({
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },
-    selectEvent: (state: InitialState, action: PayloadAction<null>): void => {
+    selectEvent: (state: InitialState, _action: PayloadAction<null>): void => {
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },

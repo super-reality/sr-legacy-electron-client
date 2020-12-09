@@ -84,7 +84,7 @@ export default function DiscoverFinder(
         setData(d);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setLoading(false);
       });
   }, [sort, searchValue]);

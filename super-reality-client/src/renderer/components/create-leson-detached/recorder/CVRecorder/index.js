@@ -1,6 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
 import getWebsiteUrlByTitle from "../../../../../utils/getWebsiteUrlByTitle";
+import { voidFunction } from "../../../../constants";
 import {
   recordingPath,
   stepPath,
@@ -12,8 +13,7 @@ import globalData from "../../../../globalData";
 const { desktopCapturer } = require("electron");
 const fs = require("fs");
 
-const { Decoder, Encoder, tools, Reader } = require("ts-ebml");
-const _ = require("lodash"); // allows fast array transformations in javascript
+const { Decoder, tools, Reader } = require("ts-ebml");
 const cv = require("../../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
@@ -42,7 +42,7 @@ export default class CVRecorder {
     this._currentTimer = "";
     this._stepRecordingName = "";
     this._recordingFullPath = "";
-    this._finishCallback = () => {};
+    this._finishCallback = voidFunction;
     this._source = () => {
       return desktopCapturer
         .getSources({
@@ -92,12 +92,6 @@ export default class CVRecorder {
 
   get recordedChunks() {
     return this._recordedChunks;
-  }
-
-  set clickEventDetails(arr) {
-    if (!arr) throw new Error("Exception");
-
-    this._clickEventDetails.push(arr);
   }
 
   get recordingStarted() {
@@ -369,7 +363,7 @@ export default class CVRecorder {
   }
 
   // Saves the video file on stop
-  handleStop(e) {
+  handleStop() {
     if (!this._recordingRestarted) {
       const videoBlob = new Blob(this._recordedChunks, {
         type: "video/webm;codecs=vp9",
@@ -432,7 +426,7 @@ export default class CVRecorder {
     }
   }
 
-  handleAudioStop(e) {
+  handleAudioStop() {
     if (!this._recordingRestarted) {
       const audioBlob = new Blob(this._audioRecordedChunks, {
         type: "audio/webm",
@@ -503,7 +497,7 @@ export default class CVRecorder {
           this.stream = newStream;
           this._videoElement = document.createElement("video");
           this._videoElement.srcObject = this.stream;
-          this._videoElement.onloadedmetadata = (e) => {
+          this._videoElement.onloadedmetadata = () => {
             // console.log(e);
             this._videoElement.play();
             this._videoElement.muted = true;

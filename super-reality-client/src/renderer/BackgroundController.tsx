@@ -27,7 +27,7 @@ export default function BackgroundController(): JSX.Element {
     [sendTo, anchorId, dispatch]
   );
 
-  const [CV, isCapturing, startCV, endCV, doMatch] = useCVMatch(
+  const [CV, _isCapturing, _startCV, _endCV, doMatch] = useCVMatch(
     cvTemplates,
     cvCallback
   );

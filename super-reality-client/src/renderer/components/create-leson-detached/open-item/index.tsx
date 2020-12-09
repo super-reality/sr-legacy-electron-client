@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,7 +15,7 @@ import BaseSelect from "../../base-select";
 import Flex from "../../flex";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
-import { Tabs, TabsContainer } from "../../tabs";
+import { TabsContainer } from "../../tabs";
 import updateItem from "../lesson-utils/updateItem";
 import SettingsFocusHighlight from "./settings-focus-highlight";
 import SettingsImage from "./settings-image";
@@ -30,15 +30,11 @@ interface OpenItemProps {
   id: string;
 }
 
-type ItemModalOptions = "Settings" | "Trigger";
-const itemModalOptions: ItemModalOptions[] = ["Settings", "Trigger"];
-
 export default function OpenItem(props: OpenItemProps) {
   const dispatch = useDispatch();
-  const { treeItems, treeSteps, treeAnchors, currentStep } = useSelector(
+  const { treeItems, treeSteps, currentStep } = useSelector(
     (state: AppState) => state.createLessonV2
   );
-  const [view, setView] = useState<ItemModalOptions>(itemModalOptions[0]);
   const { id } = props;
 
   const item: Item | null = useMemo(() => treeItems[id] || null, [
@@ -94,13 +90,8 @@ export default function OpenItem(props: OpenItemProps) {
     }
   }, [dispatch, treeSteps, currentStep]);
 
-  // anchors tree
-  const anchorsList = Object.keys(treeAnchors).map((a) => treeAnchors[a].name);
-
   if (!item) return <></>;
-  // console.log(item.anchor);
-  // console.log(Object.values(treeAnchors));
-  const anchorPreview = useCallback(() => {}, []);
+
   return (
     <>
       <TabsContainer style={{ height: "200px", overflow: "auto" }}>
@@ -144,7 +135,7 @@ export default function OpenItem(props: OpenItemProps) {
         {item.type == "dialog" && (
           <SettingsDialog item={item} update={doUpdate} />
         )}
-        {item.type == "fx" && <FXSettings item={item} update={doUpdate} />}
+        {item.type == "fx" && <FXSettings />}
       </TabsContainer>
     </>
   );

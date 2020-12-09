@@ -3,7 +3,6 @@ import "./index.scss";
 import "../containers.scss";
 import "../lesson.scss";
 import { useSelector } from "react-redux";
-import Collapsible from "../collapsible";
 import BaseSlider from "../base-slider";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";

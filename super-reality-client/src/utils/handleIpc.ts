@@ -9,8 +9,6 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getDisplayPosition from "./electron/getDisplayPosition";
-import getDisplayBounds from "./electron/getDisplayBounds";
 
 import getWindowId from "./electron/getWindowId";
 

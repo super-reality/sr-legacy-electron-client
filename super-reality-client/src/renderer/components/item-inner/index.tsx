@@ -176,7 +176,7 @@ export function Title(props: PropsWithChildren<TitleProps>): JSX.Element {
   const { title, area, sub, style, children } = props;
   return (
     <div className="item-titles" style={{ ...style, gridArea: area }}>
-      <div className="item-title">{title}</div>
+      <div className="item-title">{children || title}</div>
       {sub ? <div className="item-sub">{sub}</div> : <></>}
     </div>
   );
@@ -206,15 +206,7 @@ interface SocialProps {
 }
 
 export function Social(props: PropsWithChildren<SocialProps>): JSX.Element {
-  const {
-    area,
-    rating,
-    checked,
-    share,
-    style,
-    checkButtonCallback,
-    children,
-  } = props;
+  const { area, rating, checked, share, style, checkButtonCallback } = props;
   return (
     <div className="item-social" style={{ ...style, gridArea: area }}>
       {rating ? <div className="item-rating">{rating}</div> : <></>}
@@ -244,7 +236,7 @@ interface ImageProps {
 }
 
 export function Image(props: PropsWithChildren<ImageProps>): JSX.Element {
-  const { src, style, area, children, onClick } = props;
+  const { src, style, area, onClick } = props;
 
   return (
     <div

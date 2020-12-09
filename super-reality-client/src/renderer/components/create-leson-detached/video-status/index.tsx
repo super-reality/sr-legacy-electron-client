@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
@@ -30,6 +31,7 @@ import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
+import { itemsPath } from "../../../electron-constants";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -73,7 +75,6 @@ export default function VideoStatus() {
     cropEditAnchor,
     cropEditAnchorMode,
     cropRecordingPos,
-    currentRecording,
     canvasSourceType,
     canvasSourceDesc,
     canvasSource,
@@ -113,20 +114,31 @@ export default function VideoStatus() {
   const cvDebouncer = useDebounce(300);
 
   useEffect(() => {
+    if (!anchor) return;
     console.log(
       "Do cv match trigger:",
       triggerCvMatch,
       canvasSourceType,
       canvasSource
     );
-    if (canvasSourceType == "file" && canvasSource && anchor) {
+
+    if (canvasSourceType == "file" && canvasSource) {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
         doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
       });
-    } else if (anchor) {
+    } else if (canvasSourceType == "url" && canvasSource) {
+      const fileName = canvasSource.split("/")?.pop() || "";
+      const file = path.join(itemsPath, fileName);
+      // Trigger CV match on current preview canvas
+      cvDebouncer(() => {
+        doCvMatch(anchor.templates, file, anchor).then((arg) =>
+          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
+        );
+      });
+    } else {
       const videoHidden = document.getElementById(
         "video-hidden"
       ) as HTMLVideoElement;

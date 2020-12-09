@@ -26,8 +26,8 @@ const userDataSlice = createSlice({
   name: "userData",
   initialState,
   reducers: {
-    clearUserData: (state: AuthState, action: PayloadAction<null>): void => {
-      state = { ...initialState };
+    clearUserData: (state: AuthState): void => {
+      Object.assign(state, initialState);
     },
     toggleCollection: (
       state: AuthState,

@@ -19,7 +19,7 @@ interface FXBoxProps {
 
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
-    const { effect, style, pos, clickThrough, callback } = props;
+    const { effect, style, pos, clickThrough } = props;
     const srcFX = effectDB[effect].url;
 
     return (

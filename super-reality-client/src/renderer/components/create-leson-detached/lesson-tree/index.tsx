@@ -95,7 +95,7 @@ function TreeFolder(props: TreeFolderProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
     if (type == "chapter" && slice.treeChapters[id] == undefined) {
       // console.log(type, id, !!slice.treeChapters[id], state);
@@ -108,7 +108,7 @@ function TreeFolder(props: TreeFolderProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
     if (type == "step" && slice.treeSteps[id] == undefined) {
       // console.log(type, id, !!slice.treeSteps[id], state);
@@ -133,7 +133,7 @@ function TreeFolder(props: TreeFolderProps) {
             });
           }
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
   }, [dispatch, state, id]);
 
@@ -284,11 +284,10 @@ interface TreeItemProps {
   parentId: string;
   uniqueId: string;
   name: string;
-  expanded?: boolean;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, uniqueId, name, expanded } = props;
+  const { id, parentId, uniqueId, name } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -317,7 +316,7 @@ function TreeItem(props: TreeItemProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
   }, [dispatch, id, state]);
 

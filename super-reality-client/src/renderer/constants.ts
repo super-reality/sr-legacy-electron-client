@@ -50,6 +50,7 @@ export const restrictRoot = interact.modifiers.restrict({
   elementRect: { left: 0, right: 1, top: 0, bottom: 1 },
 });
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export const voidFunction = () => {};
 
 const fxDirectory = `${getPublicPath()}/fx`;

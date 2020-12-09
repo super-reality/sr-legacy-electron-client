@@ -72,7 +72,7 @@ export default function AnchorCrop() {
             updateDiv(startPos);
           }
         })
-        .on("dragstart", (event) => {
+        .on("dragstart", () => {
           const div = dragContainer.current;
           if (div) {
             startPos.x = div.offsetLeft || 0;
@@ -95,7 +95,7 @@ export default function AnchorCrop() {
           startPos.y += event.dy / scale;
           updateDiv(startPos);
         })
-        .on("resizeend", (event) => {
+        .on("resizeend", () => {
           const div = dragContainer.current;
           if (div && div.parentElement) {
             startPos.x = div.offsetLeft + 3;

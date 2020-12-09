@@ -1,18 +1,8 @@
-import React, { CSSProperties, useRef, useState } from "react";
-
-import "./index.scss";
-
-import { useDispatch } from "react-redux";
-
-import { ReactComponent as IconAddFX } from "../../../../../assets/svg/new-fx-icon.svg";
+import React, { CSSProperties } from "react";
 import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
-import { ItemFX } from "../../../../api/types/item/item";
-
 import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
-
-interface SettingsFX {
-  name: ItemFX;
-}
+import { ItemFX } from "../../../../api/types/item/item";
+import "./index.scss";
 
 interface FXSettingsProps {
   style?: CSSProperties;
@@ -20,9 +10,8 @@ interface FXSettingsProps {
   update: (date: Partial<ItemFX>) => void;
 }
 
-export default function FXSettings(props: FXSettingsProps): JSX.Element {
-  const { item, update, style } = props;
-  const dispatch = useDispatch();
+export default function FXSettings(): JSX.Element {
+  // const { item, update, style } = props;
 
   const [Popup, open] = usePopupItemSettings();
 

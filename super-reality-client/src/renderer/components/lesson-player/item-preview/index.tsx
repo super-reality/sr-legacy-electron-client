@@ -167,7 +167,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
             updatePosMarker(startPos, item.anchor);
           }
         })
-        .on("dragstart", (event) => {
+        .on("dragstart", () => {
           const div = dragContainer.current;
           if (div) {
             startPos.x = div.offsetLeft || 0;
@@ -201,7 +201,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           updatePosMarker(startPos, item.anchor);
           updateDiv(startPos);
         })
-        .on("resizeend", (event) => {
+        .on("resizeend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;

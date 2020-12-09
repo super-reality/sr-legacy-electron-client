@@ -8,7 +8,6 @@ import { MODE_LESSON_CREATOR } from "../../redux/slices/renderSlice";
 
 export default function Test(): JSX.Element {
   const dispatch = useDispatch();
-  const onCLose = useCallback(() => console.log("Closed!"), []);
 
   const onClick = useCallback(() => {
     reduxAction(dispatch, {

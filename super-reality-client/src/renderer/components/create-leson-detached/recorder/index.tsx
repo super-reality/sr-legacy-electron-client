@@ -12,6 +12,7 @@ import Windowlet from "../../windowlet";
 import CVRecorder from "./CVRecorder";
 
 import "./index.scss";
+import { voidFunction } from "../../../constants";
 
 // eslint-disable-next-line no-undef
 const activeWin = __non_webpack_require__("active-win");
@@ -37,7 +38,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     Electron.DesktopCapturerSource[]
   >([]);
   const [currentSource, setCurrentSource] = useState<string>("");
-  const [ticks, setTicks] = useState<number>(0);
+  const [_ticks, setTicks] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
@@ -261,7 +262,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
 
       return () => clearInterval(timer);
     }
-    return (): void => {};
+    return voidFunction;
   }, [recording, recorder, isPaused]);
 
   const recordTimer = recorder.currentTimer.split(":");

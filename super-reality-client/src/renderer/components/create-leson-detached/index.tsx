@@ -161,7 +161,7 @@ export default function CreateLessonDetached(): JSX.Element {
             arg: { spectrum: rawAudioToWaveform(data) },
           });
         })
-        .catch((e) => {
+        .catch(() => {
           console.warn(
             `recording ${currentRecording} does not have any local audio files.`
           );

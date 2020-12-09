@@ -39,7 +39,7 @@ export default function ViewLesson(props: ViewLessonProps) {
   const [data] = useDataGet<LessonGet, ILessonGet>("lesson", id);
   const dispatch = useDispatch();
 
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPlaying] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState(0);
   const { detached } = useSelector((state: AppState) => state.commonProps);
 

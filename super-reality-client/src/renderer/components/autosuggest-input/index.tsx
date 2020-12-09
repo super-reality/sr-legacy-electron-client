@@ -2,8 +2,8 @@ import React, { useEffect, CSSProperties } from "react";
 import Autosuggest, { InputProps } from "react-autosuggest";
 import "./index.scss";
 
-const onFocus = (e: React.FocusEvent<HTMLElement>): void => {
-  const input = e.target as HTMLInputElement;
+const onFocus = (/* e: React.FocusEvent<HTMLElement> */): void => {
+  // const input = e.target as HTMLInputElement;
   // We can trigger an action when we click the parent div
   // input.style.minWidth = "80px";
 };

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import usePopup from "./usePopup";
 import ButtonSimple from "../components/button-simple";
 

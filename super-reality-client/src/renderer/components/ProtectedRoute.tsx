@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import { connect, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Redirect, Route, useLocation } from "react-router-dom";
 import "./ProtectedRoute.scss";
 import { AppState } from "../redux/stores/renderer";
