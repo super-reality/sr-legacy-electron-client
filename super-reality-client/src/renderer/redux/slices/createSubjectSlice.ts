@@ -30,7 +30,7 @@ const createSubjectSlice = createSlice({
     addTag: (state: ISubject, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
-    reset: (state: ISubject): void => {
+    reset: (state: ISubject, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.parent = [];
       state.tags = [];

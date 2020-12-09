@@ -182,7 +182,7 @@ interface VideoNavigationProps {
 }
 
 const sliderStyle = {
-  position: "relative",
+  position: "relative" as any,
   width: "100%",
   touchAction: "none",
 };

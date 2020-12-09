@@ -90,7 +90,13 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     });
   }, [dispatch]);
 
-  const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
+  const [Popup, open] = usePopupImageSource(
+    insertImage,
+    true,
+    true,
+    true,
+    false
+  );
 
   const handleNameChange = useCallback(
     (e) => {

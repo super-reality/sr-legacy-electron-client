@@ -93,7 +93,7 @@ export default function OpenStep(props: OpenStepProps) {
     [id]
   );
 
-  const [Popup, open] = usePopupImageSource(callback, true, true, true);
+  const [Popup, open] = usePopupImageSource(callback, true, true, true, false);
 
   return (
     <>

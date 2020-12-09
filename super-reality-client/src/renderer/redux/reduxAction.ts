@@ -16,7 +16,6 @@ export default function reduxAction<K extends ActionKeys>(
   dispatch: Dispatch<AnyAction>,
   action: DispatchParameter<K>
 ): void {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore: Unreachable code error
   dispatch(actions[action.type](action.arg));
 }

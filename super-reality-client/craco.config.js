@@ -22,6 +22,7 @@ module.exports = {
     configure: {
       rules: {
         "no-underscore-dangle": "off",
+        "@typescript-eslint/interface-name-prefix": "off",
       },
     },
   },
