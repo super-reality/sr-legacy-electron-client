@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties } from "react";
-import { effectDB } from "../../../constants";
+import { getEffectById } from "../../../constants";
 
 import "./index.scss";
 
@@ -20,7 +20,7 @@ interface FXBoxProps {
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
     const { effect, style, pos, clickThrough } = props;
-    const srcFX = effectDB[effect].url;
+    const srcFX = getEffectById(effect);
 
     return (
       <>
@@ -35,7 +35,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
             ...style,
           }}
         >
-          <iframe className="fx-iframe" src={srcFX} />
+          <iframe className="fx-iframe" src={srcFX?.url} />
         </div>
       </>
     );
