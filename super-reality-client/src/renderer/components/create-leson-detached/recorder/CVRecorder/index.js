@@ -90,6 +90,12 @@ export default class CVRecorder {
     return this._clickEventDetails;
   }
 
+  set clickEventDetails(arr) {
+    if (!arr) throw new Error("Exception");
+
+    this._clickEventDetails.push(arr);
+  }
+
   get recordedChunks() {
     return this._recordedChunks;
   }
