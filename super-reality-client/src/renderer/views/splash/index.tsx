@@ -11,7 +11,7 @@ export default function Splash(): JSX.Element {
   const history = useHistory();
   const dispatch = useDispatch();
   const [mute, setMute] = useState<boolean>(true);
-  const [showAuth, setShowAuth] = useState<boolean>(true);
+  const [showAuth, _setShowAuth] = useState<boolean>(true);
   const [auth, setAuth] = useState<boolean>(false);
 
   const onMute = useCallback(() => setMute(!mute), [mute]);
