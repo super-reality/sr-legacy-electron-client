@@ -17,6 +17,7 @@ import AnchorBox from "../../lesson-player/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
 import timestampToTime from "../../../../utils/timestampToTime";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";
+import downloadFile from "../../../../utils/api/downloadFIle";
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -169,10 +170,29 @@ export default function VideoPreview(): JSX.Element {
       const fileName = canvasSource.split("/")?.pop() || "";
       const file = path.join(itemsPath, fileName);
       if (!fs.existsSync(file)) {
-        // eslint-disable-next-line global-require
-        const { nativeImage } = require("electron");
-        const image = nativeImage.createFromDataURL(canvasSource);
-        fs.writeFileSync(file, image.toPNG());
+        downloadFile(canvasSource, file).then(() => {
+          const img = new Image();
+          img.onload = () => {
+            if (videoCanvasRef.current) {
+              videoCanvasRef.current.width = img.width;
+              videoCanvasRef.current.height = img.height;
+              const ctx = videoCanvasRef.current.getContext("2d");
+              if (ctx) ctx.drawImage(img, 0, 0);
+            }
+          };
+          img.src = file;
+        });
+      } else {
+        const img = new Image();
+        img.onload = () => {
+          if (videoCanvasRef.current) {
+            videoCanvasRef.current.width = img.width;
+            videoCanvasRef.current.height = img.height;
+            const ctx = videoCanvasRef.current.getContext("2d");
+            if (ctx) ctx.drawImage(img, 0, 0);
+          }
+        };
+        img.src = file;
       }
     }
   }, [
