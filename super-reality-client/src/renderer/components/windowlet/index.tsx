@@ -150,6 +150,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       interact(resizeContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
+          margin: 16,
           modifiers: [restrictMinSize],
         } as any)
         .on("resizemove", (event) => {
