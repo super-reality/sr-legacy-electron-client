@@ -177,7 +177,13 @@ export default function VideoPreview(): JSX.Element {
               videoCanvasRef.current.width = img.width;
               videoCanvasRef.current.height = img.height;
               const ctx = videoCanvasRef.current.getContext("2d");
-              if (ctx) ctx.drawImage(img, 0, 0);
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+                  arg: null,
+                });
+              }
             }
           };
           img.src = file;
