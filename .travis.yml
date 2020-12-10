@@ -26,6 +26,7 @@ jobs:
       script:
         - cd super-reality-client
         - npm install
+        - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
         - npm run pre-build-iohook-win
         - npm run build:web
