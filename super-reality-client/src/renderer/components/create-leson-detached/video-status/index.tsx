@@ -32,6 +32,7 @@ import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
 import { itemsPath } from "../../../electron-constants";
+import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -81,6 +82,8 @@ export default function VideoStatus() {
     status,
     triggerCvMatch,
   } = useSelector((state: AppState) => state.createLessonV2);
+
+  const { cvResult } = useSelector((state: AppState) => state.render);
 
   const anchor = useMemo(() => {
     // const slice = store.getState().createLessonV2;
@@ -338,13 +341,20 @@ export default function VideoStatus() {
         if (cropEditAnchorMode == MODE_CREATE) {
           setStatus("Creating new anchor");
           editCreateNewAnchor(file);
+          if (currentStep) {
+            editStepItemsRelativePosition(
+              currentStep,
+              cropRecordingPos,
+              cvResult
+            );
+          }
         }
         if (cropEditAnchorMode == MODE_ADD_TO) {
           setStatus("Adding to anchor");
           editAddToCurrentAnchor(file);
         }
       });
-  }, [cropEditAnchorMode, cropRecordingPos]);
+  }, [cropEditAnchorMode, cropRecordingPos, currentStep, cvResult]);
 
   return (
     <div className="video-status-container">
