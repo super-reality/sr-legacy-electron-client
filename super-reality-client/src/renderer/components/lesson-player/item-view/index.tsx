@@ -8,7 +8,7 @@ import React, {
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
-import ImageBox from "../image.box";
+import ImageBox from "../image-box";
 import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import DialogBox from "../dialog-box";
