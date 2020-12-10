@@ -42,6 +42,7 @@ body {
   height: -webkit-fill-available;
   margin: 0px;
   font-family: Roboto;
+  pointer-events: all;
 }
 
 button {
@@ -93,6 +94,7 @@ a:active {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  pointer-events: all;
 }
 
 .content {
