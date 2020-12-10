@@ -136,11 +136,14 @@ export default function ItemPreview(props: ItemPreviewProps) {
         dragMods.push(restrictSnapGrid);
       }
 
+      let resizeMargin = 16;
+      if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
+
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: resizeMods,
-          // margin: 16,
+          margin: resizeMargin,
           inertia: false,
         } as any)
         .draggable({

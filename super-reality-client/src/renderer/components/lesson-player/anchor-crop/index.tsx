@@ -46,11 +46,13 @@ export default function AnchorCrop() {
     if (dragContainer.current) {
       const startPos = { ...cropRecordingPos };
       const scale = videoScale;
+      let resizeMargin = 16;
+      if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: [restrictSnapRound, restrictMinSize],
-          margin: 16,
+          margin: resizeMargin,
           inertia: false,
         } as any)
         .draggable({
