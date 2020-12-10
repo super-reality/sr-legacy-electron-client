@@ -19,6 +19,8 @@ import timestampToTime from "../../../../utils/timestampToTime";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";
 import downloadFile from "../../../../utils/api/downloadFIle";
 
+const zoomLevels = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6];
+
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
   const {
@@ -94,14 +96,7 @@ export default function VideoPreview(): JSX.Element {
         }
       }
     }, 500);
-  }, [
-    currentRecording,
-    containerOutRef,
-    videoCanvasRef,
-    setVideoScale,
-    setVideoPos,
-    canvasSourceType,
-  ]);
+  }, [currentRecording, containerOutRef, videoCanvasRef, canvasSourceType]);
 
   const cvEditor: any = useMemo(() => new CVEditor(), []);
 
@@ -270,29 +265,47 @@ export default function VideoPreview(): JSX.Element {
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
-      const newScale = videoScale + e.deltaY / -1000;
+      const closest = zoomLevels.reduce((prev, curr) => {
+        return Math.abs(curr - videoScale) < Math.abs(prev - videoScale)
+          ? curr
+          : prev;
+      });
+      const currentLevel = zoomLevels.findIndex((n) => n == closest);
 
-      if (videoScale > 0.1 && newScale < 4) {
+      const newScale = zoomLevels[currentLevel + (e.deltaY > 0 ? -1 : 1)];
+
+      if (newScale) {
         setVideoScale(newScale);
-        /*
-        if (containerOutRef.current) {
-          const containerWidth = videoCanvasRef.current?.width ?? 1920;
-          const containerHeight = videoCanvasRef.current?.height ?? 1080;
+        const scaleDiff = (1 / newScale) * videoScale;
+        if (containerOutRef.current && videoCanvasRef.current) {
+          const containerWidth = videoCanvasRef.current.width;
+          const containerHeight = videoCanvasRef.current.height;
           const innherWidth = containerOutRef.current.offsetWidth;
           const innherHeight = containerOutRef.current.offsetHeight;
+          const centerXPos = (innherWidth - containerWidth) / 2;
+          const centerYPos = (innherHeight - containerHeight) / 2;
+
+          const xDffToCenter = centerXPos - videoPos.x;
+          const yDiffToCenter = centerYPos - videoPos.y;
+          setVideoPos({
+            x: centerXPos - xDffToCenter / scaleDiff,
+            y: centerYPos - yDiffToCenter / scaleDiff,
+          });
         }
-        */
       }
     },
-    [videoScale]
+    [videoPos, videoScale, containerOutRef, videoCanvasRef]
   );
 
   return (
-    <div className="video-preview-container-out" ref={containerOutRef}>
+    <div
+      className="video-preview-container-out"
+      ref={containerOutRef}
+      onWheel={doScale}
+    >
       <div
         ref={containerRef}
         className="video-preview-container"
-        onWheel={doScale}
         style={{
           transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
         }}
