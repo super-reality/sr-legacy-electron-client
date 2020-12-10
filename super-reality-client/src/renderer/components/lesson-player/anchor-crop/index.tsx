@@ -64,12 +64,15 @@ export default function AnchorCrop() {
         })
         .on("resizemove", (event) => {
           const div = dragContainer.current;
-          if (div) {
-            const delta = event.deltaRect;
-            startPos.x = div.offsetLeft + delta.left / scale;
-            startPos.y = div.offsetTop + delta.top / scale;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
+          if (div && div.parentElement) {
+            startPos.x =
+              (event.rect.left - div.parentElement.getBoundingClientRect().x) /
+              scale;
+            startPos.y =
+              (event.rect.top - div.parentElement.getBoundingClientRect().y) /
+              scale;
+            startPos.width = (event.rect.width - 3) / scale;
+            startPos.height = (event.rect.height - 3) / scale;
             updateDiv(startPos);
           }
         })
@@ -78,16 +81,6 @@ export default function AnchorCrop() {
           if (div) {
             startPos.x = div.offsetLeft || 0;
             startPos.y = div.offsetTop || 0;
-            updateDiv(startPos);
-          }
-        })
-        .on("resizestart", (event) => {
-          const div = dragContainer.current;
-          if (div) {
-            startPos.x = div.offsetLeft || 0;
-            startPos.y = div.offsetTop || 0;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
             updateDiv(startPos);
           }
         })
