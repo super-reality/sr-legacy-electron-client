@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import Flex from "../../flex";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
 import ButtonRound from "../../button-round";
@@ -15,6 +15,8 @@ import { IStep } from "../../../api/types/step/step";
 import updateStep from "../lesson-utils/updateStep";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
+import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 
 function doNewAnchor(url: string, stepId: string) {
   return newAnchor(
@@ -116,7 +118,20 @@ export default function OpenStep(props: OpenStepProps) {
                 options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
                 current={step?.anchor || ""}
                 selected={currentAnchor || ""}
-                setCurrent={(val) => doUpdate({ anchor: val })}
+                setCurrent={(val) => {
+                  doUpdate({ anchor: val });
+                  const prevCvResult = store.getState().render.cvResult;
+                  pendingReduxAction(
+                    (state) => state.render.cvResult,
+                    prevCvResult
+                  ).then((state) => {
+                    editStepItemsRelativePosition(
+                      id,
+                      state.render.cvResult,
+                      prevCvResult
+                    );
+                  });
+                }}
                 open={openAnchor}
               />
             </Flex>
