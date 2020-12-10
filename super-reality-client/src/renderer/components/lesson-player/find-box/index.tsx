@@ -7,10 +7,12 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
 import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
 import { voidFunction } from "../../../constants";
+import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 
 export type FindBoxType = "anchor" | "target";
@@ -32,6 +34,10 @@ interface FindBoxProps {
 const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
   (props, forwardedRef) => {
     const { type, pos, style, clickThrough, callback } = props;
+    const { previewing } = useSelector(
+      (state: AppState) => state.createLessonV2
+    );
+
     const [opacity, setOpacity] = useState(0);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -105,7 +111,15 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
           clickThrough ? "click-through" : ""
         } ${computedType}`}
         style={{
-          ...spring,
+          ...(previewing
+            ? spring
+            : {
+                left: `${pos.x - 3}px`,
+                top: `${pos.y - 3}px`,
+                width: `${pos.width}px`,
+                height: `${pos.height}px`,
+                opacity,
+              }),
           ...style,
         }}
         onClick={
