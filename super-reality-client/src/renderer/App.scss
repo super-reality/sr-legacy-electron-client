@@ -1,5 +1,9 @@
 @import "./components/misc.scss";
 
+body {
+  font-family: "Segoe UI" !important;
+}
+
 .click-on {
   pointer-events: all;
 }
@@ -11,18 +15,27 @@
 :root {
   --color-background: #202225;
   --color-background-dark: #1c1e21;
-  --color-section: #2f3136;
+  // --color-section: #2b2542;
+  --color-section: linear-gradient(
+    180deg,
+    #353358 0%,
+    #302d4d 43.89%,
+    #29233b 100%
+  );
 
-  --color-button: #36393f;
+  --color-button: #29233c;
   --color-button-hover: #47494d;
   --color-text: #bbbbbb;
-  --color-text-active: #faa61a;
+  --color-text-active: #c2c2c2;
   --color-icon: #a8abaf;
 
   --color-checked: #43b581;
   --color-green: #43b581;
+  --color-magenda: #9391ce;
   --color-red: #f04747;
-  --color-blue: #47a2ff;
+  --color-blue: #04aff0;
+  --color-pink: #d232b5;
+  --color-cyan: #00fef6;
 
   --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
@@ -60,7 +73,7 @@ textarea {
   background: var(--color-background);
   border: 1px solid var(--color-background);
   border-radius: 4px;
-  height: 24px;
+  height: 27px;
   width: -webkit-fill-available;
   margin: auto;
   color: var(--color-text);
@@ -116,34 +129,28 @@ a:active {
 }
 
 ::-webkit-resizer {
-  background: #1b1c1d;
+  background: #A3258C;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #1b1c1d;
+  background: #A3258C;
 }
 
 ::-webkit-scrollbar {
-  background: #1b1c1d;
+  background: --var(--color-text-dark);
   height: 8px;
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
   border-radius: 8px;
-  background: #1b1c1d;
+  background: transparent;
   margin-right: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #383a3c;
+  background: #A3258C;
   border-radius: 8px;
-  border-left: 1px solid #88999e59;
-  border-right: 1px solid #000000b0;
-
-  &:hover {
-    background: #4f5152;
-  }
 }
 
 .animation-container {
@@ -184,5 +191,46 @@ a:active {
     padding: 6px;
     height: calc(100% - 112px);
     overflow: scroll;
+  }
+}
+
+.animate-gradient {
+  background-image: url("../assets/svg/cool-gradient.svg");
+  -webkit-animation: gradient-background-animation 15s ease infinite;
+  -moz-animation: gradient-background-animation 15s ease infinite;
+  animation: gradient-background-animation 15s ease infinite;
+}
+
+@-webkit-keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@-moz-keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

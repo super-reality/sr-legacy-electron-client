@@ -11,13 +11,22 @@
 
   .title-bar {
     font-size: 14px;
-    line-height: 24px;
+    line-height: 37px;
     padding-left: 8px;
-    height: 24px;
-    background-color: rgba(0, 0, 0, 0.3);
+    height: 37px;
+    background-image: linear-gradient(180deg, #29233C 0%, #2A243E 100%);
     touch-action: none;
     display: flex;
     justify-content: space-between;
+
+    .title {
+      display: flex;
+      align-content: center;
+      font-size: 18px;
+      font-family: 'Segoe UI';
+      text-transform: uppercase;
+      font-weight: bold;
+    }
 
     .buttons {
       display: flex;
