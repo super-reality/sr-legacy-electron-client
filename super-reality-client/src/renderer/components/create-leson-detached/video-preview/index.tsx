@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import fs from "fs";
+import path from "path";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
@@ -10,11 +11,15 @@ import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
-import { recordingPath } from "../../../electron-constants";
+import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../lesson-player/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
 import timestampToTime from "../../../../utils/timestampToTime";
+import setCanvasSource from "../../../redux/utils/setCanvasSource";
+import downloadFile from "../../../../utils/api/downloadFIle";
+
+const zoomLevels = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6];
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -29,8 +34,8 @@ export default function VideoPreview(): JSX.Element {
     cropRecording,
     videoScale,
     videoPos,
+    canvasSourceType,
     canvasSource,
-    currentCanvasSource,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,28 +69,15 @@ export default function VideoPreview(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const containerOutRef = useRef<HTMLDivElement>(null);
 
-  const shouldDisplayPreview = useMemo(() => {
-    const should = currentRecording || currentCanvasSource;
-    if (should && currentCanvasSource && fs.existsSync(currentCanvasSource))
-      return true;
-    if (
-      should &&
-      currentRecording &&
-      fs.existsSync(`${recordingPath}/vid-${currentRecording}.webm`)
-    )
-      return true;
-    return false;
-  }, [currentRecording, currentCanvasSource]);
-
   useEffect(() => {
     setTimeout(() => {
       if (containerOutRef.current && videoCanvasRef.current) {
         const containerWidth =
-          shouldDisplayPreview && videoCanvasRef.current
+          canvasSourceType && videoCanvasRef.current
             ? videoCanvasRef.current.width
             : 1920;
         const containerHeight =
-          shouldDisplayPreview && videoCanvasRef.current
+          canvasSourceType && videoCanvasRef.current
             ? videoCanvasRef.current.height
             : 1080;
         const innherWidth = containerOutRef.current.offsetWidth - 16;
@@ -104,14 +96,7 @@ export default function VideoPreview(): JSX.Element {
         }
       }
     }, 500);
-  }, [
-    currentRecording,
-    containerOutRef,
-    videoCanvasRef,
-    setVideoScale,
-    setVideoPos,
-    shouldDisplayPreview,
-  ]);
+  }, [currentRecording, containerOutRef, videoCanvasRef, canvasSourceType]);
 
   const cvEditor: any = useMemo(() => new CVEditor(), []);
 
@@ -127,7 +112,7 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     if (
-      !shouldDisplayPreview &&
+      !canvasSourceType &&
       step?.anchor &&
       anchorImageRef.current &&
       containerRef.current
@@ -154,30 +139,71 @@ export default function VideoPreview(): JSX.Element {
         });
       }
     }
-  }, [dispatch, currentRecording, canvasSource, shouldDisplayPreview, step]);
 
-  useEffect(() => {
-    if (currentRecording && videoCanvasRef.current && videoHiddenRef.current) {
-      if (videoCanvasRef.current)
-        cvEditor.canvasElement = videoCanvasRef.current;
-      if (videoHiddenRef.current)
-        cvEditor.videoElement = videoHiddenRef.current;
-      videoHiddenRef.current.src = `${recordingPath}/vid-${currentRecording}.webm`;
-      videoHiddenRef.current.addEventListener("loadeddata", () => {
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            videoDuration: videoHiddenRef.current?.duration || 10,
-            videoNavigation: [
-              0,
-              Math.round((videoHiddenRef.current?.duration || 10) * 500),
-              (videoHiddenRef.current?.duration || 10) * 1000,
-            ],
-          },
+    if (videoCanvasRef.current) cvEditor.canvasElement = videoCanvasRef.current;
+    if (videoHiddenRef.current) cvEditor.videoElement = videoHiddenRef.current;
+    //
+    if (
+      canvasSourceType == "recording" &&
+      canvasSource &&
+      videoHiddenRef.current
+    ) {
+      const newSrc = `${recordingPath}/vid-${canvasSource}.webm`;
+      if (videoHiddenRef.current.src !== newSrc) {
+        videoHiddenRef.current.src = newSrc;
+        videoHiddenRef.current.addEventListener("loadeddata", () => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              videoDuration: videoHiddenRef.current?.duration || 10,
+            },
+          });
         });
-      });
+      }
     }
-  }, [dispatch, currentRecording, videoCanvasRef, videoHiddenRef]);
+    if (canvasSourceType == "url" && canvasSource && videoCanvasRef) {
+      const fileName = canvasSource.split("/")?.pop() || "";
+      const file = path.join(itemsPath, fileName);
+      if (!fs.existsSync(file)) {
+        downloadFile(canvasSource, file).then(() => {
+          const img = new Image();
+          img.onload = () => {
+            if (videoCanvasRef.current) {
+              videoCanvasRef.current.width = img.width;
+              videoCanvasRef.current.height = img.height;
+              const ctx = videoCanvasRef.current.getContext("2d");
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+                  arg: null,
+                });
+              }
+            }
+          };
+          img.src = file;
+        });
+      } else {
+        const img = new Image();
+        img.onload = () => {
+          if (videoCanvasRef.current) {
+            videoCanvasRef.current.width = img.width;
+            videoCanvasRef.current.height = img.height;
+            const ctx = videoCanvasRef.current.getContext("2d");
+            if (ctx) ctx.drawImage(img, 0, 0);
+          }
+        };
+        img.src = file;
+      }
+    }
+  }, [
+    dispatch,
+    currentRecording,
+    step,
+    canvasSource,
+    videoCanvasRef,
+    videoHiddenRef,
+  ]);
 
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
@@ -186,26 +212,22 @@ export default function VideoPreview(): JSX.Element {
         ...store.getState().createLessonV2.videoNavigation,
       ] || [0, 0, 0];
       nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: {
-          currentRecording: st.recordingId,
-          currentCanvasSource: undefined,
-          canvasSource: `step ${st.name}`,
-          videoNavigation: nav,
-        },
-      });
+      if (st.snapShot) {
+        setCanvasSource("url", st.snapShot);
+      } else if (st.recordingId) {
+        setCanvasSource("recording", st.recordingId);
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
+            currentRecording: st.recordingId,
+            videoNavigation: nav,
+          },
+        });
+      }
     } else {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: {
-          currentRecording: undefined,
-          currentCanvasSource: undefined,
-          canvasSource: `no source`,
-        },
-      });
+      setCanvasSource(undefined, "");
     }
-  }, [currentStep, videoCanvasRef]);
+  }, [currentStep]);
 
   useEffect(() => {
     if (
@@ -230,7 +252,7 @@ export default function VideoPreview(): JSX.Element {
             containerRef.current.style.transform = `translate(${newPos.x}px, ${newPos.y}px) scale(${videoScale})`;
           }
         })
-        .on("dragend", (event) => {
+        .on("dragend", () => {
           setVideoPos(newPos);
         });
 
@@ -243,42 +265,60 @@ export default function VideoPreview(): JSX.Element {
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
-      const newScale = videoScale + e.deltaY / -1000;
+      const closest = zoomLevels.reduce((prev, curr) => {
+        return Math.abs(curr - videoScale) < Math.abs(prev - videoScale)
+          ? curr
+          : prev;
+      });
+      const currentLevel = zoomLevels.findIndex((n) => n == closest);
 
-      if (videoScale > 0.1 && newScale < 4) {
+      const newScale = zoomLevels[currentLevel + (e.deltaY > 0 ? -1 : 1)];
+
+      if (newScale) {
         setVideoScale(newScale);
-        /*
-        if (containerOutRef.current) {
-          const containerWidth = videoCanvasRef.current?.width ?? 1920;
-          const containerHeight = videoCanvasRef.current?.height ?? 1080;
+        const scaleDiff = (1 / newScale) * videoScale;
+        if (containerOutRef.current && videoCanvasRef.current) {
+          const containerWidth = videoCanvasRef.current.width;
+          const containerHeight = videoCanvasRef.current.height;
           const innherWidth = containerOutRef.current.offsetWidth;
           const innherHeight = containerOutRef.current.offsetHeight;
+          const centerXPos = (innherWidth - containerWidth) / 2;
+          const centerYPos = (innherHeight - containerHeight) / 2;
+
+          const xDffToCenter = centerXPos - videoPos.x;
+          const yDiffToCenter = centerYPos - videoPos.y;
+          setVideoPos({
+            x: centerXPos - xDffToCenter / scaleDiff,
+            y: centerYPos - yDiffToCenter / scaleDiff,
+          });
         }
-        */
       }
     },
-    [videoScale]
+    [videoPos, videoScale, containerOutRef, videoCanvasRef]
   );
 
   return (
-    <div className="video-preview-container-out" ref={containerOutRef}>
+    <div
+      className="video-preview-container-out"
+      ref={containerOutRef}
+      onWheel={doScale}
+    >
       <div
         ref={containerRef}
         className="video-preview-container"
-        onWheel={doScale}
         style={{
           transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
         }}
       >
         <canvas
           style={{
-            display: shouldDisplayPreview ? "block" : "none",
+            display: canvasSourceType ? "block" : "none",
           }}
           ref={videoCanvasRef}
           id="preview-video-canvas"
           className="video-preview-video"
         />
-        {shouldDisplayPreview ? (
+        {canvasSourceType ? (
           <video
             ref={videoHiddenRef}
             muted
@@ -317,7 +357,7 @@ export default function VideoPreview(): JSX.Element {
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
-            <StepView stepId={currentStep} onSucess={() => {}} />
+            <StepView stepId={currentStep} onSucess={voidFunction} />
           </>
         )}
         {cropRecording && <AnchorCrop />}

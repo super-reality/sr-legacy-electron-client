@@ -11,7 +11,7 @@ import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
-import Windowlet from "./components/create-leson-detached/windowlet";
+import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import CreateLessonDetached from "./components/create-leson-detached";
@@ -65,8 +65,8 @@ export default function App(): JSX.Element {
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
       {appMode == MODE_HOME && (
         <Windowlet
-          width={300}
-          height={700}
+          width={1100}
+          height={600}
           title="Super Reality"
           onMinimize={minimizeWindow}
           onClose={closeWindow}

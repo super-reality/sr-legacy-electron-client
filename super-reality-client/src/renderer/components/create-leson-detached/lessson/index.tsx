@@ -9,11 +9,6 @@ import { ReactComponent as ButtonPrev } from "../../../../assets/svg/prev-step.s
 import { ReactComponent as ButtonNext } from "../../../../assets/svg/next-step.svg";
 import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
 
-import { ReactComponent as ButtonFolder } from "../../../../assets/svg/folder.svg";
-import { ReactComponent as ButtonCopy } from "../../../../assets/svg/copy.svg";
-import { ReactComponent as ButtonPaste } from "../../../../assets/svg/paste.svg";
-import { ReactComponent as ButtonCut } from "../../../../assets/svg/cut.svg";
-
 import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
 import store, { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
@@ -23,6 +18,7 @@ import LessonTreeControls from "../lesson-tree-controls";
 import reduxAction from "../../../redux/reduxAction";
 import RecordingsView from "../recordings-view";
 import idNamePos from "../../../../utils/idNamePos";
+import { voidFunction } from "../../../constants";
 
 type Sections = "Lessons" | "Recordings";
 const sections: Sections[] = ["Lessons", "Recordings"];
@@ -41,18 +37,6 @@ export default function Lesson(props: LessonProps): JSX.Element {
 
   const setViewPre = useCallback(
     (arg: Sections) => {
-      /*
-      // Disabled this because now recording navigation is used on lesson view
-      // as well to preview the steps images.
-      if (arg == "Lessons") {
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            currentRecording: undefined,
-          },
-        });
-      }
-      */
       setView(arg);
     },
     [dispatch]
@@ -158,28 +142,26 @@ export default function Lesson(props: LessonProps): JSX.Element {
           <LessonTreeControls />
         </div>
       )}
-      <div className="settings-container">
-        {treeCurrentType == "item" && view == "Lessons" && (
-          <OpenItem id={treeCurrentId} />
-        )}
-        {treeCurrentType == "step" && view == "Lessons" && (
-          <OpenStep id={treeCurrentId} />
-        )}
-      </div>
+      {treeCurrentType == "item" && view == "Lessons" && (
+        <OpenItem id={treeCurrentId} />
+      )}
+      {treeCurrentType == "step" && view == "Lessons" && (
+        <OpenStep id={treeCurrentId} />
+      )}
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">
           <Flex style={{ margin: "auto" }}>
             <ButtonRound
               width="36px"
               height="36px"
-              onClick={() => {}}
+              onClick={voidFunction}
               svg={ButtonPrev}
               style={{ marginRight: "8px" }}
             />
             <ButtonRound
               width="36px"
               height="36px"
-              onClick={() => {}}
+              onClick={voidFunction}
               svg={ButtonNext}
               style={{ marginRight: "8px" }}
             />

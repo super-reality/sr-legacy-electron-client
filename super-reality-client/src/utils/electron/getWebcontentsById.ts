@@ -4,7 +4,7 @@ export default function getBrowserWindowById(
   // eslint-disable-next-line global-require
   const windows = require("electron")
     .remote.BrowserWindow.getAllWindows()
-    .filter((w) => w.id);
+    .filter((w) => w.id == id);
   if (windows.length > 0) return windows[0];
   return null;
 }

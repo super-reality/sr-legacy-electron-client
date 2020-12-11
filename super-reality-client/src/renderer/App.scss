@@ -1,5 +1,13 @@
 @import "./components/misc.scss";
 
+.click-on {
+  pointer-events: all;
+}
+
+.click-through {
+  pointer-events: none;
+}
+
 :root {
   --color-background: #202225;
   --color-background-dark: #1c1e21;
@@ -34,6 +42,7 @@ body {
   height: -webkit-fill-available;
   margin: 0px;
   font-family: Roboto;
+  pointer-events: all;
 }
 
 button {
@@ -85,6 +94,7 @@ a:active {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  pointer-events: all;
 }
 
 .content {

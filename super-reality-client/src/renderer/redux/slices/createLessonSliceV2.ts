@@ -12,6 +12,8 @@ import idInIdName from "../../../utils/idInIdName";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
+export type VideoSources = "url" | "file" | "recording" | undefined;
+
 const initialState = {
   toggleSelects: 0 as number,
   treeCurrentType: "none" as TreeTypes,
@@ -66,8 +68,9 @@ const initialState = {
     width: 100,
     height: 100,
   },
-  currentCanvasSource: undefined as string | undefined,
-  canvasSource: "no source" as string,
+  canvasSourceType: undefined as VideoSources,
+  canvasSource: undefined as string | undefined,
+  canvasSourceDesc: "no source" as string,
   status: "-",
 };
 
@@ -79,14 +82,14 @@ const createLessonSlice = createSlice({
   reducers: {
     clearRecordingCVData: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.recordingCvFrame = 0;
       state.recordingCvMatches = [];
     },
     doTriggerCvMatch: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.triggerCvMatch = new Date().getTime();
     },
@@ -352,7 +355,7 @@ const createLessonSlice = createSlice({
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },
-    selectEvent: (state: InitialState, action: PayloadAction<null>): void => {
+    selectEvent: (state: InitialState, _action: PayloadAction<null>): void => {
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },

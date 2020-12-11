@@ -10,7 +10,7 @@ import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonRound from "../button-round";
-import Windowlet from "../create-leson-detached/windowlet";
+import Windowlet from "../windowlet";
 import Flex from "../flex";
 import ChapterView from "./chapter-view";
 import ItemPreview from "./item-preview";
@@ -70,6 +70,22 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     return anchorId ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
 
+  const clearCv = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "SET_CV_RESULT",
+      arg: {
+        time: new Date().getTime(),
+        id: "",
+        dist: 0,
+        sizeFactor: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
+    });
+  }, [dispatch]);
+
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -115,6 +131,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   const doPrev = useCallback(() => {
     if (playingStepNumber > 0) {
+      clearCv();
       reduxAction(dispatch, {
         type: "SET_LESSON_PLAYER_DATA",
         arg: {
@@ -122,11 +139,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         },
       });
     }
-  }, [dispatch, playingStepNumber]);
+  }, [dispatch, clearCv, playingStepNumber]);
 
   const doNext = useCallback(() => {
     if (chapter) {
       if (playingStepNumber + 1 < chapter.steps.length) {
+        clearCv();
         reduxAction(dispatch, {
           type: "SET_LESSON_PLAYER_DATA",
           arg: {
@@ -134,6 +152,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
           },
         });
       } else if (lesson && playingChapterNumber + 1 < lesson.chapters.length) {
+        clearCv();
         reduxAction(dispatch, {
           type: "SET_LESSON_PLAYER_DATA",
           arg: {
@@ -146,7 +165,14 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onFinish();
       }
     }
-  }, [dispatch, onFinish, chapter, playingStepNumber, playingChapterNumber]);
+  }, [
+    dispatch,
+    clearCv,
+    onFinish,
+    chapter,
+    playingStepNumber,
+    playingChapterNumber,
+  ]);
 
   const doPlay = useCallback(
     (play: boolean) => {

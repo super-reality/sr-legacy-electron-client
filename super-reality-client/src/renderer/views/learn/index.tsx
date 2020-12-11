@@ -7,7 +7,6 @@ import "../../components/buttons.scss";
 import { useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Collapsible from "../../components/collapsible";
-import LessonActive from "../../components/lesson-active";
 import Category from "../../../types/collections";
 import ViewLesson from "../../components/view-lesson";
 import { AppState } from "../../redux/stores/renderer";

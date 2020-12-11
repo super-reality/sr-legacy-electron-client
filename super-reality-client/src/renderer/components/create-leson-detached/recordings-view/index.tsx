@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import ModalList from "../modal-list";
 import { AppState } from "../../../redux/stores/renderer";
 import { voidFunction } from "../../../constants";
-import reduxAction from "../../../redux/reduxAction";
 import { stepSnapshotPath } from "../../../electron-constants";
 import deleteSelectedRecording from "../lesson-utils/deleteSelectedRecording";
+import setCanvasSource from "../../../redux/utils/setCanvasSource";
+import reduxAction from "../../../redux/reduxAction";
 
 export default function RecordingsView() {
   const [videos, setVideos] = useState<string[]>([]);
@@ -28,10 +29,9 @@ export default function RecordingsView() {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
             currentRecording: id,
-            currentCanvasSource: undefined,
-            canvasSource: `recording ${id}`,
           },
         });
+        setCanvasSource("recording", id);
         document.onkeydown = keyListeners;
       }
     },

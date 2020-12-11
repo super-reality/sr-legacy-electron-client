@@ -59,7 +59,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     transparent: true,
     resizable: false,
-    focusable: false,
+    focusable: true,
     show: false,
     frame: false,
     width: 1024,

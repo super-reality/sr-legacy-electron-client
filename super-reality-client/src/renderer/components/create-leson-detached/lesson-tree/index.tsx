@@ -19,6 +19,7 @@ import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
+import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import onDragOver from "../lesson-utils/onDragOver";
 import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
@@ -94,7 +95,7 @@ function TreeFolder(props: TreeFolderProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
     if (type == "chapter" && slice.treeChapters[id] == undefined) {
       // console.log(type, id, !!slice.treeChapters[id], state);
@@ -107,7 +108,7 @@ function TreeFolder(props: TreeFolderProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
     if (type == "step" && slice.treeSteps[id] == undefined) {
       // console.log(type, id, !!slice.treeSteps[id], state);
@@ -132,7 +133,7 @@ function TreeFolder(props: TreeFolderProps) {
             });
           }
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
   }, [dispatch, state, id]);
 
@@ -283,11 +284,10 @@ interface TreeItemProps {
   parentId: string;
   uniqueId: string;
   name: string;
-  expanded?: boolean;
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, uniqueId, name, expanded } = props;
+  const { id, parentId, uniqueId, name } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -316,7 +316,7 @@ function TreeItem(props: TreeItemProps) {
           });
           setState(STATE_OK);
         })
-        .catch((e) => setState(STATE_ERR));
+        .catch(() => setState(STATE_ERR));
     }
   }, [dispatch, id, state]);
 
@@ -385,6 +385,9 @@ function TreeItem(props: TreeItemProps) {
         break;
       case "video":
         Icon = IconAddVideo;
+        break;
+      case "fx":
+        Icon = IconAddFX;
         break;
       default:
         Icon = IconAddFocus;

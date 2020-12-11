@@ -10,7 +10,7 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import FindBox from "../find-box";
-import ImageBox from "../image.box";
+import ImageBox from "../image-box";
 import {
   cursorChecker,
   restrictMinSize,
@@ -21,6 +21,7 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../api/types/item/item";
+import FXBox from "../fx-box/fx-box";
 import DialogBox from "../dialog-box";
 import AnchorBox from "../anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
@@ -45,6 +46,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -134,10 +136,14 @@ export default function ItemPreview(props: ItemPreviewProps) {
         dragMods.push(restrictSnapGrid);
       }
 
+      let resizeMargin = 16;
+      if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
+
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: resizeMods,
+          margin: resizeMargin,
           inertia: false,
         } as any)
         .draggable({
@@ -146,16 +152,18 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("resizemove", (event) => {
           const div = dragContainer.current;
-          if (div) {
-            const delta = event.deltaRect;
-            startPos.x = div.offsetLeft + delta.left / scale;
-            startPos.y = div.offsetTop + delta.top / scale;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
-            updateDiv(startPos);
-          }
-
           if (div && div.parentElement) {
+            startPos.x =
+              (event.rect.left - div.parentElement.getBoundingClientRect().x) /
+              scale;
+            startPos.y =
+              (event.rect.top - div.parentElement.getBoundingClientRect().y) /
+              scale;
+            console.log(event.rect);
+            startPos.width = (event.rect.width - 3) / scale;
+            startPos.height = (event.rect.height - 3) / scale;
+            updateDiv(startPos);
+
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
@@ -165,23 +173,12 @@ export default function ItemPreview(props: ItemPreviewProps) {
             updatePosMarker(startPos, item.anchor);
           }
         })
-        .on("dragstart", (event) => {
+        .on("dragstart", () => {
           const div = dragContainer.current;
           if (div) {
             startPos.x = div.offsetLeft || 0;
             startPos.y = div.offsetTop || 0;
             updateDiv(startPos);
-          }
-        })
-        .on("resizestart", (event) => {
-          const div = dragContainer.current;
-          if (div) {
-            startPos.x = div.offsetLeft || 0;
-            startPos.y = div.offsetTop || 0;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
-            updateDiv(startPos);
-            updatePosMarker(startPos, item.anchor);
           }
         })
         .on("dragmove", (event) => {
@@ -199,7 +196,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           updatePosMarker(startPos, item.anchor);
           updateDiv(startPos);
         })
-        .on("resizeend", (event) => {
+        .on("resizeend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;
@@ -231,8 +228,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
         .on("dragend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x;
-            startPos.y -= cvResult.y;
+            startPos.x -= cvResult.x - 3;
+            startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
@@ -270,6 +267,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
+  // set full screen for the effect
+  // if (
+  //   item &&
+  //   item.type == "fx" &&
+  //   item.fullScreen &&
+  //   dragContainer.current?.parentElement
+  // ) {
+  //   console.log("item.fullScreen", dragContainer.current.parentElement);
+  //   pos.width = dragContainer.current.parentElement.offsetWidth;
+  //   pos.height = dragContainer.current.parentElement.offsetHeight;
+  //   pos.x = 0;
+  //   pos.y = 0;
+  // }
   if (
     previewing &&
     item &&
@@ -319,6 +329,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
         />
       ) : (
         <></>
+      )}
+      {item && item.type == "fx" && (
+        <FXBox
+          ref={dragContainer}
+          pos={pos}
+          style={style}
+          effect={item.effect}
+          callback={onSucessCallback}
+        />
       )}
     </>
   );

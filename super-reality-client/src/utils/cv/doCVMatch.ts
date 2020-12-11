@@ -30,7 +30,7 @@ export default function doCvMatch(
     let height = 1;
     let xScale = 1;
     let yScale = 1;
-    let mode: "Local" | "Dom" = "Dom";
+
     if (typeof sourceElement == "string") {
       srcMat = cv.imread(sourceElement);
       width = (srcMat.cols / 100) * opt.cvCanvas;
@@ -40,7 +40,6 @@ export default function doCvMatch(
       width = Math.round(width);
       height = Math.round(height);
       srcMat = srcMat.resize(height, width);
-      mode = "Local";
     } else {
       width = (sourceElement.videoWidth / 100) * opt.cvCanvas;
       height = (sourceElement.videoHeight / 100) * opt.cvCanvas;

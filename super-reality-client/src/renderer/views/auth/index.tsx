@@ -1,8 +1,9 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import "./index.scss";
 import "../../components/buttons.scss";
+import { animated, useSpring } from "react-spring";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonSimple from "../../components/button-simple";
 import { API_URL, timeout } from "../../constants";
@@ -25,10 +26,21 @@ export default function Auth(props: AuthProps): JSX.Element {
   const { onAuth } = props;
   const dispatch = useDispatch();
   const { isPending } = useSelector((state: AppState) => state.auth);
-  const [page, setPage] = useState<"login" | "register">("login");
-  const togglePage = useCallback(() => {
-    setPage(page == "login" ? "register" : "login");
-  }, [page]);
+
+  const [stateSpring, set] = useSpring(
+    () =>
+      ({
+        transform: "translateX(0%)",
+      } as any)
+  );
+
+  const goSignIn = useCallback(() => {
+    set({ transform: "translateX(0%)" });
+  }, [set]);
+
+  const goSignUp = useCallback(() => {
+    set({ transform: "translateX(-50%)" });
+  }, [set]);
 
   const usernameField = useRef<HTMLInputElement | null>(null);
   const passwordField = useRef<HTMLInputElement | null>(null);
@@ -76,8 +88,10 @@ export default function Auth(props: AuthProps): JSX.Element {
           timeout: timeout,
         })
         .then((res) => {
-          handleAuthSignin(res);
-          onAuth();
+          handleXRAuthSingin(res).then((result) => {
+            handleAuthSignin(result);
+            onAuth();
+          });
         })
         .catch(handleAuthError);
     }
@@ -107,110 +121,113 @@ export default function Auth(props: AuthProps): JSX.Element {
       .catch(handleAuthError);
   }, []);
 
-  return page == "login" ? (
-    <form className="auth-container">
-      <fieldset>
-        <div className="input-container">
-          <label>Email</label>
-          <input
-            ref={usernameField}
-            key="singin-username"
-            defaultValue={defaultUser || ""}
-            type="text"
-            placeholder="username"
-            disabled={isPending}
-          />
-        </div>
-        <div className="input-container">
-          <label>Password</label>
-          <input
-            ref={passwordField}
-            key="singin-password"
-            type="password"
-            placeholder="password"
-            disabled={isPending}
-          />
-        </div>
-        <Flex style={{ marginTop: "16px", justifyContent: "space-between" }}>
+  return (
+    <animated.div style={stateSpring} className="auth-scroller">
+      <form className="auth-container">
+        <fieldset>
+          <div className="input-container">
+            <label>Email</label>
+            <input
+              ref={usernameField}
+              key="singin-username"
+              defaultValue={defaultUser || ""}
+              type="text"
+              placeholder="username"
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Password</label>
+            <input
+              ref={passwordField}
+              key="singin-password"
+              type="password"
+              placeholder="password"
+              disabled={isPending}
+            />
+          </div>
+        </fieldset>
+        <div className="actions-container">
           <ButtonSimple
             className="button-login"
+            margin="auto"
             width="calc(50% - 32px)"
             onClick={handleLoginSubmit}
           >
             Sign in
           </ButtonSimple>
-          <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
-            Sign up
-          </ButtonSimple>
-        </Flex>
-      </fieldset>
-    </form>
-  ) : (
-    <form className="auth-container">
-      <fieldset>
-        <div className="input-container">
-          <label>First Name</label>
-          <input
-            ref={registerFirstnameFiled}
-            key="signup-firstname"
-            type="text"
-            placeholder="first name"
-            disabled={isPending}
-          />
+          <p>
+            Dont have an account? <a onClick={goSignUp}>Create one!</a>
+          </p>
         </div>
-        <div className="input-container">
-          <label>Last Name</label>
-          <input
-            ref={registerLastnameField}
-            key="signup-lastname"
-            type="text"
-            placeholder="last name"
-            disabled={isPending}
-          />
-        </div>
-        <div className="input-container">
-          <label>Email</label>
-          <input
-            ref={registerEmailField}
-            key="signup-email"
-            type="email"
-            placeholder="email@adress.com"
-            disabled={isPending}
-          />
-        </div>
-        <div className="input-container">
-          <label>Password</label>
-          <input
-            ref={registerPasswordField}
-            key="signup-password"
-            type="password"
-            placeholder=""
-            disabled={isPending}
-          />
-        </div>
-        <div className="input-container">
-          <label>Input Code</label>
-          <input
-            ref={registerCodeField}
-            key="signup-code"
-            type="text"
-            placeholder="invite code"
-            disabled={isPending}
-          />
-        </div>
-        <Flex style={{ marginTop: "16px", justifyContent: "space-between" }}>
+      </form>
+      <form className="auth-container">
+        <fieldset>
+          <div className="input-container">
+            <label>First Name</label>
+            <input
+              ref={registerFirstnameFiled}
+              key="signup-firstname"
+              type="text"
+              placeholder="first name"
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Last Name</label>
+            <input
+              ref={registerLastnameField}
+              key="signup-lastname"
+              type="text"
+              placeholder="last name"
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Email</label>
+            <input
+              ref={registerEmailField}
+              key="signup-email"
+              type="email"
+              placeholder="email@adress.com"
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Password</label>
+            <input
+              ref={registerPasswordField}
+              key="signup-password"
+              type="password"
+              placeholder=""
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Input Code</label>
+            <input
+              ref={registerCodeField}
+              key="signup-code"
+              type="text"
+              placeholder="invite code"
+              disabled={isPending}
+            />
+          </div>
+        </fieldset>
+        <div className="actions-container">
           <ButtonSimple
             className="button-login"
+            margin="auto"
             width="calc(50% - 32px)"
             onClick={handleSingupSubmit}
           >
             Sign up
           </ButtonSimple>
-          <ButtonSimple width="calc(50% - 32px)" onClick={togglePage}>
-            Sign in
-          </ButtonSimple>
-        </Flex>
-      </fieldset>
-    </form>
+          <p>
+            Already have an account? <a onClick={goSignIn}>Sign in!</a>
+          </p>
+        </div>
+      </form>
+    </animated.div>
   );
 }

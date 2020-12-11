@@ -6,8 +6,11 @@ interface ErrorState {
   errorInfo: any;
 }
 
-export default class ErrorBoundary extends React.Component<{}, ErrorState> {
-  constructor(props: {}) {
+export default class ErrorBoundary extends React.Component<
+  Record<string, unknown>,
+  ErrorState
+> {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { error: null, errorInfo: null } as ErrorState;
   }

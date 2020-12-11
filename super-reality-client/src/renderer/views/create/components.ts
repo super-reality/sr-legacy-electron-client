@@ -2,8 +2,6 @@ import Category from "../../../types/collections";
 import CatCollection from "../../../assets/images/cat-collection.png";
 import CatLesson from "../../../assets/images/cat-lesson.png";
 import CatOffer from "../../../assets/images/cat-offer.png";
-import CatOrganization from "../../../assets/images/cat-organization.png";
-import CatProject from "../../../assets/images/cat-project.png";
 import CatSubject from "../../../assets/images/cat-subject.png";
 
 export interface Option {
