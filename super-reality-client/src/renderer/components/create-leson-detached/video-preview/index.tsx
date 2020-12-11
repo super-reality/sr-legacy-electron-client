@@ -214,6 +214,12 @@ export default function VideoPreview(): JSX.Element {
       nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
       if (st.snapShot) {
         setCanvasSource("url", st.snapShot);
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
+            videoNavigation: nav,
+          },
+        });
       } else if (st.recordingId) {
         setCanvasSource("recording", st.recordingId);
         reduxAction(dispatch, {
