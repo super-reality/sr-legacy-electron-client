@@ -184,7 +184,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       }}
     >
       <div ref={dragContainer} className="title-bar">
-        <div>{title}</div>
+        <div className="title">{title}</div>
         <div className="buttons">
           {onMinimize && (
             <div className="minimize" onClick={onMinimize}>
@@ -192,7 +192,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
             </div>
           )}
           <div className="close" onClick={() => setState(false)}>
-            <CloseIcon style={{ margin: "auto" }} fill="var(--color-icon)" />
+            <CloseIcon style={{ margin: "auto" }} fill="var(--color-pink)" />
           </div>
         </div>
       </div>

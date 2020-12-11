@@ -270,7 +270,7 @@ export default function CreateLessonDetached(): JSX.Element {
           ) : (
             <></>
           )}
-          <div className="preview">
+          <div className="animate-gradient preview">
             <VideoPreview />
           </div>
         </div>

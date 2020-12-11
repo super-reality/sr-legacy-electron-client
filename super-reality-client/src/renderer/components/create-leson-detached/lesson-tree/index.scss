@@ -3,7 +3,6 @@
 .tree-folder-container {
   display: flex;
   flex-direction: column;
-  height: 16px;
   overflow: hidden;
   -webkit-transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
   @include animated;
@@ -12,18 +11,28 @@
 
 .tree-folder {
   display: flex;
-  height: 18px;
+  font-family: "Segoe UI";
+  align-items: center;
+  height: 27px;
   cursor: pointer;
+  background: #2e2a48;
+  margin: 1.5px 3px;
+  border-radius: 3px;
   padding: 2px 0px 2px 2px;
   @include animated;
   @include disable-select;
 
+  &.hover {
+    cursor: pointer;
+  }
+
   &.selected {
-    background-color: var(--color-section-hover) !important;
+    border-radius: 3px;
+    background: #363252;
   }
 
   &.open {
-    color: var(--color-green);
+    color: var(--color-magenda);
   }
 
   .folder-drop {
@@ -31,6 +40,7 @@
     height: 16px;
     transform: rotate(-90deg);
     display: flex;
+    margin-left: 5px;
     @include animated;
     @include disable-select;
 
@@ -81,19 +91,23 @@
 
 .tree-item-container {
   display: flex;
-  height: 18px;
+  height: 27px;
+  background: #2e2a48;
+  align-items: center;
   cursor: pointer;
-  padding: 2px 0px 2px 2px;
-  border-radius: 2px;
+  margin: 1.5px 3px;
+  padding: 2px 10px 2px 2px;
+  border-radius: 3px;
   @include animated;
   @include disable-select;
 
   &.selected {
-    background-color: var(--color-section-hover) !important;
+    border-radius: 3px;
+    background-color: #363252;
   }
 
   &.open {
-    color: var(--color-text-active);
+    color: var(--color-magenda);
   }
 
   .item-icon-tree {
@@ -105,7 +119,8 @@
   .item-name {
     font-size: 13px;
     line-height: 18px;
-    margin-left: 4px;
+    margin-left: 10px;
+    margin-bottom: 2px;
     text-overflow: ellipsis;
     white-space: pre;
     overflow: hidden;

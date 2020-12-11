@@ -104,9 +104,11 @@ export default function OpenStep(props: OpenStepProps) {
         buttons={stepModalOptions}
         initial={view}
         callback={setView}
-        style={{ width: "-webkit-fill-available", height: "42px" }}
+        style={{ width: "-webkit-fill-available", height: "28px" }}
       />
-      <TabsContainer style={{ height: "200px", overflow: "auto" }}>
+      <TabsContainer
+        style={{ padding: "10px", height: "200px", overflow: "auto" }}
+      >
         {view === "Settings" && <div>Step Settings</div>}
         {view === "Anchor" && (
           <>
