@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useRef } from "react";
 import { getEffectById } from "../../../constants";
 
 import "./index.scss";
@@ -20,6 +20,7 @@ interface FXBoxProps {
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
     const { effect, style, pos, clickThrough } = props;
+    const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const srcFX = getEffectById(effect);
 
     return (
@@ -35,7 +36,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
             ...style,
           }}
         >
-          <iframe className="fx-iframe" src={srcFX?.url} />
+          <iframe ref={iframeRef} className="fx-iframe" src={srcFX?.url} />
         </div>
       </>
     );
