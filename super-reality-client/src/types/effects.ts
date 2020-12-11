@@ -30,6 +30,7 @@ export interface EffectMessageInt extends EffectMessageBase {
     value: BigInt;
   };
 }
+
 export interface EffectMessageFloat extends EffectMessageBase {
   type: "SET_FLOAT_PARAMETER";
   payload: {
@@ -37,6 +38,7 @@ export interface EffectMessageFloat extends EffectMessageBase {
     value: number;
   };
 }
+
 export interface EffectMessageString extends EffectMessageBase {
   type: "SET_STRING_PARAMETER";
   payload: {
@@ -44,6 +46,7 @@ export interface EffectMessageString extends EffectMessageBase {
     value: string;
   };
 }
+
 export interface EffectMessageVector2 extends EffectMessageBase {
   type: "SET_VECTOR2_PARAMETER";
   payload: {
@@ -51,6 +54,7 @@ export interface EffectMessageVector2 extends EffectMessageBase {
     value: { x: number; y: number };
   };
 }
+
 export interface EffectMessageVector3 extends EffectMessageBase {
   type: "SET_VECTOR3_PARAMETER";
   payload: {
@@ -58,6 +62,7 @@ export interface EffectMessageVector3 extends EffectMessageBase {
     value: { x: number; y: number; z: number };
   };
 }
+
 export interface EffectMessageColor extends EffectMessageBase {
   type: "SET_COLOR_PARAMETER";
   payload: {
