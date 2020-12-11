@@ -5,6 +5,10 @@
   "homepage": "./",
   "main": "public/electron.js",
   "dependencies": {
+    "@feathersjs/client": "^4.5.10",
+    "@feathersjs/feathers": "^4.5.10",
+    "@feathersjs/socketio": "^4.5.10",
+    "@feathersjs/socketio-client": "^4.5.10",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -55,6 +59,7 @@
     "reactn": "^2.2.7",
     "redux": "^4.0.5",
     "request": "^2.88.2",
+    "socket.io-client": "^2.3.0",
     "tmp": "^0.2.1",
     "ts-ebml": "^2.0.2",
     "typeface-roboto": "0.0.75",

@@ -12,6 +12,7 @@ export default function handleAuthSignup(
     if (res.data.err_code === 0) {
       window.localStorage.setItem("username", res.data.user.username);
       window.localStorage.setItem("token", res.data.token);
+      // handle XR
       reduxAction(store.dispatch, {
         type: "AUTH_SUCCESSFUL",
         arg: res.data,

@@ -18,6 +18,7 @@ import CreateLessonDetached from "./components/create-leson-detached";
 import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
+import TestChat from "./components/chat/container";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -78,16 +79,9 @@ export default function App(): JSX.Element {
                   margin: "0",
                 }}
               >
-                <Loading state={isLoading} />
-                <div
-                  onScroll={handleScroll}
-                  ref={scrollRef}
-                  className="content"
-                >
-                  <Switch>
-                    <Route path="/test" component={Test} />
-                  </Switch>
-                </div>
+                <ErrorBoundary>
+                  <TestChat />
+                </ErrorBoundary>
               </div>
             </>
           ) : (
@@ -104,3 +98,15 @@ export default function App(): JSX.Element {
     </ErrorBoundary>
   );
 }
+/*
+                <Loading state={isLoading} />
+                <div
+                  onScroll={handleScroll}
+                  ref={scrollRef}
+                  className="content"
+                >
+                  <Switch>
+                    <Route path="/test" component={Test} />
+                  </Switch>
+                </div>
+ */

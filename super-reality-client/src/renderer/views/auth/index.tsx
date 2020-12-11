@@ -14,6 +14,8 @@ import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
 import Flex from "../../components/flex";
+import handleXRAuthSignup from "../../api/handleXRAuthSignup";
+import handleXRAuthSingin from "../../api/handleXRAuthSignin";
 
 interface AuthProps {
   onAuth: () => void;
@@ -57,8 +59,10 @@ export default function Auth(props: AuthProps): JSX.Element {
           },
         })
         .then((res) => {
-          handleAuthSignin(res);
-          onAuth();
+          handleXRAuthSingin(res).then((result) => {
+            handleAuthSignin(result);
+            onAuth();
+          });
         })
         .catch(handleAuthError);
     } else {
@@ -92,8 +96,13 @@ export default function Auth(props: AuthProps): JSX.Element {
     axios
       .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
       .then((res) => {
-        handleAuthSingup(res);
-        onAuth();
+        // register in the XRengine
+        if (payload.password) {
+          handleXRAuthSignup(res, payload.password).then(() => {
+            handleAuthSingup(res);
+            onAuth();
+          });
+        }
       })
       .catch(handleAuthError);
   }, []);
