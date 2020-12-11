@@ -1,4 +1,3 @@
-import { EffectMessage } from "../types/effects";
 import { EffectAction } from "../types/utils";
 
 export default function sendEffectAction(
