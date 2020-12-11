@@ -33,6 +33,7 @@ import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
 import { itemsPath } from "../../../electron-constants";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
+import timetoTimestamp from "../../../../utils/timeToTimestamp";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -81,6 +82,7 @@ export default function VideoStatus() {
     canvasSource,
     status,
     triggerCvMatch,
+    videoNavigation,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -259,17 +261,19 @@ export default function VideoStatus() {
             const slice = store.getState().createLessonV2;
             const step: IStep | null = slice.treeSteps[currentStep || ""];
             if (a && step && currentStep) {
-              return updateStep({ anchor: a._id }, currentStep).then(
-                (updatedStep) => {
-                  if (updatedStep) {
-                    reduxAction(dispatch, {
-                      type: "CREATE_LESSON_V2_SETSTEP",
-                      arg: { step: updatedStep },
-                    });
-                  }
-                  return updatedStep;
+              const newTimestamp = timetoTimestamp(videoNavigation[1]);
+              return updateStep(
+                { anchor: a._id, recordingTimestamp: newTimestamp },
+                currentStep
+              ).then((updatedStep) => {
+                if (updatedStep) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_SETSTEP",
+                    arg: { step: updatedStep },
+                  });
                 }
-              );
+                return updatedStep;
+              });
             }
             return new Promise((r) => r(undefined));
           }
@@ -280,7 +284,7 @@ export default function VideoStatus() {
           doExitEditAnchor();
         });
     },
-    [dispatch, currentStep, doExitEditAnchor]
+    [videoNavigation, dispatch, currentStep, doExitEditAnchor]
   );
 
   const editAddToCurrentAnchor = useCallback(
