@@ -58,7 +58,12 @@ export default function LessonTreeControls() {
   );
 
   return (
-    <Flex style={{ margin: "8px auto", width: "-webkit-fill-available" }}>
+    <Flex
+      style={{
+        margin: "8px auto",
+        width: "-webkit-fill-available",
+      }}
+    >
       <ChapterInput />
       <StepInput />
       {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (

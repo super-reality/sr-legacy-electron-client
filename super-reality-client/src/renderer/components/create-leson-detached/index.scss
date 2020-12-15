@@ -74,7 +74,7 @@
   grid-template-areas: "edit" "nav";
   grid-gap: 5px;
   padding: 5px;
-  background: linear-gradient(180deg, #29233C 0%, #353459 40.2%, #261F34 100%);
+  background: linear-gradient(180deg, #29233c 0%, #353459 40.2%, #261f34 100%);
 
   .edit {
     display: flex;
@@ -87,7 +87,7 @@
       grid-template-rows: auto 32px 200px 32px;
       grid-gap: 8px;
       border-right: 1px solid var(--color-section);
-      background: linear-gradient(180deg, #300A46 0%, #411059 100%);
+      background: linear-gradient(180deg, #300a46 0%, #411059 100%);
     }
 
     .anchor-edit {
@@ -108,6 +108,7 @@
   }
 
   .nav {
+    position: relative;
     grid-area: nav;
     background-color: var(--color-section);
   }
@@ -126,7 +127,7 @@
   margin-left: 8px;
   margin-top: -39px;
   align-items: center;
-  background: linear-gradient(180deg, #343358 0%, #2B2641 68.4%);
+  // background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
 
   .spectrum-bar {
     width: -webkit-fill-available;

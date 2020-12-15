@@ -114,6 +114,10 @@
     width: 16px;
     height: 16px;
     display: flex;
+
+    svg {
+      filter: drop-shadow(0px 0px 5px #e85fcf);
+    }
   }
 
   .item-name {
@@ -142,4 +146,17 @@
 .drag-target {
   border-top: 2px dotted var(--color-background-hover);
   padding-top: 0px;
+}
+
+.shadow-blue {
+  svg {
+    filter: drop-shadow(0px 0px 5px #00fef6);
+  }
+
+  .button-round:hover {
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.5s ease;
+    // filter: drop-shadow(0px 0px 4px #00fef6);
+  }
 }

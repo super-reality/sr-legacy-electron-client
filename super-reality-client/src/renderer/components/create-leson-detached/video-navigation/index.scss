@@ -24,7 +24,7 @@
   transform: translate(-100%, -25px);
   z-index: 5;
   width: 26px;
-  height: 32px;
+  height: 110px;
   background-repeat: no-repeat;
   cursor: pointer;
   top: 0px;
@@ -48,7 +48,7 @@
   transform: translate(0, -25px);
   z-index: 5;
   width: 26px;
-  height: 32px;
+  height: 110px;
   background-repeat: no-repeat;
   cursor: pointer;
   top: 0px;
@@ -90,12 +90,13 @@
 
 .video-track {
   position: absolute;
-  height: 80px;
+  height: 60px;
   top: 0;
-  z-index: 1;
-  background-color: var(--color-blue);
+  // z-index: 1;
+  background: var(--color-rainbow);
+  background-repeat: no-repeat;
   cursor: pointer;
-  opacity: 0.15;
+  opacity: 0.9;
 }
 
 .video-tickPre {
@@ -103,7 +104,7 @@
   top: 4px;
   width: 2px;
   height: 28px;
-  background-color: var(--color-background-hover);
+  background-color: #3f3e6f;
 }
 
 .video-tickPre-small {
@@ -111,7 +112,7 @@
   top: 4px;
   width: 2px;
   height: 10px;
-  background-color: var(--color-background-hover);
+  background-color: #3f3e6f;
 }
 
 .video-tick {
@@ -120,6 +121,7 @@
   margin-left: 8px;
   font-size: 10px;
   text-align: center;
+  color: var(--color-magenda);
 }
 
 .video-video-nav {
