@@ -7,6 +7,7 @@ import {
   stepSnapshotPath,
   tempPath,
 } from "../../renderer/electron-constants";
+import userDataPath from "./userDataPath";
 
 function makeDataDir(dir: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -22,6 +23,7 @@ function makeDataDir(dir: string): Promise<boolean> {
 }
 
 export default function createDataDirs(): Promise<boolean> {
+  console.log("USER DATA PATH", userDataPath());
   return makeDataDir(stepPath)
     .then(() => makeDataDir(recordingPath))
     .then(() => makeDataDir(stepSnapshotPath))
