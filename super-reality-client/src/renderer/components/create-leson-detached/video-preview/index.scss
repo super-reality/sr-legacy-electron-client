@@ -44,7 +44,7 @@
     width: 0px;
     height: 100%;
     border: 1px solid gray;
-    background-color: var(--color-section);
+    background: var(--color-section);
     position: absolute;
     display: none;
     width: 200px;
@@ -63,7 +63,7 @@
     height: 1080px;
     font-size: 30px;
     font-weight: 500;
-    // background-color: var(--color-background);
+    background: var(--color-button);
     color: var(--color-gray);
     text-align: center;
     line-height: 1080px;
