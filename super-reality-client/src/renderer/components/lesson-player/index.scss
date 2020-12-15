@@ -1,7 +1,7 @@
 @import "../misc.scss";
 
 @mixin item-base {
-  background-color: var(--color-section);
+  background: var(--color-section);
   width: inherit;
   height: inherit;
   position: absolute;
