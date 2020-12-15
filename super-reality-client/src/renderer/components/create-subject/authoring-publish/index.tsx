@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import "../../containers.scss";
 import "../../popups.scss";
 import { useSelector, useDispatch } from "react-redux";

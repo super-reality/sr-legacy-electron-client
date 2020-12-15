@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 
 export default function useTransparentFix(debug?: boolean) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);

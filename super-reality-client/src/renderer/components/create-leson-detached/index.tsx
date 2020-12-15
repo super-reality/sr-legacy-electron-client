@@ -9,23 +9,13 @@ import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
-import { hidden } from "colorette";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
-import setTopMost from "../../../utils/electron/setTopMost";
-import setMaximize from "../../../utils/electron/setMaximize";
-import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
-import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
-import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
 
-import setFocusable from "../../../utils/electron/setFocusable";
-import setResizable from "../../../utils/electron/setResizable";
 import Lesson from "./lessson";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
-import closeWindow from "../../../utils/electron/closeWindow";
-import toggleMaximize from "../../../utils/electron/toggleMaximize";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
@@ -39,11 +29,9 @@ import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "./recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
-import {
-  MODE_SOLID,
-  MODE_TRANSPARENT,
-  MODE_VOID,
-} from "../../redux/slices/renderSlice";
+import Windowlet from "../windowlet";
+import { MODE_HOME } from "../../redux/slices/renderSlice";
+import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -60,41 +48,9 @@ const restrictMinSize =
     min: { width: 100, height: 100 },
   });
 
-function TopBar() {
-  const onMinimize = useCallback(() => {
-    minimizeWindow();
-  }, []);
-
-  const onMaximize = useCallback(() => {
-    toggleMaximize();
-  }, []);
-
-  const onCLose = useCallback(() => {
-    closeWindow();
-  }, []);
-
-  return (
-    <div className="top-bar">
-      <div className="name">Super Reality</div>
-      <div className="buttons">
-        <div className="minimize" onClick={onMinimize}>
-          <ButtonMinimize style={{ margin: "auto" }} />
-        </div>
-        <div className="maximize" onClick={onMaximize}>
-          <ButtonMaximize style={{ margin: "auto" }} />
-        </div>
-        <div className="close" onClick={onCLose}>
-          <ButtonClose style={{ margin: "auto" }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
-  const { overlayTransparent } = useSelector((state: AppState) => state.render);
 
   const {
     currentAnchor,
@@ -142,9 +98,11 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debounceVideoNav = useCallback(
     (n: readonly number[]) => {
-      debouncer(() => setVideoNavPos([...n]));
-      const el = document.getElementById("video-hidden") as HTMLVideoElement;
-      if (el) el.currentTime = n[1] / 1000;
+      debouncer(() => {
+        setVideoNavPos([...n]);
+        const el = document.getElementById("video-hidden") as HTMLVideoElement;
+        if (el) el.currentTime = n[1] / 1000;
+      });
     },
     [debouncer]
   );
@@ -172,32 +130,9 @@ export default function CreateLessonDetached(): JSX.Element {
       };
     }
     return voidFunction;
-  }, [overlayTransparent, resizeContainer]);
-
-  const setTransparent = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: MODE_VOID });
-    setFocusable(false);
-    setTimeout(() => {
-      setTopMost(true);
-      reduxAction(dispatch, {
-        type: "SET_OVERLAY_TRANSPARENT",
-        arg: MODE_TRANSPARENT,
-      });
-    }, 2000);
-    setMaximize(true);
-    setResizable(false);
-  }, [dispatch]);
-
-  const setSolid = useCallback(() => {
-    reduxAction(dispatch, { type: "SET_OVERLAY_TRANSPARENT", arg: MODE_SOLID });
-    setFocusable(true);
-    setTopMost(false);
-    setMaximize(false);
-    setResizable(true);
-  }, [dispatch]);
+  }, [resizeContainer]);
 
   const createRecorder = useCallback(() => {
-    setTransparent();
     setOpenRecorder(true);
   }, []);
 
@@ -228,7 +163,7 @@ export default function CreateLessonDetached(): JSX.Element {
             arg: { spectrum: rawAudioToWaveform(data) },
           });
         })
-        .catch((e) => {
+        .catch(() => {
           console.warn(
             `recording ${currentRecording} does not have any local audio files.`
           );
@@ -244,14 +179,21 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  if (overlayTransparent == MODE_TRANSPARENT)
+  const isTransparent =
+    openRecorder ||
+    anchorTestView ||
+    lessonPreview ||
+    chapterPreview ||
+    stepPreview ||
+    itemPreview;
+
+  if (isTransparent) {
     return (
-      <div className="transparent-container click-through">
+      <>
         {openRecorder && (
           <Recorder
             onFinish={() => {
               setOpenRecorder(false);
-              setSolid();
             }}
           />
         )}
@@ -259,67 +201,93 @@ export default function CreateLessonDetached(): JSX.Element {
           <>
             <AnchorTester
               onFinish={() => {
-                setSolid();
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_DATA",
+                  arg: {
+                    anchorTestView: false,
+                  },
+                });
               }}
             />
           </>
         )}
         {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
           currentLesson && (
-            <LessonPlayer lessonId={currentLesson} onFinish={setSolid} />
-          )}
-      </div>
-    );
-  if (overlayTransparent == MODE_SOLID) {
-    return (
-      <div className="solid-container">
-        <TopBar />
-        <div className="main-container">
-          <div className="edit">
-            <div
-              className="creator"
-              style={{ width: "340px" }}
-              ref={resizeContainer}
-            >
-              <Lesson
-                createRecorder={createRecorder}
-                setTransparent={setTransparent}
-              />
-            </div>
-            {currentAnchor !== undefined ? (
-              <div
-                className="anchor-edit"
-                style={{ width: "340px" }}
-                ref={resizeContainerAnchor}
-              >
-                <AnchorEdit
-                  anchorId={currentAnchor}
-                  setTransparent={setTransparent}
-                />
-              </div>
-            ) : (
-              <></>
-            )}
-            <div className="preview">
-              <VideoPreview />
-            </div>
-          </div>
-          <div className="nav">
-            <VideoStatus />
-            <VideoNavigation
-              domain={videoNavDomain}
-              defaultValues={videoNavigation}
-              ticksNumber={100}
-              callback={debounceVideoNav}
-              slideCallback={debounceVideoNav}
+            <LessonPlayer
+              lessonId={currentLesson}
+              onFinish={() => {
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_DATA",
+                  arg: {
+                    lessonPreview: false,
+                    chapterPreview: false,
+                    stepPreview: false,
+                    itemPreview: false,
+                    anchorTestView: false,
+                    previewing: false,
+                    previewOne: false,
+                  },
+                });
+              }}
             />
-            <VideoData />
-            {meoizedSpectrum}
-          </div>
-        </div>
-      </div>
+          )}
+      </>
     );
   }
-  return <></>;
+
+  const primarySize = getPrimaryMonitor().workArea;
+
+  return (
+    <Windowlet
+      width={primarySize.width}
+      height={primarySize.height}
+      title="Super Reality"
+      onMinimize={minimizeWindow}
+      onClose={() => {
+        reduxAction(dispatch, {
+          type: "SET_APP_MODE",
+          arg: MODE_HOME,
+        });
+      }}
+    >
+      <div className="main-container">
+        <div className="edit">
+          <div
+            className="creator"
+            style={{ width: "340px" }}
+            ref={resizeContainer}
+          >
+            <Lesson createRecorder={createRecorder} />
+          </div>
+          {currentAnchor !== undefined ? (
+            <div
+              className="anchor-edit"
+              style={{ width: "340px" }}
+              ref={resizeContainerAnchor}
+            >
+              <AnchorEdit anchorId={currentAnchor} />
+            </div>
+          ) : (
+            <></>
+          )}
+          <div className="animate-gradient preview">
+            <VideoPreview />
+          </div>
+        </div>
+        <div className="nav">
+          <VideoStatus />
+          <VideoNavigation
+            domain={videoNavDomain}
+            defaultValues={videoNavigation}
+            ticksNumber={100}
+            callback={debounceVideoNav}
+            slideCallback={debounceVideoNav}
+          />
+          <VideoData />
+          {meoizedSpectrum}
+        </div>
+      </div>
+    </Windowlet>
+  );
 }
 /* eslint-disable dot-notation */

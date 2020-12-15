@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
@@ -30,6 +31,9 @@ import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
+import { itemsPath } from "../../../electron-constants";
+import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
+import timetoTimestamp from "../../../../utils/timeToTimestamp";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -73,12 +77,15 @@ export default function VideoStatus() {
     cropEditAnchor,
     cropEditAnchorMode,
     cropRecordingPos,
+    canvasSourceType,
+    canvasSourceDesc,
     canvasSource,
-    currentRecording,
-    currentCanvasSource,
     status,
     triggerCvMatch,
+    videoNavigation,
   } = useSelector((state: AppState) => state.createLessonV2);
+
+  const { cvResult } = useSelector((state: AppState) => state.render);
 
   const anchor = useMemo(() => {
     // const slice = store.getState().createLessonV2;
@@ -112,20 +119,31 @@ export default function VideoStatus() {
   const cvDebouncer = useDebounce(300);
 
   useEffect(() => {
+    if (!anchor) return;
     console.log(
-      "Do cv match trigger",
-      currentRecording,
+      "Do cv match trigger:",
       triggerCvMatch,
-      currentCanvasSource
+      canvasSourceType,
+      canvasSource
     );
-    if (currentCanvasSource && anchor) {
+
+    if (canvasSourceType == "file" && canvasSource) {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
-        doCvMatch(anchor.templates, currentCanvasSource, anchor).then((arg) =>
+        doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
       });
-    } else if (anchor) {
+    } else if (canvasSourceType == "url" && canvasSource) {
+      const fileName = canvasSource.split("/")?.pop() || "";
+      const file = path.join(itemsPath, fileName);
+      // Trigger CV match on current preview canvas
+      cvDebouncer(() => {
+        doCvMatch(anchor.templates, file, anchor).then((arg) =>
+          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
+        );
+      });
+    } else {
       const videoHidden = document.getElementById(
         "video-hidden"
       ) as HTMLVideoElement;
@@ -142,9 +160,9 @@ export default function VideoStatus() {
     dispatch,
     cvDebouncer,
     anchor,
-    currentRecording,
     triggerCvMatch,
-    currentCanvasSource,
+    canvasSourceType,
+    canvasSource,
   ]);
 
   const generateItems = useCallback(() => {
@@ -243,17 +261,19 @@ export default function VideoStatus() {
             const slice = store.getState().createLessonV2;
             const step: IStep | null = slice.treeSteps[currentStep || ""];
             if (a && step && currentStep) {
-              return updateStep({ anchor: a._id }, currentStep).then(
-                (updatedStep) => {
-                  if (updatedStep) {
-                    reduxAction(dispatch, {
-                      type: "CREATE_LESSON_V2_SETSTEP",
-                      arg: { step: updatedStep },
-                    });
-                  }
-                  return updatedStep;
+              const newTimestamp = timetoTimestamp(videoNavigation[1]);
+              return updateStep(
+                { anchor: a._id, recordingTimestamp: newTimestamp },
+                currentStep
+              ).then((updatedStep) => {
+                if (updatedStep) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_SETSTEP",
+                    arg: { step: updatedStep },
+                  });
                 }
-              );
+                return updatedStep;
+              });
             }
             return new Promise((r) => r(undefined));
           }
@@ -264,7 +284,7 @@ export default function VideoStatus() {
           doExitEditAnchor();
         });
     },
-    [dispatch, currentStep, doExitEditAnchor]
+    [videoNavigation, dispatch, currentStep, doExitEditAnchor]
   );
 
   const editAddToCurrentAnchor = useCallback(
@@ -325,13 +345,20 @@ export default function VideoStatus() {
         if (cropEditAnchorMode == MODE_CREATE) {
           setStatus("Creating new anchor");
           editCreateNewAnchor(file);
+          if (currentStep) {
+            editStepItemsRelativePosition(
+              currentStep,
+              cropRecordingPos,
+              cvResult
+            );
+          }
         }
         if (cropEditAnchorMode == MODE_ADD_TO) {
           setStatus("Adding to anchor");
           editAddToCurrentAnchor(file);
         }
       });
-  }, [cropEditAnchorMode, cropRecordingPos]);
+  }, [cropEditAnchorMode, cropRecordingPos, currentStep, cvResult]);
 
   return (
     <div className="video-status-container">
@@ -458,7 +485,7 @@ export default function VideoStatus() {
       )}
       <div
         style={{ fontFamily: "monospace", marginLeft: "auto" }}
-      >{`${canvasSource} / ${status}`}</div>
+      >{`${canvasSourceDesc} / ${status}`}</div>
       <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
     </div>
   );

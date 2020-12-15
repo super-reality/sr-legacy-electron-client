@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ReactComponent as AddIcon } from "../../../assets/svg/add.svg";
 import "./index.scss";
 import "../tag/index.scss";

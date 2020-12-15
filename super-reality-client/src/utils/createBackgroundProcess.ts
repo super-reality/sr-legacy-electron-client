@@ -42,7 +42,12 @@ export default function createBackgroundProcess(): Promise<void> {
   );
 
   remote.globalShortcut.register("Alt+Shift+E", () => {
-    globalData.backgroundProcess.webContents.openDevTools();
+    globalData.backgroundProcess.webContents.toggleDevTools();
+    if (globalData.backgroundProcess.isVisible()) {
+      globalData.backgroundProcess.hide();
+    } else {
+      globalData.backgroundProcess.show();
+    }
   });
 
   return new Promise<void>((resolve) => {
@@ -54,7 +59,7 @@ export default function createBackgroundProcess(): Promise<void> {
     globalData.backgroundProcess.on("closed", () => {
       console.log("Background process closed unexpectedly!");
       globalData.backgroundProcess = null;
-      remote.globalShortcut.unregister("Alt+Shift+F");
+      remote.globalShortcut.unregister("Alt+Shift+E");
       resolve();
     });
   });

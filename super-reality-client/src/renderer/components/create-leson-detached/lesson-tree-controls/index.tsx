@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import usePopupInput from "../../../hooks/usePopupInput";
-import { TreeTypes } from "../../../redux/slices/createLessonSliceV2";
-import store, { AppState } from "../../../redux/stores/renderer";
+import { AppState } from "../../../redux/stores/renderer";
 import ButtonRound from "../../button-round";
 import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
@@ -16,7 +15,7 @@ import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dial
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType, ItemFX } from "../../../api/types/item/item";
+import { BaseItemType } from "../../../api/types/item/item";
 import newItem from "../lesson-utils/newItem";
 import ButtonSimple from "../../button-simple";
 
@@ -28,10 +27,6 @@ export default function LessonTreeControls() {
     currentLesson,
     currentChapter,
   } = useSelector((state: AppState) => state.createLessonV2);
-
-  let childType: TreeTypes = "chapter";
-  if (treeCurrentType == "chapter") childType = "step";
-  if (treeCurrentType == "step") childType = "item";
 
   const doAddStep = useCallback(
     (name: string) => newStep({ name }, currentChapter),

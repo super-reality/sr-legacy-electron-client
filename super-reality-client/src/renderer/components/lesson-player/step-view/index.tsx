@@ -78,15 +78,27 @@ export default function StepView(props: StepViewProps) {
     [itemsState, itemsShow]
   );
 
+  const itemKeys: Record<Item["type"], number> = {
+    audio: 0,
+    dialog: 0,
+    focus_highlight: 0,
+    fx: 0,
+    image: 0,
+    video: 0,
+  };
+
   return (
     <>
       {Object.keys(itemsState).map((itemId) => {
         const item: Item | undefined = treeItems[itemId];
+        if (item && item.type) {
+          itemKeys[item.type] += 1;
+        }
         return item &&
           (itemsState[itemId] == false || item.trigger == null) &&
           itemsShow[itemId] ? (
           <ItemView
-            key={`item-box-${item._id}`}
+            key={`item-box-${item.type}-${itemKeys[item.type] || item._id}`}
             item={item}
             anchorId={step.anchor || ""}
             onSucess={(trigger: number | null) => itemSucess(trigger, item)}

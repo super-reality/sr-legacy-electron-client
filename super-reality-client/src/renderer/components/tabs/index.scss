@@ -1,17 +1,15 @@
 @import "../misc.scss";
 
 .tabs-content-container {
-  border-radius: 0 0 8px 8px;
-  background-color: var(--color-section);
-  padding: 10px;
-  margin: 0 5px;
-  @include soft-shadow;
+  border-radius: 3px;
+  padding: 1.5px 0;
+  // @include soft-shadow;
 }
 
 .tabs-tab-container {
   justify-content: space-between;
   display: flex;
-  margin: 0 5px 0 5px;
+  margin: 0 3px 0 3px;
   @include disable-select;
 }
 
@@ -22,7 +20,11 @@
 }
 
 .tabs-tab {
+  font-family: "Segoe UI";
   background-color: var(--color-background-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   @include tabs-tab;
 }
 
@@ -31,7 +33,13 @@
 }
 
 .tabs-tab-selected {
-  background-color: var(--color-section);
+  font-family: "Segoe UI";
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: #2e2a48;
   color: var(--color-text-active);
   @include tabs-tab;
 }

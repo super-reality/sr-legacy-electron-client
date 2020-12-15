@@ -26,6 +26,7 @@ export function Tabs<T extends string>(props: TabsProps<T>): JSX.Element {
               width: `calc(${Math.round(100 / buttons.length)}%)`,
               height: height || "28px",
               lineHeight: height || "28px",
+              ...style,
             }}
             onClick={() => {
               setValue(str);

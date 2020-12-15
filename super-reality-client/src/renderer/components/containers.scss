@@ -1,14 +1,14 @@
 @import "./misc.scss";
 
 .inner {
-  background-color: var(--color-background);
+  background: var(--color-background);
   border-radius: 8px;
   padding: 10px;
 }
 
 .mid {
   border-radius: 6px;
-  background-color: var(--color-section);
+  background: var(--color-section);
   padding: 10px;
   margin: 10px;
   @include soft-shadow;
@@ -16,10 +16,10 @@
 
 .mid-tight {
   border-radius: 6px;
-  background-color: var(--color-section);
+  // background: var(--color-section);
   padding: 5px;
   margin: 5px;
-  @include soft-shadow;
+  // @include soft-shadow;
 }
 
 .container-with-desc {
@@ -44,6 +44,6 @@
   margin-left: auto;
 
   &:hover {
-    background-color: var(--color-section-hover);
+    background: var(--color-section-hover);
   }
 }

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import reduxAction from "../../../redux/reduxAction";
@@ -26,11 +20,10 @@ import useDebounce from "../../../hooks/useDebounce";
 
 interface AnchorEditProps {
   anchorId: string | undefined;
-  setTransparent: () => void;
 }
 
 export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
-  const { setTransparent, anchorId } = props;
+  const { anchorId } = props;
   const dispatch = useDispatch();
   const closeAnchorEdit = useCallback(() => {
     reduxAction(dispatch, {
@@ -95,10 +88,15 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
         anchorTestView: true,
       },
     });
-    setTransparent();
-  }, [dispatch, setTransparent]);
+  }, [dispatch]);
 
-  const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
+  const [Popup, open] = usePopupImageSource(
+    insertImage,
+    true,
+    true,
+    true,
+    false
+  );
 
   const handleNameChange = useCallback(
     (e) => {

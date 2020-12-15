@@ -21,6 +21,7 @@ export default function MuteButton(props: EditProps): JSX.Element {
       style={{
         margin: "8px",
         display: "flex",
+        ...style,
       }}
       onClick={(e) => {
         e.stopPropagation();

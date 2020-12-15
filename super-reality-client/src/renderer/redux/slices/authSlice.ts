@@ -20,7 +20,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthPending: (state: AuthState, action: PayloadAction<null>): void => {
+    setAuthPending: (state: AuthState, _action: PayloadAction<null>): void => {
       state.isPending = true;
     },
     setAuthValid: (state: AuthState, action: PayloadAction<boolean>): void => {
@@ -51,14 +51,14 @@ const authSlice = createSlice({
       Axios.defaults.headers.put.Authorization = bearer;
       state.token = action.payload;
     },
-    setAuthFailed: (state: AuthState, action: PayloadAction<null>): void => {
+    setAuthFailed: (state: AuthState, _action: PayloadAction<null>): void => {
       state.updatedAt = Date.now();
       state.isValid = false;
       state.isPending = false;
     },
     setAuthInvalidated: (
       state: AuthState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.updatedAt = Date.now();
       state.isValid = false;

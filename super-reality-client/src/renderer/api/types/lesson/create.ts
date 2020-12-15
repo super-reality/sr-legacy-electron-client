@@ -12,5 +12,5 @@ export default interface LessonCreate {
 export interface LessonResp {
   err_code: CodeSuccess;
   lesson: { _id: string; medias: string[]; icon: string };
-  status: Number;
+  status: number;
 }

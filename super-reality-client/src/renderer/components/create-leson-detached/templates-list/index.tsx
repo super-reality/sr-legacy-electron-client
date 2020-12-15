@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./index.scss";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import ButtonRound from "../../button-round";
@@ -37,7 +37,13 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
     [update, anchor]
   );
 
-  const [Popup, open] = usePopupImageSource(insertImage, true, true, true);
+  const [Popup, open] = usePopupImageSource(
+    insertImage,
+    true,
+    true,
+    true,
+    false
+  );
   const [Image, openImage] = usePopupImage();
 
   return (

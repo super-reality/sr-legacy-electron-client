@@ -1,4 +1,9 @@
+import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import sha1 from "../../../../../utils/md5";
+import saveCanvasImage from "../../../../../utils/saveCanvasImage";
+import timestampToTime from "../../../../../utils/timestampToTime";
 import { IStep } from "../../../../api/types/step/step";
+import { itemsPath } from "../../../../electron-constants";
 import store from "../../../../redux/stores/renderer";
 import newStep from "../../lesson-utils/newStep";
 import setStatus from "../../lesson-utils/setStatus";
@@ -18,6 +23,10 @@ export default async function generateSteps(
     currentRecording,
   } = store.getState().createLessonV2;
 
+  const videoHidden = document.getElementById(
+    "video-hidden"
+  ) as HTMLVideoElement;
+
   const steps: Record<string, StepData> = {};
   recordingData.step_data.forEach((data) => {
     steps[`step ${data.time_stamp}`] = data;
@@ -35,20 +44,34 @@ export default async function generateSteps(
     const stepName = uniqueSteps[index];
     setStatus(`Generating steps (${index}/${uniqueSteps.length})`);
 
+    const timestamp = steps[stepName].time_stamp;
     // eslint-disable-next-line no-await-in-loop
-    await newStep(
-      {
-        name: stepName,
-        anchor: recordingData.anchor,
-        recordingId: currentRecording,
-        recordingTimestamp: steps[stepName].time_stamp,
-      },
-      currentChapter
-    ).then((step) => {
-      if (step) {
-        stepNameToStep[stepName] = step;
-      }
-    });
+    await new Promise<void>((resolve) => {
+      const timestampTime = timestampToTime(timestamp);
+      videoHidden.currentTime = timestampTime / 1000;
+      setTimeout(resolve, 200);
+    })
+      .then(() =>
+        saveCanvasImage(`${itemsPath}/${sha1(`step-${timestamp}`)}.png`)
+      )
+      .then((file) => uploadFileToS3(file))
+      .then((url) =>
+        newStep(
+          {
+            name: stepName,
+            anchor: recordingData.anchor,
+            recordingId: currentRecording,
+            recordingTimestamp: steps[stepName].time_stamp,
+            snapShot: url,
+          },
+          currentChapter
+        )
+      )
+      .then((step) => {
+        if (step) {
+          stepNameToStep[stepName] = step;
+        }
+      });
   }
 
   console.log("Steps name to data:", stepNameToStep);

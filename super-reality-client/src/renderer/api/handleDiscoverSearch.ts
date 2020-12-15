@@ -12,7 +12,7 @@ export type SearchUrlNames = "lesson" | "subject" | "collection";
 /* eslint-disable camelcase */
 export default function handleDiscoverSearch(
   res: AxiosResponse<AllSearchResults | ApiError>,
-  type: SearchUrlNames
+  _type: SearchUrlNames
 ): Promise<AllSearchResults> {
   return new Promise((resolve, reject) => {
     apiErrorHandler<AllSearchResults>(res)

@@ -1,12 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import "./index.scss";
 import { useRouteMatch } from "react-router-dom";
-import { useWindowSize, useMeasure } from "react-use";
-import { useSelector } from "react-redux";
+import { useWindowSize } from "react-use";
 import Category from "../../types/collections";
 import { tabNames } from "../redux/slices/renderSlice";
-import { AppState } from "../redux/stores/renderer";
-import useOutsideClick from "./useOutsideClick";
 
 const selectOptionsByTab: Record<
   tabNames,

@@ -36,11 +36,11 @@
   }
 
   input:checked + .slider {
-    background-color: var(--color-checked);
+    background-color: var(--color-pink);
   }
 
   input:focus + .slider {
-    box-shadow: 0 0 1px var(--color-checked);
+    box-shadow: 0 0 1px var(--color-pink);
   }
 
   input:checked + .slider:before {

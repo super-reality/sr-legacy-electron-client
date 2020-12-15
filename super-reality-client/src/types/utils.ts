@@ -26,9 +26,15 @@ export type Rectangle = {
 
 export type ValueOf<T> = T[keyof T];
 
-export interface EffectDB {
-  id: string;
+export interface EffectAction {
   name: string;
-  url: string;
+}
+
+export interface EffectData {
+  name: string;
   tags: string[];
+  parameters: [];
+  actions: EffectAction[];
+  id: string;
+  url: string;
 }

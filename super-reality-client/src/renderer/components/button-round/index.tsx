@@ -40,7 +40,7 @@ export default function ButtonRound(props: ButtonRoundProps): JSX.Element {
         fill={
           disabled
             ? "var(--color-text-disabled)"
-            : iconFill || "var(--color-icon)"
+            : iconFill || "var(--color-blue)"
         }
       />
     </div>

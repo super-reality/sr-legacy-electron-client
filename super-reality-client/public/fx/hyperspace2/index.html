@@ -1,15 +1,140 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Transparency</title>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-      UnityLoader.instantiate("unityContainer", "Build/Hyperspace2.json");
-    </script>
-  </head>
-  <body style="margin: 0;">
-    <div id="unityContainer" style="width: 100vw; height: 100vh; margin: auto"></div>
-  </body>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Super Reality Unity Tools</title>
+        <style>
+            body {
+                margin: 0;
+            }
+            #unity {
+                width: 100vw;
+                height: 100vh;
+                background: transparent !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="unity"></div>
+        <script src="Build/UnityLoader.js"></script>
+        <script>
+            (() => {
+                const progress = (unityInstance, progress) => undefined;
+                const unityInstance = UnityLoader.instantiate("unity", "Build/Hyperspace2.json",{onProgress: progress});
+                const setParameter = (type, name, value) => unityInstance.SendMessage("OverlayManager", `Set${parameter}Parameter`, JSON.stringify({name, value}));
+                const runAction = name => unityInstance.SendMessage("OverlayManager", "RunAction", name);
+                window.addEventListener("message", event => {
+                    const {type, payload} = event.data;
+                    switch(type) {
+                        // {
+                        //   type: "SET_BOOL_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: false
+                        //   }
+                        // }
+                        case "SET_BOOL_PARAMETER":
+                            setParameter("Bool", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_INT_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: 0
+                        //   }
+                        // }
+                        case "SET_INT_PARAMETER":
+                            setParameter("Int", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_FLOAT_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: 0.0
+                        //   }
+                        // }
+                        case "SET_FLOAT_PARAMETER":
+                            setParameter("Float", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_STRING_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: ""
+                        //   }
+                        // }
+                        case "SET_STRING_PARAMETER":
+                            setParameter("String", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_VECTOR2_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: {
+                        //       x: 0.0,
+                        //       y: 0.0
+                        //     }
+                        //   }
+                        // }
+                        case "SET_VECTOR2_PARAMETER":
+                            setParameter("Vector2", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_VECTOR3_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: {
+                        //       x: 0.0,
+                        //       y: 0.0,
+                        //       z: 0.0
+                        //     }
+                        //   }
+                        // }
+                        case "SET_VECTOR3_PARAMETER":
+                            setParameter("Vector3", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_COLOR_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: {
+                        //       r: 0.0,
+                        //       g: 0.0,
+                        //       b: 0.0,
+                        //       a: 0.0
+                        //     }
+                        //   }
+                        // }
+                        case "SET_COLOR_PARAMETER":
+                            setParameter("Color", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "SET_COLOR32_PARAMETER",
+                        //   payload: {
+                        //     name: "Parameter Name",
+                        //     value: {
+                        //       r: 0,
+                        //       g: 0,
+                        //       b: 0,
+                        //       a: 0
+                        //     }
+                        //   }
+                        // }
+                        case "SET_COLOR32_PARAMETER":
+                            setParameter("Color32", payload.name, payload.data);
+                            break;
+                        // {
+                        //   type: "RUN_ACTION",
+                        //   payload: {
+                        //     name: "Parameter Name"
+                        //   }
+                        // }
+                        case "RUN_ACTION":
+                            runAction(payload.name);
+                            break;
+                    }
+                });
+            })()
+        </script>
+    </body>
 </html>

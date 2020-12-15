@@ -10,7 +10,7 @@ import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonRound from "../button-round";
-import Windowlet from "../create-leson-detached/windowlet";
+import Windowlet from "../windowlet";
 import Flex from "../flex";
 import ChapterView from "./chapter-view";
 import ItemPreview from "./item-preview";
@@ -109,7 +109,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
           anchorId: anchor._id,
           // cvMatchValue: 0,
           cvTemplates: anchor.templates,
-          cvTo: "LESSON_CREATE",
+          cvTo: "renderer",
         },
         to: "background",
       });

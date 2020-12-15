@@ -3,23 +3,27 @@ import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
 import Test from "./views/test";
-import Discover from "./views/discover";
-import Learn from "./views/learn";
-import TopSearch from "./components/top-search";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Loading from "./components/loading";
-import Profile from "./views/profile";
-import Create from "./views/create";
 import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
+import Windowlet from "./components/windowlet";
+import closeWindow from "../utils/electron/closeWindow";
+import useTransparentFix from "./hooks/useTransparentFix";
+import CreateLessonDetached from "./components/create-leson-detached";
+import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
+import ErrorBoundary from "./ErrorBoundary";
+import minimizeWindow from "../utils/electron/minimizeWindow";
 
 export default function App(): JSX.Element {
+  useTransparentFix();
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
+  const { ready, appMode } = useSelector((state: AppState) => state.render);
 
   const { isLoading, detached, background } = useSelector(
     (state: AppState) => state.commonProps
@@ -51,30 +55,52 @@ export default function App(): JSX.Element {
   if (background) {
     return <BackgroundController />;
   }
+  if (!ready) {
+    return <></>;
+  }
 
-  return isAuthenticated ? (
-    <>
-      <TopSearch />
-      <Loading state={isLoading} />
-      <div onScroll={handleScroll} ref={scrollRef} className="content">
-        <div className="content-wrapper">
-          <Switch>
-            <Route path="/discover" component={Discover} />
-            <Route path="/learn" component={Learn} />
-            <Route path="/teach" component={Test} />
-            <Route path="/create" component={Create} />
-            <Route path="/profile" component={Profile} />
-          </Switch>
-        </div>
-      </div>
-    </>
-  ) : (
-    <>
-      <Loading state={isPending} />
-      <Switch>
-        <Route exact path="/tests/:id" component={Tests} />
-        <Route path="*" component={Splash} />
-      </Switch>
-    </>
+  return (
+    <ErrorBoundary>
+      {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
+      {appMode == MODE_HOME && (
+        <Windowlet
+          width={1100}
+          height={600}
+          title="Super Reality"
+          onMinimize={minimizeWindow}
+          onClose={closeWindow}
+        >
+          {isAuthenticated ? (
+            <>
+              <div
+                style={{
+                  overflow: "hidden",
+                  margin: "0",
+                }}
+              >
+                <Loading state={isLoading} />
+                <div
+                  onScroll={handleScroll}
+                  ref={scrollRef}
+                  className="content"
+                >
+                  <Switch>
+                    <Route path="/test" component={Test} />
+                  </Switch>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Loading state={isPending} />
+              <Switch>
+                <Route exact path="/tests/:id" component={Tests} />
+                <Route path="*" component={Splash} />
+              </Switch>
+            </>
+          )}
+        </Windowlet>
+      )}
+    </ErrorBoundary>
   );
 }
