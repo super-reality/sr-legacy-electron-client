@@ -50,6 +50,26 @@ export default class CVEditor {
       arg: null,
     });
   }
+
+  trimVideo(trimFrom, trimTo, width, height, x, y, src, dst){
+    const ffmpegCommand = shell([
+      pathToFfmpeg,
+      '-i', src, 
+      '-filter:v', 'crop='+width+':'+height+':'+x+':'+y+', scale='+width+'x'+height+',setdar=16:9',
+      '-ss', trimFrom,
+      '-to', trimTo,
+      '-async', '1',
+      dst
+    ])
+    
+    exec(ffmpegCommand, (err) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.info('Video Trimmed!')
+      }
+    })
+  }
 }
 
 export function getRawAudioData(pathToAudio) {
