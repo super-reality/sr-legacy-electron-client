@@ -55,9 +55,10 @@ export default class CVEditor {
     const ffmpegCommand = shell([
       pathToFfmpeg,
       '-i', src, 
-      '-filter:v', 'crop='+width+':'+height+':'+x+':'+y+', scale='+width+'x'+height+',setdar=16:9',
+      '-filter:v', 'crop='+width+':'+height+':'+x+':'+y,
       '-ss', trimFrom,
       '-to', trimTo,
+      '-video_size', width+'x'+height,
       '-async', '1',
       dst
     ])
