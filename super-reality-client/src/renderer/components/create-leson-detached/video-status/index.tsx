@@ -34,6 +34,7 @@ import logger from "../../../../utils/logger";
 import { itemsPath } from "../../../electron-constants";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 import timetoTimestamp from "../../../../utils/timeToTimestamp";
+import sha1 from "../../../../utils/sha1";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -116,7 +117,7 @@ export default function VideoStatus() {
     [dispatch]
   );
 
-  const cvDebouncer = useDebounce(300);
+  const cvDebouncer = useDebounce(1000);
 
   useEffect(() => {
     if (!anchor) return;
@@ -262,18 +263,26 @@ export default function VideoStatus() {
             const step: IStep | null = slice.treeSteps[currentStep || ""];
             if (a && step && currentStep) {
               const newTimestamp = timetoTimestamp(videoNavigation[1]);
-              return updateStep(
-                { anchor: a._id, recordingTimestamp: newTimestamp },
-                currentStep
-              ).then((updatedStep) => {
-                if (updatedStep) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETSTEP",
-                    arg: { step: updatedStep },
+              saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
+                .then((file) => uploadFileToS3(file))
+                .then((url) => {
+                  return updateStep(
+                    {
+                      anchor: a._id,
+                      recordingTimestamp: newTimestamp,
+                      snapShot: url,
+                    },
+                    currentStep
+                  ).then((updatedStep) => {
+                    if (updatedStep) {
+                      reduxAction(dispatch, {
+                        type: "CREATE_LESSON_V2_SETSTEP",
+                        arg: { step: updatedStep },
+                      });
+                    }
+                    return updatedStep;
                   });
-                }
-                return updatedStep;
-              });
+                });
             }
             return new Promise((r) => r(undefined));
           }
