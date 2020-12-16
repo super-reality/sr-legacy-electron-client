@@ -593,7 +593,7 @@ export default class CVRecorder {
       "-draw_mouse",
       "0", // 0 hides and 1 shows cursor
       "-i",
-      ":0.0", // grabs whole desktop  title="window name" for a particular window
+      "desktop", // grabs whole desktop  title="window name" for a particular window
       "-c:v",
       "libx264rgb", // encoder
       "-crf",
