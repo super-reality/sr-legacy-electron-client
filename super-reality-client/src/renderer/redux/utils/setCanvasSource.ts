@@ -17,7 +17,7 @@ export default function setCanvasSource(
   }
   if (
     type == "recording" &&
-    fs.existsSync(`${recordingPath}/vid-${source}.webm`)
+    fs.existsSync(`${recordingPath}/vid-${source}.mkv`)
   ) {
     ok = true;
     canvasSourceDesc = `recording ${source}`;

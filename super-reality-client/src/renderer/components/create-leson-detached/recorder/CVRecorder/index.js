@@ -1,5 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
+import shell from "any-shell-escape";
+import { exec } from "child_process";
 import getWebsiteUrlByTitle from "../../../../../utils/getWebsiteUrlByTitle";
 import { voidFunction } from "../../../../constants";
 import {
@@ -8,9 +10,10 @@ import {
   stepSnapshotPath,
 } from "../../../../electron-constants";
 import globalData from "../../../../globalData";
+import pathToFfmpeg from "../../../../../utils/files/pathToFfmpeg";
 
 /* eslint-disable radix */
-const { desktopCapturer } = require("electron");
+const { desktopCapturer, remote } = require("electron");
 const fs = require("fs");
 
 const { Decoder, tools, Reader } = require("ts-ebml");
@@ -56,7 +59,6 @@ export default class CVRecorder {
     this._child = null;
     this._ffmpegCommand = null;
 
-    
     this.start = this.start.bind(this);
     this.extractClickedImages = this.extractClickedImages.bind(this);
     this.handleStop = this.handleStop.bind(this);
@@ -76,8 +78,12 @@ export default class CVRecorder {
     this.delete = this.delete.bind(this);
     this.stop = this.stop.bind(this);
     this.finishCallback = this.finishCallback.bind(this);
-    this.startRecordingWithoutCursor = this.startRecordingWithoutCursor.bind(this);
-    this.stopRecordingWithoutCursor = this.stopRecordingWithoutCursor.bind(this);
+    this.startRecordingWithoutCursor = this.startRecordingWithoutCursor.bind(
+      this
+    );
+    this.stopRecordingWithoutCursor = this.stopRecordingWithoutCursor.bind(
+      this
+    );
   }
 
   set finishCallback(value) {
@@ -138,8 +144,6 @@ export default class CVRecorder {
 
     this._maxPixelStepLimit = value;
   }
-
-  
 
   getWindowsNearestBorderPoint(startX, startY, img, direction) {
     let move = true;
@@ -209,6 +213,7 @@ export default class CVRecorder {
     let mainImage = cap.read();
 
     const jsonMetaData = {
+      filename: `vid-${this._stepRecordingName}.mkv`,
       step_data: [],
     };
 
@@ -375,8 +380,6 @@ export default class CVRecorder {
     this._clickEventDetails = [];
     this._finishCallback(jsonMetaData);
   }
-
-  
 
   // Saves the video file on stop
   handleStop() {
@@ -580,27 +583,54 @@ export default class CVRecorder {
     clearInterval(this._started);
   }
 
-  startRecordingWithoutCursor(){
-    this._ffmpegCommand = shell([
-      pathToFfmpeg,
-      '-f', 'gdigrab',    // grabs stream from screen
-      '-framerate', '30',    
-      '-draw_mouse', '0', // 0 hides and 1 shows cursor
-      '-i', 'desktop',    // grabs whole desktop  title="window name" for a particular window
-      '-c:v', 'libvpx-vp9',  // video encoder
-      '-lossless', '1',
-      `${this._recordingPath}vid-hidecursor-${this._stepRecordingName}.webm`  
-    ])
+  startRecordingWithoutCursor() {
+    const display = remote.screen
+      .getAllDisplays()
+      .filter((d) => `${d.id}` == this._source.display_id)[0];
+    console.log(display);
+    const displayXpos = display.bounds.x;
+    const displayYpos = display.bounds.y;
+    const displaySize = `${display.bounds.width}x${display.bounds.height}`;
 
+    let command = [
+      pathToFfmpeg(),
+      '-f',
+      'gdigrab',    // grabs stream from screen
+      '-framerate',
+      '30',    
+      '-draw_mouse',
+      '0', // 0 hides and 1 shows cursor
+      '-i',
+      'desktop',    // grabs whole desktop  title="window name" for a particular window
+      '-c:v', 
+      'libvpx-vp9',  // video encoder
+      '-lossless', 
+      '1',
+      `${this._recordingPath}vid-${this._stepRecordingName}.mkv`,
+    ];
+
+    if (display) {
+      command = [
+        ...command,
+        "-offset_x",
+        displayXpos,
+        "-offset_y",
+        displayYpos,
+        "-video_size",
+        displaySize,
+      ];
+    }
+
+    this._ffmpegCommand = shell(command);
     this._child = exec(this._ffmpegCommand, (err) => {
       if (err) {
-        console.error(err)
+        console.error(err);
       }
-    })
+    });
   }
 
-  stopRecordingWithoutCursor(){
-    this._child.stdin.write('q')
+  stopRecordingWithoutCursor() {
+    this._child.stdin.write("q");
   }
 
   start(source) {
