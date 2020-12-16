@@ -583,14 +583,13 @@ export default class CVRecorder {
   startRecordingWithoutCursor(){
     this._ffmpegCommand = shell([
       pathToFfmpeg,
-      '-framerate', '30', // frames per second
       '-f', 'gdigrab',    // grabs stream from screen
+      '-framerate', '30',    
       '-draw_mouse', '0', // 0 hides and 1 shows cursor
       '-i', 'desktop',    // grabs whole desktop  title="window name" for a particular window
-      '-c:v', 'libx264rgb',  // encoder
-      '-crf', '0',   // Constant rate factor (0 for lossless recording )
-      '-preset', 'ultrafast',   // compression factor 'ultrafast' for worst compression
-      `${this._recordingPath}vid-hidecursor-${this._stepRecordingName}.mkv`  
+      '-c:v', 'libvpx-vp9',  // video encoder
+      '-lossless', '1',
+      `${this._recordingPath}vid-hidecursor-${this._stepRecordingName}.webm`  
     ])
 
     this._child = exec(this._ffmpegCommand, (err) => {
