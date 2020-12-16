@@ -1,7 +1,6 @@
 @import "../misc.scss";
 
 @mixin item-base {
-  background: var(--color-section);
   width: inherit;
   height: inherit;
   position: absolute;
@@ -11,5 +10,6 @@
 }
 
 @mixin item-solid {
+  background: var(--color-section);
   @include soft-shadow;
 }
