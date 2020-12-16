@@ -148,7 +148,7 @@ export default function VideoPreview(): JSX.Element {
       canvasSource &&
       videoHiddenRef.current
     ) {
-      const newSrc = `${recordingPath}/vid-${canvasSource}.webm`;
+      const newSrc = `${recordingPath}/vid-${canvasSource}.mkv`;
       if (videoHiddenRef.current.src !== newSrc) {
         videoHiddenRef.current.src = newSrc;
         videoHiddenRef.current.addEventListener("loadeddata", () => {

@@ -1,3 +1,6 @@
+import { exec } from "child_process";
+import shell from "any-shell-escape";
+import pathToFfmpeg from "../../../../../utils/files/pathToFfmpeg";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";
 
@@ -50,6 +53,30 @@ export default class CVEditor {
       arg: null,
     });
   }
+<<<<<<< HEAD
+
+  trimVideo(trimFrom, trimTo, width, height, x, y, src, dst){
+    const ffmpegCommand = shell([
+      pathToFfmpeg,
+      '-i', src, 
+      '-filter:v', 'crop='+width+':'+height+':'+x+':'+y,
+      '-ss', trimFrom,
+      '-to', trimTo,
+      '-video_size', width+'x'+height,
+      '-async', '1',
+      dst
+    ])
+    
+    exec(ffmpegCommand, (err) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.info('Video Trimmed!')
+      }
+    })
+  }
+=======
+>>>>>>> 92996ad056f235deadc5ea7d4bcf027d64bb539a
 }
 
 export function getRawAudioData(pathToAudio) {
@@ -70,6 +97,31 @@ export function getRawAudioData(pathToAudio) {
       });
     } catch (e) {
       reject(e);
+    }
+  });
+}
+
+export function trimVideo(trimFrom, trimTo, width, height, x, y, src, dst) {
+  const ffmpegCommand = shell([
+    pathToFfmpeg(),
+    "-i",
+    src,
+    "-filter:v",
+    `crop=${width}:${height}:${x}:${y}, scale=${width}x${height},setdar=16:9`,
+    "-ss",
+    trimFrom,
+    "-to",
+    trimTo,
+    "-async",
+    "1",
+    dst,
+  ]);
+
+  exec(ffmpegCommand, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.info("Video Trimmed!");
     }
   });
 }

@@ -10,11 +10,11 @@ export default function deleteSelectedRecording(): void {
   let errored = false;
   if (currentRecording) {
     try {
-      const recordingVideo = `${recordingPath}/vid-${currentRecording}.webm`;
+      const recordingVideo = `${recordingPath}/vid-${currentRecording}.mkv`;
       if (fs.existsSync(recordingVideo)) {
         fs.unlinkSync(recordingVideo);
       }
-      const recordingJson = `${stepSnapshotPath}/${currentRecording}.webm.json`;
+      const recordingJson = `${stepSnapshotPath}/${currentRecording}.json`;
       if (fs.existsSync(recordingJson)) {
         fs.unlinkSync(recordingJson);
       }
