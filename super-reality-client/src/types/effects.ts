@@ -128,7 +128,7 @@ export interface EffectJsonParameter {
 export interface EffectData {
   name: string;
   tags: string[];
-  parameters: [];
+  parameters: EffectJsonParameter[];
   actions: EffectJsonAction[];
   id: string;
   thumbnail: string;

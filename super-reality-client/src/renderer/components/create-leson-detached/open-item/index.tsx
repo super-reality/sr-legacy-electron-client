@@ -142,7 +142,7 @@ export default function OpenItem(props: OpenItemProps) {
         {item.type == "dialog" && (
           <SettingsDialog item={item} update={doUpdate} />
         )}
-        {item.type == "fx" && <FXSettings />}
+        {item.type == "fx" && <FXSettings item={item} update={doUpdate} />}
       </TabsContainer>
     </>
   );
