@@ -209,6 +209,7 @@ a:active {
 
 .animate-gradient {
   background-image: url("../assets/svg/cool-gradient.svg");
+  background-size: 100%;
   -webkit-animation: gradient-background-animation 60s ease infinite
     alternate-reverse;
   -moz-animation: gradient-background-animation 60s ease infinite
