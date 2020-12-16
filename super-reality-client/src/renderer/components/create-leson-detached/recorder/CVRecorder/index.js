@@ -594,18 +594,24 @@ export default class CVRecorder {
 
     let command = [
       pathToFfmpeg(),
-      '-f',
-      'gdigrab',    // grabs stream from screen
-      '-framerate',
-      '30',    
-      '-draw_mouse',
-      '0', // 0 hides and 1 shows cursor
-      '-i',
-      'desktop',    // grabs whole desktop  title="window name" for a particular window
-      '-c:v', 
-      'libvpx-vp9',  // video encoder
-      '-lossless', 
-      '1',
+      '-f', 'gdigrab',    // grabs stream from screen 
+      '-draw_mouse', '0', // 0 hides and 1 shows cursor
+      '-i', 'desktop',    // grabs whole desktop  title="window name" for a particular window
+      '-y',
+      '-r', '30',
+      '-g', '90',
+      '-quality', 'realtime',
+      '-speed', '7',
+      '-threads', '8 \ ',
+      '-row-mt', '1',
+      '-tile-columns', '2',
+      '-frame-parallel', '1',
+      '-qmin', '4',
+      '-qmax', '48',
+      '-b:v', '4500k',
+      '-c:v', 'vp9',
+      '-b:a', '128k',
+      '-c:a', 'libopus',
       `${this._recordingPath}vid-${this._stepRecordingName}.mkv`,
     ];
 
