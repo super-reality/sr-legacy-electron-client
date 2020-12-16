@@ -13,7 +13,7 @@ import globalData from "../../../../globalData";
 import pathToFfmpeg from "../../../../../utils/files/pathToFfmpeg";
 
 /* eslint-disable radix */
-const { desktopCapturer } = require("electron");
+const { desktopCapturer, remote } = require("electron");
 const fs = require("fs");
 
 const { Decoder, tools, Reader } = require("ts-ebml");
@@ -584,7 +584,15 @@ export default class CVRecorder {
   }
 
   startRecordingWithoutCursor() {
-    this._ffmpegCommand = shell([
+    const display = remote.screen
+      .getAllDisplays()
+      .filter((d) => `${d.id}` == this._source.display_id)[0];
+    console.log(display);
+    const displayXpos = display.bounds.x;
+    const displayYpos = display.bounds.y;
+    const displaySize = `${display.bounds.width}x${display.bounds.height}`;
+
+    let command = [
       pathToFfmpeg(),
       "-framerate",
       "30", // frames per second
@@ -601,8 +609,21 @@ export default class CVRecorder {
       "-preset",
       "ultrafast", // compression factor 'ultrafast' for worst compression
       `${this._recordingPath}vid-${this._stepRecordingName}.mkv`,
-    ]);
+    ];
 
+    if (display) {
+      command = [
+        ...command,
+        "-offset_x",
+        displayXpos,
+        "-offset_y",
+        displayYpos,
+        "-video_size",
+        displaySize,
+      ];
+    }
+
+    this._ffmpegCommand = shell(command);
     this._child = exec(this._ffmpegCommand, (err) => {
       if (err) {
         console.error(err);
