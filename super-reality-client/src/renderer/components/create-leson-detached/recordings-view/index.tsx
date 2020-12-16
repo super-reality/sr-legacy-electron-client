@@ -42,8 +42,8 @@ export default function RecordingsView() {
     const newFiles: string[] = [];
     const files = fs.readdirSync(stepSnapshotPath);
     files
-      .filter((f) => f.indexOf(".webm.json") > -1)
-      .map((f) => f.replace(".webm.json", ""))
+      .filter((f) => f.indexOf(".json") > -1)
+      .map((f) => f.replace(".json", ""))
       .forEach((f) => newFiles.push(f));
     setVideos(newFiles);
   }, [currentRecording]);

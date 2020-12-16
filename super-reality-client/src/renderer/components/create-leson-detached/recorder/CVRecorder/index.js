@@ -213,6 +213,7 @@ export default class CVRecorder {
     let mainImage = cap.read();
 
     const jsonMetaData = {
+      filename: `vid-${this._stepRecordingName}.mkv`,
       step_data: [],
     };
 
@@ -592,14 +593,14 @@ export default class CVRecorder {
       "-draw_mouse",
       "0", // 0 hides and 1 shows cursor
       "-i",
-      "desktop", // grabs whole desktop  title="window name" for a particular window
+      ":0.0", // grabs whole desktop  title="window name" for a particular window
       "-c:v",
       "libx264rgb", // encoder
       "-crf",
       "0", // Constant rate factor (0 for lossless recording )
       "-preset",
       "ultrafast", // compression factor 'ultrafast' for worst compression
-      `${this._recordingPath}vid-hidecursor-${this._stepRecordingName}.mkv`,
+      `${this._recordingPath}vid-${this._stepRecordingName}.mkv`,
     ]);
 
     this._child = exec(this._ffmpegCommand, (err) => {

@@ -148,7 +148,7 @@ export default function CreateLessonDetached(): JSX.Element {
     if (currentRecording) {
       try {
         const file = fs
-          .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
+          .readFileSync(`${stepSnapshotPath}/${currentRecording}.json`)
           .toString("utf8");
         json = JSON.parse(file);
       } catch (e) {
