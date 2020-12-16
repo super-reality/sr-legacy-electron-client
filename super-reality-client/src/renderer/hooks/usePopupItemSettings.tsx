@@ -12,10 +12,10 @@ import { Item } from "../api/types/item/item";
 import reduxAction from "../redux/reduxAction";
 import updateItem from "../components/create-leson-detached/lesson-utils/updateItem";
 import { AppState } from "../redux/stores/renderer";
-import { EffectData } from "../../types/utils";
 
 // styles for the FX
 import "./popup-fx-settings.scss";
+import { EffectData } from "../../types/effects";
 
 interface SettingsItem {
   id: string;

@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fxPath } from "../../renderer/electron-constants";
-import { EffectData } from "../../types/utils";
+import { EffectData } from "../../types/effects";
 import getPublicPath from "../electron/getPublicPath";
 import createDataDirs from "./createDataDirs";
 

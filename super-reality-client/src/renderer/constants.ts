@@ -1,5 +1,5 @@
 import interact from "interactjs";
-import { EffectData } from "../types/utils";
+import { EffectData } from "../types/effects";
 import getEffectsMetadata from "../utils/files/getEffectsMetadata";
 
 // eslint-disable-next-line import/prefer-default-export

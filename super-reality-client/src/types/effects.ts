@@ -105,3 +105,32 @@ export interface EffectAction {
     name: string;
   };
 }
+
+export type EffectType =
+  | "Bool"
+  | "Int"
+  | "Float"
+  | "String"
+  | "Vector2"
+  | "Vector3"
+  | "Color"
+  | "Color32";
+
+export interface EffectJsonAction {
+  name: string;
+}
+
+export interface EffectJsonParameter {
+  name: string;
+  type: EffectType;
+}
+
+export interface EffectData {
+  name: string;
+  tags: string[];
+  parameters: [];
+  actions: EffectJsonAction[];
+  id: string;
+  thumbnail: string;
+  url: string;
+}

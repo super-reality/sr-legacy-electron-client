@@ -1,4 +1,4 @@
-import { EffectAction } from "../types/utils";
+import { EffectAction } from "../types/effects";
 
 export default function sendEffectAction(
   iframe: HTMLIFrameElement,
