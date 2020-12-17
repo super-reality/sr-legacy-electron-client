@@ -11,7 +11,6 @@ import {
 import createBackgroundProcess from "./createBackgroundProcess";
 
 import getWindowId from "./electron/getWindowId";
-import setFocusable from "./electron/setFocusable";
 import setMaximize from "./electron/setMaximize";
 
 interface DetachLesson {
