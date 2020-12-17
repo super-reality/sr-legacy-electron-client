@@ -71,14 +71,18 @@ function TreeFolder(props: TreeFolderProps) {
   const [selected, setSelected] = useState<boolean>(false);
 
   let children: IDName[] = [];
+  let dataName: string | undefined;
   if (type == "lesson") {
     children = treeLessons[id]?.chapters || [];
+    dataName = treeLessons[id]?.name;
   }
   if (type == "chapter") {
     children = treeChapters[id]?.steps || [];
+    dataName = treeChapters[id]?.name;
   }
   if (type == "step") {
     children = treeSteps[id]?.items || [];
+    dataName = treeSteps[id]?.name;
   }
 
   useEffect(() => {
@@ -247,7 +251,7 @@ function TreeFolder(props: TreeFolderProps) {
             state == STATE_LOADING ? "tree-loading" : ""
           }`}
         >
-          {name}
+          {dataName || name}
         </div>
       </div>
       <div
