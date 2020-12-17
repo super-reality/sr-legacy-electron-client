@@ -74,7 +74,7 @@
   grid-template-areas: "edit" "nav";
   grid-gap: 5px;
   padding: 5px;
-  background: linear-gradient(180deg, #29233c 0%, #353459 40.2%, #261f34 100%);
+  background: var(--main-gradient);
 
   .edit {
     display: flex;
@@ -120,17 +120,18 @@
 
 .spectrum-container {
   width: calc(100% - 28px);
-  height: 36px;
+  height: 30px;
   position: absolute;
   display: flex;
+  bottom: -5px;
   margin-left: 8px;
   margin-top: -39px;
   align-items: center;
   // background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
 
   .spectrum-bar {
-    width: -webkit-fill-available;
-    background: var(--color-background-hover);
+    width: 3px;
+    background: #343358;
     display: flex;
   }
 }

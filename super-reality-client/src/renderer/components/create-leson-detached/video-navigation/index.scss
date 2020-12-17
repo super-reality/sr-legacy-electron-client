@@ -2,7 +2,6 @@
   position: absolute;
   width: 100%;
   cursor: pointer;
-  background-color: var(--color-background);
   top: -25px;
   height: 22px;
   border-radius: 4px;
@@ -15,7 +14,6 @@
   height: 42px;
   top: 38px;
   pointer-events: none;
-  background-color: var(--color-background);
 }
 
 .video-handle-0 {
@@ -23,7 +21,7 @@
   position: absolute;
   transform: translate(-100%, -25px);
   z-index: 5;
-  width: 26px;
+  width: 32px;
   height: 110px;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -47,7 +45,7 @@
   position: absolute;
   transform: translate(0, -25px);
   z-index: 5;
-  width: 26px;
+  width: 32px;
   height: 110px;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -88,10 +86,16 @@
   background-color: #9bbfd4;
 }
 
+.video-slider-ticks {
+  position: relative;
+  top: 16px;
+}
+
 .video-track {
   position: absolute;
-  height: 60px;
-  top: 0;
+  height: 75px;
+  top: 20px;
+  border-radius: 4px;
   // z-index: 1;
   background: var(--color-rainbow);
   background-repeat: no-repeat;
@@ -102,7 +106,7 @@
 .video-tickPre {
   position: absolute;
   top: 4px;
-  width: 2px;
+  width: 1px;
   height: 28px;
   background-color: #3f3e6f;
 }
@@ -110,7 +114,7 @@
 .video-tickPre-small {
   position: absolute;
   top: 4px;
-  width: 2px;
+  width: 1px;
   height: 10px;
   background-color: #3f3e6f;
 }
@@ -120,6 +124,7 @@
   top: 20px;
   margin-left: 8px;
   font-size: 10px;
+  font-weight: 600;
   text-align: center;
   color: var(--color-magenda);
 }

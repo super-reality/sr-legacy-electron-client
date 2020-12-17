@@ -405,7 +405,7 @@ function TreeItem(props: TreeItemProps) {
       onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
       style={{ paddingLeft: "50px" }}
     >
-      <div className="item-icon-tree">
+      <div className="item-icon-tree shadow-pink">
         <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />
       </div>
       <div
