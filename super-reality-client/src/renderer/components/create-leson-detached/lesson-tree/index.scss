@@ -32,7 +32,7 @@
   }
 
   &.open {
-    color: var(--color-magenda);
+    // color: var(--color-magenda);
   }
 
   .folder-drop {
@@ -50,6 +50,7 @@
   }
 
   .folder-name {
+    color: var(--color-magenda);
     font-size: 13px;
     line-height: 18px;
     margin-left: 4px;
