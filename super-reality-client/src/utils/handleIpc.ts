@@ -79,7 +79,6 @@ export default function handleIpc(): void {
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
     setMaximize(true);
-    setFocusable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
   });
 
