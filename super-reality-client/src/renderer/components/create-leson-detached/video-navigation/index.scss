@@ -23,11 +23,11 @@
   position: absolute;
   transform: translate(-100%, -25px);
   z-index: 5;
-  width: 32px;
-  height: 110px;
+  width: 35px;
+  height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
-  top: 0px;
+  top: -3px;
 }
 
 .video-handle-1 {
@@ -35,23 +35,24 @@
   position: absolute;
   transform: translate(-50%, -25px);
   z-index: 6;
-  width: 32px;
-  height: 110px;
+  width: 46px;
+  filter: 0 0 3px #F1205F;
+  height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
-  top: 0px;
+  top: -3px;
 }
 
 .video-handle-2 {
   background-image: url("../../../../assets/svg/video-handle-right.svg");
   position: absolute;
-  transform: translate(0, -25px);
+  transform: translate(-20%, -25px);
   z-index: 5;
-  width: 32px;
-  height: 110px;
+  width: 35px;
+  height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
-  top: 0px;
+  top: -3px;
 }
 
 .video-handle-time {
@@ -73,7 +74,7 @@
   }
 
   &.time-2 {
-    margin-left: 30px;
+    margin-left: 40px;
   }
 }
 

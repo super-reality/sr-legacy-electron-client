@@ -9,6 +9,10 @@
   @include disable-select;
 }
 
+.tree-folder.selected .folder-name{
+  color: var(--color-text) !important;
+}
+
 .tree-folder {
   display: flex;
   font-family: "Segoe UI";
