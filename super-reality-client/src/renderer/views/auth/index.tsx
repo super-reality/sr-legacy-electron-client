@@ -14,7 +14,7 @@ import { ApiError } from "../../api/types";
 import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
-import Flex from "../../components/flex";
+// import Flex from "../../components/flex";
 import handleXRAuthSignup from "../../api/handleXRAuthSignup";
 import handleXRAuthSingin from "../../api/handleXRAuthSignin";
 

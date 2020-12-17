@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
-import client from "./feathers";
-import store from "../redux/stores/renderer";
-import reduxAction from "../redux/reduxAction";
+import client from "../chat/redux/feathers";
+// import store from "../redux/stores/renderer";
+// import reduxAction from "../redux/reduxAction";
 
 import SignUp from "./types/auth/signup";
 import { ApiError } from "./types";
@@ -27,7 +27,8 @@ export default function handleXRAuthSingup(
             password: password,
             type: "password",
           })
-          .then((identityProvider: any) => {
+          .then(() => {
+            // identityProvider: any
             // Create the REGISTER_USER_BY_EMAIL_SUCCSESS action
 
             // reduxAction(store.dispatch, {

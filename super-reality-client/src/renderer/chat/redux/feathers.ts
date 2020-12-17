@@ -11,7 +11,7 @@ const apiServer = "http://3.101.18.208:3030";
 
 // publicRuntimeConfig.featherStoreKey
 
-const featherStoreKey: string = "XREngine-Auth-Store";
+const featherStoreKey = "XREngine-Auth-Store";
 
 // Socket.io is exposed as the `io` global.
 const socket = io(apiServer, {
@@ -29,3 +29,4 @@ client.configure(
   })
 );
 export default client;
+// "TheOverlay-Auth-Store"
