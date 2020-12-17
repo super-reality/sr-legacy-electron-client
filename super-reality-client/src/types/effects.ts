@@ -116,6 +116,17 @@ export type EffectType =
   | "Color"
   | "Color32";
 
+export const TypeToMessage: Record<EffectType, EffectMessage["type"]> = {
+  Bool: "SET_BOOL_PARAMETER",
+  Int: "SET_INT_PARAMETER",
+  Float: "SET_FLOAT_PARAMETER",
+  String: "SET_STRING_PARAMETER",
+  Vector2: "SET_VECTOR2_PARAMETER",
+  Vector3: "SET_VECTOR3_PARAMETER",
+  Color: "SET_COLOR_PARAMETER",
+  Color32: "SET_COLOR32_PARAMETER",
+};
+
 export interface EffectJsonAction {
   name: string;
 }

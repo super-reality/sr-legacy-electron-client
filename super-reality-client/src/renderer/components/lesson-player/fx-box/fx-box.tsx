@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { CSSProperties, useEffect, useRef } from "react";
+import { TypeToMessage } from "../../../../types/effects";
 import sendEffectMessage from "../../../../utils/sendEffectMessage";
 import { getEffectById } from "../../../constants";
 
@@ -12,6 +13,7 @@ interface FXBoxProps {
     width: number;
     height: number;
   };
+  parameters: Record<string, any>;
   style?: CSSProperties;
   effect: string;
   clickThrough?: boolean;
@@ -20,26 +22,28 @@ interface FXBoxProps {
 
 const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
   (props, forwardedRef) => {
-    const { effect, style, pos, clickThrough } = props;
+    const { effect, style, pos, clickThrough, parameters } = props;
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const srcFX = getEffectById(effect);
 
-    /*
     // We should send all required parameters to the component when it loads
     useEffect(() => {
       setTimeout(() => {
-        if (iframeRef.current) {
-          sendEffectMessage(iframeRef.current, {
-            type: "SET_BOOL_PARAMETER",
-            payload: {
-              name: "bool",
-              value: true,
-            },
-          });
-        }
+        Object.keys(parameters).forEach((name) => {
+          const value = parameters[name];
+          const type = srcFX?.parameters.filter((p) => p.name == name)[0];
+          if (iframeRef.current && type) {
+            sendEffectMessage(iframeRef.current, {
+              type: TypeToMessage[type.type],
+              payload: {
+                name: name,
+                value: value,
+              },
+            });
+          }
+        });
       }, 10);
-    }, [iframeRef]);
-    */
+    }, [parameters, iframeRef]);
 
     return (
       <>

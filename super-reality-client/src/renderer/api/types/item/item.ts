@@ -1,4 +1,3 @@
-import { EffectMessage } from "../../../../types/effects";
 import { ValueOf } from "../../../../types/utils";
 
 export const ItemFocusTriggers = {
@@ -72,7 +71,7 @@ export interface ItemFX extends BaseItem {
   type: "fx";
   effect: string;
   fullScreen: boolean;
-  parameters: Record<string, EffectMessage["payload"]["value"]>;
+  parameters: Record<string, any>;
 }
 
 export interface ItemAudio extends BaseItem {

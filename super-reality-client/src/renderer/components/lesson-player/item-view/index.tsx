@@ -127,6 +127,7 @@ export default function ItemView(props: ItemViewProps) {
           pos={pos}
           clickThrough
           style={{ ...style, border: "none" }}
+          parameters={item.parameters}
           effect={item.effect}
           callback={onSucess}
         />

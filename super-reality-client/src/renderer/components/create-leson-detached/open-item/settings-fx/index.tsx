@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
 import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
 import { ItemFX } from "../../../../api/types/item/item";
 import "./index.scss";
 import { getEffectById } from "../../../../constants";
+import BaseToggle from "../../../base-toggle";
 
 interface FXSettingsProps {
   item?: ItemFX;
@@ -17,6 +18,20 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
   const [Popup, open] = usePopupItemSettings();
 
   const effect = getEffectById(item?.effect || "");
+
+  const itemParameters = item?.parameters;
+
+  const updateParameter = useCallback(
+    (name: string, value: any) => {
+      update({
+        parameters: {
+          ...itemParameters,
+          [name]: value,
+        },
+      });
+    },
+    [update]
+  );
 
   return (
     <>
@@ -40,9 +55,16 @@ export default function FXSettings(props: FXSettingsProps): JSX.Element {
           />
         </div>
         {effect?.parameters.map((parameter) => {
-          return (
-            <div key={`parameter-${parameter.name}`}>{parameter.name}</div>
-          );
+          if (parameter.type == "Bool") {
+            return (
+              <BaseToggle
+                title={parameter.name}
+                value={itemParameters ? itemParameters[parameter.name] : false}
+                callback={(val) => updateParameter(parameter.name, val)}
+              />
+            );
+          }
+          return <></>;
         })}
       </div>
     </>

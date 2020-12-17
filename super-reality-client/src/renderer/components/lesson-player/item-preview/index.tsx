@@ -335,6 +335,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           ref={dragContainer}
           pos={pos}
           style={style}
+          parameters={item.parameters}
           effect={item.effect}
           callback={onSucessCallback}
         />
