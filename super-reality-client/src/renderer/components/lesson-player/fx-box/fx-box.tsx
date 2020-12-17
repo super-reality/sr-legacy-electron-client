@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useRef } from "react";
+import React, { CSSProperties, useEffect, useRef } from "react";
+import sendEffectMessage from "../../../../utils/sendEffectMessage";
 import { getEffectById } from "../../../constants";
 
 import "./index.scss";
@@ -22,6 +23,23 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
     const { effect, style, pos, clickThrough } = props;
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const srcFX = getEffectById(effect);
+
+    /*
+    // We should send all required parameters to the component when it loads
+    useEffect(() => {
+      setTimeout(() => {
+        if (iframeRef.current) {
+          sendEffectMessage(iframeRef.current, {
+            type: "SET_BOOL_PARAMETER",
+            payload: {
+              name: "bool",
+              value: true,
+            },
+          });
+        }
+      }, 10);
+    }, [iframeRef]);
+    */
 
     return (
       <>
