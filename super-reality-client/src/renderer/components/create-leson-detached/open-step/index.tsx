@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import Flex from "../../flex";
@@ -17,6 +17,8 @@ import { IAnchor } from "../../../api/types/anchor/anchor";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
+import BaseInput from "../../base-input";
+import useDebounce from "../../../hooks/useDebounce";
 
 function doNewAnchor(url: string, stepId: string) {
   return newAnchor(
@@ -66,6 +68,12 @@ export default function OpenStep(props: OpenStepProps) {
     treeSteps,
   ]);
 
+  const [name, setName] = useState(step?.name || "");
+
+  useEffect(() => {
+    setName(step.name);
+  }, [step]);
+
   const doUpdate = useCallback(
     (data: Partial<IStep>) => {
       const updatedStep = { ...treeSteps[id], ...data };
@@ -76,6 +84,17 @@ export default function OpenStep(props: OpenStepProps) {
       updateStep(updatedStep, id);
     },
     [id, treeSteps]
+  );
+
+  const debouncer = useDebounce(1000);
+
+  const debounceDoUpdate = useCallback(
+    (data: Partial<IStep>) => {
+      debouncer(() => {
+        doUpdate(data);
+      });
+    },
+    [debouncer, doUpdate]
   );
 
   const callback = useCallback(
@@ -95,6 +114,14 @@ export default function OpenStep(props: OpenStepProps) {
     [id]
   );
 
+  const doNameUpdate = useCallback(
+    (e) => {
+      debounceDoUpdate({ name: e.currentTarget.value });
+      setName(e.currentTarget.value);
+    },
+    [debounceDoUpdate]
+  );
+
   const [Popup, open] = usePopupImageSource(callback, true, true, true, false);
 
   return (
@@ -109,7 +136,12 @@ export default function OpenStep(props: OpenStepProps) {
       <TabsContainer
         style={{ padding: "10px", height: "200px", overflow: "auto" }}
       >
-        {view === "Settings" && <div>Step Settings</div>}
+        {view === "Settings" && (
+          <>
+            <div>Step Settings</div>
+            <BaseInput title="Step name" value={name} onChange={doNameUpdate} />
+          </>
+        )}
         {view === "Anchor" && (
           <>
             <Flex
