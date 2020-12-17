@@ -14,12 +14,32 @@ body {
 
 :root {
   --color-background: #202225;
-  --color-background-dark: #1c1e21;
+  --color-background-dark: #1b1f33;
+  // --color-section: #2b2542;
   --color-section: linear-gradient(
     180deg,
     #353358 0%,
     #302d4d 43.89%,
     #29233b 100%
+  );
+
+  --main-gradient: linear-gradient(
+    180deg,
+    #29233c 0%,
+    #353459 40.2%,
+    #261f34 100%
+  );
+
+  --color-rainbow: linear-gradient(
+    270deg,
+    #ffffff 0%,
+    #feb666 14.2%,
+    #fe923d 26.8%,
+    #fb4256 47.3%,
+    #a7258a 64%,
+    #0d4ee4 77.8%,
+    #06abed 93.7%,
+    #ffffff 100%
   );
 
   --color-button: #29233c;
@@ -35,16 +55,28 @@ body {
   --color-blue: #04aff0;
   --color-pink: #d232b5;
   --color-cyan: #00fef6;
+  --color-white: #fff;
 
   --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
 
   --color-section-hover: #444e58;
   --color-section-inner-hover: #393c40;
-  --color-background-hover: #43494c;
+  --color-background-hover: #3f3e6f;
   --color-text-disabled: #808284;
   --color-text-dark: #242526;
   --color-separator: #6f6f6f;
+}
+
+.shadow-blue {
+  svg {
+    filter: drop-shadow(0px 0px 5px #00fef6);
+  }
+}
+.shadow-pink {
+  svg {
+    filter: drop-shadow(0px 0px 5px #e85fcf);
+  }
 }
 
 body {
@@ -69,8 +101,8 @@ button {
 
 input,
 textarea {
-  font-family: sans-serif;
-  background: var(--color-background);
+  font-family: "Segoe UI";
+  background: var(--color-background-dark);
   border: 1px solid var(--color-background);
   border-radius: 4px;
   height: 27px;
@@ -130,11 +162,11 @@ a:active {
 }
 
 ::-webkit-resizer {
-  background: #A3258C;
+  background: #a3258c;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #A3258C;
+  background: #a3258c;
 }
 
 ::-webkit-scrollbar {
@@ -150,7 +182,8 @@ a:active {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #A3258C;
+  background: #29233d;
+  opacity: 0.5;
   border-radius: 8px;
 }
 
@@ -197,9 +230,15 @@ a:active {
 
 .animate-gradient {
   background-image: url("../assets/svg/cool-gradient.svg");
-  -webkit-animation: gradient-background-animation 15s ease infinite;
-  -moz-animation: gradient-background-animation 15s ease infinite;
-  animation: gradient-background-animation 15s ease infinite;
+  background-size: 100%;
+  background-size: cover;
+  height: 100%;
+  background-repeat: no-repeat;
+  -webkit-animation: gradient-background-animation 60s ease infinite
+    alternate-reverse;
+  -moz-animation: gradient-background-animation 60s ease infinite
+    alternate-reverse;
+  animation: gradient-background-animation 60s ease infinite alternate-reverse;
 }
 
 @-webkit-keyframes gradient-background-animation {

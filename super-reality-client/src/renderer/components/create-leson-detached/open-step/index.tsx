@@ -134,7 +134,13 @@ export default function OpenStep(props: OpenStepProps) {
         style={{ width: "-webkit-fill-available", height: "28px" }}
       />
       <TabsContainer
-        style={{ padding: "10px", height: "200px", overflow: "auto" }}
+        style={{
+          margin: "0 3px",
+          padding: "10px",
+          height: "200px",
+          overflow: "auto",
+          background: "#2e2a48",
+        }}
       >
         {view === "Settings" && (
           <>

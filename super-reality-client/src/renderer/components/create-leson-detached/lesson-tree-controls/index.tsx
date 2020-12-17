@@ -7,11 +7,9 @@ import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
 import newStep from "../lesson-utils/newStep";
 
-import { ReactComponent as IconAddShare } from "../../../../assets/svg/add-share.svg";
 import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
-import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
-import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
+import { ReactComponent as IconAddSearch } from "../../../../assets/svg/search.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
@@ -58,7 +56,13 @@ export default function LessonTreeControls() {
   );
 
   return (
-    <Flex style={{ margin: "8px auto", width: "-webkit-fill-available" }}>
+    <Flex
+      style={{
+        margin: "8px auto",
+        width: "-webkit-fill-available",
+        justifyContent: "space-evenly",
+      }}
+    >
       <ChapterInput />
       <StepInput />
       {treeCurrentType == "lesson" || treeCurrentType == "chapter" ? (
@@ -119,24 +123,10 @@ export default function LessonTreeControls() {
           />
           <ButtonRound
             onClick={() => doAddItem("audio")}
-            svg={IconAddAudio}
+            svg={IconAddSearch}
             width="32px"
             height="32px"
             style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("dialog")}
-            svg={IconAddDialog}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddShare}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 0 0 4px" }}
           />
         </>
       )}

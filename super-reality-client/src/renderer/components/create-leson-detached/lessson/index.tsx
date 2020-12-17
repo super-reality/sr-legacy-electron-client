@@ -138,7 +138,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
         />
       )}
       {view == "Lessons" && (
-        <div className="create-lesson-item-container mid-tight">
+        <div className="create-lesson-item-container shadow-blue mid-tight">
           <LessonTreeControls />
         </div>
       )}

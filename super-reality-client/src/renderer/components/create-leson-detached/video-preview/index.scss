@@ -74,7 +74,7 @@
     height: 1080px;
     font-size: 30px;
     font-weight: 500;
-    background: var(--color-button);
+    // background-color: var(--color-background);
     color: var(--color-gray);
     text-align: center;
     line-height: 1080px;
@@ -87,6 +87,7 @@
     display: block;
     width: auto;
     height: auto;
+    box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
     /*
     max-height: -webkit-fill-available;
     height: inherit;
