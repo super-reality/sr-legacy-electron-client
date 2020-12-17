@@ -14,6 +14,17 @@
   @include disable-select;
 }
 
+.zoom-container {
+  position: absolute;
+  width: 200px;
+  height: 32px;
+  text-align: center;
+  left: calc(50% - 100px);
+  background: var(--color-button);
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+}
+
 .video-preview-container {
   width: auto;
   height: auto;
