@@ -3,7 +3,7 @@ import path from "path";
 import shell from "any-shell-escape";
 import getPublicPath from "./electron/getPublicPath";
 
-export default function cropVideo(
+export default function trimVideo(
   trimFrom: string,
   trimTo: string,
   width: string,

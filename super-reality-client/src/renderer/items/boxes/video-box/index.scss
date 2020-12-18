@@ -3,7 +3,7 @@
 .video-box {
   @include item-base;
   box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
-  // @include item-solid;
+  @include item-solid;
 
   img {
     width: calc(100% - 20px);
