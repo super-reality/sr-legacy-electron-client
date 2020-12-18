@@ -1,0 +1,28 @@
+.members-list {
+    background: linear-gradient(180deg, #42465b 0%, #1b1929 100%);
+    width: 20%;
+    padding: 10px;
+}
+
+.members {
+    height: 130px;
+    overflow: scroll;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar-thumb {
+        background: #757884;
+        border-radius: 8px;
+        border: 0;
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar {
+        background: transparent;
+    }
+}
+
+.member {
+    font-family: Segoe UI;
+    font-size: 14px;
+    margin: 3px 10px;
+}

@@ -1,0 +1,25 @@
+.groups-list {
+    background-image: url("../../../../assets/svg/chat-bg.svg");
+    background-size: cover;
+    height: 576px;
+    padding: 10px 0;
+    width: 20%;
+}
+
+.group {
+    background: linear-gradient(180deg, #343255 0%, #302d4d 70%);
+    padding: 10px;
+    margin: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    font-family: "Segoe UI";
+    color: #c2c2c2;
+    width: 150px;
+    text-align: center;
+
+    div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

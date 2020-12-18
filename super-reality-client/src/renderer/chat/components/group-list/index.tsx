@@ -1,4 +1,5 @@
 import React from "react";
+import "./index.scss";
 // import { Group } from "../../common/interfaces/Group";
 
 interface GroupsListProps {

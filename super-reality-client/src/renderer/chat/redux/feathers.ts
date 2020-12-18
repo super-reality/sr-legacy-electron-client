@@ -1,4 +1,6 @@
+/* eslint-disable import/no-unresolved */
 import io from "socket.io-client";
+/* eslint-disable import/no-unresolved */
 import feathers from "@feathersjs/client";
 
 // const { publicRuntimeConfig } = getConfig()

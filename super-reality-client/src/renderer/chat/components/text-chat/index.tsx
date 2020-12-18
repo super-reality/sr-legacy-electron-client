@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./index.scss";
 import BaseTextArea from "../../../components/base-textarea";
 import ButtonSimple from "../../../components/button-simple";
 // import { Message } from "../../common/interfaces/Message";
@@ -69,9 +70,6 @@ export default function TextChat(props: TextChatProps): JSX.Element {
         onChange={onTextChange}
       />
       <ButtonSimple
-        style={{
-          margin: "10px",
-        }}
         onClick={() => {
           createMessage(text);
         }}
