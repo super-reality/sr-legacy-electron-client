@@ -28,6 +28,7 @@ export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
     payload.effect = "id_1";
     payload.trigger = 1;
     payload.fullScreen = false;
+    payload.parameters = {};
   }
 
   return payload;
