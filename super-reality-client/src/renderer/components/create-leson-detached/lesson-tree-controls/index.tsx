@@ -115,6 +115,13 @@ export default function LessonTreeControls() {
             style={{ margin: "0 4px" }}
           />
           <ButtonRound
+            onClick={() => doAddItem("youtube")}
+            svg={IconAddVideo}
+            width="32px"
+            height="32px"
+            style={{ margin: "0 4px" }}
+          />
+          <ButtonRound
             onClick={() => doAddItem("fx")}
             svg={IconAddFX}
             width="32px"

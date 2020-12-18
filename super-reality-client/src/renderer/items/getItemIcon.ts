@@ -28,6 +28,9 @@ export default function getItemIcon(
       case "video":
         Icon = IconAddVideo;
         break;
+      case "youtube":
+        Icon = IconAddVideo;
+        break;
       case "fx":
         Icon = IconAddFX;
         break;

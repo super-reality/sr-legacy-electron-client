@@ -5,6 +5,7 @@ import SettingsFocusHighlight from "./settings/settings-focus-highlight";
 import SettingsFX from "./settings/settings-fx";
 import SettingsImage from "./settings/settings-image";
 import SettingsVideo from "./settings/settings-video";
+import SettingsYoutube from "./settings/settings-youtube";
 
 type Ret<T extends BaseItem> =
   | ((props: BaseSettingsProps<T>) => JSX.Element)
@@ -24,6 +25,9 @@ export default function getItemSettings<T extends BaseItem>(
       break;
     case "video":
       SettingsComponent = SettingsVideo as any;
+      break;
+    case "youtube":
+      SettingsComponent = SettingsYoutube as any;
       break;
     case "dialog":
       SettingsComponent = SettingsDialog as any;

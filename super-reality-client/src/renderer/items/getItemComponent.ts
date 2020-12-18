@@ -4,6 +4,7 @@ import FindBox from "./boxes/find-box";
 import FXBox from "./boxes/fx-box";
 import ImageBox from "./boxes/image-box";
 import VideoBox from "./boxes/video-box";
+import YoutubeBox from "./boxes/youtube-box";
 import { BaseItem } from "./item";
 
 type RefDivComponent<T extends BaseItem> = React.ForwardRefExoticComponent<
@@ -32,6 +33,9 @@ export default function getItemComponent<T extends BaseItem>(
         break;
       case "video":
         ItemComponent = VideoBox as any;
+        break;
+      case "youtube":
+        ItemComponent = YoutubeBox as any;
         break;
       default:
         break;

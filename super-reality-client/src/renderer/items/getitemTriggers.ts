@@ -6,6 +6,7 @@ import {
   ItemFXTriggers,
   ItemImageTriggers,
   ItemVideoTriggers,
+  ItemYoutubeTriggers,
 } from "./item";
 
 export default function getItemTriggers(
@@ -28,6 +29,9 @@ export default function getItemTriggers(
         break;
       case "video":
         triggers = ItemVideoTriggers;
+        break;
+      case "youtube":
+        triggers = ItemYoutubeTriggers;
         break;
       case "dialog":
         triggers = ItemDialogTriggers;

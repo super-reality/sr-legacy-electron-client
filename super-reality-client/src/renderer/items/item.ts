@@ -23,6 +23,11 @@ export const ItemVideoTriggers = {
   None: null,
 };
 
+export const ItemYoutubeTriggers = {
+  "Click Ok button": 1,
+  None: null,
+};
+
 export const ItemDialogTriggers = {
   "Click Ok button": 1,
   None: null,
@@ -46,6 +51,7 @@ export type BaseItemType =
   | "focus_highlight"
   | "audio"
   | "video"
+  | "youtube"
   | "image"
   | "dialog"
   | "fx";
@@ -94,6 +100,12 @@ export interface ItemVideo extends BaseItem {
   trigger: ValueOf<typeof ItemVideoTriggers>;
 }
 
+export interface ItemYoutube extends BaseItem {
+  type: "youtube";
+  url: string;
+  trigger: ValueOf<typeof ItemYoutubeTriggers>;
+}
+
 export interface ItemDialog extends BaseItem {
   type: "dialog";
   text: string;
@@ -105,5 +117,6 @@ export type Item =
   | ItemAudio
   | ItemImage
   | ItemVideo
+  | ItemYoutube
   | ItemDialog
   | ItemFX;

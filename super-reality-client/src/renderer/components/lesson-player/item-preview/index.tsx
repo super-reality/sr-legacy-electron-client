@@ -127,7 +127,8 @@ export default function ItemPreview(props: ItemPreviewProps) {
       if (
         item.type == "dialog" ||
         item.type == "image" ||
-        item.type == "video"
+        item.type == "video" ||
+        item.type == "youtube"
       ) {
         resizeMods.push(restrictSnapGrid);
         dragMods.push(restrictSnapGrid);
