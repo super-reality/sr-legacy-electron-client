@@ -113,7 +113,7 @@ export default function OpenStep(props: OpenStepProps) {
           background: "#2e2a48",
         }}
       >
-        {view === "Settings" && <div>Step Settings</div>}
+        {view === "Settings"}
         {view === "Anchor" && (
           <>
             <Flex

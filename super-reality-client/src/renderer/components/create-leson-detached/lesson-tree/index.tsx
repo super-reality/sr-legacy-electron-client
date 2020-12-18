@@ -239,7 +239,7 @@ function TreeFolder(props: TreeFolderProps) {
         <div className={`folder-drop ${open ? "open" : ""}`}>
           <IconTreeTop
             style={{ margin: "auto" }}
-            fill={`var(--color-${isOpen ? "text" : "magenda"})`}
+            fill={`var(--color-${isOpen ? "magenda" : "magenda"})`}
           />
         </div>
         <div
