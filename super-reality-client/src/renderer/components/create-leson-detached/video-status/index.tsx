@@ -370,7 +370,7 @@ export default function VideoStatus() {
   }, [cropEditAnchorMode, cropRecordingPos, currentStep, cvResult]);
 
   return (
-    <div className="video-status-container">
+    <>
       <EditAnchorOptions width="540px" height="240px">
         <Flex style={{ justifyContent: "center", margin: "0 auto 16px auto" }}>
           Choose one
@@ -423,79 +423,85 @@ export default function VideoStatus() {
           }}
         />
       </SelectAnchorPopup>
-      {!cropRecording && (
-        <>
-          <ButtonRound
-            svg={AnchorIcon}
-            width="28px"
-            height="28px"
-            style={{ margin: "auto 8px" }}
-            onClick={doOpenAnchorPopup}
-          />
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={doCreateAnchor}
-          >
-            Create new anchor
-          </ButtonSimple>
-        </>
-      )}
-      {cropRecording && !cropEditAnchor && (
-        <ButtonSimple
-          width="140px"
-          height="12px"
-          margin="auto auto"
-          onClick={doSaveNewAnchor}
-        >
-          Save anchor
-        </ButtonSimple>
-      )}
-      {cropRecording && cropEditAnchor && (
-        <>
+      <div className="video-status-container">
+        {!cropRecording && (
+          <>
+            <ButtonRound
+              svg={AnchorIcon}
+              width="28px"
+              height="28px"
+              style={{ margin: "auto 8px" }}
+              onClick={doOpenAnchorPopup}
+            />
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={doCreateAnchor}
+            >
+              Create new anchor
+            </ButtonSimple>
+          </>
+        )}
+        {cropRecording && !cropEditAnchor && (
           <ButtonSimple
             width="140px"
             height="12px"
             margin="auto auto"
-            onClick={doFinishEditAnchor}
+            onClick={doSaveNewAnchor}
           >
-            Done
+            Save anchor
           </ButtonSimple>
+        )}
+        {cropRecording && cropEditAnchor && (
+          <>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doFinishEditAnchor}
+            >
+              Done
+            </ButtonSimple>
 
-          <ButtonSimple width="100px" height="16px" onClick={doExitEditAnchor}>
-            Cancel
-          </ButtonSimple>
-        </>
-      )}
-      {recordingData.anchor && !cropRecording ? (
-        <>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={checkAnchor}
-          >
-            Check anchor
-          </ButtonSimple>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={generateItems}
-          >
-            Generate
-          </ButtonSimple>
-        </>
-      ) : (
-        <div style={{ color: "var(--color-red)" }}>
-          <i>{!cropRecording && "Attach an anchor to edit"}</i>
-        </div>
-      )}
-      <div
-        style={{ fontFamily: "monospace", marginLeft: "auto" }}
-      >{`${canvasSourceDesc} / ${status}`}</div>
-      <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
-    </div>
+            <ButtonSimple
+              width="100px"
+              height="16px"
+              onClick={doExitEditAnchor}
+            >
+              Cancel
+            </ButtonSimple>
+          </>
+        )}
+        {recordingData.anchor && !cropRecording ? (
+          <>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={checkAnchor}
+            >
+              Check anchor
+            </ButtonSimple>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={generateItems}
+            >
+              Generate
+            </ButtonSimple>
+          </>
+        ) : (
+          <div style={{ color: "var(--color-red)" }}>
+            <i>{!cropRecording && "Attach an anchor to edit"}</i>
+          </div>
+        )}
+        <div
+          style={{ fontFamily: "monospace", marginLeft: "auto" }}
+        >{`${canvasSourceDesc} / ${status}`}</div>
+        <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
+      </div>
+    </>
   );
 }
