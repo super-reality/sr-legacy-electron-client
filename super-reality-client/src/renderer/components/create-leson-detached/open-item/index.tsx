@@ -1,15 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  ItemFocusTriggers,
-  ItemAudioTriggers,
-  ItemImageTriggers,
-  ItemVideoTriggers,
-  ItemDialogTriggers,
-  ItemFXTriggers,
-  Item,
-} from "../../../items/item";
+import { Item } from "../../../items/item";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import Flex from "../../flex";
@@ -17,14 +9,12 @@ import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { TabsContainer } from "../../tabs";
 import updateItem from "../lesson-utils/updateItem";
-import SettingsFocusHighlight from "./settings-focus-highlight";
-import SettingsImage from "./settings-image";
 import BaseToggle from "../../base-toggle";
-import FXSettings from "./settings-fx";
-import SettingsDialog from "./settings-dialog";
 import ButtonRound from "../../button-round";
 
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
+import getItemTriggers from "../../../items/getitemTriggers";
+import getItemSettings from "../../../items/getItemSettings";
 
 interface OpenItemProps {
   id: string;
@@ -42,31 +32,7 @@ export default function OpenItem(props: OpenItemProps) {
     treeItems,
   ]);
 
-  let triggers: Record<string, number | null> = { None: null };
-  if (item) {
-    switch (item.type) {
-      case "focus_highlight":
-        triggers = ItemFocusTriggers;
-        break;
-      case "fx":
-        triggers = ItemFXTriggers;
-        break;
-      case "audio":
-        triggers = ItemAudioTriggers;
-        break;
-      case "image":
-        triggers = ItemImageTriggers;
-        break;
-      case "video":
-        triggers = ItemVideoTriggers;
-        break;
-      case "dialog":
-        triggers = ItemDialogTriggers;
-        break;
-      default:
-        break;
-    }
-  }
+  const triggers = getItemTriggers(item);
 
   const doUpdate = useCallback(
     <T extends Item>(data: Partial<T>) => {
@@ -91,6 +57,8 @@ export default function OpenItem(props: OpenItemProps) {
   }, [dispatch, treeSteps, currentStep]);
 
   if (!item) return <></>;
+
+  const ItemSettings = getItemSettings(item);
 
   return (
     <>
@@ -134,16 +102,7 @@ export default function OpenItem(props: OpenItemProps) {
           />
         </Flex>
 
-        {item.type == "focus_highlight" && (
-          <SettingsFocusHighlight item={item} update={doUpdate} />
-        )}
-        {item.type == "image" && (
-          <SettingsImage item={item} update={doUpdate} />
-        )}
-        {item.type == "dialog" && (
-          <SettingsDialog item={item} update={doUpdate} />
-        )}
-        {item.type == "fx" && <FXSettings />}
+        {ItemSettings && <ItemSettings item={item} update={doUpdate} />}
       </TabsContainer>
     </>
   );

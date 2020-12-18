@@ -264,19 +264,6 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
-  // set full screen for the effect
-  // if (
-  //   item &&
-  //   item.type == "fx" &&
-  //   item.fullScreen &&
-  //   dragContainer.current?.parentElement
-  // ) {
-  //   console.log("item.fullScreen", dragContainer.current.parentElement);
-  //   pos.width = dragContainer.current.parentElement.offsetWidth;
-  //   pos.height = dragContainer.current.parentElement.offsetHeight;
-  //   pos.x = 0;
-  //   pos.y = 0;
-  // }
   if (
     previewing &&
     item &&

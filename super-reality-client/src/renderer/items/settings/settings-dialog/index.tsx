@@ -1,15 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ItemDialog } from "../../../../items/item";
-import useDebounce from "../../../../hooks/useDebounce";
-import BaseTextArea from "../../../base-textarea";
-import "../../../../items/boxes/find-box/index.scss";
+import { ItemDialog } from "../../item";
+import useDebounce from "../../../hooks/useDebounce";
+import BaseTextArea from "../../../components/base-textarea";
+import "../../boxes/find-box/index.scss";
+import { BaseSettingsProps } from "../settings";
 
-interface SettingsDialog {
-  item: ItemDialog;
-  update: (date: Partial<ItemDialog>) => void;
-}
-
-export default function SettingsDialog(props: SettingsDialog) {
+export default function SettingsDialog(props: BaseSettingsProps<ItemDialog>) {
   const { item, update } = props;
   const [text, setText] = useState(item.text);
 
