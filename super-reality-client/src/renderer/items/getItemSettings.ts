@@ -2,8 +2,9 @@ import { BaseItem, Item } from "./item";
 import { BaseSettingsProps } from "./settings/settings";
 import SettingsDialog from "./settings/settings-dialog";
 import SettingsFocusHighlight from "./settings/settings-focus-highlight";
-import FXSettings from "./settings/settings-fx";
+import SettingsFX from "./settings/settings-fx";
 import SettingsImage from "./settings/settings-image";
+import SettingsVideo from "./settings/settings-video";
 
 type Ret<T extends BaseItem> =
   | ((props: BaseSettingsProps<T>) => JSX.Element)
@@ -21,11 +22,14 @@ export default function getItemSettings<T extends BaseItem>(
     case "image":
       SettingsComponent = SettingsImage as any;
       break;
+    case "video":
+      SettingsComponent = SettingsVideo as any;
+      break;
     case "dialog":
       SettingsComponent = SettingsDialog as any;
       break;
     case "fx":
-      SettingsComponent = FXSettings as any;
+      SettingsComponent = SettingsFX as any;
       break;
     default:
       break;

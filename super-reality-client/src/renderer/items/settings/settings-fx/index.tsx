@@ -5,7 +5,7 @@ import { ItemFX } from "../../item";
 import { BaseSettingsProps } from "../settings";
 import "./index.scss";
 
-export default function FXSettings(
+export default function SettingsFX(
   props: BaseSettingsProps<ItemFX>
 ): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
