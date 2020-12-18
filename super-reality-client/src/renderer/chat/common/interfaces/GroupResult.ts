@@ -1,8 +1,8 @@
-import { Group } from './Group'
+import { Group } from "./Group";
 
 export type GroupResult = {
-  data: Group[],
-  total: number,
-  limit: number
-  skip: number
-}
+  data: Group[];
+  total: number;
+  limit: number;
+  skip: number;
+};

@@ -1,8 +1,8 @@
-import { Invite } from './Invite'
+import { Invite } from "./Invite";
 
 export type InviteResult = {
-  data: Invite[],
-  total: number,
-  limit: number
-  skip: number
-}
+  data: Invite[];
+  total: number;
+  limit: number;
+  skip: number;
+};

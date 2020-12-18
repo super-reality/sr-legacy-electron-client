@@ -1,8 +1,8 @@
-import { GroupUser } from './GroupUser'
+import { GroupUser } from "./GroupUser";
 
 export type Group = {
-  id: string
-  name: string
-  description: string
-  groupUsers: GroupUser[]
-}
+  id: string;
+  name: string;
+  description: string;
+  groupUsers: GroupUser[];
+};

@@ -1,25 +1,25 @@
-import { IdentityProvider, IdentityProviderSeed } from './IdentityProvider'
+import { IdentityProvider, IdentityProviderSeed } from "./IdentityProvider";
 
 export interface AuthUser {
-  accessToken: string
+  accessToken: string;
   authentication: {
-    strategy: string
-  }
-  identityProvider: IdentityProvider
+    strategy: string;
+  };
+  identityProvider: IdentityProvider;
 }
 
 export const AuthUserSeed = {
-  accessToken: '',
+  accessToken: "",
   authentication: {
-    strategy: ''
+    strategy: "",
   },
-  identityProvider: IdentityProviderSeed
-}
+  identityProvider: IdentityProviderSeed,
+};
 
-export function resolveAuthUser (res: any): AuthUser {
+export function resolveAuthUser(res: any): AuthUser {
   return {
     accessToken: res.accessToken,
     authentication: res.authentication,
-    identityProvider: res['identity-provider']
-  }
+    identityProvider: res["identity-provider"],
+  };
 }

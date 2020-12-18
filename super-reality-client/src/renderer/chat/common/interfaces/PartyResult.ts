@@ -1,3 +1,3 @@
-import { Party } from './Party'
+import { Party } from "./Party";
 
-export type PartyResult = Party
+export type PartyResult = Party;

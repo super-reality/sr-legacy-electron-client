@@ -1,13 +1,13 @@
-import { User } from './User'
+import { User } from "./User";
 
 export type Invite = {
-  id: string
-  invitee: User
-  token: string
-  user: User,
-  createdAt: any
-}
+  id: string;
+  invitee: User;
+  token: string;
+  user: User;
+  createdAt: any;
+};
 
 export const InviteSeed = {
-  id: ''
-}
+  id: "",
+};
