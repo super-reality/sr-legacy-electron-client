@@ -88,10 +88,12 @@ export default function Auth(props: AuthProps): JSX.Element {
           timeout: timeout,
         })
         .then((res) => {
-          handleXRAuthSingin(res).then((result) => {
-            handleAuthSignin(result);
-            onAuth();
-          });
+          if (payload.password) {
+            handleXRAuthSignup(res, payload.password).then(() => {
+              handleAuthSignin(res);
+              onAuth();
+            });
+          }
         })
         .catch(handleAuthError);
     }
@@ -112,13 +114,19 @@ export default function Auth(props: AuthProps): JSX.Element {
       .then((res) => {
         // register in the XRengine
         if (payload.password) {
-          handleXRAuthSignup(res, payload.password).then(() => {
-            handleAuthSingup(res);
-            onAuth();
-          });
+          handleXRAuthSignup(res, payload.password)
+            .then(() => {
+              handleAuthSingup(res);
+              onAuth();
+            })
+            .catch((err) => {
+              console.log("auth", err);
+            });
         }
       })
-      .catch(handleAuthError);
+      .catch((er) => {
+        handleAuthError(er);
+      });
   }, []);
 
   return (

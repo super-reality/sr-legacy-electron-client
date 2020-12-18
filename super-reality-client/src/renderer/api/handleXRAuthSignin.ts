@@ -12,24 +12,30 @@ export default async function handleXRAuthSingin(
     if (res.data.err_code === 0) {
       //  window.localStorage.getItem('token');
       try {
-        const accessToken = window.localStorage.getItem("token");
-        await (client as any).authentication.setAccessToken(
-          accessToken as string
-        );
+        const accessToken = window.localStorage.getItem("XREngine-Auth-Store");
+        console.log(accessToken);
+        // await (client as any).authentication.setAccessToken(
+        //   accessToken as string
+        // );
         let result;
         try {
           result = await (client as any).reAuthenticate();
           console.log("chat auth ok", result);
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          console.log("reAuthenticate err, trying to register user", error);
+          return error;
+          // try {
+          //   await (client as any).authentication.setAccessToken(
+          //     accessToken as string
+          //   );
+          // } catch (er) {
+          //   console.log("reAuthenticate 2 err", er);
+          // }
         }
       } catch (err) {
-        console.log(err);
+        console.log("setAccessToken err", err);
       }
 
-      // (client as any).authentication.setAccessToken(
-      //     accessToken as string
-      //   );
       return res;
     }
     return res;

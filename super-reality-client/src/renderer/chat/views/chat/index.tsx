@@ -8,15 +8,16 @@ import client from "../../redux/feathers";
 import GroupsList from "../../components/group-list";
 import MembersList from "../../components/members-list";
 import TextChat from "../../components/text-chat";
+import ButtonSimple from "../../../components/button-simple";
 
-import { dChannel, dChannels } from "./dummy-data";
+// import { dChannel, dChannels } from "./dummy-data";
 
 export default function TestChat() {
   // const [user, setUser] = useState({});
-  // const [groups, setGroups] = useState<Array<any>>();
+  const [groups, setGroups] = useState<Array<any>>();
   // const [parties, setParties] = useState<Array<any>>();
-  const [channels, setChannels] = useState<Array<any>>(dChannels);
-  const [activeChannel, setActiveChannel] = useState<any>(dChannel);
+  const [channels, setChannels] = useState<Array<any>>([]);
+  const [activeChannel, setActiveChannel] = useState<any>();
 
   // const [activeGroup, setActiveGroup] = useState<any>(dChannel);
 
@@ -32,8 +33,9 @@ export default function TestChat() {
           $skip: 0,
         },
       });
-      console.log("channelsResult", data);
+      console.log("all channels", data);
       const channelsResult = data.filter((e: any) => e.channelType == "group");
+      console.log("filtered channels", channelsResult);
       setChannels(channelsResult);
     } catch (err) {
       console.log(err);
@@ -124,6 +126,9 @@ export default function TestChat() {
     };
     login();
     getChannels();
+    if (channels) {
+      setActiveChannel(channels[0]);
+    }
     console.log("channels", channels);
 
     // getChannelMessages();
@@ -131,24 +136,7 @@ export default function TestChat() {
   // test getting the groups
 
   /*
-  const createTestGroup = async () => {
-    const count = groups ? groups.length + 1 : 0;
-    console.log(count);
-    try {
-      const res = await client.service("group").create({
-        name: `testGroup ${count}`,
-        description: "Test group for the Test ",
-      });
-      if (res) {
-        const groupResults = await client.service("group").find();
-
-        console.log(groupResults);
-        setGroups(groupResults.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  
 
   const showParties = useCallback(async () => {
     // Parties
@@ -160,18 +148,7 @@ export default function TestChat() {
     getChannels();
   }, []);
 
-  const removeGroup = async () => {
-    if (groups && groups?.length > 0) {
-      await client.service("group").remove(groups[groups?.length - 1].id);
-      client.service("group").on("removed", (params: any) => {
-        console.log(params.group);
-      });
-      const groupResults = await client.service("group").find();
-
-      console.log(groupResults);
-      setGroups(groupResults.data);
-    }
-  };
+  
 */
   // const joinTheParty = useCallback((userId: string, partyId: number) => {
   //   (client as any).io.emit(
@@ -221,9 +198,9 @@ export default function TestChat() {
 
     console.log("updateChatTarget:", targetChannelResult);
   };
-  useEffect(() => {
-    getChannels();
-  }, [channels.length]);
+  // useEffect(() => {
+  //   getChannels();
+  // }, [channels.length]);
 
   const createMessage = async (values: any) => {
     console.log(values);
@@ -238,6 +215,49 @@ export default function TestChat() {
       console.log(err);
     }
   };
+
+  const createTestGroup = async () => {
+    const count = groups ? groups.length + 1 : 0;
+    console.log(count);
+    try {
+      const newGroup = await client.service("group").create({
+        name: `testGroup ${count}`,
+        description: "Test group for the Test ",
+      });
+      if (newGroup) {
+        const groupResults = await client.service("group").find();
+
+        console.log("res", newGroup);
+        console.log("groupResults", groupResults);
+        setGroups(groupResults.data);
+        createMessage({
+          targetObjectId: newGroup.id,
+          targetObjectType: "group",
+          text: "new group created",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const removeGroup = async () => {
+    if (groups && groups?.length > 0) {
+      await client.service("group").remove(groups[groups?.length - 1].id);
+      client.service("group").on("removed", (params: any) => {
+        console.log(params.group);
+      });
+      const groupResults = await client.service("group").find();
+
+      console.log(groupResults);
+      setGroups(groupResults.data);
+    }
+  };
+
+  client.service("channel").on("created", (params: any) => {
+    console.log("CANNEL CREATED EVENT");
+    console.log(params);
+    getChannels();
+  });
 
   //   const getMessageUser = (message: Message): User => {
   //     let user;
@@ -272,13 +292,20 @@ export default function TestChat() {
         overflow: "auto",
       }}
     >
-      {channels && activeChannel && (
-        <GroupsList
-          groups={channels}
-          callback={updateChatTarget}
-          activeGroupId={activeChannel.id}
-        />
-      )}
+      <div>
+        {channels && activeChannel && (
+          <GroupsList
+            groups={channels}
+            callback={updateChatTarget}
+            activeGroupId={activeChannel.id}
+          />
+        )}
+        <ButtonSimple onClick={createTestGroup}>
+          Create a test group
+        </ButtonSimple>
+        <ButtonSimple onClick={removeGroup}>Remove a test group</ButtonSimple>
+      </div>
+
       {activeChannel && <MembersList users={activeChannel.group.group_users} />}
       {activeChannel && (
         <TextChat createMessage={createMessage} activeChannel={activeChannel} />

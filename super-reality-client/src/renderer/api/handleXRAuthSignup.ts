@@ -4,6 +4,7 @@ import client from "../chat/redux/feathers";
 // import reduxAction from "../redux/reduxAction";
 
 import SignUp from "./types/auth/signup";
+import SignIn from "./types/auth/signin";
 import { ApiError } from "./types";
 
 export interface EmailRegistrationForm {
@@ -12,42 +13,59 @@ export interface EmailRegistrationForm {
 }
 // TO DO error handling
 export default function handleXRAuthSingup(
-  res: AxiosResponse<ApiError | SignUp>,
+  res: AxiosResponse<ApiError | SignUp | SignIn>,
   password: string
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     // dispatch(actionProcessing(true));
     if (res.status === 200) {
       if (res.data.err_code === 0) {
-        // token is stored in localStorage by the handleAuthSingup
-        client
-          .service("identity-provider")
-          .create({
-            token: res.data.token,
-            password: password,
-            type: "password",
-          })
-          .then(() => {
-            // identityProvider: any
-            // Create the REGISTER_USER_BY_EMAIL_SUCCSESS action
+        const accessToken = res.data.token;
+        if (accessToken) {
+          client
+            .service("identity-provider")
+            .create({
+              token: accessToken,
+              password: password,
+              type: "password",
+            })
 
-            // reduxAction(store.dispatch, {
-            //   type: "REGISTER_USER_BY_EMAIL_SUCCSESS",
-            //   arg: identityProvider,
-            // });
+            .then((resIP: any) => {
+              console.log(resIP);
+              return client.service("authManagement").create({
+                action: "verifySignupLong",
+                value: resIP.verifyToken,
+              });
+            })
 
-            resolve();
-          })
-          .catch((err: any) => {
-            console.log(err);
-            // reduxAction(store.dispatch, {
-            //   type: "AUTH_XR_FAILED",
-            //   arg: null,
-            // });
-            // dispatch(registerUserByEmailError(err.message));
-            // dispatchAlertError(dispatch, err.message);
-            reject();
-          });
+            .then((r: any) => {
+              console.log(r);
+              window.localStorage.setItem("XREngine-Auth-Store", r.accessToken);
+              return (client as any).authenticate({
+                strategy: "jwt",
+                accessToken: r.accessToken,
+              });
+            })
+            .then(() => {
+              return (client as any)
+                .reAuthenticate()
+                .then((result: any) => {
+                  console.log("chat auth ok", result);
+                  resolve();
+                })
+                .catch((error: any) => {
+                  console.log(
+                    "reAuthenticate err, trying to register user after the signup",
+                    error
+                  );
+                });
+            })
+            .catch((err: any) => {
+              console.log(err);
+
+              reject();
+            });
+        }
 
         // handle XR
 
@@ -57,20 +75,3 @@ export default function handleXRAuthSingup(
     }
   });
 }
-/*
-  client.service('identity-provider').create({
-        token: form.token,
-        password: form.password,
-        type: 'password'
-      })
-        .then((identityProvider: any) => {
-          dispatch(registerUserByEmailSuccess(identityProvider));
-          window.location.href = '/auth/confirm';
-        })
-        .catch((err: any) => {
-          console.log(err);
-          dispatch(registerUserByEmailError(err.message));
-          dispatchAlertError(dispatch, err.message);
-        })
-        .finally(() => dispatch(actionProcessing(false)));
-        */
