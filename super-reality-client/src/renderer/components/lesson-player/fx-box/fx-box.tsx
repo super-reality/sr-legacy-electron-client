@@ -42,7 +42,7 @@ const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
             });
           }
         });
-      }, 10);
+      }, 100);
     }, [parameters, iframeRef]);
 
     return (
