@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { ItemImageTriggers, ItemVideo } from "../../item";
 import { voidFunction } from "../../../constants";
 import ButtonSimple from "../../../components/button-simple";
@@ -9,6 +9,20 @@ import { BaseBoxProps } from "../boxes";
 const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
   (props, forwardedRef) => {
     const { item, style, pos, callback } = props;
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+
+    const [play, setPlay] = useState(true);
+
+    const doClick = useCallback(() => {
+      setPlay(!play);
+      if (videoRef.current) {
+        if (play) {
+          videoRef.current.pause();
+        } else {
+          videoRef.current.play();
+        }
+      }
+    }, [play, videoRef]);
 
     return (
       <div
@@ -23,6 +37,9 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
         }}
       >
         <video
+          ref={videoRef}
+          onClick={doClick}
+          autoPlay
           style={{
             maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",
           }}
