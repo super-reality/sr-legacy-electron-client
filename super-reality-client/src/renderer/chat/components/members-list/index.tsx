@@ -4,7 +4,7 @@ import { GroupUser } from "../../common/interfaces/GroupUser";
 // import { PartyUser } from "../../common/interfaces/PartyUser";
 
 interface MembersListProps {
-  users: GroupUser[];
+  users: any[];
 }
 export default function MembersList(props: MembersListProps): JSX.Element {
   const { users } = props;

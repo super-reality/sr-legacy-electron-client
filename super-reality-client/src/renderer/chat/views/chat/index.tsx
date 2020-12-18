@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import _ from "lodash";
-import client from "../../redux/feathers";
+// import client from "../../redux/feathers";
 // import v1 from "uuid";
 
 // import { Group } from "../../common/interfaces/Group";
@@ -15,9 +15,10 @@ export default function TestChat() {
   // const [user, setUser] = useState({});
   // const [groups, setGroups] = useState<Array<any>>();
   // const [parties, setParties] = useState<Array<any>>();
-  const [channels, setChannels] = useState<Array<any>>(dChannels);
-  const [activeChannel, setActiveChannel] = useState<any>(dChannel);
-
+  // const [channels, setChannels] = useState<Array<any>>(dChannels);
+  // const [activeChannel, setActiveChannel] = useState<any>(dChannel);
+  const channels = dChannels;
+  const activeChannel = dChannel;
   // const [activeGroup, setActiveGroup] = useState<any>(dChannel);
 
   // const getChannels = async () => {
@@ -192,7 +193,7 @@ export default function TestChat() {
   //     }
   //   );
   // }, []);
-
+  /*
   const updateChatTarget = async (targetObject: any) => {
     console.log(
       "targetObject:",
@@ -229,18 +230,25 @@ export default function TestChat() {
 
     console.log("updateChatTarget:", targetChannelResult);
   };
+  */
+  const updateChatTarget = (channel: any) => {
+    if (channel) {
+      console.log(channel);
+    }
+  };
 
   const createMessage = async (values: any) => {
-    try {
-      const resp = await client.service("message").create({
-        targetObjectId: values.targetObjectId,
-        targetObjectType: values.targetObjectType,
-        text: values.text,
-      });
-      console.log(resp);
-    } catch (err) {
-      console.log(err);
-    }
+    console.log(values);
+    // try {
+    //   const resp = await client.service("message").create({
+    //     targetObjectId: values.targetObjectId,
+    //     targetObjectType: values.targetObjectType,
+    //     text: values.text,
+    //   });
+    //   console.log(resp);
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   // client.service("message").on("created", (params: any) => {
