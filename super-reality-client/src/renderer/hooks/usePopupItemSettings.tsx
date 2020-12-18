@@ -8,7 +8,7 @@ import IconFXThumbnail from "../../assets/images/fx-popup-icon.png";
 import Flex from "../components/flex";
 import { ReactComponent as CloseIcon } from "../../assets/svg/win-close.svg";
 import { effectDB, getEffectById } from "../constants";
-import { Item } from "../api/types/item/item";
+import { Item } from "../items/item";
 import reduxAction from "../redux/reduxAction";
 import updateItem from "../components/create-leson-detached/lesson-utils/updateItem";
 import { AppState } from "../redux/stores/renderer";

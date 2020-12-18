@@ -7,13 +7,10 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import FindBox from "../find-box";
-import ImageBox from "../image-box";
-import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
+import { Item, ItemFocusTriggers } from "../../../items/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import DialogBox from "../dialog-box";
-import FXBox from "../fx-box";
 import { Rectangle } from "../../../../types/utils";
+import getItemComponent from "../../../items/getItemComponent";
 
 interface ItemViewProps {
   item: Item;
@@ -93,41 +90,16 @@ export default function ItemView(props: ItemViewProps) {
     return <></>;
   }
 
+  const ItemComponent = getItemComponent(item);
+
   return (
     <>
-      {item && item.type == "focus_highlight" && (
-        <FindBox
+      {ItemComponent && (
+        <ItemComponent
           clickThrough
           pos={pos}
           style={style}
-          type={item.focus}
-          callback={onSucess}
-        />
-      )}
-      {item && item.type == "image" && (
-        <ImageBox
-          pos={pos}
-          style={style}
-          image={item.url}
-          trigger={item.trigger}
-          callback={onSucess}
-        />
-      )}
-      {item && item.type == "dialog" && (
-        <DialogBox
-          pos={pos}
-          style={style}
-          text={item.text}
-          trigger={item.trigger}
-          callback={onSucess}
-        />
-      )}
-      {item && item.type == "fx" && (
-        <FXBox
-          pos={pos}
-          clickThrough
-          style={{ ...style, border: "none" }}
-          effect={item.effect}
+          item={item}
           callback={onSucess}
         />
       )}

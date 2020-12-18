@@ -11,7 +11,7 @@ import ipcSend from "../../../../utils/ipcSend";
 import getArrrayAverage from "../../../../utils/getArrayAverage";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
-import AnchorBox from "../../lesson-player/anchor-box";
+import AnchorBox from "../../../items/boxes/anchor-box";
 
 interface AnchorTesterProps {
   onFinish: () => void;

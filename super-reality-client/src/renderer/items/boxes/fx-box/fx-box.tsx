@@ -1,27 +1,16 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useRef } from "react";
+import React, { useRef } from "react";
 import { getEffectById } from "../../../constants";
+import { ItemFX } from "../../item";
+import { BaseBoxProps } from "../boxes";
 
 import "./index.scss";
 
-interface FXBoxProps {
-  pos: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  style?: CSSProperties;
-  effect: string;
-  clickThrough?: boolean;
-  callback?: (trigger: number) => void;
-}
-
-const FXBox = React.forwardRef<HTMLDivElement, FXBoxProps>(
+const FXBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFX>>(
   (props, forwardedRef) => {
-    const { effect, style, pos, clickThrough } = props;
+    const { item, style, pos, clickThrough } = props;
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
-    const srcFX = getEffectById(effect);
+    const srcFX = getEffectById(item.effect);
 
     return (
       <>

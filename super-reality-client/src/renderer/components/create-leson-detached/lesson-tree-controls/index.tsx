@@ -13,7 +13,7 @@ import { ReactComponent as IconAddSearch } from "../../../../assets/svg/search.s
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType } from "../../../api/types/item/item";
+import { BaseItemType } from "../../../items/item";
 import newItem from "../lesson-utils/newItem";
 import ButtonSimple from "../../button-simple";
 

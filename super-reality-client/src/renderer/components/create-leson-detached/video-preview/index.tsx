@@ -13,7 +13,7 @@ import AnchorCrop from "../../lesson-player/anchor-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
-import AnchorBox from "../../lesson-player/anchor-box";
+import AnchorBox from "../../../items/boxes/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
 import timestampToTime from "../../../../utils/timestampToTime";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";

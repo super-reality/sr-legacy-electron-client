@@ -1,8 +1,8 @@
 import React from "react";
-import { ItemFocus } from "../../../../api/types/item/item";
+import { ItemFocus } from "../../../../items/item";
 import ButtonSimple from "../../../button-simple";
 import Flex from "../../../flex";
-import "../../../lesson-player/find-box/index.scss";
+import "../../../../items/boxes/find-box/index.scss";
 
 interface SettingsFocusHighlight {
   item: ItemFocus;

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ItemDialog } from "../../../../api/types/item/item";
+import { ItemDialog } from "../../../../items/item";
 import useDebounce from "../../../../hooks/useDebounce";
 import BaseTextArea from "../../../base-textarea";
-import "../../../lesson-player/find-box/index.scss";
+import "../../../../items/boxes/find-box/index.scss";
 
 interface SettingsDialog {
   item: ItemDialog;

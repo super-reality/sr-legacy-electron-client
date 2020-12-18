@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ILessonV2 } from "../../api/types/lesson-v2/lesson";
 import { IChapter } from "../../api/types/chapter/chapter";
 import { IStep } from "../../api/types/step/step";
-import { Item } from "../../api/types/item/item";
+import { Item } from "../../items/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
 import { RecordingJson } from "../../components/create-leson-detached/recorder/types";

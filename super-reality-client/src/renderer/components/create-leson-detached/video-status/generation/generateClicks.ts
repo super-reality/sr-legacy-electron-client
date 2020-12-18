@@ -3,7 +3,7 @@ import doCvMatch from "../../../../../utils/cv/doCVMatch";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
-import { ItemFocus } from "../../../../api/types/item/item";
+import { ItemFocus } from "../../../../items/item";
 import { itemsPath } from "../../../../electron-constants";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";

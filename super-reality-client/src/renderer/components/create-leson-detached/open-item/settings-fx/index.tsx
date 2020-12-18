@@ -1,7 +1,7 @@
 import React, { CSSProperties } from "react";
 import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
 import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
-import { ItemFX } from "../../../../api/types/item/item";
+import { ItemFX } from "../../../../items/item";
 import "./index.scss";
 
 interface FXSettingsProps {

@@ -9,7 +9,7 @@ import {
   ItemDialogTriggers,
   ItemFXTriggers,
   Item,
-} from "../../../api/types/item/item";
+} from "../../../items/item";
 import constantFormat from "../../../../utils/constantFormat";
 import BaseSelect from "../../base-select";
 import Flex from "../../flex";

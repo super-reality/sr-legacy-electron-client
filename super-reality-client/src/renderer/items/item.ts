@@ -1,4 +1,4 @@
-import { ValueOf } from "../../../../types/utils";
+import { ValueOf } from "../../types/utils";
 
 export const ItemFocusTriggers = {
   "Click target": 1,

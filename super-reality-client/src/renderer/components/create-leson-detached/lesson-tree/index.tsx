@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useEffect, useState } from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
-import { Item } from "../../../api/types/item/item";
+import { Item } from "../../../items/item";
 import { IDName } from "../../../api/types";
 import Flex from "../../flex";
 import onDrag from "../lesson-utils/onDrag";
