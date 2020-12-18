@@ -88,10 +88,8 @@ export default function Auth(props: AuthProps): JSX.Element {
           timeout: timeout,
         })
         .then((res) => {
-          handleXRAuthSingin(res).then((result) => {
-            handleAuthSignin(result);
-            onAuth();
-          });
+          handleAuthSignin(res);
+          onAuth();
         })
         .catch(handleAuthError);
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import _ from "lodash";
 import client from "../../redux/feathers";
 // import v1 from "uuid";
@@ -20,8 +20,6 @@ export default function TestChat() {
 
   // const [activeGroup, setActiveGroup] = useState<any>(dChannel);
 
-  // const accessToken =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwMjAxMzUsImV4cCI6MTYwOTYxMjEzNSwic3ViIjoiMzE5Nzk4ZjAtMzU5NS0xMWViLTg4ODAtOGQ5NzEzYzBiNTRkIiwianRpIjoiYzY4NmU2ZjAtZjNkMy00MjJhLTk5MzgtNjdkNDMyMWQ3OGE4In0.a9_BGa4hAUHBHoDlGqBpKVtntbweoO0if1B_onqnc84";
   // const getChannels = async () => {
   //   try {
   //     console.log("FETCHING CHANNELS");
@@ -47,96 +45,96 @@ export default function TestChat() {
   //   console.log(groupResults.data);
   // };
 
-  useEffect(() => {
-    const login = async () => {
-      // await (client as any).authentication.setAccessToken(
-      //   accessToken as string
-      // );
+  // useEffect(() => {
+  // const login = async () => {
+  //   // await (client as any).authentication.setAccessToken(
+  //   //   accessToken as string
+  //   // );
 
-      let res;
-      try {
-        res = await (client as any).reAuthenticate();
-        console.log("chat auth ok", res);
-      } catch (err) {
-        console.log("err chat auth", err);
-      }
+  //   let res;
+  //   try {
+  //     res = await (client as any).reAuthenticate();
+  //     console.log("chat auth ok", res);
+  //   } catch (err) {
+  //     console.log("err chat auth", err);
+  //   }
 
-      const userData = await client
-        .service("user")
-        .get("d9062520-3969-11eb-8818-054b8fb93e03");
+  //   const userData = await client
+  //     .service("user")
+  //     .get("d9062520-3969-11eb-8818-054b8fb93e03");
 
-      console.log("user data", userData);
-      // try {
-      //   res = await (client as any)
-      //     .service("channel")
-      //     .remove("96a91260-3648-11eb-8880-8d9713c0b54d");
-      //   console.log("channel removed", res);
-      // } catch (err) {
-      //   console.log("err channel removed", err);
-      // }
+  //   console.log("user data", userData);
+  // try {
+  //   res = await (client as any)
+  //     .service("channel")
+  //     .remove("96a91260-3648-11eb-8880-8d9713c0b54d");
+  //   console.log("channel removed", res);
+  // } catch (err) {
+  //   console.log("err channel removed", err);
+  // }
 
-      // // Parties
-      // const parties = await client.service("party").find();
+  // // Parties
+  // const parties = await client.service("party").find();
 
-      // console.log("Parties", parties);
+  // console.log("Parties", parties);
 
-      // if (res) {
-      //   console.log(res);
-      //   const userData = await client
-      //     .service("user")
-      //     .get("d9062520-3969-11eb-8818-054b8fb93e03");
-      //   console.log(userData);
-      //   // loadUserData(dispatch, authUser.identityProvider.userId);
-      // } else {
-      //   console.log("****************");
-      // }
-      // /// // change the name
-      // client
-      //   .service("user")
-      //   .patch("d9062520-3969-11eb-8818-054b8fb93e03", {
-      //     name: "Test DenisKo Name",
-      //   })
-      //   .then((resN: any) => {
-      //     console.log("name Updated", resN);
-      //   });
+  // if (res) {
+  //   console.log(res);
+  //   const userData = await client
+  //     .service("user")
+  //     .get("d9062520-3969-11eb-8818-054b8fb93e03");
+  //   console.log(userData);
+  //   // loadUserData(dispatch, authUser.identityProvider.userId);
+  // } else {
+  //   console.log("****************");
+  // }
+  // /// // change the name
+  // client
+  //   .service("user")
+  //   .patch("d9062520-3969-11eb-8818-054b8fb93e03", {
+  //     name: "Test DenisKo Name",
+  //   })
+  //   .then((resN: any) => {
+  //     console.log("name Updated", resN);
+  //   });
 
-      // const groupResults = await client.service("group").find();
+  // const groupResults = await client.service("group").find();
 
-      // console.log(groupResults);
-      // console.log("waiting identity-provider");
-      //  !!!!!!!!!! const newProvider = await client.service("identity-provider").create({
-      //   type: "guest",
-      //   token: v1(),
-      // });
-      // console.log(newProvider);
-      // const res = await (client as any).authenticate({
-      //   strategy: "jwt",
-      //   accessToken: newProvider.accessToken,
-      // });
-      // console.log(res);
-      // client
-      //   .service("magic-link")
-      //   .create({
-      //     email: "email",
-      //     type: "email",
-      //     userId: "userId",
-      //   })
-      //   .then((res: any) => {
-      //     console.log(res);
-      //     const identityProvider = res;
-      //     console.log("indProv", identityProvider.userId);
-      //   });
-    };
-    login();
+  // console.log(groupResults);
+  // console.log("waiting identity-provider");
+  //  !!!!!!!!!! const newProvider = await client.service("identity-provider").create({
+  //   type: "guest",
+  //   token: v1(),
+  // });
+  // console.log(newProvider);
+  // const res = await (client as any).authenticate({
+  //   strategy: "jwt",
+  //   accessToken: newProvider.accessToken,
+  // });
+  // console.log(res);
+  // client
+  //   .service("magic-link")
+  //   .create({
+  //     email: "email",
+  //     type: "email",
+  //     userId: "userId",
+  //   })
+  //   .then((res: any) => {
+  //     console.log(res);
+  //     const identityProvider = res;
+  //     console.log("indProv", identityProvider.userId);
+  //   });
+  // };
+  // login();
 
-    // getChannels();
-    // if (channels) {
-    //   setActiveChannel(channels[0]);
-    //   console.log("ok loading");
-    // }
+  // getChannels();
+  // if (channels) {
+  //   setActiveChannel(channels[0]);
+  //   console.log("ok loading");
+  // }
 
-    // getChannelMessages();
-  }, []);
+  // getChannelMessages();
+  // }, []);
   // test getting the groups
 
   /*
