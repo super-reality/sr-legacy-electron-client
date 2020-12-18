@@ -1,43 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BaseTextArea from "../../../components/base-textarea";
 import ButtonSimple from "../../../components/button-simple";
 // import { Message } from "../../common/interfaces/Message";
-// import client from "../../redux/feathers";
+import client from "../../redux/feathers";
 
-import { dMessages } from "../../views/chat/dummy-data";
+// import { dMessages } from "../../views/chat/dummy-data";
 
 interface TextChatProps {
-  createMessage: (text: string) => void;
+  createMessage: (text: any) => void;
   activeChannel: any;
 }
 
 export default function TextChat(props: TextChatProps): JSX.Element {
   const { createMessage, activeChannel } = props;
   const [text, setText] = useState("");
-  // const [messages, setMessages] = useState<Array<any>>(dMessages);
+  const [messages, setMessages] = useState<Array<any>>();
 
-  const messages = dMessages;
+  const getChannelMessages = async (channel: any) => {
+    if (channel) {
+      const messageResult = await client.service("message").find({
+        query: {
+          channelId: channel.id,
+          $sort: {
+            createdAt: -1,
+          },
+          // $limit: limit != null ? limit : getState().get('chat').get('channels').get('channels').get(channelId).limit,
+          // $skip: skip != null ? skip : getState().get('chat').get('channels').get('channels').get(channelId).skip
+        },
+      });
+      console.log("messageResult", messageResult);
+      setMessages(messageResult.data);
+    }
+  };
 
-  //   const getChannelMessages = async (channel = activeChannel) => {
-  //     if (channel) {
-  //       const messageResult = await client.service("message").find({
-  //         query: {
-  //           channelId: channel.id,
-  //           $sort: {
-  //             createdAt: -1,
-  //           },
-  //           // $limit: limit != null ? limit : getState().get('chat').get('channels').get('channels').get(channelId).limit,
-  //           // $skip: skip != null ? skip : getState().get('chat').get('channels').get('channels').get(channelId).skip
-  //         },
-  //       });
-  //       console.log("messageResult", messageResult);
-  //       setMessages(messageResult.data);
-  //     }
-  //   };
+  useEffect(() => {
+    getChannelMessages(activeChannel);
+  }, [activeChannel]);
 
-  //   useEffect(() => {
-  //     getChannelMessages(activeChannel);
-  //   }, [activeChannel]);
+  client.service("message").on("created", (params: any) => {
+    console.log("MESSAGE CREATED EVENT");
+    console.log(params);
+    getChannelMessages(activeChannel);
+  });
 
   const onTextChange = (e: any) => {
     const message = e.target.value;
@@ -73,7 +77,11 @@ export default function TextChat(props: TextChatProps): JSX.Element {
           margin: "10px",
         }}
         onClick={() => {
-          createMessage(text);
+          createMessage({
+            text: text,
+            targetObjectId: activeChannel.group.id,
+            targetObjectType: activeChannel.channelType,
+          });
         }}
       >
         Send Message

@@ -22,24 +22,23 @@ export default function TestChat() {
 
   // const accessToken =
   //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MDcwMjAxMzUsImV4cCI6MTYwOTYxMjEzNSwic3ViIjoiMzE5Nzk4ZjAtMzU5NS0xMWViLTg4ODAtOGQ5NzEzYzBiNTRkIiwianRpIjoiYzY4NmU2ZjAtZjNkMy00MjJhLTk5MzgtNjdkNDMyMWQ3OGE4In0.a9_BGa4hAUHBHoDlGqBpKVtntbweoO0if1B_onqnc84";
-  // const getChannels = async () => {
-  //   try {
-  //     console.log("FETCHING CHANNELS");
-  //     const { data } = await client.service("channel").find({
-  //       query: {
-  //         $limit: 8,
-  //         $skip: 0,
-  //       },
-  //     });
-  //     console.log("channelResult", data);
-  //     const channelsResult = data.filter((e: any) => e.channelType == "group");
-  //     setChannels(channelsResult);
 
-  //     console.log("channels", channels);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const getChannels = async () => {
+    try {
+      console.log("FETCHING CHANNELS");
+      const { data } = await client.service("channel").find({
+        query: {
+          $limit: 8,
+          $skip: 0,
+        },
+      });
+      console.log("channelsResult", data);
+      const channelsResult = data.filter((e: any) => e.channelType == "group");
+      setChannels(channelsResult);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // const refreshGroups = async () => {
   //   const groupResults = await client.service("group").find();
@@ -49,10 +48,6 @@ export default function TestChat() {
 
   useEffect(() => {
     const login = async () => {
-      // await (client as any).authentication.setAccessToken(
-      //   accessToken as string
-      // );
-
       let res;
       try {
         res = await (client as any).reAuthenticate();
@@ -128,12 +123,8 @@ export default function TestChat() {
       //   });
     };
     login();
-
-    // getChannels();
-    // if (channels) {
-    //   setActiveChannel(channels[0]);
-    //   console.log("ok loading");
-    // }
+    getChannels();
+    console.log("channels", channels);
 
     // getChannelMessages();
   }, []);
@@ -202,15 +193,16 @@ export default function TestChat() {
       "targetObjectType:",
       targetObject.type
     );
-    // remove thiss
-    setChannels(dChannels);
+
     const targetChannelResult = await client.service("channel").find({
       query: {
         findTargetId: true,
-        targetObjectType: targetObject.type,
-        targetObjectId: targetObject.id,
+        targetObjectType: targetObject.channelType,
+        targetObjectId: targetObject.group.id,
       },
     });
+    setActiveChannel(targetChannelResult.data[0]);
+    console.log("setActiveChannel:", targetChannelResult.data[0]);
     // if (targetObject.type == "group" && groups) {
     //   const newActiveGroup = groups.find(
     //     (group) => group.id == targetObject.groupId
@@ -224,15 +216,17 @@ export default function TestChat() {
     //   setActiveGroup(newActiveParty);
     // }
     // setMessages(["message added"]);
-    setActiveChannel(targetObject);
-    // getChannelMessages(targetObject.id);
 
-    console.log("setActiveChannel:", activeChannel);
+    // getChannelMessages(targetObject.id);
 
     console.log("updateChatTarget:", targetChannelResult);
   };
+  useEffect(() => {
+    getChannels();
+  }, [channels.length]);
 
   const createMessage = async (values: any) => {
+    console.log(values);
     try {
       const resp = await client.service("message").create({
         targetObjectId: values.targetObjectId,
@@ -244,12 +238,6 @@ export default function TestChat() {
       console.log(err);
     }
   };
-
-  // client.service("message").on("created", (params: any) => {
-  //   console.log("MESSAGE CREATED EVENT");
-  //   console.log(params);
-  //   // getChannelMessages();
-  // });
 
   //   const getMessageUser = (message: Message): User => {
   //     let user;
@@ -291,7 +279,7 @@ export default function TestChat() {
           activeGroupId={activeChannel.id}
         />
       )}
-      {activeChannel && <MembersList users={activeChannel.group.groupUsers} />}
+      {activeChannel && <MembersList users={activeChannel.group.group_users} />}
       {activeChannel && (
         <TextChat createMessage={createMessage} activeChannel={activeChannel} />
       )}
@@ -343,215 +331,4 @@ verifyChanges: null
 verifyExpires: null
 verifyShortToken: null
 verifyToken: null
-
-<div
-        style={{
-          width: "45%",
-        }}
-      >
-        <textarea
-          value={text}
-          name="text"
-          cols={30}
-          rows={10}
-          onChange={onTextChange}
-        />
-
-        <ButtonSimple
-          style={{
-            margin: "10px",
-          }}
-          onClick={() => {
-            createMessage(text);
-          }}
-        >
-          Send Message
-        </ButtonSimple>
-
-        <ButtonSimple
-          style={{
-            margin: "10px",
-          }}
-          onClick={showParties}
-        >
-          Get Parties
-        </ButtonSimple>
-
-        <ButtonSimple
-          style={{
-            margin: "10px",
-          }}
-          onClick={createTestGroup}
-        >
-          createTestGroup
-        </ButtonSimple>
-        <ButtonSimple
-          style={{
-            margin: "10px",
-          }}
-          onClick={removeGroup}
-        >
-          removeGroup
-        </ButtonSimple>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            overflow: "auto",
-            height: "calc(100%-65px)",
-          }}
-        >
-          {groups ? (
-            groups.map((item) => {
-              console.log(item.name);
-              return (
-                <div
-                  key={item.id}
-                  style={{
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    style={{
-                      margin: "10px",
-                      color: "var(--color-text-active)",
-                      backgroundColor: "var(--color-button)",
-                    }}
-                  >
-                    {item.name}
-                  </div>
-                  <div
-                    style={{
-                      margin: "10px",
-                    }}
-                  >
-                    Group description:
-                  </div>
-                  <div
-                    style={{
-                      margin: "10px",
-                    }}
-                  >
-                    {item.description}
-                  </div>
-                  <ButtonSimple
-                    onClick={() => {
-                      updateChatTarget(item);
-                    }}
-                  >
-                    Start Chat
-                  </ButtonSimple>
-                  <div
-                    style={{
-                      margin: "10px",
-                    }}
-                  >
-                    {item.users.map((groupUser: any) => {
-                      return (
-                        <div key={groupUser.id}>
-                          <div>Group user:</div>
-                          <div>{groupUser.name}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div>No Groups</div>
-          )}
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            overflow: "auto",
-            height: "calc(100%-65px)",
-          }}
-        >
-          {typeof channels == "object" ? (
-            channels.map((channel) => {
-              return (
-                <div
-                  key={channel.id}
-                  style={{
-                    display: "flex",
-                  }}
-                >
-                  <div
-                    style={{
-                      margin: "10px",
-                    }}
-                  >
-                    Channel id: {channel.id}
-                  </div>
-                  <div
-                    style={{
-                      margin: "10px",
-                    }}
-                  >
-                    Channel type: {channel.channelType}
-                  </div>
-
-                  <ButtonSimple
-                    style={{
-                      margin: "10px",
-                    }}
-                    onClick={() => {
-                      updateChatTarget(channel);
-                    }}
-                  >
-                    Choose this channel
-                  </ButtonSimple>
-                </div>
-              );
-            })
-          ) : (
-            <div>No Parties</div>
-          )}
-        </div>
-      </div>
-
-      <div
-        style={{
-          width: "45%",
-        }}
-      >
-        <div>Chat</div>
-        <div
-          style={{
-            backgroundColor: "var(--color-background-dark)",
-            overflow: "auto",
-            display: "flex",
-            flexDirection: "column",
-            height: "90%",
-          }}
-        >
-          {typeof messages == "object"
-            ? messages.map((message) => {
-                return (
-                  <div key={message.id}>
-                    <div
-                      style={{
-                        margin: "10px",
-                      }}
-                    >
-                      {message.senderId}
-                    </div>
-                    <div
-                      style={{
-                        margin: "10px",
-                      }}
-                    >
-                      {message.text}
-                    </div>
-                  </div>
-                );
-              })
-            : null}
-        </div>
-      </div>
-
 */

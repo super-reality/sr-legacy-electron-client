@@ -70,7 +70,7 @@ export const dChannel = {
   group: {
     createdAt: "2020-12-04T12:06:02.000Z",
     description: "Group for the testing",
-    groupUsers: [
+    group_users: [
       {
         createdAt: "2020-12-04T12:06:02.000Z",
         groupId: "14114fd0-3629-11eb-8880-8d9713c0b54d",
@@ -106,8 +106,8 @@ export const dChannel = {
         userId: "79e60290-3405-11eb-a370-536a3bd39e62",
       },
     ],
-    id: "14114fd0-3629-11eb-8880-8d9713c0b54d",
-    name: "Test group from Denis",
+    id: "8de79ec0-408f-11eb-92e3-691c09f02192",
+    name: "Dummy Test group",
     updatedAt: "2020-12-04T12:06:02.000Z",
     users: [
       {
@@ -132,7 +132,7 @@ export const dChannel = {
   },
 
   groupId: "14114fd0-3629-11eb-8880-8d9713c0b54d",
-  id: "96a91260-3648-11eb-8880-8d9713c0b54d",
+  id: "73eb8d10-408f-11eb-92e3-691c09f02192",
   instance: null,
   instanceId: null,
   party: null,
@@ -217,7 +217,7 @@ export const dChannels = [
     },
 
     groupId: "14114fd0-3629-11eb-8880-8d9713c0b54d",
-    id: "96a91260-3648-11eb-8880-8d9713c0b54d",
+    id: "8de79ec0-408f-11eb-92e3-691c09f02192",
     instance: null,
     instanceId: null,
     party: null,
@@ -300,7 +300,7 @@ export const dChannels = [
     },
 
     groupId: "14114fd0-3629-11eb-8880-8d9713c0b54d",
-    id: "96a91260-3648-11eb-8880-8d9713c0b54d",
+    id: "73eb8d10-408f-11eb-92e3-691c09f02192",
     instance: null,
     instanceId: null,
     party: null,
@@ -383,7 +383,7 @@ export const dChannels = [
     },
 
     groupId: "14114fd0-3629-11eb-8880-8d9713c0b54d",
-    id: "96a91260-3648-11eb-8880-8d9713c0b54d",
+    id: "73eb8d10-408f-11eb-92e3-691c09f02192",
     instance: null,
     instanceId: null,
     party: null,
@@ -402,7 +402,7 @@ export const dChannels = [
 
 export const dMessages = [
   {
-    channelId: "96a91260-3648-11eb-8880-8d9713c0b54d",
+    channelId: "73eb8d10-408f-11eb-92e3-691c09f02192",
     createdAt: "2020-12-04T15:51:35.000Z",
     id: "96ada640-3648-11eb-8880-8d9713c0b54d",
     senderId: "31963960-3595-11eb-8818-054b8fb93e03",

@@ -11,11 +11,18 @@ export default async function handleXRAuthSingin(
   if (res.status === 200) {
     if (res.data.err_code === 0) {
       //  window.localStorage.getItem('token');
-
-      let result;
       try {
-        result = await (client as any).reAuthenticate();
-        console.log("chat auth ok", result);
+        const accessToken = window.localStorage.getItem("token");
+        await (client as any).authentication.setAccessToken(
+          accessToken as string
+        );
+        let result;
+        try {
+          result = await (client as any).reAuthenticate();
+          console.log("chat auth ok", result);
+        } catch (err) {
+          console.log(err);
+        }
       } catch (err) {
         console.log(err);
       }
