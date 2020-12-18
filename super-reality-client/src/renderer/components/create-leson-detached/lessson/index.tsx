@@ -150,7 +150,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
       )}
       {view == "Lessons" && (
         <div className="create-lesson-item-container mid-tight">
-          <Flex style={{ margin: "auto" }}>
+          <Flex style={{ margin: "auto", marginTop: "5px" }}>
             <ButtonRound
               width="36px"
               height="36px"

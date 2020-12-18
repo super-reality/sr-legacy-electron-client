@@ -154,7 +154,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
         />
       </Flex>
       <TemplatesList key={anchor._id} update={update} anchor={anchor} />
-      <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
+      <ButtonSimple onClick={doTest} width="190px" margin="auto">
         Test Anchor
       </ButtonSimple>
       <AnchorEditSliders anchor={anchor} update={debouncedUpdate} />

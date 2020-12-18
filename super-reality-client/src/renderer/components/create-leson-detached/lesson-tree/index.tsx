@@ -14,7 +14,7 @@ import getStep from "../lesson-utils/getStep";
 import "./index.scss";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
 import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
-import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
+import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-tts.svg";
 import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";

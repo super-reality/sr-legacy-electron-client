@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920px" height="1080px" viewBox="0 0 1920 1080" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 2</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1920" height="1080"></rect>
+        <linearGradient x1="8.3%" y1="56.4546875%" x2="91.2208333%" y2="72.2580078%" id="linearGradient-3">
+            <stop stop-color="#474785" offset="0%"></stop>
+            <stop stop-color="#100540" offset="30.7%"></stop>
+            <stop stop-color="#10043D" offset="56.8%"></stop>
+            <stop stop-color="#15449B" offset="100%"></stop>
+        </linearGradient>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="51.8011527%" gradientTransform="translate(0.500000,0.500000),scale(0.965229,1.000000),translate(-0.500000,-0.500000)" id="radialGradient-4">
+            <stop stop-color="#78279E" offset="0%"></stop>
+            <stop stop-color="#FA2859" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="51.8067227%" gradientTransform="translate(0.500000,0.500000),scale(0.965126,1.000000),translate(-0.500000,-0.500000)" id="radialGradient-5">
+            <stop stop-color="#FA255A" offset="0%"></stop>
+            <stop stop-color="#FA2859" stop-opacity="0" offset="100%"></stop>
+        </radialGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Mask"></g>
+            <g mask="url(#mask-2)" fill-rule="nonzero">
+                <g transform="translate(-273.000000, -454.000000)">
+                    <rect id="Rectangle" fill="url(#linearGradient-3)" x="273" y="454" width="1920" height="1080"></rect>
+                    <polygon id="Path" fill="url(#radialGradient-4)" opacity="0.49" points="2055 0 617 0 617 1388 2055 1388"></polygon>
+                    <polygon id="Path" fill="url(#radialGradient-5)" opacity="0.61" points="1233 865 0 865 0 2055 1233 2055"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

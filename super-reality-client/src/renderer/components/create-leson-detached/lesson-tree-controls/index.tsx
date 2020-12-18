@@ -59,9 +59,9 @@ export default function LessonTreeControls() {
   return (
     <Flex
       style={{
-        margin: "8px auto",
+        margin: "3px auto",
         width: "-webkit-fill-available",
-        justifyContent: "space-evenly",
+        justifyContent: "space-around",
       }}
     >
       <ChapterInput />

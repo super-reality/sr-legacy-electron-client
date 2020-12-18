@@ -98,9 +98,7 @@ export default function OpenItem(props: OpenItemProps) {
         style={{
           padding: "10px",
           margin: "0 3px",
-          height: "200px",
           overflow: "auto",
-          background: "#2e2a48",
         }}
       >
         <Flex column>
