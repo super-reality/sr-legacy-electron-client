@@ -23,7 +23,7 @@ const YoutubeBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
         }}
       >
         <iframe
-          src={item.url}
+          src={`https://www.youtube.com/embed/${item.url}`}
           style={{
             maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",
           }}
