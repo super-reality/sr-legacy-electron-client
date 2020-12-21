@@ -31,10 +31,13 @@ import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
-import { itemsPath } from "../../../electron-constants";
+import { itemsPath, recordingPath } from "../../../electron-constants";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 import timetoTimestamp from "../../../../utils/timeToTimestamp";
 import sha1 from "../../../../utils/sha1";
+import cropVideo from "../../../../utils/cropVideo";
+import updateItem from "../lesson-utils/updateItem";
+import { ItemVideo } from "../../../items/item";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -60,6 +63,7 @@ function newAnchorPre(file: string): Promise<IAnchor | undefined> {
 
 const userData = userDataPath();
 const captureFileName = `${userData}/capture.png`;
+const videoCropFileName = `${userData}/crop.webm`;
 
 const MODE_CREATE = 1;
 const MODE_ADD_TO = 2;
@@ -391,13 +395,47 @@ export default function VideoStatus() {
   }, [dispatch]);
 
   const doTrimVideo = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        trimVideo: false,
-      },
-    });
-  }, [dispatch]);
+    const slice = store.getState().createLessonV2;
+    const { currentRecording, trimVideoArea, currentItem } = slice;
+    if (currentItem) {
+      const recordingVideo = `${recordingPath}/vid-${currentRecording}.webm`;
+      setStatus("Trimming video...");
+      cropVideo(
+        `${videoNavigation[0] / 1000}`,
+        `${videoNavigation[2] / 1000}`,
+        Math.round(trimVideoArea.width),
+        Math.round(trimVideoArea.height),
+        Math.round(trimVideoArea.x),
+        Math.round(trimVideoArea.y),
+        recordingVideo,
+        videoCropFileName
+      )
+        .then((file) => {
+          setStatus("Uploading video...");
+          return uploadFileToS3(file);
+        })
+        .then((url) => {
+          setStatus("Updating item...");
+          return updateItem<ItemVideo>({ url }, currentItem);
+        })
+        .then((updatedItem) => {
+          if (updatedItem) {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETITEM",
+              arg: { item: updatedItem },
+            });
+          }
+
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              trimVideo: false,
+            },
+          });
+        })
+        .catch(console.error);
+    }
+  }, [dispatch, videoNavigation]);
 
   let currentMode: STATUS_MODES = MODE_IDLE;
 

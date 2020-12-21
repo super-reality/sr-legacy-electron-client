@@ -216,7 +216,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          updateItem({ ...item, relativePos: startPos }, item._id);
+          updateItem<typeof item>({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
           const div = dragContainer.current;
@@ -241,7 +241,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          updateItem({ ...item, relativePos: startPos }, item._id);
+          updateItem<typeof item>({ ...item, relativePos: startPos }, item._id);
         });
 
       return (): void => {
