@@ -1,7 +1,5 @@
-import React, { CSSProperties, PropsWithChildren, ReactChildren } from "react";
+import React, { CSSProperties, PropsWithChildren } from "react";
 import "./index.scss";
-
-import Flex from "../../../flex";
 
 interface SettingsContainerProps {
   style?: CSSProperties;
