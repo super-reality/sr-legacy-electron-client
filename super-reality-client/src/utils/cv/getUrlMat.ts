@@ -2,7 +2,7 @@ import getImage from "../getImage";
 import * as cv from "../opencv/opencv";
 
 export default function getUrlMat(image: string): Promise<cv.Mat> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     getImage(image).then((img) => {
       const canvas = document.createElement("canvas");
       const w = img.width;

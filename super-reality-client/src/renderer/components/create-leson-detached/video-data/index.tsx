@@ -52,8 +52,8 @@ export default function VideoData() {
         ))}
       </div>
       <div className="video-data">
-        {recordingData.step_data.map((s) => {
-          const named = `${s.type}-${s.time_stamp}`;
+        {recordingData.step_data.map((s, i) => {
+          const named = `${s.type}-${i}-${s.time_stamp}`;
           const item = recordingTempItems[sha1(named)] || null;
           // eslint-disable-next-line radix
           const time = timestampToTime(s.time_stamp);

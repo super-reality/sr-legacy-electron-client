@@ -11,3 +11,5 @@ export const stepSnapshotPath = `${userData}/step/snapshots/`;
 export const itemsPath = `${userData}/item/`;
 
 export const tempPath = `${userData}/temp/`;
+
+export const fxPath = `${userData}/fx/`;

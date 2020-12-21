@@ -1,7 +1,5 @@
 import React from "react";
 import "./index.scss";
-import { useRouteMatch } from "react-router-dom";
-import Category from "../../../types/collections";
 
 interface ReactSelectProps<K> {
   optionFormatter?: (option: K | string) => string | JSX.Element;

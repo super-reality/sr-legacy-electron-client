@@ -6,10 +6,19 @@ import React, {
   useRef,
   useState,
 } from "react";
+import "./index.scss";
 import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
-import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
-import { cursorChecker, restrictMinSize } from "../../../constants";
+import { ReactComponent as CloseIcon } from "../../../assets/svg/win-close.svg";
+import { ReactComponent as MinimizeIcon } from "../../../assets/svg/win-minimize.svg";
+import {
+  cursorChecker,
+  restrictMinSize,
+  restrictRoot,
+  voidFunction,
+} from "../../constants";
+import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
+import clamp from "../../../utils/clamp";
 
 interface WindowletProps {
   title: string;
@@ -18,7 +27,10 @@ interface WindowletProps {
   height?: number;
   initialPosX?: number;
   initialPosY?: number;
+  initialLeft?: string;
+  initialTop?: string;
   onClose: () => void;
+  onMinimize?: () => void;
 }
 
 export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
@@ -28,9 +40,12 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     title,
     height,
     width,
+    onMinimize,
     onClose,
     initialPosX,
     initialPosY,
+    initialLeft,
+    initialTop,
   } = props;
   const dragContainer = useRef<HTMLDivElement>(null);
   const resizeContainer = useRef<HTMLDivElement>(null);
@@ -62,10 +77,19 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       resizeContainer.current.style.width = `${width || 400}px`;
       resizeContainer.current.style.height = `${height || 200}px`;
 
+      const display = getPrimaryMonitor();
+      const primarySize = display.workArea;
+      const primaryPos = display.bounds;
+
       const screenWidth =
-        document.getElementById("root")?.offsetWidth || window.screen.width;
+        primarySize?.width ||
+        document.getElementById("root")?.offsetWidth ||
+        window.screen.width;
       const screenHeight =
-        document.getElementById("root")?.offsetHeight || window.screen.height;
+        primarySize?.height ||
+        document.getElementById("root")?.offsetHeight ||
+        window.screen.height;
+
       const windowletWidth = width || 400;
       const windowletHeight = height || 200;
 
@@ -80,12 +104,19 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       }
       if (initialPosY) {
         resizeContainer.current.style.top = `${
-          ((screenHeight - windowletHeight) / 100) * initialPosY
+          primaryPos.y + ((screenHeight - windowletHeight) / 100) * initialPosY
         }px`;
       } else {
         resizeContainer.current.style.top = `${
-          screenHeight / 2 - windowletHeight / 2
+          primaryPos.y + screenHeight / 2 - windowletHeight / 2
         }px`;
+      }
+
+      if (initialLeft) {
+        resizeContainer.current.style.left = initialLeft;
+      }
+      if (initialTop) {
+        resizeContainer.current.style.top = initialTop;
       }
     }
   }, []);
@@ -93,29 +124,34 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
   useEffect(() => {
     if (dragContainer.current) {
       interact(dragContainer.current)
-        .draggable({ cursorChecker })
+        .draggable({ cursorChecker, modifiers: [restrictRoot] })
         .on("dragmove", (event) => {
           if (resizeContainer.current) {
             const x = parseFloat(resizeContainer.current.style.left) + event.dx;
             const y = parseFloat(resizeContainer.current.style.top) + event.dy;
+
+            const rootHeight =
+              (document.getElementById("root")?.offsetHeight || 99999) -
+              (resizeContainer.current?.offsetHeight || 0);
+
             resizeContainer.current.style.left = `${x}px`;
-            resizeContainer.current.style.top = `${y}px`;
+            resizeContainer.current.style.top = `${clamp(0, rootHeight, y)}px`;
           }
         });
 
       return (): void =>
         interact(dragContainer.current as HTMLDivElement).unset();
     }
-    return () => {};
-  }, []);
+    return voidFunction;
+  }, [dragContainer, resizeContainer]);
 
   useEffect(() => {
     if (resizeContainer.current) {
       interact(resizeContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
+          margin: 16,
           modifiers: [restrictMinSize],
-          inertia: true,
         } as any)
         .on("resizemove", (event) => {
           const { target } = event;
@@ -131,8 +167,8 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       return (): void =>
         interact(resizeContainer.current as HTMLDivElement).unset();
     }
-    return () => {};
-  }, []);
+    return voidFunction;
+  }, [resizeContainer]);
 
   return (
     <animated.div
@@ -148,12 +184,19 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       }}
     >
       <div ref={dragContainer} className="title-bar">
-        <div>{title}</div>
-        <div className="close" onClick={() => setState(false)}>
-          <CloseIcon style={{ margin: "auto" }} fill="var(--color-icon" />
+        <div className="title">{title}</div>
+        <div className="buttons">
+          {onMinimize && (
+            <div className="minimize" onClick={onMinimize}>
+              <MinimizeIcon style={{ margin: "auto" }} />
+            </div>
+          )}
+          <div className="close" onClick={() => setState(false)}>
+            <CloseIcon style={{ margin: "auto" }} fill="var(--color-pink)" />
+          </div>
         </div>
       </div>
-      <div style={{ height: "calc(100% - 24px)" }}>{children}</div>
+      <div className="window-content-container">{children}</div>
     </animated.div>
   );
 }

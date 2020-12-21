@@ -29,7 +29,7 @@ const createStepSlice = createSlice({
     setData: (state: IStep, action: PayloadAction<Partial<IStep>>): void => {
       state = Object.assign(state, action.payload);
     },
-    reset: (state: IStep, action: PayloadAction<null>): void => {
+    reset: (state: IStep, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.images = [];
       state.functions = [];

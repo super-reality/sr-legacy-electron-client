@@ -30,7 +30,7 @@ export default function doCvMatch(
     let height = 1;
     let xScale = 1;
     let yScale = 1;
-    let mode: "Local" | "Dom" = "Dom";
+
     if (typeof sourceElement == "string") {
       srcMat = cv.imread(sourceElement);
       width = (srcMat.cols / 100) * opt.cvCanvas;
@@ -40,7 +40,6 @@ export default function doCvMatch(
       width = Math.round(width);
       height = Math.round(height);
       srcMat = srcMat.resize(height, width);
-      mode = "Local";
     } else {
       width = (sourceElement.videoWidth / 100) * opt.cvCanvas;
       height = (sourceElement.videoHeight / 100) * opt.cvCanvas;
@@ -53,6 +52,7 @@ export default function doCvMatch(
     }
 
     if (globalData.debugCv) {
+      console.log(`sourceElement: ${sourceElement}`);
       console.log(`Source: ${width}x${height}, Scaling: ${xScale}/${yScale}`);
     }
 
@@ -74,7 +74,9 @@ export default function doCvMatch(
         console.log(
           `Template: ${ret.cols}x${ret.rows} => ${Math.round(
             ret.cols / xScale
-          )}/${Math.round(ret.rows / yScale)}`
+          )}/${Math.round(ret.rows / yScale)}, template channels: ${
+            ret.channels
+          }`
         );
       }
 
@@ -85,6 +87,8 @@ export default function doCvMatch(
       // Source Mat and Template mat filters should be applied in the same order!
       if (opt.cvGrayscale) {
         ret = ret.cvtColor(cv.COLOR_RGBA2GRAY);
+      } else {
+        ret = ret.cvtColor(cv.COLOR_RGBA2RGB);
       }
       if (opt.cvApplyThreshold) {
         ret = ret.threshold(opt.cvThreshold, 255, cv.ADAPTIVE_THRESH_MEAN_C);

@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import Flex from "../../flex";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Tabs, TabsContainer } from "../../tabs";
 import ButtonRound from "../../button-round";
@@ -15,6 +15,10 @@ import { IStep } from "../../../api/types/step/step";
 import updateStep from "../lesson-utils/updateStep";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
+import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
+import BaseInput from "../../base-input";
+import useDebounce from "../../../hooks/useDebounce";
 
 function doNewAnchor(url: string, stepId: string) {
   return newAnchor(
@@ -64,6 +68,12 @@ export default function OpenStep(props: OpenStepProps) {
     treeSteps,
   ]);
 
+  const [name, setName] = useState(step?.name || "");
+
+  useEffect(() => {
+    setName(step.name);
+  }, [step]);
+
   const doUpdate = useCallback(
     (data: Partial<IStep>) => {
       const updatedStep = { ...treeSteps[id], ...data };
@@ -74,6 +84,17 @@ export default function OpenStep(props: OpenStepProps) {
       updateStep(updatedStep, id);
     },
     [id, treeSteps]
+  );
+
+  const debouncer = useDebounce(1000);
+
+  const debounceDoUpdate = useCallback(
+    (data: Partial<IStep>) => {
+      debouncer(() => {
+        doUpdate(data);
+      });
+    },
+    [debouncer, doUpdate]
   );
 
   const callback = useCallback(
@@ -93,7 +114,15 @@ export default function OpenStep(props: OpenStepProps) {
     [id]
   );
 
-  const [Popup, open] = usePopupImageSource(callback, true, true, true);
+  const doNameUpdate = useCallback(
+    (e) => {
+      debounceDoUpdate({ name: e.currentTarget.value });
+      setName(e.currentTarget.value);
+    },
+    [debounceDoUpdate]
+  );
+
+  const [Popup, open] = usePopupImageSource(callback, true, true, true, false);
 
   return (
     <>
@@ -102,15 +131,21 @@ export default function OpenStep(props: OpenStepProps) {
         buttons={stepModalOptions}
         initial={view}
         callback={setView}
-        style={{ width: "-webkit-fill-available", height: "42px" }}
+        style={{ width: "-webkit-fill-available", height: "28px" }}
       />
-      <TabsContainer style={{ height: "600px", overflow: "auto" }}>
+      <TabsContainer
+        style={{
+          margin: "0 3px",
+          padding: "10px",
+          height: "200px",
+          overflow: "auto",
+          background: "#2e2a48",
+        }}
+      >
         {view === "Settings" && (
           <>
-            {/* {item.type == "focus_highlight" && (
-          <SettingsFocusHighlight item={item} update={doUpdate} />
-        )} */}
-            <div> Settings</div>
+            <div>Step Settings</div>
+            <BaseInput title="Step name" value={name} onChange={doNameUpdate} />
           </>
         )}
         {view === "Anchor" && (
@@ -123,7 +158,20 @@ export default function OpenStep(props: OpenStepProps) {
                 options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
                 current={step?.anchor || ""}
                 selected={currentAnchor || ""}
-                setCurrent={(val) => doUpdate({ anchor: val })}
+                setCurrent={(val) => {
+                  doUpdate({ anchor: val });
+                  const prevCvResult = store.getState().render.cvResult;
+                  pendingReduxAction(
+                    (state) => state.render.cvResult,
+                    prevCvResult
+                  ).then((state) => {
+                    editStepItemsRelativePosition(
+                      id,
+                      state.render.cvResult,
+                      prevCvResult
+                    );
+                  });
+                }}
                 open={openAnchor}
               />
             </Flex>

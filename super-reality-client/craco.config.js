@@ -1,3 +1,5 @@
+const eslintConfig = require("./.eslintrc");
+
 // https://www.npmjs.com/package/@craco/craco
 module.exports = {
   webpack: {
@@ -19,10 +21,6 @@ module.exports = {
     },
   },
   eslint: {
-    configure: {
-      rules: {
-        "no-underscore-dangle": "off",
-      },
-    },
+    configure: eslintConfig,
   },
 };

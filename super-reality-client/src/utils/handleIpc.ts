@@ -9,8 +9,6 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getBoundsPos from "./electron/getBoundsPos";
-import getDisplayBounds from "./electron/getNewBounds";
 
 import getWindowId from "./electron/getWindowId";
 
@@ -76,6 +74,11 @@ export default function handleIpc(): void {
     createBackgroundProcess();
   });
 
+  ipcRenderer.removeAllListeners("rendererReady");
+  ipcRenderer.on("rendererReady", () => {
+    reduxAction(store.dispatch, { type: "SET_READY", arg: true });
+  });
+
   ipcRenderer.removeAllListeners("detached");
   ipcRenderer.on("detached", (e: any, arg: DetachArg) => {
     console.log(`Register on IPC as: ${arg.type}`);
@@ -114,12 +117,7 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
-    const pos = arg;
-    console.log("cv absolute pos", { x: pos.x, y: pos.y });
-    const primary = getBoundsPos(getDisplayBounds());
-    pos.x -= primary.x;
-    pos.y -= primary.y;
-    console.log("cv relative pos", { x: pos.x, y: pos.y });
-    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
+    console.log("cv pos", { x: arg.x, y: arg.y });
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
   });
 }

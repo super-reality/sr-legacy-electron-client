@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { InputChangeEv } from "../../types/utils";
-import BaseInput from "../components/base-input";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 

@@ -21,6 +21,10 @@
   box-shadow: 0px 12px 10px 2px #00000040;
 }
 
+@mixin mid-shadow {
+  box-shadow: 0px 5px 9px 0px #0000004a;
+}
+
 $break-desktop: 800px;
 $break-wrapper: 1600px;
 

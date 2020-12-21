@@ -16,7 +16,7 @@ export default function useMediaSniper(
     const userData = (app || remote.app).getPath("userData");
 
     const fileName = path.join(userData, "capture.png").replace(/\\/g, "/");
-    screenshotcapture(fileName, (err: any, imagePath: string) => {
+    screenshotcapture(fileName, () => {
       createDetachedWindow(
         {
           fullscreen: true,

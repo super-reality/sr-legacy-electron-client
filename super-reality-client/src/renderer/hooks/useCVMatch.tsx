@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import _ from "lodash";
 import { useSelector } from "react-redux";
 import { AppState } from "../redux/stores/renderer";
@@ -41,30 +35,25 @@ export default function useCVMatch(
     setCapturing(false);
   }, []);
 
-  const doMatch = useCallback(
-    (force: boolean = false) => {
-      console.log(opt);
-      const dateStart = new Date().getTime();
-      if (videoElement) {
-        doCvMatch(images, videoElement, opt)
-          .then((res) => {
-            callback(res);
-            if (globalData.debugCv) {
-              console.log(
-                `${`CV match time taken - ${
-                  new Date().getTime() - dateStart
-                }`}ms`
-              );
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
-      setFrames(frames + 1);
-    },
-    [callback, images, capturing, frames, videoElement, opt]
-  );
+  const doMatch = useCallback(() => {
+    console.log(opt);
+    const dateStart = new Date().getTime();
+    if (videoElement) {
+      doCvMatch(images, videoElement, opt)
+        .then((res) => {
+          callback(res);
+          if (globalData.debugCv) {
+            console.log(
+              `${`CV match time taken - ${new Date().getTime() - dateStart}`}ms`
+            );
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+    setFrames(frames + 1);
+  }, [callback, images, capturing, frames, videoElement, opt]);
 
   useEffect(() => {
     setFrames(0);

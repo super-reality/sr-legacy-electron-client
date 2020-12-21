@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { ReactComponent as BackIcon } from "../../../assets/svg/back.svg";
 import { ReactComponent as ProfileIcon } from "../../../assets/svg/profile.svg";
@@ -65,11 +65,6 @@ export default function TopSearch(): JSX.Element {
     any: string;
     categorgy: string;
   }>("/:any");
-
-  const catMatch = useRouteMatch<{
-    any: string;
-    categorgy: string;
-  }>("/:any/:categorgy");
 
   // Input
   const topInputStates = useSelector(

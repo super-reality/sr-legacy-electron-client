@@ -1,4 +1,4 @@
-@import '../components/misc.scss';
+@import "../components/misc.scss";
 
 .popup-container {
   position: absolute;
@@ -18,7 +18,12 @@
     min-width: 100px;
     min-height: 100px;
     margin: auto;
-    background-color: var(--color-section);
+    background: linear-gradient(
+      180deg,
+      #29233c 0%,
+      #353459 50.2%,
+      #261f34 100%
+    );
     max-width: calc(100% - 16px);
     max-height: calc(100% - 128px);
     overflow: auto;

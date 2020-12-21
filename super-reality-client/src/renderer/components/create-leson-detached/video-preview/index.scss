@@ -3,8 +3,8 @@
 @import "../../lesson-player/find-box/index.scss";
 
 .video-preview-container-out {
-  background-size:25px 25px; /* Must be a square */
-  background-position:0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
+  background-size: 25px 25px; /* Must be a square */
+  background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
 
   width: 100%;
   height: 100%;
@@ -12,6 +12,17 @@
   position: relative;
   border-radius: 5px;
   @include disable-select;
+}
+
+.zoom-container {
+  position: absolute;
+  width: 200px;
+  height: 32px;
+  text-align: center;
+  left: calc(50% - 100px);
+  background: var(--color-button);
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
 }
 
 .video-preview-container {
@@ -44,7 +55,7 @@
     width: 0px;
     height: 100%;
     border: 1px solid gray;
-    background-color: var(--color-section);
+    background: var(--color-section);
     position: absolute;
     display: none;
     width: 200px;
@@ -63,8 +74,8 @@
     height: 1080px;
     font-size: 30px;
     font-weight: 500;
-    background-color: var(--color-background);
-    color: var(--color-background-hover);
+    background: var(--color-background-dark);
+    color: var(--color-gray);
     text-align: center;
     line-height: 1080px;
     margin: auto;
@@ -76,10 +87,12 @@
     display: block;
     width: auto;
     height: auto;
+    box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
     /*
     max-height: -webkit-fill-available;
     height: inherit;
     */
+    background: var(--color-background-dark);
     position: inherit;
   }
 

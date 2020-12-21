@@ -29,7 +29,7 @@ const createCollectionSlice = createSlice({
     addTag: (state: ICollection, action: PayloadAction<ITag>): void => {
       state.tags = [...state.tags, action.payload];
     },
-    reset: (state: ICollection, action: PayloadAction<null>): void => {
+    reset: (state: ICollection, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.medias = [];
       state.tags = [];
