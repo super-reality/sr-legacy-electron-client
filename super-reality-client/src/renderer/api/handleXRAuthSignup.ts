@@ -20,12 +20,12 @@ export default function handleXRAuthSingup(
     // dispatch(actionProcessing(true));
     if (res.status === 200) {
       if (res.data.err_code === 0) {
-        const accessToken = res.data.token;
-        if (accessToken) {
+        const email = window.localStorage.getItem("username");
+        if (email) {
           client
             .service("identity-provider")
             .create({
-              token: accessToken,
+              token: email,
               password: password,
               type: "password",
             })
@@ -40,7 +40,10 @@ export default function handleXRAuthSingup(
 
             .then((r: any) => {
               console.log(r);
-              window.localStorage.setItem("XREngine-Auth-Store", r.accessToken);
+              window.localStorage.setItem(
+                "TheOverlay-Auth-Store",
+                r.accessToken
+              );
               return (client as any).authenticate({
                 strategy: "jwt",
                 accessToken: r.accessToken,
@@ -66,8 +69,6 @@ export default function handleXRAuthSingup(
               reject();
             });
         }
-
-        // handle XR
 
         return;
       }

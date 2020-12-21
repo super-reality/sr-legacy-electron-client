@@ -12,7 +12,9 @@ export default async function handleXRAuthSingin(
     if (res.data.err_code === 0) {
       //  window.localStorage.getItem('token');
       try {
-        const accessToken = window.localStorage.getItem("XREngine-Auth-Store");
+        const accessToken = window.localStorage.getItem(
+          "TheOverlay-Auth-Store"
+        );
         console.log(accessToken);
         // await (client as any).authentication.setAccessToken(
         //   accessToken as string
