@@ -6,7 +6,7 @@
   height: 22px;
   padding: 11px 0;
   border-radius: 4px;
-  background: linear-gradient(180deg, #343358 0%, #2B2641 68.4%);
+  background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
 }
 
 .video-railInner {
@@ -36,7 +36,7 @@
   transform: translate(-50%, -25px);
   z-index: 6;
   width: 46px;
-  filter: 0 0 3px #F1205F;
+  filter: 0 0 3px #f1205f;
   height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -92,6 +92,11 @@
 .video-slider-ticks {
   position: relative;
   top: 16px;
+
+  div:last-child  .video-tick {
+    display: none;
+  }
+  
 }
 
 .video-track {
@@ -135,3 +140,4 @@
 .video-video-nav {
   background: var(--color-section);
 }
+

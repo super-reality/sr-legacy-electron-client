@@ -90,7 +90,7 @@ export default function LessonTreeControls() {
                 svg={itemsDatabase[type].icon}
                 width="32px"
                 height="32px"
-                style={{ margin: "0 4px" }}
+                style={{ margin: "0" }}
               />
             );
           })}
