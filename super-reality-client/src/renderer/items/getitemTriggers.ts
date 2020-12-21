@@ -1,44 +1,12 @@
-import {
-  Item,
-  ItemAudioTriggers,
-  ItemDialogTriggers,
-  ItemFocusTriggers,
-  ItemFXTriggers,
-  ItemImageTriggers,
-  ItemVideoTriggers,
-  ItemYoutubeTriggers,
-} from "./item";
+import { Item } from "./item";
+import itemsDatabase from "./itemsDatabase";
 
 export default function getItemTriggers(
   item: Item
 ): Record<string, number | null> {
   let triggers: Record<string, number | null> = { None: null };
-  if (item) {
-    switch (item.type) {
-      case "focus_highlight":
-        triggers = ItemFocusTriggers;
-        break;
-      case "fx":
-        triggers = ItemFXTriggers;
-        break;
-      case "audio":
-        triggers = ItemAudioTriggers;
-        break;
-      case "image":
-        triggers = ItemImageTriggers;
-        break;
-      case "video":
-        triggers = ItemVideoTriggers;
-        break;
-      case "youtube":
-        triggers = ItemYoutubeTriggers;
-        break;
-      case "dialog":
-        triggers = ItemDialogTriggers;
-        break;
-      default:
-        break;
-    }
+  if (item && itemsDatabase[item.type]) {
+    triggers = itemsDatabase[item.type].triggers;
   }
 
   return triggers;

@@ -7,15 +7,10 @@ import Flex from "../../flex";
 import newChapter from "../lesson-utils/newChapter";
 import newStep from "../lesson-utils/newStep";
 
-import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
-import { ReactComponent as IconAddTTS } from "../../../../assets/svg/add-tts.svg";
-import { ReactComponent as IconAddSearch } from "../../../../assets/svg/search.svg";
-import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
-import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
-import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
-import { BaseItemType } from "../../../items/item";
+import { BaseItemType, Item } from "../../../items/item";
 import newItem from "../lesson-utils/newItem";
 import ButtonSimple from "../../button-simple";
+import itemsDatabase from "../../../items/itemsDatabase";
 
 export default function LessonTreeControls() {
   const dispatch = useDispatch();
@@ -86,55 +81,19 @@ export default function LessonTreeControls() {
         </>
       ) : (
         <>
-          <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddFocus}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("focus_highlight")}
-            svg={IconAddTTS}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("image")}
-            svg={IconAddImage}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("video")}
-            svg={IconAddVideo}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("youtube")}
-            svg={IconAddVideo}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("fx")}
-            svg={IconAddFX}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
-          <ButtonRound
-            onClick={() => doAddItem("audio")}
-            svg={IconAddSearch}
-            width="32px"
-            height="32px"
-            style={{ margin: "0 4px" }}
-          />
+          {Object.keys(itemsDatabase).map((k) => {
+            const type = k as Item["type"];
+            return (
+              <ButtonRound
+                key={`item-add-${type}`}
+                onClick={() => doAddItem(type)}
+                svg={itemsDatabase[type].icon}
+                width="32px"
+                height="32px"
+                style={{ margin: "0 4px" }}
+              />
+            );
+          })}
         </>
       )}
     </Flex>

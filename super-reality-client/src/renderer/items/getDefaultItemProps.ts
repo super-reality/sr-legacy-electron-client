@@ -1,4 +1,4 @@
-import { BaseItemType, Item } from "../../../items/item";
+import { BaseItemType, Item } from "./item";
 
 export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
   const payload: Partial<Item> = { type };

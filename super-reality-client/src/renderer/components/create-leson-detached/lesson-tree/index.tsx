@@ -384,7 +384,7 @@ function TreeItem(props: TreeItemProps) {
       style={{ paddingLeft: "50px" }}
     >
       <div className="item-icon-tree shadow-pink">
-        <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />
+        {Icon && <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />}
       </div>
       <div
         className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}

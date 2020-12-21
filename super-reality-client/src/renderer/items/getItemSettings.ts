@@ -1,11 +1,6 @@
 import { BaseItem, Item } from "./item";
+import itemsDatabase from "./itemsDatabase";
 import { BaseSettingsProps } from "./settings/settings";
-import SettingsDialog from "./settings/settings-dialog";
-import SettingsFocusHighlight from "./settings/settings-focus-highlight";
-import SettingsFX from "./settings/settings-fx";
-import SettingsImage from "./settings/settings-image";
-import SettingsVideo from "./settings/settings-video";
-import SettingsYoutube from "./settings/settings-youtube";
 
 type Ret<T extends BaseItem> =
   | ((props: BaseSettingsProps<T>) => JSX.Element)
@@ -16,27 +11,8 @@ export default function getItemSettings<T extends BaseItem>(
 ): Ret<T> {
   let SettingsComponent: Ret<T>;
 
-  switch (item.type) {
-    case "focus_highlight":
-      SettingsComponent = SettingsFocusHighlight as any;
-      break;
-    case "image":
-      SettingsComponent = SettingsImage as any;
-      break;
-    case "video":
-      SettingsComponent = SettingsVideo as any;
-      break;
-    case "youtube":
-      SettingsComponent = SettingsYoutube as any;
-      break;
-    case "dialog":
-      SettingsComponent = SettingsDialog as any;
-      break;
-    case "fx":
-      SettingsComponent = SettingsFX as any;
-      break;
-    default:
-      break;
+  if (item && itemsDatabase[item.type]) {
+    SettingsComponent = itemsDatabase[item.type].settings as any;
   }
 
   return SettingsComponent;

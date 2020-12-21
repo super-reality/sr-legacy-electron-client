@@ -124,12 +124,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         }),
       ];
 
-      if (
-        item.type == "dialog" ||
-        item.type == "image" ||
-        item.type == "video" ||
-        item.type == "youtube"
-      ) {
+      if (item.type !== "focus_highlight" && item.type !== "fx") {
         resizeMods.push(restrictSnapGrid);
         dragMods.push(restrictSnapGrid);
       }

@@ -6,7 +6,7 @@ import { BaseItemType, Item } from "../../../items/item";
 import { API_URL } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
-import getDefaultItemProps from "./getDefaultItemProps";
+import getDefaultItemProps from "../../../items/getDefaultItemProps";
 import updateStep from "./updateStep";
 
 export default function newItem(
