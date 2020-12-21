@@ -1,26 +1,14 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties } from "react";
-import { ItemImageTriggers } from "../../../api/types/item/item";
+import React from "react";
+import { ItemImage, ItemImageTriggers } from "../../item";
 import { voidFunction } from "../../../constants";
-import ButtonSimple from "../../button-simple";
+import ButtonSimple from "../../../components/button-simple";
 import "./index.scss";
+import { BaseBoxProps } from "../boxes";
 
-interface ImageBoxProps {
-  pos: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  style?: CSSProperties;
-  trigger: number | null;
-  image: string;
-  callback?: (trigger: number) => void;
-}
-
-const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
+const ImageBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemImage>>(
   (props, forwardedRef) => {
-    const { image, trigger, style, pos, callback } = props;
+    const { item, style, pos, callback } = props;
 
     return (
       <div
@@ -36,11 +24,11 @@ const ImageBox = React.forwardRef<HTMLDivElement, ImageBoxProps>(
       >
         <img
           style={{
-            maxHeight: trigger ? "calc(100% - 64px)" : "100%",
+            maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",
           }}
-          src={image}
+          src={item.url}
         />
-        {trigger && (
+        {item.trigger && (
           <ButtonSimple
             width="200px"
             height="24px"

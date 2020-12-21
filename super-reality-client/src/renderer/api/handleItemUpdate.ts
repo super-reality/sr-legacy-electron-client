@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
-import { Item } from "./types/item/item";
+import { Item } from "../items/item";
 import itemUpdate from "./types/item/update";
 
 /* eslint-disable camelcase */

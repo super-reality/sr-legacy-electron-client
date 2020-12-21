@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useEffect, useState } from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
-import { Item } from "../../../api/types/item/item";
+import { Item } from "../../../items/item";
 import { IDName } from "../../../api/types";
 import Flex from "../../flex";
 import onDrag from "../lesson-utils/onDrag";
@@ -13,17 +13,12 @@ import getStep from "../lesson-utils/getStep";
 
 import "./index.scss";
 import { ReactComponent as IconTreeTop } from "../../../../assets/svg/tree-drop.svg";
-import { ReactComponent as IconAddAudio } from "../../../../assets/svg/add-audio.svg";
-import { ReactComponent as IconAddDialog } from "../../../../assets/svg/add-dialog.svg";
-import { ReactComponent as IconAddFocus } from "../../../../assets/svg/add-focus.svg";
-import { ReactComponent as IconAddImage } from "../../../../assets/svg/add-image.svg";
-import { ReactComponent as IconAddVideo } from "../../../../assets/svg/add-video.svg";
 import { ReactComponent as TriggerIcon } from "../../../../assets/svg/item-trigger.svg";
-import { ReactComponent as IconAddFX } from "../../../../assets/svg/new-fx-icon.svg";
 import onDragOver from "../lesson-utils/onDragOver";
 import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
 import getAnchor from "../lesson-utils/getAnchor";
+import getItemIcon from "../../../items/getItemIcon";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -375,28 +370,7 @@ function TreeItem(props: TreeItemProps) {
     setIsOpen(treeCurrentId == id && treeCurrentType == "item");
   }, [treeCurrentType, treeCurrentId]);
 
-  let Icon = IconAddFocus;
-  if (itemData) {
-    switch (itemData.type) {
-      case "audio":
-        Icon = IconAddAudio;
-        break;
-      case "dialog":
-        Icon = IconAddDialog;
-        break;
-      case "image":
-        Icon = IconAddImage;
-        break;
-      case "video":
-        Icon = IconAddVideo;
-        break;
-      case "fx":
-        Icon = IconAddFX;
-        break;
-      default:
-        Icon = IconAddFocus;
-    }
-  }
+  const Icon = getItemIcon(itemData);
 
   return (
     <div
@@ -410,7 +384,7 @@ function TreeItem(props: TreeItemProps) {
       style={{ paddingLeft: "50px" }}
     >
       <div className="item-icon-tree shadow-pink">
-        <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />
+        {Icon && <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />}
       </div>
       <div
         className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}

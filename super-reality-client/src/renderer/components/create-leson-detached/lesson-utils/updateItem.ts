@@ -2,7 +2,7 @@ import Axios from "axios";
 import _ from "lodash";
 import handleItemUpdate from "../../../api/handleItemUpdate";
 import { ApiError } from "../../../api/types";
-import { Item } from "../../../api/types/item/item";
+import { Item } from "../../../items/item";
 import ItemUpdate from "../../../api/types/item/update";
 import { API_URL } from "../../../constants";
 

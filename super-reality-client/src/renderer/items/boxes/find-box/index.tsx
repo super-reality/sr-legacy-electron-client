@@ -1,39 +1,20 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
-import { ItemFocus, ItemFocusTriggers } from "../../../api/types/item/item";
+import { ItemFocus, ItemFocusTriggers } from "../../item";
 import { voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
+import { BaseBoxProps } from "../boxes";
 
 export type FindBoxType = "anchor" | "target";
 
-interface FindBoxProps {
-  pos: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  style?: CSSProperties;
-  type: ItemFocus["focus"];
-  ref?: React.RefObject<HTMLDivElement>;
-  clickThrough?: boolean;
-  callback?: (trigger: number) => void;
-}
-
-const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
+const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
   (props, forwardedRef) => {
-    const { type, pos, style, clickThrough, callback } = props;
+    const { item, pos, style, clickThrough, callback } = props;
     const { previewing } = useSelector(
       (state: AppState) => state.createLessonV2
     );
@@ -42,9 +23,9 @@ const FindBox = React.forwardRef<HTMLDivElement, FindBoxProps>(
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     let computedType = "type";
-    if (type == "Mouse Point") computedType = "mouse";
-    if (type == "Rectangle") computedType = "rectangle";
-    if (type == "Area highlight") computedType = "area";
+    if (item.focus == "Mouse Point") computedType = "mouse";
+    if (item.focus == "Rectangle") computedType = "rectangle";
+    if (item.focus == "Area highlight") computedType = "area";
 
     const clickCallback = useCallback(
       (e: { x: number; y: number; button: number }) => {

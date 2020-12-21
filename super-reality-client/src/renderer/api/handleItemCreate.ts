@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { ApiError } from "./types";
-import { Item } from "./types/item/item";
+import { Item } from "../items/item";
 import ItemCreate from "./types/item/create";
 import apiErrorHandler from "./apiErrorHandler";
 

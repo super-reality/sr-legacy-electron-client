@@ -1,36 +1,24 @@
 /* eslint-disable react/prop-types */
-import React, { CSSProperties, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Howler } from "howler";
-import { ItemImageTriggers } from "../../../api/types/item/item";
+import { ItemDialog, ItemImageTriggers } from "../../item";
 import { voidFunction } from "../../../constants";
-import ButtonRound from "../../button-round";
-import ButtonSimple from "../../button-simple";
+import ButtonRound from "../../../components/button-round";
+import ButtonSimple from "../../../components/button-simple";
 import { ReactComponent as MuteIcon } from "../../../../assets/svg/mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../../../assets/svg/unmute.svg";
 import { ReactComponent as TTSIcon } from "../../../../assets/svg/add-tts.svg";
-import Flex from "../../flex";
+import Flex from "../../../components/flex";
 import "./index.scss";
 import getTTS from "../../../../utils/api/getTTS";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
+import { BaseBoxProps } from "../boxes";
 
-interface DialogBoxProps {
-  pos: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  style?: CSSProperties;
-  text: string;
-  trigger: null | number;
-  callback?: (trigger: number) => void;
-}
-
-const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
+const DialogBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemDialog>>(
   (props, forwardedRef) => {
-    const { text, trigger, style, pos, callback } = props;
+    const { item, style, pos, callback } = props;
 
     const dispatch = useDispatch();
     const muted = useSelector((state: AppState) => state.lessonPlayer.ttsOn);
@@ -41,11 +29,11 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
 
     useEffect(() => {
       if (!muted) {
-        getTTS(text, true);
+        getTTS(item.text, true);
       } else {
         Howler.unload();
       }
-    }, [text, muted]);
+    }, [item, muted]);
 
     return (
       <div
@@ -59,9 +47,9 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
           ...style,
         }}
       >
-        <div className="dialog-text">{text}</div>
+        <div className="dialog-text">{item.text}</div>
         <Flex style={{ justifyContent: "center" }}>
-          {trigger && (
+          {item.trigger && (
             <ButtonSimple
               width="200px"
               height="24px"
@@ -85,7 +73,7 @@ const DialogBox = React.forwardRef<HTMLDivElement, DialogBoxProps>(
             style={{ marginLeft: "16px" }}
             width="40px"
             height="40px"
-            onClick={() => getTTS(text, true)}
+            onClick={() => getTTS(item.text, true)}
             svg={TTSIcon}
           />
         </Flex>

@@ -1,5 +1,5 @@
 import { CodeSuccess, ApiSucess } from "..";
-import { Item } from "./item";
+import { Item } from "../../../items/item";
 
 /* eslint-disable camelcase */
 export default interface ItemUpdate extends ApiSucess {

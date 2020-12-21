@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Item, ItemFocusTriggers } from "../../../api/types/item/item";
+import { Item, ItemFocusTriggers } from "../../../items/item";
 import { IStep } from "../../../api/types/step/step";
 import { AppState } from "../../../redux/stores/renderer";
 import ItemView from "../item-view";
@@ -85,6 +85,7 @@ export default function StepView(props: StepViewProps) {
     fx: 0,
     image: 0,
     video: 0,
+    youtube: 0,
   };
 
   return (

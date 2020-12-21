@@ -1,4 +1,4 @@
-import { BaseItemType, Item } from "../../../api/types/item/item";
+import { BaseItemType, Item } from "./item";
 
 export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
   const payload: Partial<Item> = { type };
@@ -16,6 +16,10 @@ export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
       payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
   }
   if (payload.type == "video") {
+    if (!payload.relativePos)
+      payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
+  }
+  if (payload.type == "youtube") {
     if (!payload.relativePos)
       payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
   }

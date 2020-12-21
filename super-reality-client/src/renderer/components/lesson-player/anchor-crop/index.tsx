@@ -9,8 +9,8 @@ import {
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
-import { IAbsolutePos } from "../../../api/types/item/item";
-import AnchorBox from "../anchor-box";
+import { IAbsolutePos } from "../../../items/item";
+import AnchorBox from "../../../items/boxes/anchor-box";
 
 export default function AnchorCrop() {
   const dispatch = useDispatch();

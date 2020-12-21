@@ -9,8 +9,6 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import FindBox from "../find-box";
-import ImageBox from "../image-box";
 import {
   cursorChecker,
   restrictMinSize,
@@ -20,12 +18,11 @@ import {
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
-import { IAbsolutePos } from "../../../api/types/item/item";
-import FXBox from "../fx-box/fx-box";
-import DialogBox from "../dialog-box";
-import AnchorBox from "../anchor-box";
+import { IAbsolutePos } from "../../../items/item";
+import AnchorBox from "../../../items/boxes/anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
 import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
+import getItemComponent from "../../../items/getItemComponent";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -127,11 +124,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         }),
       ];
 
-      if (
-        item.type == "dialog" ||
-        item.type == "image" ||
-        item.type == "video"
-      ) {
+      if (item.type !== "focus_highlight" && item.type !== "fx") {
         resizeMods.push(restrictSnapGrid);
         dragMods.push(restrictSnapGrid);
       }
@@ -267,19 +260,6 @@ export default function ItemPreview(props: ItemPreviewProps) {
     [item]
   );
 
-  // set full screen for the effect
-  // if (
-  //   item &&
-  //   item.type == "fx" &&
-  //   item.fullScreen &&
-  //   dragContainer.current?.parentElement
-  // ) {
-  //   console.log("item.fullScreen", dragContainer.current.parentElement);
-  //   pos.width = dragContainer.current.parentElement.offsetWidth;
-  //   pos.height = dragContainer.current.parentElement.offsetHeight;
-  //   pos.x = 0;
-  //   pos.y = 0;
-  // }
   if (
     previewing &&
     item &&
@@ -290,54 +270,23 @@ export default function ItemPreview(props: ItemPreviewProps) {
     return <></>;
   }
 
+  const ItemComponent = item ? getItemComponent(item) : undefined;
+
   return (
     <>
       {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
         <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
-      {item && item.type == "focus_highlight" ? (
-        <FindBox
+      {ItemComponent && item ? (
+        <ItemComponent
           ref={dragContainer}
           pos={pos}
           style={style}
-          type={item.focus}
+          item={item}
           callback={onSucessCallback}
         />
       ) : (
         <></>
-      )}
-      {item && item.type == "image" ? (
-        <ImageBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          image={item.url}
-          trigger={item.trigger}
-          callback={onSucessCallback}
-        />
-      ) : (
-        <></>
-      )}
-      {item && item.type == "dialog" ? (
-        <DialogBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          text={item.text}
-          trigger={item.trigger}
-          callback={onSucessCallback}
-        />
-      ) : (
-        <></>
-      )}
-      {item && item.type == "fx" && (
-        <FXBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          effect={item.effect}
-          callback={onSucessCallback}
-        />
       )}
     </>
   );

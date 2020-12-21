@@ -1,17 +1,15 @@
-import React, { CSSProperties } from "react";
-import IconFXThumbnail from "../../../../../assets/images/fx-popup-icon.png";
-import usePopupItemSettings from "../../../../hooks/usePopupItemSettings";
-import { ItemFX } from "../../../../api/types/item/item";
+import React from "react";
+import IconFXThumbnail from "../../../../assets/images/fx-popup-icon.png";
+import usePopupItemSettings from "../../../hooks/usePopupItemSettings";
+import { ItemFX } from "../../item";
+import { BaseSettingsProps } from "../settings";
 import "./index.scss";
 
-interface FXSettingsProps {
-  style?: CSSProperties;
-  item?: any;
-  update: (date: Partial<ItemFX>) => void;
-}
-
-export default function FXSettings(): JSX.Element {
-  // const { item, update, style } = props;
+export default function SettingsFX(
+  props: BaseSettingsProps<ItemFX>
+): JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { item, update } = props;
 
   const [Popup, open] = usePopupItemSettings();
 

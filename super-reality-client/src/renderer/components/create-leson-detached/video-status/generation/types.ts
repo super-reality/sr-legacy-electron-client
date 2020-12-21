@@ -1,4 +1,4 @@
-import { Item } from "../../../../api/types/item/item";
+import { Item } from "../../../../items/item";
 import { IStep } from "../../../../api/types/step/step";
 
 export interface GeneratedData {

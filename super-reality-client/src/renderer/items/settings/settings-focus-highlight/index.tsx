@@ -1,15 +1,13 @@
 import React from "react";
-import { ItemFocus } from "../../../../api/types/item/item";
-import ButtonSimple from "../../../button-simple";
-import Flex from "../../../flex";
-import "../../../lesson-player/find-box/index.scss";
+import { ItemFocus } from "../../item";
+import ButtonSimple from "../../../components/button-simple";
+import Flex from "../../../components/flex";
+import "../../boxes/find-box/index.scss";
+import { BaseSettingsProps } from "../settings";
 
-interface SettingsFocusHighlight {
-  item: ItemFocus;
-  update: (date: Partial<ItemFocus>) => void;
-}
-
-export default function SettingsFocusHighlight(props: SettingsFocusHighlight) {
+export default function SettingsFocusHighlight(
+  props: BaseSettingsProps<ItemFocus>
+) {
   const { item, update } = props;
 
   const styleSelected = { backgroundColor: "var(--color-background)" };
