@@ -20,7 +20,6 @@ import { EffectData } from "../../types/effects";
 interface SettingsItem {
   id: string;
   name: string;
-  url: string;
 }
 
 interface SettingsItemProps {
@@ -30,18 +29,7 @@ interface SettingsItemProps {
 
 function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
   const { item, callback } = props;
-  const { id, name, url } = item;
-
-  const [isHover, setIsHover] = useState("");
-
-  const onHover = useCallback((e) => {
-    e.preventDefault();
-    setIsHover(e.target.id);
-  }, []);
-
-  const onHoverEnd = useCallback(() => {
-    setIsHover("");
-  }, []);
+  const { id, name } = item;
 
   return (
     <button
@@ -57,33 +45,19 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
       key={name}
       id={id}
       type="button"
-      onMouseEnter={onHover}
-      onMouseLeave={onHoverEnd}
       onClick={() => {
         callback(id);
       }}
     >
-      {isHover == id ? (
-        <embed
-          style={{
-            pointerEvents: "none",
-            borderRadius: "8px",
-            width: "100%",
-            height: "100%",
-          }}
-          src={url}
-        />
-      ) : (
-        <img
-          style={{
-            pointerEvents: "none",
-            borderRadius: "8px",
-            width: "100%",
-            height: "100%",
-          }}
-          src={IconFXInList}
-        />
-      )}
+      <img
+        style={{
+          pointerEvents: "none",
+          borderRadius: "8px",
+          width: "100%",
+          height: "100%",
+        }}
+        src={IconFXInList}
+      />
     </button>
   );
 }
@@ -93,7 +67,6 @@ interface FXPopUpSettingsProps {
   preview: string;
   clickOk: () => void;
   clickCancel: () => void;
-  // inputComponent: JSX.Element;
 }
 
 function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
@@ -198,6 +171,82 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
 
   return (
     <>
+      <div
+        className="settings-popup-inner"
+        style={{
+          backgroundColor: "var(--color-section)",
+          borderRadius: "0",
+          borderLeft: "1px solid #3B3865",
+        }}
+      >
+        <SettingsInput
+          handleSearch={handleSearch}
+          handleOnChange={handleOnChange}
+          inputValue={inputValue}
+        />
+        <div
+          className="settings-popup-tags-container"
+          style={{
+            display: "flex",
+            height: "35px",
+          }}
+        >
+          <ButtonSimple
+            style={{
+              border: "#343358 solid 1px",
+              color: "#B8D4F3",
+              fontSize: "14px",
+              borderRadius: "3px",
+              margin: "5px 10px 5px 5px",
+            }}
+            onClick={clearAllFilters}
+          >
+            Remove filters
+          </ButtonSimple>
+          {filters.map((filter, indx) => {
+            return (
+              <ButtonSimple
+                key={filter}
+                style={{
+                  backgroundColor: "inherit",
+                  border: "var(--color-text) solid 1px",
+                  fontSize: "14px",
+                  borderRadius: "9px",
+                  margin: "5px 10px 5px 0px",
+                }}
+                onClick={() => {
+                  removeItem(indx, filters);
+                }}
+              >
+                {filter}
+                <CloseIcon
+                  style={{ marginLeft: "10px" }}
+                  height="10px"
+                  width="10px"
+                />
+              </ButtonSimple>
+            );
+          })}
+        </div>
+
+        <Flex
+          style={{
+            overflow: "auto",
+            maxHeight: "85%",
+            flexWrap: "wrap",
+          }}
+        >
+          {fxItems.map((key) => {
+            return (
+              <PopUpSettingsItem
+                key={key.name}
+                item={key}
+                callback={previewItem}
+              />
+            );
+          })}
+        </Flex>
+      </div>
       <div style={{ marginRight: "0px" }} className="settings-popup-inner">
         <div
           style={{
@@ -308,82 +357,6 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
             Cancel
           </ButtonSimple>
         </div>
-      </div>
-      <div
-        className="settings-popup-inner"
-        style={{
-          backgroundColor: "var(--color-section)",
-          borderRadius: "0",
-          borderLeft: "1px solid #3B3865",
-        }}
-      >
-        <SettingsInput
-          handleSearch={handleSearch}
-          handleOnChange={handleOnChange}
-          inputValue={inputValue}
-        />
-        <div
-          className="settings-popup-tags-container"
-          style={{
-            display: "flex",
-            height: "35px",
-          }}
-        >
-          <ButtonSimple
-            style={{
-              border: "#343358 solid 1px",
-              color: "#B8D4F3",
-              fontSize: "14px",
-              borderRadius: "3px",
-              margin: "5px 10px 5px 5px",
-            }}
-            onClick={clearAllFilters}
-          >
-            Remove filters
-          </ButtonSimple>
-          {filters.map((filter, indx) => {
-            return (
-              <ButtonSimple
-                key={filter}
-                style={{
-                  backgroundColor: "inherit",
-                  border: "var(--color-text) solid 1px",
-                  fontSize: "14px",
-                  borderRadius: "9px",
-                  margin: "5px 10px 5px 0px",
-                }}
-                onClick={() => {
-                  removeItem(indx, filters);
-                }}
-              >
-                {filter}
-                <CloseIcon
-                  style={{ marginLeft: "10px" }}
-                  height="10px"
-                  width="10px"
-                />
-              </ButtonSimple>
-            );
-          })}
-        </div>
-
-        <Flex
-          style={{
-            overflow: "auto",
-            maxHeight: "85%",
-            flexWrap: "wrap",
-          }}
-        >
-          {fxItems.map((key) => {
-            return (
-              <PopUpSettingsItem
-                key={key.name}
-                item={key}
-                callback={previewItem}
-              />
-            );
-          })}
-        </Flex>
       </div>
     </>
   );
