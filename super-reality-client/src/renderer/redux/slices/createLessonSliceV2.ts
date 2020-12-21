@@ -59,6 +59,13 @@ const initialState = {
   }[],
   recordingCvMatchValue: 990,
   recordingCvFrame: -1,
+  trimVideo: false,
+  trimVideoArea: {
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+  },
   cropRecording: false,
   cropEditAnchor: null as string | null,
   cropEditAnchorMode: 0,
