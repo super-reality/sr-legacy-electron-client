@@ -190,7 +190,13 @@ export default function VideoPreview(): JSX.Element {
             videoCanvasRef.current.width = img.width;
             videoCanvasRef.current.height = img.height;
             const ctx = videoCanvasRef.current.getContext("2d");
-            if (ctx) ctx.drawImage(img, 0, 0);
+            if (ctx) {
+              ctx.drawImage(img, 0, 0);
+              reduxAction(dispatch, {
+                type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+                arg: null,
+              });
+            }
           }
         };
         img.src = file;
@@ -214,6 +220,12 @@ export default function VideoPreview(): JSX.Element {
       nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
       if (st.snapShot) {
         setCanvasSource("url", st.snapShot);
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
+            videoNavigation: nav,
+          },
+        });
       } else if (st.recordingId) {
         setCanvasSource("recording", st.recordingId);
         reduxAction(dispatch, {
@@ -303,6 +315,9 @@ export default function VideoPreview(): JSX.Element {
       ref={containerOutRef}
       onWheel={doScale}
     >
+      <div className="zoom-container">
+        Zoom level: {Math.round(videoScale * 100)}%
+      </div>
       <div
         ref={containerRef}
         className="video-preview-container"
@@ -316,6 +331,8 @@ export default function VideoPreview(): JSX.Element {
           }}
           ref={videoCanvasRef}
           id="preview-video-canvas"
+          width="1920"
+          height="1080"
           className="video-preview-video"
         />
         {canvasSourceType ? (

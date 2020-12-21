@@ -12,10 +12,10 @@ import { Item } from "../api/types/item/item";
 import reduxAction from "../redux/reduxAction";
 import updateItem from "../components/create-leson-detached/lesson-utils/updateItem";
 import { AppState } from "../redux/stores/renderer";
-import { EffectData } from "../../types/utils";
 
 // styles for the FX
 import "./popup-fx-settings.scss";
+import { EffectData } from "../../types/effects";
 
 interface SettingsItem {
   id: string;
@@ -251,7 +251,8 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
                     style={{
                       cursor: "pointer",
                       marginLeft: "5px",
-                      border: "var(--color-text) solid 1px",
+                      color: "B8D4F3",
+                      textDecoration: "underline",
                       borderRadius: "3px",
                       padding: "0 3px",
                     }}
@@ -280,6 +281,10 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
           <ButtonSimple
             style={{
               margin: "auto 5px auto auto",
+              background: "#343358",
+              padding: "0",
+              width: "90px",
+              color: "#B8D4F3",
             }}
             width="-webkit-fill-available"
             height="35px"
@@ -290,10 +295,14 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
           <ButtonSimple
             style={{
               margin: "auto auto auto 5px",
+              background: "#343358",
+              padding: "0",
+              width: "90px",
+              color: "#B8D4F3",
               // width: "-webkit-fill-available",
             }}
             width="-webkit-fill-available"
-            height="35px"
+            height="33px"
             onClick={clickCancel}
           >
             Cancel
@@ -304,6 +313,8 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
         className="settings-popup-inner"
         style={{
           backgroundColor: "var(--color-section)",
+          borderRadius: "0",
+          borderLeft: "1px solid #3B3865",
         }}
       >
         <SettingsInput
@@ -320,9 +331,10 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
         >
           <ButtonSimple
             style={{
-              border: "var(--color-text) solid 1px",
+              border: "#343358 solid 1px",
+              color: "#B8D4F3",
               fontSize: "14px",
-              borderRadius: "9px",
+              borderRadius: "3px",
               margin: "5px 10px 5px 5px",
             }}
             onClick={clearAllFilters}
@@ -389,6 +401,8 @@ function SettingsInput(props: SettingsInputProps): JSX.Element {
       <input
         style={{
           borderRadius: "8px",
+          height: "34px",
+          background: "#29233D",
         }}
         autoFocus
         className="popup-settings-input-container-input"
@@ -443,7 +457,6 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       style={{
         display: "flex",
         flexDirection: "row",
-        backgroundColor: "#1f2124",
         top: "-8%",
         left: "10%",
         borderRadius: "15px",

@@ -18,7 +18,7 @@
   width: 32px;
   height: 32px;
   border-radius: 900px;
-  background-color: var(--color-section);
+  background: var(--color-section);
   background-size: cover;
   background-position: center;
 }
@@ -26,7 +26,7 @@
 .item-container {
   display: grid;
   gap: 8px;
-  background-color: var(--color-section);
+  background: var(--color-section);
   min-height: 32px;
   border-radius: 5px;
   margin: 5px 10px;

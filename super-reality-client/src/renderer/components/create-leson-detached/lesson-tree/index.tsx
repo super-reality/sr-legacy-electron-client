@@ -71,14 +71,18 @@ function TreeFolder(props: TreeFolderProps) {
   const [selected, setSelected] = useState<boolean>(false);
 
   let children: IDName[] = [];
+  let dataName: string | undefined;
   if (type == "lesson") {
     children = treeLessons[id]?.chapters || [];
+    dataName = treeLessons[id]?.name;
   }
   if (type == "chapter") {
     children = treeChapters[id]?.steps || [];
+    dataName = treeChapters[id]?.name;
   }
   if (type == "step") {
     children = treeSteps[id]?.items || [];
+    dataName = treeSteps[id]?.name;
   }
 
   useEffect(() => {
@@ -221,7 +225,7 @@ function TreeFolder(props: TreeFolderProps) {
 
   let padding = "0px";
   if (type == "chapter") padding = "18px";
-  if (type == "step") padding = "36px";
+  if (type == "step") padding = "30px";
 
   return (
     <>
@@ -239,7 +243,7 @@ function TreeFolder(props: TreeFolderProps) {
         <div className={`folder-drop ${open ? "open" : ""}`}>
           <IconTreeTop
             style={{ margin: "auto" }}
-            fill={`var(--color-${isOpen ? "green" : "icon"})`}
+            fill={`var(--color-${isOpen ? "magenda" : "magenda"})`}
           />
         </div>
         <div
@@ -247,7 +251,7 @@ function TreeFolder(props: TreeFolderProps) {
             state == STATE_LOADING ? "tree-loading" : ""
           }`}
         >
-          {name}
+          {dataName || name}
         </div>
       </div>
       <div
@@ -403,10 +407,10 @@ function TreeItem(props: TreeItemProps) {
         isOpen ? "open" : ""
       } ${dragOver == uniqueId ? "drag-target" : ""}`}
       onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
-      style={{ paddingLeft: "56px" }}
+      style={{ paddingLeft: "50px" }}
     >
-      <div className="item-icon-tree">
-        <Icon style={{ margin: "auto" }} fill="var(--color-icon)" />
+      <div className="item-icon-tree shadow-pink">
+        <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />
       </div>
       <div
         className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
@@ -415,7 +419,7 @@ function TreeItem(props: TreeItemProps) {
       </div>
       <div className="item-trigger">
         {itemData && itemData.trigger && (
-          <TriggerIcon width="14px" height="14px" fill="var(--color-icon)" />
+          <TriggerIcon width="14px" height="14px" fill="var(--color-pink)" />
         )}
       </div>
     </div>

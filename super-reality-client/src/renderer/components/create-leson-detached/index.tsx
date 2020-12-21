@@ -98,9 +98,11 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debounceVideoNav = useCallback(
     (n: readonly number[]) => {
-      debouncer(() => setVideoNavPos([...n]));
-      const el = document.getElementById("video-hidden") as HTMLVideoElement;
-      if (el) el.currentTime = n[1] / 1000;
+      debouncer(() => {
+        setVideoNavPos([...n]);
+        const el = document.getElementById("video-hidden") as HTMLVideoElement;
+        if (el) el.currentTime = n[1] / 1000;
+      });
     },
     [debouncer]
   );
@@ -268,12 +270,12 @@ export default function CreateLessonDetached(): JSX.Element {
           ) : (
             <></>
           )}
-          <div className="preview">
+          <div className="animate-gradient preview">
             <VideoPreview />
           </div>
         </div>
+        <VideoStatus />
         <div className="nav">
-          <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}
             defaultValues={videoNavigation}

@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { fxPath } from "../../renderer/electron-constants";
-import { EffectData } from "../../types/utils";
+import { EffectData } from "../../types/effects";
 import getPublicPath from "../electron/getPublicPath";
+import createDataDirs from "./createDataDirs";
 
 export function getEffectData(
   dir: string,
@@ -27,6 +28,7 @@ export function getEffectData(
 }
 
 export default function getEffectsMetadata(): EffectData[] {
+  createDataDirs();
   const db: EffectData[] = [];
   const internalFxPath = path.join(getPublicPath(), "fx");
   // Built in effects

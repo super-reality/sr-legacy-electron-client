@@ -15,7 +15,7 @@ export default function BaseSelect<T>(props: BaseSelectProps<T>): JSX.Element {
   const { title, current, options, optionFormatter, callback } = props;
 
   return (
-    <Flex>
+    <Flex style={{ margin: "12px 0" }}>
       <div className="container-with-desc">
         <div>{title}</div>
         <Select<T>

@@ -8,6 +8,7 @@ import createDataDirs from "../files/createDataDirs";
 import timestampToTime from "../timestampToTime";
 import getDisplayPosition from "../electron/getDisplayPosition";
 import getDisplayBounds from "../electron/getDisplayBounds";
+import timetoTimestamp from "../timeToTimestamp";
 
 jest.setTimeout(30000);
 
@@ -61,6 +62,15 @@ test("Can log in", async (done) => {
 */
 test("Can create data directories", () => {
   return expect(createDataDirs()).resolves.toBe(true);
+});
+
+test("Can convert to timestamps", () => {
+  expect(timetoTimestamp(10000)).toBe("00:00:10:00");
+  expect(timetoTimestamp(5677)).toBe("00:00:05:677");
+  expect(timetoTimestamp(67323)).toBe("00:01:07:323");
+  expect(timetoTimestamp(10867543)).toBe("03:01:07:543");
+  expect(timetoTimestamp(4207323)).toBe("01:10:07:323");
+  expect(timetoTimestamp(0)).toBe("00:00:00:00");
 });
 
 test("Can parse timestamps", () => {

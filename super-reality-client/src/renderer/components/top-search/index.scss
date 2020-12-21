@@ -6,7 +6,7 @@
   margin: 8px;
   padding: 8px;
   flex-direction: column;
-  background-color: var(--color-section);
+  background: var(--color-section);
   display: grid;
   gap: 8px;
   @include soft-shadow;
