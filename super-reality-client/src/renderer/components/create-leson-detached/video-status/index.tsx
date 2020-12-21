@@ -425,7 +425,7 @@ export default function VideoStatus() {
               arg: { item: updatedItem },
             });
           }
-
+          setStatus("Done");
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
             arg: {
@@ -433,7 +433,10 @@ export default function VideoStatus() {
             },
           });
         })
-        .catch(console.error);
+        .catch((e) => {
+          setStatus("Something went wrong trimming video!");
+          console.error(e);
+        });
     }
   }, [dispatch, videoNavigation]);
 
