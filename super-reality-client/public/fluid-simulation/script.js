@@ -61,19 +61,19 @@ const config = {
   SIM_RESOLUTION: 128,
   DYE_RESOLUTION: 1024,
   CAPTURE_RESOLUTION: 512,
-  DENSITY_DISSIPATION: 0.2,
-  VELOCITY_DISSIPATION: 0,
-  PRESSURE: 0.17,
+  DENSITY_DISSIPATION: 0.6,
+  VELOCITY_DISSIPATION: 0.2,
+  PRESSURE: 0.8,
   PRESSURE_ITERATIONS: 20,
-  CURL: 0,
-  SPLAT_RADIUS: 0.25,
+  CURL: 1,
+  SPLAT_RADIUS: 0.27,
   SPLAT_FORCE: 6000,
   SHADING: true,
   COLORFUL: false,
   COLOR_UPDATE_SPEED: 10,
   PAUSED: false,
   BACK_COLOR: { r: 0, g: 0, b: 0 },
-  TRANSPARENT: false,
+  TRANSPARENT: true,
   BLOOM: true,
   BLOOM_ITERATIONS: 8,
   BLOOM_RESOLUTION: 256,
@@ -1102,7 +1102,7 @@ const blurProgram = new Program(blurVertexShader, blurShader);
 const copyProgram = new Program(baseVertexShader, copyShader);
 const clearProgram = new Program(baseVertexShader, clearShader);
 const colorProgram = new Program(baseVertexShader, colorShader);
-const checkerboardProgram = new Program(baseVertexShader, checkerboardShader);
+// const checkerboardProgram = new Program(baseVertexShader, checkerboardShader);
 const bloomPrefilterProgram = new Program(
   baseVertexShader,
   bloomPrefilterShader
@@ -1595,22 +1595,13 @@ function render(target) {
   }
 
   if (!config.TRANSPARENT) drawColor(target, normalizeColor(config.BACK_COLOR));
-  if (target == null && config.TRANSPARENT) drawCheckerboard(target);
+  // if (target == null && config.TRANSPARENT) drawCheckerboard(target);
   drawDisplay(target);
 }
 
 function drawColor(target, color) {
   colorProgram.bind();
   gl.uniform4f(colorProgram.uniforms.color, color.r, color.g, color.b, 1);
-  blit(target);
-}
-
-function drawCheckerboard(target) {
-  checkerboardProgram.bind();
-  gl.uniform1f(
-    checkerboardProgram.uniforms.aspectRatio,
-    canvas.width / canvas.height
-  );
   blit(target);
 }
 

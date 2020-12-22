@@ -70,6 +70,7 @@ export default function VideoPreview(): JSX.Element {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const containerOutRef = useRef<HTMLDivElement>(null);
+  const fuildsOutRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -312,79 +313,87 @@ export default function VideoPreview(): JSX.Element {
   );
 
   return (
-    <div
-      className="video-preview-container-out"
-      ref={containerOutRef}
-      onWheel={doScale}
-    >
-      <div className="zoom-container">
-        Zoom level: {Math.round(videoScale * 100)}%
-      </div>
+    <>
       <div
-        ref={containerRef}
-        className="video-preview-container"
-        style={{
-          transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
-        }}
+        className="video-preview-container-out"
+        ref={containerOutRef}
+        onWheel={doScale}
       >
-        <canvas
-          style={{
-            display: canvasSourceType ? "block" : "none",
-          }}
-          ref={videoCanvasRef}
-          id="preview-video-canvas"
-          width="1920"
-          height="1080"
-          className="video-preview-video"
+        <iframe
+          src="./fluid-simulation/index.html"
+          className="fluids-iframe"
+          ref={fuildsOutRef}
+          onWheel={doScale}
         />
-        {canvasSourceType ? (
-          <video
-            ref={videoHiddenRef}
-            muted
-            id="video-hidden"
-            style={{ display: "none" }}
-          />
-        ) : (
-          <div className="video-preview-no-video">Nothing to preview</div>
-        )}
-        <div
-          key={`hor-${item?._id}` || ""}
-          id="horizontal-pos"
-          className="horizontal-pos"
-        />
-        <div
-          key={`ver-${item?._id}` || ""}
-          id="vertical-pos"
-          className="vertical-pos"
-        />
-        <div key={`xy-${item?._id}` || ""} id="xy-pos" className="xy-pos">
-          <div id="xy-pos-text" className="xy-pos-text" />
+        <div className="zoom-container">
+          Zoom level: {Math.round(videoScale * 100)}%
         </div>
-        <img ref={anchorImageRef} style={{ display: "none" }} />
-        {item && currentItem && currentStep && !cropRecording && !trimVideo && (
-          <>
-            <AnchorBox pos={cvResult} />
-            <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
-            <ItemPreview
-              showAnchor={false}
-              stepId={currentStep}
-              itemId={currentItem}
+        <div
+          ref={containerRef}
+          className="video-preview-container"
+          style={{
+            transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
+          }}
+        >
+          <canvas
+            style={{
+              display: canvasSourceType ? "block" : "none",
+            }}
+            ref={videoCanvasRef}
+            id="preview-video-canvas"
+            width="1920"
+            height="1080"
+            className="video-preview-video"
+          />
+          {canvasSourceType ? (
+            <video
+              ref={videoHiddenRef}
+              muted
+              id="video-hidden"
+              style={{ display: "none" }}
             />
-          </>
-        )}
-        {step && !currentItem && currentStep && !cropRecording && !trimVideo && (
-          <>
+          ) : (
+            <div className="video-preview-no-video">Nothing to preview</div>
+          )}
+          <div
+            key={`hor-${item?._id}` || ""}
+            id="horizontal-pos"
+            className="horizontal-pos"
+          />
+          <div
+            key={`ver-${item?._id}` || ""}
+            id="vertical-pos"
+            className="vertical-pos"
+          />
+          <div key={`xy-${item?._id}` || ""} id="xy-pos" className="xy-pos">
+            <div id="xy-pos-text" className="xy-pos-text" />
+          </div>
+          <img ref={anchorImageRef} style={{ display: "none" }} />
+          {item && currentItem && currentStep && !cropRecording && !trimVideo && (
+            <>
+              <AnchorBox pos={cvResult} />
+              <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
+              <ItemPreview
+                showAnchor={false}
+                stepId={currentStep}
+                itemId={currentItem}
+              />
+            </>
+          )}
+          {step && !currentItem && currentStep && !cropRecording && !trimVideo && (
+            <>
+              <AnchorBox pos={cvResult} />
+              <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
+              <StepView stepId={currentStep} onSucess={voidFunction} />
+            </>
+          )}
+          {cropRecording && <AnchorCrop />}
+          {!item && !cropRecording && (currentRecording || currentAnchor) && (
             <AnchorBox pos={cvResult} />
-            <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
-            <StepView stepId={currentStep} onSucess={voidFunction} />
-          </>
-        )}
-        {cropRecording && <AnchorCrop />}
-        {!item && !cropRecording && (currentRecording || currentAnchor) && (
-          <AnchorBox pos={cvResult} />
-        )}
-        {trimVideo && <VideoCrop />}
+          )}
+          {trimVideo && <VideoCrop />}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
