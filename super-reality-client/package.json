@@ -128,6 +128,13 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "./public/fluid-simulation/",
+        "to": "fluid-simulation",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "directories": {
