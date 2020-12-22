@@ -1,8 +1,8 @@
 import { CodeSuccess, ApiSucess } from "..";
-import { Item } from "./item";
+import { BaseItem } from "../../../items/item";
 
 /* eslint-disable camelcase */
-export default interface ItemUpdate extends ApiSucess {
+export default interface ItemUpdate<T extends BaseItem> extends ApiSucess {
   err_code: CodeSuccess;
-  item: Item;
+  item: T;
 }

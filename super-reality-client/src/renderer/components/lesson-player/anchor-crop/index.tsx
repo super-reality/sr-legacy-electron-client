@@ -9,12 +9,12 @@ import {
   voidFunction,
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
-import { IAbsolutePos } from "../../../api/types/item/item";
-import AnchorBox from "../anchor-box";
+import { IAbsolutePos } from "../../../items/item";
+import AnchorBox from "../../../items/boxes/anchor-box";
 
-export default function AnchorCrop() {
+export default function VideoCrop() {
   const dispatch = useDispatch();
-  const { cropRecordingPos, videoScale } = useSelector(
+  const { trimVideoArea } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -25,7 +25,7 @@ export default function AnchorCrop() {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
-          cropRecordingPos: pos,
+          trimVideoArea: pos,
         },
       });
     },
@@ -44,8 +44,7 @@ export default function AnchorCrop() {
 
   useEffect(() => {
     if (dragContainer.current) {
-      const startPos = { ...cropRecordingPos };
-      const scale = videoScale;
+      const startPos = { ...trimVideoArea };
       let resizeMargin = 16;
       if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
       interact(dragContainer.current)
@@ -68,13 +67,11 @@ export default function AnchorCrop() {
           const div = dragContainer.current;
           if (div && div.parentElement) {
             startPos.x =
-              (event.rect.left - div.parentElement.getBoundingClientRect().x) /
-              scale;
+              event.rect.left - div.parentElement.getBoundingClientRect().x;
             startPos.y =
-              (event.rect.top - div.parentElement.getBoundingClientRect().y) /
-              scale;
-            startPos.width = (event.rect.width - 3) / scale;
-            startPos.height = (event.rect.height - 3) / scale;
+              event.rect.top - div.parentElement.getBoundingClientRect().y;
+            startPos.width = event.rect.width - 3;
+            startPos.height = event.rect.height - 3;
             updateDiv(startPos);
           }
         })
@@ -87,8 +84,8 @@ export default function AnchorCrop() {
           }
         })
         .on("dragmove", (event) => {
-          startPos.x += event.dx / scale;
-          startPos.y += event.dy / scale;
+          startPos.x += event.dx;
+          startPos.y += event.dy;
           updateDiv(startPos);
         })
         .on("resizeend", () => {
@@ -110,7 +107,7 @@ export default function AnchorCrop() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, cropRecordingPos, videoScale]);
+  }, [dispatch, cvResult, trimVideoArea]);
 
-  return <AnchorBox ref={dragContainer} pos={cropRecordingPos} />;
+  return <AnchorBox ref={dragContainer} pos={trimVideoArea} />;
 }

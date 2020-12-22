@@ -274,8 +274,8 @@ export default function CreateLessonDetached(): JSX.Element {
             <VideoPreview />
           </div>
         </div>
+        <VideoStatus />
         <div className="nav">
-          <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}
             defaultValues={videoNavigation}

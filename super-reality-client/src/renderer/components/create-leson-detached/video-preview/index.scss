@@ -1,6 +1,6 @@
 @import "../../misc.scss";
-@import "../../lesson-player/index.scss";
-@import "../../lesson-player/find-box/index.scss";
+@import "../../../items/boxes/index.scss";
+@import "../../../items/boxes/find-box/index.scss";
 
 .video-preview-container-out {
   background-size: 25px 25px; /* Must be a square */
@@ -12,6 +12,17 @@
   position: relative;
   border-radius: 5px;
   @include disable-select;
+}
+
+.zoom-container {
+  position: absolute;
+  width: 200px;
+  height: 32px;
+  text-align: center;
+  left: calc(50% - 100px);
+  background: var(--color-button);
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
 }
 
 .video-preview-container {
@@ -44,7 +55,7 @@
     width: 0px;
     height: 100%;
     border: 1px solid gray;
-    background: var(--color-section);
+    background-color: var(--color-section);
     position: absolute;
     display: none;
     width: 200px;
@@ -63,7 +74,7 @@
     height: 1080px;
     font-size: 30px;
     font-weight: 500;
-    background: var(--color-button);
+    background-color: var(--color-background-dark);
     color: var(--color-gray);
     text-align: center;
     line-height: 1080px;
@@ -76,10 +87,12 @@
     display: block;
     width: auto;
     height: auto;
+    box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
     /*
     max-height: -webkit-fill-available;
     height: inherit;
     */
+    background: var(--color-background-dark);
     position: inherit;
   }
 

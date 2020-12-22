@@ -9,7 +9,7 @@
 .tabs-tab-container {
   justify-content: space-between;
   display: flex;
-  margin: 0 3px 0 3px;
+  margin: 3px;
   @include disable-select;
 }
 

@@ -31,10 +31,13 @@ import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import clearTempFolder from "../lesson-utils/clearTempFolder";
 import logger from "../../../../utils/logger";
-import { itemsPath } from "../../../electron-constants";
+import { itemsPath, recordingPath } from "../../../electron-constants";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 import timetoTimestamp from "../../../../utils/timeToTimestamp";
 import sha1 from "../../../../utils/sha1";
+import cropVideo from "../../../../utils/cropVideo";
+import updateItem from "../lesson-utils/updateItem";
+import { ItemVideo } from "../../../items/item";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -60,11 +63,23 @@ function newAnchorPre(file: string): Promise<IAnchor | undefined> {
 
 const userData = userDataPath();
 const captureFileName = `${userData}/capture.png`;
+const videoCropFileName = `${userData}/crop.webm`;
 
 const MODE_CREATE = 1;
 const MODE_ADD_TO = 2;
 
 type ANCHOR_EDIT_MODES = typeof MODE_CREATE | typeof MODE_ADD_TO;
+
+const MODE_IDLE = "MODE_IDLE";
+const MODE_TRIM_VIDEO = "MODE_TRIM_VIDEO";
+const MODE_CREATE_ANCHOR = "MODE_CREATE_ANCHOR";
+const MODE_EDIT_ANCHOR = "MODE_EDIT_ANCHOR";
+
+type STATUS_MODES =
+  | typeof MODE_IDLE
+  | typeof MODE_TRIM_VIDEO
+  | typeof MODE_CREATE_ANCHOR
+  | typeof MODE_EDIT_ANCHOR;
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -84,6 +99,7 @@ export default function VideoStatus() {
     status,
     triggerCvMatch,
     videoNavigation,
+    trimVideo,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -369,8 +385,71 @@ export default function VideoStatus() {
       });
   }, [cropEditAnchorMode, cropRecordingPos, currentStep, cvResult]);
 
+  const doCloseTrimVideo = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        trimVideo: false,
+      },
+    });
+  }, [dispatch]);
+
+  const doTrimVideo = useCallback(() => {
+    const slice = store.getState().createLessonV2;
+    const { currentRecording, trimVideoArea, currentItem } = slice;
+    if (currentItem) {
+      const recordingVideo = `${recordingPath}/vid-${currentRecording}.webm`;
+      setStatus("Trimming video...");
+      cropVideo(
+        `${videoNavigation[0] / 1000}`,
+        `${videoNavigation[2] / 1000}`,
+        Math.round(trimVideoArea.width),
+        Math.round(trimVideoArea.height),
+        Math.round(trimVideoArea.x),
+        Math.round(trimVideoArea.y),
+        recordingVideo,
+        videoCropFileName
+      )
+        .then((file) => {
+          setStatus("Uploading video...");
+          return uploadFileToS3(file);
+        })
+        .then((url) => {
+          setStatus("Updating item...");
+          return updateItem<ItemVideo>({ url }, currentItem);
+        })
+        .then((updatedItem) => {
+          if (updatedItem) {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETITEM",
+              arg: { item: updatedItem },
+            });
+          }
+          setStatus("Done");
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              trimVideo: false,
+            },
+          });
+        })
+        .catch((e) => {
+          setStatus("Something went wrong trimming video!");
+          console.error(e);
+        });
+    }
+  }, [dispatch, videoNavigation]);
+
+  let currentMode: STATUS_MODES = MODE_IDLE;
+
+  if (trimVideo) currentMode = MODE_TRIM_VIDEO;
+  else if (cropRecording) {
+    if (cropEditAnchor) currentMode = MODE_EDIT_ANCHOR;
+    else currentMode = MODE_CREATE_ANCHOR;
+  }
+
   return (
-    <div className="video-status-container">
+    <>
       <EditAnchorOptions width="540px" height="240px">
         <Flex style={{ justifyContent: "center", margin: "0 auto 16px auto" }}>
           Choose one
@@ -423,79 +502,100 @@ export default function VideoStatus() {
           }}
         />
       </SelectAnchorPopup>
-      {!cropRecording && (
-        <>
-          <ButtonRound
-            svg={AnchorIcon}
-            width="28px"
-            height="28px"
-            style={{ margin: "auto 8px" }}
-            onClick={doOpenAnchorPopup}
-          />
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={doCreateAnchor}
-          >
-            Create new anchor
-          </ButtonSimple>
-        </>
-      )}
-      {cropRecording && !cropEditAnchor && (
-        <ButtonSimple
-          width="140px"
-          height="12px"
-          margin="auto auto"
-          onClick={doSaveNewAnchor}
-        >
-          Save anchor
-        </ButtonSimple>
-      )}
-      {cropRecording && cropEditAnchor && (
-        <>
+      <div className="video-status-container">
+        {currentMode == MODE_TRIM_VIDEO && (
+          <>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doTrimVideo}
+            >
+              Ok
+            </ButtonSimple>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doCloseTrimVideo}
+            >
+              Cancel
+            </ButtonSimple>
+          </>
+        )}
+        {currentMode == MODE_CREATE_ANCHOR && (
           <ButtonSimple
             width="140px"
             height="12px"
             margin="auto auto"
-            onClick={doFinishEditAnchor}
+            onClick={doSaveNewAnchor}
           >
-            Done
+            Save anchor
           </ButtonSimple>
+        )}
+        {currentMode == MODE_EDIT_ANCHOR && (
+          <>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doFinishEditAnchor}
+            >
+              Done
+            </ButtonSimple>
 
-          <ButtonSimple width="100px" height="16px" onClick={doExitEditAnchor}>
-            Cancel
-          </ButtonSimple>
-        </>
-      )}
-      {recordingData.anchor && !cropRecording ? (
-        <>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={checkAnchor}
-          >
-            Check anchor
-          </ButtonSimple>
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto 4px"
-            onClick={generateItems}
-          >
-            Generate
-          </ButtonSimple>
-        </>
-      ) : (
-        <div style={{ color: "var(--color-red)" }}>
-          <i>{!cropRecording && "Attach an anchor to edit"}</i>
-        </div>
-      )}
-      <div
-        style={{ fontFamily: "monospace", marginLeft: "auto" }}
-      >{`${canvasSourceDesc} / ${status}`}</div>
-      <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
-    </div>
+            <ButtonSimple
+              width="100px"
+              height="16px"
+              onClick={doExitEditAnchor}
+            >
+              Cancel
+            </ButtonSimple>
+          </>
+        )}
+        {currentMode == MODE_IDLE && (
+          <>
+            <ButtonRound
+              svg={AnchorIcon}
+              width="28px"
+              height="28px"
+              style={{ margin: "auto 8px" }}
+              onClick={doOpenAnchorPopup}
+            />
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={doCreateAnchor}
+            >
+              Create new anchor
+            </ButtonSimple>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={checkAnchor}
+            >
+              Check anchor
+            </ButtonSimple>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto 4px"
+              onClick={generateItems}
+            >
+              Generate
+            </ButtonSimple>
+            <div style={{ color: "var(--color-red)" }}>
+              <i>{!cropRecording && "Attach an anchor to edit"}</i>
+            </div>
+          </>
+        )}
+        <div
+          style={{ fontFamily: "monospace", marginLeft: "auto" }}
+        >{`${canvasSourceDesc} / ${status}`}</div>
+        <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
+      </div>
+    </>
   );
 }
