@@ -19,6 +19,7 @@ import EditAnchorButton from "./edit-anchor-button";
 import timestampToTime from "../../../../utils/timestampToTime";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";
 import downloadFile from "../../../../utils/api/downloadFIle";
+import getPublicPath from "../../../../utils/electron/getPublicPath";
 
 const zoomLevels = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6];
 
@@ -320,7 +321,7 @@ export default function VideoPreview(): JSX.Element {
         onWheel={doScale}
       >
         <iframe
-          src="./fluid-simulation/index.html"
+          src={`${getPublicPath()}/fluid-simulation/index.html`}
           className="fluids-iframe"
           ref={fuildsOutRef}
           onWheel={doScale}
