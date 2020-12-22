@@ -437,7 +437,7 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
           type: "CREATE_LESSON_V2_SETITEM",
           arg: { item: updatedItem },
         });
-        updateItem(updatedItem, currentItem);
+        updateItem<T>(updatedItem, currentItem);
       }
     },
     [currentItem, treeItems]

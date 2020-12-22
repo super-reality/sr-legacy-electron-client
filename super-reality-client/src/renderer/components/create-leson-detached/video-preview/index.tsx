@@ -10,6 +10,7 @@ import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
+import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import StepView from "../../lesson-player/step-view";
@@ -36,6 +37,7 @@ export default function VideoPreview(): JSX.Element {
     videoPos,
     canvasSourceType,
     canvasSource,
+    trimVideo,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -359,7 +361,7 @@ export default function VideoPreview(): JSX.Element {
           <div id="xy-pos-text" className="xy-pos-text" />
         </div>
         <img ref={anchorImageRef} style={{ display: "none" }} />
-        {item && currentItem && currentStep && !cropRecording && (
+        {item && currentItem && currentStep && !cropRecording && !trimVideo && (
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
@@ -370,7 +372,7 @@ export default function VideoPreview(): JSX.Element {
             />
           </>
         )}
-        {step && !currentItem && currentStep && !cropRecording && (
+        {step && !currentItem && currentStep && !cropRecording && !trimVideo && (
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
@@ -381,6 +383,7 @@ export default function VideoPreview(): JSX.Element {
         {!item && !cropRecording && (currentRecording || currentAnchor) && (
           <AnchorBox pos={cvResult} />
         )}
+        {trimVideo && <VideoCrop />}
       </div>
     </div>
   );

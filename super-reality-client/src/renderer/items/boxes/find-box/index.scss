@@ -4,6 +4,11 @@
     border: dotted var(--color-red) 3px;
   }
 
+  &.video-trim {
+    background-color: #47f08d0d;
+    border: dotted var(--color-green) 3px;
+  }
+
   &.area {
     background-color: #47a3ff17;
     border: dotted var(--color-blue) 3px;

@@ -41,7 +41,7 @@ export default function OpenItem(props: OpenItemProps) {
         type: "CREATE_LESSON_V2_SETITEM",
         arg: { item: updatedItem },
       });
-      updateItem(updatedItem, id);
+      updateItem<T>(updatedItem, id);
     },
     [id, treeItems]
   );
