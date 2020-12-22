@@ -11,7 +11,10 @@ import {
 import createBackgroundProcess from "./createBackgroundProcess";
 
 import getWindowId from "./electron/getWindowId";
+import setFocusable from "./electron/setFocusable";
 import setMaximize from "./electron/setMaximize";
+import setResizable from "./electron/setResizable";
+import setTopMost from "./electron/setTopMost";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -77,7 +80,12 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
+    setFocusable(false);
+    setTimeout(() => {
+      setTopMost(true);
+    }, 2000);
     setMaximize(true);
+    setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
   });
 
