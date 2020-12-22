@@ -27,7 +27,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
     if (item.focus == "Rectangle") computedType = "rectangle";
     if (item.focus == "Area highlight") computedType = "area";
 
-    const clickCallback = useCallback(
+    const _clickCallback = useCallback(
       (e: { x: number; y: number; button: number }) => {
         if (
           e.x > pos.x &&
