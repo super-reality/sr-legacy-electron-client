@@ -24,7 +24,7 @@ import makeValidation, {
 import ITagToString from "../../../../utils/ITagToString";
 
 const uploadArtifacts = (original: ICollection) => {
-  const fileNames = [];
+  const fileNames: any[] = [];
   fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
   return uploadMany(fileNames);

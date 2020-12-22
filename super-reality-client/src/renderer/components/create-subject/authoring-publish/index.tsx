@@ -31,7 +31,7 @@ import ITagToString from "../../../../utils/ITagToString";
 import ITagToLink from "../../../../utils/ITagToLink";
 
 const uploadArtifacts = (original: ISubject) => {
-  const fileNames = [];
+  const fileNames:any[] = [];
   fileNames.push(original.icon);
   original.medias.forEach((mediaPath) => fileNames.push(mediaPath));
   return uploadMany(fileNames);

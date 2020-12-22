@@ -27,7 +27,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
     if (item.focus == "Rectangle") computedType = "rectangle";
     if (item.focus == "Area highlight") computedType = "area";
 
-    const clickCallback = useCallback(
+    const _clickCallback = useCallback(
       (e: { x: number; y: number; button: number }) => {
         if (
           e.x > pos.x &&
@@ -44,7 +44,6 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
 
     useEffect(() => {
       // eslint-disable-next-line no-undef
-      const mouseEvents = __non_webpack_require__("global-mouse-events");
       const { remote } = require("electron");
 
       if (callback) {
@@ -63,13 +62,14 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
         timeoutRef.current = interval;
 
         if (clickThrough) {
-          mouseEvents.on("mousedown", clickCallback);
+          // IMPORTANT
+          // mouseEvents.on("mousedown", clickCallback);
         }
       }
 
       return () => {
         if (timeoutRef.current) clearInterval(timeoutRef.current);
-        mouseEvents.removeListener("mousedown", clickCallback);
+        // mouseEvents.removeListener("mousedown", clickCallback);
       };
     }, [pos, callback]);
 
