@@ -44,7 +44,6 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
 
     useEffect(() => {
       // eslint-disable-next-line no-undef
-      const mouseEvents = __non_webpack_require__("global-mouse-events");
       const { remote } = require("electron");
 
       if (callback) {
@@ -63,13 +62,14 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
         timeoutRef.current = interval;
 
         if (clickThrough) {
-          mouseEvents.on("mousedown", clickCallback);
+          // IMPORTANT
+          // mouseEvents.on("mousedown", clickCallback);
         }
       }
 
       return () => {
         if (timeoutRef.current) clearInterval(timeoutRef.current);
-        mouseEvents.removeListener("mousedown", clickCallback);
+        // mouseEvents.removeListener("mousedown", clickCallback);
       };
     }, [pos, callback]);
 
