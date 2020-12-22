@@ -59,7 +59,7 @@ resizeCanvas();
 
 const config = {
   SIM_RESOLUTION: 128,
-  DYE_RESOLUTION: 1024,
+  DYE_RESOLUTION: 512,
   CAPTURE_RESOLUTION: 512,
   DENSITY_DISSIPATION: 0.6,
   VELOCITY_DISSIPATION: 0.2,
@@ -1413,7 +1413,7 @@ function updateKeywords() {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
+// multipleSplats(parseInt(Math.random() * 20) + 5);
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1859,7 +1859,7 @@ function correctDeltaY(delta) {
 }
 
 function generateColor() {
-  const c = HSVtoRGB(Math.random(), 1.0, 1.0);
+  const c = HSVtoRGB(0.4 + Math.random() * 0.5, 1.0, 1.0);
   c.r *= 0.15;
   c.g *= 0.15;
   c.b *= 0.15;
