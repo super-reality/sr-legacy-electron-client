@@ -7,9 +7,9 @@ export function capturePrimaryStream(): Promise<MediaStream> {
   const primaryId = `${getPrimaryMonitor().id}`;
 
   return new Promise((resolve, reject) => {
-    desktopCapturer.getSources({ types: ["screen"] }).then(async (sources) => {
+    desktopCapturer.getSources({ types: ["screen"] }).then(async (sources: any) => {
       const sourceId = sources.filter(
-        (source) => source.display_id == primaryId
+        (source: any) => source.display_id == primaryId
       )[0].id;
       try {
         const videoStream = await navigator.mediaDevices.getUserMedia({
