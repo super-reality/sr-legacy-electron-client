@@ -60,7 +60,7 @@ function createWindow() {
     alwaysOnTop: true,
     transparent: true,
     resizable: false,
-    focusable: true,
+    fullscreen: false,
     show: false,
     frame: false,
     width: 1024,
