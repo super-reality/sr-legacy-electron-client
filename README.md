@@ -15,7 +15,7 @@
 
 If this is the first time after installing:
 
-`npm run electron-build` or `npm run build`
+`npm run electron-build --unsafe-perm` or `npm run build --unsafe-perm`
 
 Once finished simply do `npm run start`
 
