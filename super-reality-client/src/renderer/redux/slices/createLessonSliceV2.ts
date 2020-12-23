@@ -14,6 +14,12 @@ export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
 
 export type VideoSources = "url" | "file" | "recording" | undefined;
 
+export type PreviewModes =
+  | "CREATE_ANCHOR"
+  | "ADDTO_ANCHOR"
+  | "TRIM_VIDEO"
+  | "IDLE";
+
 const initialState = {
   toggleSelects: 0 as number,
   treeCurrentType: "none" as TreeTypes,
@@ -59,22 +65,14 @@ const initialState = {
   }[],
   recordingCvMatchValue: 990,
   recordingCvFrame: -1,
-  trimVideo: false,
-  trimVideoArea: {
+  previewEditArea: {
     x: 0,
     y: 0,
     width: 100,
     height: 100,
   },
-  cropRecording: false,
-  cropEditAnchor: null as string | null,
-  cropEditAnchorMode: 0,
-  cropRecordingPos: {
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  },
+  previewMode: "IDLE" as PreviewModes,
+  editingAnchor: "",
   canvasSourceType: undefined as VideoSources,
   canvasSource: undefined as string | undefined,
   canvasSourceDesc: "no source" as string,

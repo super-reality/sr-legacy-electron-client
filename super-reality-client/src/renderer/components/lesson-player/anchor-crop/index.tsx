@@ -14,7 +14,7 @@ import AnchorBox from "../../../items/boxes/anchor-box";
 
 export default function VideoCrop() {
   const dispatch = useDispatch();
-  const { trimVideoArea } = useSelector(
+  const { previewEditArea } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -25,7 +25,7 @@ export default function VideoCrop() {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
-          trimVideoArea: pos,
+          previewEditArea: pos,
         },
       });
     },
@@ -44,7 +44,7 @@ export default function VideoCrop() {
 
   useEffect(() => {
     if (dragContainer.current) {
-      const startPos = { ...trimVideoArea };
+      const startPos = { ...previewEditArea };
       let resizeMargin = 16;
       if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
       interact(dragContainer.current)
@@ -107,7 +107,7 @@ export default function VideoCrop() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, trimVideoArea]);
+  }, [dispatch, cvResult, previewEditArea]);
 
-  return <AnchorBox ref={dragContainer} pos={trimVideoArea} />;
+  return <AnchorBox ref={dragContainer} pos={previewEditArea} />;
 }

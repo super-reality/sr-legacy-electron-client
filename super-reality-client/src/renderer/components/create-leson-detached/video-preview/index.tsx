@@ -32,12 +32,11 @@ export default function VideoPreview(): JSX.Element {
     currentItem,
     treeItems,
     treeSteps,
-    cropRecording,
     videoScale,
     videoPos,
     canvasSourceType,
     canvasSource,
-    trimVideo,
+    previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -361,7 +360,7 @@ export default function VideoPreview(): JSX.Element {
           <div id="xy-pos-text" className="xy-pos-text" />
         </div>
         <img ref={anchorImageRef} style={{ display: "none" }} />
-        {item && currentItem && currentStep && !cropRecording && !trimVideo && (
+        {item && currentItem && currentStep && previewMode == "IDLE" && (
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
@@ -372,18 +371,18 @@ export default function VideoPreview(): JSX.Element {
             />
           </>
         )}
-        {step && !currentItem && currentStep && !cropRecording && !trimVideo && (
+        {step && !currentItem && currentStep && previewMode == "IDLE" && (
           <>
             <AnchorBox pos={cvResult} />
             <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
             <StepView stepId={currentStep} onSucess={voidFunction} />
           </>
         )}
-        {cropRecording && <AnchorCrop />}
-        {!item && !cropRecording && (currentRecording || currentAnchor) && (
-          <AnchorBox pos={cvResult} />
-        )}
-        {trimVideo && <VideoCrop />}
+        {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
+        {previewMode == "ADDTO_ANCHOR" &&
+          !item &&
+          (currentRecording || currentAnchor) && <AnchorBox pos={cvResult} />}
+        {previewMode == "TRIM_VIDEO" && <VideoCrop />}
       </div>
     </div>
   );
