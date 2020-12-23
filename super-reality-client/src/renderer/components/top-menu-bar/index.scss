@@ -1,0 +1,29 @@
+@import "../misc.scss";
+
+.top-menu-container {
+  display: flex;
+  cursor: default;
+
+  .top-menu-logo {
+    background-image: url("../../../assets/images/logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 64px;
+    height: auto;
+  }
+  
+  .top-menu-item {
+    @include animated;
+    width: auto;
+    height: 100%;
+    padding: 0 8px;
+    cursor: pointer;
+
+    &:hover {
+      color: white;
+      background-color: var(--color-background-hover);
+    }
+  }
+}
+

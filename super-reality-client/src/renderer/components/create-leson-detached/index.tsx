@@ -32,6 +32,7 @@ import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
+import TopMenuBar from "../top-menu-bar";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -242,6 +243,7 @@ export default function CreateLessonDetached(): JSX.Element {
       width={primarySize.width}
       height={primarySize.height}
       title="Super Reality"
+      topBarContent={<TopMenuBar />}
       onMinimize={minimizeWindow}
       onClose={() => {
         reduxAction(dispatch, {
