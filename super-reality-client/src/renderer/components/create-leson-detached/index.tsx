@@ -34,6 +34,7 @@ import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
+import EditorSidebar from "./editor-sidebar";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -282,6 +283,7 @@ export default function CreateLessonDetached(): JSX.Element {
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>
+          <EditorSidebar />
         </div>
         <VideoStatus />
         <div className="nav">
