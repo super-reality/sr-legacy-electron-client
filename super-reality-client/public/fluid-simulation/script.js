@@ -1744,7 +1744,7 @@ function splat(x, y, dx, dy, color) {
   gl.uniform3f(splatProgram.uniforms.color, dx, dy, 0.0);
   gl.uniform1f(
     splatProgram.uniforms.radius,
-    correctRadius(config.SPLAT_RADIUS / 100.0)
+    correctRadius(config.SPLAT_RADIUS / 100.0 * ( 0.9 + 0.2 * Math.random()))
   );
   blit(velocity.write);
   velocity.swap();
