@@ -335,6 +335,16 @@ export default function VideoPreview(): JSX.Element {
             transform: `translate(${videoPos.x}px, ${videoPos.y}px) scale(${videoScale})`,
           }}
         >
+          <canvas
+            style={{
+              display: canvasSourceType ? "block" : "none",
+            }}
+            ref={videoCanvasRef}
+            id="preview-video-canvas"
+            width="1920"
+            height="1080"
+            className="video-preview-video"
+          />
           {canvasSourceType ? (
             <video
               ref={videoHiddenRef}
