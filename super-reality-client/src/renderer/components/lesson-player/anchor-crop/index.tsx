@@ -14,7 +14,7 @@ import AnchorBox from "../../../items/boxes/anchor-box";
 
 export default function VideoCrop() {
   const dispatch = useDispatch();
-  const { previewEditArea } = useSelector(
+  const { previewEditArea, videoScale } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -45,6 +45,7 @@ export default function VideoCrop() {
   useEffect(() => {
     if (dragContainer.current) {
       const startPos = { ...previewEditArea };
+      const scale = videoScale;
       let resizeMargin = 16;
       if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
       interact(dragContainer.current)
@@ -67,11 +68,13 @@ export default function VideoCrop() {
           const div = dragContainer.current;
           if (div && div.parentElement) {
             startPos.x =
-              event.rect.left - div.parentElement.getBoundingClientRect().x;
+              (event.rect.left - div.parentElement.getBoundingClientRect().x) /
+              scale;
             startPos.y =
-              event.rect.top - div.parentElement.getBoundingClientRect().y;
-            startPos.width = event.rect.width - 3;
-            startPos.height = event.rect.height - 3;
+              (event.rect.top - div.parentElement.getBoundingClientRect().y) /
+              scale;
+            startPos.width = (event.rect.width - 3) / scale;
+            startPos.height = (event.rect.height - 3) / scale;
             updateDiv(startPos);
           }
         })
@@ -84,8 +87,8 @@ export default function VideoCrop() {
           }
         })
         .on("dragmove", (event) => {
-          startPos.x += event.dx;
-          startPos.y += event.dy;
+          startPos.x += event.dx / scale;
+          startPos.y += event.dy / scale;
           updateDiv(startPos);
         })
         .on("resizeend", () => {
@@ -107,7 +110,7 @@ export default function VideoCrop() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, previewEditArea]);
+  }, [dispatch, cvResult, previewEditArea, videoScale]);
 
   return <AnchorBox ref={dragContainer} pos={previewEditArea} />;
 }
