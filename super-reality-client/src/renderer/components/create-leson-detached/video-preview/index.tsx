@@ -21,7 +21,7 @@ import setCanvasSource from "../../../redux/utils/setCanvasSource";
 import downloadFile from "../../../../utils/api/downloadFIle";
 import getPublicPath from "../../../../utils/electron/getPublicPath";
 
-const zoomLevels = [0.125, 0.25, 0.5, 1, 2, 3, 4, 5, 6];
+const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
 export default function VideoPreview(): JSX.Element {
   const { cvResult } = useSelector((state: AppState) => state.render);
