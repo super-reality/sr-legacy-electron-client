@@ -1415,6 +1415,8 @@ updateKeywords();
 initFramebuffers();
 // multipleSplats(parseInt(Math.random() * 20) + 5);
 
+setTimeout(() => multipleSplats(1), 1000 + Math.random() * 5000 )
+
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
 update();
@@ -1726,10 +1728,12 @@ function multipleSplats(amount) {
     color.b *= 10.0;
     const x = Math.random();
     const y = Math.random();
-    const dx = 1000 * (Math.random() - 0.5);
-    const dy = 1000 * (Math.random() - 0.5);
+    const dx = 1000 * (Math.random() - 0.1);
+    const dy = 1000 * (Math.random() - 0.1);
     splat(x, y, dx, dy, color);
   }
+
+  setTimeout(() => multipleSplats(1), 600 + Math.random() * 3000 )
 }
 
 function splat(x, y, dx, dy, color) {
@@ -1859,7 +1863,7 @@ function correctDeltaY(delta) {
 }
 
 function generateColor() {
-  const c = HSVtoRGB(0.4 + Math.random() * 0.5, 1.0, 1.0);
+  const c = HSVtoRGB(0.5 + Math.random() * 0.45, 1.0, 1.0);
   c.r *= 0.15;
   c.g *= 0.15;
   c.b *= 0.15;
