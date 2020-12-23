@@ -80,7 +80,6 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
-    // setFocusable(false);
     setTimeout(() => {
       setTopMost(true);
     }, 2000);

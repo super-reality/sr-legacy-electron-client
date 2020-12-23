@@ -33,6 +33,7 @@ import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import TopMenuBar from "../top-menu-bar";
+import setFocusable from "../../../utils/electron/setFocusable";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -187,6 +188,12 @@ export default function CreateLessonDetached(): JSX.Element {
     chapterPreview ||
     stepPreview ||
     itemPreview;
+
+  if (isTransparent) {
+    setFocusable(false);
+  } else {
+    setFocusable(true);
+  }
 
   if (isTransparent) {
     return (
