@@ -95,7 +95,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     true,
     true,
     true,
-    false
+    true
   );
 
   const handleNameChange = useCallback(
