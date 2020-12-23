@@ -182,19 +182,31 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  const isTransparent =
-    openRecorder ||
-    anchorTestView ||
-    lessonPreview ||
-    chapterPreview ||
-    stepPreview ||
-    itemPreview;
+  const isTransparent = useMemo(
+    () =>
+      openRecorder ||
+      anchorTestView ||
+      lessonPreview ||
+      chapterPreview ||
+      stepPreview ||
+      itemPreview,
+    [
+      openRecorder,
+      anchorTestView,
+      lessonPreview,
+      chapterPreview,
+      stepPreview,
+      itemPreview,
+    ]
+  );
 
-  if (isTransparent) {
-    setFocusable(false);
-  } else {
-    setFocusable(true);
-  }
+  useEffect(() => {
+    if (isTransparent) {
+      setFocusable(false);
+    } else {
+      setFocusable(true);
+    }
+  }, [isTransparent]);
 
   if (isTransparent) {
     return (
