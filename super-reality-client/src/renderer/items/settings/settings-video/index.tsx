@@ -15,7 +15,7 @@ export default function SettingsVideo(props: BaseSettingsProps<ItemVideo>) {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
-        trimVideo: true,
+        previewMode: "TRIM_VIDEO",
       },
     });
   }, [dispatch]);

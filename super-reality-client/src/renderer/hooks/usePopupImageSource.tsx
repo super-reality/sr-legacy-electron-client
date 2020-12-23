@@ -113,8 +113,8 @@ export default function usePopupImageSource(
                   reduxAction(dispatch, {
                     type: "CREATE_LESSON_V2_DATA",
                     arg: {
-                      cropRecording: true,
-                      cropRecordingPos: {
+                      previewMode: "CREATE_ANCHOR",
+                      previewEditArea: {
                         x: 0,
                         y: 0,
                         width: 100,
