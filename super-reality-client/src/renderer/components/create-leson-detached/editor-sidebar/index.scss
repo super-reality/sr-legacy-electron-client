@@ -1,7 +1,15 @@
 .sidebar-buttons {
-  width: 48px;
+  min-width: 40px;
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .sidebar-expanded {
   overflow: hidden;
+
+  .sidebar-content {
+    width: 300px;
+  }
 }
