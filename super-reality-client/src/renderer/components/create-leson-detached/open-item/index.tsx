@@ -64,11 +64,9 @@ export default function OpenItem(props: OpenItemProps) {
     <>
       <TabsContainer
         style={{
-          padding: "10px",
+          padding: "10px 5px",
           margin: "0 3px",
-          height: "200px",
           overflow: "auto",
-          background: "#2e2a48",
         }}
       >
         <Flex column>

@@ -139,13 +139,11 @@ export default function OpenStep(props: OpenStepProps) {
           padding: "10px",
           height: "200px",
           overflow: "auto",
-          background: "#2e2a48",
         }}
       >
         {view === "Settings" && (
           <>
-            <div>Step Settings</div>
-            <BaseInput title="Step name" value={name} onChange={doNameUpdate} />
+            <BaseInput title="" value={name} onChange={doNameUpdate} />
           </>
         )}
         {view === "Anchor" && (
