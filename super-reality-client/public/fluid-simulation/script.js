@@ -1415,7 +1415,7 @@ updateKeywords();
 initFramebuffers();
 // multipleSplats(parseInt(Math.random() * 20) + 5);
 
-setTimeout(() => multipleSplats(1), 1000 + Math.random() * 5000 )
+setTimeout(() => multipleSplats(1), 5000)
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1733,7 +1733,7 @@ function multipleSplats(amount) {
     splat(x, y, dx, dy, color);
   }
 
-  setTimeout(() => multipleSplats(1), 600 + Math.random() * 3000 )
+  setTimeout(() => multipleSplats(1), 10000 + Math.random() * 15000 )
 }
 
 function splat(x, y, dx, dy, color) {
