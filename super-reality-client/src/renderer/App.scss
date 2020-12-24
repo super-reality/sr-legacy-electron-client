@@ -2,6 +2,7 @@
 
 body {
   font-family: "Segoe UI" !important;
+  @include disable-select;
 }
 
 .click-on {
