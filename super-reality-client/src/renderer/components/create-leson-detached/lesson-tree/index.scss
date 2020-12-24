@@ -9,6 +9,13 @@
   @include disable-select;
 }
 
+.folder-name {
+  font-size: 13px;
+  line-height: 18px;
+  margin-left: 4px;
+  color: var(--color-magenda);
+}
+
 .tree-folder {
   display: flex;
   font-family: "Segoe UI";
@@ -28,11 +35,11 @@
 
   &.selected {
     border-radius: 3px;
-    background: #363252;
+    background: #585286;
   }
 
   &.open {
-    color: var(--color-magenda);
+    color: var(--color-text-active);
   }
 
   .folder-drop {
@@ -48,13 +55,10 @@
       transform: rotate(0deg);
     }
   }
+}
 
-  .folder-name {
-    color: var(--color-magenda);
-    font-size: 13px;
-    line-height: 18px;
-    margin-left: 4px;
-  }
+.tree-folder.selected.open .folder-name {
+  color: var(--color-text-active);
 }
 
 .tree-loading {
@@ -72,12 +76,7 @@
   top: 0;
   height: 100%;
   width: 150px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    #2f3136 50%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, transparent 0%, #2f3136 50%, transparent 100%);
   animation: load 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
@@ -104,7 +103,8 @@
 
   &.selected {
     border-radius: 3px;
-    background-color: #363252;
+    background-color: #585286;
+    color: var(--color-text-active) !important;
   }
 
   &.open {
@@ -117,7 +117,7 @@
     display: flex;
 
     // svg {
-      // filter: drop-shadow(0px 0px 5px #e85fcf);
+    // filter: drop-shadow(0px 0px 5px #e85fcf);
     // }
   }
 
