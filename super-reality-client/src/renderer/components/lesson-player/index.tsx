@@ -13,8 +13,6 @@ import ButtonRound from "../button-round";
 import Windowlet from "../windowlet";
 import Flex from "../flex";
 import ChapterView from "./chapter-view";
-import ItemPreview from "./item-preview";
-import StepView from "./step-view";
 
 import { ReactComponent as ButtonPrev } from "../../../assets/svg/prev-step.svg";
 import { ReactComponent as ButtonNext } from "../../../assets/svg/next-step.svg";
@@ -29,18 +27,9 @@ interface LessonPlayerProps {
 export default function LessonPlayer(props: LessonPlayerProps) {
   const { lessonId, onFinish } = props;
   const dispatch = useDispatch();
-  const {
-    currentStep,
-    currentItem,
-    treeAnchors,
-    treeSteps,
-    treeChapters,
-    treeLessons,
-    previewOne,
-    itemPreview,
-    stepPreview,
-    chapterPreview,
-  } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeAnchors, treeSteps, treeChapters, treeLessons } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
 
   const { playingStepNumber, playingChapterNumber, playing } = useSelector(
     (state: AppState) => state.lessonPlayer
@@ -196,21 +185,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   return (
     <>
-      {playing && itemPreview && previewOne && currentStep && currentItem && (
-        <ItemPreview
-          showAnchor={false}
-          stepId={currentStep}
-          itemId={currentItem}
-          onSucess={onFinish}
-        />
-      )}
-      {playing && stepPreview && previewOne && step && (
-        <StepView stepId={step?._id} onSucess={onFinish} />
-      )}
-      {playing && chapterPreview && previewOne && chapter && (
-        <ChapterView chapterId={chapter._id} onSucess={onFinish} />
-      )}
-      {playing && chapter && !previewOne && (
+      {playing && chapter && (
         <ChapterView chapterId={chapter?._id} onSucess={doNext} />
       )}
       <Windowlet
@@ -220,18 +195,13 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onClose={clearPreviews}
       >
         <Flex column style={{ height: "100%" }}>
-          {!previewOne && chapter && step && (
+          {chapter && step && (
             <>
               <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
               <Flex style={{ margin: "auto" }}>step: {step.name}</Flex>
             </>
           )}
-          {stepPreview && previewOne && step && (
-            <Flex style={{ margin: "auto" }}>{step.name}</Flex>
-          )}
-          {chapterPreview && previewOne && chapter && (
-            <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
-          )}
+
           <Flex style={{ margin: "auto" }}>
             <ButtonRound
               width="36px"
