@@ -37,14 +37,12 @@
   width: 200px;
   background-color: var(--color-background);
   padding: 6px 0;
-  border-radius: 0 0 5px 5px;
   z-index: 15;
   @include diffuse-shadow;
 
   .option {
     height: 24px;
     line-height: 24px;
-    border-radius: 4px;
     cursor: pointer;
     padding: 0px 8px;
     margin: 0px;
