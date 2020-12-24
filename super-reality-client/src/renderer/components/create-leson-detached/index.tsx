@@ -32,6 +32,9 @@ import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
+import TopMenuBar from "../top-menu-bar";
+import setFocusable from "../../../utils/electron/setFocusable";
+import EditorSidebar from "./editor-sidebar";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -179,13 +182,31 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  const isTransparent =
-    openRecorder ||
-    anchorTestView ||
-    lessonPreview ||
-    chapterPreview ||
-    stepPreview ||
-    itemPreview;
+  const isTransparent = useMemo(
+    () =>
+      openRecorder ||
+      anchorTestView ||
+      lessonPreview ||
+      chapterPreview ||
+      stepPreview ||
+      itemPreview,
+    [
+      openRecorder,
+      anchorTestView,
+      lessonPreview,
+      chapterPreview,
+      stepPreview,
+      itemPreview,
+    ]
+  );
+
+  useEffect(() => {
+    if (isTransparent) {
+      setFocusable(false);
+    } else {
+      setFocusable(true);
+    }
+  }, [isTransparent]);
 
   if (isTransparent) {
     return (
@@ -242,6 +263,7 @@ export default function CreateLessonDetached(): JSX.Element {
       width={primarySize.width}
       height={primarySize.height}
       title="Super Reality"
+      topBarContent={<TopMenuBar />}
       onMinimize={minimizeWindow}
       onClose={() => {
         reduxAction(dispatch, {
@@ -273,6 +295,7 @@ export default function CreateLessonDetached(): JSX.Element {
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>
+          <EditorSidebar />
         </div>
         <VideoStatus />
         <div className="nav">

@@ -14,7 +14,7 @@ import VideoCropBox from "../../../items/boxes/video-crop-box";
 
 export default function VideoCrop() {
   const dispatch = useDispatch();
-  const { trimVideoArea, videoScale } = useSelector(
+  const { previewEditArea, videoScale } = useSelector(
     (state: AppState) => state.createLessonV2
   );
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -26,7 +26,7 @@ export default function VideoCrop() {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
         arg: {
-          trimVideoArea: pos,
+          previewEditArea: pos,
         },
       });
     },
@@ -62,7 +62,7 @@ export default function VideoCrop() {
 
   useEffect(() => {
     if (dragContainer.current) {
-      const startPos = { ...trimVideoArea };
+      const startPos = { ...previewEditArea };
       const scale = videoScale;
       let resizeMargin = 16;
       if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
@@ -128,7 +128,7 @@ export default function VideoCrop() {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, trimVideoArea, videoScale]);
+  }, [dispatch, cvResult, previewEditArea, videoScale]);
 
   const baseShadeStyle: CSSProperties = {
     left: 0,
@@ -143,7 +143,7 @@ export default function VideoCrop() {
   return (
     <>
       <div ref={shadeContainer} style={{ ...baseShadeStyle }} />
-      <VideoCropBox ref={dragContainer} pos={trimVideoArea} />
+      <VideoCropBox ref={dragContainer} pos={previewEditArea} />
     </>
   );
 }

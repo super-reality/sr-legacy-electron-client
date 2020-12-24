@@ -22,6 +22,7 @@ import clamp from "../../../utils/clamp";
 
 interface WindowletProps {
   title: string;
+  topBarContent?: JSX.Element;
   style?: CSSProperties;
   width?: number;
   height?: number;
@@ -38,6 +39,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     children,
     style,
     title,
+    topBarContent,
     height,
     width,
     onMinimize,
@@ -184,7 +186,7 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
       }}
     >
       <div ref={dragContainer} className="title-bar">
-        <div className="title">{title}</div>
+        {topBarContent ?? <div className="title">{title}</div>}
         <div className="buttons">
           {onMinimize && (
             <div className="minimize" onClick={onMinimize}>

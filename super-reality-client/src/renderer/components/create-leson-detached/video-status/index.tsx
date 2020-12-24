@@ -23,7 +23,6 @@ import testFullVideo from "./generation/testFullVideo";
 import setStatus from "../lesson-utils/setStatus";
 import generationDone from "./generation/generationDone";
 import cropImage from "../../../../utils/cropImage";
-import Flex from "../../flex";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import updateStep from "../lesson-utils/updateStep";
@@ -89,17 +88,14 @@ export default function VideoStatus() {
     currentStep,
     treeSteps,
     treeAnchors,
-    cropRecording,
-    cropEditAnchor,
-    cropEditAnchorMode,
-    cropRecordingPos,
     canvasSourceType,
     canvasSourceDesc,
     canvasSource,
     status,
     triggerCvMatch,
     videoNavigation,
-    trimVideo,
+    previewEditArea,
+    previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const { cvResult } = useSelector((state: AppState) => state.render);
@@ -223,27 +219,20 @@ export default function VideoStatus() {
     testFullVideo(anchor);
   }, [recordingData, anchor]);
 
-  const doExitEditAnchor = useCallback(() => {
+  const doExitPreviewModes = useCallback(() => {
     setStatus("-");
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
-        cropRecording: false,
-        cropEditAnchor: null,
+        previewMode: "IDLE",
       },
     });
   }, [dispatch]);
 
-  const [
-    EditAnchorOptions,
-    openEditAnchorOptions,
-    closeEditAnchorOptions,
-  ] = usePopup(false);
-
   const doSaveNewAnchor = useCallback(() => {
     setStatus("Saving anchor..");
     saveCanvasImage(captureFileName)
-      .then((image) => cropImage(image, cropRecordingPos))
+      .then((image) => cropImage(image, previewEditArea))
       .then(newAnchorPre)
       .then((a) => {
         if (a) {
@@ -258,9 +247,9 @@ export default function VideoStatus() {
             },
           });
         }
-        doExitEditAnchor();
+        doExitPreviewModes();
       });
-  }, [cropRecordingPos, doExitEditAnchor, dispatch]);
+  }, [previewEditArea, doExitPreviewModes, dispatch]);
 
   const [Popup, doCreateAnchor] = usePopupImageSource(
     newAnchorPre,
@@ -303,13 +292,13 @@ export default function VideoStatus() {
             return new Promise((r) => r(undefined));
           }
         )
-        .then(doExitEditAnchor)
+        .then(doExitPreviewModes)
         .catch((e) => {
           console.error(e);
-          doExitEditAnchor();
+          doExitPreviewModes();
         });
     },
-    [videoNavigation, dispatch, currentStep, doExitEditAnchor]
+    [videoNavigation, dispatch, currentStep, doExitPreviewModes]
   );
 
   const editAddToCurrentAnchor = useCallback(
@@ -337,76 +326,50 @@ export default function VideoStatus() {
             return new Promise((r) => r(undefined));
           }
         )
-        .then(doExitEditAnchor)
+        .then(doExitPreviewModes)
         .catch((e) => {
           console.error(e);
-          doExitEditAnchor();
+          doExitPreviewModes();
         });
     },
-    [currentStep, doExitEditAnchor]
+    [currentStep, doExitPreviewModes]
   );
-
-  const setEditAnchorMode = useCallback(
-    (mode: ANCHOR_EDIT_MODES) => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: { cropEditAnchorMode: mode },
-      });
-      closeEditAnchorOptions();
-    },
-    [closeEditAnchorOptions, dispatch]
-  );
-
-  useEffect(() => {
-    if (cropEditAnchor) {
-      openEditAnchorOptions();
-    }
-  }, [cropEditAnchor, openEditAnchorOptions]);
 
   const doFinishEditAnchor = useCallback(() => {
     saveCanvasImage(captureFileName)
-      .then((image) => cropImage(image, cropRecordingPos))
+      .then((image) => cropImage(image, previewEditArea))
       .then((file) => {
-        if (cropEditAnchorMode == MODE_CREATE) {
+        if (previewMode == "CREATE_ANCHOR") {
           setStatus("Creating new anchor");
           editCreateNewAnchor(file);
           if (currentStep) {
             editStepItemsRelativePosition(
               currentStep,
-              cropRecordingPos,
+              previewEditArea,
               cvResult
             );
           }
         }
-        if (cropEditAnchorMode == MODE_ADD_TO) {
+        if (previewMode == "ADDTO_ANCHOR") {
           setStatus("Adding to anchor");
           editAddToCurrentAnchor(file);
         }
       });
-  }, [cropEditAnchorMode, cropRecordingPos, currentStep, cvResult]);
-
-  const doCloseTrimVideo = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        trimVideo: false,
-      },
-    });
-  }, [dispatch]);
+  }, [previewMode, previewEditArea, currentStep, cvResult]);
 
   const doTrimVideo = useCallback(() => {
     const slice = store.getState().createLessonV2;
-    const { currentRecording, trimVideoArea, currentItem } = slice;
+    const { currentRecording, currentItem } = slice;
     if (currentItem) {
       const recordingVideo = `${recordingPath}/vid-${currentRecording}.webm`;
       setStatus("Trimming video...");
       cropVideo(
         `${videoNavigation[0] / 1000}`,
         `${videoNavigation[2] / 1000}`,
-        Math.round(trimVideoArea.width),
-        Math.round(trimVideoArea.height),
-        Math.round(trimVideoArea.x),
-        Math.round(trimVideoArea.y),
+        Math.round(previewEditArea.width),
+        Math.round(previewEditArea.height),
+        Math.round(previewEditArea.x),
+        Math.round(previewEditArea.y),
         recordingVideo,
         videoCropFileName
       )
@@ -426,61 +389,17 @@ export default function VideoStatus() {
             });
           }
           setStatus("Done");
-          reduxAction(dispatch, {
-            type: "CREATE_LESSON_V2_DATA",
-            arg: {
-              trimVideo: false,
-            },
-          });
+          doExitPreviewModes();
         })
         .catch((e) => {
           setStatus("Something went wrong trimming video!");
           console.error(e);
         });
     }
-  }, [dispatch, videoNavigation]);
-
-  let currentMode: STATUS_MODES = MODE_IDLE;
-
-  if (trimVideo) currentMode = MODE_TRIM_VIDEO;
-  else if (cropRecording) {
-    if (cropEditAnchor) currentMode = MODE_EDIT_ANCHOR;
-    else currentMode = MODE_CREATE_ANCHOR;
-  }
+  }, [dispatch, doExitPreviewModes, previewEditArea, videoNavigation]);
 
   return (
     <>
-      <EditAnchorOptions width="540px" height="240px">
-        <Flex style={{ justifyContent: "center", margin: "0 auto 16px auto" }}>
-          Choose one
-        </Flex>
-        <Flex style={{ justifyContent: "space-evenly", marginBottom: "16px" }}>
-          <ButtonSimple
-            width="100px"
-            height="16px"
-            onClick={() => setEditAnchorMode(MODE_CREATE)}
-          >
-            Create new
-          </ButtonSimple>
-          <ButtonSimple
-            width="100px"
-            height="16px"
-            onClick={() => setEditAnchorMode(MODE_ADD_TO)}
-          >
-            Add to current
-          </ButtonSimple>
-          <ButtonSimple
-            width="100px"
-            height="16px"
-            onClick={() => {
-              closeEditAnchorOptions();
-              doExitEditAnchor();
-            }}
-          >
-            Cancel
-          </ButtonSimple>
-        </Flex>
-      </EditAnchorOptions>
       {Popup}
       <SelectAnchorPopup
         width="320px"
@@ -503,7 +422,7 @@ export default function VideoStatus() {
         />
       </SelectAnchorPopup>
       <div className="video-status-container">
-        {currentMode == MODE_TRIM_VIDEO && (
+        {previewMode == "TRIM_VIDEO" && (
           <>
             <ButtonSimple
               width="140px"
@@ -517,13 +436,13 @@ export default function VideoStatus() {
               width="140px"
               height="12px"
               margin="auto auto"
-              onClick={doCloseTrimVideo}
+              onClick={doExitPreviewModes}
             >
               Cancel
             </ButtonSimple>
           </>
         )}
-        {currentMode == MODE_CREATE_ANCHOR && (
+        {previewMode == "CREATE_ANCHOR" && (
           <ButtonSimple
             width="140px"
             height="12px"
@@ -533,7 +452,7 @@ export default function VideoStatus() {
             Save anchor
           </ButtonSimple>
         )}
-        {currentMode == MODE_EDIT_ANCHOR && (
+        {previewMode == "ADDTO_ANCHOR" && (
           <>
             <ButtonSimple
               width="140px"
@@ -547,13 +466,13 @@ export default function VideoStatus() {
             <ButtonSimple
               width="100px"
               height="16px"
-              onClick={doExitEditAnchor}
+              onClick={doExitPreviewModes}
             >
               Cancel
             </ButtonSimple>
           </>
         )}
-        {currentMode == MODE_IDLE && (
+        {previewMode == "IDLE" && (
           <>
             <ButtonRound
               svg={AnchorIcon}
@@ -586,9 +505,9 @@ export default function VideoStatus() {
             >
               Generate
             </ButtonSimple>
-            <div style={{ color: "var(--color-red)" }}>
+            {/* <div style={{ color: "var(--color-red)" }}>
               <i>{!cropRecording && "Attach an anchor to edit"}</i>
-            </div>
+        </div> */}
           </>
         )}
         <div

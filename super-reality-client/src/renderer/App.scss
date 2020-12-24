@@ -201,6 +201,11 @@ a:active {
 }
 
 .error-boundary {
+  max-width: 800px;
+  margin: auto;
+  background-color: var(--color-background);
+  padding: 64px;
+  
   .error-info-top {
     background-color: var(--color-r);
     border-radius: 3px 3px 0 0;

@@ -40,7 +40,9 @@ export default class ErrorBoundary extends React.Component<
       <>
         {this.state.errorInfo ? (
           <div className="error-boundary">
-            <div className="error-info-top" />
+            {
+              // <div className="error-info-top" />
+            }
             <div className="error-info-text">
               <div>{this.state.error && this.state.error.toString()}</div>
               <details style={{ whiteSpace: "pre-wrap" }}>

@@ -2,6 +2,13 @@
 @import "../../../items/boxes/index.scss";
 @import "../../../items/boxes/find-box/index.scss";
 
+.fluids-iframe {
+  border: none;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+}
+
 .video-preview-container-out {
   background-size: 25px 25px; /* Must be a square */
   background-position: 0 0, 12.5px 0, 12.5px -12.5px, 0px 12.5px; /* Must be half of one side of the square */
