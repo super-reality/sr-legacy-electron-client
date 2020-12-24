@@ -1,5 +1,9 @@
 @import "../../misc.scss";
 
+:focus {
+  outline: none;
+}
+
 .tree-folder-container {
   display: flex;
   flex-direction: column;
@@ -27,7 +31,7 @@
   }
 
   &.selected {
-    border-radius: 3px;
+    border: 3px solid yellow;
     background: #363252;
   }
 
