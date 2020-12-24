@@ -1,6 +1,6 @@
 .settings-popup-inner {
     background-color: var(--color-section);
-    color: #B8D4F3;
+    color: #B0B0B2;
     font-size: 13px;
     margin: 10px 10px 10px 10px;
     border-radius: 15px;
@@ -18,4 +18,9 @@
 }
 .popup-settings-input-container {
     margin: 0 20px 0 5px;
+
+    input {
+        border: 0;
+        max-width: 530px;
+    }
 }

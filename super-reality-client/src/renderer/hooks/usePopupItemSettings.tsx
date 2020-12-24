@@ -35,12 +35,10 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
     <button
       style={{
         cursor: "pointer",
-        width: "calc(25% - 10px)",
-        height: "calc(25% - 10px)",
-        minWidth: "100px",
-        minHeight: "85px",
+        width: "130px",
+        height: "130px",
         padding: "0px",
-        margin: "5px",
+        margin: "10px",
       }}
       key={name}
       id={id}
@@ -176,7 +174,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
         style={{
           backgroundColor: "var(--color-section)",
           borderRadius: "0",
-          borderLeft: "1px solid #3B3865",
+          borderRight: "1px solid #3B3865",
         }}
       >
         <SettingsInput
@@ -209,9 +207,10 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
                 key={filter}
                 style={{
                   backgroundColor: "inherit",
-                  border: "var(--color-text) solid 1px",
+                  border: "1px solid #343358",
                   fontSize: "14px",
-                  borderRadius: "9px",
+                  color: "#B8D4F3",
+                  borderRadius: "4px",
                   margin: "5px 10px 5px 0px",
                 }}
                 onClick={() => {
@@ -234,6 +233,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
             overflow: "auto",
             maxHeight: "85%",
             flexWrap: "wrap",
+            maxWidth: "990px",
           }}
         >
           {fxItems.map((key) => {
@@ -339,7 +339,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
             height="35px"
             onClick={clickOk}
           >
-            Ok
+            OK
           </ButtonSimple>
           <ButtonSimple
             style={{
@@ -430,12 +430,13 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       style={{
         display: "flex",
         flexDirection: "row",
-        top: "-8%",
-        left: "10%",
-        borderRadius: "15px",
+        borderRadius: "8px",
+        top: "-6.2%",
+        left: "3.4%",
+        maxHeight: "865px",
       }}
-      width="57%"
-      height="72%"
+      width="auto"
+      height="auto"
     >
       <FXPopUpSettings
         previewItem={previewItem}
