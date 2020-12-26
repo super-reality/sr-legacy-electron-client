@@ -64,22 +64,6 @@ const userData = userDataPath();
 const captureFileName = `${userData}/capture.png`;
 const videoCropFileName = `${userData}/crop.webm`;
 
-const MODE_CREATE = 1;
-const MODE_ADD_TO = 2;
-
-type ANCHOR_EDIT_MODES = typeof MODE_CREATE | typeof MODE_ADD_TO;
-
-const MODE_IDLE = "MODE_IDLE";
-const MODE_TRIM_VIDEO = "MODE_TRIM_VIDEO";
-const MODE_CREATE_ANCHOR = "MODE_CREATE_ANCHOR";
-const MODE_EDIT_ANCHOR = "MODE_EDIT_ANCHOR";
-
-type STATUS_MODES =
-  | typeof MODE_IDLE
-  | typeof MODE_TRIM_VIDEO
-  | typeof MODE_CREATE_ANCHOR
-  | typeof MODE_EDIT_ANCHOR;
-
 export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
@@ -236,6 +220,23 @@ export default function VideoStatus() {
       .then(newAnchorPre)
       .then((a) => {
         if (a) {
+          const slice = store.getState().createLessonV2;
+          if (
+            (slice.treeCurrentType == "step" ||
+              slice.treeCurrentType == "item") &&
+            slice.currentStep
+          ) {
+            updateStep({ anchor: a._id }, slice.currentStep).then(
+              (updatedStep) => {
+                if (updatedStep) {
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_SETSTEP",
+                    arg: { step: updatedStep },
+                  });
+                }
+              }
+            );
+          }
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
             arg: { currentAnchor: a._id },

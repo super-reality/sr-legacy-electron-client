@@ -20,6 +20,10 @@ import timestampToTime from "../../../../utils/timestampToTime";
 import setCanvasSource from "../../../redux/utils/setCanvasSource";
 import downloadFile from "../../../../utils/api/downloadFIle";
 import getPublicPath from "../../../../utils/electron/getPublicPath";
+import Flex from "../../flex";
+import ButtonSimple from "../../button-simple";
+import { PreviewModes } from "../../../redux/slices/createLessonSliceV2";
+import usePopup from "../../../hooks/usePopup";
 
 const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
@@ -312,8 +316,53 @@ export default function VideoPreview(): JSX.Element {
     [videoPos, videoScale, containerOutRef, videoCanvasRef]
   );
 
+  const [
+    EditAnchorOptions,
+    openEditAnchorOptions,
+    closeEditAnchorOptions,
+  ] = usePopup(false);
+
+  const setPreviewMode = useCallback(
+    (mode: PreviewModes) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { previewMode: mode },
+      });
+      closeEditAnchorOptions();
+    },
+    [closeEditAnchorOptions, dispatch]
+  );
+
   return (
     <>
+      <EditAnchorOptions width="540px" height="240px">
+        <Flex style={{ justifyContent: "center", margin: "0 auto 16px auto" }}>
+          Choose one
+        </Flex>
+        <Flex style={{ justifyContent: "space-evenly", marginBottom: "16px" }}>
+          <ButtonSimple
+            width="100px"
+            height="16px"
+            onClick={() => setPreviewMode("CREATE_ANCHOR")}
+          >
+            Create new
+          </ButtonSimple>
+          <ButtonSimple
+            width="100px"
+            height="16px"
+            onClick={() => setPreviewMode("ADDTO_ANCHOR")}
+          >
+            Add to current
+          </ButtonSimple>
+          <ButtonSimple
+            width="100px"
+            height="16px"
+            onClick={() => setPreviewMode("IDLE")}
+          >
+            Cancel
+          </ButtonSimple>
+        </Flex>
+      </EditAnchorOptions>
       <div
         className="video-preview-container-out"
         ref={containerOutRef}
@@ -372,7 +421,11 @@ export default function VideoPreview(): JSX.Element {
           {item && currentItem && currentStep && previewMode == "IDLE" && (
             <>
               <AnchorBox pos={cvResult} />
-              <EditAnchorButton anchor={step?.anchor || null} pos={cvResult} />
+              <EditAnchorButton
+                openEditAnchorOptions={openEditAnchorOptions}
+                anchor={step?.anchor || null}
+                pos={cvResult}
+              />
               <ItemPreview
                 showAnchor={false}
                 stepId={currentStep}
@@ -383,7 +436,11 @@ export default function VideoPreview(): JSX.Element {
           {step && !currentItem && currentStep && previewMode == "IDLE" && (
             <>
               <AnchorBox pos={cvResult} />
-              <EditAnchorButton anchor={step?.anchor} pos={cvResult} />
+              <EditAnchorButton
+                openEditAnchorOptions={openEditAnchorOptions}
+                anchor={step?.anchor}
+                pos={cvResult}
+              />
               <StepView stepId={currentStep} onSucess={voidFunction} />
             </>
           )}
