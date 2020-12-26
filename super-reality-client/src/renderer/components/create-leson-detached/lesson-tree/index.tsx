@@ -66,7 +66,6 @@ function TreeFolder(props: TreeFolderProps) {
   const [state, setState] = useState<STATES>(STATE_IDLE);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
-  // const [keyStep, setKeyStep] = useState<number>(tabIndex);
 
   const treeRef = useRef<HTMLDivElement>(null);
 
@@ -157,32 +156,30 @@ function TreeFolder(props: TreeFolderProps) {
       console.log(`paste on ${id}`);
     }
     */
-      if (["ArrowLeft", "ArrowRight"].includes(e.key)) {
-        // console.log("Enter the fray! ", treeRef.current);
-        // if (treeRef.current) treeRef.current.click();
-        if (e.key === "ArrowLeft") {
-          const div = document.getElementById(parentId);
-          if (div) {
-            div.click();
-            div.focus();
-            // setOpen(false);
-          }
-        }
-        if (e.key === "ArrowRight") {
-          const div = document.getElementById(id);
-          if (div) {
-            div.focus();
-          }
-          if (!open && children && children.length !== 0) {
-            setOpen(true);
-            const child = document.getElementById(children[0]._id);
-            if (child) {
-              child.click();
-              // child.focus();
-            }
-          }
+      if (e.key === "ArrowLeft") {
+        const div = document.getElementById(parentId);
+        if (div) {
+          div.click();
+          div.focus();
         }
       }
+      if (e.key === "ArrowRight") {
+        let child: HTMLElement | null = null;
+        if (id && type === "chapter") {
+          child = document.getElementById(treeChapters[id]?.steps[0]._id);
+        }
+        if (id && type === "lesson") {
+          child = document.getElementById(treeLessons[id]?.chapters[0]._id);
+        }
+        // if (id && type === "step") {
+        //   child = document.getElementById(treeSteps[id]?.items[0]._id);
+        // }
+        if (!open) setOpen(true);
+        if (child) {
+          child.click();
+        }
+      }
+
       if (["ArrowUp", "ArrowDown"].includes(e.key)) {
         e.preventDefault();
         const outputNext = (
@@ -197,30 +194,21 @@ function TreeFolder(props: TreeFolderProps) {
 
           return nextIdx;
         };
+        let list: IDName[] = [];
         if (id && type === "chapter") {
-          const list = treeLessons[parentId]?.chapters;
-          const div = document.getElementById(
-            list[outputNext(list, tabIndex, e)]._id
-          );
-          setSelected(false);
-          if (div) div.click();
+          list = treeLessons[parentId]?.chapters;
         }
         if (id && type === "step") {
-          const list = treeChapters[parentId]?.steps;
-          const div = document.getElementById(
-            list[outputNext(list, tabIndex, e)]._id
-          );
-          setSelected(false);
-          if (div) div.click();
+          list = treeChapters[parentId]?.steps;
         }
         if (id && type === "lesson") {
-          const list = lessons;
-          const div = document.getElementById(
-            list[outputNext(list, tabIndex, e)]._id
-          );
-          setSelected(false);
-          if (div) div.click();
+          list = lessons;
         }
+        const div = document.getElementById(
+          list[outputNext(list, tabIndex, e)]._id
+        );
+        setSelected(false);
+        if (div) div.click();
       }
     },
     [id]
@@ -282,6 +270,7 @@ function TreeFolder(props: TreeFolderProps) {
       }
       document.onkeydown = keyListeners;
       setSelected(true);
+      // if (treeRef.current) treeRef.current.scrollIntoView();
     },
     [dispatch, open, keyListeners]
   );
