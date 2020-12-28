@@ -1,5 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Item } from "../../../items/item";
@@ -41,10 +47,20 @@ interface TreeFolderProps {
   type: "lesson" | "chapter" | "step";
   expanded?: boolean;
   tabIndex: number;
+  siblings: IDName[];
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, parentId, uniqueId, name, type, expanded, tabIndex } = props;
+  const {
+    id,
+    siblings,
+    parentId,
+    uniqueId,
+    name,
+    type,
+    expanded,
+    tabIndex,
+  } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -54,7 +70,6 @@ function TreeFolder(props: TreeFolderProps) {
     treeChapters,
     treeSteps,
     dragOver,
-    lessons,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   let exp = expanded;
@@ -69,20 +84,26 @@ function TreeFolder(props: TreeFolderProps) {
 
   const treeRef = useRef<HTMLDivElement>(null);
 
-  let children: IDName[] = [];
-  let dataName: string | undefined;
-  if (type == "lesson") {
-    children = treeLessons[id]?.chapters || [];
-    dataName = treeLessons[id]?.name;
-  }
-  if (type == "chapter") {
-    children = treeChapters[id]?.steps || [];
-    dataName = treeChapters[id]?.name;
-  }
-  if (type == "step") {
-    children = treeSteps[id]?.items || [];
-    dataName = treeSteps[id]?.name;
-  }
+  // Converted to Memo to be used on the arrow movement function
+  // Else its value could change and the callback would not be updated
+  const [children, dataName] = useMemo((): [IDName[], string | undefined] => {
+    let child: IDName[] = [];
+    let cname: string | undefined;
+    if (type == "lesson") {
+      child = treeLessons[id]?.chapters || [];
+      cname = treeLessons[id]?.name;
+    }
+    if (type == "chapter") {
+      child = treeChapters[id]?.steps || [];
+      cname = treeChapters[id]?.name;
+    }
+    if (type == "step") {
+      child = treeSteps[id]?.items || [];
+      cname = treeSteps[id]?.name;
+    }
+
+    return [child, cname];
+  }, [id, treeLessons, treeChapters, treeSteps]);
 
   useEffect(() => {
     if (state !== STATE_IDLE) return;
@@ -145,35 +166,14 @@ function TreeFolder(props: TreeFolderProps) {
       if (e.key === "Delete") {
         onDelete(type, id, parentId);
       }
-      /*
-    if (e.ctrlKey && e.key === "c") {
-      console.log(`copy ${id}`);
-    }
-    if (e.ctrlKey && e.key === "x") {
-      console.log(`cut ${id}`);
-    }
-    if (e.ctrlKey && e.key === "v") {
-      console.log(`paste on ${id}`);
-    }
-    */
       if (e.key === "ArrowLeft") {
-        const div = document.getElementById(parentId);
-        if (div) {
-          div.click();
-          div.focus();
+        if (open) {
+          setOpen(false);
         }
       }
       if (e.key === "ArrowRight") {
         let child: HTMLElement | null = null;
-        if (id && type === "chapter") {
-          child = document.getElementById(treeChapters[id]?.steps[0]._id);
-        }
-        if (id && type === "lesson") {
-          child = document.getElementById(treeLessons[id]?.chapters[0]._id);
-        }
-        // if (id && type === "step") {
-        //   child = document.getElementById(treeSteps[id]?.items[0]._id);
-        // }
+        child = document.getElementById(children[0]?._id);
         if (!open) setOpen(true);
         if (child) {
           child.click();
@@ -191,27 +191,20 @@ function TreeFolder(props: TreeFolderProps) {
           let nextIdx = current + direction;
           if (nextIdx > list.length - 1) nextIdx = 0;
           if (nextIdx < 0) nextIdx = list.length - 1;
-
           return nextIdx;
         };
-        let list: IDName[] = [];
-        if (id && type === "chapter") {
-          list = treeLessons[parentId]?.chapters;
-        }
-        if (id && type === "step") {
-          list = treeChapters[parentId]?.steps;
-        }
-        if (id && type === "lesson") {
-          list = lessons;
-        }
-        const div = document.getElementById(
-          list[outputNext(list, tabIndex, e)]._id
+        let div = document.getElementById(
+          siblings[outputNext(siblings, tabIndex, e)]._id
         );
+        // Get the next one if this folder is open
+        if (open && children && children.length > 0) {
+          div = document.getElementById(children[0]?._id);
+        }
         setSelected(false);
         if (div) div.click();
       }
     },
-    [id]
+    [id, children, open, siblings]
   );
 
   useEffect(() => {
@@ -326,6 +319,7 @@ function TreeFolder(props: TreeFolderProps) {
         {children.map((ch, idx) => {
           return type == "lesson" || type == "chapter" ? (
             <TreeFolder
+              siblings={children}
               tabIndex={idx}
               parentId={id}
               uniqueId={`${uniqueId}.${ch._id}`}
@@ -473,11 +467,11 @@ function TreeItem(props: TreeItemProps) {
 
 export default function LessonTree() {
   const { lessons } = useSelector((state: AppState) => state.createLessonV2);
-
   return (
     <Flex column style={{ overflow: "auto" }}>
       {lessons.map((d, idx) => (
         <TreeFolder
+          siblings={lessons}
           tabIndex={idx}
           uniqueId={`${d._id}`}
           parentId=""
