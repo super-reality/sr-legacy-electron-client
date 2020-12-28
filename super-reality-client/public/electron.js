@@ -57,15 +57,15 @@ function getDisplay() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
+    alwaysOnTop: true,
     transparent: true,
     resizable: false,
-    focusable: false,
+    fullscreen: false,
     show: false,
     frame: false,
     width: 1024,
     height: 768,
     acceptFirstMouse: true,
-    alwaysOnTop: true,
     webPreferences: {
       webSecurity: false,
       nodeIntegration: true,
@@ -113,6 +113,7 @@ function createWindow() {
   mainWindow.webContents.once("dom-ready", () => {
     mainWindow.show();
     mainWindow.focus();
+    mainWindow.setAlwaysOnTop(true, "floating");
     sendInit();
 
     setTimeout(() => {

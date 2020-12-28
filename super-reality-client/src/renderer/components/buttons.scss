@@ -22,8 +22,8 @@
 
 .button-round {
   cursor: pointer;
-  background-color: var(--color-button);
-  border-radius: 4px;
+  background-color: #1B1F33;
+  border-radius: 3px;
   display: flex;
   @include animated;
   @include disable-select;
@@ -31,17 +31,10 @@
   .svg-icon {
     margin: auto;
   }
-
-  &:hover:not(.disabled) {
-    background-color: var(--color-button-hover);
-  }
-
-  &:active:not(.disabled) {
-    opacity: 0.5;
-  }
 }
 
 .button-simple {
+  font-family: 'Segoe UI';
   cursor: pointer;
   font-size: 14px;
   display: flex;

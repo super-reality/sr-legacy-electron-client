@@ -1,0 +1,21 @@
+.settings-popup-inner {
+    background-color: var(--color-section);
+    color: #B8D4F3;
+    font-size: 13px;
+    margin: 10px 10px 10px 10px;
+    border-radius: 15px;
+    padding: 15px 10px 15px 10px;
+}
+
+.prveiw-fx {
+    pointer-events: none;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #343358;
+}
+.settings-popup-options {
+    margin-top: 15px;
+}
+.popup-settings-input-container {
+    margin: 0 20px 0 5px;
+}

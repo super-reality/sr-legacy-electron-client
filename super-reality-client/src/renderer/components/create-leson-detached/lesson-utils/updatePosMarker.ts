@@ -1,4 +1,4 @@
-import { IAbsolutePos } from "../../../api/types/item/item";
+import { IAbsolutePos } from "../../../items/item";
 
 export default function updatePosMarker(
   pos: IAbsolutePos,

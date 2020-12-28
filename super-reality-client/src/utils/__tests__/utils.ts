@@ -1,18 +1,14 @@
 /* eslint-env jest */
 import path from "path";
-import Axios from "axios";
 import getFileExt from "../files/getFileExt";
 import getFileSha1 from "../files/getFileSha1";
-import SignIn from "../../renderer/api/types/auth/signin";
-import { API_URL } from "../../renderer/constants";
-import { ApiError } from "../../renderer/api/types";
-import handleAuthError from "../../renderer/api/handleAuthError";
 import { DifficultyOptions } from "../../renderer/api/types/lesson/lesson";
 import constantFormat from "../constantFormat";
 import createDataDirs from "../files/createDataDirs";
 import timestampToTime from "../timestampToTime";
-import getBoundsPos from "../electron/getBoundsPos";
+import getDisplayPosition from "../electron/getDisplayPosition";
 import getDisplayBounds from "../electron/getDisplayBounds";
+import timetoTimestamp from "../timeToTimestamp";
 
 jest.setTimeout(30000);
 
@@ -65,7 +61,16 @@ test("Can log in", async (done) => {
 });
 */
 test("Can create data directories", () => {
-  expect(createDataDirs()).toBe(true);
+  return expect(createDataDirs()).resolves.toBe(true);
+});
+
+test("Can convert to timestamps", () => {
+  expect(timetoTimestamp(10000)).toBe("00:00:10:00");
+  expect(timetoTimestamp(5677)).toBe("00:00:05:677");
+  expect(timetoTimestamp(67323)).toBe("00:01:07:323");
+  expect(timetoTimestamp(10867543)).toBe("03:01:07:543");
+  expect(timetoTimestamp(4207323)).toBe("01:10:07:323");
+  expect(timetoTimestamp(0)).toBe("00:00:00:00");
 });
 
 test("Can parse timestamps", () => {
@@ -78,19 +83,56 @@ test("Can parse timestamps", () => {
 });
 
 test("Can get bounds properly", () => {
-  // bounds of all screens
-  const bounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
-  // position of window on screen (fullscreen)
-  const windowBounds = { x: 0, y: 0, width: 1920, height: 1050 };
+  const nickBounds = { x: 0, y: -1080, width: 3863, height: 2160 };
+  const nickDisplay = { x: 0, y: 0, width: 1920, height: 1080 };
 
-  expect(getBoundsPos(bounds, windowBounds)).toStrictEqual({
+  expect(getDisplayPosition(nickBounds, nickDisplay)).toStrictEqual({
+    x: 0,
+    y: 1080,
+  });
+
+  const manweBounds = { x: -1920, y: 0, width: 2160, height: 1080 };
+  const manweDisplay = { x: 0, y: 0, width: 1920, height: 1080 };
+
+  expect(getDisplayPosition(manweBounds, manweDisplay)).toStrictEqual({
+    x: 1920,
+    y: 0,
+  });
+
+  const jamieBounds = { x: -1600, y: -1080, width: 5440, height: 2160 };
+  const jamioeDisplay = { x: 0, y: 0, width: 1920, height: 1050 };
+
+  expect(getDisplayPosition(jamieBounds, jamioeDisplay)).toStrictEqual({
     x: 1600,
     y: 1080,
+  });
+
+  const jamieBoundsShifted = { x: -1600, y: 0, width: 5440, height: 2160 };
+  const jamieDisplayShifted = { x: 0, y: 0, width: 1920, height: 1080 };
+
+  expect(
+    getDisplayPosition(jamieBoundsShifted, jamieDisplayShifted)
+  ).toStrictEqual({
+    x: 1600,
+    y: 0,
   });
 });
 
 test("Can get display bounds properly", () => {
-  const displays = [
+  const displaysNick = [
+    { bounds: { x: 0, y: 0, width: 1920, height: 1080 } },
+    { bounds: { x: 1924, y: 0, width: 1920, height: 1080 } },
+    { bounds: { x: 23, y: -1080, width: 3840, height: 1080 } },
+  ];
+
+  expect(getDisplayBounds(displaysNick as any)).toStrictEqual({
+    x: 0,
+    y: -1080,
+    width: 3863,
+    height: 2160,
+  });
+
+  const displaysJamie = [
     {
       bounds: { x: 0, y: 1080, width: 1920, height: 1080 }, // 1
     },
@@ -107,9 +149,34 @@ test("Can get display bounds properly", () => {
       bounds: { x: -1280, y: 1268, width: 1280, height: 721 }, // 5
     },
   ];
-  expect(getDisplayBounds(displays as any)).toStrictEqual({
+
+  expect(getDisplayBounds(displaysJamie as any)).toStrictEqual({
     x: -1600,
     y: 0,
+    width: 5440,
+    height: 2160,
+  });
+
+  const displaysPrimaryChange = [
+    {
+      bounds: { x: 0, y: 0, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: 1920, y: -417, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: 0, y: -1080, width: 1920, height: 1080 },
+    },
+    {
+      bounds: { x: -1600, y: -900, width: 1600, height: 900 },
+    },
+    {
+      bounds: { x: -1280, y: 188, width: 1280, height: 721 },
+    },
+  ];
+  expect(getDisplayBounds(displaysPrimaryChange as any)).toStrictEqual({
+    x: -1600,
+    y: -1080,
     width: 5440,
     height: 2160,
   });

@@ -70,10 +70,11 @@
   height: calc(100% - 24px);
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto 160px;
-  grid-template-areas: "edit" "nav";
+  grid-template-rows: auto 48px 112px;
+  grid-template-areas: "edit" "status" "nav";
   grid-gap: 5px;
   padding: 5px;
+  background: var(--main-gradient);
 
   .edit {
     display: flex;
@@ -81,6 +82,7 @@
     overflow: hidden;
 
     .creator {
+      border-radius: 3px;
       min-width: 300px;
       grid-template-rows: auto 32px 200px 32px;
       grid-gap: 8px;
@@ -99,23 +101,16 @@
       width: auto;
       flex-grow: 2;
       margin-left: 5px;
-      background-color: var(--color-background-dark);
+      // background-color: var(--color-background-dark);
       overflow: hidden;
     }
   }
 
   .nav {
+    position: relative;
     grid-area: nav;
-    background-color: var(--color-section);
+    background: var(--color-section);
   }
-}
-
-.click-on {
-  pointer-events: all;
-}
-
-.click-through {
-  pointer-events: none;
 }
 
 .name {
@@ -123,75 +118,20 @@
   margin-right: auto;
 }
 
-.window-container {
-  position: absolute;
-  min-width: 100px;
-  min-height: 100px;
-  background-color: var(--color-background);
-  display: flex;
-  flex-direction: column;
-  @include mid-shadow;
-
-  .title-bar {
-    font-size: 14px;
-    line-height: 24px;
-    padding-left: 8px;
-    height: 24px;
-    background-color: rgba(0, 0, 0, 0.3);
-    touch-action: none;
-    display: flex;
-    justify-content: space-between;
-
-    .buttons {
-      display: flex;
-      -webkit-app-region: no-drag;
-      text-align: center;
-      line-height: 24px;
-
-      .minimize {
-        width: 34px;
-        height: 100%;
-        display: flex;
-        cursor: auto;
-      }
-
-      .maximize {
-        width: 34px;
-        height: 100%;
-        display: flex;
-      }
-
-      .minimize:hover,
-      .maximize:hover {
-        background-color: var(--color-button);
-      }
-
-      .close {
-        display: flex;
-        width: 24px;
-        height: 100%;
-        cursor: auto;
-      }
-
-      .close:hover {
-        background-color: var(--color-red);
-      }
-    }
-  }
-}
-
 .spectrum-container {
   width: calc(100% - 28px);
-  height: 36px;
+  height: 30px;
   position: absolute;
   display: flex;
+  bottom: -5px;
   margin-left: 8px;
   margin-top: -39px;
   align-items: center;
+  // background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
 
   .spectrum-bar {
-    width: -webkit-fill-available;
-    background: var(--color-background-hover);
+    width: 3px;
+    background: #343358;
     display: flex;
   }
 }

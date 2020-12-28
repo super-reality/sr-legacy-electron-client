@@ -34,7 +34,7 @@ function ModalItem(props: ModalItemProps): JSX.Element {
   );
 }
 
-interface baseOption {
+interface BaseOption {
   _id: string;
   name: string;
 }
@@ -47,7 +47,7 @@ interface ModalListProps<T> {
   open?: (id: string | null) => void;
 }
 
-export default function ModalList<T extends baseOption>(
+export default function ModalList<T extends BaseOption>(
   props: ModalListProps<T>
 ): JSX.Element {
   const { options, current, selected, setCurrent, open } = props;

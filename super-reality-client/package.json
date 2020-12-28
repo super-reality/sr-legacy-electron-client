@@ -1,6 +1,6 @@
 {
   "name": "super-reality-client",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
@@ -72,7 +72,7 @@
   },
   "scripts": {
     "start": "nf start -p 3000",
-    "react-start": "craco start",
+    "react-start": "node generateInfo.js && craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
     "build:web": "craco build --config craco.web.config.js",
@@ -123,6 +123,20 @@
       {
         "from": "./public/extra/",
         "to": "extra",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./public/fx/",
+        "to": "fx",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./public/fluid-simulation/",
+        "to": "fluid-simulation",
         "filter": [
           "**/*"
         ]

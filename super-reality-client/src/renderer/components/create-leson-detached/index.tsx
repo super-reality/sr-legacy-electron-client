@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 import React, {
   useCallback,
   useEffect,
@@ -13,14 +12,10 @@ import { useSelector, useDispatch } from "react-redux";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
-import { ReactComponent as ButtonMinimize } from "../../../assets/svg/win-minimize.svg";
-import { ReactComponent as ButtonMaximize } from "../../../assets/svg/win-maximize.svg";
-import { ReactComponent as ButtonClose } from "../../../assets/svg/win-close.svg";
 
 import Lesson from "./lessson";
 import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
-import closeWindow from "../../../utils/electron/closeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorEdit from "./anchor-edit";
@@ -34,9 +29,12 @@ import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "./recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
-import Windowlet from "./windowlet";
+import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
+import TopMenuBar from "../top-menu-bar";
+import setFocusable from "../../../utils/electron/setFocusable";
+import EditorSidebar from "./editor-sidebar";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -53,40 +51,10 @@ const restrictMinSize =
     min: { width: 100, height: 100 },
   });
 
-function TopBar() {
-  const onMinimize = useCallback(() => {
-    //
-  }, []);
-
-  const onMaximize = useCallback(() => {
-    //
-  }, []);
-
-  const onCLose = useCallback(() => {
-    closeWindow();
-  }, []);
-
-  return (
-    <div className="top-bar">
-      <div className="name">Super Reality</div>
-      <div className="buttons">
-        <div className="minimize" onClick={onMinimize}>
-          <ButtonMinimize style={{ margin: "auto" }} />
-        </div>
-        <div className="maximize" onClick={onMaximize}>
-          <ButtonMaximize style={{ margin: "auto" }} />
-        </div>
-        <div className="close" onClick={onCLose}>
-          <ButtonClose style={{ margin: "auto" }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
   const resizeContainerAnchor = useRef<HTMLDivElement>(null);
+
   const {
     currentAnchor,
     currentRecording,
@@ -133,9 +101,11 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const debounceVideoNav = useCallback(
     (n: readonly number[]) => {
-      debouncer(() => setVideoNavPos([...n]));
-      const el = document.getElementById("video-hidden") as HTMLVideoElement;
-      if (el) el.currentTime = n[1] / 1000;
+      debouncer(() => {
+        setVideoNavPos([...n]);
+        const el = document.getElementById("video-hidden") as HTMLVideoElement;
+        if (el) el.currentTime = n[1] / 1000;
+      });
     },
     [debouncer]
   );
@@ -196,7 +166,7 @@ export default function CreateLessonDetached(): JSX.Element {
             arg: { spectrum: rawAudioToWaveform(data) },
           });
         })
-        .catch((e) => {
+        .catch(() => {
           console.warn(
             `recording ${currentRecording} does not have any local audio files.`
           );
@@ -212,13 +182,31 @@ export default function CreateLessonDetached(): JSX.Element {
     });
   }, [dispatch, currentRecording]);
 
-  const isTransparent =
-    openRecorder ||
-    anchorTestView ||
-    lessonPreview ||
-    chapterPreview ||
-    stepPreview ||
-    itemPreview;
+  const isTransparent = useMemo(
+    () =>
+      openRecorder ||
+      anchorTestView ||
+      lessonPreview ||
+      chapterPreview ||
+      stepPreview ||
+      itemPreview,
+    [
+      openRecorder,
+      anchorTestView,
+      lessonPreview,
+      chapterPreview,
+      stepPreview,
+      itemPreview,
+    ]
+  );
+
+  useEffect(() => {
+    if (isTransparent) {
+      setFocusable(false);
+    } else {
+      setFocusable(true);
+    }
+  }, [isTransparent]);
 
   if (isTransparent) {
     return (
@@ -275,6 +263,7 @@ export default function CreateLessonDetached(): JSX.Element {
       width={primarySize.width}
       height={primarySize.height}
       title="Super Reality"
+      topBarContent={<TopMenuBar />}
       onMinimize={minimizeWindow}
       onClose={() => {
         reduxAction(dispatch, {
@@ -303,12 +292,13 @@ export default function CreateLessonDetached(): JSX.Element {
           ) : (
             <></>
           )}
-          <div className="preview">
+          <div className="animate-gradient preview">
             <VideoPreview />
           </div>
+          <EditorSidebar />
         </div>
+        <VideoStatus />
         <div className="nav">
-          <VideoStatus />
           <VideoNavigation
             domain={videoNavDomain}
             defaultValues={videoNavigation}
@@ -323,3 +313,4 @@ export default function CreateLessonDetached(): JSX.Element {
     </Windowlet>
   );
 }
+/* eslint-disable dot-notation */

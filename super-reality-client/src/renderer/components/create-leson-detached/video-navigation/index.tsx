@@ -182,7 +182,7 @@ interface VideoNavigationProps {
 }
 
 const sliderStyle = {
-  position: "relative" as "relative",
+  position: "relative" as any,
   width: "100%",
   touchAction: "none",
 };
@@ -232,7 +232,7 @@ export default function VideoNavigation(
     <div className="video-video-nav">
       <div
         style={{
-          height: "80px",
+          height: "100px",
           display: "flex",
           alignItems: "flex-start",
           paddingTop: "26px",

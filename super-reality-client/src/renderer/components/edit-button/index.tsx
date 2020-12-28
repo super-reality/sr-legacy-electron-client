@@ -17,6 +17,7 @@ export default function EditButton(props: EditProps): JSX.Element {
       style={{
         margin: "auto",
         display: "flex",
+        ...style,
       }}
       onClick={(e) => {
         e.stopPropagation();

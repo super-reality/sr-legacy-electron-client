@@ -20,8 +20,8 @@ const lessonPlayerSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    reset: (state: InitialState, action: PayloadAction<null>): void => {
-      state = Object.assign(state, initialState);
+    reset: (_state: InitialState, _action: PayloadAction<null>): void => {
+      _state = Object.assign(_state, initialState);
     },
     setPlaying: (state: InitialState, action: PayloadAction<boolean>): void => {
       state.playing = action.payload;

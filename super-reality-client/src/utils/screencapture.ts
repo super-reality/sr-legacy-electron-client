@@ -2,19 +2,14 @@ import { exec } from "child_process";
 import os from "os";
 import fs from "fs";
 import path from "path";
-import getPrimaryPos from "./electron/getPrimaryPos";
-import getPrimarySize from "./electron/getPrimarySize";
 import getDisplayBounds from "./electron/getDisplayBounds";
+import getDisplayPosition from "./electron/getDisplayPosition";
+import getPrimaryMonitor from "./electron/getPrimaryMonitor";
+import getPublicPath from "./electron/getPublicPath";
 
 function captureCommand(filePath: string) {
-  // eslint-disable-next-line global-require
-  const { remote } = require("electron");
-
-  const proc: any = process;
   // freeware nircmd http://www.nirsoft.net/utils/nircmd.html
-  const nircmdc = remote.app.isPackaged
-    ? path.join(proc.resourcesPath, "extra", "nircmdc.exe")
-    : path.join(remote.app.getAppPath(), "public", "extra", "nircmdc.exe");
+  const nircmdc = path.join(getPublicPath(), "extra", "nircmdc.exe");
 
   switch (os.platform()) {
     case "win32":
@@ -54,9 +49,8 @@ export default function screencapture(
   callback: (err: any, imagePath: string) => void
 ) {
   capture(filePath, (err: any, imagePath: string) => {
-    const displays = getDisplayBounds();
-    const pos = getPrimaryPos(displays);
-    const size = getPrimarySize();
+    const pos = getDisplayPosition(getDisplayBounds());
+    const size = getPrimaryMonitor().bounds;
     // eslint-disable-next-line global-require
     const { nativeImage } = require("electron");
 

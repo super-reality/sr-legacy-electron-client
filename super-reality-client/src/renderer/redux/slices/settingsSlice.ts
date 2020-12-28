@@ -14,9 +14,9 @@ const settingsSlice = createSlice({
   reducers: {
     clearsettings: (
       state: SettingsState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
-      state = { ...initialState };
+      Object.assign(state, initialState);
     },
     setSettings: (
       state: SettingsState,

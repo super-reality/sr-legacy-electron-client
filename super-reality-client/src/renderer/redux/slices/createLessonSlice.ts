@@ -48,7 +48,7 @@ const createLessonSlice = createSlice({
       newSteps[action.payload.index] = { ...action.payload.step };
       state.steps = newSteps;
     },
-    reset: (state: ILesson, action: PayloadAction<null>): void => {
+    reset: (state: ILesson, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.parent = [];
       state.ownership = [];

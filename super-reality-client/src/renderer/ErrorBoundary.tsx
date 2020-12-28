@@ -6,8 +6,11 @@ interface ErrorState {
   errorInfo: any;
 }
 
-export default class ErrorBoundary extends React.Component<{}, ErrorState> {
-  constructor(props: {}) {
+export default class ErrorBoundary extends React.Component<
+  Record<string, unknown>,
+  ErrorState
+> {
+  constructor(props: Record<string, unknown>) {
     super(props);
     this.state = { error: null, errorInfo: null } as ErrorState;
   }
@@ -37,7 +40,9 @@ export default class ErrorBoundary extends React.Component<{}, ErrorState> {
       <>
         {this.state.errorInfo ? (
           <div className="error-boundary">
-            <div className="error-info-top" />
+            {
+              // <div className="error-info-top" />
+            }
             <div className="error-info-text">
               <div>{this.state.error && this.state.error.toString()}</div>
               <details style={{ whiteSpace: "pre-wrap" }}>

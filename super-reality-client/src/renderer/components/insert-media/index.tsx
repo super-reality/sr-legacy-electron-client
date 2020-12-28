@@ -16,7 +16,13 @@ interface InsertMediaProps {
 export default function InsertMedia(props: InsertMediaProps): JSX.Element {
   const { callback, imgUrl, style, snip, url, disk, keepSize } = props;
 
-  const [Popup, open] = usePopupImageSource(callback, snip, url, disk);
+  const [Popup, open] = usePopupImageSource(
+    callback,
+    snip || false,
+    url || false,
+    disk || false,
+    false
+  );
 
   return (
     <>

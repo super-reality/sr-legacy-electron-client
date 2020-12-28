@@ -12,45 +12,48 @@ interface EditAnchorButtoProps {
     width: number;
     height: number;
   };
+  openEditAnchorOptions: () => void;
 }
 
 export default function EditAnchorButton(props: EditAnchorButtoProps) {
   const dispatch = useDispatch();
-  const { anchor, pos } = props;
+  const { anchor, pos, openEditAnchorOptions } = props;
 
   const onClick = useCallback(() => {
+    openEditAnchorOptions();
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
       arg: {
-        cropEditAnchor: anchor,
-        cropRecording: true,
-        cropRecordingPos: {
+        editingAnchor: anchor || "",
+        previewEditArea: {
           ...pos,
         },
       },
     });
-  }, [dispatch, anchor, pos]);
+  }, [openEditAnchorOptions, dispatch, anchor, pos]);
 
   return (
-    <div
-      className="edit-anchor-button-hover"
-      style={{
-        left: `${pos.x - 64}px`,
-        top: `${pos.y - 64}px`,
-        width: `${pos.width + 128}px`,
-        height: `${pos.height + 128}px`,
-      }}
-    >
-      <div className="edit-anchor-button" onClick={onClick}>
-        <ButtonEdit
-          style={{
-            width: "16px",
-            height: "16px",
-            margin: "auto",
-            fill: "var(--color-icon)",
-          }}
-        />
+    <>
+      <div
+        className="edit-anchor-button-hover"
+        style={{
+          left: `${pos.x - 64}px`,
+          top: `${pos.y - 64}px`,
+          width: `${pos.width + 128}px`,
+          height: `${pos.height + 128}px`,
+        }}
+      >
+        <div className="edit-anchor-button" onClick={onClick}>
+          <ButtonEdit
+            style={{
+              width: "16px",
+              height: "16px",
+              margin: "auto",
+              fill: "var(--color-icon)",
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

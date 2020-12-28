@@ -1,0 +1,40 @@
+@import "../misc.scss";
+
+.top-menu-container {
+  display: flex;
+  cursor: default;
+
+  .top-menu-logo {
+    background-image: url("../../../assets/svg/logo.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+    margin: 5px 0;
+    height: auto;
+  }
+
+  .top-menu-item {
+    @include animated;
+    color: #807EB5;
+    line-height: 3;
+    width: auto;
+    height: 100%;
+    padding: 0 15px;
+    cursor: pointer;
+
+    &.active {
+      color: white;
+      background-color: var(--color-background-hover);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    &:hover {
+      color: white;
+      background-color: var(--color-background-hover);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }
+}

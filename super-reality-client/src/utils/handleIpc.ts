@@ -9,10 +9,12 @@ import {
   IpcMsgPythocResponse,
 } from "../types/ipc";
 import createBackgroundProcess from "./createBackgroundProcess";
-import getBoundsPos from "./electron/getBoundsPos";
-import getDisplayBounds from "./electron/getDisplayBounds";
 
 import getWindowId from "./electron/getWindowId";
+// import setFocusable from "./electron/setFocusable";
+import setMaximize from "./electron/setMaximize";
+import setResizable from "./electron/setResizable";
+import setTopMost from "./electron/setTopMost";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -78,6 +80,11 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
+    setTimeout(() => {
+      setTopMost(true);
+    }, 2000);
+    setMaximize(true);
+    setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
   });
 
@@ -119,12 +126,7 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("cvResult");
   makeIpcListener<ipcMsgCvResult>("cvResult", (e, arg) => {
-    const pos = arg;
-    console.log("cv absolute pos", { x: pos.x, y: pos.y });
-    const primary = getBoundsPos(getDisplayBounds());
-    pos.x -= primary.x;
-    pos.y -= primary.y;
-    console.log("cv relative pos", { x: pos.x, y: pos.y });
-    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg: pos });
+    console.log("cv pos", { x: arg.x, y: arg.y });
+    reduxAction(store.dispatch, { type: "SET_CV_RESULT", arg });
   });
 }

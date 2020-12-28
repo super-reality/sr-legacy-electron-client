@@ -7,7 +7,7 @@ import handleFileUpload from "../../renderer/api/handleFileUpload";
 
 export default function uploadFileToS3(
   localFileName: string,
-  type: string = "lesson"
+  type = "lesson"
 ): Promise<string> {
   console.log("upload:", localFileName);
   return new Promise((resolve, reject) => {

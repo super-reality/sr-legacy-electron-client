@@ -3,7 +3,7 @@ import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
-import Windowlet from "../windowlet";
+import Windowlet from "../../windowlet";
 import Flex from "../../flex";
 import AnchorEditSliders from "../anchor-edit-sliders";
 import { IAnchor } from "../../../api/types/anchor/anchor";
@@ -11,7 +11,7 @@ import ipcSend from "../../../../utils/ipcSend";
 import getArrrayAverage from "../../../../utils/getArrayAverage";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
-import AnchorBox from "../../lesson-player/anchor-box";
+import AnchorBox from "../../../items/boxes/anchor-box";
 
 interface AnchorTesterProps {
   onFinish: () => void;

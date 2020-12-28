@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { isEqual } from "lodash";
 import {
   Slider,
@@ -133,7 +133,7 @@ interface BaseSliderProps<T> {
 }
 
 const sliderStyle = {
-  position: "relative" as "relative",
+  position: "relative" as any,
   width: "100%",
   touchAction: "none",
 };

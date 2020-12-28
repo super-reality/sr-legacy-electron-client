@@ -1,5 +1,5 @@
 @mixin animated {
-  -webkit-transition: all 0.15s cubic-bezier(0, 0, 0.2, 1);
+  -webkit-transition: all 0.25s cubic-bezier(0, 0, 0.2, 1);
 }
 
 @mixin disable-select {

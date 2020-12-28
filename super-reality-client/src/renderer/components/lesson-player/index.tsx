@@ -10,11 +10,9 @@ import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonRound from "../button-round";
-import Windowlet from "../create-leson-detached/windowlet";
+import Windowlet from "../windowlet";
 import Flex from "../flex";
 import ChapterView from "./chapter-view";
-import ItemPreview from "./item-preview";
-import StepView from "./step-view";
 
 import { ReactComponent as ButtonPrev } from "../../../assets/svg/prev-step.svg";
 import { ReactComponent as ButtonNext } from "../../../assets/svg/next-step.svg";
@@ -29,18 +27,9 @@ interface LessonPlayerProps {
 export default function LessonPlayer(props: LessonPlayerProps) {
   const { lessonId, onFinish } = props;
   const dispatch = useDispatch();
-  const {
-    currentStep,
-    currentItem,
-    treeAnchors,
-    treeSteps,
-    treeChapters,
-    treeLessons,
-    previewOne,
-    itemPreview,
-    stepPreview,
-    chapterPreview,
-  } = useSelector((state: AppState) => state.createLessonV2);
+  const { treeAnchors, treeSteps, treeChapters, treeLessons } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
 
   const { playingStepNumber, playingChapterNumber, playing } = useSelector(
     (state: AppState) => state.lessonPlayer
@@ -69,6 +58,22 @@ export default function LessonPlayer(props: LessonPlayerProps) {
     const anchorId = step?.anchor;
     return anchorId ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
+
+  const clearCv = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "SET_CV_RESULT",
+      arg: {
+        time: new Date().getTime(),
+        id: "",
+        dist: 0,
+        sizeFactor: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      },
+    });
+  }, [dispatch]);
 
   const clearPreviews = useCallback(() => {
     reduxAction(dispatch, {
@@ -115,6 +120,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   const doPrev = useCallback(() => {
     if (playingStepNumber > 0) {
+      clearCv();
       reduxAction(dispatch, {
         type: "SET_LESSON_PLAYER_DATA",
         arg: {
@@ -122,11 +128,12 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         },
       });
     }
-  }, [dispatch, playingStepNumber]);
+  }, [dispatch, clearCv, playingStepNumber]);
 
   const doNext = useCallback(() => {
     if (chapter) {
       if (playingStepNumber + 1 < chapter.steps.length) {
+        clearCv();
         reduxAction(dispatch, {
           type: "SET_LESSON_PLAYER_DATA",
           arg: {
@@ -134,6 +141,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
           },
         });
       } else if (lesson && playingChapterNumber + 1 < lesson.chapters.length) {
+        clearCv();
         reduxAction(dispatch, {
           type: "SET_LESSON_PLAYER_DATA",
           arg: {
@@ -146,7 +154,14 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onFinish();
       }
     }
-  }, [dispatch, onFinish, chapter, playingStepNumber, playingChapterNumber]);
+  }, [
+    dispatch,
+    clearCv,
+    onFinish,
+    chapter,
+    playingStepNumber,
+    playingChapterNumber,
+  ]);
 
   const doPlay = useCallback(
     (play: boolean) => {
@@ -170,21 +185,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   return (
     <>
-      {playing && itemPreview && previewOne && currentStep && currentItem && (
-        <ItemPreview
-          showAnchor={false}
-          stepId={currentStep}
-          itemId={currentItem}
-          onSucess={onFinish}
-        />
-      )}
-      {playing && stepPreview && previewOne && step && (
-        <StepView stepId={step?._id} onSucess={onFinish} />
-      )}
-      {playing && chapterPreview && previewOne && chapter && (
-        <ChapterView chapterId={chapter._id} onSucess={onFinish} />
-      )}
-      {playing && chapter && !previewOne && (
+      {playing && chapter && (
         <ChapterView chapterId={chapter?._id} onSucess={doNext} />
       )}
       <Windowlet
@@ -194,18 +195,13 @@ export default function LessonPlayer(props: LessonPlayerProps) {
         onClose={clearPreviews}
       >
         <Flex column style={{ height: "100%" }}>
-          {!previewOne && chapter && step && (
+          {chapter && step && (
             <>
               <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
               <Flex style={{ margin: "auto" }}>step: {step.name}</Flex>
             </>
           )}
-          {stepPreview && previewOne && step && (
-            <Flex style={{ margin: "auto" }}>{step.name}</Flex>
-          )}
-          {chapterPreview && previewOne && chapter && (
-            <Flex style={{ margin: "auto" }}>{chapter.name}</Flex>
-          )}
+
           <Flex style={{ margin: "auto" }}>
             <ButtonRound
               width="36px"

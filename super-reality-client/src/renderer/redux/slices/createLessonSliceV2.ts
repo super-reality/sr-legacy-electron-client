@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ILessonV2 } from "../../api/types/lesson-v2/lesson";
 import { IChapter } from "../../api/types/chapter/chapter";
 import { IStep } from "../../api/types/step/step";
-import { Item } from "../../api/types/item/item";
+import { Item } from "../../items/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
 import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
@@ -11,6 +11,14 @@ import idNamePos from "../../../utils/idNamePos";
 import idInIdName from "../../../utils/idInIdName";
 
 export type TreeTypes = "none" | "chapter" | "lesson" | "step" | "item";
+
+export type VideoSources = "url" | "file" | "recording" | undefined;
+
+export type PreviewModes =
+  | "CREATE_ANCHOR"
+  | "ADDTO_ANCHOR"
+  | "TRIM_VIDEO"
+  | "IDLE";
 
 const initialState = {
   toggleSelects: 0 as number,
@@ -57,17 +65,17 @@ const initialState = {
   }[],
   recordingCvMatchValue: 990,
   recordingCvFrame: -1,
-  cropRecording: false,
-  cropEditAnchor: null as string | null,
-  cropEditAnchorMode: 0,
-  cropRecordingPos: {
+  previewEditArea: {
     x: 0,
     y: 0,
     width: 100,
     height: 100,
   },
-  currentCanvasSource: undefined as string | undefined,
-  canvasSource: "no source" as string,
+  previewMode: "IDLE" as PreviewModes,
+  editingAnchor: "",
+  canvasSourceType: undefined as VideoSources,
+  canvasSource: undefined as string | undefined,
+  canvasSourceDesc: "no source" as string,
   status: "-",
 };
 
@@ -79,14 +87,14 @@ const createLessonSlice = createSlice({
   reducers: {
     clearRecordingCVData: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.recordingCvFrame = 0;
       state.recordingCvMatches = [];
     },
     doTriggerCvMatch: (
       state: InitialState,
-      action: PayloadAction<null>
+      _action: PayloadAction<null>
     ): void => {
       state.triggerCvMatch = new Date().getTime();
     },
@@ -352,7 +360,7 @@ const createLessonSlice = createSlice({
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },
-    selectEvent: (state: InitialState, action: PayloadAction<null>): void => {
+    selectEvent: (state: InitialState, _action: PayloadAction<null>): void => {
       // eslint-disable-next-line operator-assignment
       state.toggleSelects = state.toggleSelects + 1;
     },

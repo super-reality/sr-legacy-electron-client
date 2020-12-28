@@ -9,8 +9,6 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import FindBox from "../find-box";
-import ImageBox from "../image.box";
 import {
   cursorChecker,
   restrictMinSize,
@@ -20,11 +18,11 @@ import {
 } from "../../../constants";
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
-import { IAbsolutePos } from "../../../api/types/item/item";
-import DialogBox from "../dialog-box";
-import AnchorBox from "../anchor-box";
+import { IAbsolutePos } from "../../../items/item";
+import AnchorBox from "../../../items/boxes/anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
 import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
+import getItemComponent from "../../../items/getItemComponent";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -45,6 +43,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
     x: 0,
@@ -125,19 +124,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
         }),
       ];
 
-      if (
-        item.type == "dialog" ||
-        item.type == "image" ||
-        item.type == "video"
-      ) {
+      if (item.type !== "focus_highlight" && item.type !== "fx") {
         resizeMods.push(restrictSnapGrid);
         dragMods.push(restrictSnapGrid);
       }
+
+      let resizeMargin = 16;
+      if (startPos.width < 56 || startPos.height < 56) resizeMargin = 6;
 
       interact(dragContainer.current)
         .resizable({
           edges: { left: true, right: true, bottom: true, top: true },
           modifiers: resizeMods,
+          margin: resizeMargin,
           inertia: false,
         } as any)
         .draggable({
@@ -146,16 +145,18 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("resizemove", (event) => {
           const div = dragContainer.current;
-          if (div) {
-            const delta = event.deltaRect;
-            startPos.x = div.offsetLeft + delta.left / scale;
-            startPos.y = div.offsetTop + delta.top / scale;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
-            updateDiv(startPos);
-          }
-
           if (div && div.parentElement) {
+            startPos.x =
+              (event.rect.left - div.parentElement.getBoundingClientRect().x) /
+              scale;
+            startPos.y =
+              (event.rect.top - div.parentElement.getBoundingClientRect().y) /
+              scale;
+            console.log(event.rect);
+            startPos.width = (event.rect.width - 3) / scale;
+            startPos.height = (event.rect.height - 3) / scale;
+            updateDiv(startPos);
+
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
               startPos.x;
@@ -165,23 +166,12 @@ export default function ItemPreview(props: ItemPreviewProps) {
             updatePosMarker(startPos, item.anchor);
           }
         })
-        .on("dragstart", (event) => {
+        .on("dragstart", () => {
           const div = dragContainer.current;
           if (div) {
             startPos.x = div.offsetLeft || 0;
             startPos.y = div.offsetTop || 0;
             updateDiv(startPos);
-          }
-        })
-        .on("resizestart", (event) => {
-          const div = dragContainer.current;
-          if (div) {
-            startPos.x = div.offsetLeft || 0;
-            startPos.y = div.offsetTop || 0;
-            startPos.width = (event.rect.width - 6) / scale;
-            startPos.height = (event.rect.height - 6) / scale;
-            updateDiv(startPos);
-            updatePosMarker(startPos, item.anchor);
           }
         })
         .on("dragmove", (event) => {
@@ -199,7 +189,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
           updatePosMarker(startPos, item.anchor);
           updateDiv(startPos);
         })
-        .on("resizeend", (event) => {
+        .on("resizeend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
             startPos.x -= cvResult.x - 3;
@@ -226,13 +216,13 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          updateItem({ ...item, relativePos: startPos }, item._id);
+          updateItem<typeof item>({ ...item, relativePos: startPos }, item._id);
         })
         .on("dragend", () => {
           const div = dragContainer.current;
           if (step.anchor && item?.anchor) {
-            startPos.x -= cvResult.x;
-            startPos.y -= cvResult.y;
+            startPos.x -= cvResult.x - 3;
+            startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
             startPos.horizontal =
               (100 / (div.parentElement.offsetWidth - startPos.width)) *
@@ -251,7 +241,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
               },
             },
           });
-          updateItem({ ...item, relativePos: startPos }, item._id);
+          updateItem<typeof item>({ ...item, relativePos: startPos }, item._id);
         });
 
       return (): void => {
@@ -280,41 +270,19 @@ export default function ItemPreview(props: ItemPreviewProps) {
     return <></>;
   }
 
+  const ItemComponent = item ? getItemComponent(item) : undefined;
+
   return (
     <>
       {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
         <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
       )}
-      {item && item.type == "focus_highlight" ? (
-        <FindBox
+      {ItemComponent && item ? (
+        <ItemComponent
           ref={dragContainer}
           pos={pos}
           style={style}
-          type={item.focus}
-          callback={onSucessCallback}
-        />
-      ) : (
-        <></>
-      )}
-      {item && item.type == "image" ? (
-        <ImageBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          image={item.url}
-          trigger={item.trigger}
-          callback={onSucessCallback}
-        />
-      ) : (
-        <></>
-      )}
-      {item && item.type == "dialog" ? (
-        <DialogBox
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          text={item.text}
-          trigger={item.trigger}
+          item={item}
           callback={onSucessCallback}
         />
       ) : (
