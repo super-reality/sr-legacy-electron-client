@@ -166,10 +166,6 @@ function TreeFolder(props: TreeFolderProps) {
   const doOpen = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (!e.ctrlKey) {
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_TREE",
-          arg: { type, uniqueId, id },
-        });
         if (id && type == "step") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
@@ -181,6 +177,7 @@ function TreeFolder(props: TreeFolderProps) {
             },
           });
         }
+
         if (id && type == "chapter") {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_DATA",
@@ -203,6 +200,10 @@ function TreeFolder(props: TreeFolderProps) {
             },
           });
         }
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_TREE",
+          arg: { type, uniqueId, id },
+        });
         setOpen(!open);
         setTimeout(() => {
           window.localStorage.setItem(id, !open ? "true" : "false");
@@ -337,10 +338,6 @@ function TreeItem(props: TreeItemProps) {
   }, []);
 
   const doOpen = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_TREE",
-      arg: { type: "item", uniqueId, id },
-    });
     if (id) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DATA",
@@ -352,6 +349,10 @@ function TreeItem(props: TreeItemProps) {
         },
       });
     }
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_TREE",
+      arg: { type: "item", uniqueId, id },
+    });
     document.onkeydown = keyListeners;
     setSelected(true);
   }, [dispatch, id, keyListeners]);

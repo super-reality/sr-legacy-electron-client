@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../../../redux/stores/renderer";
+import store, { AppState } from "../../../redux/stores/renderer";
 import {
   cursorChecker,
   restrictMinSize,
@@ -23,6 +23,7 @@ import AnchorBox from "../../../items/boxes/anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
 import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
 import getItemComponent from "../../../items/getItemComponent";
+import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -43,6 +44,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
     videoScale,
   } = useSelector((state: AppState) => state.createLessonV2);
   const { cvResult } = useSelector((state: AppState) => state.render);
+
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const prevCvResult = store.getState().render.cvResult;
+    pendingReduxAction((state) => state.render.cvResult, prevCvResult, 1000)
+      .then(() => setShow(true))
+      .catch(() => setShow(true));
+  }, []);
 
   const dragContainer = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<IAbsolutePos>({
@@ -274,10 +284,13 @@ export default function ItemPreview(props: ItemPreviewProps) {
 
   return (
     <>
-      {showAnchor && step?.anchor && item?.anchor && anchor && cvResult && (
-        <AnchorBox clickThrough={!!onSucess} pos={cvResult} />
-      )}
-      {ItemComponent && item ? (
+      {show &&
+        showAnchor &&
+        step?.anchor &&
+        item?.anchor &&
+        anchor &&
+        cvResult && <AnchorBox clickThrough={!!onSucess} pos={cvResult} />}
+      {show && ItemComponent && item ? (
         <ItemComponent
           ref={dragContainer}
           pos={pos}
