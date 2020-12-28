@@ -25,6 +25,7 @@ import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
 import getAnchor from "../lesson-utils/getAnchor";
 import getItemIcon from "../../../items/getItemIcon";
+import idNamePos from "../../../../utils/idNamePos";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -163,6 +164,7 @@ function TreeFolder(props: TreeFolderProps) {
 
   const keyListeners = useCallback(
     (e: KeyboardEvent) => {
+      if (!selected) return;
       if (e.key === "Delete") {
         onDelete(type, id, parentId);
       }
@@ -182,21 +184,60 @@ function TreeFolder(props: TreeFolderProps) {
 
       if (["ArrowUp", "ArrowDown"].includes(e.key)) {
         e.preventDefault();
-        const outputNext = (
-          list: IDName[],
-          current: number,
-          evt: KeyboardEvent
-        ): number => {
-          const direction = evt.key === "ArrowDown" ? 1 : -1;
-          let nextIdx = current + direction;
-          if (nextIdx > list.length - 1) nextIdx = 0;
-          if (nextIdx < 0) nextIdx = list.length - 1;
-          return nextIdx;
-        };
-        let div = document.getElementById(
-          siblings[outputNext(siblings, tabIndex, e)]._id
-        );
-        // Get the next one if this folder is open
+        let findId = "";
+        if (e.key === "ArrowDown") {
+          const nextIdx = tabIndex + 1;
+          if (nextIdx > siblings.length - 1) {
+            // Go to next parent
+            const slice = store.getState().createLessonV2;
+            if (type == "chapter" && slice.currentLesson) {
+              const parentSiblings = slice.lessons;
+              const pos = idNamePos(parentSiblings, slice.currentLesson);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            if (type == "step") {
+              const grandpa = uniqueId.split(".")[0];
+              const parentSiblings = slice.treeLessons[grandpa].chapters;
+              const pos = idNamePos(parentSiblings, parentId);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            /*
+            if (type == "item") {
+              const grandpa = uniqueId.split(".")[1];
+              const parentSiblings = slice.treeChapters[grandpa].steps;
+              const pos = idNamePos(parentSiblings, parentId);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            */
+          } else {
+            // Go to next sibling
+            findId = siblings[nextIdx]._id;
+          }
+        } else {
+          const nextIdx = tabIndex - 1;
+          if (nextIdx < 0) {
+            // Go to parent
+            findId = parentId;
+          } else {
+            // Go to previous sibling
+            findId = siblings[nextIdx]._id;
+          }
+        }
+
+        let div = document.getElementById(findId);
+        // Get the first children if this folder is open
         if (open && children && children.length > 0) {
           div = document.getElementById(children[0]?._id);
         }
@@ -204,7 +245,7 @@ function TreeFolder(props: TreeFolderProps) {
         if (div) div.click();
       }
     },
-    [id, children, open, siblings]
+    [id, tabIndex, children, selected, open, siblings]
   );
 
   useEffect(() => {
@@ -261,12 +302,17 @@ function TreeFolder(props: TreeFolderProps) {
           window.localStorage.setItem(id, !open ? "true" : "false");
         }, 100);
       }
-      document.onkeydown = keyListeners;
       setSelected(true);
       // if (treeRef.current) treeRef.current.scrollIntoView();
     },
-    [dispatch, open, keyListeners]
+    [dispatch, open]
   );
+
+  useEffect(() => {
+    if (selected) {
+      document.onkeydown = keyListeners;
+    }
+  }, [selected, keyListeners]);
 
   useEffect(() => {
     setIsOpen(treeCurrentId == id && treeCurrentType == type);
@@ -401,6 +447,12 @@ function TreeItem(props: TreeItemProps) {
     */
   }, []);
 
+  useEffect(() => {
+    if (selected) {
+      document.onkeydown = keyListeners;
+    }
+  }, [selected, keyListeners]);
+
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
@@ -417,9 +469,8 @@ function TreeItem(props: TreeItemProps) {
         },
       });
     }
-    document.onkeydown = keyListeners;
     setSelected(true);
-  }, [dispatch, id, keyListeners]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
