@@ -274,11 +274,13 @@ export default function VideoNavigation(
               <div className="video-slider-tracks">
                 {tracks
                   .filter((t, i) => i > 0)
-                  .map(({ id, source, target }) => (
+                  .map(({ id, source, target }, idx) => (
                     <Track
                       key={id}
-                      source={source}
-                      target={target}
+                      source={idx === 0 ? source : tracks[0].target}
+                      target={
+                        idx === 0 ? tracks[tracks.length - 1].target : target
+                      }
                       getTrackProps={getTrackProps}
                     />
                   ))}
