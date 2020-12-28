@@ -429,7 +429,6 @@ export default function VideoPreview(): JSX.Element {
           )}
           {currentItem && currentStep && previewMode == "IDLE" && (
             <ItemPreview
-              key={currentStep}
               showAnchor={false}
               stepId={currentStep}
               itemId={currentItem}

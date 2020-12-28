@@ -112,15 +112,18 @@ export default function ItemPreview(props: ItemPreviewProps) {
     updatePos();
   }, [cvResult, updatePos]);
 
-  function updateDiv(startPos: IAbsolutePos) {
-    const div = dragContainer.current;
-    if (div) {
-      div.style.left = `${Math.round(startPos.x)}px`;
-      div.style.top = `${Math.round(startPos.y)}px`;
-      div.style.width = `${Math.round(startPos.width)}px`;
-      div.style.height = `${Math.round(startPos.height)}px`;
-    }
-  }
+  const updateDiv = useCallback(
+    (startPos: IAbsolutePos) => {
+      const div = dragContainer.current;
+      if (div) {
+        div.style.left = `${Math.round(startPos.x)}px`;
+        div.style.top = `${Math.round(startPos.y)}px`;
+        div.style.width = `${Math.round(startPos.width)}px`;
+        div.style.height = `${Math.round(startPos.height)}px`;
+      }
+    },
+    [dragContainer]
+  );
 
   useEffect(() => {
     if (dragContainer.current && item && step) {
@@ -259,7 +262,16 @@ export default function ItemPreview(props: ItemPreviewProps) {
       };
     }
     return voidFunction;
-  }, [dispatch, cvResult, pos, step, item, videoScale]);
+  }, [
+    dispatch,
+    updateDiv,
+    dragContainer.current,
+    cvResult,
+    pos,
+    step,
+    item,
+    videoScale,
+  ]);
 
   const onSucessCallback = useCallback(
     (trigger: number | null) => {
