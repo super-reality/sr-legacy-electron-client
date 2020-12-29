@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   isChatAuth: false,
-  loginData: {},
+  loginData: {} as Record<string, unknown>,
   messages: [] as string[],
   users: [] as string[],
 };
