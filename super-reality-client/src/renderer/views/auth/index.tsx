@@ -51,6 +51,27 @@ export default function Auth(props: AuthProps): JSX.Element {
   const defaultUser = window.localStorage.getItem("username");
   const defaultToken = window.localStorage.getItem("token");
 
+  const loginChat = async (email?: string, password?: string) => {
+    if (email && password) {
+      (client as any)
+        .authenticate({
+          strategy: "local",
+          email,
+          password,
+        })
+        .then(() => {
+          reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+        })
+        .catch((error: any) => {
+          console.log("chat local login error", error);
+        });
+    }
+    await (client as any).reAuthenticate().catch((err: any) => {
+      console.log("chat jwt", err);
+    });
+    reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+  };
+
   // chat listener
   useEffect(() => {
     const messagesClient = client.service("messages");
@@ -101,11 +122,14 @@ export default function Auth(props: AuthProps): JSX.Element {
           // Try to authenticate the feathers chat with the JWT stored in localStorage
           const reAuth = await (client as any)
             .reAuthenticate()
+            .then(() => {
+              reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+            })
             .catch((err: any) => {
               const token = localStorage.getItem("feathers-jwt");
               console.log("token", token, "err reAuthenticate", err);
             });
-          reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+
           console.log(reAuth);
           handleAuthSignin(res);
           onAuth();
@@ -116,12 +140,15 @@ export default function Auth(props: AuthProps): JSX.Element {
         username: usernameField.current?.value,
         password: passwordField.current?.value,
       };
+      if (payload.username && payload.password) {
+        loginChat(payload.username, payload.password);
+      }
 
       axios
         .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
           timeout: timeout,
         })
-        .then((res) => {
+        .then(async (res) => {
           handleAuthSignin(res);
           onAuth();
         })

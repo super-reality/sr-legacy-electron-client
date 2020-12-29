@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import moment from "moment";
+import React from "react";
 import client, { logout } from "./feathers";
 import ButtonSimple from "../button-simple";
+import MembersList from "./members-list";
+import TextChat from "./text-chat";
 
 interface ChatProps {
   users: any[];
@@ -10,14 +11,15 @@ interface ChatProps {
 
 export default function Chat(props: ChatProps) {
   const { users, messages } = props;
-  const [text, setText] = useState("");
+  // const [text, setText] = useState("");
 
-  const handleOnChange = (e: any) => {
-    e.preventDefault();
-    const messageText = e.target.value;
-    setText(messageText);
-  };
-  const sendMessage = () => {
+  // const handleOnChange = (e: any) => {
+  //   e.preventDefault();
+  //   const messageText = e.target.value;
+  //   setText(messageText);
+  // };
+
+  const sendMessage = (text: string) => {
     if (text !== "") {
       console.log(text);
       client
@@ -25,7 +27,6 @@ export default function Chat(props: ChatProps) {
         .create({ text })
         .then((res: any) => {
           console.log("create message res", res);
-          setText("");
         });
     }
   };
@@ -44,37 +45,29 @@ export default function Chat(props: ChatProps) {
   // }, []);
 
   return (
-    <>
-      {users && messages ? (
-        <main
-          className="flex flex-column"
-          style={{
-            overflow: "auto",
-          }}
-        >
-          <header className="title-bar flex flex-row flex-center">
-            <div className="title-wrapper block center-element">
-              <img
-                className="logo"
-                src="http://feathersjs.com/img/feathers-logo-wide.png"
-                alt="Feathers Logo"
-              />
-              <span className="title">Chat</span>
-            </div>
-          </header>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        overflow: "auto",
+      }}
+    >
+      <ButtonSimple
+        style={{
+          height: "100%",
+        }}
+        onClick={logout}
+      >
+        Logout
+      </ButtonSimple>
+      {users && <MembersList users={users} />}
+      {messages && <TextChat sendMessage={sendMessage} messages={messages} />}
+    </div>
+  );
+}
 
-          <div className="flex flex-row flex-1 clear">
-            <aside className="sidebar col col-3 flex flex-column flex-space-between">
-              <header className="flex flex-row flex-center">
-                <h4 className="font-300 text-center">
-                  <span className="font-600 online-count">
-                    {users ? users.length : 0}
-                  </span>{" "}
-                  users
-                </h4>
-              </header>
-
-              <ul className="flex flex-column flex-1 list-unstyled user-list">
+/*
+<ul className="flex flex-column flex-1 list-unstyled user-list">
                 {users &&
                   users.map((user) => (
                     <li key={user._id}>
@@ -89,6 +82,32 @@ export default function Chat(props: ChatProps) {
                     </li>
                   ))}
               </ul>
+              
+      {users && messages ? (
+        <main
+          className="flex flex-column"
+          style={{
+            overflow: "auto",
+          }}
+        >
+          <header className="title-bar flex flex-row flex-center">
+            <div className="title-wrapper block center-element">
+              <span className="title">Chat</span>
+            </div>
+          </header>
+
+          <div className="flex flex-row flex-1 clear">
+            <aside className="sidebar col col-3 flex flex-column flex-space-between">
+              <header className="flex flex-row flex-center">
+                <h4 className="font-300 text-center">
+                  <span className="font-600 online-count">
+                    {users ? users.length : 0}
+                  </span>{" "}
+                  users
+                </h4>
+              </header>
+              {users && <MembersList users={users} />}
+
               <footer className="flex flex-row flex-center">
                 <a
                   href="#"
@@ -107,31 +126,7 @@ export default function Chat(props: ChatProps) {
               }}
             >
               <main className="chat flex flex-column flex-1 clear">
-                {messages &&
-                  messages.map((message) => (
-                    <div key={message._id} className="message flex flex-row">
-                      <img
-                        src={message.user.avatar}
-                        alt={message.user.email}
-                        className="avatar"
-                      />
-                      <div className="message-wrapper">
-                        <p className="message-header">
-                          <span className="username font-600">
-                            {message.user.email}
-                          </span>
-                          <span className="sent-date font-300">
-                            {moment(message.createdAt).format(
-                              "MMM Do, hh:mm:ss"
-                            )}
-                          </span>
-                        </p>
-                        <p className="message-content font-300">
-                          {message.text}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                
               </main>
 
               <input
@@ -156,6 +151,4 @@ export default function Chat(props: ChatProps) {
       ) : (
         <div>Loading...</div>
       )}
-    </>
-  );
-}
+*/

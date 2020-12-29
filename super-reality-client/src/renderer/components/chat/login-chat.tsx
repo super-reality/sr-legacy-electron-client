@@ -1,53 +1,76 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import reduxAction from "../../redux/reduxAction";
+import ButtonSimple from "../button-simple";
 import client from "./feathers";
 
 export default function Login() {
-  const [loginState, setLoginState] = useState({});
+  // const { isChatAuth } = useSelector((state: AppState) => state.chat);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleEmailChange = (ev) => {
+  const dispatch = useDispatch();
+  const handleEmailChange = (ev: any) => {
     setEmail(ev.target.value);
     console.log(ev.target.value);
   };
-  const handlePasswordChange = (ev) => {
+  const handlePasswordChange = (ev: any) => {
     setPassword(ev.target.value);
   };
-  const login = () => {
+
+  const loginChat = async () => {
     if (email !== "" && password !== "") {
-      client
+      (client as any)
         .authenticate({
           strategy: "local",
           email,
           password,
         })
-        .catch((error) => {
-          console.log(error);
-          setLoginState({ error: error });
+        .then(() => {
+          reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+        })
+        .catch((error: any) => {
+          console.log("chat local login error", error);
         });
     }
-    client.authenticate();
+    await (client as any).reAuthenticate().catch((err: any) => {
+      console.log("chat jwt", err);
+    });
+    reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
   };
+
+  // const login = () => {
+  //   if (email !== "" && password !== "") {
+  //     (client as any)
+  //       .authenticate({
+  //         strategy: "local",
+  //         email,
+  //         password,
+  //       })
+  //       .catch((error: any) => {
+  //         console.log("local auth", error);
+
+  //     })
+  //   }
+  //   (client as any).reAuthenticate();
+  // };
 
   const signup = () => {
     return client
       .service("users")
       .create({ email, password })
-      .then(() => login());
+      .then(() => loginChat());
   };
 
-  const { error } = loginState;
   return (
-    <main className="login container">
-      <div className="row">
-        <div className="col-12 col-6-tablet push-3-tablet text-center heading">
-          <h1 className="font-100">Log in or signup</h1>
-          <p>{error && error.message}</p>
+    <main>
+      <div>
+        <div>
+          <h1>Log in or signup in Chat</h1>
         </div>
       </div>
-      <div className="row">
-        <div className="col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop">
-          <form className="form">
+      <div>
+        <div>
+          <form>
             <fieldset>
               <input
                 value={email}
@@ -72,25 +95,21 @@ export default function Login() {
               />
             </fieldset>
 
-            <button
-              type="button"
-              className="button button-primary block signup"
+            <ButtonSimple
               onClick={() => {
-                login();
+                loginChat();
               }}
             >
               Log in
-            </button>
+            </ButtonSimple>
 
-            <button
-              type="button"
-              className="button button-primary block signup"
+            <ButtonSimple
               onClick={() => {
                 signup();
               }}
             >
               Signup
-            </button>
+            </ButtonSimple>
           </form>
         </div>
       </div>
