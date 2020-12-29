@@ -373,9 +373,11 @@ export default function VideoPreview(): JSX.Element {
           ref={fuildsOutRef}
           onWheel={doScale}
         />
-        <div className="zoom-container">
-          Zoom level: {Math.round(videoScale * 100)}%
-        </div>
+        {videoScale !== 1 && (
+          <div className="zoom-container">
+            Zoom level: {Math.round(videoScale * 100)}%
+          </div>
+        )}
         <div
           ref={containerRef}
           className="video-preview-container"
