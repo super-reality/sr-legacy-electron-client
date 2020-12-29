@@ -375,6 +375,7 @@ function TreeItem(props: TreeItemProps) {
 
   return (
     <div
+      draggable
       onDrag={(e) => onDrag(e, "item", id, parentId)}
       onDrop={(e) => onDrop(e, "item", id, parentId)}
       onDragOver={(e) => onDragOver(e, uniqueId)}
