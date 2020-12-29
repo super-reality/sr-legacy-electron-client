@@ -209,18 +209,6 @@ function TreeFolder(props: TreeFolderProps) {
                 findId = id;
               }
             }
-            /*
-            if (type == "item") {
-              const grandpa = uniqueId.split(".")[1];
-              const parentSiblings = slice.treeChapters[grandpa].steps;
-              const pos = idNamePos(parentSiblings, parentId);
-              if (pos + 1 < parentSiblings.length) {
-                findId = parentSiblings[pos + 1]._id;
-              } else {
-                findId = id;
-              }
-            }
-            */
           } else {
             // Go to next sibling
             findId = siblings[nextIdx]._id;
@@ -381,6 +369,8 @@ function TreeFolder(props: TreeFolderProps) {
               key={ch._id}
               id={ch._id}
               name={ch.name}
+              tabIndex={idx}
+              siblings={children}
             />
           );
         })}
@@ -394,10 +384,12 @@ interface TreeItemProps {
   parentId: string;
   uniqueId: string;
   name: string;
+  tabIndex: number;
+  siblings: IDName[];
 }
 
 function TreeItem(props: TreeItemProps) {
-  const { id, parentId, uniqueId, name } = props;
+  const { id, parentId, uniqueId, name, tabIndex, siblings } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -430,11 +422,12 @@ function TreeItem(props: TreeItemProps) {
     }
   }, [dispatch, id, state]);
 
-  const keyListeners = useCallback((e: KeyboardEvent) => {
-    if (e.key === "Delete") {
-      onDelete("item", id, parentId);
-    }
-    /*
+  const keyListeners = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Delete") {
+        onDelete("item", id, parentId);
+      }
+      /*
     if (e.ctrlKey && e.key === "c") {
       console.log(`copy ${id}`);
     }
@@ -445,7 +438,46 @@ function TreeItem(props: TreeItemProps) {
       console.log(`paste on ${id}`);
     }
     */
-  }, []);
+
+      if (["ArrowUp", "ArrowDown"].includes(e.key)) {
+        e.preventDefault();
+        let findId = "";
+        if (e.key === "ArrowDown") {
+          const nextIdx = tabIndex + 1;
+          if (nextIdx > siblings.length - 1) {
+            // Go to next parent
+            const slice = store.getState().createLessonV2;
+            const grandpa = uniqueId.split(".")[1];
+            const parentSiblings = slice.treeChapters[grandpa].steps;
+            const pos = idNamePos(parentSiblings, parentId);
+            if (pos + 1 < parentSiblings.length) {
+              findId = parentSiblings[pos + 1]._id;
+            } else {
+              findId = id;
+            }
+          } else {
+            // Go to next sibling
+            findId = siblings[nextIdx]._id;
+          }
+        } else {
+          const nextIdx = tabIndex - 1;
+          if (nextIdx < 0) {
+            // Go to parent
+            findId = parentId;
+          } else {
+            // Go to previous sibling
+            findId = siblings[nextIdx]._id;
+          }
+        }
+
+        const div = document.getElementById(findId);
+        setSelected(false);
+        console.log(findId);
+        if (div) div.click();
+      }
+    },
+    [tabIndex, selected, siblings]
+  );
 
   useEffect(() => {
     if (selected) {
@@ -490,6 +522,7 @@ function TreeItem(props: TreeItemProps) {
 
   return (
     <div
+      id={id}
       onDrag={(e) => onDrag(e, "item", id, parentId)}
       onDrop={(e) => onDrop(e, "item", id, parentId)}
       onDragOver={(e) => onDragOver(e, uniqueId)}
