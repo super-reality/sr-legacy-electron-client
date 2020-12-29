@@ -5,7 +5,19 @@ import { animated, useSpring } from "react-spring";
 import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as DummyOne } from "../../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as DummyTwo } from "../../../../assets/svg/add-video.svg";
-import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
+// import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
+import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
+import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
+import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
+import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
+import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
+import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
+import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
+import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
+import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
+import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
+import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
+import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
@@ -35,8 +47,8 @@ export default function EditorSidebar() {
   const dispatch = useDispatch();
 
   const props = useSpring({
-    width: expanded ? "300px" : "0px",
-    minWidth: expanded ? "300px" : "0px",
+    width: expanded ? "256px" : "0px",
+    minWidth: expanded ? "256px" : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -114,29 +126,101 @@ export default function EditorSidebar() {
         </div>
       </animated.div>
       <div className="sidebar-buttons">
-        {sidebarIcons.map((icon, index) => {
-          return (
-            <ButtonRound
-              onClick={() => {
-                setCurrent(index);
-                if (index == current || !expanded) setExpanded(!expanded);
-              }}
-              width="32px"
-              height="32px"
-              key={icon.title}
-              svg={icon.icon}
-              title={icon.title}
-            />
-          );
-        })}
-        <ButtonRound
-          width="36px"
-          height="36px"
-          iconFill="var(--color-green)"
-          onClick={doPreview}
-          svg={ButtonPlay}
-          style={{ marginRight: "8px" }}
-        />
+        <div className="action-buttons">
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonMic}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonGamepad}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonVideocam}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonAirplay}
+          />
+        </div>
+
+        <div className="communication-buttons">
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonPeople}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonRecentPeople}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonMessages}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonNotification}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonError}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonTick}
+          />
+          {sidebarIcons.map((icon, index) => {
+            return (
+              <ButtonRound
+                onClick={() => {
+                  setCurrent(index);
+                  if (index == current || !expanded) setExpanded(!expanded);
+                }}
+                width="32px"
+                height="32px"
+                key={icon.title}
+                svg={icon.icon}
+                title={icon.title}
+              />
+            );
+          })}
+        </div>
+
+        <div className="control-buttons">
+          <ButtonRound
+            width="36px"
+            height="36px"
+            onClick={doPreview}
+            svg={ButtonRefresh}
+          />
+          <ButtonRound
+            width="36px"
+            height="36px"
+            onClick={doPreview}
+            svg={ButtonPlayNew}
+          />
+        </div>
       </div>
     </>
   );

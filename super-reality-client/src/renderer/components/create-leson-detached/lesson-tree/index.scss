@@ -13,6 +13,9 @@
   font-size: 13px;
   line-height: 18px;
   margin-left: 4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   color: var(--color-magenda);
 }
 

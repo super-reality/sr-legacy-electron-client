@@ -1,15 +1,23 @@
 .sidebar-buttons {
-  min-width: 40px;
-  width: 40px;
+  width: 80px;
   display: flex;
+  background: #29233d;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 10px 0;
+
+  .button-round {
+    background-color: transparent;
+    margin: 0 auto;
+    padding: 2px 0;
+  }
 }
 
 .sidebar-expanded {
   overflow: hidden;
+  background: #29233d;
 
   .sidebar-content {
-    width: 300px;
+    width: 256px;
   }
 }
