@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./index.scss";
 import BaseTextArea from "../../base-textarea";
 import ButtonSimple from "../../button-simple";
-import client from "../feathers";
+// import client from "../feathers";
 
 interface TextChatProps {
   sendMessage: (text: string) => void;
@@ -23,16 +23,16 @@ export default function TextChat(props: TextChatProps): JSX.Element {
     setText("");
   };
   console.log("messages", messages);
-  const scrollToBottom = () => {
-    const chat = (document as any).querySelector(".messages");
+  //   const scrollToBottom = () => {
+  //     const chat = (document as any).querySelector(".messages");
 
-    chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-    console.log("chat.scrollTop", chat.scrollTop);
-  };
-  useEffect(() => {
-    client.service("messages").on("created", scrollToBottom);
-    client.service("messages").removeListener("created", scrollToBottom);
-  }, []);
+  //     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+  //     console.log("chat.scrollTop", chat.scrollTop);
+  //   };
+  //   useEffect(() => {
+  //     client.service("messages").on("created", scrollToBottom);
+  //     client.service("messages").removeListener("created", scrollToBottom);
+  //   }, []);
   return (
     <div className="chat-container">
       <div
