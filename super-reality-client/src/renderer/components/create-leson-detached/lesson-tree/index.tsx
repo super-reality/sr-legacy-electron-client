@@ -212,6 +212,10 @@ function TreeFolder(props: TreeFolderProps) {
           } else {
             // Go to next sibling
             findId = siblings[nextIdx]._id;
+
+            if (open && children && children.length > 0) {
+              findId = children[0]?._id;
+            }
           }
         } else {
           const nextIdx = tabIndex - 1;
@@ -224,13 +228,11 @@ function TreeFolder(props: TreeFolderProps) {
           }
         }
 
-        let div = document.getElementById(findId);
-        // Get the first children if this folder is open
-        if (open && children && children.length > 0) {
-          div = document.getElementById(children[0]?._id);
+        if (findId !== "") {
+          const div = document.getElementById(findId);
+          setSelected(false);
+          if (div) div.click();
         }
-        setSelected(false);
-        if (div) div.click();
       }
     },
     [id, tabIndex, children, selected, open, siblings]
@@ -470,10 +472,12 @@ function TreeItem(props: TreeItemProps) {
           }
         }
 
-        const div = document.getElementById(findId);
-        setSelected(false);
-        console.log(findId);
-        if (div) div.click();
+        if (findId !== "") {
+          const div = document.getElementById(findId);
+          setSelected(false);
+          console.log(findId);
+          if (div) div.click();
+        }
       }
     },
     [tabIndex, selected, siblings]
