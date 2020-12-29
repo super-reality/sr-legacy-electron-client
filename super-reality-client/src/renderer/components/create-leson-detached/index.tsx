@@ -305,6 +305,7 @@ export default function CreateLessonDetached(): JSX.Element {
             ticksNumber={100}
             callback={debounceVideoNav}
             slideCallback={debounceVideoNav}
+            isBackgroundSync
           />
           <VideoData />
           {meoizedSpectrum}
