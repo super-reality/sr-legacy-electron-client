@@ -6,8 +6,11 @@ export default function onDragOver(
   uniqueid: string
 ): void {
   event.preventDefault();
-  reduxAction(store.dispatch, {
-    type: "CREATE_LESSON_V2_DRAGOVER",
-    arg: uniqueid,
-  });
+  const { dragOver } = store.getState().createLessonV2;
+  if (dragOver !== uniqueid) {
+    reduxAction(store.dispatch, {
+      type: "CREATE_LESSON_V2_DRAGOVER",
+      arg: uniqueid,
+    });
+  }
 }
