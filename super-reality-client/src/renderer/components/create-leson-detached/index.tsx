@@ -35,6 +35,7 @@ import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import EditorSidebar from "./editor-sidebar";
+import setTopMost from "../../../utils/electron/setTopMost";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -203,8 +204,10 @@ export default function CreateLessonDetached(): JSX.Element {
   useEffect(() => {
     if (isTransparent) {
       setFocusable(false);
+      setTopMost(true);
     } else {
       setFocusable(true);
+      setTopMost(false);
     }
   }, [isTransparent]);
 
