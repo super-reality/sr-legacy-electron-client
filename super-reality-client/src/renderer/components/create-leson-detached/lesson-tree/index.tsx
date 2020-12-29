@@ -1,5 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Item } from "../../../items/item";
@@ -19,6 +25,7 @@ import onDelete from "../lesson-utils/onDelete";
 import getItem from "../lesson-utils/getItem";
 import getAnchor from "../lesson-utils/getAnchor";
 import getItemIcon from "../../../items/getItemIcon";
+import idNamePos from "../../../../utils/idNamePos";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -41,10 +48,20 @@ interface TreeFolderProps {
   type: "lesson" | "chapter" | "step";
   expanded?: boolean;
   tabIndex: number;
+  siblings: IDName[];
 }
 
 function TreeFolder(props: TreeFolderProps) {
-  const { id, parentId, uniqueId, name, type, expanded, tabIndex } = props;
+  const {
+    id,
+    siblings,
+    parentId,
+    uniqueId,
+    name,
+    type,
+    expanded,
+    tabIndex,
+  } = props;
   const dispatch = useDispatch();
   const {
     toggleSelects,
@@ -54,7 +71,6 @@ function TreeFolder(props: TreeFolderProps) {
     treeChapters,
     treeSteps,
     dragOver,
-    lessons,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   let exp = expanded;
@@ -69,20 +85,26 @@ function TreeFolder(props: TreeFolderProps) {
 
   const treeRef = useRef<HTMLDivElement>(null);
 
-  let children: IDName[] = [];
-  let dataName: string | undefined;
-  if (type == "lesson") {
-    children = treeLessons[id]?.chapters || [];
-    dataName = treeLessons[id]?.name;
-  }
-  if (type == "chapter") {
-    children = treeChapters[id]?.steps || [];
-    dataName = treeChapters[id]?.name;
-  }
-  if (type == "step") {
-    children = treeSteps[id]?.items || [];
-    dataName = treeSteps[id]?.name;
-  }
+  // Converted to Memo to be used on the arrow movement function
+  // Else its value could change and the callback would not be updated
+  const [children, dataName] = useMemo((): [IDName[], string | undefined] => {
+    let child: IDName[] = [];
+    let cname: string | undefined;
+    if (type == "lesson") {
+      child = treeLessons[id]?.chapters || [];
+      cname = treeLessons[id]?.name;
+    }
+    if (type == "chapter") {
+      child = treeChapters[id]?.steps || [];
+      cname = treeChapters[id]?.name;
+    }
+    if (type == "step") {
+      child = treeSteps[id]?.items || [];
+      cname = treeSteps[id]?.name;
+    }
+
+    return [child, cname];
+  }, [id, treeLessons, treeChapters, treeSteps]);
 
   useEffect(() => {
     if (state !== STATE_IDLE) return;
@@ -142,38 +164,18 @@ function TreeFolder(props: TreeFolderProps) {
 
   const keyListeners = useCallback(
     (e: KeyboardEvent) => {
+      if (!selected) return;
       if (e.key === "Delete") {
         onDelete(type, id, parentId);
       }
-      /*
-    if (e.ctrlKey && e.key === "c") {
-      console.log(`copy ${id}`);
-    }
-    if (e.ctrlKey && e.key === "x") {
-      console.log(`cut ${id}`);
-    }
-    if (e.ctrlKey && e.key === "v") {
-      console.log(`paste on ${id}`);
-    }
-    */
       if (e.key === "ArrowLeft") {
-        const div = document.getElementById(parentId);
-        if (div) {
-          div.click();
-          div.focus();
+        if (open) {
+          setOpen(false);
         }
       }
       if (e.key === "ArrowRight") {
         let child: HTMLElement | null = null;
-        if (id && type === "chapter") {
-          child = document.getElementById(treeChapters[id]?.steps[0]._id);
-        }
-        if (id && type === "lesson") {
-          child = document.getElementById(treeLessons[id]?.chapters[0]._id);
-        }
-        // if (id && type === "step") {
-        //   child = document.getElementById(treeSteps[id]?.items[0]._id);
-        // }
+        child = document.getElementById(children[0]?._id);
         if (!open) setOpen(true);
         if (child) {
           child.click();
@@ -182,36 +184,68 @@ function TreeFolder(props: TreeFolderProps) {
 
       if (["ArrowUp", "ArrowDown"].includes(e.key)) {
         e.preventDefault();
-        const outputNext = (
-          list: IDName[],
-          current: number,
-          evt: KeyboardEvent
-        ): number => {
-          const direction = evt.key === "ArrowDown" ? 1 : -1;
-          let nextIdx = current + direction;
-          if (nextIdx > list.length - 1) nextIdx = 0;
-          if (nextIdx < 0) nextIdx = list.length - 1;
+        let findId = "";
+        if (e.key === "ArrowDown") {
+          const nextIdx = tabIndex + 1;
+          if (nextIdx > siblings.length - 1) {
+            // Go to next parent
+            const slice = store.getState().createLessonV2;
+            if (type == "chapter" && slice.currentLesson) {
+              const parentSiblings = slice.lessons;
+              const pos = idNamePos(parentSiblings, slice.currentLesson);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            if (type == "step") {
+              const grandpa = uniqueId.split(".")[0];
+              const parentSiblings = slice.treeLessons[grandpa].chapters;
+              const pos = idNamePos(parentSiblings, parentId);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            /*
+            if (type == "item") {
+              const grandpa = uniqueId.split(".")[1];
+              const parentSiblings = slice.treeChapters[grandpa].steps;
+              const pos = idNamePos(parentSiblings, parentId);
+              if (pos + 1 < parentSiblings.length) {
+                findId = parentSiblings[pos + 1]._id;
+              } else {
+                findId = id;
+              }
+            }
+            */
+          } else {
+            // Go to next sibling
+            findId = siblings[nextIdx]._id;
+          }
+        } else {
+          const nextIdx = tabIndex - 1;
+          if (nextIdx < 0) {
+            // Go to parent
+            findId = parentId;
+          } else {
+            // Go to previous sibling
+            findId = siblings[nextIdx]._id;
+          }
+        }
 
-          return nextIdx;
-        };
-        let list: IDName[] = [];
-        if (id && type === "chapter") {
-          list = treeLessons[parentId]?.chapters;
+        let div = document.getElementById(findId);
+        // Get the first children if this folder is open
+        if (open && children && children.length > 0) {
+          div = document.getElementById(children[0]?._id);
         }
-        if (id && type === "step") {
-          list = treeChapters[parentId]?.steps;
-        }
-        if (id && type === "lesson") {
-          list = lessons;
-        }
-        const div = document.getElementById(
-          list[outputNext(list, tabIndex, e)]._id
-        );
         setSelected(false);
         if (div) div.click();
       }
     },
-    [id]
+    [id, tabIndex, children, selected, open, siblings]
   );
 
   useEffect(() => {
@@ -268,12 +302,17 @@ function TreeFolder(props: TreeFolderProps) {
           window.localStorage.setItem(id, !open ? "true" : "false");
         }, 100);
       }
-      document.onkeydown = keyListeners;
       setSelected(true);
       // if (treeRef.current) treeRef.current.scrollIntoView();
     },
-    [dispatch, open, keyListeners]
+    [dispatch, open]
   );
+
+  useEffect(() => {
+    if (selected) {
+      document.onkeydown = keyListeners;
+    }
+  }, [selected, keyListeners]);
 
   useEffect(() => {
     setIsOpen(treeCurrentId == id && treeCurrentType == type);
@@ -326,6 +365,7 @@ function TreeFolder(props: TreeFolderProps) {
         {children.map((ch, idx) => {
           return type == "lesson" || type == "chapter" ? (
             <TreeFolder
+              siblings={children}
               tabIndex={idx}
               parentId={id}
               uniqueId={`${uniqueId}.${ch._id}`}
@@ -407,6 +447,12 @@ function TreeItem(props: TreeItemProps) {
     */
   }, []);
 
+  useEffect(() => {
+    if (selected) {
+      document.onkeydown = keyListeners;
+    }
+  }, [selected, keyListeners]);
+
   const doOpen = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_TREE",
@@ -423,9 +469,8 @@ function TreeItem(props: TreeItemProps) {
         },
       });
     }
-    document.onkeydown = keyListeners;
     setSelected(true);
-  }, [dispatch, id, keyListeners]);
+  }, [dispatch, id]);
 
   useEffect(() => {
     const lesson = store.getState().createLessonV2;
@@ -473,11 +518,11 @@ function TreeItem(props: TreeItemProps) {
 
 export default function LessonTree() {
   const { lessons } = useSelector((state: AppState) => state.createLessonV2);
-
   return (
     <Flex column style={{ overflow: "auto" }}>
       {lessons.map((d, idx) => (
         <TreeFolder
+          siblings={lessons}
           tabIndex={idx}
           uniqueId={`${d._id}`}
           parentId=""
