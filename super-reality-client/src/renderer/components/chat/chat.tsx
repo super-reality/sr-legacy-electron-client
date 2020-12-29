@@ -1,8 +1,10 @@
 import React from "react";
-import client, { logout } from "./feathers";
+import { useDispatch } from "react-redux";
+import client, { logoutChat } from "./feathers";
 import ButtonSimple from "../button-simple";
 import MembersList from "./members-list";
 import TextChat from "./text-chat";
+import reduxAction from "../../redux/reduxAction";
 
 interface ChatProps {
   users: any[];
@@ -11,13 +13,7 @@ interface ChatProps {
 
 export default function Chat(props: ChatProps) {
   const { users, messages } = props;
-  // const [text, setText] = useState("");
-
-  // const handleOnChange = (e: any) => {
-  //   e.preventDefault();
-  //   const messageText = e.target.value;
-  //   setText(messageText);
-  // };
+  const dispatch = useDispatch();
 
   const sendMessage = (text: string) => {
     if (text !== "") {
@@ -31,6 +27,13 @@ export default function Chat(props: ChatProps) {
     }
   };
 
+  const logout = () => {
+    logoutChat();
+    console.log("logout");
+    reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    reduxAction(dispatch, { type: "SET_MESSAGES", arg: [] });
+    reduxAction(dispatch, { type: "SET_USERS", arg: [] });
+  };
   // const scrollToBottom = () => {
   //   const chat = document.querySelector(".chat");
   //   if (chat) {
@@ -43,6 +46,14 @@ export default function Chat(props: ChatProps) {
   //   scrollToBottom();
   //   client.service("messages").removeListener("created", scrollToBottom);
   // }, []);
+  const removeChatAccount = () => {
+    const username = window.localStorage.getItem("username");
+    try {
+      client.service("users").remove({ email: username });
+    } catch (err) {
+      console.log("remove user error", err);
+    }
+  };
 
   return (
     <div
@@ -52,14 +63,28 @@ export default function Chat(props: ChatProps) {
         overflow: "auto",
       }}
     >
-      <ButtonSimple
+      <div
         style={{
-          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "auto",
         }}
-        onClick={logout}
       >
-        Logout
-      </ButtonSimple>
+        <ButtonSimple style={{ margin: "10px" }} onClick={logout}>
+          Logout
+        </ButtonSimple>
+        <ButtonSimple
+          style={{
+            color: "red",
+            margin: "10px",
+          }}
+          onClick={() => {
+            removeChatAccount();
+          }}
+        >
+          Remove Chat Account
+        </ButtonSimple>
+      </div>
       {users && <MembersList users={users} />}
       {messages && <TextChat sendMessage={sendMessage} messages={messages} />}
     </div>

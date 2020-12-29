@@ -64,12 +64,18 @@ export default function Auth(props: AuthProps): JSX.Element {
         })
         .catch((error: any) => {
           console.log("chat local login error", error);
+          reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
         });
     }
-    await (client as any).reAuthenticate().catch((err: any) => {
-      console.log("chat jwt", err);
-    });
-    reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    try {
+      await (client as any).reAuthenticate().catch((err: any) => {
+        console.log("chat jwt", err);
+      });
+      reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    } catch (err) {
+      console.log("chat jwt login error", err);
+      reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    }
   };
 
   // chat listener
@@ -120,17 +126,15 @@ export default function Auth(props: AuthProps): JSX.Element {
         .then(async (res) => {
           // const defaultChatToken = window.localStorage.getItem("feathers-jwt");
           // Try to authenticate the feathers chat with the JWT stored in localStorage
-          const reAuth = await (client as any)
-            .reAuthenticate()
-            .then(() => {
-              reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-            })
-            .catch((err: any) => {
-              const token = localStorage.getItem("feathers-jwt");
-              console.log("token", token, "err reAuthenticate", err);
-            });
-
-          console.log(reAuth);
+          try {
+            await (client as any).reAuthenticate();
+            console.log("whohooo chat reAuth");
+            reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+          } catch (err) {
+            const token = localStorage.getItem("token");
+            console.log("token", token, "err reAuthenticate", err);
+            reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+          }
           handleAuthSignin(res);
           onAuth();
         })

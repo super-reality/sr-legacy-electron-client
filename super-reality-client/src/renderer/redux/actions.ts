@@ -72,6 +72,7 @@ export const actions = {
   SET_LESSON_PLAYING: lessonPlayerSlice.setPlaying,
   SET_TTS: lessonPlayerSlice.setTTS,
   LOGIN_CHAT_SUCCES: chatSlice.loginChatSucces,
+  LOGIN_CHAT_ERROR: chatSlice.loginChatError,
   SET_MESSAGES: chatSlice.setMessages,
   SET_USERS: chatSlice.setUsers,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,

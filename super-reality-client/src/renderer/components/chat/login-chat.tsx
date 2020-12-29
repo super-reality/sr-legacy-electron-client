@@ -32,10 +32,13 @@ export default function Login() {
           console.log("chat local login error", error);
         });
     }
-    await (client as any).reAuthenticate().catch((err: any) => {
+    try {
+      await (client as any).reAuthenticate();
+      reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    } catch (err) {
       console.log("chat jwt", err);
-    });
-    reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+      reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    }
   };
 
   // const login = () => {
@@ -65,7 +68,8 @@ export default function Login() {
     <main>
       <div>
         <div>
-          <h1>Log in or signup in Chat</h1>
+          <h2>Login Chat Using the chat email and password or </h2>
+          <h2>Signup Chat Using the SR email and password</h2>
         </div>
       </div>
       <div>

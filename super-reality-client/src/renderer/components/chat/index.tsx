@@ -11,6 +11,13 @@ export default function ChatApplication() {
     (state: AppState) => state.chat
   );
   const dispatch = useDispatch();
+
+  const logoutListener = () => {
+    console.log("logout");
+    reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    reduxAction(dispatch, { type: "SET_MESSAGES", arg: [] });
+    reduxAction(dispatch, { type: "SET_USERS", arg: [] });
+  };
   useEffect(() => {
     const messagesClient = client.service("messages");
     const usersClient = client.service("users");
@@ -26,6 +33,7 @@ export default function ChatApplication() {
     // On logout reset all all local state (which will then show the login screen)
     client.on("logout", () => {
       console.log("logout");
+      logoutListener();
     });
 
     // Add new messages to the message list
@@ -46,7 +54,7 @@ export default function ChatApplication() {
     <div>
       {!isChatAuth ? (
         <main className="container text-center">
-          <Login />;
+          <Login />
         </main>
       ) : (
         <Chat messages={messages} users={users} />

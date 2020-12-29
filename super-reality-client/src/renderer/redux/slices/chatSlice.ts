@@ -17,6 +17,9 @@ const chatSlice = createSlice({
     loginChatSucces: (state: ChatState, _action: PayloadAction<null>): void => {
       state.isChatAuth = true;
     },
+    loginChatError: (state: ChatState, _action: PayloadAction<null>): void => {
+      state.isChatAuth = false;
+    },
     setChatLoginData: (
       state: ChatState,
       action: PayloadAction<Record<string, unknown>>
@@ -34,6 +37,7 @@ const chatSlice = createSlice({
 
 export const {
   loginChatSucces,
+  loginChatError,
   setChatLoginData,
   setMessages,
   setUsers,

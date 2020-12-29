@@ -7,7 +7,7 @@ const client = feathers();
 client.configure(feathers.socketio(socket));
 client.configure(feathers.authentication());
 
-export const logout = async () => {
+export const logoutChat = async () => {
   await client.logout();
 };
 export default client;
