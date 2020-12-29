@@ -7,7 +7,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   const handleEmailChange = (ev) => {
-    
     setEmail(ev.target.value);
     console.log(ev.target.value);
   };
@@ -15,15 +14,19 @@ export default function Login() {
     setPassword(ev.target.value);
   };
   const login = () => {
-    return client
-      .authenticate({
-        strategy: "local",
-        email,
-        password,
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (email !== "" && password !== "") {
+      client
+        .authenticate({
+          strategy: "local",
+          email,
+          password,
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoginState({ error: error });
+        });
+    }
+    client.authenticate();
   };
 
   const signup = () => {
@@ -72,7 +75,9 @@ export default function Login() {
             <button
               type="button"
               className="button button-primary block signup"
-              onClick={() => login()}
+              onClick={() => {
+                login();
+              }}
             >
               Log in
             </button>
@@ -80,7 +85,9 @@ export default function Login() {
             <button
               type="button"
               className="button button-primary block signup"
-              onClick={() => signup()}
+              onClick={() => {
+                signup();
+              }}
             >
               Signup
             </button>

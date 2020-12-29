@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
-import Test from "./views/test";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
