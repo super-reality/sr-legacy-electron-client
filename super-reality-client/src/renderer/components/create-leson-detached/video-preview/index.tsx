@@ -430,11 +430,7 @@ export default function VideoPreview(): JSX.Element {
             </>
           )}
           {currentItem && currentStep && previewMode == "IDLE" && (
-            <ItemPreview
-              showAnchor={false}
-              stepId={currentStep}
-              itemId={currentItem}
-            />
+            <ItemPreview stepId={currentStep} itemId={currentItem} />
           )}
           {step &&
             !currentItem &&
@@ -443,15 +439,14 @@ export default function VideoPreview(): JSX.Element {
             step.items.map((itemIdName) => (
               <ItemPreview
                 key={itemIdName._id}
-                showAnchor={false}
                 stepId={currentStep}
                 itemId={itemIdName._id}
               />
             ))}
-          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
           {previewMode == "ADDTO_ANCHOR" &&
             !item &&
             (currentRecording || currentAnchor) && <AnchorBox pos={cvResult} />}
+          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
           {previewMode == "TRIM_VIDEO" && <VideoCrop />}
         </div>
       </div>

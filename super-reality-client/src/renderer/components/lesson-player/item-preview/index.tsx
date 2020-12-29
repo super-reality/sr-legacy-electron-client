@@ -19,7 +19,6 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 import updateItem from "../../create-leson-detached/lesson-utils/updateItem";
 import { IAbsolutePos } from "../../../items/item";
-import AnchorBox from "../../../items/boxes/anchor-box";
 import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosMarker";
 import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
 import getItemComponent from "../../../items/getItemComponent";
@@ -28,12 +27,11 @@ import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
 interface ItemPreviewProps {
   itemId: string;
   stepId: string;
-  showAnchor: boolean;
   onSucess?: () => void;
 }
 
 export default function ItemPreview(props: ItemPreviewProps) {
-  const { itemId, stepId, showAnchor } = props;
+  const { itemId, stepId } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
   const {
@@ -48,10 +46,13 @@ export default function ItemPreview(props: ItemPreviewProps) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    // Let the anchors update before we show the item
+    const delayedShow = () => setTimeout(() => setShow(true), 100);
+
     const prevCvResult = store.getState().render.cvResult;
-    pendingReduxAction((state) => state.render.cvResult, prevCvResult, 1000)
-      .then(() => setShow(true))
-      .catch(() => setShow(true));
+    pendingReduxAction((state) => state.render.cvResult, prevCvResult, 2000)
+      .then(delayedShow)
+      .catch(delayedShow);
   }, []);
 
   const dragContainer = useRef<HTMLDivElement>(null);
@@ -294,25 +295,15 @@ export default function ItemPreview(props: ItemPreviewProps) {
 
   const ItemComponent = item ? getItemComponent(item) : undefined;
 
-  return (
-    <>
-      {show &&
-        showAnchor &&
-        step?.anchor &&
-        item?.anchor &&
-        anchor &&
-        cvResult && <AnchorBox clickThrough={!!onSucess} pos={cvResult} />}
-      {show && ItemComponent && item ? (
-        <ItemComponent
-          ref={dragContainer}
-          pos={pos}
-          style={style}
-          item={item}
-          callback={onSucessCallback}
-        />
-      ) : (
-        <></>
-      )}
-    </>
+  return show && ItemComponent && item ? (
+    <ItemComponent
+      ref={dragContainer}
+      pos={pos}
+      style={style}
+      item={item}
+      callback={onSucessCallback}
+    />
+  ) : (
+    <></>
   );
 }

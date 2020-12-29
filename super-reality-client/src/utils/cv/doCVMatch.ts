@@ -147,8 +147,8 @@ export default function doCvMatch(
             width: Math.round(templates[bestIndex].cols * xScale),
             height: Math.round(templates[bestIndex].rows * yScale),
           };
-          resolve(ret);
           matToCanvas(srcMat, "canvasTestOutput");
+          resolve(ret);
         })
         .catch(reject);
     } else {
