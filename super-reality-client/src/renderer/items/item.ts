@@ -87,6 +87,7 @@ export interface ItemVideo extends BaseItem {
   type: "video";
   url: string;
   loop: boolean;
+  muted?: boolean;
   trigger: ValueOf<typeof ItemVideoTriggers>;
 }
 
