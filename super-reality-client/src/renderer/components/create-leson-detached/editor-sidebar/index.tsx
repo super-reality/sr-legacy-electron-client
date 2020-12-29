@@ -36,6 +36,26 @@ const sidebarIcons = [
       <>{`Dummy Two Title! put a whole jsx component here, like "<Component>"`}</>
     ),
   },
+  {
+    title: "Microphone",
+    icon: ButtonMic,
+    component: <>Dummy Mic</>,
+  },
+  {
+    title: "Gamepad",
+    icon: ButtonGamepad,
+    component: <b>Dum dum</b>,
+  },
+  {
+    title: "Videocam",
+    icon: ButtonVideocam,
+    component: <>camera</>,
+  },
+  {
+    title: "Airplay",
+    icon: ButtonAirplay,
+    component: <>AirPlay</>,
+  },
 ];
 
 export default function EditorSidebar() {
@@ -127,30 +147,23 @@ export default function EditorSidebar() {
       </animated.div>
       <div className="sidebar-buttons">
         <div className="action-buttons">
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonMic}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonGamepad}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonVideocam}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonAirplay}
-          />
+          {sidebarIcons.map((icon, index) => {
+            // Limit the loop to the action buttons on the array
+            if (index < 2 || index > 5) return null;
+            return (
+              <ButtonRound
+                onClick={() => {
+                  setCurrent(index);
+                  if (index == current || !expanded) setExpanded(!expanded);
+                }}
+                width="32px"
+                height="32px"
+                key={icon.title}
+                svg={icon.icon}
+                title={icon.title}
+              />
+            );
+          })}
         </div>
 
         <div className="communication-buttons">
