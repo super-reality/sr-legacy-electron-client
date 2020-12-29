@@ -19,7 +19,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
       (state: AppState) => state.createLessonV2
     );
 
-    const [opacity, setOpacity] = useState(0);
+    const [opacity, setOpacity] = useState(previewing ? 0 : 1);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     let computedType = "type";

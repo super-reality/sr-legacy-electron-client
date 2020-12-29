@@ -13,7 +13,6 @@ import AnchorCrop from "../../lesson-player/anchor-crop";
 import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
-import StepView from "../../lesson-player/step-view";
 import AnchorBox from "../../../items/boxes/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
 import timestampToTime from "../../../../utils/timestampToTime";
@@ -374,9 +373,11 @@ export default function VideoPreview(): JSX.Element {
           ref={fuildsOutRef}
           onWheel={doScale}
         />
-        <div className="zoom-container">
-          Zoom level: {Math.round(videoScale * 100)}%
-        </div>
+        {videoScale !== 1 && (
+          <div className="zoom-container">
+            Zoom level: {Math.round(videoScale * 100)}%
+          </div>
+        )}
         <div
           ref={containerRef}
           className="video-preview-container"
@@ -418,7 +419,7 @@ export default function VideoPreview(): JSX.Element {
             <div id="xy-pos-text" className="xy-pos-text" />
           </div>
           <img ref={anchorImageRef} style={{ display: "none" }} />
-          {item && currentItem && currentStep && previewMode == "IDLE" && (
+          {previewMode == "IDLE" && (
             <>
               <AnchorBox pos={cvResult} />
               <EditAnchorButton
@@ -426,28 +427,26 @@ export default function VideoPreview(): JSX.Element {
                 anchor={step?.anchor || null}
                 pos={cvResult}
               />
+            </>
+          )}
+          {currentItem && currentStep && previewMode == "IDLE" && (
+            <ItemPreview stepId={currentStep} itemId={currentItem} />
+          )}
+          {step &&
+            !currentItem &&
+            currentStep &&
+            previewMode == "IDLE" &&
+            step.items.map((itemIdName) => (
               <ItemPreview
-                showAnchor={false}
+                key={itemIdName._id}
                 stepId={currentStep}
-                itemId={currentItem}
+                itemId={itemIdName._id}
               />
-            </>
-          )}
-          {step && !currentItem && currentStep && previewMode == "IDLE" && (
-            <>
-              <AnchorBox pos={cvResult} />
-              <EditAnchorButton
-                openEditAnchorOptions={openEditAnchorOptions}
-                anchor={step?.anchor}
-                pos={cvResult}
-              />
-              <StepView stepId={currentStep} onSucess={voidFunction} />
-            </>
-          )}
-          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
+            ))}
           {previewMode == "ADDTO_ANCHOR" &&
             !item &&
             (currentRecording || currentAnchor) && <AnchorBox pos={cvResult} />}
+          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
           {previewMode == "TRIM_VIDEO" && <VideoCrop />}
         </div>
       </div>

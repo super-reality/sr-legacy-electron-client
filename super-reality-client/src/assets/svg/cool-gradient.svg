@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1551px" height="937px" viewBox="0 0 1551 937" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Path 3 + Path 2 + Rectangle Mask</title>
+<svg width="1920px" height="1080px" viewBox="0 0 1920 1080" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 2 Copy</title>
     <defs>
-        <linearGradient x1="8.3%" y1="57.4454388%" x2="92.3726628%" y2="73.4682256%" id="linearGradient-1">
+        <rect id="path-1" x="0" y="0" width="1920" height="1080"></rect>
+        <linearGradient x1="8.3%" y1="56.4541127%" x2="91.2208333%" y2="72.2560258%" id="linearGradient-3">
             <stop stop-color="#474785" offset="0%"></stop>
             <stop stop-color="#100540" offset="30.7%"></stop>
             <stop stop-color="#10043D" offset="56.8%"></stop>
             <stop stop-color="#15449B" offset="100%"></stop>
         </linearGradient>
-        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="51.8067227%" gradientTransform="translate(0.500000,0.500000),scale(0.965126,1.000000),translate(-0.500000,-0.500000)" id="radialGradient-2">
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="62.6001232%" gradientTransform="translate(0.500000,0.500000),scale(0.798720,1.000000),translate(-0.500000,-0.500000)" id="radialGradient-4">
             <stop stop-color="#78279E" offset="0%"></stop>
             <stop stop-color="#FA2859" stop-opacity="0" offset="100%"></stop>
         </radialGradient>
-        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="51.8067227%" gradientTransform="translate(0.500000,0.500000),scale(0.965126,1.000000),translate(-0.500000,-0.500000)" id="radialGradient-3">
+        <radialGradient cx="50%" cy="50%" fx="50%" fy="50%" r="50%" gradientTransform="translate(0.500000,0.500000),scale(1.000000,0.683685),translate(-0.500000,-0.500000)" id="radialGradient-5">
             <stop stop-color="#FA255A" offset="0%"></stop>
             <stop stop-color="#FA2859" stop-opacity="0" offset="100%"></stop>
         </radialGradient>
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Path-3-+-Path-2-+-Rectangle-Mask">
-            <g id="Mask" fill="url(#linearGradient-1)" fill-rule="nonzero">
-                <polygon id="Path" points="1551 0 0 0 0 937 1551 937"></polygon>
+        <g id="Group-2-Copy">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Mask"></g>
+            <g id="Group-2" mask="url(#mask-2)" fill-rule="nonzero">
+                <g transform="translate(-600.000000, -453.543307)">
+                    <rect id="Rectangle" fill="url(#linearGradient-3)" x="600" y="453.979786" width="1920" height="1079.95191"></rect>
+                    <polygon id="Path" fill="url(#radialGradient-4)" opacity="0.49" points="2520 0 600 0 600 1533.54331 2520 1533.54331"></polygon>
+                    <polygon id="Path" fill="url(#radialGradient-5)" opacity="0.692055838" points="1438 453.543307 0 453.543307 0 2556.85039 1438 2556.85039"></polygon>
+                </g>
             </g>
-            <g id="Path-3" transform="translate(186.000000, -380.000000)" fill="url(#radialGradient-2)" fill-rule="nonzero" opacity="0.49">
-                <polygon id="Path" points="1233 0 0 0 0 1190 1233 1190"></polygon>
-            </g>
-            <g id="Path-2" transform="translate(-325.000000, 211.000000)" fill="url(#radialGradient-3)" fill-rule="nonzero" opacity="0.61">
-                <polygon id="Path" points="1233 0 0 0 0 1190 1233 1190"></polygon>
-            </g>
-            <rect id="Rectangle" x="0" y="0" width="1551" height="937"></rect>
         </g>
     </g>
 </svg>

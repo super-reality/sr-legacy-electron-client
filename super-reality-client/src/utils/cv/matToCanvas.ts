@@ -19,9 +19,9 @@ export default function matToCanvas(mat: cv.Mat, id: string): void {
   if (canvas) {
     canvas.width = mat.cols;
     canvas.height = mat.rows;
-  }
 
-  // set image data
-  const ctx = canvas.getContext("2d");
-  if (ctx) ctx.putImageData(imgData, 0, 0);
+    // set image data
+    const ctx = canvas.getContext("2d");
+    if (ctx) ctx.putImageData(imgData, 0, 0);
+  }
 }
