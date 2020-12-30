@@ -14,6 +14,7 @@ import { ApiError } from "../../api/types";
 import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
+import client from "../../components/chat/feathers";
 
 interface AuthProps {
   onAuth: () => void;
@@ -50,6 +51,61 @@ export default function Auth(props: AuthProps): JSX.Element {
   const defaultUser = window.localStorage.getItem("username");
   const defaultToken = window.localStorage.getItem("token");
 
+  const loginChat = async (email?: string, password?: string) => {
+    if (email && password) {
+      (client as any)
+        .authenticate({
+          strategy: "local",
+          email,
+          password,
+        })
+        .then(() => {
+          reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+        })
+        .catch((error: any) => {
+          console.log("chat local login error", error);
+          reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+        });
+    }
+    try {
+      await (client as any).reAuthenticate().catch((err: any) => {
+        console.log("chat jwt", err);
+      });
+      reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    } catch (err) {
+      console.log("chat jwt login error", err);
+      reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    }
+  };
+
+  // chat listener
+  useEffect(() => {
+    const messagesClient = client.service("messages");
+    const usersClient = client.service("users");
+    // On successfull login
+    client.on("authenticated", (login) => {
+      // Get all users and messages
+      Promise.all([
+        messagesClient.find({
+          query: {
+            $sort: { createdAt: -1 },
+            $limit: 25,
+          },
+        }),
+        usersClient.find(),
+      ]).then(([messagePage, userPage]) => {
+        // We want the latest messages but in the reversed order
+        const messages = messagePage.data.reverse();
+        const users = userPage.data;
+        console.log("login", login, "messages", messages, "users", users);
+        // Once both return, update the state
+        reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
+        reduxAction(dispatch, { type: "SET_MESSAGES", arg: messages });
+        reduxAction(dispatch, { type: "SET_USERS", arg: users });
+      });
+    });
+  }, []);
+
   useEffect(() => {
     if (defaultToken && defaultUser && passwordField.current) {
       passwordField.current.value = "*";
@@ -67,7 +123,18 @@ export default function Auth(props: AuthProps): JSX.Element {
             Authorization: `Bearer ${defaultToken}`,
           },
         })
-        .then((res) => {
+        .then(async (res) => {
+          // const defaultChatToken = window.localStorage.getItem("feathers-jwt");
+          // Try to authenticate the feathers chat with the JWT stored in localStorage
+          try {
+            await (client as any).reAuthenticate();
+            console.log("whohooo chat reAuth");
+            reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+          } catch (err) {
+            const token = localStorage.getItem("token");
+            console.log("token", token, "err reAuthenticate", err);
+            reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+          }
           handleAuthSignin(res);
           onAuth();
         })
@@ -77,12 +144,15 @@ export default function Auth(props: AuthProps): JSX.Element {
         username: usernameField.current?.value,
         password: passwordField.current?.value,
       };
+      if (payload.username && payload.password) {
+        loginChat(payload.username, payload.password);
+      }
 
       axios
         .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
           timeout: timeout,
         })
-        .then((res) => {
+        .then(async (res) => {
           handleAuthSignin(res);
           onAuth();
         })

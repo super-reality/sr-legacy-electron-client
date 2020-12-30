@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
-import Test from "./views/test";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
@@ -18,6 +17,8 @@ import CreateLessonDetached from "./components/create-leson-detached";
 import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
+
+import ChatApplication from "./components/chat";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -84,9 +85,7 @@ export default function App(): JSX.Element {
                   ref={scrollRef}
                   className="content"
                 >
-                  <Switch>
-                    <Route path="/test" component={Test} />
-                  </Switch>
+                  <ChatApplication />
                 </div>
               </div>
             </>
@@ -104,3 +103,10 @@ export default function App(): JSX.Element {
     </ErrorBoundary>
   );
 }
+
+/*
+<Switch>
+                    <Route path="/test" component={Test} />
+                  </Switch>
+
+*/
