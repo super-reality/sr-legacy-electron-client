@@ -20,7 +20,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
   const [data, setData] = useState(baseData);
 
   const doCallback = useCallback(
-    (type: string, value: any) => {
+    (type: string, value: any | null) => {
       let newData = data;
       if (single) {
         newData = [
@@ -71,10 +71,12 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
                 margin="8px auto"
                 key={`panel-button-${t}`}
                 width="145px"
-                height="30px"
+                height="28px"
+                style={{ justifyContent: "space-between" }}
                 onClick={() => setDataType(t)}
               >
-                {t}
+                <div>{t}</div>
+                <div />
               </ButtonSimple>
             );
           })}

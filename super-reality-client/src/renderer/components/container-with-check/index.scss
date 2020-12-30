@@ -1,0 +1,20 @@
+.container-check {
+  display: flex;
+
+  .check {
+    cursor: pointer;
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border-radius: 500%;
+    background-color: var(--color-background-hover);
+
+    &.checked {
+      background-color: var(--color-pink);
+    }
+
+    &:hover {
+      background-color: var(--color-magenda);
+    }
+  }
+}
