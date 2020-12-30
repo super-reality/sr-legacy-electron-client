@@ -169,17 +169,10 @@ function TreeFolder(props: TreeFolderProps) {
         onDelete(type, id, parentId);
       }
       if (e.key === "ArrowLeft") {
-        if (open) {
-          setOpen(false);
-        }
+        if (open) setOpen(false);
       }
       if (e.key === "ArrowRight") {
-        let child: HTMLElement | null = null;
-        child = document.getElementById(children[0]?._id);
         if (!open) setOpen(true);
-        if (child) {
-          child.click();
-        }
       }
 
       if (["ArrowUp", "ArrowDown"].includes(e.key)) {
@@ -289,7 +282,9 @@ function TreeFolder(props: TreeFolderProps) {
           type: "CREATE_LESSON_V2_TREE",
           arg: { type, uniqueId, id },
         });
-        setOpen(!open);
+        if (e.isTrusted) {
+          setOpen(!open);
+        }
         setTimeout(() => {
           window.localStorage.setItem(id, !open ? "true" : "false");
         }, 100);
@@ -328,12 +323,6 @@ function TreeFolder(props: TreeFolderProps) {
         } ${dragOver == uniqueId ? "drag-target" : ""}`}
         onClick={doOpen}
         tabIndex={tabIndex}
-        onFocus={() => {
-          if (treeRef.current) {
-            setOpen(!open);
-            treeRef.current.blur();
-          }
-        }}
         style={{ paddingLeft: padding }}
       >
         <div className={`folder-drop ${open ? "open" : ""}`}>
