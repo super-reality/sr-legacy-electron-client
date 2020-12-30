@@ -36,6 +36,7 @@ import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
+import LeftPanelWrapper from "./left-panel-wrapper";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -68,6 +69,7 @@ export default function CreateLessonDetached(): JSX.Element {
     videoNavigation,
     videoDuration,
     recordingData,
+    openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -295,6 +297,7 @@ export default function CreateLessonDetached(): JSX.Element {
           ) : (
             <></>
           )}
+          {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>

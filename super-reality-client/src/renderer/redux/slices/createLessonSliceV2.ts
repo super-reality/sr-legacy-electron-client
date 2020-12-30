@@ -77,6 +77,7 @@ const initialState = {
   canvasSource: undefined as string | undefined,
   canvasSourceDesc: "no source" as string,
   status: "-",
+  openPanel: undefined as string | undefined,
 };
 
 type InitialState = typeof initialState;

@@ -73,9 +73,7 @@ export default function Lesson(props: LessonProps): JSX.Element {
       {treeCurrentType == "item" && view == "Lessons" && (
         <OpenItem id={treeCurrentId} />
       )}
-      {treeCurrentType == "step" && view == "Lessons" && (
-        <OpenStep id={treeCurrentId} />
-      )}
+      {treeCurrentType == "step" && view == "Lessons" && <OpenStep />}
     </>
   );
 }

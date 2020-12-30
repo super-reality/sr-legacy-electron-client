@@ -46,12 +46,30 @@ export function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     [data, single, callback]
   );
 
+  const active: string[] = [];
+
   return (
     <div className="selector-panel-container">
       <div className="panel-title">{title}</div>
       <div className="panels-flex">
         <div className="panel-a">
+          <div className="panel-subtitle">Active</div>
+          {data.map((t) => {
+            active.push(t.type);
+            return (
+              <ButtonSimple
+                key={`panel-button-${t.type}`}
+                width="145px"
+                height="30px"
+                onClick={() => setDataType(t.type)}
+              >
+                {t.type}
+              </ButtonSimple>
+            );
+          })}
+          <div className="panel-subtitle">Library</div>
           {types.map((t) => {
+            if (active.includes(t)) return undefined;
             return (
               <ButtonSimple
                 key={`panel-button-${t}`}
