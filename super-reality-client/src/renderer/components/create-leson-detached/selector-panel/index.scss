@@ -13,13 +13,12 @@
   
   .panels-flex {
     display: flex;
+    overflow: auto;
   
-    .panel-a {
+    .panel {
       padding: 16px;
-    }
-    
-    .panel-b {
-      padding: 16px;
+      overflow: auto;
+      border-right: 1px solid var(--color-background-hover);
     }
   }  
 }
