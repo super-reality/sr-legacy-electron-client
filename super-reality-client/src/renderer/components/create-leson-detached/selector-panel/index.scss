@@ -1,0 +1,21 @@
+.selector-panel-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  .panel-title {
+    padding: 16px;
+  }
+  
+  .panels-flex {
+    display: flex;
+  
+    .panel-a {
+      padding: 16px;
+    }
+    
+    .panel-b {
+      padding: 16px;
+    }
+  }  
+}
