@@ -19,6 +19,7 @@ import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.sv
 import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
 import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import ButtonRound from "../../button-round";
+import Chat from "../../chat";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
@@ -39,7 +40,7 @@ const sidebarIcons = [
   {
     title: "Microphone",
     icon: ButtonMic,
-    component: <>Dummy Mic</>,
+    component: <Chat />,
   },
   {
     title: "Gamepad",
@@ -67,8 +68,8 @@ export default function EditorSidebar() {
   const dispatch = useDispatch();
 
   const props = useSpring({
-    width: expanded ? "256px" : "0px",
-    minWidth: expanded ? "256px" : "0px",
+    width: expanded ? "550px" : "0px",
+    minWidth: expanded ? "300px" : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -140,7 +141,7 @@ export default function EditorSidebar() {
 
   return (
     <>
-      <animated.div style={props} className="sidebar-expanded">
+      <animated.div style={props} className="sidebar-expanded overlay">
         <div className="sidebar-content">
           {sidebarIcons[current]?.component}
         </div>
