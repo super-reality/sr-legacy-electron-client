@@ -27,6 +27,13 @@ Once finished simply do `npm run start`
 - `npm run build:web` for web
 
 
+## Debug
+
+To open DevTools (show console errors, add breakpoints, etc) to the renderer use the keys `Alt + Shift + D`
+
+To open the DevTools and the window of the background (used for OpenCv template matching) process you can use `Alt + Shift + E`
+
+
 ## Testing
 
 `npm run jest:ci:watch` opens jest watcher with common CI tests

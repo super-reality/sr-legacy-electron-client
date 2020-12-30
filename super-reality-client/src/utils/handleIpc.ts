@@ -11,6 +11,7 @@ import {
 import createBackgroundProcess from "./createBackgroundProcess";
 
 import getWindowId from "./electron/getWindowId";
+import setFocusable from "./electron/setFocusable";
 // import setFocusable from "./electron/setFocusable";
 import setMaximize from "./electron/setMaximize";
 import setResizable from "./electron/setResizable";
@@ -80,9 +81,8 @@ export default function handleIpc(): void {
 
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
-    setTimeout(() => {
-      setTopMost(true);
-    }, 2000);
+    setFocusable(true);
+    setTopMost(false);
     setMaximize(true);
     setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
