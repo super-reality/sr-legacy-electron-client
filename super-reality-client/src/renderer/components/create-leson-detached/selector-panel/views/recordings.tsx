@@ -19,7 +19,7 @@ export interface RecordingTypeValue {
 
 export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { select, open } = props;
+  const { select, value, open } = props;
 
   const [videos, setVideos] = useState<string[]>([]);
 
@@ -45,7 +45,11 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
           onClick={() => open(id)}
         >
           <div>{id}</div>
-          <div />
+          {value?.recording == id ? (
+            <div className="button-checked" />
+          ) : (
+            <div />
+          )}
         </ButtonSimple>
       ))}
     </>
@@ -53,10 +57,12 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 }
 
 export function RecordingsView(
-  props: BasePanelViewProps<RecordingTypeValue> & { id: string }
+  props: BasePanelViewProps<RecordingTypeValue> & {
+    id: string;
+  }
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, select, open } = props;
+  const { id, value, select, open } = props;
   const [duration, setDuration] = useState(100);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -82,7 +88,7 @@ export function RecordingsView(
   return (
     <>
       <ContainerWithCheck
-        checked
+        checked={value?.recording == id}
         callback={(val) =>
           select(
             "Recording",

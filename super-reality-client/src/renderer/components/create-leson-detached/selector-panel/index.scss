@@ -1,3 +1,10 @@
+.button-checked {
+  background-color: var(--color-pink);
+  width: 18px;
+  height: 18px;
+  border-radius: 500px;
+}
+
 .selector-panel-container {
   display: flex;
   flex-direction: column;

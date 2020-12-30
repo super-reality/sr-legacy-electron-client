@@ -44,6 +44,8 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const active: string[] = [];
 
+  const currentValue = data.filter((d) => d.type == dataType)[0]?.value || null;
+
   return (
     <div className="selector-panel-container">
       <div className="panel-title">{title}</div>
@@ -84,15 +86,20 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
         {dataType && (
           <div className="panel">
             {dataType == "Recording" && (
-              <RecordingsList open={setDataId} select={doCallback} />
+              <RecordingsList
+                value={currentValue}
+                open={setDataId}
+                select={doCallback}
+              />
             )}
           </div>
         )}
-        {dataId && dataType && (
+        {dataType && dataId && (
           <div className="panel">
             {dataType == "Recording" && (
               <RecordingsView
                 id={dataId}
+                value={currentValue}
                 open={setDataId}
                 select={doCallback}
               />

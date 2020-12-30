@@ -12,11 +12,13 @@ export default function ContainerWithCheck(
   const { children, checked, callback } = props;
 
   return (
-    <div className="container-check">
-      <div
-        className={`check ${checked ? "checked" : ""}`}
-        onClick={() => callback(!checked)}
-      />
+    <div className="container-with-check">
+      <div className="check-container">
+        <div
+          className={`check ${checked ? "checked" : ""}`}
+          onClick={() => callback(!checked)}
+        />
+      </div>
       {children}
     </div>
   );

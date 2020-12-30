@@ -1,20 +1,33 @@
-.container-check {
+.container-with-check {
   display: flex;
+  overflow: hidden;
+  border-radius: 4px;
 
-  .check {
+  .check-container {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    background: var(--color-background);
+    display: flex;
+    align-self: flex-end;
     cursor: pointer;
-    position: relative;
-    width: 24px;
-    height: 24px;
-    border-radius: 500%;
-    background-color: var(--color-background-hover);
+    z-index: 1;
+  
+    .check {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      margin: auto;
+      border-radius: 500px;
+      background-color: var(--color-background-hover);
 
-    &.checked {
-      background-color: var(--color-pink);
-    }
+      &.checked {
+        background-color: var(--color-pink);
+      }
 
-    &:hover {
-      background-color: var(--color-magenda);
+      &:hover {
+        background-color: var(--color-magenda);
+      }
     }
   }
 }
