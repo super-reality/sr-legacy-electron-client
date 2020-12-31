@@ -60,14 +60,9 @@ const sidebarIcons = [
     component: <>AirPlay</>,
   },
   {
-    title: "dummy seven",
-    icon: DummyOne,
+    title: "ButtonEye",
+    icon: ButtonEye,
     component: <>Dummy Seven</>,
-  },
-  {
-    title: "dummy eight",
-    icon: DummyOne,
-    component: <>Dummy eight</>,
   },
   {
     title: "Chat",
@@ -167,7 +162,7 @@ export default function EditorSidebar() {
         <div className="action-buttons">
           {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 8) return null;
+            if (index < 2 || index > 7) return null;
             return (
               <ButtonRound
                 onClick={() => {
@@ -183,20 +178,7 @@ export default function EditorSidebar() {
             );
           })}
         </div>
-
         <div className="communication-buttons">
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonEye}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonMessages}
-          />
           <ButtonRound
             onClick={doPreview}
             width="36px"
@@ -254,3 +236,19 @@ export default function EditorSidebar() {
     </>
   );
 }
+
+/*
+
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonEye}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonMessages}
+          />
+*/
