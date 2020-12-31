@@ -70,7 +70,7 @@ export default function CreateLessonDetached(): JSX.Element {
     videoDuration,
     recordingData,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const { messages, users } = useSelector((state: AppState) => state.chat);
+  // const { messages, users } = useSelector((state: AppState) => state.chat);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
@@ -120,11 +120,7 @@ export default function CreateLessonDetached(): JSX.Element {
     reduxAction(dispatch, { type: "SET_MESSAGES", arg: [] });
     reduxAction(dispatch, { type: "SET_USERS", arg: [] });
   };
-  const onMessageCreatedListener = (newMessage: any, stateMessages: any[]) => {
-    console.log("message created", newMessage, "messages", stateMessages);
-    const newMessages = [...stateMessages, newMessage];
-    reduxAction(dispatch, { type: "SET_MESSAGES", arg: newMessages });
-  };
+
   // chat listener
   useEffect(() => {
     // (client as any)
@@ -222,17 +218,6 @@ export default function CreateLessonDetached(): JSX.Element {
     client.on("logout", () => {
       console.log("logout");
       logoutListener();
-    });
-
-    // Add new messages to the message list
-    messagesClient.on("created", (message: any) => {
-      onMessageCreatedListener(message, messages);
-    });
-
-    // Add new users to the user list
-    usersClient.on("created", (user: any) => {
-      const updatedUsers = users.concat(user);
-      reduxAction(dispatch, { type: "SET_USERS", arg: updatedUsers });
     });
   }, []);
 

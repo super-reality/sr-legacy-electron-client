@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Login from "./login-chat";
 import { AppState } from "../../redux/stores/renderer";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
@@ -9,6 +9,7 @@ import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import client from "./feathers";
+import reduxAction from "../../redux/reduxAction";
 
 interface ChatProps {
   users: any[];
@@ -71,7 +72,7 @@ export function Chat(props: ChatProps) {
               <div className="single-chat" key={_id}>
                 <img className="avatar" src={DefaultIcon} alt="sonic" />
                 <div className="info">
-                  <div className="user">{user.name}</div>
+                  <div className="user">{user.email}</div>
                   <div className="timestamp">{messageTime(createdAt)}</div>
                 </div>
                 <div className="message">{text}</div>
@@ -103,7 +104,7 @@ export default function ChatApplication() {
   const { isChatAuth, messages, users } = useSelector(
     (state: AppState) => state.chat
   );
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   // useEffect(() => {
   //   const messagesClient = client.service("messages");
@@ -119,6 +120,25 @@ export default function ChatApplication() {
 
   //   // On logout reset all all local state (which will then show the login screen)
   // }, []);
+  const onMessageCreatedListener = (newMessage: any, stateMessages: any[]) => {
+    console.log("message created", newMessage, "messages", stateMessages);
+    const newMessages = [...stateMessages, newMessage];
+    reduxAction(dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  };
+  useEffect(() => {
+    const messagesClient = client.service("messages");
+    const usersClient = client.service("users");
+    // Add new messages to the message list
+    messagesClient.on("created", (message: any) => {
+      onMessageCreatedListener(message, messages);
+    });
+
+    // Add new users to the user list
+    usersClient.on("created", (user: any) => {
+      const updatedUsers = users.concat(user);
+      reduxAction(dispatch, { type: "SET_USERS", arg: updatedUsers });
+    });
+  }, []);
 
   return (
     <div>
