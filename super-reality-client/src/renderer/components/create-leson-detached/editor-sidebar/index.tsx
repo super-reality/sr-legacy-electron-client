@@ -10,6 +10,8 @@ import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
 import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
 import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
+import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
+import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
 import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
 import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
@@ -40,7 +42,7 @@ const sidebarIcons = [
   {
     title: "Microphone",
     icon: ButtonMic,
-    component: <>Dummy Mic</>,
+    component: <> Dummy Mic </>,
   },
   {
     title: "Gamepad",
@@ -83,8 +85,8 @@ export default function EditorSidebar() {
   const dispatch = useDispatch();
 
   const props = useSpring({
-    width: expanded ? "256px" : "0px",
-    minWidth: expanded ? "256px" : "0px",
+    width: expanded ? "550px" : "0px",
+    minWidth: expanded ? "300px" : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -187,7 +189,13 @@ export default function EditorSidebar() {
             onClick={doPreview}
             width="36px"
             height="36px"
-            svg={ButtonPeople}
+            svg={ButtonEye}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonMessages}
           />
           <ButtonRound
             onClick={doPreview}
@@ -199,8 +207,15 @@ export default function EditorSidebar() {
             onClick={doPreview}
             width="36px"
             height="36px"
-            svg={ButtonMessages}
+            svg={ButtonScreenShare}
           />
+          <ButtonRound
+            onClick={doPreview}
+            width="36px"
+            height="36px"
+            svg={ButtonPeople}
+          />
+
           <ButtonRound
             onClick={doPreview}
             width="36px"
@@ -219,21 +234,6 @@ export default function EditorSidebar() {
             height="36px"
             svg={ButtonTick}
           />
-          {sidebarIcons.map((icon, index) => {
-            return (
-              <ButtonRound
-                onClick={() => {
-                  setCurrent(index);
-                  if (index == current || !expanded) setExpanded(!expanded);
-                }}
-                width="32px"
-                height="32px"
-                key={icon.title}
-                svg={icon.icon}
-                title={icon.title}
-              />
-            );
-          })}
         </div>
 
         <div className="control-buttons">

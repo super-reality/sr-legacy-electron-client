@@ -1,0 +1,63 @@
+.title {
+    padding: 20px 20px 0 25px;
+    color: #585286;
+    font-size: 16px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 6px;
+    background: #211b33;
+    font-size: 14px;
+    color: #b8d4f3;
+    margin: 20px;
+
+    .chats {
+        overflow-y: scroll;
+        height: calc(85vh - 250px);
+    }
+
+    .user {
+        font-weight: 600;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .timestamp {
+        color: #585286;
+        font-size: 12px;
+    }
+
+    .avatar {
+        float: left;
+        margin-right: 5px;
+    }
+
+    .single-chat {
+        padding: 1em;
+    }
+
+    .chat-input {
+        padding: 1em;
+        border-radius: 3px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+
+        input {
+            background: #2b2641;
+            font-size: 14px;
+            color: #b8d4f3;
+        }
+
+        svg {
+            position: absolute;
+            right: 20px;
+        }
+    }
+}
