@@ -30,18 +30,6 @@ export default function Chat(): JSX.Element {
             </div>
             <div className="message">Thank you so much!</div>
           </div>
-
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          
           <div className="single-chat">
             <img className="avatar" src={Pacman} alt="Nick Mark" />
             <div className="info">
@@ -112,7 +100,16 @@ export default function Chat(): JSX.Element {
               I love this lesson! Thanks so much for making it!
             </div>
           </div>
-
+          <div className="single-chat">
+            <img className="avatar" src={Pacman} alt="Nick Mark" />
+            <div className="info">
+              <div className="user">Pac-Girl</div>
+              <div className="timestamp">Today at 12:30pm</div>
+            </div>
+            <div className="message">
+              I love this lesson! Thanks so much for making it!
+            </div>
+          </div>
         </div>
         <div className="chat-input">
           <input type="text" placeholder="You rock!" />

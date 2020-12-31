@@ -15,8 +15,8 @@
     margin: 20px;
 
     .chats {
-        overflow: scroll;
-        max-height: 55vh;
+        overflow-y: scroll;
+        height: calc(85vh - 250px);
     }
 
     .user {
