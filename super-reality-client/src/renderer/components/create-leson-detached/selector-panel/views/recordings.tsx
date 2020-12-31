@@ -25,7 +25,6 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 
   const doUnCheck = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      e.preventDefault();
       e.stopPropagation();
       select("Recording", null);
     },
