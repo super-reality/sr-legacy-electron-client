@@ -16,10 +16,11 @@
 
     .chats {
         overflow-y: scroll;
-        height: calc(85vh - 250px);
+        height: calc(85vh - 220px);
     }
 
     .user {
+        font-size: 16px;
         font-weight: 600;
     }
 
@@ -35,7 +36,10 @@
 
     .avatar {
         float: left;
-        margin-right: 5px;
+        margin-right: 10px;
+        height: 30px;
+        width: 30px;
+        border-radius: 4px;
     }
 
     .single-chat {
