@@ -22,6 +22,7 @@ import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
+import ChatApplication from "../../chat";
 
 const sidebarIcons = [
   {
@@ -55,6 +56,21 @@ const sidebarIcons = [
     title: "Airplay",
     icon: ButtonAirplay,
     component: <>AirPlay</>,
+  },
+  {
+    title: "dummy seven",
+    icon: DummyOne,
+    component: <>Dummy Seven</>,
+  },
+  {
+    title: "dummy eight",
+    icon: DummyOne,
+    component: <>Dummy eight</>,
+  },
+  {
+    title: "Chat",
+    icon: ButtonMessages,
+    component: <ChatApplication />,
   },
 ];
 
@@ -149,7 +165,7 @@ export default function EditorSidebar() {
         <div className="action-buttons">
           {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 5) return null;
+            if (index < 2 || index > 8) return null;
             return (
               <ButtonRound
                 onClick={() => {

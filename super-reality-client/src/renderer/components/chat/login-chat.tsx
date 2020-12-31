@@ -58,7 +58,7 @@ export default function Login() {
   // };
 
   const signup = () => {
-    return client
+    client
       .service("users")
       .create({ email, password })
       .then(() => loginChat());

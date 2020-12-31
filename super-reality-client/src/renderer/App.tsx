@@ -18,7 +18,7 @@ import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
 
-import ChatApplication from "./components/chat";
+import Test from "./views/test";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -85,7 +85,9 @@ export default function App(): JSX.Element {
                   ref={scrollRef}
                   className="content"
                 >
-                  <ChatApplication />
+                  <Switch>
+                    <Route path="/test" component={Test} />
+                  </Switch>
                 </div>
               </div>
             </>
@@ -103,10 +105,3 @@ export default function App(): JSX.Element {
     </ErrorBoundary>
   );
 }
-
-/*
-<Switch>
-                    <Route path="/test" component={Test} />
-                  </Switch>
-
-*/

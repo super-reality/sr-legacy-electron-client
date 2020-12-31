@@ -36,6 +36,7 @@ import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
+import client from "../chat/feathers";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -69,6 +70,7 @@ export default function CreateLessonDetached(): JSX.Element {
     videoDuration,
     recordingData,
   } = useSelector((state: AppState) => state.createLessonV2);
+  const { messages, users } = useSelector((state: AppState) => state.chat);
   const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
@@ -110,6 +112,129 @@ export default function CreateLessonDetached(): JSX.Element {
     },
     [debouncer]
   );
+
+  // chat functions
+  const logoutListener = () => {
+    console.log("logout");
+    reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    reduxAction(dispatch, { type: "SET_MESSAGES", arg: [] });
+    reduxAction(dispatch, { type: "SET_USERS", arg: [] });
+  };
+  const onMessageCreatedListener = (newMessage: any, stateMessages: any[]) => {
+    console.log("message created", newMessage, "messages", stateMessages);
+    const newMessages = [...stateMessages, newMessage];
+    reduxAction(dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  };
+  // chat listener
+  useEffect(() => {
+    // (client as any)
+    //   .authenticate()
+    //   .then((res: any) => {
+    //     console.log("whohooo chat reAuth login", res);
+    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    //   })
+    //   .catch((err: any) => {
+    //     console.log("chat jwt login error", err);
+    //     (client as any).logout();
+    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    //   });
+    client
+      .service("messages")
+      .find()
+      .then((res: any) => {
+        console.log("test get messages res:", res);
+      })
+      .catch((err: any) => {
+        console.log("test get messages err:", err);
+      });
+    const messagesClient = client.service("messages");
+    const usersClient = client.service("users");
+    Promise.all([
+      messagesClient.find({
+        query: {
+          $sort: { createdAt: -1 },
+          $limit: 25,
+        },
+      }),
+      usersClient.find(),
+    ])
+      .then(([messagePage, userPage]) => {
+        // We want the latest messages but in the reversed order
+        const uploadedMessages = messagePage.data.reverse();
+        const uploadedUsers = userPage.data;
+        console.log(
+          "first time",
+          "messages",
+          uploadedMessages,
+          "users",
+          uploadedUsers
+        );
+        // Once both return, update the state
+        // reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
+        reduxAction(dispatch, {
+          type: "SET_MESSAGES",
+          arg: [...uploadedMessages],
+        });
+        reduxAction(dispatch, { type: "SET_USERS", arg: [...uploadedUsers] });
+      })
+      .catch((err) => {
+        console.log("on authenticated", err);
+      });
+    // On successfull login
+    console.log("authenticated listener");
+    client.on("authenticated", (login) => {
+      // Get all users and messages
+      console.log("authenticated listener start. login:", login);
+      Promise.all([
+        messagesClient.find({
+          query: {
+            $sort: { createdAt: -1 },
+            $limit: 25,
+          },
+        }),
+        usersClient.find(),
+      ])
+        .then(([messagePage, userPage]) => {
+          // We want the latest messages but in the reversed order
+          const uploadedMessages = messagePage.data.reverse();
+          const uploadedUsers = userPage.data;
+          console.log(
+            "login",
+            login,
+            "messages",
+            uploadedMessages,
+            "users",
+            uploadedUsers
+          );
+          // Once both return, update the state
+          reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
+          reduxAction(dispatch, {
+            type: "SET_MESSAGES",
+            arg: uploadedMessages,
+          });
+          reduxAction(dispatch, { type: "SET_USERS", arg: uploadedUsers });
+        })
+        .catch((err) => {
+          console.log("on authenticated", err);
+        });
+    });
+
+    client.on("logout", () => {
+      console.log("logout");
+      logoutListener();
+    });
+
+    // Add new messages to the message list
+    messagesClient.on("created", (message: any) => {
+      onMessageCreatedListener(message, messages);
+    });
+
+    // Add new users to the user list
+    usersClient.on("created", (user: any) => {
+      const updatedUsers = users.concat(user);
+      reduxAction(dispatch, { type: "SET_USERS", arg: updatedUsers });
+    });
+  }, []);
 
   useEffect(() => {
     setMocks();

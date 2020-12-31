@@ -13,6 +13,7 @@ interface ChatProps {
 
 export default function Chat(props: ChatProps) {
   const { users, messages } = props;
+  // const { user }: any = useSelector((state: AppState) => state.chat.loginData);
   const dispatch = useDispatch();
 
   const sendMessage = (text: string) => {
@@ -47,9 +48,8 @@ export default function Chat(props: ChatProps) {
   //   client.service("messages").removeListener("created", scrollToBottom);
   // }, []);
   const removeChatAccount = () => {
-    const username = window.localStorage.getItem("username");
     try {
-      client.service("users").remove({ email: username });
+      client.service("users").remove("zSwS0LrFs6p7FP3H");
     } catch (err) {
       console.log("remove user error", err);
     }
@@ -92,6 +92,17 @@ export default function Chat(props: ChatProps) {
 }
 
 /*
+<ButtonSimple
+          style={{
+            color: "red",
+            margin: "10px",
+          }}
+          onClick={() => {
+            removeChatAccount();
+          }}
+        >
+          Remove Chat Account
+        </ButtonSimple>
 <ul className="flex flex-column flex-1 list-unstyled user-list">
                 {users &&
                   users.map((user) => (

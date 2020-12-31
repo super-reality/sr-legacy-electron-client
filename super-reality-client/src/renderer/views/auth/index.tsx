@@ -53,58 +53,43 @@ export default function Auth(props: AuthProps): JSX.Element {
 
   const loginChat = async (email?: string, password?: string) => {
     if (email && password) {
-      (client as any)
+      return (client as any)
         .authenticate({
           strategy: "local",
           email,
           password,
         })
-        .then(() => {
+        .then((res: any) => {
+          console.log("whohooo chat local login", res);
           reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+          reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: res });
         })
         .catch((error: any) => {
           console.log("chat local login error", error);
+          (client as any).logout();
           reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
         });
     }
-    try {
-      await (client as any).reAuthenticate().catch((err: any) => {
-        console.log("chat jwt", err);
+    return (client as any)
+      .reAuthenticate()
+      .then((res: any) => {
+        console.log("whohooo chat reAuth login", res);
+        reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+        reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: res });
+      })
+      .catch((err: any) => {
+        console.log("chat jwt login error", err);
+        (client as any).logout();
+        reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
       });
-      reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-    } catch (err) {
-      console.log("chat jwt login error", err);
-      reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-    }
   };
 
-  // chat listener
-  useEffect(() => {
-    const messagesClient = client.service("messages");
-    const usersClient = client.service("users");
-    // On successfull login
-    client.on("authenticated", (login) => {
-      // Get all users and messages
-      Promise.all([
-        messagesClient.find({
-          query: {
-            $sort: { createdAt: -1 },
-            $limit: 25,
-          },
-        }),
-        usersClient.find(),
-      ]).then(([messagePage, userPage]) => {
-        // We want the latest messages but in the reversed order
-        const messages = messagePage.data.reverse();
-        const users = userPage.data;
-        console.log("login", login, "messages", messages, "users", users);
-        // Once both return, update the state
-        reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
-        reduxAction(dispatch, { type: "SET_MESSAGES", arg: messages });
-        reduxAction(dispatch, { type: "SET_USERS", arg: users });
-      });
-    });
-  }, []);
+  const signupChat = async (email: string, password: string) => {
+    return client
+      .service("users")
+      .create({ email, password })
+      .then(() => loginChat(email, password));
+  };
 
   useEffect(() => {
     if (defaultToken && defaultUser && passwordField.current) {
@@ -124,17 +109,18 @@ export default function Auth(props: AuthProps): JSX.Element {
           },
         })
         .then(async (res) => {
-          // const defaultChatToken = window.localStorage.getItem("feathers-jwt");
           // Try to authenticate the feathers chat with the JWT stored in localStorage
-          try {
-            await (client as any).reAuthenticate();
-            console.log("whohooo chat reAuth");
-            reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-          } catch (err) {
-            const token = localStorage.getItem("token");
-            console.log("token", token, "err reAuthenticate", err);
-            reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-          }
+          await loginChat();
+          // try {
+          //   await (client as any).reAuthenticate();
+          //   console.log("whohooo chat reAuth");
+          //   reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+          // } catch (err) {
+          //   const token = localStorage.getItem("token");
+          //   console.log("token", token, "err reAuthenticate", err);
+          //   (client as any).logout();
+          //   reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+          // }
           handleAuthSignin(res);
           onAuth();
         })
@@ -144,15 +130,15 @@ export default function Auth(props: AuthProps): JSX.Element {
         username: usernameField.current?.value,
         password: passwordField.current?.value,
       };
-      if (payload.username && payload.password) {
-        loginChat(payload.username, payload.password);
-      }
 
       axios
         .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
           timeout: timeout,
         })
         .then(async (res) => {
+          if (payload.username && payload.password) {
+            await loginChat(payload.username, payload.password);
+          }
           handleAuthSignin(res);
           onAuth();
         })
@@ -172,12 +158,50 @@ export default function Auth(props: AuthProps): JSX.Element {
 
     axios
       .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
-      .then((res) => {
+      .then(async (res) => {
+        if (payload.username && payload.password) {
+          await signupChat(payload.username, payload.password);
+        }
+
         handleAuthSingup(res);
         onAuth();
       })
       .catch(handleAuthError);
   }, []);
+
+  // useEffect(() => {
+  //   const messagesClient = client.service("messages");
+  //   const usersClient = client.service("users");
+  //   // On successfull login
+  //   client.on("authenticated", (login) => {
+  //     // Get all users and messages
+  //     Promise.all([
+  //       messagesClient.find({
+  //         query: {
+  //           $sort: { createdAt: -1 },
+  //           $limit: 25,
+  //         },
+  //       }),
+  //       usersClient.find(),
+  //     ]).then(([messagePage, userPage]) => {
+  //       // We want the latest messages but in the reversed order
+  //       const uploadedMessages = messagePage.data.reverse();
+  //       const uploadedUsers = userPage.data;
+  //       console.log(
+  //         "login",
+  //         login,
+  //         "messages",
+  //         uploadedMessages,
+  //         "users",
+  //         uploadedUsers
+  //       );
+  //       // Once both return, update the state
+  //       reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
+  //       reduxAction(dispatch, { type: "SET_MESSAGES", arg: uploadedMessages });
+  //       reduxAction(dispatch, { type: "SET_USERS", arg: uploadedUsers });
+  //     });
+  //   });
+  // }, []);
 
   return (
     <animated.div style={stateSpring} className="auth-scroller">
