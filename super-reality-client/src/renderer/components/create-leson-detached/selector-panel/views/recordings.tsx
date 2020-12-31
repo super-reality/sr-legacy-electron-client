@@ -5,9 +5,9 @@ import {
   recordingPath,
   stepSnapshotPath,
 } from "../../../../electron-constants";
-import ButtonSimple from "../../../button-simple";
 import BaseSlider from "../../../base-slider";
 import ContainerWithCheck from "../../../container-with-check";
+import ButtonCheckbox from "../../button-checkbox";
 
 export interface RecordingTypeValue {
   type: "Recording";
@@ -26,6 +26,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
   const doUnCheck = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.preventDefault();
+      e.stopPropagation();
       select("Recording", null);
     },
     [select]
@@ -44,21 +45,15 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
   return (
     <>
       {videos.map((id) => (
-        <ButtonSimple
+        <ButtonCheckbox
+          text={id}
           margin="8px auto"
           key={`recording-button-${id}`}
-          width="145px"
-          height="28px"
-          style={{ justifyContent: "space-between" }}
-          onClick={() => open(id)}
-        >
-          <div>{id}</div>
-          {value?.recording == id ? (
-            <div onClick={doUnCheck} className="button-checked" />
-          ) : (
-            <div />
-          )}
-        </ButtonSimple>
+          showDisabled={false}
+          check={value?.recording == id}
+          onButtonClick={() => open(id)}
+          onCheckClick={doUnCheck}
+        />
       ))}
     </>
   );

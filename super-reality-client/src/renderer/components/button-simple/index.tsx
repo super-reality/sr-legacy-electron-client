@@ -8,7 +8,7 @@ interface ButtonSimpleProps {
   margin?: string;
   width?: string;
   height?: string;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export default function ButtonSimple(
