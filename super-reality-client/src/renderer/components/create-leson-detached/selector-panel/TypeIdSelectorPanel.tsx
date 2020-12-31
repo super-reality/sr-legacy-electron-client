@@ -58,7 +58,8 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               <ButtonSimple
                 key={`panel-button-${t.type}`}
                 width="145px"
-                height="30px"
+                height="28px"
+                style={{ justifyContent: "space-between" }}
                 onClick={() => setDataType(t.type)}
               >
                 {t.type}

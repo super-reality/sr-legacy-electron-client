@@ -23,6 +23,14 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 
   const [videos, setVideos] = useState<string[]>([]);
 
+  const doUnCheck = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.preventDefault();
+      select("Recording", null);
+    },
+    [select]
+  );
+
   useEffect(() => {
     const newFiles: string[] = [];
     const files = fs.readdirSync(stepSnapshotPath);
@@ -46,7 +54,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
         >
           <div>{id}</div>
           {value?.recording == id ? (
-            <div className="button-checked" />
+            <div onClick={doUnCheck} className="button-checked" />
           ) : (
             <div />
           )}
@@ -61,11 +69,20 @@ export function RecordingsView(
     id: string;
   }
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { id, value, select, open } = props;
+  const { id, value, select } = props;
   const [duration, setDuration] = useState(100);
-
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const doCheckToggle = useCallback(
+    (val: boolean) =>
+      select(
+        "Recording",
+        val
+          ? { recording: id, time: videoRef?.current?.currentTime || 0 }
+          : null
+      ),
+    [videoRef, id, select]
+  );
 
   const scrubVideo = useCallback(
     (n: readonly number[]) => {
@@ -89,14 +106,7 @@ export function RecordingsView(
     <>
       <ContainerWithCheck
         checked={value?.recording == id}
-        callback={(val) =>
-          select(
-            "Recording",
-            val
-              ? { recording: id, time: videoRef.current?.currentTime || 0 }
-              : null
-          )
-        }
+        callback={doCheckToggle}
       >
         <video
           style={{ width: "300px" }}
