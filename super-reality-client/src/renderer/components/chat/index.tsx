@@ -4,6 +4,7 @@ import React from "react";
 import Sonic from "../../../assets/images/sonic.png";
 import Nick from "../../../assets/images/Nick.png";
 import Pacman from "../../../assets/images/pacman.png";
+import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 
 export default function Chat(): JSX.Element {
   return (
@@ -113,6 +114,7 @@ export default function Chat(): JSX.Element {
         </div>
         <div className="chat-input">
           <input type="text" placeholder="You rock!" />
+          <SendButton />
         </div>
       </div>
     </>

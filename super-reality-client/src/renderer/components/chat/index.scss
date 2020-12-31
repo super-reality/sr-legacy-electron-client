@@ -45,11 +45,19 @@
     .chat-input {
         padding: 1em;
         border-radius: 3px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
 
         input {
             background: #2b2641;
             font-size: 14px;
             color: #b8d4f3;
+        }
+
+        svg {
+            position: absolute;
+            right: 20px;
         }
     }
 }
