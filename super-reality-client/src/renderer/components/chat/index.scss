@@ -16,10 +16,11 @@
 
     .chats {
         overflow-y: scroll;
-        height: calc(85vh - 250px);
+        height: calc(85vh - 220px);
     }
 
     .user {
+        font-size: 16px;
         font-weight: 600;
     }
 

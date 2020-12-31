@@ -12,14 +12,15 @@ import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videoca
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
 import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
 import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
-import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
+// import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
 import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
 import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
-import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
+// import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
 import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
 import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
 import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
 import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
+import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
 import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
@@ -160,6 +161,15 @@ export default function EditorSidebar() {
       </animated.div>
       <div className="sidebar-buttons">
         <div className="action-buttons">
+          <div className="logged-user">
+            <ButtonRound
+              onClick={doPreview}
+              width="36px"
+              height="36px"
+              svg={DefaultUser}
+            />
+          </div>
+
           {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
             if (index < 2 || index > 7) return null;
@@ -190,19 +200,6 @@ export default function EditorSidebar() {
             width="36px"
             height="36px"
             svg={ButtonScreenShare}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonPeople}
-          />
-
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonNotification}
           />
           <ButtonRound
             onClick={doPreview}
