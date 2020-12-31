@@ -30,16 +30,26 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
           },
         ];
       } else {
+        // here it will fail for multi selection deselection
         newData = data.map((d) => {
           if (type == d.type) return { ...d, value };
           return d;
         });
       }
 
-      setData(newData);
-      callback(newData);
+      const filtered = newData.filter((d) => d.value !== null);
+
+      setData(filtered);
+      callback(filtered);
     },
     [data, single, callback]
+  );
+
+  const doUnCheck = useCallback(
+    (type: string) => {
+      doCallback(type, null);
+    },
+    [doCallback]
   );
 
   const active: string[] = [];
@@ -62,7 +72,14 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
                 style={{ justifyContent: "space-between" }}
                 onClick={() => setDataType(t.type)}
               >
-                {t.type}
+                <div>{t.type}</div>
+                <div
+                  onClick={(e) => {
+                    e.preventDefault();
+                    doUnCheck(t.type);
+                  }}
+                  className="button-checked"
+                />
               </ButtonSimple>
             );
           })}
