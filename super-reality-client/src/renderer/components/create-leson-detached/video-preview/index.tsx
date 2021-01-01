@@ -4,6 +4,7 @@ import path from "path";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
+import { useSpring, animated } from "react-spring";
 import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
@@ -47,6 +48,7 @@ export default function VideoPreview(): JSX.Element {
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
+  const [zoomBox, setBoxOpacity] = useSpring(() => ({ opacity: 0 }));
 
   const setVideoPos = useCallback(
     (arg: { x: number; y: number }) => {
@@ -284,6 +286,9 @@ export default function VideoPreview(): JSX.Element {
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
+      setBoxOpacity({
+        opacity: 1,
+      });
       const closest = zoomLevels.reduce((prev, curr) => {
         return Math.abs(curr - videoScale) < Math.abs(prev - videoScale)
           ? curr
@@ -312,6 +317,9 @@ export default function VideoPreview(): JSX.Element {
           });
         }
       }
+      setTimeout(() => {
+        setBoxOpacity({ opacity: 0 });
+      }, 3000);
     },
     [videoPos, videoScale, containerOutRef, videoCanvasRef]
   );
@@ -374,9 +382,10 @@ export default function VideoPreview(): JSX.Element {
           ref={fuildsOutRef}
           onWheel={doScale}
         />
-        <div className="zoom-container">
+        <animated.div style={zoomBox as any} className="zoom-container">
           Zoom level: {Math.round(videoScale * 100)}%
-        </div>
+        </animated.div>
+
         <div
           ref={containerRef}
           className="video-preview-container"
