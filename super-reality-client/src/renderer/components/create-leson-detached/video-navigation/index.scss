@@ -21,9 +21,9 @@
 .video-handle-0 {
   background-image: url("../../../../assets/svg/video-handle-left.svg");
   position: absolute;
-  transform: translate(-100%, -25px);
+  transform: translate(-90%, -25px);
   z-index: 5;
-  width: 35px;
+  width: 39px;
   height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -48,7 +48,7 @@
   position: absolute;
   transform: translate(-20%, -25px);
   z-index: 5;
-  width: 35px;
+  width: 40px;
   height: 130px;
   background-repeat: no-repeat;
   cursor: pointer;
@@ -104,11 +104,11 @@
   height: 75px;
   top: 20px;
   border-radius: 4px;
-  // z-index: 1;
-  background: var(--color-rainbow);
+  z-index: 1;
+  background: var(--color-less-rainbow);
   background-repeat: no-repeat;
   cursor: pointer;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 .video-tickPre {
