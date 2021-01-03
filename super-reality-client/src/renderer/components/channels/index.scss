@@ -1,0 +1,55 @@
+.title {
+    padding: 20px 20px 0 25px;
+    color: #585286;
+    font-size: 16px;
+}
+
+.channel {
+    overflow-y: scroll;
+    height: calc(85vh - 150px)
+}
+
+.channel-container {
+    font-size: 14px;
+    color: #c2c2c2;
+    padding: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.channel-container::after {
+    content: "";
+    height: 2px !important;
+    width: 86%;
+    top: 95%;
+    position: absolute;
+    background-color: #585286;
+    transition: 0.4s ease-out all 0.1s;
+}
+
+.single-channel {
+    background: #323052;
+    border-radius: 6px;
+    color: #8a88c3;
+    padding: 11px;
+    margin-bottom: 7px;
+}
+
+.avatar {
+    float: left;
+    margin-right: 10px;
+    height: 25px;
+    width: 25px;
+}
+
+.add {
+    position: relative;
+    button {
+        position: absolute;
+        right: 15px;
+        top: -20px;
+    }
+    :hover {
+        cursor: pointer;
+    }
+}

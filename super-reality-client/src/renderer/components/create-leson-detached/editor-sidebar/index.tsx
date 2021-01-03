@@ -26,6 +26,9 @@ import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
+import Screenshare from "../../screenshare";
+import Cams from "../../cams";
+import Channels from "../../channels";
 
 const sidebarIcons = [
   {
@@ -53,17 +56,17 @@ const sidebarIcons = [
   {
     title: "Videocam",
     icon: ButtonVideocam,
-    component: <>camera</>,
+    component: <Cams />,
   },
   {
     title: "Airplay",
     icon: ButtonAirplay,
-    component: <>AirPlay</>,
+    component: <Screenshare />,
   },
   {
     title: "ButtonEye",
     icon: ButtonEye,
-    component: <>Dummy Seven</>,
+    component: <Channels />,
   },
   {
     title: "Chat",

@@ -4,7 +4,7 @@
   display: flex;
   background: #29233d;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
   padding: 10px 0;
 
   .button-round {
@@ -18,11 +18,18 @@
   padding-bottom: 15px;
 }
 
+.control-buttons{
+  position: absolute;
+  right: 1.2%;
+  bottom: 1.2%;
+}
+
 .sidebar-expanded {
   overflow: hidden;
   background: linear-gradient(180deg, #272035 0%, #2d2a44 6.7%, #2d2b45 94.1%, #261f34 100%);
 
   .sidebar-content {
     height: 100%;
+    width: 100%;
   }
 }
