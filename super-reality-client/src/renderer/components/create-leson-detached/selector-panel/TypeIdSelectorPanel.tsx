@@ -60,12 +60,14 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const Panel = useBasePanel(title);
 
-  let ListView: (props: any) => JSX.Element = RecordingsList;
-  let SingleView: (props: any) => JSX.Element = RecordingsView;
+  let ListView: ((props: any) => JSX.Element) | null = null;
+  let SingleView: ((props: any) => JSX.Element) | null = null;
 
   switch (dataType) {
     // Canvas
     case "Recording":
+      ListView = RecordingsList;
+      SingleView = RecordingsView;
       break;
     // Start Step
     case "Image Found":
@@ -111,12 +113,12 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
           );
         })}
       </div>
-      {dataType && (
+      {dataType && ListView && (
         <div className="panel">
           <ListView value={currentValue} open={setDataId} select={doCallback} />
         </div>
       )}
-      {dataType && dataId && (
+      {dataType && dataId && SingleView && (
         <div className="panel">
           <SingleView
             id={dataId}
