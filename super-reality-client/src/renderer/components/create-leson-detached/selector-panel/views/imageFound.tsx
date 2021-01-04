@@ -5,6 +5,7 @@ import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
 import ButtonCheckbox from "../../button-checkbox";
 import { AppState } from "../../../../redux/stores/renderer";
+import AnchorEdit from "../../anchor-edit";
 
 export interface ImageFoundTypeValue {
   type: "Image Found";
@@ -109,6 +110,7 @@ export function ImageFoundView(
           {">"}
         </div>
       </div>
+      <AnchorEdit anchorId={id} />
     </>
   );
 }

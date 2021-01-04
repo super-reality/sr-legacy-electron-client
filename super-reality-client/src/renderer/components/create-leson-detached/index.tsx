@@ -18,7 +18,6 @@ import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
-import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
@@ -55,10 +54,8 @@ const restrictMinSize =
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
-  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
 
   const {
-    currentAnchor,
     currentRecording,
     currentLesson,
     anchorTestView,
@@ -286,17 +283,6 @@ export default function CreateLessonDetached(): JSX.Element {
           >
             <Lesson createRecorder={createRecorder} />
           </div>
-          {currentAnchor !== undefined ? (
-            <div
-              className="anchor-edit"
-              style={{ width: "340px" }}
-              ref={resizeContainerAnchor}
-            >
-              <AnchorEdit anchorId={currentAnchor} />
-            </div>
-          ) : (
-            <></>
-          )}
           {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             <VideoPreview />

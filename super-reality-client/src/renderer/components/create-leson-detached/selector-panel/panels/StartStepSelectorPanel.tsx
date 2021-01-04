@@ -40,7 +40,7 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
   return (
     <TypeIdSelectorPanel
       title="Start Step When"
-      single={false}
+      single
       types={[
         "Image Found",
         "Video Found",
