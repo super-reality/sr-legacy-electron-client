@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import "./index.scss";
-import TypeIdSelectorPanel from "./TypeIdSelectorPanel";
+import "../index.scss";
+import TypeIdSelectorPanel from "../TypeIdSelectorPanel";
 
 interface CanvasSelectorPanelProps {
   stepId: string;
@@ -18,26 +18,15 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
 
   return (
     <TypeIdSelectorPanel
-      title="Step Canvas"
-      single
+      title="Start Step When"
+      single={false}
       types={[
-        "Image",
-        "Recording",
-        "Process",
-        "Facial Expression",
-        "Browser",
-        "GPS",
-        "Body Pose",
-        "Brainwave",
-        "User",
-        "Object",
-        "Gaze",
-        "Sound",
-        "Smell",
-        "Taste",
-        "AI",
-        "Organism",
-        "Language",
+        "Image Found",
+        "Video Found",
+        "Process Found",
+        "Text Found",
+        "Object Found",
+        "GPS Found",
       ]}
       baseData={[]}
       callback={doUpdate}

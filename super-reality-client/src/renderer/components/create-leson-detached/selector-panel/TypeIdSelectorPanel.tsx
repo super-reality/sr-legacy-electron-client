@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { TypeValue } from "../../../../types/utils";
 import ButtonCheckbox from "../button-checkbox";
 import useBasePanel from "./useBasePanel";
+import { ImageFoundList, ImageFoundView } from "./views/imageFound";
 import { RecordingsList, RecordingsView } from "./views/recordings";
 
 interface TypeIdSelectorPanelProps {
@@ -59,6 +60,22 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const Panel = useBasePanel(title);
 
+  let ListView: (props: any) => JSX.Element = RecordingsList;
+  let SingleView: (props: any) => JSX.Element = RecordingsView;
+
+  switch (dataType) {
+    // Canvas
+    case "Recording":
+      break;
+    // Start Step
+    case "Image Found":
+      ListView = ImageFoundList;
+      SingleView = ImageFoundView;
+      break;
+    default:
+      break;
+  }
+
   return (
     <Panel>
       <div className="panel">
@@ -96,25 +113,17 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       </div>
       {dataType && (
         <div className="panel">
-          {dataType == "Recording" && (
-            <RecordingsList
-              value={currentValue}
-              open={setDataId}
-              select={doCallback}
-            />
-          )}
+          <ListView value={currentValue} open={setDataId} select={doCallback} />
         </div>
       )}
       {dataType && dataId && (
         <div className="panel">
-          {dataType == "Recording" && (
-            <RecordingsView
-              id={dataId}
-              value={currentValue}
-              open={setDataId}
-              select={doCallback}
-            />
-          )}
+          <SingleView
+            id={dataId}
+            value={currentValue}
+            open={setDataId}
+            select={doCallback}
+          />
         </div>
       )}
     </Panel>

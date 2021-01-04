@@ -33,9 +33,9 @@ export default function OpenStep() {
         style={{ padding: 0 }}
         width="270px"
         height="40px"
-        onClick={() => openPanel("step-when")}
+        onClick={() => openPanel("start-step")}
       >
-        Step When
+        Start Step
       </ButtonSimple>
       <ButtonSimple
         margin="4px auto"

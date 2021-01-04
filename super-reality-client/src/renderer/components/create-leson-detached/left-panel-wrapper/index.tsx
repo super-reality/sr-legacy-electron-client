@@ -2,7 +2,8 @@ import React from "react";
 
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import CanvasSelectorPanel from "../selector-panel/CanvasSelectorPanel";
+import CanvasSelectorPanel from "../selector-panel/panels/CanvasSelectorPanel";
+import StartStepSelectorPanel from "../selector-panel/panels/StartStepSelectorPanel";
 
 export default function LeftPanelWrapper(): JSX.Element {
   const { openPanel, currentStep } = useSelector(
@@ -15,6 +16,11 @@ export default function LeftPanelWrapper(): JSX.Element {
     case "step-canvas":
       if (currentStep) {
         Component = <CanvasSelectorPanel stepId={currentStep} />;
+      }
+      break;
+    case "start-step":
+      if (currentStep) {
+        Component = <StartStepSelectorPanel stepId={currentStep} />;
       }
       break;
     default:
