@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import ButtonSimple from "../../../button-simple";
 import ButtonCheckbox from "../../button-checkbox";
 import useBasePanel from "../useBasePanel";
 import { ImageFoundList, ImageFoundView } from "../views/imageFound";
@@ -95,6 +96,23 @@ export default function GeneratePanel(props: GeneratePanelProps) {
             open={setDataId}
             select={doCallback}
           />
+          {dataType == "Recording" && (
+            <>
+              {!anchor && (
+                <div style={{ textAlign: "center" }}>
+                  You need to select an anchor image before generating
+                </div>
+              )}
+              <ButtonSimple
+                disabled={!anchor}
+                width="145px"
+                height="20px"
+                margin="8px auto"
+              >
+                Generate Steps
+              </ButtonSimple>
+            </>
+          )}
         </div>
       )}
     </Panel>

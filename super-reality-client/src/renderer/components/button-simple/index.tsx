@@ -4,6 +4,7 @@ import "../buttons.scss";
 interface ButtonSimpleProps {
   style?: CSSProperties;
   id?: string;
+  disabled?: boolean;
   className?: string;
   margin?: string;
   width?: string;
@@ -17,6 +18,7 @@ export default function ButtonSimple(
   const {
     children,
     id,
+    disabled,
     className,
     style,
     margin,
@@ -29,7 +31,7 @@ export default function ButtonSimple(
     <div
       onClick={onClick}
       id={id}
-      className={`button-simple ${className}`}
+      className={`button-simple ${className} ${disabled ? "disabled" : ""}`}
       style={{ margin, width, height, ...style }}
     >
       {children}
