@@ -8,6 +8,8 @@ import {
 import BaseSlider from "../../../base-slider";
 import ContainerWithCheck from "../../../container-with-check";
 import ButtonCheckbox from "../../button-checkbox";
+import reduxAction from "../../../../redux/reduxAction";
+import store from "../../../../redux/stores/renderer";
 
 export interface RecordingTypeValue {
   type: "Recording";
@@ -78,10 +80,16 @@ export function RecordingsView(
     [videoRef, id, select]
   );
 
+  useEffect(() => {
+    reduxAction(store.dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { currentRecording: id },
+    });
+  }, [id]);
+
   const scrubVideo = useCallback(
     (n: readonly number[]) => {
       if (videoRef.current) {
-        console.log(n);
         videoRef.current.currentTime = n[0] / 1000;
       }
     },
@@ -92,6 +100,10 @@ export function RecordingsView(
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = () => {
         setDuration((videoRef.current?.duration || 0) * 1000);
+        reduxAction(store.dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: { videoDuration: videoRef.current?.duration || 0 },
+        });
       };
     }
   }, [videoRef.current]);
