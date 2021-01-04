@@ -4,7 +4,7 @@
   display: flex;
   background: #29233d;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-between;
   padding: 10px 0;
 
   .button-round {
@@ -16,12 +16,6 @@
 
 .logged-user {
   padding-bottom: 15px;
-}
-
-.control-buttons{
-  position: absolute;
-  right: 1.2%;
-  bottom: 1.2%;
 }
 
 .sidebar-expanded {

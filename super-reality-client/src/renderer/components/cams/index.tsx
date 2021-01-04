@@ -20,7 +20,7 @@ export default function Cams(): JSX.Element {
               </div>
             </div>
             <div className="cam">
-              <img src={Camss} />
+              <img src={Camss} alt="Cam1" />
               <div className="user-avatar">
                 <img src={PacMan} alt="" />
               </div>
@@ -34,7 +34,7 @@ export default function Cams(): JSX.Element {
               </div>
             </div>
             <div className="cam">
-              <img src={Camss2} />
+              <img src={Camss2} alt="cam2" />
               <div className="user-avatar">
                 <img src={PacMan} alt="" />
               </div>

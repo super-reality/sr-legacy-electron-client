@@ -48,7 +48,7 @@
   @include disable-select;
 
   &:hover {
-    background-color: var(--color-button-hover);
+    background-color: var(--color-background-hover);
   }
   &:active {
     background-color: var(--color-background);
