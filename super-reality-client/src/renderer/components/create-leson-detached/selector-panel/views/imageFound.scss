@@ -1,0 +1,48 @@
+.anchor-image-preview {
+  width: 300px;
+  height: 180px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
+  background-color: var(--color-background-dark);
+}
+
+.anchor-templates-carousel {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  .left-arrow {
+    height: 64px;
+    width: 16px;
+    background-color: var(--color-button);
+    cursor: pointer;
+    text-align: center;
+    line-height: 64px;
+    color: white;
+  }
+
+  .right-arrow {
+    height: 64px;
+    width: 16px;
+    background-color: var(--color-button);
+    cursor: pointer;
+    text-align: center;
+    line-height: 64px;
+    color: white;
+  }
+
+  .template {
+    cursor: pointer;
+    height: 64px;
+    width: 64px;
+    background-position: center;
+    background-size: auto;
+    background-color: var(--color-background-dark);
+
+    &.selected {
+      background-color: var(--color-background-dark);
+    }
+  }
+}

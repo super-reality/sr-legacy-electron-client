@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import "./imageFound.scss";
 import { useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
@@ -53,6 +54,7 @@ export function ImageFoundView(
     id: string;
   }
 ) {
+  const [currentTemplate, setCurrentTemplate] = useState(0);
   const { id, value, select } = props;
 
   const { treeAnchors } = useSelector(
@@ -68,16 +70,45 @@ export function ImageFoundView(
     [id, select]
   );
 
+  const prevTemplate = useCallback(() => {
+    if (currentTemplate > 0) setCurrentTemplate(currentTemplate - 1);
+    else setCurrentTemplate(anchor.templates.length - 1);
+  }, [currentTemplate, anchor]);
+
+  const nextTemplate = useCallback(() => {
+    if (currentTemplate < anchor.templates.length)
+      setCurrentTemplate(currentTemplate + 1);
+    else setCurrentTemplate(0);
+  }, [currentTemplate, anchor]);
+
   return (
     <>
       <ContainerWithCheck checked={value == id} callback={doCheckToggle}>
         <div
+          className="anchor-image-preview"
           style={{
-            backgroundImage: `url(${anchor.templates[0]})`,
-            width: "300px",
+            backgroundImage: `url(${anchor.templates[currentTemplate]})`,
           }}
         />
       </ContainerWithCheck>
+      <div className="anchor-templates-carousel">
+        <div className="left-arrow" onClick={prevTemplate}>
+          {"<"}
+        </div>
+        {anchor.templates.map((t, i) => {
+          return (
+            <div
+              key={`carousel-image-${t}`}
+              style={{ backgroundImage: `url(${t})` }}
+              onClick={() => setCurrentTemplate(i)}
+              className={`template ${currentTemplate == i ? "selected" : ""}`}
+            />
+          );
+        })}
+        <div className="right-arrow" onClick={nextTemplate}>
+          {">"}
+        </div>
+      </div>
     </>
   );
 }
