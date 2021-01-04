@@ -89,7 +89,10 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               key={`panel-button-active-${t.type}`}
               text={t.type}
               check
-              onButtonClick={() => setDataType(t.type)}
+              onButtonClick={() => {
+                setDataType(t.type);
+                setDataId(null);
+              }}
               onCheckClick={(e) => {
                 e.stopPropagation();
                 doUnCheck(t.type);
@@ -108,7 +111,10 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               height="28px"
               text={t}
               check={false}
-              onButtonClick={() => setDataType(t)}
+              onButtonClick={() => {
+                setDataType(t);
+                setDataId(null);
+              }}
             />
           );
         })}

@@ -64,6 +64,15 @@ export default function OpenStep() {
       >
         Alerts
       </ButtonSimple>
+      <ButtonSimple
+        margin="4px auto"
+        style={{ padding: 0 }}
+        width="270px"
+        height="40px"
+        onClick={() => openPanel("geenrate-recording")}
+      >
+        Generate Steps
+      </ButtonSimple>
     </>
   );
 }
