@@ -26,6 +26,10 @@ import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
+// import Screenshare from "../../screenshare";
+// import Cams from "../../cams";
+// import Channels from "../../channels";
+// import client from "../../chat/feathers";
 
 const sidebarIcons = [
   {
