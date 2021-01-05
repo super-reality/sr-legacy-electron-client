@@ -41,6 +41,7 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
 
   return (
     <>
+      <div className="panel-subtitle">Active</div>
       {anchors.filter(filterFnCheck).map((a) => (
         <ButtonCheckbox
           text={a.name}
@@ -52,6 +53,7 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
           onCheckClick={doUnCheck}
         />
       ))}
+      <div className="panel-subtitle">Library</div>
       {anchors.filter(filterFnUnCheck).map((a) => (
         <ButtonCheckbox
           text={a.name}

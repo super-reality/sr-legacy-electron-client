@@ -50,6 +50,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 
   return (
     <>
+      <div className="panel-subtitle">Active</div>
       {videos.filter(filterFnCheck).map((id) => (
         <ButtonCheckbox
           text={id}
@@ -61,6 +62,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
           onCheckClick={doUnCheck}
         />
       ))}
+      <div className="panel-subtitle">Library</div>
       {videos.filter(filterFnUnCheck).map((id) => (
         <ButtonCheckbox
           text={id}
