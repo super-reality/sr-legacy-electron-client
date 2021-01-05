@@ -21,7 +21,7 @@ export interface RecordingTypeValue {
 
 export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { select, value, open } = props;
+  const { select, data, open } = props;
 
   const [videos, setVideos] = useState<string[]>([]);
 
@@ -45,17 +45,22 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 
   return (
     <>
-      {videos.map((id) => (
-        <ButtonCheckbox
-          text={id}
-          margin="8px auto"
-          key={`recording-button-${id}`}
-          showDisabled={false}
-          check={value?.recording == id}
-          onButtonClick={() => open(id)}
-          onCheckClick={doUnCheck}
-        />
-      ))}
+      {videos.map((id) => {
+        const checked = !!data.filter(
+          (d) => d.type == "Recording" && d.value.recording == id
+        )[0];
+        return (
+          <ButtonCheckbox
+            text={id}
+            margin="8px auto"
+            key={`recording-button-${id}`}
+            showDisabled={false}
+            check={checked}
+            onButtonClick={() => open(id)}
+            onCheckClick={doUnCheck}
+          />
+        );
+      })}
     </>
   );
 }
@@ -65,7 +70,7 @@ export function RecordingsView(
     id: string;
   }
 ) {
-  const { id, value, select } = props;
+  const { id, data, select } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -108,12 +113,13 @@ export function RecordingsView(
     }
   }, [videoRef.current]);
 
+  const checked = !!data.filter(
+    (d) => d.type == "Recording" && d.value.recording == id
+  )[0];
+
   return (
     <>
-      <ContainerWithCheck
-        checked={value?.recording == id}
-        callback={doCheckToggle}
-      >
+      <ContainerWithCheck checked={checked} callback={doCheckToggle}>
         <video
           style={{ width: "300px" }}
           ref={videoRef}

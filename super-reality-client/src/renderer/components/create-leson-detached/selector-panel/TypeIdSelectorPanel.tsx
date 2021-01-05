@@ -56,8 +56,6 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const active: string[] = [];
 
-  const currentValue = data.filter((d) => d.type == dataType)[0]?.value || null;
-
   const Panel = useBasePanel(title);
 
   let ListView: ((props: any) => JSX.Element) | null = null;
@@ -121,14 +119,14 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       </div>
       {dataType && ListView && (
         <div className="panel">
-          <ListView value={currentValue} open={setDataId} select={doCallback} />
+          <ListView data={data} open={setDataId} select={doCallback} />
         </div>
       )}
       {dataType && dataId && SingleView && (
         <div className="panel">
           <SingleView
             id={dataId}
-            value={currentValue}
+            data={data}
             open={setDataId}
             select={doCallback}
           />

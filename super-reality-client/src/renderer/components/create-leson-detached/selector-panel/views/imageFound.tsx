@@ -14,7 +14,7 @@ export interface ImageFoundTypeValue {
 
 export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { select, value, open } = props;
+  const { select, data, open } = props;
 
   const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -35,17 +35,23 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
 
   return (
     <>
-      {anchors.map((a) => (
-        <ButtonCheckbox
-          text={a.name}
-          margin="8px auto"
-          key={`image-found-button-${a._id}`}
-          showDisabled={false}
-          check={value == a._id}
-          onButtonClick={() => open(a._id)}
-          onCheckClick={doUnCheck}
-        />
-      ))}
+      {anchors.map((a) => {
+        const checked = !!data.filter(
+          (d) => d.type == "Image Found" && d.value == a._id
+        )[0];
+
+        return (
+          <ButtonCheckbox
+            text={a.name}
+            margin="8px auto"
+            key={`image-found-button-${a._id}`}
+            showDisabled={false}
+            check={checked}
+            onButtonClick={() => open(a._id)}
+            onCheckClick={doUnCheck}
+          />
+        );
+      })}
     </>
   );
 }
@@ -56,7 +62,7 @@ export function ImageFoundView(
   }
 ) {
   const [currentTemplate, setCurrentTemplate] = useState(0);
-  const { id, value, select } = props;
+  const { id, data, select } = props;
 
   const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -82,9 +88,13 @@ export function ImageFoundView(
     else setCurrentTemplate(0);
   }, [currentTemplate, anchor]);
 
+  const checked = !!data.filter(
+    (d) => d.type == "Image Found" && d.value == anchor?._id
+  )[0];
+
   return (
     <>
-      <ContainerWithCheck checked={value == id} callback={doCheckToggle}>
+      <ContainerWithCheck checked={checked} callback={doCheckToggle}>
         <div
           className="anchor-image-preview"
           style={{
