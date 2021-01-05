@@ -1,5 +1,5 @@
-import { Item } from "../../../../items/item";
-import { IStep } from "../../../../api/types/step/step";
+import { Item } from "../../../items/item";
+import { IStep } from "../../../api/types/step/step";
 
 export interface GeneratedData {
   itemToStep: Record<string, string>;

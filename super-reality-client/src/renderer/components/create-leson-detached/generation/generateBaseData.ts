@@ -1,4 +1,4 @@
-import store from "../../../../redux/stores/renderer";
+import store from "../../../redux/stores/renderer";
 import { GeneratedData } from "./types";
 
 export default function generateBaseData(): GeneratedData {

@@ -1,8 +1,8 @@
-import doCvMatch from "../../../../../utils/cv/doCVMatch";
-import timestampToTime from "../../../../../utils/timestampToTime";
-import { IAnchor } from "../../../../api/types/anchor/anchor";
-import reduxAction from "../../../../redux/reduxAction";
-import store from "../../../../redux/stores/renderer";
+import doCvMatch from "../../../../utils/cv/doCVMatch";
+import timestampToTime from "../../../../utils/timestampToTime";
+import { IAnchor } from "../../../api/types/anchor/anchor";
+import reduxAction from "../../../redux/reduxAction";
+import store from "../../../redux/stores/renderer";
 
 export default async function testFullVideo(anchor: IAnchor): Promise<void> {
   const videoHidden = document.getElementById(

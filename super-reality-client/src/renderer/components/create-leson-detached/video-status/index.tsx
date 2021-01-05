@@ -2,34 +2,21 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
-import ButtonRound from "../../button-round";
 import store, { AppState } from "../../../redux/stores/renderer";
-import usePopup from "../../../hooks/usePopup";
-import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/cv/doCVMatch";
-import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import userDataPath from "../../../../utils/files/userDataPath";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import { IStep } from "../../../api/types/step/step";
-import generateDialogues from "./generation/generateDialogues";
-import generateBaseData from "./generation/generateBaseData";
-import generateSteps from "./generation/generateSteps";
-import generateClicks from "./generation/generateClicks";
 import saveCanvasImage from "../../../../utils/saveCanvasImage";
-import testFullVideo from "./generation/testFullVideo";
 import setStatus from "../lesson-utils/setStatus";
-import generationDone from "./generation/generationDone";
 import cropImage from "../../../../utils/cropImage";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import updateStep from "../lesson-utils/updateStep";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
-import clearTempFolder from "../lesson-utils/clearTempFolder";
-import logger from "../../../../utils/logger";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
 import timetoTimestamp from "../../../../utils/timeToTimestamp";
@@ -67,7 +54,6 @@ const videoCropFileName = `${userData}/crop.webm`;
 export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
-    recordingData,
     currentAnchor,
     currentStep,
     treeSteps,
@@ -90,28 +76,6 @@ export default function VideoStatus() {
 
     return treeAnchors[step?.anchor || currentAnchor || ""] || null;
   }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
-
-  const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
-
-  const openAnchor = useCallback(
-    (e: string | undefined) => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: { currentAnchor: e },
-      });
-    },
-    [dispatch]
-  );
-
-  const setRecordingAnchor = useCallback(
-    (e: string | undefined) => {
-      reduxAction(dispatch, {
-        type: "SET_RECORDING_DATA",
-        arg: { anchor: e },
-      });
-    },
-    [dispatch]
-  );
 
   const cvDebouncer = useDebounce(1000);
 
@@ -162,47 +126,6 @@ export default function VideoStatus() {
     canvasSource,
   ]);
 
-  const generateItems = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-
-    if (anchor) {
-      setStatus(`Generating`);
-      const generatedData = generateBaseData();
-      generateSteps(generatedData)
-        .then((data) => generateDialogues(data))
-        .then((data) => generateClicks(data, anchor))
-        .then(() => generationDone())
-        .catch((e) => {
-          logger("error", e);
-          console.error(e);
-          clearTempFolder();
-          setStatus(`Error generating`);
-        });
-    } else {
-      setStatus(`No anchor selected`);
-    }
-  }, [anchor]);
-
-  const checkAnchor = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        currentItem: undefined,
-        currentStep: undefined,
-        currentAnchor: recordingData.anchor,
-        recordingCvFrame: 0,
-      },
-    });
-    testFullVideo(anchor);
-  }, [recordingData, anchor]);
-
   const doExitPreviewModes = useCallback(() => {
     setStatus("-");
     reduxAction(dispatch, {
@@ -251,14 +174,6 @@ export default function VideoStatus() {
         doExitPreviewModes();
       });
   }, [previewEditArea, doExitPreviewModes, dispatch]);
-
-  const [Popup, doCreateAnchor] = usePopupImageSource(
-    newAnchorPre,
-    true,
-    true,
-    true,
-    true
-  );
 
   const editCreateNewAnchor = useCallback(
     (fileName: string) => {
@@ -401,27 +316,6 @@ export default function VideoStatus() {
 
   return (
     <>
-      {Popup}
-      <SelectAnchorPopup
-        width="320px"
-        height="400px"
-        style={{ padding: "10px" }}
-      >
-        <ModalList
-          options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
-          current={recordingData.anchor || ""}
-          selected={recordingData.anchor || ""}
-          setCurrent={(id) => {
-            setRecordingAnchor(id || undefined);
-            openAnchor(id || undefined);
-            close();
-          }}
-          open={(id) => {
-            openAnchor(id || undefined);
-            close();
-          }}
-        />
-      </SelectAnchorPopup>
       <div className="video-status-container">
         {previewMode == "TRIM_VIDEO" && (
           <>
@@ -471,44 +365,6 @@ export default function VideoStatus() {
             >
               Cancel
             </ButtonSimple>
-          </>
-        )}
-        {previewMode == "IDLE" && (
-          <>
-            <ButtonRound
-              svg={AnchorIcon}
-              width="28px"
-              height="28px"
-              style={{ margin: "auto 8px" }}
-              onClick={doOpenAnchorPopup}
-            />
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={doCreateAnchor}
-            >
-              Create new anchor
-            </ButtonSimple>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={checkAnchor}
-            >
-              Check anchor
-            </ButtonSimple>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={generateItems}
-            >
-              Generate
-            </ButtonSimple>
-            {/* <div style={{ color: "var(--color-red)" }}>
-              <i>{!cropRecording && "Attach an anchor to edit"}</i>
-        </div> */}
           </>
         )}
         <div

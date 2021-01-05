@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 
-export default function OpenStep() {
+export default function OpenChapter() {
   const dispatch = useDispatch();
 
   const openPanel = useCallback(
@@ -24,7 +24,7 @@ export default function OpenStep() {
         style={{ padding: 0 }}
         width="270px"
         height="40px"
-        onClick={() => openPanel("step-information")}
+        onClick={() => openPanel("chapter-information")}
       >
         Information
       </ButtonSimple>
@@ -33,25 +33,7 @@ export default function OpenStep() {
         style={{ padding: 0 }}
         width="270px"
         height="40px"
-        onClick={() => openPanel("start-step")}
-      >
-        Start Step
-      </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-canvas")}
-      >
-        Canvas
-      </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-skills")}
+        onClick={() => openPanel("chapter-skills")}
       >
         Skills and achievements
       </ButtonSimple>
@@ -60,9 +42,18 @@ export default function OpenStep() {
         style={{ padding: 0 }}
         width="270px"
         height="40px"
-        onClick={() => openPanel("step-alerts")}
+        onClick={() => openPanel("chapter-alerts")}
       >
         Alerts
+      </ButtonSimple>
+      <ButtonSimple
+        margin="4px auto"
+        style={{ padding: 0 }}
+        width="270px"
+        height="40px"
+        onClick={() => openPanel("generate-recording")}
+      >
+        Generate Steps
       </ButtonSimple>
     </>
   );

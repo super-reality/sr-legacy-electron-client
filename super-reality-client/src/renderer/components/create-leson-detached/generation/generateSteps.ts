@@ -1,13 +1,13 @@
-import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
-import sha1 from "../../../../../utils/md5";
-import saveCanvasImage from "../../../../../utils/saveCanvasImage";
-import timestampToTime from "../../../../../utils/timestampToTime";
-import { IStep } from "../../../../api/types/step/step";
-import { itemsPath } from "../../../../electron-constants";
-import store from "../../../../redux/stores/renderer";
-import newStep from "../../lesson-utils/newStep";
-import setStatus from "../../lesson-utils/setStatus";
-import { StepData } from "../../../recorder/types";
+import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import sha1 from "../../../../utils/md5";
+import saveCanvasImage from "../../../../utils/saveCanvasImage";
+import timestampToTime from "../../../../utils/timestampToTime";
+import { IStep } from "../../../api/types/step/step";
+import { itemsPath } from "../../../electron-constants";
+import store from "../../../redux/stores/renderer";
+import newStep from "../lesson-utils/newStep";
+import setStatus from "../lesson-utils/setStatus";
+import { StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
 function onlyUnique(value: any, index: number, self: Array<any>) {

@@ -8,6 +8,7 @@ import { AppState } from "../../../redux/stores/renderer";
 import OpenItem from "../open-item";
 import OpenStep from "../open-step";
 import LessonTreeControls from "../lesson-tree-controls";
+import OpenChapter from "../open-chapter";
 
 export default function Lesson(): JSX.Element {
   const { treeCurrentType, treeCurrentId } = useSelector(
@@ -24,6 +25,7 @@ export default function Lesson(): JSX.Element {
       </div>
       {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
       {treeCurrentType == "step" && <OpenStep />}
+      {treeCurrentType == "chapter" && <OpenChapter />}
     </>
   );
 }

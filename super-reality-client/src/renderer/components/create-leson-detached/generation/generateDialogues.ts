@@ -1,10 +1,10 @@
-import getSTT from "../../../../../utils/api/getSTT";
-import timestampToTime from "../../../../../utils/timestampToTime";
-import trimAudio from "../../../../../utils/trimAudio";
-import { recordingPath, tempPath } from "../../../../electron-constants";
-import store from "../../../../redux/stores/renderer";
-import newItem from "../../lesson-utils/newItem";
-import setStatus from "../../lesson-utils/setStatus";
+import getSTT from "../../../../utils/api/getSTT";
+import timestampToTime from "../../../../utils/timestampToTime";
+import trimAudio from "../../../../utils/trimAudio";
+import { recordingPath, tempPath } from "../../../electron-constants";
+import store from "../../../redux/stores/renderer";
+import newItem from "../lesson-utils/newItem";
+import setStatus from "../lesson-utils/setStatus";
 import { GeneratedData } from "./types";
 
 interface AudioPiece {

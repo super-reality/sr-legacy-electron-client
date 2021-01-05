@@ -1,15 +1,15 @@
-import { CVResult } from "../../../../../types/utils";
-import doCvMatch from "../../../../../utils/cv/doCVMatch";
-import saveCanvasImage from "../../../../../utils/saveCanvasImage";
-import timestampToTime from "../../../../../utils/timestampToTime";
-import { IAnchor } from "../../../../api/types/anchor/anchor";
-import { ItemFocus } from "../../../../items/item";
-import { itemsPath } from "../../../../electron-constants";
-import reduxAction from "../../../../redux/reduxAction";
-import store from "../../../../redux/stores/renderer";
-import newItem from "../../lesson-utils/newItem";
-import setStatus from "../../lesson-utils/setStatus";
-import { StepData } from "../../../recorder/types";
+import { CVResult } from "../../../../types/utils";
+import doCvMatch from "../../../../utils/cv/doCVMatch";
+import saveCanvasImage from "../../../../utils/saveCanvasImage";
+import timestampToTime from "../../../../utils/timestampToTime";
+import { IAnchor } from "../../../api/types/anchor/anchor";
+import { ItemFocus } from "../../../items/item";
+import { itemsPath } from "../../../electron-constants";
+import reduxAction from "../../../redux/reduxAction";
+import store from "../../../redux/stores/renderer";
+import newItem from "../lesson-utils/newItem";
+import setStatus from "../lesson-utils/setStatus";
+import { StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
 function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {

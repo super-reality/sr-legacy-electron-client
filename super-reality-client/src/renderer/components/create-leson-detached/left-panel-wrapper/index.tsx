@@ -22,8 +22,8 @@ export default function LeftPanelWrapper(): JSX.Element {
       if (currentStep)
         Component = <StartStepSelectorPanel stepId={currentStep} />;
       break;
-    case "geenrate-recording":
-      if (currentStep) Component = <GeneratePanel stepId={currentStep} />;
+    case "generate-recording":
+      Component = <GeneratePanel />;
       break;
     default:
       break;
