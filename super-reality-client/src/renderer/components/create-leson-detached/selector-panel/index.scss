@@ -16,7 +16,11 @@
   }
 
   .panel-title {
+    display: flex;
+    justify-content: space-between;
     padding: 16px;
+    height: 16px;
+    line-height: 16px;
   }
   
   .panels-flex {
