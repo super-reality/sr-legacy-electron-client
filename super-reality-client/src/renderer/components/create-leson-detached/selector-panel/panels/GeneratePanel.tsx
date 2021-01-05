@@ -41,13 +41,13 @@ export default function GeneratePanel(props: GeneratePanelProps) {
     case "Recording":
       ListView = RecordingsList;
       SingleView = RecordingsView;
-      currentValue = recording;
+      currentValue = recording ? [recording] : [];
       break;
     // Start Step
     case "Image Found":
       ListView = ImageFoundList;
       SingleView = ImageFoundView;
-      currentValue = anchor;
+      currentValue = anchor ? [anchor] : [];
       break;
     default:
       break;
