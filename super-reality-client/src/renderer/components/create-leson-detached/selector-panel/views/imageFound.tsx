@@ -120,7 +120,7 @@ export function ImageFoundView(
           {">"}
         </div>
       </div>
-      <AnchorEdit anchorId={id} />
+      <AnchorEdit key={`anchor-edit-${id}`} anchorId={id} />
     </>
   );
 }
