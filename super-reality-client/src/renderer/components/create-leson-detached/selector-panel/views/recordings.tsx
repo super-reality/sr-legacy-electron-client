@@ -44,7 +44,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
   }, []);
 
   const filterFn = (a: string) =>
-    data.filter((d) => d.type == "Recording" && d.value.recording == a)[0];
+    data.filter((d) => d.type == "Recording" && d.value?.recording == a)[0];
   const filterFnCheck = (a: string) => !!filterFn(a);
   const filterFnUnCheck = (a: string) => !filterFn(a);
 
@@ -127,7 +127,7 @@ export function RecordingsView(
   }, [videoRef.current]);
 
   const checked = !!data.filter(
-    (d) => d.type == "Recording" && d.value.recording == id
+    (d) => d.type == "Recording" && d.value?.recording == id
   )[0];
 
   return (

@@ -35,19 +35,21 @@ export default function GeneratePanel(props: GeneratePanelProps) {
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;
 
-  let currentValue: any | null = null;
+  const currentValue = [
+    { type: "Image Found", value: anchor },
+    { type: "Recording", value: recording },
+  ];
+
   switch (dataType) {
     // Canvas
     case "Recording":
       ListView = RecordingsList;
       SingleView = RecordingsView;
-      currentValue = recording ? [recording] : [];
       break;
     // Start Step
     case "Image Found":
       ListView = ImageFoundList;
       SingleView = ImageFoundView;
-      currentValue = anchor ? [anchor] : [];
       break;
     default:
       break;
@@ -85,14 +87,14 @@ export default function GeneratePanel(props: GeneratePanelProps) {
       </div>
       {dataType && ListView && (
         <div className="panel">
-          <ListView value={currentValue} open={setDataId} select={doCallback} />
+          <ListView data={currentValue} open={setDataId} select={doCallback} />
         </div>
       )}
       {dataType && dataId && SingleView && (
         <div className="panel">
           <SingleView
             id={dataId}
-            value={currentValue}
+            data={currentValue}
             open={setDataId}
             select={doCallback}
           />
