@@ -9,7 +9,7 @@ import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";
 import newItem from "../../lesson-utils/newItem";
 import setStatus from "../../lesson-utils/setStatus";
-import { StepData } from "../../recorder/types";
+import { StepData } from "../../../recorder/types";
 import { GeneratedData } from "./types";
 
 function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {

@@ -8,7 +8,7 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
-import CVEditor from "../recorder/CVEditor";
+import CVEditor from "../../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";

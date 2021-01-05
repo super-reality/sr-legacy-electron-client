@@ -1,5 +1,5 @@
-import reduxAction from "../../../../redux/reduxAction";
-import store from "../../../../redux/stores/renderer";
+import reduxAction from "../../../redux/reduxAction";
+import store from "../../../redux/stores/renderer";
 
 const fs = require("fs");
 

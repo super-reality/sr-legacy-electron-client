@@ -1,20 +1,20 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable lines-between-class-members */
-import getWebsiteUrlByTitle from "../../../../../utils/getWebsiteUrlByTitle";
-import { voidFunction } from "../../../../constants";
+import getWebsiteUrlByTitle from "../../../../utils/getWebsiteUrlByTitle";
+import { voidFunction } from "../../../constants";
 import {
   recordingPath,
   stepPath,
   stepSnapshotPath,
-} from "../../../../electron-constants";
-import globalData from "../../../../globalData";
+} from "../../../electron-constants";
+import globalData from "../../../globalData";
 
 /* eslint-disable radix */
 const { desktopCapturer } = require("electron");
 const fs = require("fs");
 
 const { Decoder, tools, Reader } = require("ts-ebml");
-const cv = require("../../../../../utils/opencv/opencv");
+const cv = require("../../../../utils/opencv/opencv");
 
 export default class CVRecorder {
   constructor() {

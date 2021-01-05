@@ -1,18 +1,20 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ReactComponent as RecordIcon } from "../../../../assets/svg/record.svg";
-import { ReactComponent as StopIcon } from "../../../../assets/svg/stop.svg";
-import { ReactComponent as PauseIcon } from "../../../../assets/svg/pause.svg";
-import { ReactComponent as ResetIcon } from "../../../../assets/svg/restart.svg";
-import { ReactComponent as PlayIcon } from "../../../../assets/svg/play.svg";
-import ButtonRound from "../../button-round";
-import Flex from "../../flex";
-import ReactSelect from "../../top-select";
-import Windowlet from "../../windowlet";
+import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
+import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
+import { ReactComponent as PauseIcon } from "../../../assets/svg/pause.svg";
+import { ReactComponent as ResetIcon } from "../../../assets/svg/restart.svg";
+import { ReactComponent as PlayIcon } from "../../../assets/svg/play.svg";
+import ButtonRound from "../button-round";
+import Flex from "../flex";
+import ReactSelect from "../top-select";
+import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
 import "./index.scss";
-import { voidFunction } from "../../../constants";
+import { voidFunction } from "../../constants";
+import setAppMode from "../../redux/utils/setAppMode";
+import { MODE_HOME } from "../../redux/slices/renderSlice";
 
 // eslint-disable-next-line no-undef
 const activeWin = __non_webpack_require__("active-win");
@@ -23,12 +25,7 @@ const wheelButtonId = 3;
 const scrollDownId = 1;
 const scrollUpId = -1;
 
-interface RecorderProps {
-  onFinish: () => void;
-}
-
-export default function Recorder(props: RecorderProps): JSX.Element {
-  const { onFinish } = props;
+export default function Recorder(): JSX.Element {
   const [count, setCount] = useState(-1);
   const [recording, setRecording] = useState(false);
   const [windowSources, setWindowSources] = useState<
@@ -144,8 +141,8 @@ export default function Recorder(props: RecorderProps): JSX.Element {
     iohook.removeAllListeners("keyup");
     iohook.unload();
     iohook.stop();
-    onFinish();
-  }, [recorder, onFinish]);
+    setAppMode(MODE_HOME);
+  }, [recorder]);
 
   const getCurrentSource = useCallback(
     (sources: Electron.DesktopCapturerSource[]) => {
@@ -274,7 +271,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           title="Super Reality Recorder"
           width={298}
           height={320}
-          onClose={onFinish}
+          onClose={() => setAppMode(MODE_HOME)}
         >
           <video muted autoPlay style={{ width: "100%", height: "100%" }}>
             <source src="countdown.mp4" type="video/mp4" />
@@ -288,7 +285,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           title="Super Reality Recorder"
           width={540}
           height={200}
-          onClose={onFinish}
+          onClose={() => setAppMode(MODE_HOME)}
         >
           <Flex column style={{ height: "100%" }}>
             <Flex
@@ -350,7 +347,7 @@ export default function Recorder(props: RecorderProps): JSX.Element {
           title="Super Reality Recorder"
           width={300}
           height={100}
-          onClose={onFinish}
+          onClose={() => setAppMode(MODE_HOME)}
           initialPosX={98}
           initialPosY={98}
           style={{ backgroundColor: "#2f3136" }}

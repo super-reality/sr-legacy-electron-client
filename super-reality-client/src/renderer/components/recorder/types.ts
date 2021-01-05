@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-import { Rectangle } from "../../../../types/utils";
+import { Rectangle } from "../../../types/utils";
 
 export type StepType =
   | "left_click"

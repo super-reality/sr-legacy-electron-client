@@ -6,7 +6,7 @@ import { IStep } from "../../api/types/step/step";
 import { Item } from "../../items/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
-import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
+import { RecordingJson } from "../../components/recorder/types";
 import idNamePos from "../../../utils/idNamePos";
 import idInIdName from "../../../utils/idInIdName";
 
