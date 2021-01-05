@@ -43,24 +43,35 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
     setVideos(newFiles);
   }, []);
 
+  const filterFn = (a: string) =>
+    data.filter((d) => d.type == "Recording" && d.value.recording == a)[0];
+  const filterFnCheck = (a: string) => !!filterFn(a);
+  const filterFnUnCheck = (a: string) => !filterFn(a);
+
   return (
     <>
-      {videos.map((id) => {
-        const checked = !!data.filter(
-          (d) => d.type == "Recording" && d.value.recording == id
-        )[0];
-        return (
-          <ButtonCheckbox
-            text={id}
-            margin="8px auto"
-            key={`recording-button-${id}`}
-            showDisabled={false}
-            check={checked}
-            onButtonClick={() => open(id)}
-            onCheckClick={doUnCheck}
-          />
-        );
-      })}
+      {videos.filter(filterFnCheck).map((id) => (
+        <ButtonCheckbox
+          text={id}
+          margin="8px auto"
+          key={`recording-button-${id}`}
+          showDisabled={false}
+          check
+          onButtonClick={() => open(id)}
+          onCheckClick={doUnCheck}
+        />
+      ))}
+      {videos.filter(filterFnUnCheck).map((id) => (
+        <ButtonCheckbox
+          text={id}
+          margin="8px auto"
+          key={`recording-button-${id}`}
+          showDisabled={false}
+          check={false}
+          onButtonClick={() => open(id)}
+          onCheckClick={doUnCheck}
+        />
+      ))}
     </>
   );
 }

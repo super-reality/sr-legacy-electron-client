@@ -6,6 +6,7 @@ import ContainerWithCheck from "../../../container-with-check";
 import ButtonCheckbox from "../../button-checkbox";
 import { AppState } from "../../../../redux/stores/renderer";
 import AnchorEdit from "../../anchor-edit";
+import { IAnchor } from "../../../../api/types/anchor/anchor";
 
 export interface ImageFoundTypeValue {
   type: "Image Found";
@@ -33,25 +34,35 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
     [select]
   );
 
+  const filterFn = (a: IAnchor) =>
+    data.filter((d) => d.type == "Image Found" && d.value == a._id)[0];
+  const filterFnCheck = (a: IAnchor) => !!filterFn(a);
+  const filterFnUnCheck = (a: IAnchor) => !filterFn(a);
+
   return (
     <>
-      {anchors.map((a) => {
-        const checked = !!data.filter(
-          (d) => d.type == "Image Found" && d.value == a._id
-        )[0];
-
-        return (
-          <ButtonCheckbox
-            text={a.name}
-            margin="8px auto"
-            key={`image-found-button-${a._id}`}
-            showDisabled={false}
-            check={checked}
-            onButtonClick={() => open(a._id)}
-            onCheckClick={doUnCheck}
-          />
-        );
-      })}
+      {anchors.filter(filterFnCheck).map((a) => (
+        <ButtonCheckbox
+          text={a.name}
+          margin="8px auto"
+          key={`image-found-button-${a._id}`}
+          showDisabled={false}
+          check
+          onButtonClick={() => open(a._id)}
+          onCheckClick={doUnCheck}
+        />
+      ))}
+      {anchors.filter(filterFnUnCheck).map((a) => (
+        <ButtonCheckbox
+          text={a.name}
+          margin="8px auto"
+          key={`image-found-button-${a._id}`}
+          showDisabled={false}
+          check={false}
+          onButtonClick={() => open(a._id)}
+          onCheckClick={doUnCheck}
+        />
+      ))}
     </>
   );
 }
