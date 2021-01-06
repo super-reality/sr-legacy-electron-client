@@ -32,5 +32,13 @@
       overflow: auto;
       border-right: 1px solid var(--color-background-hover);
     }
+
+    .panel-wide {
+      padding: 16px;
+      min-width: 300px;
+      width: min-content;
+      overflow: auto;
+      border-right: 1px solid var(--color-background-hover);
+    }
   }  
 }
