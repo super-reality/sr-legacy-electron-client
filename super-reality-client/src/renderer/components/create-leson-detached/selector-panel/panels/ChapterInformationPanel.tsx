@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useDebounce from "../../../hooks/useDebounce";
-import reduxAction from "../../../redux/reduxAction";
-import { AppState } from "../../../redux/stores/renderer";
-import BaseInput from "../../base-input";
-import updateChapter from "../lesson-utils/updateChapter";
-import useBasePanel from "./useBasePanel";
+import useDebounce from "../../../../hooks/useDebounce";
+import reduxAction from "../../../../redux/reduxAction";
+import { AppState } from "../../../../redux/stores/renderer";
+import BaseInput from "../../../base-input";
+import updateChapter from "../../lesson-utils/updateChapter";
+import useBasePanel from "../useBasePanel";
 
 interface ChapterInformationPanelProps {
   chapterId: string;
