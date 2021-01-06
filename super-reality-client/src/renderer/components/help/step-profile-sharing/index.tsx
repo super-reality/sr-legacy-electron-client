@@ -1,9 +1,15 @@
 import React from "react";
+import { StepSectionProps } from "..";
 
 import PacMan from "../../../../assets/images/pacman.png";
 import ButtonTick from "../../../../assets/svg/button-tick.svg";
 
-export default function StepProfileSharing(): JSX.Element {
+export default function StepProfileSharing(
+  props: StepSectionProps
+): JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { goNext, goBack } = props;
+
   const progressBar = {
     width: "60%",
     height: "7px",

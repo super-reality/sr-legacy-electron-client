@@ -1,6 +1,9 @@
 import React from "react";
+import { StepSectionProps } from "..";
 
-export default function StepSkills(): JSX.Element {
+export default function StepSkills(props: StepSectionProps): JSX.Element {
+  const { goNext, goBack } = props;
+
   return (
     <>
       <div className="title">Step 3 of 5</div>
@@ -54,8 +57,12 @@ export default function StepSkills(): JSX.Element {
           </select>
         </div>
         <div className="help-buttons">
-          <button type="button">Back</button>
-          <button type="button">Next</button>
+          <button onClick={goBack} type="button">
+            Back
+          </button>
+          <button onClick={goNext} type="button">
+            Next
+          </button>
         </div>
       </div>
     </>

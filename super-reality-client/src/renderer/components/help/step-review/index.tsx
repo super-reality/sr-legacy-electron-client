@@ -1,6 +1,9 @@
 import React from "react";
+import { StepSectionProps } from "..";
 
-export default function StepTitle(): JSX.Element {
+export default function StepReview(props: StepSectionProps): JSX.Element {
+  const { goNext, goBack } = props;
+
   return (
     <>
       <div className="title">Step 1 of 5</div>
@@ -43,8 +46,12 @@ export default function StepTitle(): JSX.Element {
         <a className="see-more">See more options</a>
 
         <div className="help-buttons">
-          <button type="button">Back</button>
-          <button type="button">Next</button>
+          <button onClick={goBack} type="button">
+            Back
+          </button>
+          <button onClick={goNext} type="button">
+            Next
+          </button>
         </div>
       </div>
     </>
