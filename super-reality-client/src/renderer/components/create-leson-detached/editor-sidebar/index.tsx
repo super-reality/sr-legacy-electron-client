@@ -11,14 +11,15 @@ import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.
 import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
 import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
-import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
+// import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 // import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
-import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
+// import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
 import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
 // import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
-import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
-import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
+// import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
+// import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
 import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
+import { ReactComponent as ButtonHelp } from "../../../../assets/svg/help.svg";
 import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
 import ButtonRound from "../../button-round";
@@ -29,6 +30,7 @@ import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
 import Cams from "../../cams";
 import Channels from "../../channels";
+import Help from "../../help";
 
 const sidebarIcons = [
   {
@@ -59,12 +61,12 @@ const sidebarIcons = [
     component: <Cams />,
   },
   {
-    title: "Airplay",
+    title: "Screenshare",
     icon: ButtonAirplay,
     component: <Screenshare />,
   },
   {
-    title: "ButtonEye",
+    title: "Channels",
     icon: ButtonEye,
     component: <Channels />,
   },
@@ -72,6 +74,11 @@ const sidebarIcons = [
     title: "Chat",
     icon: ButtonMessages,
     component: <ChatApplication />,
+  },
+  {
+    title: "Get Help",
+    icon: ButtonHelp,
+    component: <Help />,
   },
 ];
 
@@ -83,9 +90,18 @@ export default function EditorSidebar() {
   );
   const dispatch = useDispatch();
 
+  let width = "300px";
+
+  if (current == 8) {
+    width = "750px";
+  }
+  if (current == 6) {
+    width = "250px";
+  }
+
   const props = useSpring({
-    width: expanded ? "550px" : "0px",
-    minWidth: expanded ? "300px" : "0px",
+    width: expanded ? width : "0px",
+    minWidth: expanded ? width : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -175,7 +191,7 @@ export default function EditorSidebar() {
 
           {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 7) return null;
+            if (index < 2 || index > 8) return null;
             return (
               <ButtonRound
                 onClick={() => {
@@ -190,32 +206,6 @@ export default function EditorSidebar() {
               />
             );
           })}
-        </div>
-        <div className="communication-buttons">
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonRecentPeople}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonScreenShare}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonError}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonTick}
-          />
         </div>
 
         <div className="control-buttons">
@@ -236,19 +226,3 @@ export default function EditorSidebar() {
     </>
   );
 }
-
-/*
-
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonEye}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonMessages}
-          />
-*/
