@@ -79,3 +79,31 @@
     background-color: #668eb7;
   }
 }
+
+@mixin check-container {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  background: var(--color-background);
+  display: flex;
+  align-self: flex-end;
+  cursor: pointer;
+  z-index: 1;
+}
+
+@mixin check {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin: auto;
+  border-radius: 500px;
+  background-color: var(--color-background-hover);
+
+  &.checked {
+    background-color: var(--color-pink);
+  }
+
+  &:hover {
+    background-color: var(--color-magenda);
+  }
+}

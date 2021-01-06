@@ -1,3 +1,6 @@
+@import "../buttons.scss";
+
+
 .container-with-check {
   display: flex;
   overflow: hidden;
@@ -5,30 +8,10 @@
   position: relative;
 
   .check-container {
-    width: 32px;
-    height: 32px;
-    position: absolute;
-    background: var(--color-background);
-    display: flex;
-    align-self: flex-end;
-    cursor: pointer;
-    z-index: 1;
-  
+    @include check-container;
+    
     .check {
-      position: relative;
-      width: 18px;
-      height: 18px;
-      margin: auto;
-      border-radius: 500px;
-      background-color: var(--color-background-hover);
-
-      &.checked {
-        background-color: var(--color-pink);
-      }
-
-      &:hover {
-        background-color: var(--color-magenda);
-      }
+      @include check;
     }
   }
 }

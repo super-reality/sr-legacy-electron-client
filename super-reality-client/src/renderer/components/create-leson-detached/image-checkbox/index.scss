@@ -1,0 +1,26 @@
+@import "../../buttons.scss";
+
+.image-checkbox {
+  justify-content: center;
+  position: relative;
+  background-color: var(--color-button);
+  display: flex;
+  cursor: pointer;
+
+  img {
+    max-width: 80%;
+    max-height: 80%;
+    height: auto;
+    margin: auto;
+  }
+
+  .check-container {
+    bottom: 0;
+    left: 0;
+    @include check-container;
+    
+    .check {
+      @include check;
+    }
+  }
+}

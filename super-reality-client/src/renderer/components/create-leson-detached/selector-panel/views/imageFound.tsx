@@ -3,10 +3,10 @@ import "./imageFound.scss";
 import { useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
-import ButtonCheckbox from "../../button-checkbox";
 import { AppState } from "../../../../redux/stores/renderer";
 import AnchorEdit from "../../anchor-edit";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
+import ImageCheckbox from "../../image-checkbox";
 
 export interface ImageFoundTypeValue {
   type: "Image Found";
@@ -43,8 +43,8 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
     <>
       <div className="panel-subtitle">Active</div>
       {anchors.filter(filterFnCheck).map((a) => (
-        <ButtonCheckbox
-          text={a.name}
+        <ImageCheckbox
+          image={a.templates[0]}
           margin="8px auto"
           key={`image-found-button-${a._id}`}
           showDisabled={false}
@@ -55,8 +55,8 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
       ))}
       <div className="panel-subtitle">Library</div>
       {anchors.filter(filterFnUnCheck).map((a) => (
-        <ButtonCheckbox
-          text={a.name}
+        <ImageCheckbox
+          image={a.templates[0]}
           margin="8px auto"
           key={`image-found-button-${a._id}`}
           showDisabled={false}
