@@ -14,7 +14,7 @@ import { ApiError } from "../../api/types";
 import SignUp from "../../api/types/auth/signup";
 import SignIn from "../../api/types/auth/signin";
 import reduxAction from "../../redux/reduxAction";
-import client from "../../components/chat/feathers";
+import client from "../../feathers";
 
 interface AuthProps {
   onAuth: () => void;

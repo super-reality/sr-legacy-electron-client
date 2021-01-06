@@ -86,6 +86,7 @@ export default function handleIpc(): void {
     setMaximize(true);
     setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
+    // chat first requests and listeners
   });
 
   ipcRenderer.removeAllListeners("detached");

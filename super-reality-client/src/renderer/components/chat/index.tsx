@@ -8,8 +8,9 @@ import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 // import Pacman from "../../../assets/images/pacman.png";
 import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
-import client from "./feathers";
 import reduxAction from "../../redux/reduxAction";
+import Channels from "../channels";
+import client from "../../feathers";
 
 interface ChatProps {
   users: any[];
@@ -201,7 +202,7 @@ export function Chat(props: ChatProps) {
     });
   }, []);
   return (
-    <>
+    <div className="chat-with-title-container">
       <div className="title">Chat</div>
       <div className="chat-container">
         <div className="chats">
@@ -235,7 +236,7 @@ export function Chat(props: ChatProps) {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -266,7 +267,10 @@ export default function ChatApplication() {
           <Login />
         </main>
       ) : (
-        <Chat messages={messages} users={users} />
+        <div className="chat-and-channels-container">
+          <Channels />
+          <Chat messages={messages} users={users} />
+        </div>
       )}
     </div>
   );

@@ -4,6 +4,15 @@
     font-size: 16px;
 }
 
+.chat-and-channels-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.chat-with-title-container{
+    display: flex;
+    flex-direction: column;
+}
 .chat-container {
     display: flex;
     flex-direction: column;

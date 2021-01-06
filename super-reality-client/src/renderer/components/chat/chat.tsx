@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import client, { logoutChat } from "./feathers";
+import client, { logoutChat } from "../../feathers";
 import ButtonSimple from "../button-simple";
 import MembersList from "./members-list";
 import TextChat from "./text-chat";
@@ -36,10 +36,7 @@ export default function Chat(props: ChatProps) {
     reduxAction(dispatch, { type: "SET_USERS", arg: [] });
   };
   // const scrollToBottom = () => {
-  //   const chat = document.querySelector(".chat");
-  //   if (chat) {
-  //     chat.scrollTop = chat.scrollHeight - chat.clientHeight;
-  //   }
+  //
   // };
 
   // useEffect(() => {

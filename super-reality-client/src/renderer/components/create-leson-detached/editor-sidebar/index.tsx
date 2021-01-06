@@ -10,7 +10,7 @@ import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
 import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
 import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
-import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
+
 import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 // import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
 import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
@@ -28,7 +28,8 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
 import Cams from "../../cams";
-import Channels from "../../channels";
+// import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
+// import Channels from "../../channels";
 
 const sidebarIcons = [
   {
@@ -44,9 +45,9 @@ const sidebarIcons = [
     ),
   },
   {
-    title: "Microphone",
-    icon: ButtonMic,
-    component: <> Dummy Mic </>,
+    title: "Chat",
+    icon: ButtonMessages,
+    component: <ChatApplication />,
   },
   {
     title: "Gamepad",
@@ -54,29 +55,25 @@ const sidebarIcons = [
     component: <b>Dum dum</b>,
   },
   {
-    title: "Videocam",
-    icon: ButtonVideocam,
-    component: <Cams />,
-  },
-  {
     title: "Airplay",
     icon: ButtonAirplay,
     component: <Screenshare />,
   },
   {
-    title: "ButtonEye",
-    icon: ButtonEye,
-    component: <Channels />,
+    title: "Videocam",
+    icon: ButtonVideocam,
+    component: <Cams />,
   },
   {
-    title: "Chat",
-    icon: ButtonMessages,
-    component: <ChatApplication />,
+    title: "Microphone",
+    icon: ButtonMic,
+    component: <> Dummy Mic </>,
   },
 ];
 
 export default function EditorSidebar() {
   const [expanded, setExpanded] = useState(false);
+  const [isChat, setIsChat] = useState(false);
   const [current, setCurrent] = useState(0);
   const { treeCurrentType } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -84,8 +81,8 @@ export default function EditorSidebar() {
   const dispatch = useDispatch();
 
   const props = useSpring({
-    width: expanded ? "550px" : "0px",
-    minWidth: expanded ? "300px" : "0px",
+    width: expanded && isChat ? "1100px" : "0px", // "550px"
+    minWidth: expanded ? "600px" : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -157,40 +154,7 @@ export default function EditorSidebar() {
 
   return (
     <>
-      <animated.div style={props} className="sidebar-expanded">
-        <div className="sidebar-content">
-          {sidebarIcons[current]?.component}
-        </div>
-      </animated.div>
       <div className="sidebar-buttons">
-        <div className="action-buttons">
-          <div className="logged-user">
-            <ButtonRound
-              onClick={doPreview}
-              width="36px"
-              height="36px"
-              svg={DefaultUser}
-            />
-          </div>
-
-          {sidebarIcons.map((icon, index) => {
-            // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 7) return null;
-            return (
-              <ButtonRound
-                onClick={() => {
-                  setCurrent(index);
-                  if (index == current || !expanded) setExpanded(!expanded);
-                }}
-                width="32px"
-                height="32px"
-                key={icon.title}
-                svg={icon.icon}
-                title={icon.title}
-              />
-            );
-          })}
-        </div>
         <div className="communication-buttons">
           <ButtonRound
             onClick={doPreview}
@@ -232,13 +196,53 @@ export default function EditorSidebar() {
             svg={ButtonPlayNew}
           />
         </div>
+        <div className="action-buttons">
+          {sidebarIcons.map((icon, index) => {
+            // Limit the loop to the action buttons on the array
+            if (index < 2 || index > 7) return null;
+            return (
+              <ButtonRound
+                onClick={() => {
+                  setCurrent(index);
+                  if (index == current || !expanded) setExpanded(!expanded);
+                  if (index == current && icon.title == "Chat") {
+                    console.log("isChat", isChat);
+                    setIsChat(!isChat);
+                  }
+                }}
+                width="32px"
+                height="32px"
+                key={icon.title}
+                svg={icon.icon}
+                title={icon.title}
+              />
+            );
+          })}
+          <div className="logged-user">
+            <ButtonRound
+              onClick={doPreview}
+              width="36px"
+              height="36px"
+              svg={DefaultUser}
+            />
+          </div>
+        </div>
       </div>
+      <animated.div style={props} className="sidebar-expanded">
+        <div className="sidebar-content">
+          {sidebarIcons[current]?.component}
+        </div>
+      </animated.div>
     </>
   );
 }
 
 /*
-
+  {
+    title: "ButtonEye",
+    icon: ButtonEye,
+    component: <Channels />,
+  },
           <ButtonRound
             onClick={doPreview}
             width="36px"

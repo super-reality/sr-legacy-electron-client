@@ -1,13 +1,15 @@
 import io from "socket.io-client";
 import feathers from "@feathersjs/client";
 
-const socket = io("http://3.101.51.61:3040/",
-{
-  transports: ['websocket'],
+// Socket.io is exposed as the `io` global.
+const socket = io("http://3.101.51.61:3040/", {
+  transports: ["websocket"],
 });
+
+// @feathersjs/client is exposed as the `feathers` global.
 const client = feathers();
 
-client.configure(feathers.socketio(socket));
+client.configure(feathers.socketio(socket, { timeout: 10000 }));
 client.configure(
   feathers.authentication({
     storageKey: "chat-token",
