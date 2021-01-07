@@ -23,8 +23,6 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <li>Need a gaming buddy? We will find you one!</li>
         </ul>
 
-        <span>Request Category</span>
-
         <div className="custom-checkbox">
           <input type="checkbox" />
           <span className="checkmark" />

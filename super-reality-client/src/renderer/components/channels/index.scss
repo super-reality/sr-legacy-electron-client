@@ -6,7 +6,7 @@
 
 .channel {
     overflow-y: scroll;
-    height: calc(85vh - 150px)
+    height: calc(85vh - 150px);
 }
 
 .channel-container {
@@ -33,6 +33,12 @@
     color: #8a88c3;
     padding: 11px;
     margin-bottom: 7px;
+
+    .info {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .avatar {

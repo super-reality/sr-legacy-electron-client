@@ -55,15 +55,14 @@
     border-right: 1px solid #585286;
 }
 .help-steps {
-    height: 500px;
     width: 100%;
+    overflow-y: scroll;
+    position: relative;
 }
 
 .step {
     padding: 25px;
     color: #8a88c3;
-    overflow-y: scroll;
-    height: 100%;
 
     ul {
         list-style: disc;
@@ -97,6 +96,7 @@
         height: 150px;
         align-items: center;
         display: flex;
+        border-radius: 4px;
         border: 2px dashed #04aff0;
 
         label {
@@ -129,6 +129,10 @@
             background-color: #585286;
             transition: 0.4s ease-out all 0.1s;
         }
+        .identities {
+            width: 215px;
+            border-right: 1px solid #585286;
+        }
 
         .progress-button {
             display: flex;
@@ -137,7 +141,7 @@
             background: #323052;
             border-radius: 6px;
             position: relative;
-            margin-bottom: 10px;
+            margin: 0 0 10px 10px;
             padding: 11px 11px 11px 20px;
         }
 
@@ -168,7 +172,15 @@
         color: #b8d4f3;
         margin: 20px 0;
         padding: 0 15px;
+        outline: 0;
         border-radius: 4px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-repeat: no-repeat;
+        background-position-x: 95%;
+        background-position-y: 15px;
+        background-image: url("../../../assets/svg/chevron-down.svg");
     }
 }
 

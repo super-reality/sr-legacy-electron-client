@@ -42,32 +42,47 @@ export default function StepProfileSharing(
               </div>
             </div>
             <div className="progress-button">
-              Emotions
+              Engagement
               <img src={ButtonTick} alt="" />
               <div className="blue-bar">
                 <div className="pink-bar-progress" style={progressBar} />
               </div>
             </div>
             <div className="progress-button">
-              Emotions
+              Relationships
               <img src={ButtonTick} alt="" />
               <div className="blue-bar">
                 <div className="pink-bar-progress" style={progressBar} />
               </div>
             </div>
             <div className="progress-button">
-              Emotions
+              Meaning
               <img src={ButtonTick} alt="" />
               <div className="blue-bar">
                 <div className="pink-bar-progress" style={progressBar} />
               </div>
             </div>
             <div className="progress-button">
-              Emotions
+              Accomplishments
               <img src={ButtonTick} alt="" />
               <div className="blue-bar">
                 <div className="pink-bar-progress" style={progressBar} />
               </div>
+            </div>
+            <div className="progress-button">
+              Physical Health
+              <img src={ButtonTick} alt="" />
+              <div className="blue-bar">
+                <div className="pink-bar-progress" style={progressBar} />
+              </div>
+            </div>
+            <div className="single-channel">
+              <img className="avatar" src={PacMan} alt="" />
+              <div className="info">Westside</div>
+            </div>
+            <div className="single-channel">
+              <img className="avatar" src={PacMan} alt="" />
+              <div className="info">Matt</div>
             </div>
           </div>
         </div>
