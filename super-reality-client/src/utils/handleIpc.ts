@@ -81,10 +81,18 @@ export default function handleIpc(): void {
   });
 
   // message created listener
-  const onMessageCreatedListener = (newMessage: any, stateMessages: any[]) => {
+  const onMessagesUpdateListener = (newMessage: any, stateMessages: any[]) => {
     console.log("message created", newMessage, "messages", stateMessages);
     const newMessages = [...stateMessages, newMessage];
     reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  };
+
+  const onUserCreatedListener = (newUser: any, stateUsers: any[]) => {
+    const updatedUsers = stateUsers.concat(newUser);
+    reduxAction(store.dispatch, {
+      type: "SET_USERS",
+      arg: updatedUsers,
+    });
   };
   const logoutListener = () => {
     console.log("logout");
@@ -111,53 +119,9 @@ export default function handleIpc(): void {
     //     (client as any).logout();
     //     // reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
     //   });
-    // client
-    //   .service("messages")
-    //   .find()
-    //   .then((res: any) => {
-    //     console.log("test get messages res:", res);
-    //   })
-    //   .catch((err: any) => {
-    //     console.log("test get messages err:", err);
-    //   });
+
     const messagesClient = client.service("messages");
     const usersClient = client.service("users");
-    // Promise.all([
-    //   messagesClient.find({
-    //     query: {
-    //       $sort: { createdAt: -1 },
-    //       $limit: 25,
-    //     },
-    //   }),
-    //   usersClient.find(),
-    // ])
-    //   .then(([messagePage, userPage]) => {
-    //     // We want the latest messages but in the reversed order
-    //     const uploadedMessages = messagePage.data.reverse();
-    //     const uploadedUsers = userPage.data;
-    //     console.log(
-    //       "first time",
-    //       "messages",
-    //       uploadedMessages,
-    //       "users",
-    //       uploadedUsers
-    //     );
-    //     // Once both return, update the state
-    //     // reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
-    //     reduxAction(store.dispatch, {
-    //       type: "SET_MESSAGES",
-    //       arg: [...uploadedMessages],
-    //     });
-    //     reduxAction(store.dispatch, { type: "SET_USERS", arg: [...uploadedUsers] });
-    //     // Add new messages to the message list
-
-    //     client.service("messages").on("created", (message: any) => {
-    //       onMessageCreatedListener(message, messages);
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log("on authenticated", err);
-    //   });
 
     // On successfull login
     console.log("authenticated listener");
@@ -199,18 +163,49 @@ export default function handleIpc(): void {
             arg: uploadedUsers,
           });
           // chat listeners
-          const { chat } = store.getState();
-          // messages
+
+          // messages created listener clean up
+          messagesClient.off("created", onMessagesUpdateListener);
+          // add new message to the redux state
           messagesClient.on("created", (message: any) => {
-            onMessageCreatedListener(message, chat.messages);
+            const { chat } = store.getState();
+            onMessagesUpdateListener(message, chat.messages);
           });
+          // edit message listener
+          messagesClient.on("patched", (params: any) => {
+            const { chat } = store.getState();
+
+            const filteredMessages = chat.messages.filter(
+              ({ _id }) => _id != params._id
+            );
+            console.log("MESSAGE PATCHED EVENT", [...filteredMessages, params]);
+            reduxAction(store.dispatch, {
+              type: "SET_MESSAGES",
+              arg: [...filteredMessages, params],
+            });
+          });
+
+          // messages removed listener clean up
+          // messagesClient.off("removed", onMessagesUpdateListener);
+          messagesClient.on("removed", (message: any) => {
+            const { chat } = store.getState();
+            console.log("removed", message);
+            const updatedMessages = chat.messages.filter(
+              ({ _id }) => _id != message._id
+            );
+            console.log("remove message state", updatedMessages);
+            reduxAction(store.dispatch, {
+              type: "SET_MESSAGES",
+              arg: updatedMessages,
+            });
+          });
+
+          // users listener clean up
+          usersClient.off("created", onUserCreatedListener);
           // Add new users to the user list
           usersClient.on("created", (user: any) => {
-            const updatedUsers = chat.users.concat(user);
-            reduxAction(store.dispatch, {
-              type: "SET_USERS",
-              arg: updatedUsers,
-            });
+            const { chat } = store.getState();
+            onUserCreatedListener(user, chat.users);
           });
         })
         .catch((err) => {

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import moment from "moment";
 import Login from "./login-chat";
 import { AppState } from "../../redux/stores/renderer";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
@@ -52,28 +53,52 @@ export function Chat(props: ChatProps) {
     }
   };
   const messageTime = (unixTimestam: number) => {
-    const milliseconds = unixTimestam * 1000; // 1575909015000
+    // const milliseconds = unixTimestam * 1000; // 1575909015000
 
-    const dateObject = new Date(milliseconds);
+    // const dateObject = new Date(milliseconds);
+    const dateObject = moment(unixTimestam).calendar();
 
-    const humanDateFormat = dateObject.toLocaleString();
-    console.log("date converted:", humanDateFormat);
-    return humanDateFormat;
+    // const humanDateFormat = dateObject.toLocaleString();
+    console.log("date converted:", dateObject);
+
+    return dateObject;
   };
-  console.log(Chat);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef && messagesEndRef.current) {
+      const chat = messagesEndRef.current;
+      chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+    }
+  };
+
+  // delete message function
+  const removeMessage = (id: string) => {
+    (client as any).service("messages").remove(id);
+  };
+
+  // edit message
+  const getMessageText = (oldMessage: string) => {
+    setTextMessage(oldMessage);
+  };
+  const submitEditMessage = (id: string, updatedMessage: string) => {
+    (client as any).service("messages").patch(id, {
+      text: updatedMessage,
+    });
+  };
+  // scroll to the bottom of the chat when new message is added
+  // TO DO create listener
+  useEffect(scrollToBottom, [messages]);
+
   // const dispatch = useDispatch();
   // chat functions
   // const { messages, users } = useSelector((state: AppState) => state.chat);
 
-  // chat listener
-  // useEffect(() => {
-
-  // }, []);
   return (
     <div className="chat-with-title-container">
       <div className="title">Chat</div>
       <div className="chat-container">
-        <div className="chats">
+        <div className="chats" ref={messagesEndRef}>
           {messages.map((messageObject) => {
             const { _id, user, createdAt, text } = messageObject;
             return (
@@ -84,6 +109,42 @@ export function Chat(props: ChatProps) {
                   <div className="timestamp">{messageTime(createdAt)}</div>
                 </div>
                 <div className="message">{text}</div>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    removeMessage(_id);
+                  }}
+                >
+                  del
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    getMessageText(text);
+                  }}
+                >
+                  edit
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    submitEditMessage(_id, textMessage);
+                  }}
+                >
+                  edit submit
+                </button>
               </div>
             );
           })}
@@ -113,6 +174,18 @@ export default function ChatApplication() {
     (state: AppState) => state.chat
   );
 
+  // useEffect(() => {
+  //   const getChannels = async () => {
+  //     const channelResult = await client.service("channel").find({
+  //       query: {
+  //         $limit: 10,
+  //         $skip: 0,
+  //       },
+  //     });
+  //     console.log(channelResult);
+  //   };
+  //   getChannels();
+  // }, []);
   // useEffect(() => {
   //   const messagesClient = client.service("messages");
   //   const usersClient = client.service("users");

@@ -4,8 +4,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState = {
   isChatAuth: false,
   loginData: {} as Record<string, unknown>,
-  messages: [] as string[],
-  users: [] as string[],
+  messages: [] as any[],
+  users: [] as any[],
 };
 
 type ChatState = typeof initialState;
