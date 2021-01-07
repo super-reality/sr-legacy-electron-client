@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import "./imageFound.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
 import { AppState } from "../../../../redux/stores/renderer";
@@ -9,6 +9,8 @@ import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
 import AnchorCommands from "../../../anchor-commands";
 import useAnchor from "../../hooks/useAnchor";
+import ButtonSimple from "../../../button-simple";
+import reduxAction from "../../../../redux/reduxAction";
 
 export interface ImageFoundTypeValue {
   type: "Image Found";
@@ -18,6 +20,7 @@ export interface ImageFoundTypeValue {
 export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { select, data, open } = props;
+  const dispatch = useDispatch();
 
   const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -27,6 +30,13 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
     () => Object.keys(treeAnchors).map((a) => treeAnchors[a]),
     [treeAnchors]
   );
+
+  const setCreateAnchorMode = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { previewMode: "CREATE_ANCHOR" },
+    });
+  }, [dispatch]);
 
   const doUnCheck = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -43,6 +53,9 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
 
   return (
     <>
+      <ButtonSimple width="200px" height="24px" onClick={setCreateAnchorMode}>
+        Create new
+      </ButtonSimple>
       <div className="panel-subtitle">Active</div>
       {anchors.filter(filterFnCheck).map((a) => (
         <ImageCheckbox

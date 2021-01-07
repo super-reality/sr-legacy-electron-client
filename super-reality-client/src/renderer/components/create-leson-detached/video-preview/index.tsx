@@ -442,8 +442,8 @@ export default function VideoPreview(): JSX.Element {
                 itemId={itemIdName._id}
               />
             ))}
-          {previewMode == "CREATE_ANCHOR" ||
-            (previewMode == "ADDTO_ANCHOR" && <AnchorCrop />)}
+          {(previewMode == "CREATE_ANCHOR" ||
+            previewMode == "ADDTO_ANCHOR") && <AnchorCrop />}
           {previewMode == "TRIM_VIDEO" && <VideoCrop />}
         </div>
       </div>

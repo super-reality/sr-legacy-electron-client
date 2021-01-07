@@ -14,7 +14,6 @@ import setStatus from "../lesson-utils/setStatus";
 import cropImage from "../../../../utils/cropImage";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import updateStep from "../lesson-utils/updateStep";
 import useDebounce from "../../../hooks/useDebounce";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import cropVideo from "../../../../utils/cropVideo";
@@ -135,38 +134,7 @@ export default function VideoStatus() {
     saveCanvasImage(captureFileName)
       .then((image) => cropImage(image, previewEditArea))
       .then(newAnchorPre)
-      .then((a) => {
-        if (a) {
-          const slice = store.getState().createLessonV2;
-          if (
-            (slice.treeCurrentType == "step" ||
-              slice.treeCurrentType == "item") &&
-            slice.currentStep
-          ) {
-            updateStep({ anchor: a._id }, slice.currentStep).then(
-              (updatedStep) => {
-                if (updatedStep) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETSTEP",
-                    arg: { step: updatedStep },
-                  });
-                }
-              }
-            );
-          }
-          reduxAction(dispatch, {
-            type: "CREATE_LESSON_V2_DATA",
-            arg: { currentAnchor: a._id },
-          });
-          reduxAction(dispatch, {
-            type: "SET_RECORDING_DATA",
-            arg: {
-              anchor: a._id,
-            },
-          });
-        }
-        doExitPreviewModes();
-      });
+      .then(doExitPreviewModes);
   }, [previewEditArea, doExitPreviewModes, dispatch]);
 
   const doTrimVideo = useCallback(() => {
