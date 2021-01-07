@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import reduxAction from "../../../redux/reduxAction";
-import { AppState } from "../../../redux/stores/renderer";
 import updateAnchor from "../lesson-utils/updateAnchor";
 
 import ButtonSimple from "../../button-simple";
@@ -11,6 +10,7 @@ import AnchorEditSliders from "../anchor-edit-sliders";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
+import useAnchor from "../hooks/useAnchor";
 
 interface AnchorEditProps {
   anchorId: string | undefined;
@@ -20,24 +20,20 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const { anchorId } = props;
   const dispatch = useDispatch();
 
-  const { treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const anchor = useAnchor(anchorId);
 
-  const anchor = useMemo(() => {
-    return treeAnchors[anchorId || ""] || null;
-  }, [treeAnchors, anchorId]);
-
-  const [anchorName, setAnchorName] = useState(anchor.name || "New Anchor");
+  const [anchorName, setAnchorName] = useState(anchor?.name || "New Anchor");
 
   const update = useCallback(
     (data: Partial<IAnchor>) => {
-      const newData = { ...anchor, ...data };
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETANCHOR",
-        arg: { anchor: newData },
-      });
-      updateAnchor({ ...data }, anchor._id);
+      if (anchor) {
+        const newData = { ...anchor, ...data };
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETANCHOR",
+          arg: { anchor: newData },
+        });
+        updateAnchor({ ...data }, anchor._id);
+      }
     },
     [anchor, dispatch]
   );
@@ -55,10 +51,12 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
 
   const insertImage = useCallback(
     (image: string) => {
-      uploadFileToS3(image).then((url) => {
-        const imgArr = [...anchor.templates, url];
-        update({ templates: imgArr });
-      });
+      if (anchor) {
+        uploadFileToS3(image).then((url) => {
+          const imgArr = [...anchor.templates, url];
+          update({ templates: imgArr });
+        });
+      }
     },
     [anchor]
   );
@@ -91,7 +89,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     (e) => {
       setAnchorName(e.currentTarget.value);
 
-      if (e.key === "Enter") {
+      if (anchor && e.key === "Enter") {
         debouncer(() => {
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETANCHOR",

@@ -1,0 +1,19 @@
+.anchor-commands-container {
+  display: flex;
+  bottom: 0;
+  position: absolute;
+  right: 0;
+  height: 24px;
+  width: 64px;
+  justify-content: space-evenly;
+  background: var(--color-magenda);
+  align-items: center;
+
+  .button {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}

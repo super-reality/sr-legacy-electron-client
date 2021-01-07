@@ -15,12 +15,8 @@ import cropImage from "../../../../utils/cropImage";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import updateStep from "../lesson-utils/updateStep";
-import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import { itemsPath, recordingPath } from "../../../electron-constants";
-import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
-import timetoTimestamp from "../../../../utils/timeToTimestamp";
-import sha1 from "../../../../utils/sha1";
 import cropVideo from "../../../../utils/cropVideo";
 import updateItem from "../lesson-utils/updateItem";
 import { ItemVideo } from "../../../items/item";
@@ -68,9 +64,7 @@ export default function VideoStatus() {
     previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
 
-  const { cvResult } = useSelector((state: AppState) => state.render);
-
-  const anchor = useMemo(() => {
+  const anchor: IAnchor | null = useMemo(() => {
     // const slice = store.getState().createLessonV2;
     const step: IStep | null = treeSteps[currentStep || ""];
 
@@ -175,104 +169,6 @@ export default function VideoStatus() {
       });
   }, [previewEditArea, doExitPreviewModes, dispatch]);
 
-  const editCreateNewAnchor = useCallback(
-    (fileName: string) => {
-      newAnchorPre(fileName)
-        .then(
-          (a): Promise<IStep | undefined> => {
-            const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (a && step && currentStep) {
-              const newTimestamp = timetoTimestamp(videoNavigation[1]);
-              saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
-                .then((file) => uploadFileToS3(file))
-                .then((url) => {
-                  return updateStep(
-                    {
-                      anchor: a._id,
-                      recordingTimestamp: newTimestamp,
-                      snapShot: url,
-                    },
-                    currentStep
-                  ).then((updatedStep) => {
-                    if (updatedStep) {
-                      reduxAction(dispatch, {
-                        type: "CREATE_LESSON_V2_SETSTEP",
-                        arg: { step: updatedStep },
-                      });
-                    }
-                    return updatedStep;
-                  });
-                });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        .then(doExitPreviewModes)
-        .catch((e) => {
-          console.error(e);
-          doExitPreviewModes();
-        });
-    },
-    [videoNavigation, dispatch, currentStep, doExitPreviewModes]
-  );
-
-  const editAddToCurrentAnchor = useCallback(
-    (fileName: string) => {
-      uploadFileToS3(fileName)
-        .then(
-          (newUrl): Promise<IAnchor | undefined> => {
-            const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (currentStep && step && step.anchor) {
-              const a: IAnchor | null = slice.treeAnchors[step.anchor];
-              return updateAnchor(
-                { templates: [...a.templates, newUrl] },
-                step.anchor
-              ).then((updatedAnchor) => {
-                if (updatedAnchor) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETANCHOR",
-                    arg: { anchor: updatedAnchor },
-                  });
-                }
-                return updatedAnchor;
-              });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        .then(doExitPreviewModes)
-        .catch((e) => {
-          console.error(e);
-          doExitPreviewModes();
-        });
-    },
-    [currentStep, doExitPreviewModes]
-  );
-
-  const doFinishEditAnchor = useCallback(() => {
-    saveCanvasImage(captureFileName)
-      .then((image) => cropImage(image, previewEditArea))
-      .then((file) => {
-        if (previewMode == "CREATE_ANCHOR") {
-          setStatus("Creating new anchor");
-          editCreateNewAnchor(file);
-          if (currentStep) {
-            editStepItemsRelativePosition(
-              currentStep,
-              previewEditArea,
-              cvResult
-            );
-          }
-        }
-        if (previewMode == "ADDTO_ANCHOR") {
-          setStatus("Adding to anchor");
-          editAddToCurrentAnchor(file);
-        }
-      });
-  }, [previewMode, previewEditArea, currentStep, cvResult]);
-
   const doTrimVideo = useCallback(() => {
     const slice = store.getState().createLessonV2;
     const { currentRecording, currentItem } = slice;
@@ -347,26 +243,7 @@ export default function VideoStatus() {
             Save anchor
           </ButtonSimple>
         )}
-        {previewMode == "ADDTO_ANCHOR" && (
-          <>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto auto"
-              onClick={doFinishEditAnchor}
-            >
-              Done
-            </ButtonSimple>
 
-            <ButtonSimple
-              width="100px"
-              height="16px"
-              onClick={doExitPreviewModes}
-            >
-              Cancel
-            </ButtonSimple>
-          </>
-        )}
         <div
           style={{ fontFamily: "monospace", marginLeft: "auto" }}
         >{`${canvasSourceDesc} / ${status}`}</div>
