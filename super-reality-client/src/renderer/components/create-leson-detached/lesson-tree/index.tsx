@@ -26,7 +26,7 @@ import getItem from "../lesson-utils/getItem";
 import getAnchor from "../lesson-utils/getAnchor";
 import getItemIcon from "../../../items/getItemIcon";
 import idNamePos from "../../../../utils/idNamePos";
-import addKeyListener from "../../../../utils/addKeyListener";
+import { addKeyDownListener } from "../../../../utils/globalKeyListeners";
 
 const STATE_ERR = -1;
 const STATE_IDLE = 0;
@@ -221,20 +221,20 @@ function TreeFolder(props: TreeFolderProps) {
 
   const regenKeyListeners = useCallback(() => {
     if (!selected) return;
-    addKeyListener("Delete", () => {
+    addKeyDownListener("Delete", () => {
       onDelete(type, id, parentId);
     });
 
-    addKeyListener("ArrowLeft", () => {
+    addKeyDownListener("ArrowLeft", () => {
       if (open) setOpen(false);
     });
 
-    addKeyListener("ArrowRight", () => {
+    addKeyDownListener("ArrowRight", () => {
       if (!open) setOpen(true);
     });
 
-    addKeyListener("ArrowUp", keyUpDown);
-    addKeyListener("ArrowDown", keyUpDown);
+    addKeyDownListener("ArrowUp", keyUpDown);
+    addKeyDownListener("ArrowDown", keyUpDown);
   }, [id, keyUpDown]);
 
   useEffect(() => {
@@ -464,11 +464,11 @@ function TreeItem(props: TreeItemProps) {
   );
 
   const regenKeyListeners = useCallback(() => {
-    addKeyListener("Delete", () => {
+    addKeyDownListener("Delete", () => {
       onDelete("item", id, parentId);
     });
-    addKeyListener("ArrowUp", keyUpDown);
-    addKeyListener("ArrowDown", keyUpDown);
+    addKeyDownListener("ArrowUp", keyUpDown);
+    addKeyDownListener("ArrowDown", keyUpDown);
   }, []);
 
   useEffect(() => {

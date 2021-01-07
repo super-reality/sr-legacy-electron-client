@@ -14,7 +14,8 @@ const globalData = {
   prevBounds: { x: 0, y: 0, width: 0, height: 0 } as Rectangle,
   audioCutoffTime: 0,
   titleUrlDictionary: {} as Record<string, string>,
-  documentKeyListeners: {} as Record<string, (e: KeyboardEvent) => void>,
+  documentKeyDownListeners: {} as Record<string, (e: KeyboardEvent) => void>,
+  documentKeyUpListeners: {} as Record<string, (e: KeyboardEvent) => void>,
 };
 
 export default globalData;

@@ -23,6 +23,10 @@ import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import { PreviewModes } from "../../../redux/slices/createLessonSliceV2";
 import usePopup from "../../../hooks/usePopup";
+import {
+  addKeyDownListener,
+  deleteKeyDownListener,
+} from "../../../../utils/globalKeyListeners";
 
 const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
@@ -330,6 +334,14 @@ export default function VideoPreview(): JSX.Element {
     },
     [closeEditAnchorOptions, dispatch]
   );
+
+  useEffect(() => {
+    addKeyDownListener("Space", () => {
+      //
+    });
+
+    return () => deleteKeyDownListener("Space");
+  }, []);
 
   return (
     <>
