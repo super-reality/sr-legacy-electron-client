@@ -13,14 +13,10 @@ import saveCanvasImage from "../../../utils/saveCanvasImage";
 import cropImage from "../../../utils/cropImage";
 import setStatus from "../create-leson-detached/lesson-utils/setStatus";
 import { IAnchor } from "../../api/types/anchor/anchor";
-import { IStep } from "../../api/types/step/step";
 import uploadFileToS3 from "../../../utils/api/uploadFileToS3";
 import newAnchor from "../create-leson-detached/lesson-utils/newAnchor";
-import timetoTimestamp from "../../../utils/timeToTimestamp";
-import updateStep from "../create-leson-detached/lesson-utils/updateStep";
-import { itemsPath } from "../../electron-constants";
-import editStepItemsRelativePosition from "../create-leson-detached/lesson-utils/editStepItemsRelativePosition";
-import sha1 from "../../../utils/sha1";
+
+// import editStepItemsRelativePosition from "../create-leson-detached/lesson-utils/editStepItemsRelativePosition";
 
 interface AnchorCommandsProps {
   anchorId: string;
@@ -53,12 +49,9 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { anchorId, template } = props;
   const { cvResult } = useSelector((state: AppState) => state.render);
-  const {
-    previewMode,
-    currentStep,
-    videoNavigation,
-    previewEditArea,
-  } = useSelector((state: AppState) => state.createLessonV2);
+  const { previewMode, videoNavigation, previewEditArea } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const dispatch = useDispatch();
 
   const userData = userDataPath();
@@ -82,23 +75,19 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
         .then(
           (newUrl): Promise<IAnchor | undefined> => {
             const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (currentStep && step && step.anchor) {
-              const a: IAnchor | null = slice.treeAnchors[step.anchor];
-              return updateAnchor(
-                { templates: [...a.templates, newUrl] },
-                step.anchor
-              ).then((updatedAnchor) => {
-                if (updatedAnchor) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETANCHOR",
-                    arg: { anchor: updatedAnchor },
-                  });
-                }
-                return updatedAnchor;
-              });
-            }
-            return new Promise((r) => r(undefined));
+            const a: IAnchor | null = slice.treeAnchors[anchorId];
+            return updateAnchor(
+              { templates: [...a.templates, newUrl] },
+              anchorId
+            ).then((updatedAnchor) => {
+              if (updatedAnchor) {
+                reduxAction(dispatch, {
+                  type: "CREATE_LESSON_V2_SETANCHOR",
+                  arg: { anchor: updatedAnchor },
+                });
+              }
+              return updatedAnchor;
+            });
           }
         )
         .then(() => setPreviewMode("IDLE"))
@@ -107,17 +96,16 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
           setPreviewMode("IDLE");
         });
     },
-    [currentStep, setPreviewMode]
+    [anchorId, setPreviewMode]
   );
 
   const editCreateNewAnchor = useCallback(
     (fileName: string) => {
       newAnchorPre(fileName)
+        /*
         .then(
           (a): Promise<IStep | undefined> => {
-            const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (a && step && currentStep) {
+            if (a) {
               const newTimestamp = timetoTimestamp(videoNavigation[1]);
               saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
                 .then((file) => uploadFileToS3(file))
@@ -143,13 +131,14 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
             return new Promise((r) => r(undefined));
           }
         )
+        */
         .then(() => setPreviewMode("IDLE"))
         .catch((e) => {
           console.error(e);
           setPreviewMode("IDLE");
         });
     },
-    [videoNavigation, dispatch, currentStep, setPreviewMode]
+    [videoNavigation, dispatch, setPreviewMode]
   );
 
   const doFinishEditAnchor = useCallback(() => {
@@ -159,13 +148,6 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
         if (previewMode == "CREATE_ANCHOR") {
           setStatus("Creating new anchor");
           editCreateNewAnchor(file);
-          if (currentStep) {
-            editStepItemsRelativePosition(
-              currentStep,
-              previewEditArea,
-              cvResult
-            );
-          }
         }
         if (previewMode == "EDIT_ANCHOR") {
           setStatus("Editing anchor");
@@ -176,7 +158,7 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
           editAddToCurrentAnchor(file);
         }
       });
-  }, [previewMode, previewEditArea, currentStep, cvResult]);
+  }, [previewMode, previewEditArea, cvResult]);
 
   const _doEditTemplate = useCallback(() => {
     //
@@ -197,13 +179,13 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
 
   const doRemoveTemplate = useCallback(() => {
     if (!anchor) return;
-    const templates = [...anchor.templates].splice(template, 1);
-    if (templates.length == 1) {
+    if (anchor.templates.length == 1) {
       reduxAction(dispatch, {
         type: "CREATE_LESSON_V2_DELETEANCHOR",
         arg: { anchorId },
       });
     } else {
+      const templates = [...anchor.templates].splice(template, 1);
       updateAnchor({ templates }, anchorId).then((udpated) => {
         if (udpated) {
           reduxAction(dispatch, {
