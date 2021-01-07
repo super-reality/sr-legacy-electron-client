@@ -79,8 +79,6 @@ export default function App(): JSX.Element {
     return <></>;
   }
 
-  // DO NOT REPLACE THIS LISTENER
-  // bad things will happen
   document.onkeydown = globalKeyListener;
 
   return (
