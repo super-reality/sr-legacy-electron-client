@@ -116,9 +116,8 @@ export function ImageFoundView(
         />
       </ContainerWithCheck>
       <div className="anchor-templates-carousel">
-        <div className="left-arrow" onClick={prevTemplate}>
-          {"<"}
-        </div>
+        <div className="left-arrow" onClick={prevTemplate} />
+
         {anchor.templates.map((t, i) => {
           return (
             <div
@@ -129,9 +128,7 @@ export function ImageFoundView(
             />
           );
         })}
-        <div className="right-arrow" onClick={nextTemplate}>
-          {">"}
-        </div>
+        <div className="right-arrow" onClick={nextTemplate} />
       </div>
       <AnchorEdit key={`anchor-edit-${id}`} anchorId={id} />
     </>

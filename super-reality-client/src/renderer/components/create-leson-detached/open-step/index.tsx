@@ -4,6 +4,12 @@ import { useDispatch } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 
+import { ReactComponent as IconInfo } from "../../../../assets/svg/information.svg";
+import { ReactComponent as IconStartStep } from "../../../../assets/svg/start-step.svg";
+import { ReactComponent as IconCanvas } from "../../../../assets/svg/canvas.svg";
+import { ReactComponent as IconAchievements } from "../../../../assets/svg/skill-achievement.svg";
+import { ReactComponent as IconAlerts } from "../../../../assets/svg/alerts.svg";
+
 export default function OpenStep() {
   const dispatch = useDispatch();
 
@@ -17,51 +23,36 @@ export default function OpenStep() {
     [dispatch]
   );
 
+  const style = {
+    padding: "0px 15px",
+    background: "#2e2a48",
+    margin: "3.5px 0",
+    width: "90%",
+    height: "40px",
+    justifyContent: "left",
+    color: "#8A88C3",
+  };
+
   return (
     <>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-information")}
-      >
+      <ButtonSimple style={style} onClick={() => openPanel("step-information")}>
+        <IconInfo />
         Information
       </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("start-step")}
-      >
+      <ButtonSimple style={style} onClick={() => openPanel("start-step")}>
+        <IconStartStep />
         Start Step
       </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-canvas")}
-      >
+      <ButtonSimple style={style} onClick={() => openPanel("step-canvas")}>
+        <IconCanvas />
         Canvas
       </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-skills")}
-      >
+      <ButtonSimple style={style} onClick={() => openPanel("step-skills")}>
+        <IconAchievements />
         Skills and achievements
       </ButtonSimple>
-      <ButtonSimple
-        margin="4px auto"
-        style={{ padding: 0 }}
-        width="270px"
-        height="40px"
-        onClick={() => openPanel("step-alerts")}
-      >
+      <ButtonSimple style={style} onClick={() => openPanel("step-alerts")}>
+        <IconAlerts />
         Alerts
       </ButtonSimple>
     </>

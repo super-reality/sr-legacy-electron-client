@@ -1,4 +1,4 @@
-@import './misc.scss';
+@import "./misc.scss";
 
 .icon-button {
   opacity: 0.8;
@@ -15,14 +15,14 @@
   margin: auto 8px auto 2px;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.25);
-  background-color: rgba(0,0,0,0.25);
+  background-color: rgba(0, 0, 0, 0.25);
   background-size: cover;
   background-position: center;
 }
 
 .button-round {
   cursor: pointer;
-  background-color: #1B1F33;
+  background-color: #1b1f33;
   border-radius: 3px;
   display: flex;
   @include animated;
@@ -34,7 +34,7 @@
 }
 
 .button-simple {
-  font-family: 'Segoe UI';
+  font-family: "Segoe UI";
   cursor: pointer;
   font-size: 14px;
   display: flex;
@@ -84,7 +84,8 @@
   width: 32px;
   height: 32px;
   position: absolute;
-  background: var(--color-background);
+  background: #2e2a48;
+  border-radius: 0px 6px;
   display: flex;
   align-self: flex-end;
   cursor: pointer;
@@ -100,7 +101,11 @@
   background-color: var(--color-background-hover);
 
   &.checked {
-    background-color: var(--color-pink);
+    background-image: url("../../assets/svg/pink-checked.svg");
+    background-color: transparent;
+    width: 25px;
+    height: 20px;
+    background-repeat: no-repeat;
   }
 
   &:hover {

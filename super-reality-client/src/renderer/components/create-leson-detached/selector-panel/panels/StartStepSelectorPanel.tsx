@@ -6,6 +6,8 @@ import updateStep from "../../lesson-utils/updateStep";
 import "../index.scss";
 import TypeIdSelectorPanel from "../TypeIdSelectorPanel";
 
+// import IconStarStep from "../../../../../assets/svg/start-step.svg";
+
 interface CanvasSelectorPanelProps {
   stepId: string;
 }
