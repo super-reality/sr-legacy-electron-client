@@ -16,6 +16,7 @@ export type VideoSources = "url" | "file" | "recording" | undefined;
 
 export type PreviewModes =
   | "CREATE_ANCHOR"
+  | "EDIT_ANCHOR"
   | "ADDTO_ANCHOR"
   | "TRIM_VIDEO"
   | "IDLE";
@@ -351,6 +352,17 @@ const createLessonSlice = createSlice({
         [anchor._id]: anchor,
       };
     },
+    deleteAnchor: (
+      state: InitialState,
+      action: PayloadAction<{ anchorId: string }>
+    ): void => {
+      const { anchorId } = action.payload;
+
+      const newTree = { ...state.treeAnchors };
+      delete newTree[anchorId];
+
+      state.treeAnchors = newTree;
+    },
     setOpenTree: (
       state: InitialState,
       action: PayloadAction<{ type: TreeTypes; uniqueId: string; id: string }>
@@ -384,6 +396,7 @@ export const {
   setItem,
   setTempItem,
   setAnchor,
+  deleteAnchor,
   setOpenTree,
   selectEvent,
   doTriggerCvMatch,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
@@ -12,6 +12,7 @@ import getArrrayAverage from "../../../../utils/getArrayAverage";
 import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
 import AnchorBox from "../../../items/boxes/anchor-box";
+import useAnchor from "../hooks/useAnchor";
 
 interface AnchorTesterProps {
   onFinish: () => void;
@@ -20,7 +21,7 @@ interface AnchorTesterProps {
 export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   const { onFinish } = props;
   const dispatch = useDispatch();
-  const { currentAnchor, treeAnchors } = useSelector(
+  const { currentAnchor } = useSelector(
     (state: AppState) => state.createLessonV2
   );
 
@@ -35,9 +36,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
     height: number;
   }>();
 
-  const anchor = useMemo(() => {
-    return treeAnchors[currentAnchor || ""] || null;
-  }, [treeAnchors, currentAnchor]);
+  const anchor = useAnchor(currentAnchor);
 
   useEffect(() => {
     console.log("cvResult", cvResult);
@@ -57,18 +56,20 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      ipcSend({
-        method: "cv",
-        arg: {
-          ...anchor,
-          anchorId: anchor._id,
-          cvMatchValue: 0,
-          cvTemplates: anchor.templates,
-          cvTo: "renderer",
-        },
-        to: "background",
-      });
-    }, anchor.cvDelay);
+      if (anchor) {
+        ipcSend({
+          method: "cv",
+          arg: {
+            ...anchor,
+            anchorId: anchor._id,
+            cvMatchValue: 0,
+            cvTemplates: anchor.templates,
+            cvTo: "renderer",
+          },
+          to: "background",
+        });
+      }
+    }, anchor?.cvDelay);
 
     return () => clearInterval(interval);
   }, [anchor]);
@@ -77,12 +78,14 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
 
   const debounceUpdate = useCallback(
     (data: Partial<IAnchor>) => {
-      const newData = { ...anchor, ...data };
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_SETANCHOR",
-        arg: { anchor: newData },
-      });
-      debouncer(() => updateAnchor(newData, anchor._id));
+      if (anchor) {
+        const newData = { ...anchor, ...data };
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETANCHOR",
+          arg: { anchor: newData },
+        });
+        debouncer(() => updateAnchor(newData, anchor._id));
+      }
     },
     [anchor, dispatch, debouncer]
   );
@@ -99,7 +102,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
               style={{
                 marginLeft: "4px",
                 color: `var(--color-${
-                  anchor.cvMatchValue > threshold ? "red" : "green"
+                  anchor && anchor.cvMatchValue > threshold ? "red" : "green"
                 })`,
               }}
             >
@@ -111,7 +114,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
                 fontSize: "16px",
                 margin: "auto 0px auto 8px",
                 color: `var(--color-${
-                  anchor.cvMatchValue > threshold ? "red" : "green"
+                  anchor && anchor.cvMatchValue > threshold ? "red" : "green"
                 })`,
               }}
             >
@@ -127,7 +130,9 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
               padding: "8px",
             }}
           >
-            <AnchorEditSliders anchor={anchor} update={debounceUpdate} />
+            {anchor && (
+              <AnchorEditSliders anchor={anchor} update={debounceUpdate} />
+            )}
           </Flex>
         </div>
       </Windowlet>

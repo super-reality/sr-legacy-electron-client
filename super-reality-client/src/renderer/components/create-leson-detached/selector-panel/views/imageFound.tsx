@@ -1,12 +1,16 @@
 import React, { useCallback, useMemo, useState } from "react";
 import "./imageFound.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
 import { AppState } from "../../../../redux/stores/renderer";
 import AnchorEdit from "../../anchor-edit";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
+import AnchorCommands from "../../../anchor-commands";
+import useAnchor from "../../hooks/useAnchor";
+import ButtonSimple from "../../../button-simple";
+import reduxAction from "../../../../redux/reduxAction";
 
 export interface ImageFoundTypeValue {
   type: "Image Found";
@@ -16,6 +20,7 @@ export interface ImageFoundTypeValue {
 export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { select, data, open } = props;
+  const dispatch = useDispatch();
 
   const { treeAnchors } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -25,6 +30,13 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
     () => Object.keys(treeAnchors).map((a) => treeAnchors[a]),
     [treeAnchors]
   );
+
+  const setCreateAnchorMode = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: { previewMode: "CREATE_ANCHOR" },
+    });
+  }, [dispatch]);
 
   const doUnCheck = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -41,6 +53,9 @@ export function ImageFoundList(props: BasePanelViewProps<ImageFoundTypeValue>) {
 
   return (
     <>
+      <ButtonSimple width="200px" height="24px" onClick={setCreateAnchorMode}>
+        Create new
+      </ButtonSimple>
       <div className="panel-subtitle">Active</div>
       {anchors.filter(filterFnCheck).map((a) => (
         <ImageCheckbox
@@ -77,13 +92,7 @@ export function ImageFoundView(
   const [currentTemplate, setCurrentTemplate] = useState(0);
   const { id, data, select } = props;
 
-  const { treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  const anchor = useMemo(() => {
-    return treeAnchors[id || ""] || null;
-  }, [treeAnchors, id]);
+  const anchor = useAnchor(id);
 
   const doCheckToggle = useCallback(
     (val: boolean) => select("Image Found", val ? id : null),
@@ -92,11 +101,11 @@ export function ImageFoundView(
 
   const prevTemplate = useCallback(() => {
     if (currentTemplate > 0) setCurrentTemplate(currentTemplate - 1);
-    else setCurrentTemplate(anchor.templates.length - 1);
+    else if (anchor) setCurrentTemplate(anchor.templates.length - 1);
   }, [currentTemplate, anchor]);
 
   const nextTemplate = useCallback(() => {
-    if (currentTemplate < anchor.templates.length)
+    if (anchor && currentTemplate < anchor.templates.length)
       setCurrentTemplate(currentTemplate + 1);
     else setCurrentTemplate(0);
   }, [currentTemplate, anchor]);
@@ -111,14 +120,18 @@ export function ImageFoundView(
         <div
           className="anchor-image-preview"
           style={{
-            backgroundImage: `url(${anchor.templates[currentTemplate]})`,
+            backgroundImage: `url(${anchor?.templates[currentTemplate]})`,
           }}
+        />
+        <AnchorCommands
+          key={`anchor-commands-${id}`}
+          template={currentTemplate}
+          anchorId={id}
         />
       </ContainerWithCheck>
       <div className="anchor-templates-carousel">
         <div className="left-arrow" onClick={prevTemplate} />
-
-        {anchor.templates.map((t, i) => {
+        {anchor?.templates.map((t, i) => {
           return (
             <div
               key={`carousel-image-${t}`}
