@@ -76,6 +76,7 @@ export const actions = {
   SET_MESSAGES: chatSlice.setMessages,
   SET_USERS: chatSlice.setUsers,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
+  UPDATE_MESSAGE: chatSlice.updateMessages,
 };
 
 export type ActionKeys = keyof typeof actions;

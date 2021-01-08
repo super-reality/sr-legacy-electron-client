@@ -173,15 +173,15 @@ export default function handleIpc(): void {
           });
           // edit message listener
           messagesClient.on("patched", (params: any) => {
-            const { chat } = store.getState();
+            // const { chat } = store.getState();
 
-            const filteredMessages = chat.messages.filter(
-              ({ _id }) => _id != params._id
-            );
-            console.log("MESSAGE PATCHED EVENT", [...filteredMessages, params]);
+            // const filteredMessages = chat.messages.filter(
+            //   ({ _id }) => _id != params._id
+            // );
+            console.log("MESSAGE PATCHED EVENT", params);
             reduxAction(store.dispatch, {
-              type: "SET_MESSAGES",
-              arg: [...filteredMessages, params],
+              type: "UPDATE_MESSAGE",
+              arg: params,
             });
           });
 
