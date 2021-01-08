@@ -549,7 +549,7 @@ function TreeItem(props: TreeItemProps) {
 export default function LessonTree() {
   const { lessons } = useSelector((state: AppState) => state.createLessonV2);
   return (
-    <Flex column style={{ overflow: "auto" }}>
+    <Flex column>
       {lessons.map((d, idx) => (
         <TreeFolder
           siblings={lessons}

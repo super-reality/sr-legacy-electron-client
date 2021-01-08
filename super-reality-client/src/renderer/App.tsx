@@ -14,9 +14,16 @@ import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import CreateLessonDetached from "./components/create-leson-detached";
-import { MODE_HOME, MODE_LESSON_CREATOR } from "./redux/slices/renderSlice";
+import {
+  MODE_HOME,
+  MODE_LESSON_CREATOR,
+  MODE_RECORDER,
+} from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
+import Recorder from "./components/recorder";
+import setFocusable from "../utils/electron/setFocusable";
+import setTopMost from "../utils/electron/setTopMost";
 
 import Test from "./views/test";
 
@@ -50,6 +57,18 @@ export default function App(): JSX.Element {
     }
   }, [yScrollMoveTo]);
 
+  useEffect(() => {
+    // Add as more modes are transparent
+    const isTopMost = appMode == MODE_RECORDER;
+    if (isTopMost) {
+      setFocusable(false);
+      setTopMost(true);
+    } else {
+      setFocusable(true);
+      setTopMost(false);
+    }
+  }, [appMode]);
+
   if (detached) {
     return <DetachController />;
   }
@@ -62,6 +81,7 @@ export default function App(): JSX.Element {
 
   return (
     <ErrorBoundary>
+      {appMode == MODE_RECORDER && <Recorder />}
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
       {appMode == MODE_HOME && (
         <Windowlet
