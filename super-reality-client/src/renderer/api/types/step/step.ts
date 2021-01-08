@@ -1,28 +1,28 @@
 import { IDName } from "..";
 import { TypeValue } from "../../../../types/utils";
 
-type CanvasTypes = "url" | "recording" | "image";
+type CanvasTypes = "Url" | "Recording" | "Image";
 
-interface BaseCanvasTypeValue {
+interface BaseCanvasTypeValue extends TypeValue {
   type: CanvasTypes;
 }
 
 export interface UrlCanvasTypeValue extends BaseCanvasTypeValue {
-  type: "url";
+  type: "Url";
   value: string;
 }
 
 export interface RecordingCanvasTypeValue extends BaseCanvasTypeValue {
-  type: "recording";
+  type: "Recording";
   value: {
     recording: string;
     timestamp: string;
-    url: string;
+    url?: string;
   };
 }
 
 export interface ImageCanvasTypeValue extends BaseCanvasTypeValue {
-  type: "image";
+  type: "Image";
   value: {
     filename: string;
     url: string;

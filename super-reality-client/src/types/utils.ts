@@ -26,7 +26,7 @@ export type Rectangle = {
 
 export interface TypeValue {
   type: string;
-  value: any;
+  value: unknown;
 }
 
 export interface TypedTypeValue<T> {

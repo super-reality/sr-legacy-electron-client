@@ -230,7 +230,7 @@ export default function VideoPreview(): JSX.Element {
       ] || [0, 0, 0];
 
       const canvasObj = st.canvas[0];
-      if (canvasObj.type == "image") {
+      if (canvasObj.type == "Image") {
         setCanvasSource("url", canvasObj.value.url);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
@@ -239,8 +239,10 @@ export default function VideoPreview(): JSX.Element {
           },
         });
       }
-      if (canvasObj.type == "recording") {
+      if (canvasObj.type == "Recording") {
+        console.log(canvasObj.value.timestamp);
         nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
+        console.log(nav[1]);
         setCanvasSource("recording", canvasObj.value.recording);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
@@ -250,7 +252,7 @@ export default function VideoPreview(): JSX.Element {
           },
         });
       }
-      if (canvasObj.type == "url") {
+      if (canvasObj.type == "Url") {
         setCanvasSource("url", canvasObj.value);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",

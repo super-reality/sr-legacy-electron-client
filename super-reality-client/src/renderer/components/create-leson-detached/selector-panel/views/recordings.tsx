@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import fs from "fs";
 import { BasePanelViewProps } from "../viewTypes";
 import {
@@ -10,16 +16,14 @@ import ContainerWithCheck from "../../../container-with-check";
 import ButtonCheckbox from "../../button-checkbox";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";
+import { RecordingCanvasTypeValue } from "../../../../api/types/step/step";
+import timetoTimestamp from "../../../../../utils/timeToTimestamp";
+import timestampToTime from "../../../../../utils/timestampToTime";
+import useDebounce from "../../../../hooks/useDebounce";
 
-export interface RecordingTypeValue {
-  type: "Recording";
-  value: {
-    recording: string;
-    time: number;
-  };
-}
-
-export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
+export function RecordingsList(
+  props: BasePanelViewProps<RecordingCanvasTypeValue>
+) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { select, data, open } = props;
 
@@ -79,7 +83,7 @@ export function RecordingsList(props: BasePanelViewProps<RecordingTypeValue>) {
 }
 
 export function RecordingsView(
-  props: BasePanelViewProps<RecordingTypeValue> & {
+  props: BasePanelViewProps<RecordingCanvasTypeValue> & {
     id: string;
   }
 ) {
@@ -87,12 +91,25 @@ export function RecordingsView(
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
+  const defaultTime = useMemo(
+    () =>
+      data[0]?.value.recording == id
+        ? timestampToTime(data[0]?.value.timestamp || "00:00:00") / 1000
+        : 0,
+    [data, id]
+  );
+
   const doCheckToggle = useCallback(
     (val: boolean) =>
       select(
         "Recording",
         val
-          ? { recording: id, time: videoRef?.current?.currentTime || 0 }
+          ? {
+              recording: id,
+              timestamp: timetoTimestamp(
+                (videoRef?.current?.currentTime || 0) * 1000
+              ),
+            }
           : null
       ),
     [videoRef, id, select]
@@ -105,18 +122,31 @@ export function RecordingsView(
     });
   }, [id]);
 
+  const debouncer = useDebounce(500);
+
   const scrubVideo = useCallback(
     (n: readonly number[]) => {
-      if (videoRef.current) {
-        videoRef.current.currentTime = n[0] / 1000;
-      }
+      debouncer(() => {
+        if (videoRef.current) {
+          videoRef.current.currentTime = n[0] / 1000;
+        }
+        select("Recording", {
+          recording: id,
+          timestamp: timetoTimestamp(
+            (videoRef?.current?.currentTime || 0) * 1000
+          ),
+        });
+      });
     },
-    [videoRef.current]
+    [debouncer, select, videoRef.current]
   );
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = () => {
+        setTimeout(() => {
+          if (videoRef.current) videoRef.current.currentTime = defaultTime;
+        }, 200);
         setDuration((videoRef.current?.duration || 0) * 1000);
         reduxAction(store.dispatch, {
           type: "CREATE_LESSON_V2_DATA",
@@ -142,7 +172,7 @@ export function RecordingsView(
       <BaseSlider
         domain={[0, duration]}
         step={100}
-        defaultValues={[videoRef.current?.currentTime || 0]}
+        defaultValues={[defaultTime * 1000]}
         callback={scrubVideo}
         slideCallback={scrubVideo}
       />

@@ -62,7 +62,7 @@ export default async function generateSteps(
             anchor: recordingData.anchor,
             canvas: [
               {
-                type: "recording",
+                type: "Recording",
                 value: {
                   recording: currentRecording || "",
                   timestamp: steps[stepName].time_stamp,
