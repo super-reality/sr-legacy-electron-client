@@ -24,6 +24,10 @@ import minimizeWindow from "../utils/electron/minimizeWindow";
 import Recorder from "./components/recorder";
 import setFocusable from "../utils/electron/setFocusable";
 import setTopMost from "../utils/electron/setTopMost";
+import {
+  globalKeyDownListener,
+  globalKeyUpListener,
+} from "../utils/globalKeyListeners";
 
 import Test from "./views/test";
 
@@ -78,6 +82,9 @@ export default function App(): JSX.Element {
   if (!ready) {
     return <></>;
   }
+
+  document.onkeydown = globalKeyDownListener;
+  document.onkeyup = globalKeyUpListener;
 
   return (
     <ErrorBoundary>

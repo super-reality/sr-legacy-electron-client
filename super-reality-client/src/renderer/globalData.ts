@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import React from "react";
 import { ILessonGet } from "./api/types/lesson/get";
 import { ISubjectGet } from "./api/types/subject/get";
 import { ICollectionGet } from "./api/types/collection/get";
@@ -12,6 +14,8 @@ const globalData = {
   prevBounds: { x: 0, y: 0, width: 0, height: 0 } as Rectangle,
   audioCutoffTime: 0,
   titleUrlDictionary: {} as Record<string, string>,
+  documentKeyDownListeners: {} as Record<string, (e: KeyboardEvent) => void>,
+  documentKeyUpListeners: {} as Record<string, (e: KeyboardEvent) => void>,
 };
 
 export default globalData;
