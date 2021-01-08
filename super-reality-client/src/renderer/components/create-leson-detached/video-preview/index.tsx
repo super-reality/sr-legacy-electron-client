@@ -8,7 +8,7 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
-import CVEditor from "../recorder/CVEditor";
+import CVEditor from "../../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
@@ -23,6 +23,12 @@ import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import { PreviewModes } from "../../../redux/slices/createLessonSliceV2";
 import usePopup from "../../../hooks/usePopup";
+import {
+  addKeyDownListener,
+  addKeyUpListener,
+  deleteKeyDownListener,
+  deleteKeyUpListener,
+} from "../../../../utils/globalKeyListeners";
 
 const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
@@ -31,7 +37,6 @@ export default function VideoPreview(): JSX.Element {
   const {
     videoNavigation,
     currentRecording,
-    currentAnchor,
     currentStep,
     currentItem,
     treeItems,
@@ -257,9 +262,9 @@ export default function VideoPreview(): JSX.Element {
   }, [videoNavigation]);
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerOutRef.current) {
       const newPos = { ...videoPos };
-      interact(containerRef.current)
+      interact(containerOutRef.current)
         .draggable({
           cursorChecker,
         })
@@ -275,11 +280,11 @@ export default function VideoPreview(): JSX.Element {
         });
 
       return (): void => {
-        if (containerRef.current) interact(containerRef.current).unset();
+        if (containerOutRef.current) interact(containerOutRef.current).unset();
       };
     }
     return voidFunction;
-  }, [containerRef, videoScale, videoPos]);
+  }, [containerOutRef, containerRef, videoScale, videoPos]);
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
@@ -331,6 +336,25 @@ export default function VideoPreview(): JSX.Element {
     },
     [closeEditAnchorOptions, dispatch]
   );
+
+  useEffect(() => {
+    addKeyDownListener(" ", () => {
+      if (fuildsOutRef.current) {
+        fuildsOutRef.current.style.pointerEvents = "none";
+      }
+    });
+
+    addKeyUpListener(" ", () => {
+      if (fuildsOutRef.current) {
+        fuildsOutRef.current.style.pointerEvents = "all";
+      }
+    });
+
+    return () => {
+      deleteKeyDownListener(" ");
+      deleteKeyUpListener(" ");
+    };
+  }, []);
 
   return (
     <>
@@ -443,10 +467,8 @@ export default function VideoPreview(): JSX.Element {
                 itemId={itemIdName._id}
               />
             ))}
-          {previewMode == "ADDTO_ANCHOR" &&
-            !item &&
-            (currentRecording || currentAnchor) && <AnchorBox pos={cvResult} />}
-          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
+          {(previewMode == "CREATE_ANCHOR" ||
+            previewMode == "ADDTO_ANCHOR") && <AnchorCrop />}
           {previewMode == "TRIM_VIDEO" && <VideoCrop />}
         </div>
       </div>

@@ -15,7 +15,7 @@
   transform: translate(0%, -50%);
   border-radius: 4px;
   pointer-events: none;
-  background-color: var(--color-background-hover);
+  background-color: #585286;
 }
 
 .handle {
@@ -26,11 +26,7 @@
   height: 20px;
   border-radius: 12px;
   cursor: pointer;
-  background-color: #bdbdbd;
-}
-
-.handle:hover {
-  background-color: #dedede;
+  background-color: #D231B5;
 }
 
 .slider {
@@ -49,16 +45,17 @@
   transform: translate(0%, -50%);
   height: 8px;
   z-index: 1;
-  background-color: var(--color-blue);
+  background-color: #211B33;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .tickPre {
   position: absolute;
-  margin-top: -10px;
+  margin-top: -4px;
+  z-index: 1;
   width: 1px;
-  height: 20px;
+  height: 8px;
   background-color: var(--color-background-hover);
 }
 

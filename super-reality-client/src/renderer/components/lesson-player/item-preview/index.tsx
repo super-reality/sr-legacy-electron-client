@@ -23,6 +23,7 @@ import updatePosMarker from "../../create-leson-detached/lesson-utils/updatePosM
 import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarker";
 import getItemComponent from "../../../items/getItemComponent";
 import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
+import useAnchor from "../../create-leson-detached/hooks/useAnchor";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -34,13 +35,9 @@ export default function ItemPreview(props: ItemPreviewProps) {
   const { itemId, stepId } = props;
   const { onSucess } = props;
   const dispatch = useDispatch();
-  const {
-    previewing,
-    treeItems,
-    treeSteps,
-    treeAnchors,
-    videoScale,
-  } = useSelector((state: AppState) => state.createLessonV2);
+  const { previewing, treeItems, treeSteps, videoScale } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
   const { cvResult } = useSelector((state: AppState) => state.render);
 
   const [show, setShow] = useState(false);
@@ -74,11 +71,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     treeSteps,
   ]);
 
-  // Get step's anchor or just the one in use
-  const anchor = useMemo(() => {
-    const anchorId = step?.anchor;
-    return anchorId ? treeAnchors[anchorId] : undefined;
-  }, [step, treeAnchors]);
+  const anchor = useAnchor(step?.anchor || undefined);
 
   const updatePos = useCallback(() => {
     const newPos = {
