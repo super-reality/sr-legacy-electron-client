@@ -5,8 +5,21 @@
 }
 
 .channel {
+    position: relative;
     overflow-y: scroll;
-    height: calc(85vh - 150px)
+    height: calc(86vh - 150px);
+    max-width: 250px;
+    width: 100%;
+}
+
+.channel::after {
+    // content: "";
+    // height: 86% !important;
+    // width: 2px;
+    // top: 7%;
+    // position: absolute;
+    // background-color: #585286;
+    // right: 3%;
 }
 
 .channel-container {
@@ -20,7 +33,7 @@
 .channel-container::after {
     content: "";
     height: 2px !important;
-    width: 86%;
+    width: 83%;
     top: 95%;
     position: absolute;
     background-color: #585286;
@@ -32,7 +45,14 @@
     border-radius: 6px;
     color: #8a88c3;
     padding: 11px;
+    display: flex;
+    align-content: center;
     margin-bottom: 7px;
+    align-items: center;
+
+    svg {
+        margin-right: 10px;
+    }
 }
 
 .avatar {

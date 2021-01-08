@@ -2,6 +2,8 @@
 
 body {
   font-family: "Segoe UI" !important;
+  overflow:hidden;
+  height: 100%;
   @include disable-select;
 }
 
