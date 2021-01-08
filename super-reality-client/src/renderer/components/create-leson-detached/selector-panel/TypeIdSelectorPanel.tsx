@@ -125,6 +125,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       {dataType && dataId && SingleView && (
         <div className="panel">
           <SingleView
+            key={`single-view-${dataId}`}
             id={dataId}
             data={data}
             open={setDataId}
