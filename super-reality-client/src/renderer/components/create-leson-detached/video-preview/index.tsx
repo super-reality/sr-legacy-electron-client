@@ -224,25 +224,37 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
-    if (currentStep && st) {
+    if (currentStep && st && st.canvas[0]) {
       const nav: number[] = [
         ...store.getState().createLessonV2.videoNavigation,
       ] || [0, 0, 0];
-      nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
-      if (st.snapShot) {
-        setCanvasSource("url", st.snapShot);
+
+      const canvasObj = st.canvas[0];
+      if (canvasObj.type == "image") {
+        setCanvasSource("url", canvasObj.value.url);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
             videoNavigation: nav,
           },
         });
-      } else if (st.recordingId) {
-        setCanvasSource("recording", st.recordingId);
+      }
+      if (canvasObj.type == "recording") {
+        nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
+        setCanvasSource("recording", canvasObj.value.recording);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
-            currentRecording: st.recordingId,
+            currentRecording: canvasObj.value.recording,
+            videoNavigation: nav,
+          },
+        });
+      }
+      if (canvasObj.type == "url") {
+        setCanvasSource("url", canvasObj.value);
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_DATA",
+          arg: {
             videoNavigation: nav,
           },
         });

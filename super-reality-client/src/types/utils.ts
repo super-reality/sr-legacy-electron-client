@@ -29,4 +29,9 @@ export interface TypeValue {
   value: any;
 }
 
+export interface TypedTypeValue<T> {
+  type: string;
+  value: T;
+}
+
 export type ValueOf<T> = T[keyof T];
