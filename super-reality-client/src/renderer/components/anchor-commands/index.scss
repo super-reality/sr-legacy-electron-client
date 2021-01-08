@@ -3,10 +3,11 @@
   bottom: 0;
   position: absolute;
   right: 0;
-  height: 24px;
-  width: 64px;
+  height: 32px;
+  width: 100px;
   justify-content: space-evenly;
-  background: var(--color-magenda);
+  background: #585286;
+  border-radius: 6px 0;
   align-items: center;
 
   .button {

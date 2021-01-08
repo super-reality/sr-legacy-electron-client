@@ -27,7 +27,7 @@ export default function ButtonCheckbox(props: ButtonCheckboxProps) {
   return (
     <ButtonSimple
       width={width ?? "145px"}
-      height={height ?? "28px"}
+      height={height ?? "24px"}
       margin={margin ?? ""}
       style={{ justifyContent: "space-between" }}
       onClick={onButtonClick}

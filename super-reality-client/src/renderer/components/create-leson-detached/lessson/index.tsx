@@ -23,9 +23,11 @@ export default function Lesson(): JSX.Element {
       <div className="create-lesson-item-container shadow-blue mid-tight">
         <LessonTreeControls />
       </div>
-      {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
-      {treeCurrentType == "step" && <OpenStep />}
-      {treeCurrentType == "chapter" && <OpenChapter />}
+      <div className="steps-btn-container">
+        {treeCurrentType == "item" && <OpenItem id={treeCurrentId} />}
+        {treeCurrentType == "step" && <OpenStep />}
+        {treeCurrentType == "chapter" && <OpenChapter />}
+      </div>
     </>
   );
 }

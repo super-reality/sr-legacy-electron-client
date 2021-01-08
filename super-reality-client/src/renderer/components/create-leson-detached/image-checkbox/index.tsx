@@ -28,8 +28,8 @@ export default function ImageCheckbox(props: ImageCheckboxProps) {
     <div
       className="image-checkbox"
       style={{
-        width: width ?? "200px",
-        height: height ?? "120px",
+        width: width ?? "250px",
+        height: height ?? "165px",
         margin: margin ?? "8px auto",
       }}
       onClick={onButtonClick}

@@ -4,7 +4,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: auto;
-  background-color: var(--color-background-dark);
+  background-color: #211b33;
 }
 
 .anchor-templates-carousel {
@@ -14,23 +14,24 @@
   margin: 20px 0;
 
   .left-arrow {
-    height: 64px;
-    width: 16px;
-    background-color: var(--color-button);
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 40%;
+    background-image:url("../../../../../assets/svg/left-arrow.svg");
+    background-repeat: no-repeat;
     cursor: pointer;
-    text-align: center;
-    line-height: 64px;
-    color: white;
+
   }
 
   .right-arrow {
-    height: 64px;
-    width: 16px;
-    background-color: var(--color-button);
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 40%;
+    background-image:url("../../../../../assets/svg/right-arrow.svg");
+    background-repeat: no-repeat;
     cursor: pointer;
-    text-align: center;
-    line-height: 64px;
-    color: white;
   }
 
   .template {

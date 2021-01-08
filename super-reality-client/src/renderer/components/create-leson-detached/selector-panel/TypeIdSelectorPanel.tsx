@@ -106,7 +106,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               margin="8px auto"
               key={`panel-button-${t}`}
               width="145px"
-              height="28px"
+              height="24px"
               text={t}
               check={false}
               onButtonClick={() => {
