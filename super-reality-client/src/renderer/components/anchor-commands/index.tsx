@@ -2,7 +2,9 @@ import React, { useCallback } from "react";
 import "./index.scss";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as EditButton } from "../../../assets/svg/edit.svg";
+import { ReactComponent as RefreshButton } from "../../../assets/svg/refresh-circle-orange.svg";
+import { ReactComponent as AddButton } from "../../../assets/svg/add-circle-blue.svg";
+import { ReactComponent as CloseButton } from "../../../assets/svg/close-circle-red.svg";
 import useAnchor from "../create-leson-detached/hooks/useAnchor";
 import reduxAction from "../../redux/reduxAction";
 import store, { AppState } from "../../redux/stores/renderer";
@@ -201,42 +203,20 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
     <div className="anchor-commands-container">
       {previewMode == "IDLE" && (
         <>
-          <EditButton
-            className="button"
-            width="16px"
-            height="16px"
-            fill="#E78C31"
-            onClick={doAddTemplate}
-          />
-          <EditButton
-            className="button"
-            width="16px"
-            height="16px"
-            fill="#04AFF0"
-            onClick={doAddTemplate}
-          />
-          <EditButton
-            className="button"
-            width="16px"
-            height="16px"
-            fill="#F1205F"
-            onClick={doRemoveTemplate}
-          />
+          <RefreshButton className="button" onClick={doAddTemplate} />
+          <AddButton className="button" onClick={doAddTemplate} />
+          <CloseButton className="button" onClick={doRemoveTemplate} />
         </>
       )}
       {previewMode == "ADDTO_ANCHOR" && (
         <>
-          <EditButton
+          <AddButton
             className="button"
-            width="16px"
-            height="16px"
             fill="#00FF3C"
             onClick={doFinishEditAnchor}
           />
-          <EditButton
+          <CloseButton
             className="button"
-            width="16px"
-            height="16px"
             fill="#FF004D"
             onClick={() => setPreviewMode("IDLE")}
           />
