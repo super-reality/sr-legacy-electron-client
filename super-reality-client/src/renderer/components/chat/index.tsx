@@ -17,10 +17,198 @@ interface ChatProps {
   messages: any[];
 }
 
+interface MessageProps {
+  messageProp: any;
+}
+
+export function Message(props: MessageProps) {
+  const { messageProp } = props;
+  const { _id, user, createdAt, text } = messageProp;
+
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [textEdit, setTextEdit] = useState("");
+  const [edit, setEdit] = useState<boolean>(false);
+
+  const openMessageMenu = () => {
+    setOpenMenu(true);
+  };
+
+  const closeMessageMenu = () => {
+    setOpenMenu(false);
+  };
+  const onTextChange = (e: any) => {
+    const message = e.target.value;
+    setTextEdit(message);
+  };
+
+  const messageTime = (unixTimestam: number) => {
+    // const milliseconds = unixTimestam * 1000; // 1575909015000
+
+    // const dateObject = new Date(milliseconds);
+    const dateObject = moment(unixTimestam).calendar();
+
+    // const humanDateFormat = dateObject.toLocaleString();
+    console.log("date converted:", dateObject);
+
+    return dateObject;
+  };
+
+  // delete message function
+  const removeMessage = (id: string) => {
+    (client as any).service("messages").remove(id);
+  };
+
+  // edit message
+  const startEditMessage = (oldMessage: string) => {
+    setTextEdit(oldMessage);
+    setEdit(true);
+  };
+
+  // patch updated message
+  const submitEditMessage = (id: string, updatedMessage: string) => {
+    (client as any).service("messages").patch(id, {
+      text: updatedMessage,
+    });
+    setEdit(false);
+    setTextEdit("");
+    setOpenMenu(false);
+  };
+
+  const handleEnterDownEdit = (
+    id: string,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      submitEditMessage(id, textEdit);
+      setTextEdit("");
+      setOpenMenu(false);
+    }
+  };
+  const cancelEditingMessage = () => {
+    setEdit(false);
+    setTextEdit("");
+    setOpenMenu(false);
+  };
+  return (
+    <div className="single-chat" key={_id}>
+      <img className="avatar" src={DefaultIcon} alt="sonic" />
+      <div className="info">
+        <div className="user">{user.email}</div>
+        <div className="timestamp">{messageTime(createdAt)}</div>
+      </div>
+      {!edit ? (
+        <div className="message-box">
+          <div className="message">{text}</div>
+          {openMenu ? (
+            <ul>
+              <li>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    removeMessage(_id);
+                  }}
+                >
+                  del
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    startEditMessage(text);
+                  }}
+                >
+                  edit
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  style={{
+                    cursor: "pointer",
+                    color: "var(--color-text)",
+                  }}
+                  onClick={() => {
+                    closeMessageMenu();
+                  }}
+                >
+                  close menu
+                </button>
+              </li>
+            </ul>
+          ) : (
+            <button
+              type="button"
+              style={{
+                cursor: "pointer",
+                color: "var(--color-text)",
+              }}
+              onClick={() => {
+                openMessageMenu();
+              }}
+            >
+              ...
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="chat-input">
+          <input
+            value={textEdit}
+            type="text"
+            placeholder="You rock!"
+            onChange={onTextChange}
+            onKeyDown={(e) => {
+              handleEnterDownEdit(_id, e);
+            }}
+          />
+          <button
+            type="button"
+            style={{
+              cursor: "pointer",
+              color: "var(--color-text)",
+            }}
+            onClick={() => {
+              cancelEditingMessage();
+            }}
+          >
+            cancel
+          </button>
+          <button
+            type="button"
+            style={{
+              cursor: "pointer",
+              color: "var(--color-text)",
+            }}
+            onClick={() => {
+              submitEditMessage(_id, textEdit);
+            }}
+          >
+            save
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Chat(props: ChatProps) {
   const { users, messages } = props;
   const [textMessage, setTextMessage] = useState("");
-  // const { user }: any = useSelector((state: AppState) => state.chat.loginData);
+
+  const onTextChange = (e: any) => {
+    const message = e.target.value;
+    setTextMessage(message);
+  };
+
   console.log("users:", users, "messages", messages);
   // const dispatch = useDispatch();
 
@@ -36,32 +224,15 @@ export function Chat(props: ChatProps) {
     }
   };
 
-  const onTextChange = (e: any) => {
-    const message = e.target.value;
-    setTextMessage(message);
-  };
-
   const createMessage = (messageContent: string) => {
     sendMessage(messageContent);
     setTextMessage("");
   };
-
   const handleEnterDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       sendMessage(textMessage);
       setTextMessage("");
     }
-  };
-  const messageTime = (unixTimestam: number) => {
-    // const milliseconds = unixTimestam * 1000; // 1575909015000
-
-    // const dateObject = new Date(milliseconds);
-    const dateObject = moment(unixTimestam).calendar();
-
-    // const humanDateFormat = dateObject.toLocaleString();
-    console.log("date converted:", dateObject);
-
-    return dateObject;
   };
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -70,21 +241,6 @@ export function Chat(props: ChatProps) {
       const chat = messagesEndRef.current;
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
     }
-  };
-
-  // delete message function
-  const removeMessage = (id: string) => {
-    (client as any).service("messages").remove(id);
-  };
-
-  // edit message
-  const getMessageText = (oldMessage: string) => {
-    setTextMessage(oldMessage);
-  };
-  const submitEditMessage = (id: string, updatedMessage: string) => {
-    (client as any).service("messages").patch(id, {
-      text: updatedMessage,
-    });
   };
   // scroll to the bottom of the chat when new message is added
   // TO DO create listener
@@ -100,52 +256,8 @@ export function Chat(props: ChatProps) {
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
           {messages.map((messageObject) => {
-            const { _id, user, createdAt, text } = messageObject;
             return (
-              <div className="single-chat" key={_id}>
-                <img className="avatar" src={DefaultIcon} alt="sonic" />
-                <div className="info">
-                  <div className="user">{user.email}</div>
-                  <div className="timestamp">{messageTime(createdAt)}</div>
-                </div>
-                <div className="message">{text}</div>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    removeMessage(_id);
-                  }}
-                >
-                  del
-                </button>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    getMessageText(text);
-                  }}
-                >
-                  edit
-                </button>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    submitEditMessage(_id, textMessage);
-                  }}
-                >
-                  edit submit
-                </button>
-              </div>
+              <Message key={messageObject._id} messageProp={messageObject} />
             );
           })}
         </div>
