@@ -12,13 +12,16 @@ import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videoca
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
 
 import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
+import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
+// import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 // import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
-import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
+// import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
 import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
 // import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
-import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
-import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
+// import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
+// import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
 import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
+import { ReactComponent as ButtonHelp } from "../../../../assets/svg/help.svg";
 import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
 import ButtonRound from "../../button-round";
@@ -28,8 +31,8 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
 import Cams from "../../cams";
-// import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
-// import Channels from "../../channels";
+import Channels from "../../channels";
+import Help from "../../help";
 
 const sidebarIcons = [
   {
@@ -55,19 +58,29 @@ const sidebarIcons = [
     component: <b>Dum dum</b>,
   },
   {
-    title: "Airplay",
-    icon: ButtonAirplay,
-    component: <Screenshare />,
-  },
-  {
     title: "Videocam",
     icon: ButtonVideocam,
     component: <Cams />,
   },
   {
+    title: "Screenshare",
+    icon: ButtonAirplay,
+    component: <Screenshare />,
+  },
+  {
+    title: "Channels",
+    icon: ButtonEye,
+    component: <Channels />,
+  },
+  {
     title: "Microphone",
     icon: ButtonMic,
     component: <> Dummy Mic </>,
+  },
+  {
+    title: "Get Help",
+    icon: ButtonHelp,
+    component: <Help />,
   },
 ];
 
@@ -80,9 +93,18 @@ export default function EditorSidebar() {
   );
   const dispatch = useDispatch();
 
+  let width = "300px";
+
+  if (current == 8) {
+    width = "750px";
+  }
+  if (current == 6) {
+    width = "250px";
+  }
+
   const props = useSpring({
-    width: expanded && isChat ? "1100px" : "0px", // "550px"
-    minWidth: expanded ? "600px" : "0px",
+    width: expanded ? width : "0px",
+    minWidth: expanded ? width : "0px",
   });
 
   const doPreviewCurrentToNumber = useCallback(() => {
@@ -155,31 +177,33 @@ export default function EditorSidebar() {
   return (
     <>
       <div className="sidebar-buttons">
-        <div className="communication-buttons">
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonRecentPeople}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonScreenShare}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonError}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonTick}
-          />
+        <div className="action-buttons">
+          <div className="logged-user">
+            <ButtonRound
+              onClick={doPreview}
+              width="36px"
+              height="36px"
+              svg={DefaultUser}
+            />
+          </div>
+
+          {sidebarIcons.map((icon, index) => {
+            // Limit the loop to the action buttons on the array
+            if (index < 2 || index > 8) return null;
+            return (
+              <ButtonRound
+                onClick={() => {
+                  setCurrent(index);
+                  if (index == current || !expanded) setExpanded(!expanded);
+                }}
+                width="32px"
+                height="32px"
+                key={icon.title}
+                svg={icon.icon}
+                title={icon.title}
+              />
+            );
+          })}
         </div>
 
         <div className="control-buttons">
@@ -236,23 +260,3 @@ export default function EditorSidebar() {
     </>
   );
 }
-
-/*
-  {
-    title: "ButtonEye",
-    icon: ButtonEye,
-    component: <Channels />,
-  },
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonEye}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonMessages}
-          />
-*/
