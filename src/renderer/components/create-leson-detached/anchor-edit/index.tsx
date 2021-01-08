@@ -10,6 +10,7 @@ import AnchorEditSliders from "../anchor-edit-sliders";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
+import getTextFromOcr from "../../../../utils/ocr/getTextFromOcr";
 import useAnchor from "../hooks/useAnchor";
 import Collapsible from "../../collapsible";
 
@@ -103,12 +104,23 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
     [anchor, anchorName, debouncer]
   );
 
+  const testOcr = () => {
+    if (anchor) {
+      getTextFromOcr("eng", anchor.templates[0]).then((text) => {
+        console.log(text);
+      });
+    }
+  };
+
   if (anchor === null) return <></>;
   return (
     <>
       {Popup}
       <ButtonSimple onClick={doTest} width="190px" height="24px" margin="auto">
         Test Anchor
+      </ButtonSimple>
+      <ButtonSimple onClick={testOcr} width="190px" height="24px" margin="auto">
+        Test OCR
       </ButtonSimple>
       <BaseInput
         title="Anchor name"
