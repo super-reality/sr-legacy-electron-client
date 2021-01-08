@@ -7,7 +7,7 @@ const socket = io("http://3.101.51.61:3040/", {
 });
 
 // @feathersjs/client is exposed as the `feathers` global.
-const client = feathers();
+const client = feathers<any>();
 
 client.configure(feathers.socketio(socket, { timeout: 10000 }));
 client.configure(
@@ -18,6 +18,6 @@ client.configure(
 );
 
 export const logoutChat = async () => {
-  await client.logout();
+  await (client as any).logout();
 };
 export default client;
