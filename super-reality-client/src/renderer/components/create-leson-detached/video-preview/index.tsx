@@ -48,6 +48,7 @@ export default function VideoPreview(): JSX.Element {
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
   const [zoomBox, setBoxOpacity] = useSpring(() => ({ opacity: 0 }));
+  let timeOutId: NodeJS.Timeout | null = null;
 
   const setVideoPos = useCallback(
     (arg: { x: number; y: number }) => {
@@ -285,6 +286,7 @@ export default function VideoPreview(): JSX.Element {
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
+      if (timeOutId) clearTimeout(timeOutId);
       setBoxOpacity({
         opacity: 1,
       });
@@ -316,7 +318,7 @@ export default function VideoPreview(): JSX.Element {
           });
         }
       }
-      setTimeout(() => {
+      timeOutId = setTimeout(() => {
         setBoxOpacity({ opacity: 0 });
       }, 3000);
     },
