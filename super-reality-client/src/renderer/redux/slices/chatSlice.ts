@@ -38,7 +38,7 @@ const chatSlice = createSlice({
         ({ _id }) => _id == action.payload._id
       );
       const updatedMessages = [
-        ...messages.slice(0, messageId - 1),
+        ...messages.slice(0, messageId),
         action.payload,
         ...messages.slice(messageId + 1),
       ];
