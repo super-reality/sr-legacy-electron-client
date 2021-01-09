@@ -4,14 +4,16 @@
     font-size: 16px;
 }
 
-.chat-and-channels-container{
+.chat-and-channels-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-.chat-with-title-container{
+.chat-with-title-container {
     display: flex;
     flex-direction: column;
+    max-width: 500px;
+    width: 100%;
 }
 .chat-container {
     display: flex;
@@ -25,12 +27,17 @@
 
     .chats {
         overflow-y: scroll;
-        height: calc(85vh - 220px);
+        // height: calc(85vh - 220px);
+        height: calc(86vh - 250px);
     }
 
     .user {
         font-size: 16px;
         font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 55%;
     }
 
     .info {
@@ -40,7 +47,7 @@
 
     .timestamp {
         color: #585286;
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .avatar {

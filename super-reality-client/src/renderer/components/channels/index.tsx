@@ -1,15 +1,17 @@
 import "./index.scss";
 import React from "react";
 
-import ButtonAdd from "../../../assets/svg/add-circle.svg";
+import ButtonAdd from "../../../assets/images/add-circle.png";
 
 import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
+import TeacherBot from "../../../assets/svg/teacher-bot.svg";
+import { ReactComponent as Support } from "../../../assets/svg/support.svg";
 
 export default function Channels(): JSX.Element {
   return (
     <div className="channel">
-      <div className="title">Tools</div>
+      <div className="title">Super Powers</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
@@ -18,16 +20,13 @@ export default function Channels(): JSX.Element {
       <div className="channel-container">
         <div className="channels">
           <div className="single-channel">
-            <img className="avatar" src={PacMan} alt="" />
-            <div className="info">Get Help</div>
+            {/* <img className="avatar" src={Support} alt="" /> */}
+            <Support />
+            <div className="info">Support</div>
           </div>
           <div className="single-channel">
-            <img className="avatar" src={Sonic} alt="" />
-            <div className="info">Give Help</div>
-          </div>
-          <div className="single-channel">
-            <img className="avatar" src={PacMan} alt="" />
-            <div className="info">Requests</div>
+            <img className="avatar" src={TeacherBot} alt="" />
+            <div className="info">Teacher Bot</div>
           </div>
         </div>
       </div>
