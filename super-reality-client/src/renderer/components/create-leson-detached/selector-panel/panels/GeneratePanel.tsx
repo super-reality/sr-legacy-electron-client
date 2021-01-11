@@ -163,6 +163,7 @@ export default function GeneratePanel() {
       {dataType && dataId && SingleView && (
         <div className="panel">
           <SingleView
+            key={`single-view-${dataId}`}
             id={dataId}
             data={currentValue}
             open={setDataId}
