@@ -12,6 +12,16 @@ export default function SettingsVideo(props: BaseSettingsProps<ItemVideo>) {
   const { item, update } = props;
   const dispatch = useDispatch();
 
+  const openPanel = useCallback(
+    (panel: string) => {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: { openPanel: panel },
+      });
+    },
+    [dispatch]
+  );
+
   const doTrimVideo = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -23,6 +33,16 @@ export default function SettingsVideo(props: BaseSettingsProps<ItemVideo>) {
 
   return (
     <>
+      <video
+        style={{
+          background: "var(--color-background-dark)",
+          maxWidth: "100%",
+          borderRadius: "4px",
+          cursor: "pointer",
+        }}
+        onClick={() => openPanel("item-video")}
+        src={item.url}
+      />
       <BaseInput
         title="Video URL"
         value={item.url}

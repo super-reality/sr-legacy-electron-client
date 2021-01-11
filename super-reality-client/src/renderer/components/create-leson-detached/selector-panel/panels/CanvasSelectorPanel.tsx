@@ -39,6 +39,7 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
     <TypeIdSelectorPanel
       title="Step Canvas"
       single
+      showActive
       types={[
         "Image",
         "Recording",

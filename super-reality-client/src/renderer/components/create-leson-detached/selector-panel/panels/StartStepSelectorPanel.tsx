@@ -43,6 +43,7 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
     <TypeIdSelectorPanel
       title="Start Step When"
       single
+      showActive
       types={[
         "Image Found",
         "Video Found",
