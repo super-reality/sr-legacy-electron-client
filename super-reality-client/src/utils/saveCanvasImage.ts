@@ -1,10 +1,16 @@
 import fs from "fs";
 
-export default function saveCanvasImage(fileName: string): Promise<string> {
+export default function saveCanvasImage(
+  fileName: string,
+  canvasElement?: HTMLCanvasElement
+): Promise<string> {
   return new Promise((resolve, reject) => {
-    const canvas = document.getElementById("preview-video-canvas") as
-      | HTMLCanvasElement
-      | undefined;
+    let canvas = canvasElement;
+    if (!canvas) {
+      canvas = document.getElementById("preview-video-canvas") as
+        | HTMLCanvasElement
+        | undefined;
+    }
     if (canvas) {
       const url = canvas.toDataURL("image/jpg", 0.8);
 

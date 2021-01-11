@@ -103,12 +103,11 @@
   &.checked {
     background-image: url("../../assets/svg/pink-checked.svg");
     background-color: transparent;
-    width: 25px;
     height: 20px;
     background-repeat: no-repeat;
   }
 
   &:hover {
-    background-color: var(--color-magenda);
+    filter:brightness(2);
   }
 }

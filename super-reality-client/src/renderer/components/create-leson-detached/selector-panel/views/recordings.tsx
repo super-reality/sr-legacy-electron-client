@@ -8,6 +8,7 @@ import React, {
 import fs from "fs";
 import { BasePanelViewProps } from "../viewTypes";
 import {
+  itemsPath,
   recordingPath,
   stepSnapshotPath,
 } from "../../../../electron-constants";
@@ -20,6 +21,9 @@ import { RecordingCanvasTypeValue } from "../../../../api/types/step/step";
 import timetoTimestamp from "../../../../../utils/timeToTimestamp";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import useDebounce from "../../../../hooks/useDebounce";
+import sha1 from "../../../../../utils/sha1";
+import saveCanvasImage from "../../../../../utils/saveCanvasImage";
+import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
 
 export function RecordingsList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
@@ -90,6 +94,24 @@ export function RecordingsView(
   const { id, data, select } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const updateCanvas = useCallback(() => {
+    if (videoRef.current && canvasRef.current) {
+      const ctx = canvasRef.current.getContext("2d");
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+      if (ctx) {
+        ctx.drawImage(
+          videoRef.current,
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+      }
+    }
+  }, [canvasRef, videoRef]);
 
   const defaultTime = useMemo(
     () =>
@@ -99,20 +121,12 @@ export function RecordingsView(
     [data, id]
   );
 
-  const doCheckToggle = useCallback(
-    (val: boolean) =>
-      select(
-        "Recording",
-        val
-          ? {
-              recording: id,
-              timestamp: timetoTimestamp(
-                (videoRef?.current?.currentTime || 0) * 1000
-              ),
-            }
-          : null
-      ),
-    [videoRef, id, select]
+  const checked = useMemo(
+    () =>
+      !!data.filter(
+        (d) => d.type == "Recording" && d.value?.recording == id
+      )[0],
+    [data, id]
   );
 
   useEffect(() => {
@@ -124,21 +138,51 @@ export function RecordingsView(
 
   const debouncer = useDebounce(500);
 
+  const selectNewTimestamp = useCallback(
+    (n: readonly number[]) => {
+      if (videoRef.current) {
+        videoRef.current.currentTime = n[0] / 1000;
+        updateCanvas();
+        // if (checked) {
+        //  select("Recording", null);
+        // }
+      }
+    },
+    [select, updateCanvas, checked, videoRef.current]
+  );
+
   const scrubVideo = useCallback(
     (n: readonly number[]) => {
       debouncer(() => {
-        if (videoRef.current) {
-          videoRef.current.currentTime = n[0] / 1000;
-        }
-        select("Recording", {
-          recording: id,
-          timestamp: timetoTimestamp(
-            (videoRef?.current?.currentTime || 0) * 1000
-          ),
-        });
+        selectNewTimestamp(n);
       });
     },
-    [debouncer, select, videoRef.current]
+    [debouncer, selectNewTimestamp]
+  );
+
+  const doCheckToggle = useCallback(
+    (val: boolean) => {
+      const timestamp = timetoTimestamp(
+        (videoRef?.current?.currentTime || 0) * 1000
+      );
+      if (val && canvasRef.current) {
+        saveCanvasImage(
+          `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
+          canvasRef.current
+        )
+          .then(uploadFileToS3)
+          .then((url) => {
+            select("Recording", {
+              recording: id,
+              timestamp,
+              url,
+            });
+          });
+      } else {
+        select("Recording", null);
+      }
+    },
+    [videoRef, id, select]
   );
 
   useEffect(() => {
@@ -156,13 +200,10 @@ export function RecordingsView(
     }
   }, [videoRef.current]);
 
-  const checked = !!data.filter(
-    (d) => d.type == "Recording" && d.value?.recording == id
-  )[0];
-
   return (
     <>
       <ContainerWithCheck checked={checked} callback={doCheckToggle}>
+        <canvas ref={canvasRef} style={{ display: "none" }} />
         <video
           style={{ width: "300px" }}
           ref={videoRef}

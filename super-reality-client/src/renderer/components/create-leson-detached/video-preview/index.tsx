@@ -240,17 +240,21 @@ export default function VideoPreview(): JSX.Element {
         });
       }
       if (canvasObj.type == "Recording") {
-        console.log(canvasObj.value.timestamp);
-        nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
-        console.log(nav[1]);
+        console.log(canvasObj);
         setCanvasSource("recording", canvasObj.value.recording);
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            currentRecording: canvasObj.value.recording,
-            videoNavigation: nav,
-          },
-        });
+        if (canvasObj.value.url) {
+          setCanvasSource("url", canvasObj.value.url);
+        } else {
+          nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
+          console.log(nav[1]);
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              currentRecording: canvasObj.value.recording,
+              videoNavigation: nav,
+            },
+          });
+        }
       }
       if (canvasObj.type == "Url") {
         setCanvasSource("url", canvasObj.value);
