@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
@@ -14,20 +8,18 @@ import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 
 import Lesson from "./lessson";
-import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
-import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-import { RecordingJson } from "./recorder/types";
+import { RecordingJson } from "../recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
-import { getRawAudioData } from "./recorder/CVEditor";
+import { getRawAudioData } from "../recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
@@ -36,7 +28,7 @@ import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
-import client from "../chat/feathers";
+import LeftPanelWrapper from "./left-panel-wrapper";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -55,10 +47,8 @@ const restrictMinSize =
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
-  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
 
   const {
-    currentAnchor,
     currentRecording,
     currentLesson,
     anchorTestView,
@@ -69,9 +59,8 @@ export default function CreateLessonDetached(): JSX.Element {
     videoNavigation,
     videoDuration,
     recordingData,
+    openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const { messages, users } = useSelector((state: AppState) => state.chat);
-  const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
 
@@ -113,129 +102,6 @@ export default function CreateLessonDetached(): JSX.Element {
     [debouncer]
   );
 
-  // chat functions
-  const logoutListener = () => {
-    console.log("logout");
-    reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-    reduxAction(dispatch, { type: "SET_MESSAGES", arg: [] });
-    reduxAction(dispatch, { type: "SET_USERS", arg: [] });
-  };
-  const onMessageCreatedListener = (newMessage: any, stateMessages: any[]) => {
-    console.log("message created", newMessage, "messages", stateMessages);
-    const newMessages = [...stateMessages, newMessage];
-    reduxAction(dispatch, { type: "SET_MESSAGES", arg: newMessages });
-  };
-  // chat listener
-  useEffect(() => {
-    // (client as any)
-    //   .authenticate()
-    //   .then((res: any) => {
-    //     console.log("whohooo chat reAuth login", res);
-    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-    //   })
-    //   .catch((err: any) => {
-    //     console.log("chat jwt login error", err);
-    //     (client as any).logout();
-    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-    //   });
-    client
-      .service("messages")
-      .find()
-      .then((res: any) => {
-        console.log("test get messages res:", res);
-      })
-      .catch((err: any) => {
-        console.log("test get messages err:", err);
-      });
-    const messagesClient = client.service("messages");
-    const usersClient = client.service("users");
-    Promise.all([
-      messagesClient.find({
-        query: {
-          $sort: { createdAt: -1 },
-          $limit: 25,
-        },
-      }),
-      usersClient.find(),
-    ])
-      .then(([messagePage, userPage]) => {
-        // We want the latest messages but in the reversed order
-        const uploadedMessages = messagePage.data.reverse();
-        const uploadedUsers = userPage.data;
-        console.log(
-          "first time",
-          "messages",
-          uploadedMessages,
-          "users",
-          uploadedUsers
-        );
-        // Once both return, update the state
-        // reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
-        reduxAction(dispatch, {
-          type: "SET_MESSAGES",
-          arg: [...uploadedMessages],
-        });
-        reduxAction(dispatch, { type: "SET_USERS", arg: [...uploadedUsers] });
-      })
-      .catch((err) => {
-        console.log("on authenticated", err);
-      });
-    // On successfull login
-    console.log("authenticated listener");
-    client.on("authenticated", (login) => {
-      // Get all users and messages
-      console.log("authenticated listener start. login:", login);
-      Promise.all([
-        messagesClient.find({
-          query: {
-            $sort: { createdAt: -1 },
-            $limit: 25,
-          },
-        }),
-        usersClient.find(),
-      ])
-        .then(([messagePage, userPage]) => {
-          // We want the latest messages but in the reversed order
-          const uploadedMessages = messagePage.data.reverse();
-          const uploadedUsers = userPage.data;
-          console.log(
-            "login",
-            login,
-            "messages",
-            uploadedMessages,
-            "users",
-            uploadedUsers
-          );
-          // Once both return, update the state
-          reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
-          reduxAction(dispatch, {
-            type: "SET_MESSAGES",
-            arg: uploadedMessages,
-          });
-          reduxAction(dispatch, { type: "SET_USERS", arg: uploadedUsers });
-        })
-        .catch((err) => {
-          console.log("on authenticated", err);
-        });
-    });
-
-    client.on("logout", () => {
-      console.log("logout");
-      logoutListener();
-    });
-
-    // Add new messages to the message list
-    messagesClient.on("created", (message: any) => {
-      onMessageCreatedListener(message, messages);
-    });
-
-    // Add new users to the user list
-    usersClient.on("created", (user: any) => {
-      const updatedUsers = users.concat(user);
-      reduxAction(dispatch, { type: "SET_USERS", arg: updatedUsers });
-    });
-  }, []);
-
   useEffect(() => {
     setMocks();
     document.body.style.backgroundColor = "rgba(0, 0, 0, 0)";
@@ -260,10 +126,6 @@ export default function CreateLessonDetached(): JSX.Element {
     }
     return voidFunction;
   }, [resizeContainer]);
-
-  const createRecorder = useCallback(() => {
-    setOpenRecorder(true);
-  }, []);
 
   const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
     videoDuration,
@@ -310,20 +172,12 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const isTransparent = useMemo(
     () =>
-      openRecorder ||
       anchorTestView ||
       lessonPreview ||
       chapterPreview ||
       stepPreview ||
       itemPreview,
-    [
-      openRecorder,
-      anchorTestView,
-      lessonPreview,
-      chapterPreview,
-      stepPreview,
-      itemPreview,
-    ]
+    [anchorTestView, lessonPreview, chapterPreview, stepPreview, itemPreview]
   );
 
   useEffect(() => {
@@ -339,13 +193,6 @@ export default function CreateLessonDetached(): JSX.Element {
   if (isTransparent) {
     return (
       <>
-        {openRecorder && (
-          <Recorder
-            onFinish={() => {
-              setOpenRecorder(false);
-            }}
-          />
-        )}
         {anchorTestView && (
           <>
             <AnchorTester
@@ -407,19 +254,9 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson createRecorder={createRecorder} />
+            <Lesson />
           </div>
-          {currentAnchor !== undefined ? (
-            <div
-              className="anchor-edit"
-              style={{ width: "340px" }}
-              ref={resizeContainerAnchor}
-            >
-              <AnchorEdit anchorId={currentAnchor} />
-            </div>
-          ) : (
-            <></>
-          )}
+          {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>

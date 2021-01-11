@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import client from "../../feathers";
 import reduxAction from "../../redux/reduxAction";
 import ButtonSimple from "../button-simple";
-import client from "./feathers";
 
 export default function Login() {
   // const { isChatAuth } = useSelector((state: AppState) => state.chat);

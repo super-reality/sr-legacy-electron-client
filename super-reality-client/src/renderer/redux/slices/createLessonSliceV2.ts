@@ -6,7 +6,7 @@ import { IStep } from "../../api/types/step/step";
 import { Item } from "../../items/item";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import { IDName } from "../../api/types";
-import { RecordingJson } from "../../components/create-leson-detached/recorder/types";
+import { RecordingJson } from "../../components/recorder/types";
 import idNamePos from "../../../utils/idNamePos";
 import idInIdName from "../../../utils/idInIdName";
 
@@ -16,6 +16,7 @@ export type VideoSources = "url" | "file" | "recording" | undefined;
 
 export type PreviewModes =
   | "CREATE_ANCHOR"
+  | "EDIT_ANCHOR"
   | "ADDTO_ANCHOR"
   | "TRIM_VIDEO"
   | "IDLE";
@@ -77,6 +78,7 @@ const initialState = {
   canvasSource: undefined as string | undefined,
   canvasSourceDesc: "no source" as string,
   status: "-",
+  openPanel: undefined as string | undefined,
 };
 
 type InitialState = typeof initialState;
@@ -350,6 +352,17 @@ const createLessonSlice = createSlice({
         [anchor._id]: anchor,
       };
     },
+    deleteAnchor: (
+      state: InitialState,
+      action: PayloadAction<{ anchorId: string }>
+    ): void => {
+      const { anchorId } = action.payload;
+
+      const newTree = { ...state.treeAnchors };
+      delete newTree[anchorId];
+
+      state.treeAnchors = newTree;
+    },
     setOpenTree: (
       state: InitialState,
       action: PayloadAction<{ type: TreeTypes; uniqueId: string; id: string }>
@@ -383,6 +396,7 @@ export const {
   setItem,
   setTempItem,
   setAnchor,
+  deleteAnchor,
   setOpenTree,
   selectEvent,
   doTriggerCvMatch,

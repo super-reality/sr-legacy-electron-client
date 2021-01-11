@@ -2,38 +2,20 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
-import ButtonRound from "../../button-round";
 import store, { AppState } from "../../../redux/stores/renderer";
-import usePopup from "../../../hooks/usePopup";
-import ModalList from "../modal-list";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/cv/doCVMatch";
-import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import userDataPath from "../../../../utils/files/userDataPath";
 import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import { IStep } from "../../../api/types/step/step";
-import generateDialogues from "./generation/generateDialogues";
-import generateBaseData from "./generation/generateBaseData";
-import generateSteps from "./generation/generateSteps";
-import generateClicks from "./generation/generateClicks";
 import saveCanvasImage from "../../../../utils/saveCanvasImage";
-import testFullVideo from "./generation/testFullVideo";
 import setStatus from "../lesson-utils/setStatus";
-import generationDone from "./generation/generationDone";
 import cropImage from "../../../../utils/cropImage";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import updateStep from "../lesson-utils/updateStep";
-import updateAnchor from "../lesson-utils/updateAnchor";
 import useDebounce from "../../../hooks/useDebounce";
-import clearTempFolder from "../lesson-utils/clearTempFolder";
-import logger from "../../../../utils/logger";
 import { itemsPath, recordingPath } from "../../../electron-constants";
-import editStepItemsRelativePosition from "../lesson-utils/editStepItemsRelativePosition";
-import timetoTimestamp from "../../../../utils/timeToTimestamp";
-import sha1 from "../../../../utils/sha1";
 import cropVideo from "../../../../utils/cropVideo";
 import updateItem from "../lesson-utils/updateItem";
 import { ItemVideo } from "../../../items/item";
@@ -67,7 +49,6 @@ const videoCropFileName = `${userData}/crop.webm`;
 export default function VideoStatus() {
   const dispatch = useDispatch();
   const {
-    recordingData,
     currentAnchor,
     currentStep,
     treeSteps,
@@ -82,36 +63,12 @@ export default function VideoStatus() {
     previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
 
-  const { cvResult } = useSelector((state: AppState) => state.render);
-
-  const anchor = useMemo(() => {
+  const anchor: IAnchor | null = useMemo(() => {
     // const slice = store.getState().createLessonV2;
     const step: IStep | null = treeSteps[currentStep || ""];
 
     return treeAnchors[step?.anchor || currentAnchor || ""] || null;
   }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
-
-  const [SelectAnchorPopup, doOpenAnchorPopup, close] = usePopup(false);
-
-  const openAnchor = useCallback(
-    (e: string | undefined) => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: { currentAnchor: e },
-      });
-    },
-    [dispatch]
-  );
-
-  const setRecordingAnchor = useCallback(
-    (e: string | undefined) => {
-      reduxAction(dispatch, {
-        type: "SET_RECORDING_DATA",
-        arg: { anchor: e },
-      });
-    },
-    [dispatch]
-  );
 
   const cvDebouncer = useDebounce(1000);
 
@@ -162,47 +119,6 @@ export default function VideoStatus() {
     canvasSource,
   ]);
 
-  const generateItems = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-
-    if (anchor) {
-      setStatus(`Generating`);
-      const generatedData = generateBaseData();
-      generateSteps(generatedData)
-        .then((data) => generateDialogues(data))
-        .then((data) => generateClicks(data, anchor))
-        .then(() => generationDone())
-        .catch((e) => {
-          logger("error", e);
-          console.error(e);
-          clearTempFolder();
-          setStatus(`Error generating`);
-        });
-    } else {
-      setStatus(`No anchor selected`);
-    }
-  }, [anchor]);
-
-  const checkAnchor = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        currentItem: undefined,
-        currentStep: undefined,
-        currentAnchor: recordingData.anchor,
-        recordingCvFrame: 0,
-      },
-    });
-    testFullVideo(anchor);
-  }, [recordingData, anchor]);
-
   const doExitPreviewModes = useCallback(() => {
     setStatus("-");
     reduxAction(dispatch, {
@@ -218,145 +134,8 @@ export default function VideoStatus() {
     saveCanvasImage(captureFileName)
       .then((image) => cropImage(image, previewEditArea))
       .then(newAnchorPre)
-      .then((a) => {
-        if (a) {
-          const slice = store.getState().createLessonV2;
-          if (
-            (slice.treeCurrentType == "step" ||
-              slice.treeCurrentType == "item") &&
-            slice.currentStep
-          ) {
-            updateStep({ anchor: a._id }, slice.currentStep).then(
-              (updatedStep) => {
-                if (updatedStep) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETSTEP",
-                    arg: { step: updatedStep },
-                  });
-                }
-              }
-            );
-          }
-          reduxAction(dispatch, {
-            type: "CREATE_LESSON_V2_DATA",
-            arg: { currentAnchor: a._id },
-          });
-          reduxAction(dispatch, {
-            type: "SET_RECORDING_DATA",
-            arg: {
-              anchor: a._id,
-            },
-          });
-        }
-        doExitPreviewModes();
-      });
+      .then(doExitPreviewModes);
   }, [previewEditArea, doExitPreviewModes, dispatch]);
-
-  const [Popup, doCreateAnchor] = usePopupImageSource(
-    newAnchorPre,
-    true,
-    true,
-    true,
-    true
-  );
-
-  const editCreateNewAnchor = useCallback(
-    (fileName: string) => {
-      newAnchorPre(fileName)
-        .then(
-          (a): Promise<IStep | undefined> => {
-            const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (a && step && currentStep) {
-              const newTimestamp = timetoTimestamp(videoNavigation[1]);
-              saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
-                .then((file) => uploadFileToS3(file))
-                .then((url) => {
-                  return updateStep(
-                    {
-                      anchor: a._id,
-                      recordingTimestamp: newTimestamp,
-                      snapShot: url,
-                    },
-                    currentStep
-                  ).then((updatedStep) => {
-                    if (updatedStep) {
-                      reduxAction(dispatch, {
-                        type: "CREATE_LESSON_V2_SETSTEP",
-                        arg: { step: updatedStep },
-                      });
-                    }
-                    return updatedStep;
-                  });
-                });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        .then(doExitPreviewModes)
-        .catch((e) => {
-          console.error(e);
-          doExitPreviewModes();
-        });
-    },
-    [videoNavigation, dispatch, currentStep, doExitPreviewModes]
-  );
-
-  const editAddToCurrentAnchor = useCallback(
-    (fileName: string) => {
-      uploadFileToS3(fileName)
-        .then(
-          (newUrl): Promise<IAnchor | undefined> => {
-            const slice = store.getState().createLessonV2;
-            const step: IStep | null = slice.treeSteps[currentStep || ""];
-            if (currentStep && step && step.anchor) {
-              const a: IAnchor | null = slice.treeAnchors[step.anchor];
-              return updateAnchor(
-                { templates: [...a.templates, newUrl] },
-                step.anchor
-              ).then((updatedAnchor) => {
-                if (updatedAnchor) {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_SETANCHOR",
-                    arg: { anchor: updatedAnchor },
-                  });
-                }
-                return updatedAnchor;
-              });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        .then(doExitPreviewModes)
-        .catch((e) => {
-          console.error(e);
-          doExitPreviewModes();
-        });
-    },
-    [currentStep, doExitPreviewModes]
-  );
-
-  const doFinishEditAnchor = useCallback(() => {
-    saveCanvasImage(captureFileName)
-      .then((image) => cropImage(image, previewEditArea))
-      .then((file) => {
-        if (previewMode == "CREATE_ANCHOR") {
-          setStatus("Creating new anchor");
-          editCreateNewAnchor(file);
-          if (currentStep) {
-            editStepItemsRelativePosition(
-              currentStep,
-              previewEditArea,
-              cvResult
-            );
-          }
-        }
-        if (previewMode == "ADDTO_ANCHOR") {
-          setStatus("Adding to anchor");
-          editAddToCurrentAnchor(file);
-        }
-      });
-  }, [previewMode, previewEditArea, currentStep, cvResult]);
 
   const doTrimVideo = useCallback(() => {
     const slice = store.getState().createLessonV2;
@@ -401,27 +180,6 @@ export default function VideoStatus() {
 
   return (
     <>
-      {Popup}
-      <SelectAnchorPopup
-        width="320px"
-        height="400px"
-        style={{ padding: "10px" }}
-      >
-        <ModalList
-          options={Object.keys(treeAnchors).map((a) => treeAnchors[a])}
-          current={recordingData.anchor || ""}
-          selected={recordingData.anchor || ""}
-          setCurrent={(id) => {
-            setRecordingAnchor(id || undefined);
-            openAnchor(id || undefined);
-            close();
-          }}
-          open={(id) => {
-            openAnchor(id || undefined);
-            close();
-          }}
-        />
-      </SelectAnchorPopup>
       <div className="video-status-container">
         {previewMode == "TRIM_VIDEO" && (
           <>
@@ -453,64 +211,7 @@ export default function VideoStatus() {
             Save anchor
           </ButtonSimple>
         )}
-        {previewMode == "ADDTO_ANCHOR" && (
-          <>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto auto"
-              onClick={doFinishEditAnchor}
-            >
-              Done
-            </ButtonSimple>
 
-            <ButtonSimple
-              width="100px"
-              height="16px"
-              onClick={doExitPreviewModes}
-            >
-              Cancel
-            </ButtonSimple>
-          </>
-        )}
-        {previewMode == "IDLE" && (
-          <>
-            <ButtonRound
-              svg={AnchorIcon}
-              width="28px"
-              height="28px"
-              style={{ margin: "auto 8px" }}
-              onClick={doOpenAnchorPopup}
-            />
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={doCreateAnchor}
-            >
-              Create new anchor
-            </ButtonSimple>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={checkAnchor}
-            >
-              Check anchor
-            </ButtonSimple>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto 4px"
-              onClick={generateItems}
-            >
-              Generate
-            </ButtonSimple>
-            {/* <div style={{ color: "var(--color-red)" }}>
-              <i>{!cropRecording && "Attach an anchor to edit"}</i>
-        </div> */}
-          </>
-        )}
         <div
           style={{ fontFamily: "monospace", marginLeft: "auto" }}
         >{`${canvasSourceDesc} / ${status}`}</div>

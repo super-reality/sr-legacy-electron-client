@@ -42,6 +42,7 @@ export const actions = {
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
   CREATE_LESSON_V2_SET_TEMPITEM: createLessonSliceV2.setTempItem,
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
+  CREATE_LESSON_V2_DELETEANCHOR: createLessonSliceV2.deleteAnchor,
   CREATE_LESSON_V2_TRIGGER_CV_MATCH: createLessonSliceV2.doTriggerCvMatch,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
@@ -76,6 +77,7 @@ export const actions = {
   SET_MESSAGES: chatSlice.setMessages,
   SET_USERS: chatSlice.setUsers,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
+  UPDATE_MESSAGE: chatSlice.updateMessages,
 };
 
 export type ActionKeys = keyof typeof actions;

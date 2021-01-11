@@ -1,0 +1,17 @@
+@import "../buttons.scss";
+
+
+.container-with-check {
+  display: flex;
+  overflow: hidden;
+  border-radius: 8px;
+  position: relative;
+
+  .check-container {
+    @include check-container;
+    
+    .check {
+      @include check;
+    }
+  }
+}
