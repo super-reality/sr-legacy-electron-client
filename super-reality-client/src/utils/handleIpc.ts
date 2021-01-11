@@ -213,14 +213,6 @@ export default function handleIpc(): void {
         });
     });
 
-    //
-
-    // client.service("messages").on("created", (message: any) => {
-    //   console.log("message created", message, "messages", messages);
-    //   const newMessages = [...messages, message];
-    //   reduxAction(dispatch, { type: "SET_MESSAGES", arg: newMessages });
-    // });
-
     client.on("logout", () => {
       console.log("logout");
       logoutListener();
