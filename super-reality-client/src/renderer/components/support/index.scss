@@ -51,7 +51,7 @@
 }
 
 .support-list {
-    width: 300px;
+    width: 100%;
     border-right: 1px solid #585286;
 }
 .support-steps {
@@ -60,11 +60,14 @@
 }
 
 .support-scroll {
-    display:flex;
+    display: flex;
+    width: 300%;
 }
 
 .support-scroll>div {
-    width:750px;
+    overflow: auto;
+    flex-direction: column;
+    width: 33%;
 }
 
 .step {

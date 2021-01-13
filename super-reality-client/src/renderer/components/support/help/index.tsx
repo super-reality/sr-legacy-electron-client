@@ -1,5 +1,5 @@
 import "./index.scss";
-import React, { useCallback, /* useState */ } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { animated, useSpring } from "react-spring";
 
 import IconTitle from "../../../../assets/svg/title.svg";
@@ -17,11 +17,10 @@ import StepReview from "./step-review";
 
 import { SupportSectionsProps } from "..";
 
-
-
 export interface StepSectionProps {
   goBack: () => void;
   goNext: () => void;
+  index?: number;
 }
 
 const helpSections = [
@@ -55,7 +54,10 @@ const helpSections = [
 export default function Help(props: SupportSectionsProps): JSX.Element {
   const { goStart } = props;
 
-/*   const [currentSection, setCurrentSection] = useState(0); */
+  /*   const [currentSection, setCurrentSection] = useState(0); */
+
+  const [index, setIndex] = useState(0);
+
   const [stateSpring, set] = useSpring(
     () =>
       ({
@@ -63,16 +65,19 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
       } as any)
   );
 
-  const clickGoNext = useCallback(() => {
-    set({ transform: "translateX(-50%)" });
+  useEffect(() => {
+    set({ transform: `translateX(-${33 * index}%)` });
+  });
 
-  }, [stateSpring]);
+  const clickGoNext = useCallback(() => {
+    setIndex(index + 1);
+  }, [index]);
 
   const clickGoBack = useCallback(() => {
-    set({ transform: "translateX(-0%)" });
-  }, [stateSpring]);
+    setIndex(index - 1);
+  }, [index]);
 
-/*   const CurrentSectionComponent = helpSections[currentSection].section; */
+  /*   const CurrentSectionComponent = helpSections[currentSection].section; */
 
   return (
     <div className="support fade">
@@ -81,14 +86,11 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
         <ul>
           {helpSections.map((section) => {
             return (
-              <li
-                
-                key={`section-${section.title}`}
-              >
+              <li key={`section-${section.title}`}>
                 <a>{section.title}</a>
                 <img src={section.icon} />
                 <div className="progress-step">
-                  <img src={IconCircleTick} alt="" />
+                  <img src={IconCircleTick} alt="hola2" />
                 </div>
               </li>
             );
@@ -97,10 +99,13 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
       </div>
       <div className="support-steps">
         <animated.div style={stateSpring} className="support-scroll">
-          <StepTitle goBack={goStart} goNext={clickGoNext}/>
-          <StepDescription goBack={clickGoBack} goNext={clickGoNext}/>
-          <StepSkills goBack={clickGoBack} goNext={clickGoNext}/>
-            
+          <StepTitle index={index} goBack={goStart} goNext={clickGoNext} />
+          <StepDescription
+            index={index}
+            goBack={clickGoBack}
+            goNext={clickGoNext}
+          />
+          <StepSkills index={index} goBack={clickGoBack} goNext={clickGoNext} />
         </animated.div>
       </div>
     </div>

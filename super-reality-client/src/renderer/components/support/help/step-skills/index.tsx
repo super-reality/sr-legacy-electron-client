@@ -2,11 +2,11 @@ import React from "react";
 import { StepSectionProps } from "..";
 
 export default function StepSkills(props: StepSectionProps): JSX.Element {
-  const { goNext, goBack } = props;
+  const { goNext, goBack,index } = props;
 
   return (
-    <>
-      <div className="title">Step 3 of 5</div>
+    <div>
+      <div className="title">Step {index} of 5</div>
       <div className="step">
         <div className="step-title">Skills</div>
         What are skills and expertise area most important to in your request?
@@ -65,6 +65,6 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

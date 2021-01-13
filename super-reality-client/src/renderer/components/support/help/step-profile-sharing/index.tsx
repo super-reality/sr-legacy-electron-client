@@ -18,7 +18,7 @@ export default function StepProfileSharing(
   };
 
   return (
-    <>
+    <div>
       <div className="title">Step 4 of 5</div>
       <div className="step">
         <div className="step-title">Identity Sharing</div>
@@ -87,6 +87,6 @@ export default function StepProfileSharing(
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

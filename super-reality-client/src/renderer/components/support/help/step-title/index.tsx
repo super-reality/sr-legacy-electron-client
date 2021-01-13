@@ -2,11 +2,11 @@ import React from "react";
 import { StepSectionProps } from "..";
 
 export default function StepTitle(props: StepSectionProps): JSX.Element {
-  const { goNext, goBack } = props;
+  const { goNext, goBack,index } = props;
 
   return (
-    <>
-      <div className="title">Step 1 of 5</div>
+    <div>
+      <div className="title">Step {index} of 5</div>
 
       <div className="step">
         <div className="step-title">Title</div>
@@ -54,6 +54,6 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
