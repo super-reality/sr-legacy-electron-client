@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as DummyOne } from "../../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as DummyTwo } from "../../../../assets/svg/add-video.svg";
 // import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
-import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
-import { ReactComponent as ButtonShareScreen } from "../../../../assets/svg/share-screen.svg";
-import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
-import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
+// import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
+// import { ReactComponent as ButtonShareScreen } from "../../../../assets/svg/share-screen.svg";
+// import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
+// import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
 // import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
-import { ReactComponent as ButtonPencil } from "../../../../assets/svg/pencil.svg";
-import { ReactComponent as ButtonSideBarAdd } from "../../../../assets/svg/sidebar-add.svg";
+// import { ReactComponent as ButtonPencil } from "../../../../assets/svg/pencil.svg";
+// import { ReactComponent as ButtonSideBarAdd } from "../../../../assets/svg/sidebar-add.svg";
 
 // import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 // import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
@@ -24,16 +24,30 @@ import { ReactComponent as ButtonMessages } from "../../../../assets/svg/message
 // import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
 // import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
-import SidebarLogo from "../../../../assets/images/sidebar-log.png";
-import ControlButtons from "../../../../assets/images/control-icons.png";
+// import { ReactComponent as ButtonShare } from "../../../../assets/svg/share-new.svg";
+// import SidebarLogo from "../../../../assets/images/sidebar-log.png";
+// import SidebarLogoSvg from "../../../../assets/svg/sidebar-logo.svg";
+import ButtonForward from "../../../../assets/images/forward-btn.png";
+import ButtonBack from "../../../../assets/images/back-btn.png";
+import ButtonRefresh from "../../../../assets/images/refresh-btn.png";
+import ButtonEdit from "../../../../assets/images/edit-btn.png";
+import ButtonTeacher from "../../../../assets/images/teacher.png";
+import ButtonBrowser from "../../../../assets/images/browser.png";
+import ButtonContent from "../../../../assets/images/content.png";
+import ButtonShareNew from "../../../../assets/images/share-btn.png";
+import ButtonAdd from "../../../../assets/images/add-btn.png";
+import ButtonSonic from "../../../../assets/images/sonic-btn.png";
+import ButtonDavinci from "../../../../assets/images/davinci-btn.png";
+import DropdownLogo from "../../../../assets/images/dropdown-logo.png";
+// import ControlButtons from "../../../../assets/images/control-icons.png";
 // import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
 import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
-import Screenshare from "../../screenshare";
-import Cams from "../../cams";
+// import Screenshare from "../../screenshare";
+// import Cams from "../../cams";
 import client from "../../../feathers";
 import usePopupCreateGroup from "../../../hooks/usePopupCreateGroup";
 // import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
@@ -56,31 +70,6 @@ const sidebarIcons = [
     title: "Chat",
     icon: ButtonMessages,
     component: <ChatApplication />,
-  },
-  {
-    title: "Pencil",
-    icon: ButtonPencil,
-    component: <b>Pencil</b>,
-  },
-  {
-    title: "Gamepad",
-    icon: ButtonGamepad,
-    component: <b>Dum dum</b>,
-  },
-  {
-    title: "Sharescreen",
-    icon: ButtonShareScreen,
-    component: <Screenshare />,
-  },
-  {
-    title: "Videocam",
-    icon: ButtonVideocam,
-    component: <Cams />,
-  },
-  {
-    title: "Microphone",
-    icon: ButtonMic,
-    component: <> Dummy Mic </>,
   },
 ];
 
@@ -192,39 +181,43 @@ export default function EditorSidebar() {
     (client as any).service("groups").create(groupProps);
   };
 
-  const [CreateGroupMenu, openGroupPopup] = usePopupCreateGroup({
+  const [CreateGroupMenu] = usePopupCreateGroup({
     createGroup,
   });
+  // , openGroupPopup
   return (
     <>
-      <div className="sidebar-buttons">
-        <div className="sidebar-logo">
-          <img src={SidebarLogo} />
+      <div className="sidebar-buttons button-logo">
+        <div className="dropdown">
+          <div className="sidebar-logo" />
+          <div className="dropdown-content">
+            <button type="button">
+              <img src={DropdownLogo} />
+            </button>
+          </div>
         </div>
-        <div className="control-buttons">
-          <img src={ControlButtons} alt="" />
-        </div>
-        <div className="communication-buttons">
-          {/* <ButtonRound
-            onClick={doPreview}
-            width="40px"
-            height="40px"
-            svg={ButtonRecentPeople}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="40px"
-            height="40px"
-            svg={ButtonScreenShare}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="40px"
-            height="40px"
-            svg={ButtonError}
-          /> */}
 
-          <div className="groups">
+        <div className="control-buttons">
+          <div className="dropdown">
+            <div className="button-forward">
+              <button type="button">
+                <img src={ButtonForward} />
+              </button>
+            </div>
+
+            <div className="dropdown-content">
+              <button type="button">
+                <img src={ButtonRefresh} />
+              </button>
+              <button type="button">
+                <img src={ButtonBack} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="communication-buttons">
+          <div className="group-buttons">
             <div className="sidebar-group">
               <div
                 className="open-group"
@@ -235,34 +228,52 @@ export default function EditorSidebar() {
                 }}
               />
             </div>
-            <div className="sidebar-group">
-              <div className="open-group" />
-            </div>
-            <div className="sidebar-group">
-              <div className="open-group" />
-            </div>
-            <div className="sidebar-group">
-              <div className="closed-group">
-                <div className="small-group-icon" />
-                <div className="small-group-icon" />
-                <div className="small-group-icon" />
-                <div className="small-group-icon" />
-              </div>
+          </div>
+        </div>
+
+        <div className="action-buttons button-edit">
+          <div className="dropdown">
+            <button type="button">
+              <img src={ButtonEdit} />
+            </button>
+
+            <div className="dropdown-content">
+              <button type="button">
+                <img title="Content" src={ButtonContent} />
+              </button>
+              <button type="button">
+                <img title="Teacher" src={ButtonTeacher} />
+              </button>
+              <button type="button">
+                <img title="Browser" src={ButtonBrowser} />
+              </button>
             </div>
           </div>
+        </div>
 
-          <ButtonRound
-            onClick={openGroupPopup}
-            width="40px"
-            height="40px"
-            svg={ButtonSideBarAdd}
-          />
+        <div className="action-buttons button-share">
+          <div className="dropdown">
+            <button type="button">
+              <img src={ButtonShareNew} />
+            </button>
+            <div className="dropdown-content">
+              <button type="button">
+                <img title="Add" src={ButtonAdd} />
+              </button>
+              <button type="button">
+                <img title="Sonic" src={ButtonSonic} />
+              </button>
+              <button type="button">
+                <img title="Davinci" src={ButtonDavinci} />
+              </button>
+            </div>
+          </div>
         </div>
 
         <div className="action-buttons">
-          {sidebarIcons.map((icon, index) => {
+          {/* {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 7) return null;
+            if (index < 2 || index > 8) return null;
             return (
               <ButtonRound
                 onClick={() => {
@@ -278,12 +289,12 @@ export default function EditorSidebar() {
                 title={icon.title}
               />
             );
-          })}
+          })} */}
           <div className="logged-user">
             <ButtonRound
               onClick={doPreview}
-              width="40px"
-              height="40px"
+              width="44px"
+              height="44px"
               svg={DefaultUser}
             />
           </div>
@@ -298,23 +309,3 @@ export default function EditorSidebar() {
     </>
   );
 }
-
-/*
-  {
-    title: "ButtonEye",
-    icon: ButtonEye,
-    component: <Channels />,
-  },
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonEye}
-          />
-          <ButtonRound
-            onClick={doPreview}
-            width="36px"
-            height="36px"
-            svg={ButtonMessages}
-          />
-*/
