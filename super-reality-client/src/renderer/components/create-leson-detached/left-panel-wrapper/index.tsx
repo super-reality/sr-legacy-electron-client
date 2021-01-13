@@ -28,11 +28,22 @@ export default function LeftPanelWrapper(): JSX.Element {
       Component = <AlertsPanel />;
       break;
     case "step-canvas":
-      if (currentStep) Component = <CanvasSelectorPanel stepId={currentStep} />;
+      if (currentStep)
+        Component = (
+          <CanvasSelectorPanel
+            key={`step-canvas-${currentStep}`}
+            stepId={currentStep}
+          />
+        );
       break;
     case "start-step":
       if (currentStep)
-        Component = <StartStepSelectorPanel stepId={currentStep} />;
+        Component = (
+          <StartStepSelectorPanel
+            key={`start-step-${currentStep}`}
+            stepId={currentStep}
+          />
+        );
       break;
     case "step-information":
       if (currentStep)
