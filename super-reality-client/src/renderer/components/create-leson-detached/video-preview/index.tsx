@@ -4,11 +4,12 @@ import path from "path";
 import "react-image-crop/lib/ReactCrop.scss";
 import { useDispatch, useSelector } from "react-redux";
 import interact from "interactjs";
+import { useSpring, animated } from "react-spring";
 import store, { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
-import CVEditor from "../recorder/CVEditor";
+import CVEditor from "../../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
 import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
@@ -23,6 +24,12 @@ import Flex from "../../flex";
 import ButtonSimple from "../../button-simple";
 import { PreviewModes } from "../../../redux/slices/createLessonSliceV2";
 import usePopup from "../../../hooks/usePopup";
+import {
+  addKeyDownListener,
+  addKeyUpListener,
+  deleteKeyDownListener,
+  deleteKeyUpListener,
+} from "../../../../utils/globalKeyListeners";
 
 const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
@@ -31,7 +38,6 @@ export default function VideoPreview(): JSX.Element {
   const {
     videoNavigation,
     currentRecording,
-    currentAnchor,
     currentStep,
     currentItem,
     treeItems,
@@ -46,6 +52,8 @@ export default function VideoPreview(): JSX.Element {
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const videoHiddenRef = useRef<HTMLVideoElement>(null);
   const anchorImageRef = useRef<HTMLImageElement>(null);
+  const [zoomBox, setBoxOpacity] = useSpring(() => ({ opacity: 0 }));
+  let timeOutId: NodeJS.Timeout | null = null;
 
   const setVideoPos = useCallback(
     (arg: { x: number; y: number }) => {
@@ -257,9 +265,9 @@ export default function VideoPreview(): JSX.Element {
   }, [videoNavigation]);
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerOutRef.current) {
       const newPos = { ...videoPos };
-      interact(containerRef.current)
+      interact(containerOutRef.current)
         .draggable({
           cursorChecker,
         })
@@ -275,14 +283,18 @@ export default function VideoPreview(): JSX.Element {
         });
 
       return (): void => {
-        if (containerRef.current) interact(containerRef.current).unset();
+        if (containerOutRef.current) interact(containerOutRef.current).unset();
       };
     }
     return voidFunction;
-  }, [containerRef, videoScale, videoPos]);
+  }, [containerOutRef, containerRef, videoScale, videoPos]);
 
   const doScale = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
+      if (timeOutId) clearTimeout(timeOutId);
+      setBoxOpacity({
+        opacity: 1,
+      });
       const closest = zoomLevels.reduce((prev, curr) => {
         return Math.abs(curr - videoScale) < Math.abs(prev - videoScale)
           ? curr
@@ -311,6 +323,9 @@ export default function VideoPreview(): JSX.Element {
           });
         }
       }
+      timeOutId = setTimeout(() => {
+        setBoxOpacity({ opacity: 0 });
+      }, 3000);
     },
     [videoPos, videoScale, containerOutRef, videoCanvasRef]
   );
@@ -331,6 +346,25 @@ export default function VideoPreview(): JSX.Element {
     },
     [closeEditAnchorOptions, dispatch]
   );
+
+  useEffect(() => {
+    addKeyDownListener(" ", () => {
+      if (fuildsOutRef.current) {
+        fuildsOutRef.current.style.pointerEvents = "none";
+      }
+    });
+
+    addKeyUpListener(" ", () => {
+      if (fuildsOutRef.current) {
+        fuildsOutRef.current.style.pointerEvents = "all";
+      }
+    });
+
+    return () => {
+      deleteKeyDownListener(" ");
+      deleteKeyUpListener(" ");
+    };
+  }, []);
 
   return (
     <>
@@ -373,11 +407,10 @@ export default function VideoPreview(): JSX.Element {
           ref={fuildsOutRef}
           onWheel={doScale}
         />
-        {videoScale !== 1 && (
-          <div className="zoom-container">
-            Zoom level: {Math.round(videoScale * 100)}%
-          </div>
-        )}
+        <animated.div style={zoomBox as any} className="zoom-container">
+          Zoom level: {Math.round(videoScale * 100)}%
+        </animated.div>
+
         <div
           ref={containerRef}
           className="video-preview-container"
@@ -443,10 +476,8 @@ export default function VideoPreview(): JSX.Element {
                 itemId={itemIdName._id}
               />
             ))}
-          {previewMode == "ADDTO_ANCHOR" &&
-            !item &&
-            (currentRecording || currentAnchor) && <AnchorBox pos={cvResult} />}
-          {previewMode == "CREATE_ANCHOR" && <AnchorCrop />}
+          {(previewMode == "CREATE_ANCHOR" ||
+            previewMode == "ADDTO_ANCHOR") && <AnchorCrop />}
           {previewMode == "TRIM_VIDEO" && <VideoCrop />}
         </div>
       </div>

@@ -2,6 +2,8 @@
 
 body {
   font-family: "Segoe UI" !important;
+  overflow:hidden;
+  height: 100%;
   @include disable-select;
 }
 
@@ -36,7 +38,7 @@ body {
   --color-less-rainbow: linear-gradient(90.79deg, #fa255a -1.12%, #8c2799 44.72%, #0f32e1 99.41%);
 
   --color-button: #29233c;
-  --color-button-hover: #47494d;
+  --color-button-hover: #585286;
   --color-text: #bbbbbb;
   --color-text-active: #c2c2c2;
   --color-icon: #a8abaf;

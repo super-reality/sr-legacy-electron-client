@@ -7,9 +7,12 @@ import { ReactComponent as DummyOne } from "../../../../assets/svg/new-fx-icon.s
 import { ReactComponent as DummyTwo } from "../../../../assets/svg/add-video.svg";
 // import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
 import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
+import { ReactComponent as ButtonShareScreen } from "../../../../assets/svg/share-screen.svg";
 import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
 import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
-import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
+// import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
+import { ReactComponent as ButtonPencil } from "../../../../assets/svg/pencil.svg";
+import { ReactComponent as ButtonSideBarAdd } from "../../../../assets/svg/sidebar-add.svg";
 
 /* import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg"; */
 import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
@@ -23,7 +26,12 @@ import { ReactComponent as ButtonMessages } from "../../../../assets/svg/message
 import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
 import { ReactComponent as ButtonHelp } from "../../../../assets/svg/help.svg";
 import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
+// import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
+// import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
+import SidebarLogo from "../../../../assets/images/sidebar-log.png";
+import ControlButtons from "../../../../assets/images/control-icons.png";
+// import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
 import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
@@ -53,18 +61,18 @@ const sidebarIcons = [
     component: <ChatApplication />,
   },
   {
+    title: "Pencil",
+    icon: ButtonPencil,
+    component: <b>Pencil</b>,
+  },
+  {
     title: "Gamepad",
     icon: ButtonGamepad,
     component: <b>Dum dum</b>,
   },
   {
-    title: "Videocam",
-    icon: ButtonVideocam,
-    component: <Cams />,
-  },
-  {
-    title: "Screenshare",
-    icon: ButtonAirplay,
+    title: "Sharescreen",
+    icon: ButtonShareScreen,
     component: <Screenshare />,
   },
   {
@@ -95,15 +103,17 @@ export default function EditorSidebar() {
 
   let width = "300px";
 
-  if (current == 8) {
-    width = "750px";
+  // chat button width
+  if (current == 2) {
+    width = "700px";
   }
+
   if (current == 6) {
-    width = "750px";
+    width = "250px";
   }
 
   const props = useSpring({
-    width: expanded ? width : "0px",
+    width: expanded && isChat ? width : "0px", // "550px"
     minWidth: expanded ? width : "0px",
   });
 
@@ -177,49 +187,60 @@ export default function EditorSidebar() {
   return (
     <>
       <div className="sidebar-buttons">
-        <div className="action-buttons">
-          <div className="logged-user">
-            <ButtonRound
-              onClick={doPreview}
-              width="36px"
-              height="36px"
-              svg={DefaultUser}
-            />
+        <div className="sidebar-logo">
+          <img src={SidebarLogo} />
+        </div>
+        <div className="control-buttons">
+          <img src={ControlButtons} alt="" />
+        </div>
+        <div className="communication-buttons">
+          {/* <ButtonRound
+            onClick={doPreview}
+            width="40px"
+            height="40px"
+            svg={ButtonRecentPeople}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="40px"
+            height="40px"
+            svg={ButtonScreenShare}
+          />
+          <ButtonRound
+            onClick={doPreview}
+            width="40px"
+            height="40px"
+            svg={ButtonError}
+          /> */}
+
+          <div className="groups">
+            <div className="sidebar-group">
+              <div className="open-group" />
+            </div>
+            <div className="sidebar-group">
+              <div className="open-group" />
+            </div>
+            <div className="sidebar-group">
+              <div className="open-group" />
+            </div>
+            <div className="sidebar-group">
+              <div className="closed-group">
+                <div className="small-group-icon" />
+                <div className="small-group-icon" />
+                <div className="small-group-icon" />
+                <div className="small-group-icon" />
+              </div>
+            </div>
           </div>
 
-          {sidebarIcons.map((icon, index) => {
-            // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 8) return null;
-            return (
-              <ButtonRound
-                onClick={() => {
-                  setCurrent(index);
-                  if (index == current || !expanded) setExpanded(!expanded);
-                }}
-                width="32px"
-                height="32px"
-                key={icon.title}
-                svg={icon.icon}
-                title={icon.title}
-              />
-            );
-          })}
+          <ButtonRound
+            onClick={doPreview}
+            width="40px"
+            height="40px"
+            svg={ButtonSideBarAdd}
+          />
         </div>
 
-        <div className="control-buttons">
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={doPreview}
-            svg={ButtonRefresh}
-          />
-          <ButtonRound
-            width="36px"
-            height="36px"
-            onClick={doPreview}
-            svg={ButtonPlayNew}
-          />
-        </div>
         <div className="action-buttons">
           {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
@@ -245,8 +266,8 @@ export default function EditorSidebar() {
           <div className="logged-user">
             <ButtonRound
               onClick={doPreview}
-              width="36px"
-              height="36px"
+              width="40px"
+              height="40px"
               svg={DefaultUser}
             />
           </div>

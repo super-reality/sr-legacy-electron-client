@@ -1,57 +1,48 @@
 import "./index.scss";
-import React, { useState } from "react";
+import React from "react";
 
-import ButtonAdd from "../../../assets/svg/add-circle.svg";
+import ButtonAdd from "../../../assets/images/add-circle.png";
 
 import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
-import ButtonBasic from "../button-basic";
-import Flex from "../flex";
-
-/* CHANNELS */
-import Support from "./support-channel";
-
-const NONE = 0;
-const SUPPORT = 1;
-const GETHELP = 2;
-const GIVEHELP = 3;
-
-type channel = typeof NONE | typeof SUPPORT | typeof GETHELP | typeof GIVEHELP;
+import TeacherBot from "../../../assets/svg/teacher-bot.svg";
+import { ReactComponent as Support } from "../../../assets/svg/support.svg";
 
 export default function Channels(): JSX.Element {
-  const [currentchannel, setCurrentChannel] = useState<channel>(SUPPORT);
   return (
-    <Flex>
-      <div className="channel">
-        <div className="title">Tools</div>
-        <div className="add">
-          <button type="button">
-            <img src={ButtonAdd} />
-          </button>
+    <div className="channel">
+      <div className="title">Super Powers</div>
+      <div className="add">
+        <button type="button">
+          <img src={ButtonAdd} />
+        </button>
+      </div>
+      <div className="channel-container">
+        <div className="channels">
+          <div className="single-channel">
+            {/* <img className="avatar" src={Support} alt="" /> */}
+            <Support />
+            <div className="info">Support</div>
+          </div>
+          <div className="single-channel">
+            <img className="avatar" src={TeacherBot} alt="" />
+            <div className="info">Teacher Bot</div>
+          </div>
         </div>
         <div className="channel-container">
           <div className="channels">
-            <ButtonBasic
-              className="single-channel"
-              onClick={() => setCurrentChannel(SUPPORT)}
-            >
+            <div className="single-channel">
               <img className="avatar" src={PacMan} alt="" />
               <div className="info">Support</div>
-            </ButtonBasic>
-            <ButtonBasic
-              className="single-channel"
-              onClick={() => setCurrentChannel(GETHELP)}
-            >
+            </div>
+            <div className="single-channel">
               <img className="avatar" src={PacMan} alt="" />
               <div className="info">Get Help</div>
-            </ButtonBasic>
-            <ButtonBasic
-              className="single-channel"
-              onClick={() => setCurrentChannel(GIVEHELP)}
-            >
+            </div>
+            <div className="single-channel">
               <img className="avatar" src={Sonic} alt="" />
               <div className="info">Give Help</div>
-            </ButtonBasic>
+            </div>
             <div className="single-channel">
               <img className="avatar" src={PacMan} alt="" />
               <div className="info">Requests</div>
@@ -121,13 +112,6 @@ export default function Channels(): JSX.Element {
           </div>
         </div>
       </div>
-      {currentchannel != NONE && (
-        <div>
-          {currentchannel == SUPPORT && <Support />}
-          {currentchannel == GETHELP && <h1>Get Help</h1>}
-          {currentchannel == GIVEHELP && <h1>Give Help</h1>}
-        </div>
-      )}
-    </Flex>
+    </div>
   );
 }

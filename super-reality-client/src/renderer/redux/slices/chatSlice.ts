@@ -29,6 +29,21 @@ const chatSlice = createSlice({
     setMessages: (state: ChatState, action: PayloadAction<string[]>): void => {
       state.messages = action.payload;
     },
+    updateMessages: (
+      state: ChatState,
+      action: PayloadAction<Record<string, unknown>>
+    ): void => {
+      const { messages } = state;
+      const messageId = messages.findIndex(
+        ({ _id }) => _id == action.payload._id
+      );
+      const updatedMessages = [
+        ...messages.slice(0, messageId),
+        action.payload,
+        ...messages.slice(messageId + 1),
+      ];
+      state.messages = updatedMessages;
+    },
     setUsers: (state: ChatState, action: PayloadAction<string[]>): void => {
       state.users = action.payload;
     },
@@ -41,6 +56,7 @@ export const {
   setChatLoginData,
   setMessages,
   setUsers,
+  updateMessages,
 } = chatSlice.actions;
 
 export default chatSlice;

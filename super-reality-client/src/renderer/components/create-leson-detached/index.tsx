@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
@@ -14,20 +8,18 @@ import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
 
 import Lesson from "./lessson";
-import Recorder from "./recorder";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
-import AnchorEdit from "./anchor-edit";
 import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import useDebounce from "../../hooks/useDebounce";
-import { RecordingJson } from "./recorder/types";
+import { RecordingJson } from "../recorder/types";
 import VideoStatus from "./video-status";
 import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
-import { getRawAudioData } from "./recorder/CVEditor";
+import { getRawAudioData } from "../recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "../windowlet";
 import { MODE_HOME } from "../../redux/slices/renderSlice";
@@ -36,6 +28,7 @@ import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
+import LeftPanelWrapper from "./left-panel-wrapper";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -54,10 +47,8 @@ const restrictMinSize =
 
 export default function CreateLessonDetached(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
-  const resizeContainerAnchor = useRef<HTMLDivElement>(null);
 
   const {
-    currentAnchor,
     currentRecording,
     currentLesson,
     anchorTestView,
@@ -68,8 +59,8 @@ export default function CreateLessonDetached(): JSX.Element {
     videoNavigation,
     videoDuration,
     recordingData,
+    openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const [openRecorder, setOpenRecorder] = useState<boolean>(false);
   const dispatch = useDispatch();
   useTransparentFix(false);
 
@@ -136,10 +127,6 @@ export default function CreateLessonDetached(): JSX.Element {
     return voidFunction;
   }, [resizeContainer]);
 
-  const createRecorder = useCallback(() => {
-    setOpenRecorder(true);
-  }, []);
-
   const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
     videoDuration,
   ]);
@@ -185,20 +172,12 @@ export default function CreateLessonDetached(): JSX.Element {
 
   const isTransparent = useMemo(
     () =>
-      openRecorder ||
       anchorTestView ||
       lessonPreview ||
       chapterPreview ||
       stepPreview ||
       itemPreview,
-    [
-      openRecorder,
-      anchorTestView,
-      lessonPreview,
-      chapterPreview,
-      stepPreview,
-      itemPreview,
-    ]
+    [anchorTestView, lessonPreview, chapterPreview, stepPreview, itemPreview]
   );
 
   useEffect(() => {
@@ -214,13 +193,6 @@ export default function CreateLessonDetached(): JSX.Element {
   if (isTransparent) {
     return (
       <>
-        {openRecorder && (
-          <Recorder
-            onFinish={() => {
-              setOpenRecorder(false);
-            }}
-          />
-        )}
         {anchorTestView && (
           <>
             <AnchorTester
@@ -282,19 +254,9 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            <Lesson createRecorder={createRecorder} />
+            <Lesson />
           </div>
-          {currentAnchor !== undefined ? (
-            <div
-              className="anchor-edit"
-              style={{ width: "340px" }}
-              ref={resizeContainerAnchor}
-            >
-              <AnchorEdit anchorId={currentAnchor} />
-            </div>
-          ) : (
-            <></>
-          )}
+          {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>
