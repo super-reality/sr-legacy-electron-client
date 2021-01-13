@@ -11,7 +11,7 @@ import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.
 import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
 import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
 
-import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
+/* import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg"; */
 import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
 // import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
 // import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
@@ -32,7 +32,7 @@ import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
 import Cams from "../../cams";
 import Channels from "../../channels";
-import Help from "../../help";
+import Support from "../../support";
 
 const sidebarIcons = [
   {
@@ -80,7 +80,7 @@ const sidebarIcons = [
   {
     title: "Get Help",
     icon: ButtonHelp,
-    component: <Help />,
+    component: <Support />,
   },
 ];
 
@@ -99,7 +99,7 @@ export default function EditorSidebar() {
     width = "750px";
   }
   if (current == 6) {
-    width = "250px";
+    width = "750px";
   }
 
   const props = useSpring({

@@ -56,7 +56,7 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             <option>Search Skills</option>
           </select>
         </div>
-        <div className="help-buttons">
+        <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back
           </button>

@@ -1,8 +1,8 @@
 import React from "react";
 import { StepSectionProps } from "..";
 
-import PacMan from "../../../../assets/images/pacman.png";
-import ButtonTick from "../../../../assets/svg/button-tick.svg";
+import PacMan from "../../../../../assets/images/pacman.png";
+import ButtonTick from "../../../../../assets/svg/button-tick.svg";
 
 export default function StepProfileSharing(
   props: StepSectionProps

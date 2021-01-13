@@ -45,7 +45,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
 
         <a className="see-more">See more options</a>
 
-        <div className="help-buttons">
+        <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back
           </button>

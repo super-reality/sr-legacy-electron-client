@@ -5,10 +5,10 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
   const { goNext, goBack } = props;
 
   return (
-    <>
+    <div>
       <div className="title">Step 1 of 5</div>
 
-      <div className="step">
+      <div className="step fade">
         <div className="step-title">Title</div>
         <span>Enter the name of your request</span>
         <input type="text" placeholder="I can't animate in Blender!" />
@@ -43,7 +43,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
         <a className="see-more">See more options</a>
 
-        <div className="help-buttons">
+        <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back
           </button>
@@ -52,6 +52,6 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

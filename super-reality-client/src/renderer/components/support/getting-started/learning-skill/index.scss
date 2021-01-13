@@ -1,0 +1,115 @@
+
+
+
+.start-options{
+    display: flex;
+
+    margin: 10px 0;
+
+    .start-option{
+        --height:130px;
+        --width: 150px;
+        height: 130px;
+        width: 150px;
+        border-radius: 5px;
+        background: #323052;
+        padding: 10px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.5s;
+        animation-name: container;
+        animation-duration: .5s;
+
+        .start-option-content{
+            text-align: center;
+            position: relative;
+            
+
+            .option-dot{
+                position: absolute;
+                top: 0;
+                right: 0;
+                margin-right:-25%;
+                margin-top:-25% ;
+                height: 8px;
+                width: 8px;
+                --height: 8px;
+                --width: 8px;
+                border-radius: 50%;
+                background:#8A88C3;
+                animation-name: container;
+                animation-duration: .5s;
+                
+            }
+            img{
+                width: 30px;
+                --width:30px;
+                --height:auto;
+                margin-bottom:10px ;
+                animation-name: container;
+                animation-duration: .5s;
+            }
+            .start-option-content-title{
+                font-size: 11px;
+                --font-size: 11px;
+                font-weight: bold;
+                color: #8A88C3;
+                margin-bottom: 10px;
+                transition: all 0.5s;
+                animation-name: text;
+                animation-duration: .5s;
+                
+            }
+            .start-option-content-description{
+                font-size: 10px;
+                --font-size: 10px;
+                font-weight: bold;
+                color: #8A88C3;
+                transition: all 0.5s;
+                animation-name: text ;
+                animation-duration: .5s;
+                
+            }
+        }
+        
+
+        &:nth-child(2) {
+            margin-left: 10px;
+        }
+    }
+
+    .selected{
+        background: #585286 ;
+        .start-option-content{
+
+            .option-dot{
+                background:#D330B6;
+            }
+
+            .start-option-content-title{
+                color: #c2c2c2;
+            }
+            .start-option-content-description{
+                
+                color: #c2c2c2;
+                
+            }
+        }
+    }
+}
+
+@keyframes container {
+    from {height: 0px;
+        width: 0px;
+    font-size: 0;}
+    to {height: var(--height);
+        width: var(--width);
+        font-size: var(--font-size);
+    }
+  }
+@keyframes text {
+    from {font-size: 0;}
+    to {font-size: var(--font-size);}
+}

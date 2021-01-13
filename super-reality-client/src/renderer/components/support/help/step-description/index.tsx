@@ -24,7 +24,7 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
             <span>drag or upload request images</span>.
           </label>
         </div>
-        <div className="help-buttons">
+        <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back
           </button>
