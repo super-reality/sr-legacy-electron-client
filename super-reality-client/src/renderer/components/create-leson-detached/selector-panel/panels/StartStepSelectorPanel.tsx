@@ -50,6 +50,7 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
         "Text Found",
         "Object Found",
         "GPS Found",
+        "Expression Found",
       ]}
       baseData={
         step?.anchor
