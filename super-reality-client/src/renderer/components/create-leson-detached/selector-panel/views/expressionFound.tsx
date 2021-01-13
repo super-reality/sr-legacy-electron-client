@@ -79,7 +79,7 @@ export function ExpressionFoundList(
       _id: "expression-angry",
       name: "Expression: Angry",
       type: "crop",
-    },    
+    },
     // Kissing face
     {
       templates: [
