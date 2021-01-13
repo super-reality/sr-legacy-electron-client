@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/lib/ReactCrop.scss";
 import "./video-trim.scss";
@@ -17,7 +11,7 @@ import { Rectangle } from "../../types/utils";
 
 export default function usePopupVideoTrim(
   id: string,
-  callback: (rect: Rectangle) => void
+  callback: (rect: Rectangle, from: number, to: number) => void
 ): [() => JSX.Element, () => void, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
 
@@ -25,36 +19,9 @@ export default function usePopupVideoTrim(
     const [nav, setNav] = useState([0, 0, 100]);
     const [videoDuration, setVideoDuration] = useState(100);
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [crop, setCrop] = useState<any>({});
+    const [crop, setCrop] = useState<Rectangle | null>(null);
 
-    const updateCanvas = useCallback(() => {
-      if (videoRef.current && canvasRef.current) {
-        const ctx = canvasRef.current.getContext("2d");
-        canvasRef.current.width = videoRef.current.videoWidth;
-        canvasRef.current.height = videoRef.current.videoHeight;
-        if (ctx) {
-          ctx.drawImage(
-            videoRef.current,
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-          );
-        }
-      }
-    }, [canvasRef, videoRef]);
-
-    useEffect(() => {
-      if (videoRef.current) {
-        videoRef.current.onloadedmetadata = () => {
-          const duration = (videoRef.current?.duration || 0) * 1000;
-          setVideoDuration(duration);
-        };
-      }
-    }, [videoRef.current]);
-
-    const debouncer = useDebounce(250);
+    const debouncer = useDebounce(50);
 
     const debounceVideoNav = useCallback(
       (n: readonly number[]) => {
@@ -66,17 +33,16 @@ export default function usePopupVideoTrim(
               if (videoRef.current) videoRef.current.currentTime = n[i] / 1000;
             }
           });
-
-          updateCanvas();
         });
       },
-      [videoRef, nav, updateCanvas, debouncer]
+      [videoRef, nav, debouncer]
     );
 
     const videoNavDomain = useMemo(() => [0, videoDuration], [videoDuration]);
 
     const Video = (
       <video
+        key={`video-trim-popup${id}`}
         muted
         ref={videoRef}
         /*
@@ -86,27 +52,40 @@ export default function usePopupVideoTrim(
           setNav(newNav);
         }}
         */
+        onLoadedMetadata={(e) => {
+          const duration = (e.currentTarget.duration || 0) * 1000;
+          const newNav = [...nav];
+          newNav[2] = duration;
+          setNav(newNav);
+          setVideoDuration(duration);
+        }}
         onLoadStart={(e) => {
           // You must inform ReactCrop when your media has loaded.
           e.target.dispatchEvent(new Event("medialoaded", { bubbles: true }));
+          const duration = (e.currentTarget.duration || 0) * 1000;
+          setVideoDuration(duration);
         }}
         src={`${recordingPath}/vid-${id}.webm`}
       />
     );
 
     const onDone = useCallback(() => {
-      if (videoRef.current) {
+      if (videoRef.current && crop) {
         const scale =
           videoRef.current.offsetHeight / videoRef.current.videoHeight;
-        callback({
-          x: crop.x / scale,
-          y: crop.y / scale,
-          width: crop.width / scale,
-          height: crop.height / scale,
-        });
+        callback(
+          {
+            x: crop.x / scale,
+            y: crop.y / scale,
+            width: crop.width / scale,
+            height: crop.height / scale,
+          },
+          nav[0],
+          nav[2]
+        );
         close();
       }
-    }, [callback, crop, videoRef]);
+    }, [callback, nav, crop, videoRef]);
 
     return (
       <Popup width="calc(100% - 32px)" height="calc(100% - 32px)">
@@ -121,6 +100,7 @@ export default function usePopupVideoTrim(
           <ReactCrop crop={crop} onChange={setCrop} renderComponent={Video} />
         </div>
         <ButtonSimple
+          disabled={crop?.height == 0 && crop?.width == 0}
           margin="auto"
           width="200px"
           height="24px"
@@ -128,7 +108,7 @@ export default function usePopupVideoTrim(
         >
           Done
         </ButtonSimple>
-        <div>
+        <div style={{ overflow: "hidden" }}>
           <VideoNavigation
             domain={videoNavDomain}
             defaultValues={nav}
