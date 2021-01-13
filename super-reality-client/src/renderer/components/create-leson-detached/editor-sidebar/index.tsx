@@ -34,6 +34,8 @@ import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
 import Cams from "../../cams";
+import client from "../../../feathers";
+import usePopupCreateGroup from "../../../hooks/usePopupCreateGroup";
 // import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
 // import Channels from "../../channels";
 
@@ -174,6 +176,25 @@ export default function EditorSidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
+  const createGroup = (gName: string, gPhoto?: string) => {
+    let groupProps;
+    if (gPhoto) {
+      groupProps = {
+        groupName: gName,
+        groupPhoto: gPhoto,
+      };
+    } else {
+      groupProps = {
+        groupName: gName,
+        groupPhoto: gPhoto,
+      };
+    }
+    (client as any).service("groups").create(groupProps);
+  };
+
+  const [CreateGroupMenu, openGroupPopup] = usePopupCreateGroup({
+    createGroup,
+  });
   return (
     <>
       <div className="sidebar-buttons">
@@ -205,7 +226,14 @@ export default function EditorSidebar() {
 
           <div className="groups">
             <div className="sidebar-group">
-              <div className="open-group" />
+              <div
+                className="open-group"
+                onClick={() => {
+                  setCurrent(2);
+                  setExpanded(!expanded);
+                  setIsChat(!isChat);
+                }}
+              />
             </div>
             <div className="sidebar-group">
               <div className="open-group" />
@@ -224,7 +252,7 @@ export default function EditorSidebar() {
           </div>
 
           <ButtonRound
-            onClick={doPreview}
+            onClick={openGroupPopup}
             width="40px"
             height="40px"
             svg={ButtonSideBarAdd}
@@ -240,10 +268,8 @@ export default function EditorSidebar() {
                 onClick={() => {
                   setCurrent(index);
                   if (index == current || !expanded) setExpanded(!expanded);
-                  if (index == current && icon.title == "Chat") {
-                    console.log("isChat", isChat);
+                  if (index == current && icon.title == "Chat")
                     setIsChat(!isChat);
-                  }
                 }}
                 width="32px"
                 height="32px"
@@ -266,6 +292,7 @@ export default function EditorSidebar() {
       <animated.div style={props} className="sidebar-expanded">
         <div className="sidebar-content">
           {sidebarIcons[current]?.component}
+          <CreateGroupMenu />
         </div>
       </animated.div>
     </>

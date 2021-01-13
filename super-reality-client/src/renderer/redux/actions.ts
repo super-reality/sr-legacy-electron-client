@@ -76,6 +76,7 @@ export const actions = {
   LOGIN_CHAT_ERROR: chatSlice.loginChatError,
   SET_MESSAGES: chatSlice.setMessages,
   SET_USERS: chatSlice.setUsers,
+  SET_GROUPS: chatSlice.setGroups,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
   UPDATE_MESSAGE: chatSlice.updateMessages,
 };

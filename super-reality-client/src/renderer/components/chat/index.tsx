@@ -11,56 +11,67 @@ import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import Channels from "../channels";
 import client from "../../feathers";
+import usePopupMessageMenu from "../../hooks/usePopupMessageMenu";
 
 interface ChatProps {
   users: any[];
   messages: any[];
 }
 
+interface User {
+  createdAt: string;
+  firstname: string;
+  lastname: string;
+  updatedAt: string;
+  username: string;
+  _id: string;
+  avatar?: string;
+}
+
 interface MessageProps {
-  messageProp: any;
+  _id: string;
+  user: User;
+  createdAt: string;
+  text: string;
 }
 
 export function Message(props: MessageProps) {
-  const { messageProp } = props;
-  const { _id, user, createdAt, text } = messageProp;
+  const { _id, user, createdAt, text } = props;
 
-  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [isHover, setIsHover] = useState<boolean>(false);
   const [textEdit, setTextEdit] = useState("");
   const [edit, setEdit] = useState<boolean>(false);
+  const dotsRef = useRef<HTMLDivElement>(null);
 
-  const openMessageMenu = () => {
-    setOpenMenu(true);
+  const showMessageMenu = () => {
+    setIsHover(true);
   };
 
-  const closeMessageMenu = () => {
-    setOpenMenu(false);
+  const hideMessageMenu = () => {
+    setIsHover(false);
   };
+
   const onTextChange = (e: any) => {
     const message = e.target.value;
     setTextEdit(message);
   };
 
-  const messageTime = (unixTimestam: number) => {
-    // const milliseconds = unixTimestam * 1000; // 1575909015000
-
-    // const dateObject = new Date(milliseconds);
+  // convert creation time in needed format
+  const messageTime = (unixTimestam: number | string) => {
+    // convert time using moment.js lib
     const dateObject = moment(unixTimestam).calendar();
-
-    // const humanDateFormat = dateObject.toLocaleString();
-    console.log("date converted:", dateObject);
-
+    // console.log("date converted:", dateObject);
     return dateObject;
   };
 
   // delete message function
-  const removeMessage = (id: string) => {
-    (client as any).service("messages").remove(id);
+  const removeMessage = () => {
+    (client as any).service("messages").remove(_id);
   };
 
   // edit message
-  const startEditMessage = (oldMessage: string) => {
-    setTextEdit(oldMessage);
+  const startEditMessage = () => {
+    setTextEdit(text);
     setEdit(true);
   };
 
@@ -71,7 +82,6 @@ export function Message(props: MessageProps) {
     });
     setEdit(false);
     setTextEdit("");
-    setOpenMenu(false);
   };
 
   const handleEnterDownEdit = (
@@ -81,83 +91,49 @@ export function Message(props: MessageProps) {
     if (e.key === "Enter") {
       submitEditMessage(id, textEdit);
       setTextEdit("");
-      setOpenMenu(false);
     }
   };
   const cancelEditingMessage = () => {
     setEdit(false);
     setTextEdit("");
-    setOpenMenu(false);
   };
+
+  const yPosition = dotsRef.current?.offsetTop;
+  const xPosition = dotsRef.current?.offsetLeft;
+  // Popup menu
+  const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
+    removeMessage,
+    startEditMessage,
+    yPosition,
+    xPosition,
+  });
+  console.log(user.avatar);
   return (
     <div className="single-chat" key={_id}>
-      <img className="avatar" src={DefaultIcon} alt="sonic" />
+      <img className="avatar" src={user.avatar || DefaultIcon} alt="avatar" />
       <div className="info">
-        <div className="user">{user.email}</div>
+        <div className="user">{user.username}</div>
         <div className="timestamp">{messageTime(createdAt)}</div>
       </div>
       {!edit ? (
-        <div className="message-box">
-          <div className="message">{text}</div>
-          {openMenu ? (
-            <ul>
-              <li>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    removeMessage(_id);
-                  }}
-                >
-                  del
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    startEditMessage(text);
-                  }}
-                >
-                  edit
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  style={{
-                    cursor: "pointer",
-                    color: "var(--color-text)",
-                  }}
-                  onClick={() => {
-                    closeMessageMenu();
-                  }}
-                >
-                  close menu
-                </button>
-              </li>
-            </ul>
-          ) : (
+        <div
+          className="message-box"
+          onMouseEnter={showMessageMenu}
+          onMouseLeave={hideMessageMenu}
+        >
+          <div className="message" ref={dotsRef}>
+            {text}
+          </div>
+          <PopupMenu />
+          {isHover ? (
             <button
               type="button"
-              style={{
-                cursor: "pointer",
-                color: "var(--color-text)",
-              }}
-              onClick={() => {
-                openMessageMenu();
-              }}
+              className="dots-menu"
+              onClick={openMessagePopup}
             >
               ...
             </button>
-          )}
+          ) : null}
         </div>
       ) : (
         <div className="chat-input">
@@ -203,6 +179,7 @@ export function Message(props: MessageProps) {
 export function Chat(props: ChatProps) {
   const { users, messages } = props;
   const [textMessage, setTextMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const onTextChange = (e: any) => {
     const message = e.target.value;
@@ -234,7 +211,6 @@ export function Chat(props: ChatProps) {
       setTextMessage("");
     }
   };
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     if (messagesEndRef && messagesEndRef.current) {
@@ -255,9 +231,16 @@ export function Chat(props: ChatProps) {
       <div className="title">Chat</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages.map((messageObject) => {
+          {messages.map((messageObject: any) => {
+            const { _id, user, createdAt, text } = messageObject;
             return (
-              <Message key={messageObject._id} messageProp={messageObject} />
+              <Message
+                key={_id}
+                _id={_id}
+                user={user}
+                createdAt={createdAt}
+                text={text}
+              />
             );
           })}
         </div>

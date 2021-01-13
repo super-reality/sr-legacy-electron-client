@@ -6,6 +6,7 @@ const initialState = {
   loginData: {} as Record<string, unknown>,
   messages: [] as any[],
   users: [] as any[],
+  groups: [] as any[],
 };
 
 type ChatState = typeof initialState;
@@ -47,6 +48,9 @@ const chatSlice = createSlice({
     setUsers: (state: ChatState, action: PayloadAction<string[]>): void => {
       state.users = action.payload;
     },
+    setGroups: (state: ChatState, action: PayloadAction<string[]>): void => {
+      state.groups = action.payload;
+    },
   },
 });
 
@@ -56,6 +60,7 @@ export const {
   setChatLoginData,
   setMessages,
   setUsers,
+  setGroups,
   updateMessages,
 } = chatSlice.actions;
 

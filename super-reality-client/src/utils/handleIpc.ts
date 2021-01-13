@@ -80,6 +80,7 @@ export default function handleIpc(): void {
     createBackgroundProcess();
   });
 
+  // chat listeners
   // message created listener
   const onMessagesUpdateListener = (newMessage: any, stateMessages: any[]) => {
     console.log("message created", newMessage, "messages", stateMessages);
@@ -100,6 +101,16 @@ export default function handleIpc(): void {
     reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: [] });
     reduxAction(store.dispatch, { type: "SET_USERS", arg: [] });
   };
+
+  // groups listeners functions
+  const onGroupCreatedListener = (newGroup: any, stateGroups: any[]) => {
+    const updatedGroups = stateGroups.concat(newGroup);
+    reduxAction(store.dispatch, {
+      type: "SET_GROUPS",
+      arg: updatedGroups,
+    });
+  };
+
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
     setFocusable(true);
@@ -107,21 +118,12 @@ export default function handleIpc(): void {
     setMaximize(true);
     setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
-    // chat first requests and listeners
-    // (client as any)
-    //   .authenticate()
-    //   .then((res: any) => {
-    //     console.log("whohooo chat reAuth login", res);
-    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-    //   })
-    //   .catch((err: any) => {
-    //     console.log("chat jwt login error", err);
-    //     (client as any).logout();
-    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-    //   });
+
+    // cha requests and listeners
 
     const messagesClient = client.service("messages");
     const usersClient = client.service("users");
+    const groupsClient = client.service("groups");
 
     // On successfull login
     console.log("authenticated listener");
@@ -136,18 +138,22 @@ export default function handleIpc(): void {
           },
         }),
         usersClient.find(),
+        groupsClient.find(),
       ])
-        .then(([messagePage, userPage]) => {
+        .then(([messagesResult, usersResult, groupsResult]) => {
           // We want the latest messages but in the reversed order
-          const uploadedMessages = messagePage.data.reverse();
-          const uploadedUsers = userPage.data;
+          const uploadedMessages = messagesResult.data.reverse();
+          const uploadedUsers = usersResult.data;
+          const uploadedGroups = groupsResult.data;
           console.log(
             "login",
             login,
             "messages",
             uploadedMessages,
             "users",
-            uploadedUsers
+            uploadedUsers,
+            "groups",
+            uploadedGroups
           );
           // Once both return, update the state
           reduxAction(store.dispatch, {
@@ -162,6 +168,10 @@ export default function handleIpc(): void {
             type: "SET_USERS",
             arg: uploadedUsers,
           });
+          reduxAction(store.dispatch, {
+            type: "SET_GROUPS",
+            arg: uploadedGroups,
+          });
           // chat listeners
 
           // messages created listener clean up
@@ -173,11 +183,6 @@ export default function handleIpc(): void {
           });
           // edit message listener
           messagesClient.on("patched", (params: any) => {
-            // const { chat } = store.getState();
-
-            // const filteredMessages = chat.messages.filter(
-            //   ({ _id }) => _id != params._id
-            // );
             console.log("MESSAGE PATCHED EVENT", params);
             reduxAction(store.dispatch, {
               type: "UPDATE_MESSAGE",
@@ -206,6 +211,15 @@ export default function handleIpc(): void {
           usersClient.on("created", (user: any) => {
             const { chat } = store.getState();
             onUserCreatedListener(user, chat.users);
+          });
+
+          // groups listeners
+          // groups listeners clean up
+          groupsClient.off("created", onGroupCreatedListener);
+          groupsClient.on("created", (group: any) => {
+            console.log(group);
+            const { groups } = store.getState().chat;
+            onGroupCreatedListener(group, groups);
           });
         })
         .catch((err) => {
