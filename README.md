@@ -2,13 +2,15 @@
 
 ## Installing
 
-1. `npm install`
+1. switch to or branch from `develop`
 
-2. if not installed; `npm install foreman -g`
+2. `npm install` (make sure to use Node 12.14.0, see [troubleshooting](#troubleshooting))
 
-3. run `npm run electron-rebuild`
+3. if not installed; `npm install foreman -g`
 
-4. run `pre-build-iohook`
+4. run `npm run electron-rebuild`
+
+5. run `npm run pre-build-iohook-win`
 
 
 ## Run from source
@@ -59,3 +61,11 @@ All visual tests are declared in `src/__tests__/electron.ts` and the code for th
 Try to keep `develop` in a buildable and runnable state.
 
 Merging to `master` triggers automatic version bump.
+
+## Troubleshooting
+
+- Node 12.14.0 is required, you can use [nvm-windows](https://github.com/coreybutler/nvm-windows#installation--upgrades) or [nvm](https://github.com/nvm-sh/nvm) to manage multiple versions of Node
+  - Download the nvm installer
+  - In a new command prompt, install Node: `nvm install 12.14.0`
+  - After that, use that version: `nvm use 12.14.0`
+- If you get an error about not being able to find the `/fx` folder try running `npm run electron-build` again
