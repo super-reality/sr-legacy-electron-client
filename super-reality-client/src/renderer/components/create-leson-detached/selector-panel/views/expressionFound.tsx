@@ -1,44 +1,25 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import "./imageFound.scss";
-import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
-import { AppState } from "../../../../redux/stores/renderer";
 import AnchorEdit from "../../anchor-edit";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
 import AnchorCommands from "../../../anchor-commands";
 import useAnchor from "../../hooks/useAnchor";
-import ButtonSimple from "../../../button-simple";
-import reduxAction from "../../../../redux/reduxAction";
 
 export interface ExpressionFoundTypeValue {
   type: "Expression Found";
   value: string;
 }
 
+/**
+ * Expression list in Start Step When
+ */
 export function ExpressionFoundList(
   props: BasePanelViewProps<ExpressionFoundTypeValue>
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { select, data, open } = props;
-  const dispatch = useDispatch();
-
-  const { treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-
-  const anchors = useMemo(
-    () => Object.keys(treeAnchors).map((a) => treeAnchors[a]),
-    [treeAnchors]
-  );
-
-  const setCreateAnchorMode = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: { previewMode: "CREATE_ANCHOR" },
-    });
-  }, [dispatch]);
 
   const doUnCheck = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -48,6 +29,57 @@ export function ExpressionFoundList(
     [select]
   );
 
+  // Anchors
+  // @todo Replace these link with Super Reality ones
+  const anchors: IAnchor[] = [
+    {
+      templates: [
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/smirking-face_1f60f.png",
+      ],
+      anchorFunction: "or",
+      cvMatchValue: 900,
+      cvCanvas: 190,
+      cvDelay: 50,
+      cvGrayscale: true,
+      cvApplyThreshold: false,
+      cvThreshold: 224,
+      _id: "expression-smirk",
+      name: "Expression: Smirk",
+      type: "crop",
+    },
+    {
+      templates: [
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/winking-face_1f609.png",
+      ],
+      anchorFunction: "or",
+      cvMatchValue: 900,
+      cvCanvas: 190,
+      cvDelay: 50,
+      cvGrayscale: true,
+      cvApplyThreshold: false,
+      cvThreshold: 224,
+      _id: "expression-wink",
+      name: "Expression: Wink",
+      type: "crop",
+    },
+    {
+      templates: [
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/face-with-open-mouth_1f62e.png",
+      ],
+      anchorFunction: "or",
+      cvMatchValue: 900,
+      cvCanvas: 190,
+      cvDelay: 50,
+      cvGrayscale: true,
+      cvApplyThreshold: false,
+      cvThreshold: 224,
+      _id: "expression-surprised",
+      name: "Expression: Surprised",
+      type: "crop",
+    },
+  ];
+
+  // Filters
   const filterFn = (a: IAnchor) =>
     data.filter((d) => d.type == "Expression Found" && d.value == a._id)[0];
   const filterFnCheck = (a: IAnchor) => !!filterFn(a);
@@ -55,9 +87,6 @@ export function ExpressionFoundList(
 
   return (
     <>
-      <ButtonSimple width="200px" height="24px" onClick={setCreateAnchorMode}>
-        Create new
-      </ButtonSimple>
       <div className="panel-subtitle">Active</div>
       {anchors.filter(filterFnCheck).map((a) => (
         <ImageCheckbox
