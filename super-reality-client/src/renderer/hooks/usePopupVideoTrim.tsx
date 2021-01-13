@@ -87,7 +87,7 @@ export default function usePopupVideoTrim(
     }, [callback, nav, crop, videoRef]);
 
     return (
-      <Popup width="calc(100% - 32px)" height="calc(100% - 32px)">
+      <Popup width="calc(100% - 128px)" height="calc(100% - 128px)">
         <div
           style={{
             height: "calc(100% - 240px)",
