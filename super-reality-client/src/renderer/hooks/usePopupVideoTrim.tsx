@@ -38,35 +38,34 @@ export default function usePopupVideoTrim(
       [videoRef, nav, debouncer]
     );
 
-    const videoNavDomain = useMemo(() => [0, videoDuration], [videoDuration]);
-
-    const Video = (
-      <video
-        key={`video-trim-popup${id}`}
-        muted
-        ref={videoRef}
-        /*
+    const Video = useMemo(
+      () => (
+        <video
+          key={`trim-popup-video-${id}`}
+          muted
+          ref={videoRef}
+          /*
         onTimeUpdate={(e) => {
           const newNav = [...nav];
           newNav[1] = e.currentTarget.currentTime * 1000;
           setNav(newNav);
         }}
         */
-        onLoadedMetadata={(e) => {
-          const duration = (e.currentTarget.duration || 0) * 1000;
-          const newNav = [...nav];
-          newNav[2] = duration;
-          setNav(newNav);
-          setVideoDuration(duration);
-        }}
-        onLoadStart={(e) => {
-          // You must inform ReactCrop when your media has loaded.
-          e.target.dispatchEvent(new Event("medialoaded", { bubbles: true }));
-          const duration = (e.currentTarget.duration || 0) * 1000;
-          setVideoDuration(duration);
-        }}
-        src={`${recordingPath}/vid-${id}.webm`}
-      />
+          onLoadedMetadata={(e) => {
+            const duration = (e.currentTarget.duration || 0) * 1000;
+            const newNav = [...nav];
+            newNav[2] = duration;
+            setNav(newNav);
+            setVideoDuration(duration);
+          }}
+          onLoadStart={(e) => {
+            // You must inform ReactCrop when your media has loaded.
+            e.target.dispatchEvent(new Event("medialoaded", { bubbles: true }));
+          }}
+          src={`${recordingPath}/vid-${id}.webm`}
+        />
+      ),
+      [id]
     );
 
     const onDone = useCallback(() => {
@@ -110,7 +109,7 @@ export default function usePopupVideoTrim(
         </ButtonSimple>
         <div style={{ overflow: "hidden" }}>
           <VideoNavigation
-            domain={videoNavDomain}
+            domain={[0, videoDuration]}
             defaultValues={nav}
             ticksNumber={100}
             callback={debounceVideoNav}
