@@ -4,6 +4,10 @@ import ButtonCheckbox from "../button-checkbox";
 import useBasePanel from "./useBasePanel";
 import { ImageFoundList, ImageFoundView } from "./views/imageFound";
 import { RecordingsList, RecordingsView } from "./views/recordings";
+import {
+  ExpressionFoundList,
+  ExpressionFoundView,
+} from "./views/expressionFound";
 
 interface TypeIdSelectorPanelProps {
   title: string;
@@ -61,6 +65,9 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;
 
+  /**
+   * Updates the view based on the clicked button
+   */
   switch (dataType) {
     // Canvas
     case "Recording":
@@ -71,6 +78,10 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     case "Image Found":
       ListView = ImageFoundList;
       SingleView = ImageFoundView;
+      break;
+    case "Expression Found":
+      ListView = ExpressionFoundList;
+      SingleView = ExpressionFoundView;
       break;
     default:
       break;
