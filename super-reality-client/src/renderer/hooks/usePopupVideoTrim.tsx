@@ -13,9 +13,11 @@ import VideoNavigation from "../components/create-leson-detached/video-navigatio
 import { recordingPath } from "../electron-constants";
 import useDebounce from "./useDebounce";
 import usePopup from "./usePopup";
+import { Rectangle } from "../../types/utils";
 
 export default function usePopupVideoTrim(
-  id: string
+  id: string,
+  callback: (rect: Rectangle) => void
 ): [() => JSX.Element, () => void, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
 
@@ -25,7 +27,6 @@ export default function usePopupVideoTrim(
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [crop, setCrop] = useState<any>({});
-    const [cropSource, setCropSource] = useState<Blob | string | null>(null);
 
     const updateCanvas = useCallback(() => {
       if (videoRef.current && canvasRef.current) {
@@ -40,17 +41,6 @@ export default function usePopupVideoTrim(
             canvasRef.current.width,
             canvasRef.current.height
           );
-
-          setCropSource(canvasRef.current.toDataURL("image/jpeg"));
-          /*
-          canvasRef.current.toBlob(
-            (blob) => {
-              setCropSource(blob);
-            },
-            "image/jpeg",
-            1
-          );
-          */
         }
       }
     }, [canvasRef, videoRef]);
@@ -85,36 +75,58 @@ export default function usePopupVideoTrim(
 
     const videoNavDomain = useMemo(() => [0, videoDuration], [videoDuration]);
 
+    const Video = (
+      <video
+        muted
+        ref={videoRef}
+        /*
+        onTimeUpdate={(e) => {
+          const newNav = [...nav];
+          newNav[1] = e.currentTarget.currentTime * 1000;
+          setNav(newNav);
+        }}
+        */
+        onLoadStart={(e) => {
+          // You must inform ReactCrop when your media has loaded.
+          e.target.dispatchEvent(new Event("medialoaded", { bubbles: true }));
+        }}
+        src={`${recordingPath}/vid-${id}.webm`}
+      />
+    );
+
+    const onDone = useCallback(() => {
+      if (videoRef.current) {
+        const scale =
+          videoRef.current.offsetHeight / videoRef.current.videoHeight;
+        callback({
+          x: crop.x / scale,
+          y: crop.y / scale,
+          width: crop.width / scale,
+          height: crop.height / scale,
+        });
+        close();
+      }
+    }, [callback, crop, videoRef]);
+
     return (
-      <Popup
-        style={{ overflow: "auto" }}
-        width="calc(100% - 32px)"
-        height="calc(100% - 32px)"
-      >
+      <Popup width="calc(100% - 32px)" height="calc(100% - 32px)">
         <div
           style={{
             height: "calc(100% - 240px)",
             margin: "32px auto",
             width: "fit-content",
+            overflow: "hidden",
           }}
         >
-          <ReactCrop
-            src={cropSource}
-            crop={crop}
-            onChange={(newCrop: any) => {
-              console.log(newCrop);
-              setCrop(newCrop);
-            }}
-          />
-          <canvas ref={canvasRef} style={{ display: "none" }} />
-          <video
-            style={{ display: "none" }}
-            ref={videoRef}
-            src={`${recordingPath}/vid-${id}.webm`}
-          />
+          <ReactCrop crop={crop} onChange={setCrop} renderComponent={Video} />
         </div>
-        <ButtonSimple width="200px" height="24px">
-          Dont
+        <ButtonSimple
+          margin="auto"
+          width="200px"
+          height="24px"
+          onClick={onDone}
+        >
+          Done
         </ButtonSimple>
         <div>
           <VideoNavigation

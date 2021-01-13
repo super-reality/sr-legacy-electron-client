@@ -1,10 +1,11 @@
 .ReactCrop {
   overflow: hidden;
+  height: 100%;
 
   div {
     height: 100%;
 
-    img {
+    video {
       height: 100%;
     }
   }

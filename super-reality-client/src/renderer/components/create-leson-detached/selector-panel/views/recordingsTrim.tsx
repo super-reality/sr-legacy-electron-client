@@ -183,7 +183,15 @@ export function RecordingsTrimView(
     }
   }, [videoRef.current]);
 
-  const [TrimPopup, doOpenTrimmer, _doCloseTrimmer] = usePopupVideoTrim(id);
+  /*
+  const callback = useCallback((rect: Rectangle) => {
+  })
+  */
+
+  const [TrimPopup, doOpenTrimmer, _doCloseTrimmer] = usePopupVideoTrim(
+    id,
+    console.log
+  );
 
   return (
     <>
