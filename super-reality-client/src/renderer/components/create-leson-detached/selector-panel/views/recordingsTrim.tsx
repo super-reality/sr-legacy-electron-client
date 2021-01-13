@@ -23,6 +23,8 @@ import useDebounce from "../../../../hooks/useDebounce";
 import sha1 from "../../../../../utils/sha1";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import usePopupVideoTrim from "../../../../hooks/usePopupVideoTrim";
+import ButtonSimple from "../../../button-simple";
 
 export function RecordingsTrimList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
@@ -181,6 +183,8 @@ export function RecordingsTrimView(
     }
   }, [videoRef.current]);
 
+  const [TrimPopup, doOpenTrimmer, _doCloseTrimmer] = usePopupVideoTrim(id);
+
   return (
     <>
       <div>
@@ -191,6 +195,12 @@ export function RecordingsTrimView(
           src={`${recordingPath}/vid-${id}.webm`}
         />
       </div>
+      <div>
+        <TrimPopup key={id} />
+      </div>
+      <ButtonSimple width="200px" height="24px" onClick={doOpenTrimmer}>
+        Trim
+      </ButtonSimple>
       <BaseSlider
         domain={[0, duration]}
         step={100}
