@@ -133,6 +133,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
                         (d) => !dataIds[t].includes(d.type)
                       );
                       setData(filtered);
+                      callback(filtered);
                     } else doCallback(t, null);
                   }}
                 />
