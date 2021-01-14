@@ -7,7 +7,7 @@ import { ReactComponent as ResetIcon } from "../../../assets/svg/restart.svg";
 import { ReactComponent as PlayIcon } from "../../../assets/svg/play.svg";
 import ButtonRound from "../button-round";
 import Flex from "../flex";
-import ReactSelect from "../top-select";
+import ReactSelect from "../react-select";
 import Windowlet from "../windowlet";
 import CVRecorder from "./CVRecorder";
 
