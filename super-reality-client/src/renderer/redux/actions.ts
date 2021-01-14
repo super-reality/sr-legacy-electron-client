@@ -76,9 +76,13 @@ export const actions = {
   LOGIN_CHAT_ERROR: chatSlice.loginChatError,
   SET_MESSAGES: chatSlice.setMessages,
   SET_USERS: chatSlice.setUsers,
+  UPDATE_CHAT_USERS: chatSlice.updateChatUsers,
   SET_GROUPS: chatSlice.setGroups,
+  ADD_GROUP: chatSlice.addNewGroup,
+  UPDATE_GROUP: chatSlice.updateGroup,
+  DELETE_GROUP: chatSlice.deleteGroup,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
-  UPDATE_MESSAGE: chatSlice.updateMessages,
+  UPDATE_MESSAGE: chatSlice.updateMessage,
 };
 
 export type ActionKeys = keyof typeof actions;

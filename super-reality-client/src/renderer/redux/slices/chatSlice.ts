@@ -1,15 +1,26 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Group, ChatUser, Message } from "../../../types/chat";
 
 const initialState = {
   isChatAuth: false,
-  loginData: {} as Record<string, unknown>,
-  messages: [] as any[],
-  users: [] as any[],
-  groups: [] as any[],
+  loginData: {} as any,
+  messages: [] as Message[],
+  users: [] as ChatUser[],
+  groups: [] as Group[],
 };
 
 type ChatState = typeof initialState;
+
+const updateArray = (arrayToChange: any[], newItem: any) => {
+  const newItemId = arrayToChange.findIndex(({ _id }) => _id == newItem._id);
+  const updatedState = [
+    ...arrayToChange.slice(0, newItemId),
+    newItem,
+    ...arrayToChange.slice(newItemId + 1),
+  ];
+  return updatedState;
+};
 
 const chatSlice = createSlice({
   name: "chat",
@@ -21,35 +32,52 @@ const chatSlice = createSlice({
     loginChatError: (state: ChatState, _action: PayloadAction<null>): void => {
       state.isChatAuth = false;
     },
-    setChatLoginData: (
-      state: ChatState,
-      action: PayloadAction<Record<string, unknown>>
-    ): void => {
+    setChatLoginData: (state: ChatState, action: PayloadAction<any>): void => {
       state.loginData = action.payload;
     },
-    setMessages: (state: ChatState, action: PayloadAction<string[]>): void => {
+    updateUser: (state: ChatState, action: PayloadAction<any>): void => {
+      state.loginData.user = action.payload;
+    },
+    setMessages: (state: ChatState, action: PayloadAction<Message[]>): void => {
       state.messages = action.payload;
     },
-    updateMessages: (
-      state: ChatState,
-      action: PayloadAction<Record<string, unknown>>
-    ): void => {
-      const { messages } = state;
-      const messageId = messages.findIndex(
-        ({ _id }) => _id == action.payload._id
-      );
-      const updatedMessages = [
-        ...messages.slice(0, messageId),
-        action.payload,
-        ...messages.slice(messageId + 1),
-      ];
-      state.messages = updatedMessages;
+    updateMessage: (state: ChatState, action: PayloadAction<Message>): void => {
+      state.messages = updateArray(state.messages, action.payload);
     },
-    setUsers: (state: ChatState, action: PayloadAction<string[]>): void => {
+    setUsers: (state: ChatState, action: PayloadAction<ChatUser[]>): void => {
       state.users = action.payload;
     },
-    setGroups: (state: ChatState, action: PayloadAction<string[]>): void => {
+    updateChatUsers: (
+      state: ChatState,
+      action: PayloadAction<ChatUser>
+    ): void => {
+      state.users = updateArray(state.users, action.payload);
+    },
+
+    setGroups: (state: ChatState, action: PayloadAction<Group[]>): void => {
       state.groups = action.payload;
+    },
+    addNewGroup: (state: ChatState, action: PayloadAction<Group>): void => {
+      const updatedGroups = state.groups.concat(action.payload);
+      state.groups = updatedGroups;
+    },
+    updateGroup: (state: ChatState, action: PayloadAction<Group>): void => {
+      const { groups } = state;
+      // const groupId = groups.findIndex(
+      //   ({ _id }) => _id == action.payload._id
+      // );
+      // const updatedCollectives = [
+      //   ...collectives.slice(0, collectiveId),
+      //   action.payload,
+      //   ...collectives.slice(collectiveId + 1),
+      // ];
+      state.groups = updateArray(groups, action.payload);
+    },
+    deleteGroup: (state: ChatState, action: PayloadAction<Group>): void => {
+      const filteredGroups = state.groups.filter(
+        ({ _id }) => _id != action.payload._id
+      );
+      state.groups = filteredGroups;
     },
   },
 });
@@ -58,10 +86,15 @@ export const {
   loginChatSucces,
   loginChatError,
   setChatLoginData,
+  updateUser,
   setMessages,
+  updateMessage,
   setUsers,
+  updateChatUsers,
   setGroups,
-  updateMessages,
+  addNewGroup,
+  updateGroup,
+  deleteGroup,
 } = chatSlice.actions;
 
 export default chatSlice;

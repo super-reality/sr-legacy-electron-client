@@ -9,17 +9,18 @@ import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
 import TeacherBot from "../../../assets/svg/teacher-bot.svg";
 import { ReactComponent as Support } from "../../../assets/svg/support.svg";
+import { Group } from "../../../types/chat";
 
 export default function Channels(): JSX.Element {
   const { groups } = useSelector((state: AppState) => state.chat);
   return (
     <div className="channel">
       <div className="channel-container">
-        {groups.map((group: any) => {
+        {groups.map((group: Group) => {
           return (
             <div className="single-channel" key={group._id}>
-              <img className="avatar" src={group.groupPhoto} alt="" />
-              <div className="info">{group.groupName}</div>
+              <img className="avatar" src={group.collectivePhoto} alt="" />
+              <div className="info">{group.collectiveName}</div>
             </div>
           );
         })}

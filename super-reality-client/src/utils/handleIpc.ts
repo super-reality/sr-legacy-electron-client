@@ -1,5 +1,4 @@
 import pythonExecute from "../background/pythonExecute";
-import client from "../renderer/feathers";
 import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
 import {
@@ -9,6 +8,7 @@ import {
   IpcMsgPythocExec,
   IpcMsgPythocResponse,
 } from "../types/ipc";
+import { onAuthenticated } from "./chat-utils/listeners";
 import createBackgroundProcess from "./createBackgroundProcess";
 
 import getWindowId from "./electron/getWindowId";
@@ -80,37 +80,6 @@ export default function handleIpc(): void {
     createBackgroundProcess();
   });
 
-  // chat listeners
-  // message created listener
-  const onMessagesUpdateListener = (newMessage: any, stateMessages: any[]) => {
-    console.log("message created", newMessage, "messages", stateMessages);
-    const newMessages = [...stateMessages, newMessage];
-    reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessages });
-  };
-
-  const onUserCreatedListener = (newUser: any, stateUsers: any[]) => {
-    const updatedUsers = stateUsers.concat(newUser);
-    reduxAction(store.dispatch, {
-      type: "SET_USERS",
-      arg: updatedUsers,
-    });
-  };
-  const logoutListener = () => {
-    console.log("logout");
-    reduxAction(store.dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-    reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: [] });
-    reduxAction(store.dispatch, { type: "SET_USERS", arg: [] });
-  };
-
-  // groups listeners functions
-  const onGroupCreatedListener = (newGroup: any, stateGroups: any[]) => {
-    const updatedGroups = stateGroups.concat(newGroup);
-    reduxAction(store.dispatch, {
-      type: "SET_GROUPS",
-      arg: updatedGroups,
-    });
-  };
-
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
     setFocusable(true);
@@ -119,118 +88,8 @@ export default function handleIpc(): void {
     setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
 
-    // cha requests and listeners
-
-    const messagesClient = client.service("messages");
-    const usersClient = client.service("users");
-    const groupsClient = client.service("groups");
-
-    // On successfull login
-    console.log("authenticated listener");
-    client.on("authenticated", (login) => {
-      // Get all users and messages
-      console.log("authenticated listener start. login:", login);
-      Promise.all([
-        messagesClient.find({
-          query: {
-            $sort: { createdAt: -1 },
-            $limit: 25,
-          },
-        }),
-        usersClient.find(),
-        groupsClient.find(),
-      ])
-        .then(([messagesResult, usersResult, groupsResult]) => {
-          // We want the latest messages but in the reversed order
-          const uploadedMessages = messagesResult.data.reverse();
-          const uploadedUsers = usersResult.data;
-          const uploadedGroups = groupsResult.data;
-          console.log(
-            "login",
-            login,
-            "messages",
-            uploadedMessages,
-            "users",
-            uploadedUsers,
-            "groups",
-            uploadedGroups
-          );
-          // Once both return, update the state
-          reduxAction(store.dispatch, {
-            type: "SET_CHAT_LOGIN_DATA",
-            arg: login,
-          });
-          reduxAction(store.dispatch, {
-            type: "SET_MESSAGES",
-            arg: uploadedMessages,
-          });
-          reduxAction(store.dispatch, {
-            type: "SET_USERS",
-            arg: uploadedUsers,
-          });
-          reduxAction(store.dispatch, {
-            type: "SET_GROUPS",
-            arg: uploadedGroups,
-          });
-          // chat listeners
-
-          // messages created listener clean up
-          messagesClient.off("created", onMessagesUpdateListener);
-          // add new message to the redux state
-          messagesClient.on("created", (message: any) => {
-            const { chat } = store.getState();
-            onMessagesUpdateListener(message, chat.messages);
-          });
-          // edit message listener
-          messagesClient.on("patched", (params: any) => {
-            console.log("MESSAGE PATCHED EVENT", params);
-            reduxAction(store.dispatch, {
-              type: "UPDATE_MESSAGE",
-              arg: params,
-            });
-          });
-
-          // messages removed listener clean up
-          // messagesClient.off("removed", onMessagesUpdateListener);
-          messagesClient.on("removed", (message: any) => {
-            const { chat } = store.getState();
-            console.log("removed", message);
-            const updatedMessages = chat.messages.filter(
-              ({ _id }) => _id != message._id
-            );
-            console.log("remove message state", updatedMessages);
-            reduxAction(store.dispatch, {
-              type: "SET_MESSAGES",
-              arg: updatedMessages,
-            });
-          });
-
-          // users listener clean up
-          usersClient.off("created", onUserCreatedListener);
-          // Add new users to the user list
-          usersClient.on("created", (user: any) => {
-            const { chat } = store.getState();
-            onUserCreatedListener(user, chat.users);
-          });
-
-          // groups listeners
-          // groups listeners clean up
-          groupsClient.off("created", onGroupCreatedListener);
-          groupsClient.on("created", (group: any) => {
-            console.log(group);
-            const { groups } = store.getState().chat;
-            onGroupCreatedListener(group, groups);
-          });
-        })
-        .catch((err) => {
-          console.log("on authenticated", err);
-        });
-    });
-
-    client.on("logout", () => {
-      console.log("logout");
-      logoutListener();
-    });
+    // chat requests and listeners
+    onAuthenticated();
   });
 
   ipcRenderer.removeAllListeners("detached");
