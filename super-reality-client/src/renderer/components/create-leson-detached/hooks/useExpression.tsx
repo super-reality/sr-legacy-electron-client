@@ -6,7 +6,7 @@ import { IAnchor } from "../../../api/types/anchor/anchor";
  * but it will eventually which is why it's located here for now
  */
 // @todo Replace these link with Super Reality ones
-const expressions: IAnchor[] = [
+export const expressions: IAnchor[] = [
   // Happy
   {
     templates: [
@@ -105,4 +105,10 @@ const expressions: IAnchor[] = [
   },
 ];
 
-export default expressions;
+/**
+ * Gets an expression by id
+ * @param anchorId {string} The ID to lookup
+ */
+export function useExpression(anchorId: string) {
+  return expressions.find((expression) => expression._id === anchorId);
+}

@@ -7,7 +7,7 @@ import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
 import AnchorCommands from "../../../anchor-commands";
 import useAnchor from "../../hooks/useAnchor";
-import expressions from "../../hooks/useExpression";
+import { expressions, useExpression } from "../../hooks/useExpression";
 
 export interface ExpressionFoundTypeValue {
   type: "Expression Found";
@@ -79,7 +79,7 @@ export function ExpressionFoundView(
 
   const anchor = useAnchor(id);
 
-  console.log(anchor);
+  // console.log(id, useExpression(id));
 
   const doCheckToggle = useCallback(
     (val: boolean) => select("Expression Found", val ? id : null),
