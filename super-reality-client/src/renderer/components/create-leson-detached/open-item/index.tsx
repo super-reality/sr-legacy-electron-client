@@ -81,10 +81,7 @@ export default function OpenItem(props: OpenItemProps) {
               doUpdate({ anchor: val });
             }}
           />
-          <ButtonSimple
-            style={style}
-            onClick={() => openPanel("step-information")}
-          >
+          <ButtonSimple style={style} onClick={() => openPanel("end-step-on")}>
             <IconEndStep />
             End Step On
           </ButtonSimple>

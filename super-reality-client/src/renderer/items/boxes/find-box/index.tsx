@@ -36,7 +36,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
           e.y < pos.y + pos.height &&
           callback
         ) {
-          callback("mouse");
+          callback("mouse-left");
         }
       },
       [callback, pos]
@@ -57,7 +57,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
             mouse.x < diplayPos.x + pos.x + pos.width &&
             mouse.y < diplayPos.y + pos.y + pos.height
           ) {
-            callback("mouse");
+            callback("mouse-hover");
           }
         }, 50);
         timeoutRef.current = interval;
@@ -103,7 +103,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
               }),
           ...style,
         }}
-        onClick={callback ? () => callback("mouse") : voidFunction}
+        onClick={callback ? () => callback("mouse-left") : voidFunction}
       />
     );
   }

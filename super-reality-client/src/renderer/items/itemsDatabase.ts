@@ -21,8 +21,6 @@ import VideoBox from "./boxes/video-box";
 import YoutubeBox from "./boxes/youtube-box";
 import DialogBox from "./boxes/dialog-box";
 
-type ItemTriggers = Record<string, number | null>;
-
 type ItemIcon = React.FunctionComponent<
   React.SVGProps<SVGSVGElement> & {
     title?: string | undefined;

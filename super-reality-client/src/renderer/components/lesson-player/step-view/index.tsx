@@ -68,8 +68,7 @@ export default function StepView(props: StepViewProps) {
       if (
         previewing &&
         item.type == "focus_highlight" &&
-        item.endOn.filter((t) => t.type == "mouse" && t.value == "hover")
-          .length > 0
+        item.endOn.filter((t) => t.type == "mouse-hover").length > 0
       ) {
         const showState = { ...itemsShow };
         showState[item._id] = false;

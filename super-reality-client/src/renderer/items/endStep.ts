@@ -1,19 +1,34 @@
 import { TypeValue } from "../../types/utils";
 
-export type TriggerTypes = "mouse" | "gaze" | "keyboard";
+export type TriggerTypes =
+  | "mouse-left"
+  | "mouse-double"
+  | "mouse-hover"
+  | "gaze"
+  | "keyboard";
 
 interface BaseEndStepTypeValue extends TypeValue {
   type: TriggerTypes;
 }
 
-export interface MouseTriggerTypeValue extends BaseEndStepTypeValue {
-  type: "mouse";
-  value: "left" | "double" | "hover";
+export interface MouseLeftTriggerTypeValue extends BaseEndStepTypeValue {
+  type: "mouse-left";
+  value: string;
+}
+
+export interface MouseDoubleTriggerTypeValue extends BaseEndStepTypeValue {
+  type: "mouse-double";
+  value: string;
+}
+
+export interface MouseHoverTriggerTypeValue extends BaseEndStepTypeValue {
+  type: "mouse-hover";
+  value: string;
 }
 
 export interface GazeTriggerTypeValue extends BaseEndStepTypeValue {
   type: "gaze";
-  value: null;
+  value: string;
 }
 
 export interface KeyboardTriggerTypeValue extends BaseEndStepTypeValue {
@@ -22,6 +37,8 @@ export interface KeyboardTriggerTypeValue extends BaseEndStepTypeValue {
 }
 
 export type EndStepTypeValue =
-  | MouseTriggerTypeValue
+  | MouseLeftTriggerTypeValue
+  | MouseDoubleTriggerTypeValue
+  | MouseHoverTriggerTypeValue
   | GazeTriggerTypeValue
   | KeyboardTriggerTypeValue;
