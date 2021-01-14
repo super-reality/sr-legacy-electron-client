@@ -2,11 +2,8 @@ import React, { useCallback, useState } from "react";
 import "./imageFound.scss";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";
-import AnchorEdit from "../../anchor-edit";
 import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
-import AnchorCommands from "../../../anchor-commands";
-import useAnchor from "../../hooks/useAnchor";
 import { expressions, useExpression } from "../../hooks/useExpression";
 
 export interface ExpressionFoundTypeValue {
@@ -74,12 +71,10 @@ export function ExpressionFoundView(
     id: string;
   }
 ) {
-  const [currentTemplate, setCurrentTemplate] = useState(0);
+  const [currentTemplate] = useState(0);
   const { id, data, select } = props;
 
-  const anchor = useAnchor(id);
-
-  // console.log(id, useExpression(id));
+  const expression = useExpression(id);
 
   const doCheckToggle = useCallback(
     (val: boolean) => select("Expression Found", val ? id : null),
@@ -87,7 +82,7 @@ export function ExpressionFoundView(
   );
 
   const checked = !!data.filter(
-    (d) => d.type == "Expression Found" && d.value == anchor?._id
+    (d) => d.type == "Expression Found" && d.value == expression?._id
   )[0];
 
   return (
@@ -96,28 +91,11 @@ export function ExpressionFoundView(
         <div
           className="anchor-image-preview"
           style={{
-            backgroundImage: `url(${anchor?.templates[currentTemplate]})`,
+            backgroundImage: `url(${expression?.templates[currentTemplate]})`,
           }}
         />
-        <AnchorCommands
-          key={`anchor-commands-${id}`}
-          template={currentTemplate}
-          anchorId={id}
-        />
       </ContainerWithCheck>
-      <div className="anchor-templates-carousel">
-        {anchor?.templates.map((t, i) => {
-          return (
-            <div
-              key={`carousel-image-${t}`}
-              style={{ backgroundImage: `url(${t})` }}
-              onClick={() => setCurrentTemplate(i)}
-              className={`template ${currentTemplate == i ? "selected" : ""}`}
-            />
-          );
-        })}
-      </div>
-      <AnchorEdit key={`anchor-edit-${id}`} anchorId={id} />
+      <h2>{expression?.name}</h2>
     </>
   );
 }
