@@ -26,4 +26,4 @@ export interface Message {
   user: ChatUser;
 }
 
-export interface ChatLoginData {}
+// export interface ChatLoginData {}
