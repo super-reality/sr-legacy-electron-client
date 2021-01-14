@@ -92,6 +92,7 @@ export function ExpressionFoundView(
           className="anchor-image-preview"
           style={{
             backgroundImage: `url(${expression?.templates[currentTemplate]})`,
+            backgroundSize: "150px",
           }}
         />
       </ContainerWithCheck>

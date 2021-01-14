@@ -76,11 +76,12 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       ListView = RecordingsList;
       SingleView = RecordingsView;
       break;
-    // Start Step
+    // Start Step: Image found
     case "Image Found":
       ListView = ImageFoundList;
       SingleView = ImageFoundView;
       break;
+    // Start Step: Expression
     case "Expression Found":
       ListView = ExpressionFoundList;
       SingleView = ExpressionFoundView;
