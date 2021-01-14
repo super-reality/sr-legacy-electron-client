@@ -18,7 +18,6 @@ export type PreviewModes =
   | "CREATE_ANCHOR"
   | "EDIT_ANCHOR"
   | "ADDTO_ANCHOR"
-  | "TRIM_VIDEO"
   | "IDLE";
 
 const initialState = {

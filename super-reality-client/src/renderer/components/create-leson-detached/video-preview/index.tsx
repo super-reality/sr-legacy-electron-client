@@ -11,7 +11,6 @@ import ItemPreview from "../../lesson-player/item-preview";
 import reduxAction from "../../../redux/reduxAction";
 import CVEditor from "../../recorder/CVEditor";
 import AnchorCrop from "../../lesson-player/anchor-crop";
-import VideoCrop from "../../lesson-player/video-crop";
 import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import AnchorBox from "../../../items/boxes/anchor-box";
@@ -227,25 +226,43 @@ export default function VideoPreview(): JSX.Element {
 
   useEffect(() => {
     const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
-    if (currentStep && st) {
+    if (currentStep && st && st.canvas[0]) {
       const nav: number[] = [
         ...store.getState().createLessonV2.videoNavigation,
       ] || [0, 0, 0];
-      nav[1] = timestampToTime(st.recordingTimestamp || "00:00:00");
-      if (st.snapShot) {
-        setCanvasSource("url", st.snapShot);
+
+      const canvasObj = st.canvas[0];
+      if (canvasObj.type == "Image") {
+        setCanvasSource("url", canvasObj.value.url);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
             videoNavigation: nav,
           },
         });
-      } else if (st.recordingId) {
-        setCanvasSource("recording", st.recordingId);
+      }
+      if (canvasObj.type == "Recording") {
+        console.log(canvasObj);
+        setCanvasSource("recording", canvasObj.value.recording);
+        if (canvasObj.value.url) {
+          setCanvasSource("url", canvasObj.value.url);
+        } else {
+          nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
+          console.log(nav[1]);
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_DATA",
+            arg: {
+              currentRecording: canvasObj.value.recording,
+              videoNavigation: nav,
+            },
+          });
+        }
+      }
+      if (canvasObj.type == "Url") {
+        setCanvasSource("url", canvasObj.value);
         reduxAction(dispatch, {
           type: "CREATE_LESSON_V2_DATA",
           arg: {
-            currentRecording: st.recordingId,
             videoNavigation: nav,
           },
         });
@@ -477,8 +494,8 @@ export default function VideoPreview(): JSX.Element {
               />
             ))}
           {(previewMode == "CREATE_ANCHOR" ||
-            previewMode == "ADDTO_ANCHOR") && <AnchorCrop />}
-          {previewMode == "TRIM_VIDEO" && <VideoCrop />}
+            previewMode == "ADDTO_ANCHOR" ||
+            previewMode == "EDIT_ANCHOR") && <AnchorCrop />}
         </div>
       </div>
     </>

@@ -60,9 +60,16 @@ export default async function generateSteps(
           {
             name: stepName,
             anchor: recordingData.anchor,
-            recordingId: currentRecording,
-            recordingTimestamp: steps[stepName].time_stamp,
-            snapShot: url,
+            canvas: [
+              {
+                type: "Recording",
+                value: {
+                  recording: currentRecording || "",
+                  timestamp: steps[stepName].time_stamp,
+                  url,
+                },
+              },
+            ],
           },
           currentChapter
         )
