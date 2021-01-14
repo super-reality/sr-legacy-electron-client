@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
-import { ItemFocus, ItemFocusTriggers } from "../../item";
+import { ItemFocus } from "../../item";
 import { voidFunction } from "../../../constants";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
@@ -36,7 +36,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
           e.y < pos.y + pos.height &&
           callback
         ) {
-          callback(ItemFocusTriggers["Click target"]);
+          callback("mouse");
         }
       },
       [callback, pos]
@@ -57,7 +57,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
             mouse.x < diplayPos.x + pos.x + pos.width &&
             mouse.y < diplayPos.y + pos.y + pos.height
           ) {
-            callback(ItemFocusTriggers["Hover target"]);
+            callback("mouse");
           }
         }, 50);
         timeoutRef.current = interval;
@@ -103,11 +103,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
               }),
           ...style,
         }}
-        onClick={
-          callback
-            ? () => callback(ItemFocusTriggers["Click target"])
-            : voidFunction
-        }
+        onClick={callback ? () => callback("mouse") : voidFunction}
       />
     );
   }

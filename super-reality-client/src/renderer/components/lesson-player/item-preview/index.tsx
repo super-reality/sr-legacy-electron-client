@@ -24,6 +24,7 @@ import hidePosMarker from "../../create-leson-detached/lesson-utils/hidePosMarke
 import getItemComponent from "../../../items/getItemComponent";
 import pendingReduxAction from "../../../redux/utils/pendingReduxAction";
 import useAnchor from "../../create-leson-detached/hooks/useAnchor";
+import { TriggerTypes } from "../../../items/endStep";
 
 interface ItemPreviewProps {
   itemId: string;
@@ -268,8 +269,12 @@ export default function ItemPreview(props: ItemPreviewProps) {
   ]);
 
   const onSucessCallback = useCallback(
-    (trigger: number | null) => {
-      if (item && onSucess && trigger == item.trigger) {
+    (trigger: TriggerTypes | null) => {
+      if (
+        item &&
+        onSucess &&
+        item.endOn.filter((t) => t.type == trigger).length > 0
+      ) {
         onSucess();
       }
     },

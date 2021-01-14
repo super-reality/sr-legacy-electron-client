@@ -1,13 +1,5 @@
-import {
-  Item,
-  ItemAudioTriggers,
-  ItemDialogTriggers,
-  ItemFocusTriggers,
-  ItemFXTriggers,
-  ItemImageTriggers,
-  ItemVideoTriggers,
-  ItemYoutubeTriggers,
-} from "./item";
+import { Item } from "./item";
+
 import SettingsDialog from "./settings/settings-dialog";
 import SettingsFocusHighlight from "./settings/settings-focus-highlight";
 import SettingsFX from "./settings/settings-fx";
@@ -39,7 +31,6 @@ type ItemIcon = React.FunctionComponent<
 
 interface ItemDatabaseEntry {
   name: string;
-  triggers: ItemTriggers;
   component: React.ForwardRefExoticComponent<
     any & React.RefAttributes<HTMLDivElement>
   >;
@@ -50,49 +41,42 @@ interface ItemDatabaseEntry {
 const itemsDatabase: Record<Item["type"], ItemDatabaseEntry> = {
   focus_highlight: {
     name: "Focus Highlight",
-    triggers: ItemFocusTriggers,
     settings: SettingsFocusHighlight,
     component: FindBox,
     icon: IconAddFocus,
   },
   fx: {
     name: "Effect",
-    triggers: ItemFXTriggers,
     settings: SettingsFX,
     component: FXBox,
     icon: IconAddFX,
   },
   audio: {
     name: "Audio",
-    triggers: ItemAudioTriggers,
     settings: SettingsImage,
     component: ImageBox,
     icon: IconAddAudio,
   },
   image: {
     name: "Image",
-    triggers: ItemImageTriggers,
     settings: SettingsImage,
     component: ImageBox,
     icon: IconAddImage,
   },
   video: {
     name: "Video",
-    triggers: ItemVideoTriggers,
     settings: SettingsVideo,
     component: VideoBox,
     icon: IconAddVideo,
   },
   youtube: {
     name: "YouTube",
-    triggers: ItemYoutubeTriggers,
     settings: SettingsYoutube,
     component: YoutubeBox,
     icon: IconAddYoutube,
   },
   dialog: {
     name: "Dialog",
-    triggers: ItemDialogTriggers,
     settings: SettingsDialog,
     component: DialogBox,
     icon: IconAddDialog,
