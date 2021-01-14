@@ -22,7 +22,13 @@ export default function LeftPanelWrapper(): JSX.Element {
   switch (openPanel) {
     // items
     case "end-step-on":
-      if (currentItem) Component = <StepOnSelectorPanel itemId={currentItem} />;
+      if (currentItem)
+        Component = (
+          <StepOnSelectorPanel
+            key={`end-stepon-panel-${currentItem}`}
+            itemId={currentItem}
+          />
+        );
       break;
     // items
     case "item-video":

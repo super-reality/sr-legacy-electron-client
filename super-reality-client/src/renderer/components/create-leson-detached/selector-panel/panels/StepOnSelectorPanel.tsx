@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
+import { Item } from "../../../../items/item";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";
 import useItem from "../../hooks/useItem";
-import updateStep from "../../lesson-utils/updateStep";
+import updateItem from "../../lesson-utils/updateItem";
 import "../index.scss";
 import TypeIdSelectorPanel from "../TypeIdSelectorPanel";
 
@@ -19,17 +20,14 @@ export default function StepOnSelectorPanel(props: StepOnSelectorPanelProps) {
 
   const doUpdate = useCallback(
     (val: any) => {
-      // hacky hack, we should not use anchor anymore!
-      if (val[0]?.type == "Image Found") {
-        updateStep({ anchor: val[0]?.value }, itemId).then((updated) => {
-          if (updated) {
-            reduxAction(store.dispatch, {
-              type: "CREATE_LESSON_V2_SETSTEP",
-              arg: { step: updated },
-            });
-          }
-        });
-      }
+      updateItem({ endOn: val }, itemId).then((updated: unknown) => {
+        if (updated) {
+          reduxAction(store.dispatch, {
+            type: "CREATE_LESSON_V2_SETITEM",
+            arg: { item: updated as Item },
+          });
+        }
+      });
     },
     [itemId]
   );
