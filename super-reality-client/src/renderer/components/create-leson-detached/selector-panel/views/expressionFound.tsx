@@ -7,6 +7,7 @@ import { IAnchor } from "../../../../api/types/anchor/anchor";
 import ImageCheckbox from "../../image-checkbox";
 import AnchorCommands from "../../../anchor-commands";
 import useAnchor from "../../hooks/useAnchor";
+import expressions from "../../hooks/useExpression";
 
 export interface ExpressionFoundTypeValue {
   type: "Expression Found";
@@ -29,107 +30,6 @@ export function ExpressionFoundList(
     [select]
   );
 
-  // Anchors
-  // @todo Replace these link with Super Reality ones
-  const anchors: IAnchor[] = [
-    // Happy
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/smiling-face-with-open-mouth-and-smiling-eyes_1f604.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-happy",
-      name: "Expression: Happy",
-      type: "crop",
-    },
-    // Surprised
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/face-with-open-mouth_1f62e.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-surprised",
-      name: "Expression: Surprised",
-      type: "crop",
-    },
-    // Angry
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/angry-face_1f620.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-angry",
-      name: "Expression: Angry",
-      type: "crop",
-    },
-    // Kissing face
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/kissing-face_1f617.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-kissy",
-      name: "Expression: Kissy",
-      type: "crop",
-    },
-    // Eyebrow Raised
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/face-with-one-eyebrow-raised_1f928.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-eyebrowse",
-      name: "Expression: Eyebrow Raised",
-      type: "crop",
-    },
-    // Smirking
-    {
-      templates: [
-        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/microsoft/209/smirking-face_1f60f.png",
-      ],
-      anchorFunction: "or",
-      cvMatchValue: 900,
-      cvCanvas: 190,
-      cvDelay: 50,
-      cvGrayscale: true,
-      cvApplyThreshold: false,
-      cvThreshold: 224,
-      _id: "expression-smirking",
-      name: "Expression: Smirking",
-      type: "crop",
-    },
-  ];
-
   // Filters
   const filterFn = (a: IAnchor) =>
     data.filter((d) => d.type == "Expression Found" && d.value == a._id)[0];
@@ -139,7 +39,7 @@ export function ExpressionFoundList(
   return (
     <>
       <div className="panel-subtitle">Active</div>
-      {anchors.filter(filterFnCheck).map((a) => (
+      {expressions.filter(filterFnCheck).map((a) => (
         <ImageCheckbox
           image={a.templates[0]}
           margin="8px auto"
@@ -151,7 +51,7 @@ export function ExpressionFoundList(
         />
       ))}
       <div className="panel-subtitle">Library</div>
-      {anchors.filter(filterFnUnCheck).map((a) => (
+      {expressions.filter(filterFnUnCheck).map((a) => (
         <ImageCheckbox
           image={a.templates[0]}
           margin="8px auto"
@@ -166,6 +66,9 @@ export function ExpressionFoundList(
   );
 }
 
+/**
+ * Expression Found customization panel
+ */
 export function ExpressionFoundView(
   props: BasePanelViewProps<ExpressionFoundTypeValue> & {
     id: string;
@@ -176,21 +79,12 @@ export function ExpressionFoundView(
 
   const anchor = useAnchor(id);
 
+  console.log(anchor);
+
   const doCheckToggle = useCallback(
     (val: boolean) => select("Expression Found", val ? id : null),
     [id, select]
   );
-
-  const prevTemplate = useCallback(() => {
-    if (currentTemplate > 0) setCurrentTemplate(currentTemplate - 1);
-    else if (anchor) setCurrentTemplate(anchor.templates.length - 1);
-  }, [currentTemplate, anchor]);
-
-  const nextTemplate = useCallback(() => {
-    if (anchor && currentTemplate < anchor.templates.length)
-      setCurrentTemplate(currentTemplate + 1);
-    else setCurrentTemplate(0);
-  }, [currentTemplate, anchor]);
 
   const checked = !!data.filter(
     (d) => d.type == "Expression Found" && d.value == anchor?._id
@@ -212,7 +106,6 @@ export function ExpressionFoundView(
         />
       </ContainerWithCheck>
       <div className="anchor-templates-carousel">
-        <div className="left-arrow" onClick={prevTemplate} />
         {anchor?.templates.map((t, i) => {
           return (
             <div
@@ -223,7 +116,6 @@ export function ExpressionFoundView(
             />
           );
         })}
-        <div className="right-arrow" onClick={nextTemplate} />
       </div>
       <AnchorEdit key={`anchor-edit-${id}`} anchorId={id} />
     </>
