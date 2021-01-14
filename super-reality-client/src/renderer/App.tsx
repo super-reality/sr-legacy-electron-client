@@ -6,7 +6,6 @@ import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Loading from "./components/loading";
-import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
@@ -122,7 +121,6 @@ export default function App(): JSX.Element {
             <>
               <Loading state={isPending} />
               <Switch>
-                <Route exact path="/tests/:id" component={Tests} />
                 <Route path="*" component={Splash} />
               </Switch>
             </>
