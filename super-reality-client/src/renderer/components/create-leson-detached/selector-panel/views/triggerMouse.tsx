@@ -33,12 +33,20 @@ export function TriggerMouseList(props: BasePanelViewProps<MouseTriggers>) {
     <>
       {Object.keys(typeToText).map((k: any) => (
         <ContainerWithCheck
+          style={{ marginBottom: "16px" }}
           key={`hover-option-${k}`}
           checked={data.filter((d) => d.type == k).length > 0}
           callback={(val) => doCheckToggle(val, k)}
         >
           <div
-            style={{ width: "200px", height: "120px" }}
+            style={{
+              width: "200px",
+              height: "120px",
+              textAlign: "center",
+              lineHeight: "120px",
+              background: "var(--color-background-dark)",
+              cursor: "pointer",
+            }}
             onClick={() => open(k)}
           >
             {typeToText[k as MouseTriggers["type"]]}
