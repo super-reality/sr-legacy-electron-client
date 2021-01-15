@@ -4,7 +4,7 @@ import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import {
   Slider,
-  SliderModeFunction,
+  CustomMode,
   Rail,
   Handles,
   Tracks,
@@ -17,12 +17,12 @@ import {
 import "../../containers.scss";
 import "./index.scss";
 
-const customMode: SliderModeFunction = (curr, next) => {
+const customMode: CustomMode = (curr, next) => {
   const handle2Moved = next[2].val != curr[2].val;
-  const handle1Moved = next[1].val != curr[1].val;
+  // const handle1Moved = next[1].val != curr[1].val;
   const handle0Moved = next[0].val != curr[0].val;
 
-  if (next[2].val <= next[0].val) return curr;
+  if (next[2].val < next[0].val) return curr;
   if (handle0Moved && curr[0].val == curr[1].val) {
     const newNext = next;
     newNext[1].val = next[0].val;
@@ -82,6 +82,8 @@ interface HandleProps {
   handle: SliderItem;
   getHandleProps: GetHandleProps;
   disabled?: boolean;
+  /** Handles middle handle double click event */
+  onDoubleClick?: () => void;
 }
 
 function Handle({
@@ -89,6 +91,7 @@ function Handle({
   handle: { id, value, percent },
   disabled = false,
   index,
+  onDoubleClick,
   getHandleProps,
 }: HandleProps) {
   return (
@@ -98,6 +101,7 @@ function Handle({
         style={{
           left: `${percent}%`,
         }}
+        onDoubleClick={id.slice(-1) == "1" ? onDoubleClick : undefined}
         {...getHandleProps(id)}
       />
       <div
@@ -192,6 +196,8 @@ interface VideoNavigationProps {
    * Sync the first track background with the other tracks. Default to false
    */
   isBackgroundSync?: boolean;
+  /** Activate on double clicking middle handle */
+  middleDoubleClick?: () => void;
 }
 
 const sliderStyle = {
@@ -213,6 +219,7 @@ export default function VideoNavigation(
     ticksNumber,
     style,
     isBackgroundSync = false,
+    middleDoubleClick,
   } = props;
 
   const [state, setState] = useState<readonly number[]>(defaultValues.slice());
@@ -256,7 +263,7 @@ export default function VideoNavigation(
         }}
       >
         <Slider
-          mode={customMode as any}
+          mode={customMode}
           step={step || 10}
           disabled={disabled}
           domain={domain}
@@ -277,6 +284,7 @@ export default function VideoNavigation(
                     key={handle.id}
                     handle={handle}
                     domain={domain}
+                    onDoubleClick={middleDoubleClick}
                     getHandleProps={getHandleProps}
                   />
                 ))}
