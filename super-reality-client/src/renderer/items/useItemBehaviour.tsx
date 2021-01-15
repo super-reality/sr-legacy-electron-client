@@ -21,7 +21,6 @@ export default function useItemBehaviour(
       callback
     ) {
       const timeNow = new Date().getTime();
-      console.log("CLICK", timeNow - lastClickRef.current);
       if (timeNow - lastClickRef.current < 500) {
         callback("mouse-double");
       } else {
