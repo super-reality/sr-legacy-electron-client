@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
@@ -9,15 +9,12 @@ import reduxAction from "../../redux/reduxAction";
 
 import Lesson from "./lessson";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
-import VideoNavigation from "./video-navigation";
 import VideoPreview from "./video-preview";
 import AnchorTester from "./anchor-tester";
 import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
-import useDebounce from "../../hooks/useDebounce";
 import { RecordingJson } from "../recorder/types";
 import VideoStatus from "./video-status";
-import VideoData from "./video-data";
 import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "../recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
@@ -56,14 +53,15 @@ export default function CreateLessonDetached(): JSX.Element {
     chapterPreview,
     stepPreview,
     itemPreview,
-    videoNavigation,
-    videoDuration,
-    recordingData,
+    // videoNavigation,
+    // videoDuration,
+    // recordingData,
     openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   useTransparentFix(false);
 
+  /*
   const meoizedSpectrum = useMemo(() => {
     return (
       <div className="spectrum-container">
@@ -101,6 +99,7 @@ export default function CreateLessonDetached(): JSX.Element {
     },
     [debouncer]
   );
+  */
 
   useEffect(() => {
     setMocks();
@@ -127,9 +126,9 @@ export default function CreateLessonDetached(): JSX.Element {
     return voidFunction;
   }, [resizeContainer]);
 
-  const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
-    videoDuration,
-  ]);
+  // const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
+  //   videoDuration,
+  // ]);
 
   useEffect(() => {
     let json: RecordingJson = {
@@ -263,6 +262,7 @@ export default function CreateLessonDetached(): JSX.Element {
           <EditorSidebar />
         </div>
         <VideoStatus />
+        {/*
         <div className="nav">
           <VideoNavigation
             domain={videoNavDomain}
@@ -275,6 +275,7 @@ export default function CreateLessonDetached(): JSX.Element {
           <VideoData />
           {meoizedSpectrum}
         </div>
+        */}
       </div>
     </Windowlet>
   );
