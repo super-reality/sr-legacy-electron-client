@@ -89,9 +89,10 @@ export function RecordingsList(
 export function RecordingsView(
   props: BasePanelViewProps<RecordingCanvasTypeValue> & {
     id: string;
+    noUpload?: boolean;
   }
 ) {
-  const { id, data, select } = props;
+  const { id, data, select, noUpload } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -166,18 +167,25 @@ export function RecordingsView(
         (videoRef?.current?.currentTime || 0) * 1000
       );
       if (val && canvasRef.current) {
-        saveCanvasImage(
-          `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
-          canvasRef.current
-        )
-          .then(uploadFileToS3)
-          .then((url) => {
-            select("Recording", {
-              recording: id,
-              timestamp,
-              url,
-            });
+        if (noUpload) {
+          select("Recording", {
+            recording: id,
+            timestamp,
           });
+        } else {
+          saveCanvasImage(
+            `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
+            canvasRef.current
+          )
+            .then(uploadFileToS3)
+            .then((url) => {
+              select("Recording", {
+                recording: id,
+                timestamp,
+                url,
+              });
+            });
+        }
       } else {
         select("Recording", null);
       }
@@ -205,6 +213,7 @@ export function RecordingsView(
       <ContainerWithCheck checked={checked} callback={doCheckToggle}>
         <canvas ref={canvasRef} style={{ display: "none" }} />
         <video
+          id="video-panel"
           style={{ width: "300px" }}
           ref={videoRef}
           src={`${recordingPath}/vid-${id}.webm`}

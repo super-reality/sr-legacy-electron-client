@@ -23,9 +23,7 @@ export default async function generateSteps(
     currentRecording,
   } = store.getState().createLessonV2;
 
-  const videoHidden = document.getElementById(
-    "video-hidden"
-  ) as HTMLVideoElement;
+  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
 
   const steps: Record<string, StepData> = {};
   recordingData.step_data.forEach((data) => {
@@ -48,7 +46,7 @@ export default async function generateSteps(
     // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => {
       const timestampTime = timestampToTime(timestamp);
-      videoHidden.currentTime = timestampTime / 1000;
+      videoPanel.currentTime = timestampTime / 1000;
       setTimeout(resolve, 200);
     })
       .then(() =>
