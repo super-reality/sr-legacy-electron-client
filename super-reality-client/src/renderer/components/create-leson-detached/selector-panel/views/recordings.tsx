@@ -116,7 +116,7 @@ export function RecordingsView(
 
   const defaultTime = useMemo(
     () =>
-      data[0]?.value.recording == id
+      data[0]?.value?.recording == id
         ? timestampToTime(data[0]?.value.timestamp || "00:00:00") / 1000
         : 0,
     [data, id]
@@ -143,13 +143,12 @@ export function RecordingsView(
     (n: readonly number[]) => {
       if (videoRef.current) {
         videoRef.current.currentTime = n[0] / 1000;
-        updateCanvas();
         // if (checked) {
         //  select("Recording", null);
         // }
       }
     },
-    [select, updateCanvas, checked, videoRef.current]
+    [select, checked, videoRef.current]
   );
 
   const scrubVideo = useCallback(
@@ -205,8 +204,9 @@ export function RecordingsView(
           arg: { videoDuration: videoRef.current?.duration || 0 },
         });
       };
+      videoRef.current.onseeked = updateCanvas;
     }
-  }, [videoRef.current]);
+  }, [videoRef.current, updateCanvas]);
 
   return (
     <>
