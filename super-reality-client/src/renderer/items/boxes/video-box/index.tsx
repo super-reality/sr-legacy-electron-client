@@ -39,6 +39,7 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
         <video
           ref={videoRef}
           onClick={doClick}
+          muted={item.muted == undefined ? true : item.muted}
           autoPlay
           style={{
             maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",

@@ -1,4 +1,5 @@
 import pythonExecute from "../background/pythonExecute";
+import client from "../renderer/feathers";
 import reduxAction from "../renderer/redux/reduxAction";
 import store from "../renderer/redux/stores/renderer";
 import {
@@ -15,6 +16,7 @@ import setFocusable from "./electron/setFocusable";
 // import setFocusable from "./electron/setFocusable";
 import setMaximize from "./electron/setMaximize";
 import setResizable from "./electron/setResizable";
+import setTopMost from "./electron/setTopMost";
 
 interface DetachLesson {
   type: "LESSON_VIEW";
@@ -78,12 +80,143 @@ export default function handleIpc(): void {
     createBackgroundProcess();
   });
 
+  // message created listener
+  const onMessagesUpdateListener = (newMessage: any, stateMessages: any[]) => {
+    console.log("message created", newMessage, "messages", stateMessages);
+    const newMessages = [...stateMessages, newMessage];
+    reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  };
+
+  const onUserCreatedListener = (newUser: any, stateUsers: any[]) => {
+    const updatedUsers = stateUsers.concat(newUser);
+    reduxAction(store.dispatch, {
+      type: "SET_USERS",
+      arg: updatedUsers,
+    });
+  };
+  const logoutListener = () => {
+    console.log("logout");
+    reduxAction(store.dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: [] });
+    reduxAction(store.dispatch, { type: "SET_USERS", arg: [] });
+  };
   ipcRenderer.removeAllListeners("rendererReady");
   ipcRenderer.on("rendererReady", () => {
+    setFocusable(true);
+    setTopMost(false);
     setMaximize(true);
-    setFocusable(false);
     setResizable(false);
     reduxAction(store.dispatch, { type: "SET_READY", arg: true });
+    // chat first requests and listeners
+    // (client as any)
+    //   .authenticate()
+    //   .then((res: any) => {
+    //     console.log("whohooo chat reAuth login", res);
+    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
+    //   })
+    //   .catch((err: any) => {
+    //     console.log("chat jwt login error", err);
+    //     (client as any).logout();
+    //     // reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
+    //   });
+
+    const messagesClient = client.service("messages");
+    const usersClient = client.service("users");
+
+    // On successfull login
+    console.log("authenticated listener");
+    client.on("authenticated", (login) => {
+      // Get all users and messages
+      console.log("authenticated listener start. login:", login);
+      Promise.all([
+        messagesClient.find({
+          query: {
+            $sort: { createdAt: -1 },
+            $limit: 25,
+          },
+        }),
+        usersClient.find(),
+      ])
+        .then(([messagePage, userPage]) => {
+          // We want the latest messages but in the reversed order
+          const uploadedMessages = messagePage.data.reverse();
+          const uploadedUsers = userPage.data;
+          console.log(
+            "login",
+            login,
+            "messages",
+            uploadedMessages,
+            "users",
+            uploadedUsers
+          );
+          // Once both return, update the state
+          reduxAction(store.dispatch, {
+            type: "SET_CHAT_LOGIN_DATA",
+            arg: login,
+          });
+          reduxAction(store.dispatch, {
+            type: "SET_MESSAGES",
+            arg: uploadedMessages,
+          });
+          reduxAction(store.dispatch, {
+            type: "SET_USERS",
+            arg: uploadedUsers,
+          });
+          // chat listeners
+
+          // messages created listener clean up
+          messagesClient.off("created", onMessagesUpdateListener);
+          // add new message to the redux state
+          messagesClient.on("created", (message: any) => {
+            const { chat } = store.getState();
+            onMessagesUpdateListener(message, chat.messages);
+          });
+          // edit message listener
+          messagesClient.on("patched", (params: any) => {
+            // const { chat } = store.getState();
+
+            // const filteredMessages = chat.messages.filter(
+            //   ({ _id }) => _id != params._id
+            // );
+            console.log("MESSAGE PATCHED EVENT", params);
+            reduxAction(store.dispatch, {
+              type: "UPDATE_MESSAGE",
+              arg: params,
+            });
+          });
+
+          // messages removed listener clean up
+          // messagesClient.off("removed", onMessagesUpdateListener);
+          messagesClient.on("removed", (message: any) => {
+            const { chat } = store.getState();
+            console.log("removed", message);
+            const updatedMessages = chat.messages.filter(
+              ({ _id }) => _id != message._id
+            );
+            console.log("remove message state", updatedMessages);
+            reduxAction(store.dispatch, {
+              type: "SET_MESSAGES",
+              arg: updatedMessages,
+            });
+          });
+
+          // users listener clean up
+          usersClient.off("created", onUserCreatedListener);
+          // Add new users to the user list
+          usersClient.on("created", (user: any) => {
+            const { chat } = store.getState();
+            onUserCreatedListener(user, chat.users);
+          });
+        })
+        .catch((err) => {
+          console.log("on authenticated", err);
+        });
+    });
+
+    client.on("logout", () => {
+      console.log("logout");
+      logoutListener();
+    });
   });
 
   ipcRenderer.removeAllListeners("detached");

@@ -10,6 +10,7 @@ import * as userDataSlice from "./slices/userDataSlice";
 import * as settingsSlice from "./slices/settingsSlice";
 import * as backgroundSlice from "./slices/backgroundSlice";
 import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
+import * as chatSlice from "./slices/chatSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -41,6 +42,7 @@ export const actions = {
   CREATE_LESSON_V2_SETITEM: createLessonSliceV2.setItem,
   CREATE_LESSON_V2_SET_TEMPITEM: createLessonSliceV2.setTempItem,
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
+  CREATE_LESSON_V2_DELETEANCHOR: createLessonSliceV2.deleteAnchor,
   CREATE_LESSON_V2_TRIGGER_CV_MATCH: createLessonSliceV2.doTriggerCvMatch,
   CREATE_LESSON_DATA: createLessonSlice.setData,
   CREATE_LESSON_TAG: createLessonSlice.addTag,
@@ -70,6 +72,12 @@ export const actions = {
   RESET_LESSON_PLAYER: lessonPlayerSlice.reset,
   SET_LESSON_PLAYING: lessonPlayerSlice.setPlaying,
   SET_TTS: lessonPlayerSlice.setTTS,
+  LOGIN_CHAT_SUCCES: chatSlice.loginChatSucces,
+  LOGIN_CHAT_ERROR: chatSlice.loginChatError,
+  SET_MESSAGES: chatSlice.setMessages,
+  SET_USERS: chatSlice.setUsers,
+  SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
+  UPDATE_MESSAGE: chatSlice.updateMessages,
 };
 
 export type ActionKeys = keyof typeof actions;

@@ -1,4 +1,4 @@
-import { ValueOf } from "../../types/utils";
+import { TypeValue, ValueOf } from "../../types/utils";
 
 export interface IAbsolutePos {
   vertical?: number; // In % of screen, not used for anchors
@@ -40,6 +40,7 @@ export interface ItemFocus extends BaseItem {
   type: "focus_highlight";
   focus: "Mouse Point" | "Rectangle" | "Area highlight";
   trigger: ValueOf<typeof ItemFocusTriggers>;
+  endOn: TypeValue[];
 }
 
 export const ItemFXTriggers = {
@@ -87,6 +88,7 @@ export interface ItemVideo extends BaseItem {
   type: "video";
   url: string;
   loop: boolean;
+  muted?: boolean;
   trigger: ValueOf<typeof ItemVideoTriggers>;
 }
 

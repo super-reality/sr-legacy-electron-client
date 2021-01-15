@@ -2,6 +2,8 @@ import React, { useCallback, useState } from "react";
 import useTopNavDropdown, { EditorMenues } from "../../hooks/useTopnavDropdown";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import "./index.scss";
+import setAppMode from "../../redux/utils/setAppMode";
+import { MODE_RECORDER } from "../../redux/slices/renderSlice";
 
 const menues: EditorMenues[] = [
   "Create",
@@ -14,10 +16,17 @@ const menues: EditorMenues[] = [
 export default function TopMenuBar() {
   const [open, setOpen] = useState<EditorMenues | null>(null);
 
-  const onSelect = useCallback((selected: string) => {
-    setOpen(null);
-    console.log(selected);
-  }, []);
+  const onSelect = useCallback(
+    (selected: string) => {
+      setOpen(null);
+      if (open == "Create") {
+        if (selected == "Recording") {
+          setAppMode(MODE_RECORDER);
+        }
+      }
+    },
+    [open]
+  );
 
   const [Dropdown, dropdownRef] = useTopNavDropdown(open, onSelect);
 

@@ -14,5 +14,21 @@
   margin-top: 4px;
   flex-direction: column;
   display: flex;
-  height: calc(100% - 372px);
+  height: 100%;
+  overflow: auto;
+}
+
+.steps-btn-container {
+  flex-direction: column;
+  display: flex;
+  overflow: auto;
+  padding: 0 10px;
+
+  .button-simple:hover{
+    background-color: var(--color-button) !important;
+  }
+
+  svg {
+    margin-right: 15px;
+  }
 }

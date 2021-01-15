@@ -14,7 +14,7 @@
     line-height: 37px;
     padding-left: 8px;
     height: 40px;
-    background-image: linear-gradient(180deg, #29233C 0%, #2A243E 100%);
+    background-image: linear-gradient(180deg, #29233c 0%, #2a243e 100%);
     touch-action: none;
     display: flex;
     justify-content: space-between;
@@ -24,7 +24,7 @@
       align-content: center;
       color: #454055;
       font-size: 18px;
-      font-family: 'Segoe UI';
+      font-family: "Segoe UI";
       text-transform: uppercase;
       font-weight: bold;
     }
@@ -51,6 +51,7 @@
       .minimize:hover,
       .maximize:hover {
         background-color: var(--color-button);
+        cursor: pointer;
       }
 
       .close {
@@ -58,10 +59,12 @@
         width: 24px;
         height: 100%;
         cursor: auto;
+        padding: 0 5px;
       }
 
       .close:hover {
         background-color: var(--color-red);
+        cursor: pointer;
       }
     }
   }

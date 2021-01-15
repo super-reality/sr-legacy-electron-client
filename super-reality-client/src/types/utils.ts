@@ -24,4 +24,14 @@ export type Rectangle = {
   height: number;
 };
 
+export interface TypeValue {
+  type: string;
+  value: unknown;
+}
+
+export interface TypedTypeValue<T> {
+  type: string;
+  value: T;
+}
+
 export type ValueOf<T> = T[keyof T];

@@ -1,0 +1,47 @@
+.title {
+    padding: 20px 20px 0 25px;
+    color: #585286;
+    font-size: 16px;
+}
+
+.cams-container {
+    font-size: 14px;
+    color: #c2c2c2;
+    padding: 20px;
+}
+
+.cams {
+    position: relative;
+}
+
+.cam-title {
+    border-radius: 6px 6px 0 0;
+    padding: 10px;
+    background: #585286;
+    position: relative;
+
+    .voting {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+    }
+}
+
+.cam {
+    border-radius: 0 0 6px 6px;
+    position: relative;
+
+    img {
+        width: 100%;
+        border-radius: 0 0 6px 6px;
+    }
+
+    .user-avatar {
+        position: absolute;
+        bottom: 0%;
+    }
+}
+
+.single-cam {
+    margin-bottom: 20px;
+}

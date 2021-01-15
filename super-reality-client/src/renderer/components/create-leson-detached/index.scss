@@ -80,11 +80,13 @@
     display: flex;
     grid-area: edit;
     overflow: hidden;
+    height: 100%;
 
     .creator {
       border-radius: 3px;
       min-width: 300px;
-      grid-template-rows: auto 32px 200px 32px;
+      display: grid;
+      grid-template-rows: auto 48px 320px;
       grid-gap: 8px;
       border-right: 1px solid var(--color-section);
     }

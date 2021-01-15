@@ -15,7 +15,7 @@
     height: inherit;
     position: absolute;
     cursor: pointer;
-    background-color: var(--color-background-hover);
+    background-color: var(--color-background-dark);
     transition: 0.4s;
     border-radius: 34px;
     left: 24px;
@@ -41,7 +41,7 @@
   }
 
   input:focus + .slider {
-    box-shadow: 0 0 1px var(--color-pink);
+    box-shadow: 0 0 1px var(--color-background-dark);
   }
 
   input:checked + .slider:before {

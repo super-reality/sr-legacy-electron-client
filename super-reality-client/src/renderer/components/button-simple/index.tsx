@@ -4,11 +4,12 @@ import "../buttons.scss";
 interface ButtonSimpleProps {
   style?: CSSProperties;
   id?: string;
+  disabled?: boolean;
   className?: string;
   margin?: string;
   width?: string;
   height?: string;
-  onClick: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export default function ButtonSimple(
@@ -17,6 +18,7 @@ export default function ButtonSimple(
   const {
     children,
     id,
+    disabled,
     className,
     style,
     margin,
@@ -27,9 +29,9 @@ export default function ButtonSimple(
 
   return (
     <div
-      onClick={onClick}
+      onClick={disabled == true ? undefined : onClick}
       id={id}
-      className={`button-simple ${className}`}
+      className={`button-simple ${className} ${disabled ? "disabled" : ""}`}
       style={{ margin, width, height, ...style }}
     >
       {children}
