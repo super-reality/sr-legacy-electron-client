@@ -1,13 +1,16 @@
-import React from 'react';
-import sinon from 'sinon';
-import { assert } from 'chai';
-import { shallow, mount } from 'enzyme';
-import { Rail } from '../Rail';
-import { GetRailProps } from '../Rail/types';
-import { Handles } from '../Handles';
-import { GetHandleProps } from '../Handles/types';
-import { Slider } from './Slider';
-import * as utils from './utils';
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/prop-types */
+/* eslint-env jest */
+import React from "react";
+import sinon from "sinon";
+import { shallow, mount } from "enzyme";
+import { Rail } from "../Rail";
+import { GetRailProps } from "../Rail/types";
+import { Handles } from "../Handles";
+import { GetHandleProps } from "../Handles/types";
+import { Slider } from "./Slider";
+import * as utils from "./utils";
 
 const getTestProps = () => ({
   step: 1,
@@ -19,7 +22,7 @@ const getTestProps = () => ({
 const fakeTouch = {
   altitudeAngle: 0,
   azimuthAngle: 0,
-  touchType: 'touchmove' as TouchType,
+  touchType: "touchmove" as TouchType,
   identifier: 1,
   target: window,
   screenX: 0,
@@ -41,20 +44,22 @@ const RailComponent: React.FC<{ getRailProps: GetRailProps }> = ({
 const HandleComponent: React.FC<{
   id: string;
   getHandleProps: GetHandleProps;
-}> = ({ id, getHandleProps }) => <button {...getHandleProps(id)} />;
+}> = ({ id, getHandleProps }) => (
+  <button type="button" {...getHandleProps(id)} />
+);
 
-describe('<Slider />', () => {
-  it('renders DOM elements children when passed', () => {
+describe("<Slider />", () => {
+  it("renders DOM elements children when passed", () => {
     const wrapper = shallow(
       <Slider {...getTestProps()}>
         <div className="foo" />
       </Slider>
     );
 
-    assert.strictEqual(wrapper.find('.foo').length, 1);
+    expect(wrapper.find(".foo").length).toBe(1);
   });
 
-  it('renders Component children when passed', () => {
+  it("renders Component children when passed", () => {
     const Custom = () => <div className="foo" />;
 
     const wrapper = shallow(
@@ -63,44 +68,44 @@ describe('<Slider />', () => {
       </Slider>
     );
 
-    assert.strictEqual(wrapper.find('Custom').length, 1);
+    expect(wrapper.find("Custom").length).toBe(1);
   });
 
   it("calls getHandles when reversed changes and values prop doesn't", () => {
-    const getHandlesSpy = sinon.spy(utils, 'getHandles');
+    const getHandlesSpy = sinon.spy(utils, "getHandles");
     const wrapper = shallow(<Slider {...getTestProps()} />);
 
-    assert.strictEqual(getHandlesSpy.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(1);
     wrapper.setProps({ ...getTestProps(), reversed: true });
-    assert.strictEqual(getHandlesSpy.callCount, 2);
+    expect(getHandlesSpy.callCount).toBe(2);
     getHandlesSpy.restore();
   });
 
-  it('calls getHandles when values change', () => {
-    const getHandlesSpy = sinon.spy(utils, 'getHandles');
+  it("calls getHandles when values change", () => {
+    const getHandlesSpy = sinon.spy(utils, "getHandles");
     const wrapper = shallow(<Slider {...getTestProps()} />);
 
-    assert.strictEqual(getHandlesSpy.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(1);
     wrapper.setProps({ ...getTestProps(), values: [130, 140] });
-    assert.strictEqual(getHandlesSpy.callCount, 2);
+    expect(getHandlesSpy.callCount).toBe(2);
     getHandlesSpy.restore();
   });
 
-  it('does NOT call gethandles when values change to a different array with the same values', () => {
-    const getHandlesSpy = sinon.spy(utils, 'getHandles');
+  it("does NOT call gethandles when values change to a different array with the same values", () => {
+    const getHandlesSpy = sinon.spy(utils, "getHandles");
     const wrapper = shallow(<Slider {...getTestProps()} />);
 
     const props = {
       ...getTestProps(),
     };
 
-    assert.strictEqual(getHandlesSpy.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(1);
     wrapper.setProps({ ...props, values: [...props.values] });
-    assert.strictEqual(getHandlesSpy.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(1);
     getHandlesSpy.restore();
   });
 
-  it('does call onChange/onUpdate when it should', () => {
+  it("does call onChange/onUpdate when it should", () => {
     const onUpdate = sinon.spy();
     const onChange = sinon.spy();
 
@@ -112,11 +117,11 @@ describe('<Slider />', () => {
 
     const wrapper = shallow(<Slider {...props} />);
 
-    assert.strictEqual(onUpdate.callCount, 0);
-    assert.strictEqual(onChange.callCount, 0);
+    expect(onUpdate.callCount).toBe(0);
+    expect(onChange.callCount).toBe(0);
     wrapper.setProps({ ...props, domain: [50, 200] });
-    assert.strictEqual(onUpdate.callCount, 1);
-    assert.strictEqual(onChange.callCount, 1);
+    expect(onUpdate.callCount).toBe(1);
+    expect(onChange.callCount).toBe(1);
   });
 
   it("does NOT call onChange/onUpdate when it shouldn't", () => {
@@ -131,15 +136,15 @@ describe('<Slider />', () => {
 
     const wrapper = shallow(<Slider {...props} />);
 
-    assert.strictEqual(onUpdate.callCount, 0);
-    assert.strictEqual(onChange.callCount, 0);
+    expect(onUpdate.callCount).toBe(0);
+    expect(onChange.callCount).toBe(0);
     wrapper.setProps({ ...props, domain: [50, 200], values: [50, 200] });
-    assert.strictEqual(onUpdate.callCount, 0);
-    assert.strictEqual(onChange.callCount, 0);
+    expect(onUpdate.callCount).toBe(0);
+    expect(onChange.callCount).toBe(0);
   });
 
-  it('uses valid value props when domain changes', () => {
-    const getHandlesSpy = sinon.spy(utils, 'getHandles');
+  it("uses valid value props when domain changes", () => {
+    const getHandlesSpy = sinon.spy(utils, "getHandles");
 
     const onUpdate = sinon.spy();
     const onChange = sinon.spy();
@@ -147,17 +152,17 @@ describe('<Slider />', () => {
       <Slider onUpdate={onUpdate} onChange={onChange} {...getTestProps()} />
     );
 
-    assert.strictEqual(getHandlesSpy.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(1);
     wrapper.setProps({ ...getTestProps(), values: [1, 1], domain: [0, 2] });
-    assert.strictEqual(getHandlesSpy.callCount, 2);
-    assert.strictEqual(onUpdate.callCount, 0);
-    assert.strictEqual(onChange.callCount, 0);
+    expect(getHandlesSpy.callCount).toBe(2);
+    expect(onUpdate.callCount).toBe(0);
+    expect(onChange.callCount).toBe(0);
 
     getHandlesSpy.restore();
   });
 
-  it('recalculates invalid value when domain changes', () => {
-    const getHandlesSpy = sinon.spy(utils, 'getHandles');
+  it("recalculates invalid value when domain changes", () => {
+    const getHandlesSpy = sinon.spy(utils, "getHandles");
 
     const onUpdate = sinon.spy();
     const onChange = sinon.spy();
@@ -166,41 +171,41 @@ describe('<Slider />', () => {
     );
 
     wrapper.setProps({ ...getTestProps(), domain: [1, 2] });
-    assert.strictEqual(getHandlesSpy.callCount, 2);
-    assert.strictEqual(onUpdate.callCount, 1);
-    assert.strictEqual(onChange.callCount, 1);
+    expect(getHandlesSpy.callCount).toBe(2);
+    expect(onUpdate.callCount).toBe(1);
+    expect(onChange.callCount).toBe(1);
 
     getHandlesSpy.restore();
   });
 
-  it('should ALWAYS call submitUpdate when onMouseMove is called', () => {
-    const submitUpdateSpy = sinon.spy(Slider.prototype, 'submitUpdate');
+  it("should ALWAYS call submitUpdate when onMouseMove is called", () => {
+    const submitUpdateSpy = sinon.spy(Slider.prototype, "submitUpdate");
     const wrapper = shallow<Slider>(<Slider {...getTestProps()} />);
 
-    assert.strictEqual(submitUpdateSpy.callCount, 0);
-    wrapper.instance().onMouseMove(new MouseEvent('mousemove'));
-    assert.strictEqual(submitUpdateSpy.callCount, 1);
+    expect(submitUpdateSpy.callCount).toBe(0);
+    wrapper.instance().onMouseMove(new MouseEvent("mousemove"));
+    expect(submitUpdateSpy.callCount).toBe(1);
 
     submitUpdateSpy.restore();
   });
 
-  it('should call submitUpdate when onTouchMove is called', () => {
-    const submitUpdateSpy = sinon.spy(Slider.prototype, 'submitUpdate');
+  it("should call submitUpdate when onTouchMove is called", () => {
+    const submitUpdateSpy = sinon.spy(Slider.prototype, "submitUpdate");
     const wrapper = shallow<Slider>(<Slider {...getTestProps()} />);
 
-    assert.strictEqual(submitUpdateSpy.callCount, 0);
+    expect(submitUpdateSpy.callCount).toBe(0);
     wrapper
       .instance()
-      .onTouchMove(new TouchEvent('touchmove', { touches: [fakeTouch] }));
-    assert.strictEqual(submitUpdateSpy.callCount, 1);
+      .onTouchMove(new TouchEvent("touchmove", { touches: [fakeTouch] }));
+    expect(submitUpdateSpy.callCount).toBe(1);
 
     submitUpdateSpy.restore();
   });
 
-  it('calls handleRailAndTrackClicks when descendent emits event', () => {
+  it("calls handleRailAndTrackClicks when descendent emits event", () => {
     const handleRailAndTrackClicksSpy = sinon.spy(
       Slider.prototype,
-      'handleRailAndTrackClicks'
+      "handleRailAndTrackClicks"
     );
     const wrapper = mount(
       <Slider {...getTestProps()}>
@@ -212,13 +217,13 @@ describe('<Slider />', () => {
       </Slider>
     );
 
-    wrapper.find('RailComponent').simulate('mousedown');
-    assert.strictEqual(handleRailAndTrackClicksSpy.callCount, 1);
+    wrapper.find("RailComponent").simulate("mousedown");
+    expect(handleRailAndTrackClicksSpy.callCount).toBe(1);
 
     handleRailAndTrackClicksSpy.restore();
   });
 
-  it('should not call keyboard events when disabled', () => {
+  it("should not call keyboard events when disabled", () => {
     const sliderProps = {
       ...getTestProps(),
       disabled: true,
@@ -245,16 +250,13 @@ describe('<Slider />', () => {
       </Slider>
     );
 
-    wrapper
-      .find('HandleComponent')
-      .simulate('keydown')
-      .simulate('keydown');
+    wrapper.find("HandleComponent").simulate("keydown").simulate("keydown");
 
-    const handles = wrapper.state().handles;
-    assert.strictEqual(handles[0].val, 110);
+    const { handles } = wrapper.state();
+    expect(handles[0].val).toBe(110);
   });
 
-  it('should not call mouse events when descendent emits mouse event', () => {
+  it("should not call mouse events when descendent emits mouse event", () => {
     const sliderProps = {
       ...getTestProps(),
       disabled: true,
@@ -283,22 +285,22 @@ describe('<Slider />', () => {
 
     const handleRailAndTrackClicksSpy = sinon.spy(
       Slider.prototype,
-      'handleRailAndTrackClicks'
+      "handleRailAndTrackClicks"
     );
 
-    wrapper.find('RailComponent').simulate('mousedown');
-    assert.strictEqual(handleRailAndTrackClicksSpy.called, false);
+    wrapper.find("RailComponent").simulate("mousedown");
+    expect(handleRailAndTrackClicksSpy.called).toBe(false);
 
-    wrapper.find('HandleComponent').simulate('mousedown');
-    assert.strictEqual(handleRailAndTrackClicksSpy.called, false);
+    wrapper.find("HandleComponent").simulate("mousedown");
+    expect(handleRailAndTrackClicksSpy.called).toBe(false);
 
     handleRailAndTrackClicksSpy.restore();
   });
 
-  it('calls handleRailAndTrackClicks when descendent emits touch event', () => {
+  it("calls handleRailAndTrackClicks when descendent emits touch event", () => {
     const handleRailAndTrackClicksSpy = sinon.spy(
       Slider.prototype,
-      'handleRailAndTrackClicks'
+      "handleRailAndTrackClicks"
     );
 
     const wrapper = mount(
@@ -312,15 +314,15 @@ describe('<Slider />', () => {
     );
 
     wrapper
-      .find('RailComponent')
-      .simulate('touchstart', { touches: [fakeTouch] });
+      .find("RailComponent")
+      .simulate("touchstart", { touches: [fakeTouch] });
 
-    assert.strictEqual(handleRailAndTrackClicksSpy.called, true);
+    expect(handleRailAndTrackClicksSpy.called).toBe(true);
     handleRailAndTrackClicksSpy.restore();
   });
 
-  it('calls addTouchEvents when descendent emits touch event with an id', () => {
-    const addTouchEventsSpy = sinon.spy(Slider.prototype, 'addTouchEvents');
+  it("calls addTouchEvents when descendent emits touch event with an id", () => {
+    const addTouchEventsSpy = sinon.spy(Slider.prototype, "addTouchEvents");
     const wrapper = mount(
       <Slider {...getTestProps()}>
         <Handles>
@@ -337,15 +339,15 @@ describe('<Slider />', () => {
     );
 
     wrapper
-      .find('HandleComponent')
-      .simulate('touchstart', { touches: [fakeTouch] });
+      .find("HandleComponent")
+      .simulate("touchstart", { touches: [fakeTouch] });
 
-    assert.strictEqual(addTouchEventsSpy.called, true);
+    expect(addTouchEventsSpy.called).toBe(true);
     addTouchEventsSpy.restore();
   });
 
-  it('should call submitUpdate ONLY when a valid key is pressed', () => {
-    const submitUpdateSpy = sinon.spy(Slider.prototype, 'submitUpdate');
+  it("should call submitUpdate ONLY when a valid key is pressed", () => {
+    const submitUpdateSpy = sinon.spy(Slider.prototype, "submitUpdate");
 
     const wrapper = mount(
       <Slider {...getTestProps()}>
@@ -362,18 +364,18 @@ describe('<Slider />', () => {
       </Slider>
     );
 
-    assert.strictEqual(submitUpdateSpy.callCount, 0);
-    wrapper.find('HandleComponent').simulate('keydown', { key: 'ArrowUp' });
-    assert.strictEqual(submitUpdateSpy.callCount, 1);
-    wrapper.find('HandleComponent').simulate('keydown', { key: 'Escape' });
-    assert.strictEqual(submitUpdateSpy.callCount, 1);
-    wrapper.find('HandleComponent').simulate('keydown', { key: 'ArrowLeft' });
-    assert.strictEqual(submitUpdateSpy.callCount, 2);
+    expect(submitUpdateSpy.callCount).toBe(0);
+    wrapper.find("HandleComponent").simulate("keydown", { key: "ArrowUp" });
+    expect(submitUpdateSpy.callCount).toBe(1);
+    wrapper.find("HandleComponent").simulate("keydown", { key: "Escape" });
+    expect(submitUpdateSpy.callCount).toBe(1);
+    wrapper.find("HandleComponent").simulate("keydown", { key: "ArrowLeft" });
+    expect(submitUpdateSpy.callCount).toBe(2);
 
     submitUpdateSpy.restore();
   });
 
-  it('should not go over the domain when using the keyboard', () => {
+  it("should not go over the domain when using the keyboard", () => {
     const onChange = sinon.spy();
 
     const props = {
@@ -398,33 +400,33 @@ describe('<Slider />', () => {
       </Slider>
     );
 
-    wrapper.find('HandleComponent').simulate('keydown', { key: 'ArrowDown' });
-    assert.deepEqual(onChange.getCall(0).args[0], [100]);
-    wrapper.find('HandleComponent').simulate('keydown', { key: 'ArrowDown' });
-    assert.deepEqual(onChange.getCall(0).args[0], [100]);
+    wrapper.find("HandleComponent").simulate("keydown", { key: "ArrowDown" });
+    expect(onChange.getCall(0).args[0]).toStrictEqual([100]);
+    wrapper.find("HandleComponent").simulate("keydown", { key: "ArrowDown" });
+    expect(onChange.getCall(0).args[0]).toStrictEqual([100]);
   });
 
-  it('does call setState when submitUpdate called', () => {
-    const setStateSpy = sinon.spy(Slider.prototype, 'setState');
+  it("does call setState when submitUpdate called", () => {
+    const setStateSpy = sinon.spy(Slider.prototype, "setState");
     const wrapper = mount<Slider>(<Slider {...getTestProps()} />);
 
-    const values = wrapper.state().values;
+    const { values } = wrapper.state();
     wrapper.instance().submitUpdate([...values], true);
 
-    assert.strictEqual(setStateSpy.callCount, 1);
+    expect(setStateSpy.callCount).toBe(1);
     setStateSpy.restore();
   });
 
-  it('calls removeListeners when it unmounts', () => {
-    const removeListenersSpy = sinon.spy(Slider.prototype, 'removeListeners');
+  it("calls removeListeners when it unmounts", () => {
+    const removeListenersSpy = sinon.spy(Slider.prototype, "removeListeners");
     const wrapper = shallow(<Slider {...getTestProps()} />);
     wrapper.unmount();
 
-    assert.strictEqual(removeListenersSpy.callCount, 1);
+    expect(removeListenersSpy.callCount).toBe(1);
     removeListenersSpy.restore();
   });
 
-  it('calls onChange when onMouseUp or onTouchEnd are called', () => {
+  it("calls onChange when onMouseUp or onTouchEnd are called", () => {
     const onChange = sinon.spy();
 
     const props = {
@@ -435,13 +437,13 @@ describe('<Slider />', () => {
     const wrapper = shallow<Slider>(<Slider {...props} />);
 
     wrapper.instance().onMouseUp();
-    assert.strictEqual(onChange.callCount, 1);
+    expect(onChange.callCount).toBe(1);
 
     wrapper.instance().onTouchEnd();
-    assert.strictEqual(onChange.callCount, 2);
+    expect(onChange.callCount).toBe(2);
   });
 
-  it('calls onUpdate/onChange on initial render when values are NOT valid steps', () => {
+  it("calls onUpdate/onChange on initial render when values are NOT valid steps", () => {
     const onUpdate = sinon.spy();
     const onChange = sinon.spy();
 
@@ -454,11 +456,11 @@ describe('<Slider />', () => {
 
     shallow(<Slider {...props} />);
 
-    assert.strictEqual(onUpdate.callCount, 1);
-    assert.strictEqual(onChange.callCount, 1);
+    expect(onUpdate.callCount).toBe(1);
+    expect(onChange.callCount).toBe(1);
   });
 
-  it('calls onUpdate/onChange on props update when values are NOT valid steps', () => {
+  it("calls onUpdate/onChange on props update when values are NOT valid steps", () => {
     const onUpdate = sinon.spy();
     const onChange = sinon.spy();
 
@@ -472,23 +474,31 @@ describe('<Slider />', () => {
     const wrapper = shallow(<Slider {...props} />);
     wrapper.setProps({ values: [110.5, 150] }); // update with invalid 110.5
 
-    assert.strictEqual(onUpdate.callCount, 1);
-    assert.strictEqual(onChange.callCount, 1);
+    expect(onUpdate.callCount).toBe(1);
+    expect(onChange.callCount).toBe(1);
 
     wrapper.setProps({ values: [120, 150] }); // update with valid values
 
-    assert.strictEqual(onUpdate.callCount, 1);
-    assert.strictEqual(onChange.callCount, 1);
+    expect(onUpdate.callCount).toBe(1);
+    expect(onChange.callCount).toBe(1);
 
     wrapper.setProps({ values: [120, 150.5] }); // update with invalid 150.5
 
-    assert.strictEqual(onUpdate.callCount, 2);
-    assert.strictEqual(onChange.callCount, 2);
+    expect(onUpdate.callCount).toBe(2);
+    expect(onChange.callCount).toBe(2);
   });
 
-  it('should allow conditional rendering', () => {
-    assert.doesNotThrow(() => {
-      mount(<Slider {...getTestProps()}>{null}{null}</Slider>);
-    });
+  /*
+  // toHaveBeenCalled equivalent?
+  it("should allow conditional rendering", () => {
+    expect(() => {
+      mount(
+        <Slider {...getTestProps()}>
+          {null}
+          {null}
+        </Slider>
+      );
+    }).toHaveBeenCalled()
   });
+  */
 });

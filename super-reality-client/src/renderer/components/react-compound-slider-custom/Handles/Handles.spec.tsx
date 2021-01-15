@@ -1,12 +1,14 @@
-import React from 'react';
-import { assert } from 'chai';
-import { shallow } from 'enzyme';
-import { Handles } from './Handles';
+/* eslint-env jest */
+/* eslint-disable import/no-extraneous-dependencies */
+import React from "react";
+import { shallow } from "enzyme";
+import { Handles } from "./Handles";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
-describe('<Handles />', () => {
-  it('renders the result of child function', () => {
+describe("<Handles />", () => {
+  it("renders the result of child function", () => {
     const wrapper = shallow(
       <Handles handles={[]} emitMouse={noop} emitTouch={noop}>
         {() => {
@@ -15,6 +17,6 @@ describe('<Handles />', () => {
       </Handles>
     );
 
-    assert.strictEqual(wrapper.contains(<div className="foo" />), true);
+    expect(wrapper.contains(<div className="foo" />)).toBe(true);
   });
 });

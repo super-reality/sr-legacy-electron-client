@@ -175,7 +175,7 @@
     "@types/d3-array": "^2.8.0",
     "@types/expect-puppeteer": "^4.4.3",
     "@types/howler": "^2.2.1",
-    "@types/jest": "^26.0.9",
+    "@types/jest": "^26.0.20",
     "@types/jest-environment-puppeteer": "^4.3.2",
     "@types/lodash": "^4.14.159",
     "@types/puppeteer": "^3.0.1",
@@ -192,6 +192,8 @@
     "electron-builder": "^22.8.0",
     "electron-packager": "^15.0.0",
     "electron-rebuild": "^2.0.3",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
     "eslint": "6.8.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -212,6 +214,7 @@
     "native-addon-loader": "^2.0.1",
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "sinon": "^9.2.3"
   }
 }

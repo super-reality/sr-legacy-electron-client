@@ -1,12 +1,14 @@
-import React from 'react';
-import { assert } from 'chai';
-import { shallow } from 'enzyme';
-import { Rail } from './Rail';
+/* eslint-env jest */
+/* eslint-disable import/no-extraneous-dependencies */
+import React from "react";
+import { shallow } from "enzyme";
+import { Rail } from "./Rail";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
-describe('<Rail />', () => {
-  it('renders the result of child function', () => {
+describe("<Rail />", () => {
+  it("renders the result of child function", () => {
     const wrapper = shallow(
       <Rail emitMouse={noop} emitTouch={noop}>
         {() => {
@@ -15,6 +17,6 @@ describe('<Rail />', () => {
       </Rail>
     );
 
-    assert.strictEqual(wrapper.contains(<div className="foo" />), true);
+    expect(wrapper.contains(<div className="foo" />)).toBe(true);
   });
 });

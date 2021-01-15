@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+/* eslint-env jest */
 import { DiscreteScale } from './DiscreteScale';
 
 const getTestValues = (min = 0, max = 10) => {
@@ -18,8 +18,8 @@ describe('DiscreteScale', () => {
   it('should return correct values', () => {
     const { range, domain } = getTestValues();
     scale.setRange(range).setDomain(domain);
-    assert.strictEqual(scale.getValue(5.4), 5);
-    assert.strictEqual(scale.getValue(0.4), 0);
-    assert.strictEqual(scale.getValue(5.5), 6);
+    expect(scale.getValue(5.4)).toBe(5);
+    expect(scale.getValue(0.4)).toBe(0);
+    expect(scale.getValue(5.5)).toBe(6);
   });
 });
