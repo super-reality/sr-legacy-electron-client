@@ -20,7 +20,7 @@ const showChatNotification = (message: Message) => {
     subtitle: message.user.username,
     body: `User: ${message.user.username} 
     ${message.text}`,
-    icon: path.join(getPublicPath(), "logo192.png"),
+    icon: path.join(getPublicPath(), "/icons/logo-os-notification.png"),
   };
   new Notification(notification).show();
 };
