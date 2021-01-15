@@ -46,9 +46,11 @@ import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
+import Support from "../../support";
+import Solution from "../../solution";
 // import Screenshare from "../../screenshare";
 // import Cams from "../../cams";
-// import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
+import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
 // import Channels from "../../channels";
 
 const sidebarIcons = [
@@ -69,6 +71,16 @@ const sidebarIcons = [
     icon: ButtonMessages,
     component: <ChatApplication />,
   },
+  {
+    title: "Support",
+    icon: ButtonEye,
+    component: <Support />,
+  },
+  {
+    title: "Solution",
+    icon: ButtonEye,
+    component: <Solution />,
+  },
 ];
 
 export default function EditorSidebar() {
@@ -82,13 +94,17 @@ export default function EditorSidebar() {
 
   let width = "300px";
 
-  // chat button width
+  // chat button
   if (current == 2) {
     width = "700px";
   }
-
-  if (current == 6) {
-    width = "250px";
+  // support button
+  if (current == 3) {
+    width = "720px";
+  }
+  // solution button
+  if (current == 4) {
+    width = "820px";
   }
 
   const props = useSpring({

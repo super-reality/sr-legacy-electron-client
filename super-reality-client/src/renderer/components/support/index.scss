@@ -1,0 +1,210 @@
+.support-container {
+    padding: 20px;
+    display: flex;
+    height: 90%;
+
+    input {
+        background: #211b33;
+        height: 30px;
+        color: #b8d4f3;
+        margin: 10px;
+        margin-left: 0;
+        border-radius: 3px;
+    }
+}
+
+.support-category {
+    width: 30%;
+    border-right: 1px solid #585286;
+    font-size: 14px;
+}
+
+.support-search {
+    width: 70%;
+    height: 100%;
+    color: #8a88c3;
+    position: relative;
+    overflow-y: scroll;
+    .support-wrapper {
+        padding: 0 20px;
+    }
+
+    a {
+        display: block;
+        color: #0898eb;
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .request-count {
+        font-weight: bold;
+        font-size: 12px;
+        color: #c2c2c2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .sort-filter {
+        display: flex;
+        align-items: center;
+
+        select {
+            display: block;
+            background: #211b33;
+            height: 32px;
+            border: 0;
+            color: #b8d4f3;
+            padding: 0 20px;
+            margin: 0 10px;
+            outline: 0;
+            width: 100px;
+            border-radius: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background-repeat: no-repeat;
+            background-position-x: 90%;
+            background-position-y: 10px;
+            background-image: url("../../../assets/svg/chevron-down.svg");
+        }
+    }
+
+    .support-list > div:nth-child(1) {
+        margin-top: 15px;
+    }
+
+    .support-list {
+        height: 100%;
+        overflow-y: scroll;
+        padding-right: 10px;
+    }
+
+    .single-query {
+        border-top: 1px solid #585286;
+        display: flex;
+        align-items: center;
+        padding-left: 10px;
+
+        .voting {
+            float: left;
+        }
+
+        .content {
+            margin: 15px 20px;
+            width: 80%;
+            max-width: 360px;
+
+            .query {
+                font-weight: bold;
+                color: #c2c2c2;
+                font-size: 13px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .description {
+                font-weight: normal;
+                color: #8a88c3;
+                font-size: 13px;
+                margin: 10px 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .member-count {
+                font-weight: bold;
+                color: #7f7eb6;
+                font-size: 13px;
+            }
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #8a88c3;
+            font-size: 12px;
+        }
+    }
+
+    .query-title {
+        font-size: 22px;
+        color: #c2c2c2;
+        border-bottom: 1px solid #585286;
+        padding-bottom: 10px;
+    }
+
+    .white {
+        display: inline;
+        color: #c2c2c2;
+    }
+
+    .purple {
+        display: inline;
+        color: #8a88c3;
+    }
+
+    .blue {
+        color: #04aff0;
+        display: inline;
+    }
+
+    .border-bottom {
+        padding: 15px 0;
+        border-bottom: 1px solid #585286;
+    }
+
+    span {
+        display: block;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    li {
+        margin: 5px 0;
+    }
+
+    ul li:before {
+        content: "";
+        position: absolute;
+        border-right: 2px solid #7d7ab0;
+        border-bottom: 2px solid #7d7ab0;
+        margin-top: 13px;
+        width: 6px;
+        height: 6px;
+        left: 35px;
+        transform: translateY(-50%) rotate(-45deg);
+    }
+
+    .suggest-solution {
+        padding: 0 20px;
+        .title {
+            font-size: 16;
+            font-weight: bold;
+            color: #c2c2c2;
+            padding: 0;
+
+            span {
+                margin-top: 10px;
+                // font-size: 13px;
+                font-weight: 500;
+            }
+        }
+        ol {
+            li {
+                list-style-type: upper-alpha;
+                position: unset;
+                color: #b8d4f3;
+            }
+        }
+
+        ul {
+            list-style: disc;
+        }
+
+        ul li:before {
+            position: unset;
+            border: 0;
+        }
+    }
+}
