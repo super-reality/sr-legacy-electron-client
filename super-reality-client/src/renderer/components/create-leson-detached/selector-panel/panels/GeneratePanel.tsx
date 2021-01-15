@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import logger from "../../../../../utils/logger";
 import reduxAction from "../../../../redux/reduxAction";
 import { AppState } from "../../../../redux/stores/renderer";
-import setCanvasSource from "../../../../redux/utils/setCanvasSource";
 import ButtonSimple from "../../../button-simple";
 import ButtonCheckbox from "../../button-checkbox";
 import generateBaseData from "../../generation/generateBaseData";
@@ -75,13 +74,6 @@ export default function GeneratePanel() {
 
   const doCallback = useCallback((type: string, value: any | null) => {
     if (type == "Recording") {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: {
-          currentRecording: value.recording,
-        },
-      });
-      setCanvasSource("recording", value.recording);
       setRecording(value);
     }
     if (type == "Image Found") {
@@ -168,6 +160,7 @@ export default function GeneratePanel() {
             data={currentValue}
             open={setDataId}
             select={doCallback}
+            noUpload
           />
           {dataType == "Recording" && (
             <>

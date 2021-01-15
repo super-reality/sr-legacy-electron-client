@@ -89,9 +89,10 @@ export function RecordingsList(
 export function RecordingsView(
   props: BasePanelViewProps<RecordingCanvasTypeValue> & {
     id: string;
+    noUpload?: boolean;
   }
 ) {
-  const { id, data, select } = props;
+  const { id, data, select, noUpload } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -115,7 +116,7 @@ export function RecordingsView(
 
   const defaultTime = useMemo(
     () =>
-      data[0]?.value.recording == id
+      data[0]?.value?.recording == id
         ? timestampToTime(data[0]?.value.timestamp || "00:00:00") / 1000
         : 0,
     [data, id]
@@ -142,13 +143,12 @@ export function RecordingsView(
     (n: readonly number[]) => {
       if (videoRef.current) {
         videoRef.current.currentTime = n[0] / 1000;
-        updateCanvas();
         // if (checked) {
         //  select("Recording", null);
         // }
       }
     },
-    [select, updateCanvas, checked, videoRef.current]
+    [select, checked, videoRef.current]
   );
 
   const scrubVideo = useCallback(
@@ -166,18 +166,25 @@ export function RecordingsView(
         (videoRef?.current?.currentTime || 0) * 1000
       );
       if (val && canvasRef.current) {
-        saveCanvasImage(
-          `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
-          canvasRef.current
-        )
-          .then(uploadFileToS3)
-          .then((url) => {
-            select("Recording", {
-              recording: id,
-              timestamp,
-              url,
-            });
+        if (noUpload) {
+          select("Recording", {
+            recording: id,
+            timestamp,
           });
+        } else {
+          saveCanvasImage(
+            `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
+            canvasRef.current
+          )
+            .then(uploadFileToS3)
+            .then((url) => {
+              select("Recording", {
+                recording: id,
+                timestamp,
+                url,
+              });
+            });
+        }
       } else {
         select("Recording", null);
       }
@@ -197,14 +204,20 @@ export function RecordingsView(
           arg: { videoDuration: videoRef.current?.duration || 0 },
         });
       };
+      videoRef.current.onseeked = updateCanvas;
     }
-  }, [videoRef.current]);
+  }, [videoRef.current, updateCanvas]);
 
   return (
     <>
       <ContainerWithCheck checked={checked} callback={doCheckToggle}>
-        <canvas ref={canvasRef} style={{ display: "none" }} />
+        <canvas
+          id="video-canvas-panel"
+          ref={canvasRef}
+          style={{ display: "none" }}
+        />
         <video
+          id="video-panel"
           style={{ width: "300px" }}
           ref={videoRef}
           src={`${recordingPath}/vid-${id}.webm`}

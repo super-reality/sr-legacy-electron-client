@@ -8,11 +8,13 @@ import TypeIdSelectorPanel from "../TypeIdSelectorPanel";
 
 // import IconStarStep from "../../../../../assets/svg/start-step.svg";
 
-interface CanvasSelectorPanelProps {
+interface StartStepSelectorPanelProps {
   stepId: string;
 }
 
-export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
+export default function StartStepSelectorPanel(
+  props: StartStepSelectorPanelProps
+) {
   const { stepId } = props;
 
   const { treeSteps } = useSelector((state: AppState) => state.createLessonV2);

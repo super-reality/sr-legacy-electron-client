@@ -28,7 +28,7 @@ function makeDialogsFromPieces(
         type: "dialog",
         text: p.text,
         anchor: false,
-        trigger: null,
+        endOn: [],
         relativePos: {
           width: 300,
           height: 140,
