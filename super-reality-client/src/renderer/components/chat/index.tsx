@@ -157,7 +157,7 @@ export function Message(props: MessageProps) {
               cancelEditingMessage();
             }}
           >
-            cancel
+            Cancel
           </button>
           <button
             type="button"
@@ -169,7 +169,7 @@ export function Message(props: MessageProps) {
               submitEditMessage(_id, textEdit);
             }}
           >
-            save
+            Save
           </button>
         </div>
       )}

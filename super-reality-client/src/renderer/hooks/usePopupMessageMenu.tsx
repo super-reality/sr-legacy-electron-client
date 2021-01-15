@@ -1,6 +1,9 @@
 import React from "react";
 import usePopup from "./usePopup";
 
+import IconEdit from "../../assets/images/popup-edit.png";
+import IconDelete from "../../assets/images/popup-delete.png";
+
 interface MessageMenuProps {
   removeMessage: () => void;
   startEditMessage: () => void;
@@ -28,32 +31,32 @@ export default function usePopupMessageMenu(
   const Modal = () => {
     return (
       <MessagePopup width="100px" height="50px">
-        <ul>
-          <li>
-            <button
-              type="button"
-              style={{
-                cursor: "pointer",
-                color: "var(--color-text)",
-              }}
-              onClick={deleteMessage}
-            >
-              del
-            </button>
-          </li>
-          <li>
-            <button
-              type="button"
-              style={{
-                cursor: "pointer",
-                color: "var(--color-text)",
-              }}
-              onClick={editMessage}
-            >
-              edit
-            </button>
-          </li>
-        </ul>
+        <div className="popup-item">
+          <button
+            type="button"
+            style={{
+              cursor: "pointer",
+              color: "var(--color-text)",
+            }}
+            onClick={editMessage}
+          >
+            Edit Message
+            <img src={IconEdit} alt="" />
+          </button>
+        </div>
+        <div className="popup-item">
+          <button
+            type="button"
+            style={{
+              cursor: "pointer",
+              color: "var(--color-text)",
+            }}
+            onClick={deleteMessage}
+          >
+            Delete Message
+            <img src={IconDelete} alt="" />
+          </button>
+        </div>
       </MessagePopup>
     );
   };
