@@ -4,6 +4,7 @@ import { TypeValue } from "../../../../../types/utils";
 import { CanvasTypeValue } from "../../../../api/types/step/step";
 import reduxAction from "../../../../redux/reduxAction";
 import useStep from "../../hooks/useStep";
+import forceStepBackgroundUpdate from "../../lesson-utils/forceStepBackgroundUpdate";
 import updateStep from "../../lesson-utils/updateStep";
 import "../index.scss";
 import TypeIdSelectorPanel from "../TypeIdSelectorPanel";
@@ -27,6 +28,7 @@ export default function CanvasSelectorPanel(props: CanvasSelectorPanelProps) {
               type: "CREATE_LESSON_V2_SETSTEP",
               arg: { step: updated },
             });
+            forceStepBackgroundUpdate();
           }
         }
       );

@@ -160,7 +160,6 @@ export default function ItemPreview(props: ItemPreviewProps) {
             startPos.y =
               (event.rect.top - div.parentElement.getBoundingClientRect().y) /
               scale;
-            console.log(event.rect);
             startPos.width = (event.rect.width - 3) / scale;
             startPos.height = (event.rect.height - 3) / scale;
             updateDiv(startPos);
