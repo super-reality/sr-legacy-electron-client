@@ -24,6 +24,9 @@ export default async function generateSteps(
   } = store.getState().createLessonV2;
 
   const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoCanvas = document.getElementById(
+    "video-canvas-panel"
+  ) as HTMLCanvasElement;
 
   const steps: Record<string, StepData> = {};
   recordingData.step_data.forEach((data) => {
@@ -50,7 +53,10 @@ export default async function generateSteps(
       setTimeout(resolve, 200);
     })
       .then(() =>
-        saveCanvasImage(`${itemsPath}/${sha1(`step-${timestamp}`)}.png`)
+        saveCanvasImage(
+          `${itemsPath}/${sha1(`step-${timestamp}`)}.png`,
+          videoCanvas
+        )
       )
       .then((file) => uploadFileToS3(file))
       .then((url) =>

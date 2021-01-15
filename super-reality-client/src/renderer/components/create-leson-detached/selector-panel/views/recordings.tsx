@@ -211,7 +211,11 @@ export function RecordingsView(
   return (
     <>
       <ContainerWithCheck checked={checked} callback={doCheckToggle}>
-        <canvas ref={canvasRef} style={{ display: "none" }} />
+        <canvas
+          id="video-canvas-panel"
+          ref={canvasRef}
+          style={{ display: "none" }}
+        />
         <video
           id="video-panel"
           style={{ width: "300px" }}
