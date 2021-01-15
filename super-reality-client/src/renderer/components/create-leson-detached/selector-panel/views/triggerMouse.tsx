@@ -14,7 +14,7 @@ type MouseTriggers =
   | MouseHoverTriggerTypeValue;
 
 export function TriggerMouseList(props: BasePanelViewProps<MouseTriggers>) {
-  const { select, data, open } = props;
+  const { select, data } = props;
 
   const doCheckToggle = useCallback(
     (val: boolean, k: MouseTriggers["value"]) => {
@@ -47,7 +47,7 @@ export function TriggerMouseList(props: BasePanelViewProps<MouseTriggers>) {
               background: "var(--color-background-dark)",
               cursor: "pointer",
             }}
-            onClick={() => open(k)}
+            // onClick={() => open(k)}
           >
             {typeToText[k as MouseTriggers["type"]]}
           </div>
