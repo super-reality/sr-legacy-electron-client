@@ -270,6 +270,10 @@ export default function CreateLessonDetached(): JSX.Element {
             ticksNumber={100}
             callback={debounceVideoNav}
             slideCallback={debounceVideoNav}
+            middleDoubleClick={() => {
+              const center = videoNavigation[1];
+              debounceVideoNav([center, center, center]);
+            }}
             isBackgroundSync
           />
           <VideoData />
