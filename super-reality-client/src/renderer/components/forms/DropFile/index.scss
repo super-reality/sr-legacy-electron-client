@@ -1,0 +1,48 @@
+.upload-image {
+    height: 150px;
+    align-items: center;
+    display: flex;
+    border-radius: 4px;
+    border: 2px dashed #04aff0;
+
+    p {
+        margin: auto;
+        font-size: 14px;
+    }
+
+    
+}
+.droplist{
+    >h4{
+        color: #c2c2c2;
+        margin-bottom: 2px;
+    }
+
+    >ul{
+        list-style-type: none !important;
+        transition: all 1s;
+        >li{
+            width: 100%;
+            display: flex;
+            
+                >img{
+                    width: 20px;
+                }
+                >.close{
+                    width: 12px;
+                    margin-left: 10px;
+                    cursor: pointer;
+                    
+                    &:hover {
+                        filter: invert(24%) sepia(86%) saturate(2894%) hue-rotate(293deg) brightness(93%) contrast(85%);
+                    }
+                }
+
+            
+        }
+    }
+    
+}
+.upload-image-drag {
+    border: 2px dashed #D330B6!important;
+}

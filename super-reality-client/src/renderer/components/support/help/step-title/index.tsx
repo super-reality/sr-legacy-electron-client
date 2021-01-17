@@ -1,59 +1,89 @@
+/* eslint-disable react/jsx-props-no-spreading */
+
 import React from "react";
+import { Formik, Form, FormikProps } from "formik";
+import * as Yup from "yup";
+import FormControl from "../../../forms";
 import { StepSectionProps } from "..";
 
+const RadioButtonOptions = [
+  { key: "Blender Animation", value: "Blender Animation" },
+  { key: "3D Animation", value: "3D Animation" },
+  { key: "2D Pixel Art Animation", value: "2D Pixel Art Animation" },
+];
+const titleSchema = Yup.object().shape({
+  title: Yup.string()
+    .min(10, "*Give us a litle more information pls")
+    .max(50, "*Not so much information thanks")
+    .required("*Required"),
+  category: Yup.string().required("*Please select a category"),
+});
+
+interface Values {
+  title: string;
+  category: string;
+}
+
 export default function StepTitle(props: StepSectionProps): JSX.Element {
-  const { goNext, goBack,index } = props;
+  const { goNext, goBack, index } = props;
 
   return (
     <div>
       <div className="title">Step {index} of 5</div>
 
-      <div className="step">
-        <div className="step-title">Title</div>
-        <span>Enter the name of your request</span>
-        <input type="text" placeholder="I can't animate in Blender!" />
+      <Formik
+        initialValues={{
+          title: "",
+          category: "",
+        }}
+        validationSchema={titleSchema}
+        onSubmit={(values) => {
+          goNext();
 
-        <p>What can you request? Anything...we are here to help. </p>
+          console.log(values);
+        }}
+      >
+        {(formik: FormikProps<Values>) => (
+          <Form className="step">
+            <div className="step-title">Title</div>
+            <span>Enter the name of your request</span>
+            <FormControl
+              name="title"
+              control="text"
+              placeholder="I can't animate in Blender!"
+              {...formik}
+            />
 
-        <ul>
-          <li>Need to learn a skill? Tell us what it is!</li>
-          <li>
-            Dont see a lesson you want to learn? We can create it for you!
-          </li>
-          <li>Need a gaming buddy? We will find you one!</li>
-        </ul>
+            <p>What can you request? Anything...we are here to help. </p>
 
-        <span>Request Category</span>
+            <ul>
+              <li>Need to learn a skill? Tell us what it is!</li>
+              <li>
+                Dont see a lesson you want to learn? We can create it for you!
+              </li>
+              <li>Need a gaming buddy? We will find you one!</li>
+            </ul>
 
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>Blender Animation</label>
-        </div>
+            <span>Request Category</span>
 
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>3D Animation</label>
-        </div>
+            <FormControl
+              name="category"
+              control="radio"
+              options={RadioButtonOptions}
+              {...formik}
+            />
 
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>2D Pixel Art Animation</label>
-        </div>
+            <a className="see-more">See more options</a>
 
-        <a className="see-more">See more options</a>
-
-        <div className="support-buttons">
-          <button onClick={goBack} type="button">
-            Back
-          </button>
-          <button onClick={goNext} type="button">
-            Next
-          </button>
-        </div>
-      </div>
+            <div className="support-buttons">
+              <button onClick={goBack} type="button">
+                Back
+              </button>
+              <button type="submit">Next</button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }

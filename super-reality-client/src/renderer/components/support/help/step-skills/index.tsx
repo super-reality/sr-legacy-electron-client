@@ -2,7 +2,7 @@ import React from "react";
 import { StepSectionProps } from "..";
 
 export default function StepSkills(props: StepSectionProps): JSX.Element {
-  const { goNext, goBack,index } = props;
+  const { goNext, goBack, index } = props;
 
   return (
     <div>

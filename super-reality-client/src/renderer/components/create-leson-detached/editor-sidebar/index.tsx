@@ -9,7 +9,7 @@ import { ReactComponent as DummyTwo } from "../../../../assets/svg/add-video.svg
 import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
 import { ReactComponent as ButtonShareScreen } from "../../../../assets/svg/share-screen.svg";
 import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
-import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
+/* import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg"; */
 // import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
 import { ReactComponent as ButtonPencil } from "../../../../assets/svg/pencil.svg";
 import { ReactComponent as ButtonSideBarAdd } from "../../../../assets/svg/sidebar-add.svg";
@@ -23,9 +23,9 @@ import { ReactComponent as ButtonMessages } from "../../../../assets/svg/message
 // import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
 // import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
 // import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
-import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
+/* import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg"; */
 import { ReactComponent as ButtonHelp } from "../../../../assets/svg/help.svg";
-import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
+/* import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg"; */
 // import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
 // import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
 import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
@@ -38,7 +38,7 @@ import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import ChatApplication from "../../chat";
 import Screenshare from "../../screenshare";
-import Cams from "../../cams";
+/* import Cams from "../../cams"; */
 import Channels from "../../channels";
 import Support from "../../support";
 
@@ -83,7 +83,7 @@ const sidebarIcons = [
   {
     title: "Microphone",
     icon: ButtonMic,
-    component: <> Dummy Mic </>,
+    component: <Support />,
   },
   {
     title: "Get Help",
@@ -109,7 +109,7 @@ export default function EditorSidebar() {
   }
 
   if (current == 6) {
-    width = "250px";
+    width = "1500px";
   }
 
   const props = useSpring({

@@ -1,0 +1,12 @@
+.sliderForm {
+    display: flex;
+    width:200%;
+}
+
+.sliderForm>div {
+    overflow-y: scroll;
+    flex-direction: column;
+    width: var(--slides);
+    max-width:var(--slides);
+
+}

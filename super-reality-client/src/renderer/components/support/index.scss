@@ -1,26 +1,29 @@
 .support {
     display: flex;
     height: 100%;
-    overflow: hidden;
+
     ul {
         margin: 0px;
-        padding: 0px;
-        padding-left: 25px;
+        padding: 10px;
+        
         list-style: none;
         display: flex;
         flex-direction: column;
     }
 
     li {
-        padding: 12px 12px 12px 0;
+        padding: 12px 12px 12px 12px;
         font-weight: bold;
         font-size: 14px;
-        color: #8a88c3;
-
+        color: #8a88c3; 
+        border-radius: 6px;
+        
+        margin-bottom: 8px;
         img {
             float: left;
             margin-right: 10px;
         }
+
     }
 
     .progress-step {
@@ -51,23 +54,49 @@
 }
 
 .support-list {
-    width: 100%;
+    width: 50%;
     border-right: 1px solid #585286;
-}
-.support-steps {
-    overflow-y: scroll;
+    li {
+        
+        background: #323052;
+        transition: .5s;
+        cursor: pointer;
+        img {
+            float: left;
+            margin-right: 10px;
+            
+        }
 
+        &:hover{
+            background:  #222138;
+            >img{
+                filter: invert(32%) sepia(43%) saturate(2314%) hue-rotate(279deg) brightness(95%) contrast(107%);
+            }
+        }
+        &:active{
+            background:black;
+        }
+    }
+}
+
+
+.support-steps {
+    position: relative;
+    overflow-y: scroll;
 }
 
 .support-scroll {
     display: flex;
-    width: 300%;
+    width:200%;
+
+
 }
 
 .support-scroll>div {
-    overflow: auto;
+    overflow-y: scroll;
     flex-direction: column;
-    width: 33%;
+    width: 25%;
+
 }
 
 .step {

@@ -4,6 +4,11 @@
     font-size: 16px;
 }
 
+.channel-wrapper{
+    height: 100%;
+    width: 100%;
+    display:flex;
+}
 .channel {
     position: relative;
     overflow-y: scroll;
