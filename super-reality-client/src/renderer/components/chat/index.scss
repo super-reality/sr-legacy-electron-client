@@ -59,6 +59,8 @@
         height: 30px;
         width: 30px;
         border-radius: 4px;
+        position: relative;
+        z-index: 2;
     }
 
     .single-chat {
@@ -158,6 +160,7 @@
         justify-content: space-between;
 
         input {
+            padding-right: 30px;
             background: #2b2641;
             font-size: 14px;
             color: #b8d4f3;
