@@ -1,7 +1,5 @@
 import "./index.scss";
 import React from "react";
-import { useSelector } from "react-redux";
-import { AppState } from "../../redux/stores/renderer";
 
 import ButtonAdd from "../../../assets/images/add-circle.png";
 
@@ -9,22 +7,10 @@ import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
 import TeacherBot from "../../../assets/svg/teacher-bot.svg";
 import { ReactComponent as Support } from "../../../assets/svg/support.svg";
-import { Group } from "../../../types/chat";
 
 export default function Channels(): JSX.Element {
-  const { groups } = useSelector((state: AppState) => state.chat);
   return (
     <div className="channel">
-      <div className="channel-container">
-        {groups.map((group: Group) => {
-          return (
-            <div className="single-channel" key={group._id}>
-              <img className="avatar" src={group.collectivePhoto} alt="" />
-              <div className="info">{group.collectiveName}</div>
-            </div>
-          );
-        })}
-      </div>
       <div className="title">Super Powers</div>
       <div className="add">
         <button type="button">

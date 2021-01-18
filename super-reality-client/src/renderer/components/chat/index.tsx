@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 /* eslint-disable-next-line */
 import moment from "moment";
-import Login from "./login-chat";
-import { AppState } from "../../redux/stores/renderer";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 // import Sonic from "../../../assets/images/sonic.png";
 // import Nick from "../../../assets/images/Nick.png";
 // import Pacman from "../../../assets/images/pacman.png";
 import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
-import Channels from "../channels";
 import client from "../../feathers";
 import usePopupMessageMenu from "../../hooks/usePopupMessageMenu";
 
@@ -99,14 +95,10 @@ export function Message(props: MessageProps) {
     setTextEdit("");
   };
 
-  const yPosition = dotsRef.current?.offsetTop;
-  const xPosition = dotsRef.current?.offsetLeft;
   // Popup menu
   const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
     removeMessage,
     startEditMessage,
-    yPosition,
-    xPosition,
   });
   console.log(user.avatar);
   return (
@@ -116,6 +108,7 @@ export function Message(props: MessageProps) {
         <div className="user">{user.username}</div>
         <div className="timestamp">{messageTime(createdAt)}</div>
       </div>
+
       {!edit ? (
         <div
           className="message-box"
@@ -125,15 +118,17 @@ export function Message(props: MessageProps) {
           <div className="message" ref={dotsRef}>
             {text}
           </div>
-          <PopupMenu />
+
           {isHover ? (
-            <button
-              type="button"
-              className="dots-menu"
-              onClick={openMessagePopup}
-            >
-              ...
-            </button>
+            <div className="message-settings-box">
+              <button
+                type="button"
+                className="dots-menu"
+                onClick={openMessagePopup}
+              >
+                ...
+              </button>
+            </div>
           ) : null}
         </div>
       ) : (
@@ -173,11 +168,12 @@ export function Message(props: MessageProps) {
           </button>
         </div>
       )}
+      <PopupMenu />
     </div>
   );
 }
 
-export function Chat(props: ChatProps) {
+export default function Chat(props: ChatProps) {
   const { users, messages } = props;
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -261,54 +257,6 @@ export function Chat(props: ChatProps) {
           />
         </div>
       </div>
-    </div>
-  );
-}
-
-export default function ChatApplication() {
-  const { isChatAuth, messages, users } = useSelector(
-    (state: AppState) => state.chat
-  );
-
-  // useEffect(() => {
-  //   const getChannels = async () => {
-  //     const channelResult = await client.service("channel").find({
-  //       query: {
-  //         $limit: 10,
-  //         $skip: 0,
-  //       },
-  //     });
-  //     console.log(channelResult);
-  //   };
-  //   getChannels();
-  // }, []);
-  // useEffect(() => {
-  //   const messagesClient = client.service("messages");
-  //   const usersClient = client.service("users");
-
-  //   // Try to authenticate with the JWT stored in localStorage
-  //   // client.authenticate().catch((err) => {
-  //   //   const token = localStorage.getItem("token");
-  //   //   console.log("token", token, "err authent", err);
-
-  //   //   setChatState({ login: null });
-  //   // });
-
-  //   // On logout reset all all local state (which will then show the login screen)
-  // }, []);
-
-  return (
-    <div>
-      {!isChatAuth ? (
-        <main className="container text-center">
-          <Login />
-        </main>
-      ) : (
-        <div className="chat-and-channels-container">
-          <Channels />
-          <Chat messages={messages} users={users} />
-        </div>
-      )}
     </div>
   );
 }

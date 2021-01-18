@@ -1,4 +1,5 @@
 import { remote } from "electron";
+import os from "os";
 import path from "path";
 import client from "../../renderer/feathers";
 import reduxAction from "../../renderer/redux/reduxAction";
@@ -8,8 +9,6 @@ import { Group, Message, ChatUser } from "../../types/chat";
 import getPublicPath from "../electron/getPublicPath";
 // import NotificationLogo from "../../assets/images/sidebar-logo.png";
 
-// eslint-disable-next-line
-const os = require("os");
 const { Notification, app } = remote;
 const showChatNotification = (message: Message) => {
   if (os.platform() === "win32") {
@@ -199,7 +198,7 @@ export const onAuthenticated = () => {
         // collectives listeners clean up
         groupClient.off("created", onGroupCreatedListener);
         groupClient.on("created", (group: Group) => {
-          console.log(group);
+          console.log("group created", group);
 
           onGroupCreatedListener(group);
         });
@@ -212,7 +211,7 @@ export const onAuthenticated = () => {
         // collective delete listener
         groupClient.off("removed", onDeleteGroupListener);
         groupClient.on("removed", (group: Group) => {
-          console.log("patched", group);
+          console.log("deleted", group);
           onDeleteGroupListener(group);
         });
       })

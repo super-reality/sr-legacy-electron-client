@@ -4,17 +4,13 @@ import usePopup from "./usePopup";
 interface MessageMenuProps {
   removeMessage: () => void;
   startEditMessage: () => void;
-  yPosition: number | string | undefined;
-  xPosition: number | string | undefined;
 }
 
 export default function usePopupMessageMenu(
   props: MessageMenuProps
 ): [() => JSX.Element, () => void] {
-  const { removeMessage, startEditMessage, yPosition, xPosition } = props;
+  const { removeMessage, startEditMessage } = props;
   const [MessagePopup, doOpen, close] = usePopup(false);
-
-  console.log(xPosition, yPosition);
 
   const deleteMessage = () => {
     removeMessage();

@@ -45,13 +45,7 @@ import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
-import ChatApplication from "../../chat";
-// import Screenshare from "../../screenshare";
-// import Cams from "../../cams";
-import client from "../../../feathers";
-import usePopupCreateGroup from "../../../hooks/usePopupCreateGroup";
-// import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
-// import Channels from "../../channels";
+import Browser from "../../browser";
 
 const sidebarIcons = [
   {
@@ -69,7 +63,7 @@ const sidebarIcons = [
   {
     title: "Chat",
     icon: ButtonMessages,
-    component: <ChatApplication />,
+    component: <Browser />,
   },
 ];
 
@@ -165,26 +159,6 @@ export default function EditorSidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
-  const createGroup = (gName: string, gPhoto?: string) => {
-    let groupProps;
-    if (gPhoto) {
-      groupProps = {
-        groupName: gName,
-        groupPhoto: gPhoto,
-      };
-    } else {
-      groupProps = {
-        groupName: gName,
-        groupPhoto: gPhoto,
-      };
-    }
-    (client as any).service("groups").create(groupProps);
-  };
-
-  const [CreateGroupMenu] = usePopupCreateGroup({
-    createGroup,
-  });
-  // , openGroupPopup
   return (
     <>
       <div className="sidebar-buttons button-logo">
@@ -303,7 +277,6 @@ export default function EditorSidebar() {
       <animated.div style={props} className="sidebar-expanded">
         <div className="sidebar-content">
           {sidebarIcons[current]?.component}
-          <CreateGroupMenu />
         </div>
       </animated.div>
     </>
