@@ -1,0 +1,58 @@
+.review-step > span {
+  display: block;
+  padding: 5px 0;
+  color: #c2c2c2;
+  font-size: 15px;
+}
+.review-step > p {
+  font-size: 14px;
+}
+.review-step {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #8a88c3;
+}
+
+.review-step > ul {
+  display: block !important;
+}
+
+.review-skill {
+  display: inline-block;
+  margin: 8px 8px 8px 0;
+  border-radius: 25px !important;
+  padding: 5px !important;
+  color: #2d2a44 !important;
+  transition: all 0.5s;
+  font: 400 13.3333px Arial;
+  font-family: Segoe UI;
+  background-color: #0898eb;
+  cursor: pointer;
+  &::before {
+    content: "+ ";
+  }
+}
+
+.imageslist {
+
+  > ul {
+    list-style-type: none !important;
+    transition: all 1s;
+    display: block !important;
+    li {
+      text-align: center;
+      display: inline-block;
+      > div {
+        display: block;
+        > img {
+          width: 180px;
+          display: block;
+        }
+        >p{
+            display: block;
+        }
+
+        
+      }
+    }
+  }
+}

@@ -2,10 +2,20 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { InputProps } from "..";
-import icon from "../../../../assets/svg/image-icon.svg";
+/* import icon from "../../../../assets/svg/image-icon.svg"; */
 import close from "../../../../assets/svg/close-img.svg";
 import "./index.scss";
 
+const _fileProperties = [
+  "lastModified",
+  "lastModifiedDate",
+  "name",
+  "path",
+  "preview",
+  "size",
+  "type",
+  "webkitRelativePath",
+];
 export default function DropFile(props: InputProps): JSX.Element {
   const { setFieldValue, name, values } = props;
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
@@ -14,28 +24,55 @@ export default function DropFile(props: InputProps): JSX.Element {
       if (accepted.length === 0) {
         return;
       }
-      setFieldValue("files", values.files.concat(accepted));
+
+      /*   const fileBlob:any= accepted[0];
+      const newFile:any={};
+      _fileProperties.forEach((key) => {
+        newFile[key] = fileBlob[key];
+      }); */
+
+      const images: any = [];
+
+      accepted.forEach((file) => {
+        images.push({
+          lastModified: file.lastModified,
+          name: file.name,
+          path: file.path,
+          size: file.size,
+          type: file.type,
+        });
+      });
+
+      console.log(accepted);
+      setFieldValue(name, values[name].concat(images));
     },
   });
 
   const removeImg = (index: number) => {
-    values.files.splice(index, 1);
-    setFieldValue("files", values.files);
+    const a = [...values[name]];
+    a.splice(index, 1);
+    setFieldValue(name, a);
   };
 
-  const files = values.files.map((file: any, index: number) => {
+  const files = values[name].map((file: any, index: number) => {
     return (
       <li key={file.path}>
-        <img src={icon} alt="lol2" />
-        {file.name}
-        <img
-          className="close"
-          onClick={() => {
-            removeImg(index);
-          }}
-          src={close}
-          alt="lol"
-        />
+        <div>
+          <img src={file.path} alt="lol23" />
+          
+            <div>
+              <p>{file.name}</p>
+              <img
+                className="close"
+                onClick={() => {
+                  removeImg(index);
+                }}
+                src={close}
+                alt="lol"
+            />
+            </div>
+          
+        </div>
       </li>
     );
   });
@@ -47,18 +84,17 @@ export default function DropFile(props: InputProps): JSX.Element {
           className: `dropzone upload-image ${
             isDragActive && "upload-image-drag"
           }`,
-        })}
-      >
+        })}>
         <input name={name} {...getInputProps()} />
         <p>
           {isDragActive
-            ? "drop your files here"
+            ? "drop your images here"
             : "drag or upload request images"}
         </p>
       </div>
-      {values.files.length > 0 && (
+      {values[name].length > 0 && (
         <aside className="droplist">
-          <h4>Files</h4>
+          <h4>{name}</h4>
           <ul>{files}</ul>
         </aside>
       )}

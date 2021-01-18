@@ -1,44 +1,65 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import store, { AppState } from "../../../../redux/stores/renderer";
 import { StepSectionProps } from "..";
+import "./index.scss";
 
 export default function StepReview(props: StepSectionProps): JSX.Element {
   const { goNext, goBack } = props;
+  const slice = store.getState().createSupportTicket;
 
+  const { title, category, skills, description, images } = useSelector(
+    (state: AppState) => state.createSupportTicket
+  );
+
+  console.log(slice);
+  console.log(skills);
+  console.log(skills !== undefined);
+
+  const getImages =
+    images &&
+    images.map((image) => (
+      <li  key={image.path}>
+        <div>
+          <img src={image.path} alt="lol23" />
+          <p>{image.name}</p>
+        </div>
+      </li>
+    ));
+
+  const getSkills =
+    skills &&
+    skills.map((skill) => (
+      <li className="review-skill" key={skill}>
+        {skill}
+      </li>
+    ));
   return (
     <div>
       <div className="title">Step 1 of 5</div>
 
       <div className="step fade">
-        <div className="step-title">Title</div>
-        <span>Enter the name of your request</span>
-        <input type="text" placeholder="I can't animate in Blender!" />
-
-        <p>What can you request? Anything...we are here to help. </p>
-
-        <ul>
-          <li>Need to learn a skill? Tell us what it is!</li>
-          <li>
-            Dont see a lesson you want to learn? We can create it for you!
-          </li>
-          <li>Need a gaming buddy? We will find you one!</li>
-        </ul>
-
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>Blender Animation</label>
+        <div className="review-step">
+          <div className="step-title">Title</div>
+          <p>{title}</p>
+          <span>Requested category</span>
+          <p>{category}</p>
         </div>
 
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>3D Animation</label>
+        <div className="review-step imageslist">
+          <div className="step-title">Description</div>
+          <p>{description}</p>
+          <span>Images</span>
+          {images && images.length > 0 ? (
+            <ul >{getImages}</ul>
+          ) : (
+            <p>No images selected</p>
+          )}
         </div>
 
-        <div className="custom-checkbox">
-          <input type="checkbox" />
-          <span className="checkmark" />
-          <label>2D Pixel Art Animation</label>
+        <div className="review-step">
+          <div className="step-title">Skills</div>
+          <ul>{getSkills}</ul>
         </div>
 
         <a className="see-more">See more options</a>
@@ -48,7 +69,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
             Back
           </button>
           <button onClick={goNext} type="button">
-            Next
+            Ask for help
           </button>
         </div>
       </div>

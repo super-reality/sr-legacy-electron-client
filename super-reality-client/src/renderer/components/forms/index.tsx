@@ -6,6 +6,7 @@ import InputText from "./InputText";
 import RadioButtons from "./RadioButtons";
 import TextArea from "./TextArea";
 import DropFile from "./DropFile";
+import SkillsCheckbox from "./SkillsCheckbox";
 /* export interface radioOption {
   key: string;
   value: string;
@@ -36,6 +37,8 @@ export default function FormControl({
       return <TextArea {...rest} />;
     case "file":
       return <DropFile {...rest} />;
+    case "skills":
+      return <SkillsCheckbox {...rest} />;
 
     default:
       return <></>;

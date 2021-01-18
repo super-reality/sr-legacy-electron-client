@@ -3,6 +3,9 @@
 import React from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import store from "../../../../redux/stores/renderer";
+import reduxAction from "../../../../redux/reduxAction";
 import FormControl from "../../../forms";
 import { StepSectionProps } from "..";
 
@@ -20,11 +23,13 @@ const titleSchema = Yup.object().shape({
 });
 
 interface Values {
-  title: string;
-  category: string;
+  title: string | undefined;
+  category: string | undefined;
 }
 
 export default function StepTitle(props: StepSectionProps): JSX.Element {
+  const slice = store.getState().createSupportTicket;
+  const dispatch = useDispatch();
   const { goNext, goBack, index } = props;
 
   return (
@@ -33,11 +38,18 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
 
       <Formik
         initialValues={{
-          title: "",
-          category: "",
+          title: slice.title,
+          category: slice.category,
         }}
         validationSchema={titleSchema}
         onSubmit={(values) => {
+          reduxAction(dispatch, {
+            type: "SET_SUPPORT_TICKET",
+            arg: {
+              title: values.title,
+              category: values.category,
+            },
+          });
           goNext();
 
           console.log(values);

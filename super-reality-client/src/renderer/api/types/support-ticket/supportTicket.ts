@@ -1,11 +1,9 @@
 export default interface supportTicker {
-    category: category;
-    option: option;
-    title: string;
-    requestCategory: requestCategory;
-    description: string;
-    file?: string;
-    skills: skills;
+  title?:string,
+  category?:string,
+  skills?: any[],
+  description?: string,
+  images?: File[],
 }
 
 export interface tags {

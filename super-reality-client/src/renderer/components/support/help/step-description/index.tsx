@@ -2,11 +2,14 @@
 import React from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import store from "../../../../redux/stores/renderer";
+import reduxAction from "../../../../redux/reduxAction";
 import FormControl from "../../../forms";
 import { StepSectionProps } from "..";
 
 interface Values {
-  description: string;
+  description: string | undefined;
 }
 
 const descriptionSchema = Yup.object().shape({
@@ -18,24 +21,34 @@ const descriptionSchema = Yup.object().shape({
 
 export default function StepDescription(props: StepSectionProps): JSX.Element {
   const { goNext, goBack, index } = props;
+  const slice = store.getState().createSupportTicket;
+  const dispatch = useDispatch();
 
   return (
     <div>
       <div className="title">Step {index} of 5</div>
       <Formik
         initialValues={{
-          description: "",
-          files: [],
+          description: slice.description,
+          images: slice.images,
         }}
         validationSchema={descriptionSchema}
         onSubmit={(values) => {
+          reduxAction(dispatch, {
+            type: "SET_SUPPORT_TICKET",
+            arg: {
+              description: values.description,
+              images: values.images,
+            },
+          });
+
           goNext();
 
           console.log(values);
         }}
       >
         {(formik: FormikProps<Values>) => (
-          <Form className="step">
+          <Form className="step ss">
             <div className="step-title">Description</div>A good description of
             your request includes:
             <ul>
@@ -47,12 +60,7 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
             </ul>
             <FormControl name="description" control="textarea" {...formik} />
             <p>Additional files ( optional )</p>
-            {/* <div className="upload-image">
-              <label htmlFor="file">
-                <span>drag or upload request images</span>.
-              </label>
-            </div> */}
-            <FormControl name="files" control="file" {...formik} />
+            <FormControl name="images" control="file" {...formik} />
             <div className="support-buttons">
               <button onClick={goBack} type="button">
                 Back

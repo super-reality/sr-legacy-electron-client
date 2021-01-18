@@ -21,24 +21,41 @@
     >ul{
         list-style-type: none !important;
         transition: all 1s;
-        >li{
-            width: 100%;
-            display: flex;
-            
-                >img{
-                    width: 20px;
-                }
-                >.close{
-                    width: 12px;
-                    margin-left: 10px;
-                    cursor: pointer;
-                    
-                    &:hover {
-                        filter: invert(24%) sepia(86%) saturate(2894%) hue-rotate(293deg) brightness(93%) contrast(85%);
+        display: block!important;
+        li{
+            text-align: center;
+            display: inline-block;
+            >div{
+                width: auto;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                    >img{
+                        width: 180px;
+                        display: block;
                     }
-                }
-
-            
+                    >div{
+                        display: flex;
+                        >p{
+                            display: block;
+                        }
+                        
+                            >.close{
+                                display: inline-block;
+                            width: 12px;
+                            margin-left: 10px;
+                            cursor: pointer;
+                            
+                            &:hover {
+                                filter: invert(24%) sepia(86%) saturate(2894%) hue-rotate(293deg) brightness(93%) contrast(85%);
+                            }
+                        }
+                    }
+    
+                   
+    
+                
+            }
         }
     }
     

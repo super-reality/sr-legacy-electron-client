@@ -20,7 +20,8 @@ export default function useFormSlider(steps: number): any {
       } as any)
   );
 
-  const slideDistance = Math.round(100 / steps);
+  const slideDistance = Math.round(100 / (steps-1));
+  const slideWidth = Math.round(200 / (steps-1));
 
   console.log(slideDistance);
   console.log(slideDistance * index);
@@ -41,7 +42,7 @@ export default function useFormSlider(steps: number): any {
     <FormSlider
       className={className}
       style={stateSpring}
-      slides={slideDistance}
+      slides={slideWidth}
     >
       {children}
     </FormSlider>
