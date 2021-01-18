@@ -3,7 +3,9 @@ import { useSelector } from "react-redux";
 import { ILessonV2 } from "../../../api/types/lesson-v2/lesson";
 import { AppState } from "../../../redux/stores/renderer";
 
-export default function useLesson(lessonId: string): ILessonV2 | null {
+export default function useLesson(
+  lessonId: string | undefined
+): ILessonV2 | null {
   const { treeLessons } = useSelector(
     (state: AppState) => state.createLessonV2
   );

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";
-import store, { AppState } from "../../../redux/stores/renderer";
+import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/cv/doCVMatch";
@@ -15,10 +15,7 @@ import cropImage from "../../../../utils/cropImage";
 import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import useDebounce from "../../../hooks/useDebounce";
-import { itemsPath, recordingPath } from "../../../electron-constants";
-import cropVideo from "../../../../utils/cropVideo";
-import updateItem from "../lesson-utils/updateItem";
-import { ItemVideo } from "../../../items/item";
+import { itemsPath } from "../../../electron-constants";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -44,7 +41,6 @@ function newAnchorPre(file: string): Promise<IAnchor | undefined> {
 
 const userData = userDataPath();
 const captureFileName = `${userData}/capture.png`;
-const videoCropFileName = `${userData}/crop.webm`;
 
 export default function VideoStatus() {
   const dispatch = useDispatch();
@@ -58,7 +54,6 @@ export default function VideoStatus() {
     canvasSource,
     status,
     triggerCvMatch,
-    videoNavigation,
     previewEditArea,
     previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
@@ -137,70 +132,9 @@ export default function VideoStatus() {
       .then(doExitPreviewModes);
   }, [previewEditArea, doExitPreviewModes, dispatch]);
 
-  const doTrimVideo = useCallback(() => {
-    const slice = store.getState().createLessonV2;
-    const { currentRecording, currentItem } = slice;
-    if (currentItem) {
-      const recordingVideo = `${recordingPath}/vid-${currentRecording}.webm`;
-      setStatus("Trimming video...");
-      cropVideo(
-        `${videoNavigation[0] / 1000}`,
-        `${videoNavigation[2] / 1000}`,
-        Math.round(previewEditArea.width),
-        Math.round(previewEditArea.height),
-        Math.round(previewEditArea.x),
-        Math.round(previewEditArea.y),
-        recordingVideo,
-        videoCropFileName
-      )
-        .then((file) => {
-          setStatus("Uploading video...");
-          return uploadFileToS3(file);
-        })
-        .then((url) => {
-          setStatus("Updating item...");
-          return updateItem<ItemVideo>({ url }, currentItem);
-        })
-        .then((updatedItem) => {
-          if (updatedItem) {
-            reduxAction(dispatch, {
-              type: "CREATE_LESSON_V2_SETITEM",
-              arg: { item: updatedItem },
-            });
-          }
-          setStatus("Done");
-          doExitPreviewModes();
-        })
-        .catch((e) => {
-          setStatus("Something went wrong trimming video!");
-          console.error(e);
-        });
-    }
-  }, [dispatch, doExitPreviewModes, previewEditArea, videoNavigation]);
-
   return (
     <>
       <div className="video-status-container">
-        {previewMode == "TRIM_VIDEO" && (
-          <>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto auto"
-              onClick={doTrimVideo}
-            >
-              Ok
-            </ButtonSimple>
-            <ButtonSimple
-              width="140px"
-              height="12px"
-              margin="auto auto"
-              onClick={doExitPreviewModes}
-            >
-              Cancel
-            </ButtonSimple>
-          </>
-        )}
         {previewMode == "CREATE_ANCHOR" && (
           <ButtonSimple
             width="140px"

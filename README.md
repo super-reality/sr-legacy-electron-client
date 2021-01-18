@@ -17,10 +17,16 @@
 
 If this is the first time after installing:
 
-`npm run electron-build` or `npm run build`
+`npm run build` or `npm run electron-build`
 
 Once finished simply do `npm run start`
 
+## Problem Solving
+
+If electron fails use these to debug the problem:
+
+`electron .`
+`npm run electron`
 
 ## Building
 

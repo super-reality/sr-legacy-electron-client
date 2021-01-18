@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import fs from "fs";
+import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import {
   itemsPath,
@@ -13,10 +14,9 @@ import {
   stepSnapshotPath,
 } from "../../../../electron-constants";
 import BaseSlider from "../../../base-slider";
-import ContainerWithCheck from "../../../container-with-check";
 import ButtonCheckbox from "../../button-checkbox";
 import reduxAction from "../../../../redux/reduxAction";
-import store from "../../../../redux/stores/renderer";
+import store, { AppState } from "../../../../redux/stores/renderer";
 import { RecordingCanvasTypeValue } from "../../../../api/types/step/step";
 import timetoTimestamp from "../../../../../utils/timeToTimestamp";
 import timestampToTime from "../../../../../utils/timestampToTime";
@@ -24,8 +24,16 @@ import useDebounce from "../../../../hooks/useDebounce";
 import sha1 from "../../../../../utils/sha1";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import usePopupVideoTrim from "../../../../hooks/usePopupVideoTrim";
+import ButtonSimple from "../../../button-simple";
+import setStatus from "../../lesson-utils/setStatus";
+import cropVideo from "../../../../../utils/cropVideo";
+import userDataPath from "../../../../../utils/files/userDataPath";
+import { Rectangle } from "../../../../../types/utils";
+import { ItemVideo } from "../../../../items/item";
+import updateItem from "../../lesson-utils/updateItem";
 
-export function RecordingsList(
+export function RecordingsTrimList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
 ) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,27 +59,9 @@ export function RecordingsList(
     setVideos(newFiles);
   }, []);
 
-  const filterFn = (a: string) =>
-    data.filter((d) => d.type == "Recording" && d.value?.recording == a)[0];
-  const filterFnCheck = (a: string) => !!filterFn(a);
-  const filterFnUnCheck = (a: string) => !filterFn(a);
-
   return (
     <>
-      <div className="panel-subtitle">Active</div>
-      {videos.filter(filterFnCheck).map((id) => (
-        <ButtonCheckbox
-          text={id}
-          margin="8px auto"
-          key={`recording-button-${id}`}
-          showDisabled={false}
-          check
-          onButtonClick={() => open(id)}
-          onCheckClick={doUnCheck}
-        />
-      ))}
-      <div className="panel-subtitle">Library</div>
-      {videos.filter(filterFnUnCheck).map((id) => (
+      {videos.map((id) => (
         <ButtonCheckbox
           text={id}
           margin="8px auto"
@@ -86,13 +76,20 @@ export function RecordingsList(
   );
 }
 
-export function RecordingsView(
+const userData = userDataPath();
+const videoCropFileName = `${userData}/crop.webm`;
+
+export function RecordingsTrimView(
   props: BasePanelViewProps<RecordingCanvasTypeValue> & {
     id: string;
-    noUpload?: boolean;
   }
 ) {
-  const { id, data, select, noUpload } = props;
+  const dispatch = useDispatch();
+  const { currentItem } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+
+  const { id, data, select } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -116,7 +113,7 @@ export function RecordingsView(
 
   const defaultTime = useMemo(
     () =>
-      data[0]?.value?.recording == id
+      data[0]?.value.recording == id
         ? timestampToTime(data[0]?.value.timestamp || "00:00:00") / 1000
         : 0,
     [data, id]
@@ -143,12 +140,13 @@ export function RecordingsView(
     (n: readonly number[]) => {
       if (videoRef.current) {
         videoRef.current.currentTime = n[0] / 1000;
+        updateCanvas();
         // if (checked) {
         //  select("Recording", null);
         // }
       }
     },
-    [select, checked, videoRef.current]
+    [select, updateCanvas, checked, videoRef.current]
   );
 
   const scrubVideo = useCallback(
@@ -160,31 +158,24 @@ export function RecordingsView(
     [debouncer, selectNewTimestamp]
   );
 
-  const doCheckToggle = useCallback(
+  const _doCheckToggle = useCallback(
     (val: boolean) => {
       const timestamp = timetoTimestamp(
         (videoRef?.current?.currentTime || 0) * 1000
       );
       if (val && canvasRef.current) {
-        if (noUpload) {
-          select("Recording", {
-            recording: id,
-            timestamp,
-          });
-        } else {
-          saveCanvasImage(
-            `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
-            canvasRef.current
-          )
-            .then(uploadFileToS3)
-            .then((url) => {
-              select("Recording", {
-                recording: id,
-                timestamp,
-                url,
-              });
+        saveCanvasImage(
+          `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
+          canvasRef.current
+        )
+          .then(uploadFileToS3)
+          .then((url) => {
+            select("Recording", {
+              recording: id,
+              timestamp,
+              url,
             });
-        }
+          });
       } else {
         select("Recording", null);
       }
@@ -204,25 +195,71 @@ export function RecordingsView(
           arg: { videoDuration: videoRef.current?.duration || 0 },
         });
       };
-      videoRef.current.onseeked = updateCanvas;
     }
-  }, [videoRef.current, updateCanvas]);
+  }, [videoRef.current]);
+
+  const callback = useCallback(
+    (rect: Rectangle, from: number, to: number) => {
+      if (currentItem) {
+        const recordingVideo = `${recordingPath}/vid-${id}.webm`;
+        setStatus("Trimming video...");
+        cropVideo(
+          `${from / 1000}`,
+          `${to / 1000}`,
+          Math.round(rect.width),
+          Math.round(rect.height),
+          Math.round(rect.x),
+          Math.round(rect.y),
+          recordingVideo,
+          videoCropFileName
+        )
+          .then((file) => {
+            setStatus("Uploading video...");
+            return uploadFileToS3(file);
+          })
+          .then((url) => {
+            setStatus("Updating item...");
+            return updateItem<ItemVideo>({ url }, currentItem);
+          })
+          .then((updatedItem) => {
+            if (updatedItem) {
+              reduxAction(dispatch, {
+                type: "CREATE_LESSON_V2_SETITEM",
+                arg: { item: updatedItem },
+              });
+            }
+            setStatus("Done");
+          })
+          .catch((e) => {
+            setStatus("Something went wrong trimming video!");
+            console.error(e);
+          });
+      }
+    },
+    [dispatch, id, currentItem]
+  );
+
+  const [TrimPopup, doOpenTrimmer, _doCloseTrimmer] = usePopupVideoTrim(
+    id,
+    callback
+  );
 
   return (
     <>
-      <ContainerWithCheck checked={checked} callback={doCheckToggle}>
-        <canvas
-          id="video-canvas-panel"
-          ref={canvasRef}
-          style={{ display: "none" }}
-        />
+      <div>
+        <canvas ref={canvasRef} style={{ display: "none" }} />
         <video
-          id="video-panel"
-          style={{ width: "300px" }}
+          style={{ borderRadius: "5px", width: "300px" }}
           ref={videoRef}
           src={`${recordingPath}/vid-${id}.webm`}
         />
-      </ContainerWithCheck>
+      </div>
+      <div>
+        <TrimPopup key={id} />
+      </div>
+      <ButtonSimple width="200px" height="24px" onClick={doOpenTrimmer}>
+        Trim
+      </ButtonSimple>
       <BaseSlider
         domain={[0, duration]}
         step={100}

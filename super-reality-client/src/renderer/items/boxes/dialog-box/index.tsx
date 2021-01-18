@@ -2,10 +2,8 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Howler } from "howler";
-import { ItemDialog, ItemImageTriggers } from "../../item";
-import { voidFunction } from "../../../constants";
+import { ItemDialog } from "../../item";
 import ButtonRound from "../../../components/button-round";
-import ButtonSimple from "../../../components/button-simple";
 import { ReactComponent as MuteIcon } from "../../../../assets/svg/mute.svg";
 import { ReactComponent as UnmuteIcon } from "../../../../assets/svg/unmute.svg";
 import { ReactComponent as TTSIcon } from "../../../../assets/svg/add-tts.svg";
@@ -18,7 +16,7 @@ import { BaseBoxProps } from "../boxes";
 
 const DialogBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemDialog>>(
   (props, forwardedRef) => {
-    const { item, style, pos, callback } = props;
+    const { item, style, pos } = props;
 
     const dispatch = useDispatch();
     const muted = useSelector((state: AppState) => state.lessonPlayer.ttsOn);
@@ -49,20 +47,6 @@ const DialogBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemDialog>>(
       >
         <div className="dialog-text">{item.text}</div>
         <Flex style={{ justifyContent: "center" }}>
-          {item.trigger && (
-            <ButtonSimple
-              width="200px"
-              height="24px"
-              margin="0 16px 0 0"
-              onClick={
-                callback
-                  ? () => callback(ItemImageTriggers["Click Ok button"])
-                  : voidFunction
-              }
-            >
-              Ok
-            </ButtonSimple>
-          )}
           <ButtonRound
             width="40px"
             height="40px"
