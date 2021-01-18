@@ -24,6 +24,7 @@
     font-size: 14px;
     color: #b8d4f3;
     margin: 20px;
+    height: calc(80vh - 255px);
 
     .chats {
         overflow-y: scroll;
@@ -70,7 +71,6 @@
     .message-box {
         position: relative;
         z-index: 1;
-
 
         &:hover {
             background: #29233c;
@@ -131,7 +131,6 @@
                     cursor: pointer;
                     background: #29233c;
                     transition: 0.2s ease-out all;
-
                 }
             }
         }

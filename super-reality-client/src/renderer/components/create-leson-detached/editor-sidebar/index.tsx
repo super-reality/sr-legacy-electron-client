@@ -38,7 +38,6 @@ import ButtonShareNew from "../../../../assets/images/share-btn.png";
 import ButtonAdd from "../../../../assets/images/add-btn.png";
 import ButtonSonic from "../../../../assets/images/sonic-btn.png";
 import ButtonDavinci from "../../../../assets/images/davinci-btn.png";
-import DropdownLogo from "../../../../assets/images/dropdown-logo.png";
 // import ControlButtons from "../../../../assets/images/control-icons.png";
 // import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
 import ButtonRound from "../../button-round";
@@ -162,14 +161,7 @@ export default function EditorSidebar() {
   return (
     <>
       <div className="sidebar-buttons button-logo">
-        <div className="dropdown">
-          <div className="sidebar-logo" />
-          <div className="dropdown-content">
-            <button type="button">
-              <img src={DropdownLogo} />
-            </button>
-          </div>
-        </div>
+        <div className="sidebar-logo" />
 
         <div className="control-buttons">
           <div className="dropdown">
