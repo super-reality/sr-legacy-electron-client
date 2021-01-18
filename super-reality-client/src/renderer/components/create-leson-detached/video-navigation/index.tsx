@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { CSSProperties, useEffect, useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import {
-  SliderModeFunction,
   Slider,
+  CustomMode,
   Rail,
   Handles,
   Tracks,
@@ -12,36 +13,47 @@ import {
   GetTrackProps,
   SliderItem,
   Ticks,
-} from "react-compound-slider";
+} from "../../react-compound-slider-custom";
 import "../../containers.scss";
 import "./index.scss";
 
-const customMode: SliderModeFunction = (curr, next) => {
-  const newNext = next;
-  let changed = -1;
-  for (let i = 0; i < curr.length; i += 1) {
-    if (curr[i].val !== next[i].val) {
-      changed = i;
-    }
-    if (changed == 0) {
-      if (next[0].val >= curr[1].val * 0.99) {
-        newNext[0].val = curr[1].val;
-      }
-    }
+const customMode: CustomMode = (curr, next) => {
+  const handle2Moved = next[2].val != curr[2].val;
+  // const handle1Moved = next[1].val != curr[1].val;
+  const handle0Moved = next[0].val != curr[0].val;
 
-    if (changed == 1) {
-      if (next[0].val == curr[1].val) newNext[0].val = next[1].val;
-      if (next[2].val == curr[1].val) newNext[2].val = next[1].val;
-    }
-
-    if (changed == 2) {
-      if (curr[1].val >= next[2].val * 0.99) {
-        newNext[2].val = curr[1].val;
-      }
-    }
+  if (next[2].val < next[0].val) return curr;
+  if (handle0Moved && curr[0].val == curr[1].val) {
+    const newNext = next;
+    newNext[1].val = next[0].val;
+    return newNext;
+  }
+  if (handle2Moved && curr[2].val == curr[1].val) {
+    const newNext = next;
+    newNext[1].val = next[2].val;
+    return newNext;
+  }
+  if (
+    handle2Moved &&
+    next[2].val >= next[1].val * 0.97 &&
+    next[2].val <= next[1].val + next[1].val * 0.03
+  ) {
+    const newNext = next;
+    newNext[2].val = curr[1].val;
+    return newNext;
   }
 
-  return newNext;
+  if (
+    handle0Moved &&
+    next[0].val >= next[1].val * 0.97 &&
+    next[0].val <= next[1].val + next[1].val * 0.03
+  ) {
+    const newNext = next;
+    newNext[0].val = newNext[1].val;
+    return newNext;
+  }
+
+  return next;
 }; // snapping mode
 
 function formatTime(time: number): string {
@@ -70,6 +82,8 @@ interface HandleProps {
   handle: SliderItem;
   getHandleProps: GetHandleProps;
   disabled?: boolean;
+  /** Handles middle handle double click event */
+  onDoubleClick?: () => void;
 }
 
 function Handle({
@@ -77,15 +91,17 @@ function Handle({
   handle: { id, value, percent },
   disabled = false,
   index,
+  onDoubleClick,
   getHandleProps,
 }: HandleProps) {
   return (
     <>
       <div
-        className={`video-handle-${index}`}
+        className={`video-handle-${id.slice(-1)}`}
         style={{
           left: `${percent}%`,
         }}
+        onDoubleClick={id.slice(-1) == "1" ? onDoubleClick : undefined}
         {...getHandleProps(id)}
       />
       <div
@@ -180,6 +196,8 @@ interface VideoNavigationProps {
    * Sync the first track background with the other tracks. Default to false
    */
   isBackgroundSync?: boolean;
+  /** Activate on double clicking middle handle */
+  middleDoubleClick?: () => void;
 }
 
 const sliderStyle = {
@@ -201,6 +219,7 @@ export default function VideoNavigation(
     ticksNumber,
     style,
     isBackgroundSync = false,
+    middleDoubleClick,
   } = props;
 
   const [state, setState] = useState<readonly number[]>(defaultValues.slice());
@@ -265,6 +284,7 @@ export default function VideoNavigation(
                     key={handle.id}
                     handle={handle}
                     domain={domain}
+                    onDoubleClick={middleDoubleClick}
                     getHandleProps={getHandleProps}
                   />
                 ))}
@@ -276,25 +296,30 @@ export default function VideoNavigation(
               <div className="video-slider-tracks">
                 {tracks
                   .filter((t, i) => i > 0)
-                  .map(({ id, source, target }, idx) =>
-                    isBackgroundSync ? (
-                      <Track
-                        key={id}
-                        source={idx === 0 ? source : tracks[0].target}
-                        target={
-                          idx === 0 ? tracks[tracks.length - 1].target : target
-                        }
-                        getTrackProps={getTrackProps}
-                      />
-                    ) : (
-                      <Track
-                        key={id}
-                        source={source}
-                        target={target}
-                        getTrackProps={getTrackProps}
-                      />
-                    )
-                  )}
+                  .map(({ id, source, target }, idx) => {
+                    if (idx == 0) {
+                      return isBackgroundSync ? (
+                        <Track
+                          key={id}
+                          source={source.id.slice(-1) != "0" ? target : source}
+                          target={
+                            tracks[tracks.length - 1].target.id.slice(-1) == "2"
+                              ? tracks[tracks.length - 1].target
+                              : tracks[tracks.length - 1].source
+                          }
+                          getTrackProps={getTrackProps}
+                        />
+                      ) : (
+                        <Track
+                          key={id}
+                          source={source}
+                          target={target}
+                          getTrackProps={getTrackProps}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
               </div>
             )}
           </Tracks>
