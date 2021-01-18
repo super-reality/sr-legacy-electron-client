@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
@@ -29,6 +29,8 @@ import {
   globalKeyUpListener,
 } from "../utils/globalKeyListeners";
 
+import EditorSidebar from "./components/create-leson-detached/editor-sidebar";
+
 import Test from "./views/test";
 
 export default function App(): JSX.Element {
@@ -37,7 +39,7 @@ export default function App(): JSX.Element {
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const { ready, appMode } = useSelector((state: AppState) => state.render);
 
-  const { isLoading, detached, background } = useSelector(
+  const { detached, background } = useSelector(
     (state: AppState) => state.commonProps
   );
   const yScrollMoveTo = useSelector(
@@ -47,12 +49,12 @@ export default function App(): JSX.Element {
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
-  const handleScroll = useCallback((): void => {
-    if (scrollRef.current) {
-      const { scrollTop } = scrollRef.current;
-      reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
-    }
-  }, [scrollRef, dispatch]);
+  // const handleScroll = useCallback((): void => {
+  //   if (scrollRef.current) {
+  //     const { scrollTop } = scrollRef.current;
+  //     reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
+  //   }
+  // }, [scrollRef, dispatch]);
 
   useEffect(() => {
     if (scrollRef.current && yScrollMoveTo !== undefined) {
@@ -91,43 +93,30 @@ export default function App(): JSX.Element {
       {appMode == MODE_RECORDER && <Recorder />}
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
       {appMode == MODE_HOME && (
-        <Windowlet
-          width={1100}
-          height={600}
-          title="Super Reality"
-          onMinimize={minimizeWindow}
-          onClose={closeWindow}
-        >
+        <>
           {isAuthenticated ? (
-            <>
-              <div
-                style={{
-                  overflow: "hidden",
-                  margin: "0",
-                }}
-              >
-                <Loading state={isLoading} />
-                <div
-                  onScroll={handleScroll}
-                  ref={scrollRef}
-                  className="content"
-                >
-                  <Switch>
-                    <Route path="/test" component={Test} />
-                  </Switch>
-                </div>
-              </div>
-            </>
+            <div className="browser-container">
+              <EditorSidebar />
+              <Switch>
+                <Route path="/test" component={Test} />
+              </Switch>
+            </div>
           ) : (
-            <>
+            <Windowlet
+              width={1100}
+              height={600}
+              title="Super Reality"
+              onMinimize={minimizeWindow}
+              onClose={closeWindow}
+            >
               <Loading state={isPending} />
               <Switch>
                 <Route exact path="/tests/:id" component={Tests} />
                 <Route path="*" component={Splash} />
               </Switch>
-            </>
+            </Windowlet>
           )}
-        </Windowlet>
+        </>
       )}
     </ErrorBoundary>
   );
