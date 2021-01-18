@@ -3,6 +3,7 @@ import "./index.scss";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/stores/renderer";
+
 import Channels from "../channels";
 import Chat from "../chat";
 import Login from "../chat/login-chat";
@@ -11,7 +12,7 @@ import GroupsPage from "../groups";
 import Sonic from "../../../assets/images/sonic.png";
 
 export default function Browser() {
-  const { isChatAuth, messages, users } = useSelector(
+  const { isChatAuth, messages, users, activeGroup } = useSelector(
     (state: AppState) => state.chat
   );
   const [showGroups, setShowGroups] = useState(false);
@@ -20,9 +21,19 @@ export default function Browser() {
     <div>
       <div className="browser-nav">
         <div className="group-button">
-          <div className="single-button">
+          <div
+            className="single-button"
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setShowGroups(!showGroups);
+            }}
+          >
             <img src={Sonic} alt="" />
-            <div className="group-title">YO!!!!</div>
+            <div className="group-title">
+              {showGroups ? "Show Chat" : "Show Groups"}
+            </div>
           </div>
         </div>
         <div className="group-button">
@@ -83,15 +94,13 @@ export default function Browser() {
             onClick={() => {
               setShowGroups(!showGroups);
             }}
-          >
-            {showGroups ? "Show Chat" : "Show Groups"}
-          </button>
+          />
           <div className="chat-and-channels-container">
             {showGroups ? (
               <GroupsPage />
             ) : (
               <>
-                <Channels />
+                <Channels activeGroup={activeGroup} />
                 <Chat messages={messages} users={users} />
               </>
             )}

@@ -5,6 +5,7 @@ import { Group, ChatUser, Message } from "../../../types/chat";
 const initialState = {
   isChatAuth: false,
   loginData: {} as any,
+  activeGroup: {} as Group,
   messages: [] as Message[],
   users: [] as ChatUser[],
   groups: [] as Group[],
@@ -79,6 +80,9 @@ const chatSlice = createSlice({
       );
       state.groups = filteredGroups;
     },
+    setActiveGroup: (state: ChatState, action: PayloadAction<Group>): void => {
+      state.activeGroup = action.payload;
+    },
   },
 });
 
@@ -95,6 +99,7 @@ export const {
   addNewGroup,
   updateGroup,
   deleteGroup,
+  setActiveGroup,
 } = chatSlice.actions;
 
 export default chatSlice;

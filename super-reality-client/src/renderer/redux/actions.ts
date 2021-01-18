@@ -81,6 +81,7 @@ export const actions = {
   ADD_GROUP: chatSlice.addNewGroup,
   UPDATE_GROUP: chatSlice.updateGroup,
   DELETE_GROUP: chatSlice.deleteGroup,
+  SET_ACTIVE_GROUP: chatSlice.setActiveGroup,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
   UPDATE_MESSAGE: chatSlice.updateMessage,
 };
