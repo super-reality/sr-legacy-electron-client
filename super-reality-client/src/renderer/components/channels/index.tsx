@@ -7,10 +7,22 @@ import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
 import TeacherBot from "../../../assets/svg/teacher-bot.svg";
 import { ReactComponent as Support } from "../../../assets/svg/support.svg";
+import { Group } from "../../../types/chat";
 
-export default function Channels(): JSX.Element {
+interface ChannelsProps {
+  activeGroup: Group;
+}
+
+export default function Channels(props: ChannelsProps): JSX.Element {
+  const { activeGroup } = props;
   return (
     <div className="channel">
+      <div className="active-group">{activeGroup.collectiveName}</div>
+      <div className="group-settings-dropdown">
+        <ul>
+          <li>Group settings</li>
+        </ul>
+      </div>
       <div className="title">Super Powers</div>
       <div className="add">
         <button type="button">

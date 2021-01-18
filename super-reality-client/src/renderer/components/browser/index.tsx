@@ -7,7 +7,7 @@ import Login from "../chat/login-chat";
 import GroupsPage from "../groups";
 
 export default function Browser() {
-  const { isChatAuth, messages, users } = useSelector(
+  const { isChatAuth, messages, users, activeGroup } = useSelector(
     (state: AppState) => state.chat
   );
   const [showGroups, setShowGroups] = useState(false);
@@ -37,7 +37,7 @@ export default function Browser() {
               <GroupsPage />
             ) : (
               <>
-                <Channels />
+                <Channels activeGroup={activeGroup} />
                 <Chat messages={messages} users={users} />
               </>
             )}
