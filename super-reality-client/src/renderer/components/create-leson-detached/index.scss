@@ -67,11 +67,11 @@
 
 .main-container {
   width: calc(100% - 10px);
-  height: calc(100% - 24px);
+  height: calc(100% - 10px);
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto 48px 112px;
-  grid-template-areas: "edit" "status" "nav";
+  grid-template-rows: auto 20px;
+  grid-template-areas: "edit" "status";
   grid-gap: 5px;
   padding: 5px;
   background: var(--main-gradient);
