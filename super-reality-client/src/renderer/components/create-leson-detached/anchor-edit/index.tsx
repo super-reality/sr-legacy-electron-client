@@ -11,6 +11,7 @@ import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
 import useAnchor from "../hooks/useAnchor";
+import Collapsible from "../../collapsible";
 
 interface AnchorEditProps {
   anchorId: string | undefined;
@@ -114,7 +115,9 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
         value={anchorName}
         onChange={handleNameChange}
       />
-      <AnchorEditSliders anchor={anchor} update={debouncedUpdate} />
+      <Collapsible title="Advanced">
+        <AnchorEditSliders anchor={anchor} update={debouncedUpdate} />
+      </Collapsible>
     </>
   );
 }
