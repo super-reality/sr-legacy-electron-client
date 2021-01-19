@@ -60,7 +60,7 @@ const sidebarIcons = [
     ),
   },
   {
-    title: "Chat",
+    title: "Chat Channel",
     icon: ButtonMessages,
     component: <Browser />,
   },
@@ -159,7 +159,12 @@ export default function EditorSidebar() {
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
       <div className="sidebar-buttons button-logo">
         <div className="sidebar-logo" />
 
@@ -271,6 +276,6 @@ export default function EditorSidebar() {
           {sidebarIcons[current]?.component}
         </div>
       </animated.div>
-    </>
+    </div>
   );
 }
