@@ -62,8 +62,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <ul>{getSkills}</ul>
         </div>
 
-        <a className="see-more">See more options</a>
-
+      
         <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back

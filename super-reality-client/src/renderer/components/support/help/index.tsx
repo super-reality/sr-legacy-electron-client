@@ -40,12 +40,12 @@ const helpSections = [
     title: "Skills",
     icon: IconSkills,
     section: StepSkills,
-  } /* ,
+  },/* 
   {
     title: "Profile Sharing",
     icon: IconProfileSharing,
     section: StepProfileSharing,
-  }, */,
+  }, */
   {
     title: "Review",
     icon: IconReview,
@@ -64,7 +64,7 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
     setIndex,
     clickGoNext,
     clickGoBack,
-  } = useFormSlider(5);
+  } = useFormSlider(4);
 
   const verifyFill = (i: number) => {
     switch (i) {
@@ -77,7 +77,6 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
       case 2:
         if (skills && skills.length > 0) return true;
         break;
-
       default:
         return false;
     }
@@ -92,7 +91,9 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
             return (
               <li
                 className={verifyFill(i) ? "step-selected" : ""}
-                onClick={() => setIndex(i)}
+                onClick={() => {
+                  if (verifyFill(i)) setIndex(i);
+                }}
                 key={`section-${section.title}`}>
                 <a>{section.title}</a>
                 <img src={section.icon} />

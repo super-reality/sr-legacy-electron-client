@@ -20,14 +20,6 @@ const createSupportTicketSlice = createSlice({
     ): void => {
       state = Object.assign(state, action.payload);
     },
-
-    /* addImages: (
-      state: supportTicker,
-      action: PayloadAction<supportTicker>
-    ): void => {
-      state.images = [...state.images, action.payload];
-    }, */
-
     reset: (state: supportTicker, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.images = [];

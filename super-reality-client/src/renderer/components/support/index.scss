@@ -1,6 +1,7 @@
 .support {
   display: flex;
   height: 100%;
+  width: 100%;
 
   ul {
     margin: 0px;
@@ -53,7 +54,8 @@
 }
 
 .support-list {
-  width: 40%;
+  width: 20%;
+  min-width: 20%;
   border-right: 1px solid #585286;
   li {
     background: #323052;
