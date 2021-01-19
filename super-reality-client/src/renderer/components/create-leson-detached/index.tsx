@@ -53,53 +53,10 @@ export default function CreateLessonDetached(): JSX.Element {
     chapterPreview,
     stepPreview,
     itemPreview,
-    // videoNavigation,
-    // videoDuration,
-    // recordingData,
     openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
   useTransparentFix(false);
-
-  /*
-  const meoizedSpectrum = useMemo(() => {
-    return (
-      <div className="spectrum-container">
-        {recordingData.spectrum.map((n, i) => (
-          <div
-            // eslint-disable-next-line react/no-array-index-key
-            key={`spectrum-key-${i}`}
-            className="spectrum-bar"
-            style={{ height: `${n * 100}%` }}
-          />
-        ))}
-      </div>
-    );
-  }, [recordingData]);
-
-  const setVideoNavPos = useCallback(
-    (n: readonly number[]) => {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: { videoNavigation: [...n] },
-      });
-    },
-    [dispatch]
-  );
-
-  const debouncer = useDebounce(500);
-
-  const debounceVideoNav = useCallback(
-    (n: readonly number[]) => {
-      debouncer(() => {
-        setVideoNavPos([...n]);
-        const el = document.getElementById("video-hidden") as HTMLVideoElement;
-        if (el) el.currentTime = n[1] / 1000;
-      });
-    },
-    [debouncer]
-  );
-  */
 
   useEffect(() => {
     setMocks();
@@ -125,10 +82,6 @@ export default function CreateLessonDetached(): JSX.Element {
     }
     return voidFunction;
   }, [resizeContainer]);
-
-  // const videoNavDomain = useMemo(() => [0, Math.round(videoDuration * 1000)], [
-  //   videoDuration,
-  // ]);
 
   useEffect(() => {
     let json: RecordingJson = {
@@ -183,6 +136,10 @@ export default function CreateLessonDetached(): JSX.Element {
     if (isTransparent) {
       setFocusable(false);
       setTopMost(true);
+      setTimeout(() => {
+        setFocusable(false);
+        setTopMost(true);
+      }, 500);
     } else {
       setFocusable(true);
       setTopMost(false);
@@ -262,26 +219,7 @@ export default function CreateLessonDetached(): JSX.Element {
           <EditorSidebar />
         </div>
         <VideoStatus />
-        {/*
-        <div className="nav">
-          <VideoNavigation
-            domain={videoNavDomain}
-            defaultValues={videoNavigation}
-            ticksNumber={100}
-            callback={debounceVideoNav}
-            slideCallback={debounceVideoNav}
-            middleDoubleClick={() => {
-              const center = videoNavigation[1];
-              debounceVideoNav([center, center, center]);
-            }}
-            isBackgroundSync
-          />
-          <VideoData />
-          {meoizedSpectrum}
-        </div>
-        */}
       </div>
     </Windowlet>
   );
 }
-/* eslint-disable dot-notation */
