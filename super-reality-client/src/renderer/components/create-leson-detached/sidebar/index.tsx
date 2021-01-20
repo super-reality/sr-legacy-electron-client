@@ -68,7 +68,7 @@ const sidebarIcons = [
   },
 ];
 
-export default function EditorSidebar() {
+export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   const [isChat, setIsChat] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -126,24 +126,6 @@ export default function EditorSidebar() {
     }
   }, [dispatch]);
 
-  /*
-  const doPreviewOne = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        lessonPreview: treeCurrentType == "lesson",
-        chapterPreview: treeCurrentType == "chapter",
-        stepPreview: treeCurrentType == "step",
-        itemPreview: treeCurrentType == "item",
-        anchorTestView: false,
-        previewing: true,
-        previewOne: true,
-      },
-    });
-    doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
-  */
-
   const doPreview = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -165,12 +147,7 @@ export default function EditorSidebar() {
   }, [dispatch]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
+    <div className="sidebar-container">
       <div className="sidebar-buttons button-logo">
         <div className="sidebar-logo" />
 

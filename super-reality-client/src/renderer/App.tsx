@@ -14,11 +14,7 @@ import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import CreateLessonDetached from "./components/create-leson-detached";
-import {
-  MODE_HOME,
-  MODE_LESSON_CREATOR,
-  MODE_RECORDER,
-} from "./redux/slices/renderSlice";
+import { MODE_LESSON_CREATOR, MODE_RECORDER } from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
 import Recorder from "./components/recorder";
@@ -29,7 +25,7 @@ import {
   globalKeyUpListener,
 } from "../utils/globalKeyListeners";
 
-import EditorSidebar from "./components/create-leson-detached/editor-sidebar";
+import Sidebar from "./components/create-leson-detached/sidebar";
 
 // import Test from "./views/test";
 
@@ -90,30 +86,23 @@ export default function App(): JSX.Element {
 
   return (
     <ErrorBoundary>
+      {isAuthenticated && <Sidebar />}
       {appMode == MODE_RECORDER && <Recorder />}
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
-      {appMode == MODE_HOME && (
-        <>
-          {isAuthenticated ? (
-            <div className="browser-container">
-              <EditorSidebar />
-            </div>
-          ) : (
-            <Windowlet
-              width={1100}
-              height={600}
-              title="Super Reality"
-              onMinimize={minimizeWindow}
-              onClose={closeWindow}
-            >
-              <Loading state={isPending} />
-              <Switch>
-                <Route exact path="/tests/:id" component={Tests} />
-                <Route path="*" component={Splash} />
-              </Switch>
-            </Windowlet>
-          )}
-        </>
+      {!isAuthenticated && (
+        <Windowlet
+          width={1100}
+          height={600}
+          title="Super Reality"
+          onMinimize={minimizeWindow}
+          onClose={closeWindow}
+        >
+          <Loading state={isPending} />
+          <Switch>
+            <Route exact path="/tests/:id" component={Tests} />
+            <Route path="*" component={Splash} />
+          </Switch>
+        </Windowlet>
       )}
     </ErrorBoundary>
   );

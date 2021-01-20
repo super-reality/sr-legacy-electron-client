@@ -23,7 +23,6 @@ import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
-import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
 import LeftPanelWrapper from "./left-panel-wrapper";
 
@@ -216,7 +215,6 @@ export default function CreateLessonDetached(): JSX.Element {
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>
-          <EditorSidebar />
         </div>
         <VideoStatus />
       </div>
