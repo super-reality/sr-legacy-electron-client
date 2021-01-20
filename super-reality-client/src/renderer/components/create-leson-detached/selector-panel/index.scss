@@ -56,9 +56,31 @@
 
       .skill-chip {
         border: 2px solid #b8d4f3;
+        color: #b8d4f3;
+        font-size: 13px;
         border-radius: 4px;
         margin: 10px 10px 5px 0px;
         padding: 2px 1em;
+      }
+
+      select {
+        width: 100%;
+        display: block;
+        background: #211b33;
+        height: 40px;
+        border: 0;
+        color: #b8d4f3;
+        margin: 20px 0;
+        padding: 0 15px;
+        outline: 0;
+        border-radius: 4px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-repeat: no-repeat;
+        background-position-x: 95%;
+        background-position-y: 15px;
+        background-image: url("../../../../assets/svg/chevron-down.svg");
       }
     }
   }

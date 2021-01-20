@@ -9,6 +9,12 @@ export default function SkillsPanel() {
   return (
     <Panel>
       <div className="panel-wide">
+        <div className="skills-search">
+          Select skills
+          <select>
+            <option>Skills</option>
+          </select>
+        </div>
         Skills
         <div className="skill-chips">
           <div className="skill-chip">MSPaint</div>

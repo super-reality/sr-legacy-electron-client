@@ -30,7 +30,7 @@ export default function Channels(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Rooms</div>
+      <div className="channel-title">Rooms</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
@@ -48,7 +48,7 @@ export default function Channels(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Mentors</div>
+      <div className="channel-title">Mentors</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
@@ -66,7 +66,7 @@ export default function Channels(): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Game</div>
+      <div className="channel-title">Game</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
