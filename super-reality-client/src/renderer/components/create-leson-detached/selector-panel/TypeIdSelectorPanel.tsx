@@ -146,7 +146,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
                 <ButtonCheckbox
                   margin="8px auto"
                   key={`panel-button-${t}`}
-                  width="145px"
+                  width="165px"
                   height="24px"
                   text={t}
                   check={false}
@@ -164,7 +164,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               <ButtonCheckbox
                 margin="8px auto"
                 key={`panel-button-${t}`}
-                width="145px"
+                width="165px"
                 height="24px"
                 text={t}
                 check={false}

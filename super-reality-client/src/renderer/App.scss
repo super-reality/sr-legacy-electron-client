@@ -2,7 +2,7 @@
 
 body {
   font-family: "Segoe UI" !important;
-  overflow:hidden;
+  overflow: hidden;
   height: 100%;
   @include disable-select;
 }
@@ -157,7 +157,9 @@ a:active {
 }
 
 ::-webkit-resizer {
-  background: #a3258c;
+  // background: #a3258c;
+  border-bottom: 30px solid #3f3b60;
+  border-left: 30px solid transparent;
 }
 
 ::-webkit-scrollbar-corner {
