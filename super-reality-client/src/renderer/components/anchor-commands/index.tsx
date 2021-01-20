@@ -15,7 +15,7 @@ import saveCanvasImage from "../../../utils/saveCanvasImage";
 import cropImage from "../../../utils/cropImage";
 import setStatus from "../create-leson-detached/lesson-utils/setStatus";
 import { IAnchor } from "../../api/types/anchor/anchor";
-import uploadFileToS3 from "../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../utils/api/uploadFileToIPFS";
 import newAnchor from "../create-leson-detached/lesson-utils/newAnchor";
 import pendingReduxAction from "../../redux/utils/pendingReduxAction";
 
@@ -41,7 +41,7 @@ function doNewAnchor(url: string) {
 
 function newAnchorPre(file: string): Promise<IAnchor | undefined> {
   if (file.indexOf("http") == -1) {
-    return uploadFileToS3(file).then(doNewAnchor);
+    return uploadFileToIPFS(file).then(doNewAnchor);
   }
   return doNewAnchor(file);
 }
@@ -72,7 +72,7 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
 
   const editAddToCurrentAnchor = useCallback(
     (fileName: string) => {
-      uploadFileToS3(fileName)
+      uploadFileToIPFS(fileName)
         .then(
           (newUrl): Promise<IAnchor | undefined> => {
             const slice = store.getState().createLessonV2;

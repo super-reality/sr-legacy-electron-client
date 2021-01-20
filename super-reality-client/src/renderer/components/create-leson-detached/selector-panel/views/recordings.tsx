@@ -23,7 +23,7 @@ import timestampToTime from "../../../../../utils/timestampToTime";
 import useDebounce from "../../../../hooks/useDebounce";
 import sha1 from "../../../../../utils/sha1";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
-import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../../utils/api/uploadFileToIPFS";
 
 export function RecordingsList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
@@ -176,7 +176,7 @@ export function RecordingsView(
             `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
             canvasRef.current
           )
-            .then(uploadFileToS3)
+            .then(uploadFileToIPFS)
             .then((url) => {
               select("Recording", {
                 recording: id,

@@ -6,7 +6,7 @@ import { ReactComponent as TrashButton } from "../../../../assets/svg/trash.svg"
 import { ReactComponent as EditButton } from "../../../../assets/svg/edit.svg";
 import usePopupImage from "../../../hooks/usePopupImage";
 import { IAnchor } from "../../../api/types/anchor/anchor";
-import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../utils/api/uploadFileToIPFS";
 
 interface TemplatesListProps {
   anchor: IAnchor;
@@ -19,7 +19,7 @@ export default function TemplatesList(props: TemplatesListProps): JSX.Element {
 
   const insertImage = useCallback(
     (image: string) => {
-      uploadFileToS3(image).then((url) => {
+      uploadFileToIPFS(image).then((url) => {
         const imgArr = [...anchor.templates];
         imgArr.splice(editIndex, 1, url);
         update({ templates: imgArr });

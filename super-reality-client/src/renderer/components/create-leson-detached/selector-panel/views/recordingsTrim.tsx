@@ -23,7 +23,7 @@ import timestampToTime from "../../../../../utils/timestampToTime";
 import useDebounce from "../../../../hooks/useDebounce";
 import sha1 from "../../../../../utils/sha1";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
-import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../../utils/api/uploadFileToIPFS";
 import usePopupVideoTrim from "../../../../hooks/usePopupVideoTrim";
 import ButtonSimple from "../../../button-simple";
 import setStatus from "../../lesson-utils/setStatus";
@@ -168,7 +168,7 @@ export function RecordingsTrimView(
           `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
           canvasRef.current
         )
-          .then(uploadFileToS3)
+          .then(uploadFileToIPFS)
           .then((url) => {
             select("Recording", {
               recording: id,
@@ -215,7 +215,7 @@ export function RecordingsTrimView(
         )
           .then((file) => {
             setStatus("Uploading video...");
-            return uploadFileToS3(file);
+            return uploadFileToIPFS(file);
           })
           .then((url) => {
             setStatus("Updating item...");

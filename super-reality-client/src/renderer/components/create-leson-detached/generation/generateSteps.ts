@@ -1,4 +1,4 @@
-import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../utils/api/uploadFileToIPFS";
 import sha1 from "../../../../utils/md5";
 import saveCanvasImage from "../../../../utils/saveCanvasImage";
 import timestampToTime from "../../../../utils/timestampToTime";
@@ -58,7 +58,7 @@ export default async function generateSteps(
           videoCanvas
         )
       )
-      .then((file) => uploadFileToS3(file))
+      .then((file) => uploadFileToIPFS(file))
       .then((url) =>
         newStep(
           {

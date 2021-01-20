@@ -1,4 +1,4 @@
-import uploadFileToS3 from "./uploadFileToS3";
+import uploadFileToIPFS from "./uploadFileToIPFS";
 
 export default function uploadMany(
   files: string[]
@@ -11,7 +11,7 @@ export default function uploadMany(
           ret[file] = file;
           resolve();
         } else {
-          uploadFileToS3(file)
+          uploadFileToIPFS(file)
             .then((f) => {
               ret[file] = f;
               resolve();

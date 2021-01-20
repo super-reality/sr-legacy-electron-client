@@ -7,7 +7,7 @@ import reduxAction from "../../../redux/reduxAction";
 import ButtonSimple from "../../button-simple";
 import doCvMatch from "../../../../utils/cv/doCVMatch";
 import userDataPath from "../../../../utils/files/userDataPath";
-import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../utils/api/uploadFileToIPFS";
 import { IStep } from "../../../api/types/step/step";
 import saveCanvasImage from "../../../../utils/saveCanvasImage";
 import setStatus from "../lesson-utils/setStatus";
@@ -34,7 +34,7 @@ function doNewAnchor(url: string) {
 
 function newAnchorPre(file: string): Promise<IAnchor | undefined> {
   if (file.indexOf("http") == -1) {
-    return uploadFileToS3(file).then(doNewAnchor);
+    return uploadFileToIPFS(file).then(doNewAnchor);
   }
   return doNewAnchor(file);
 }

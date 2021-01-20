@@ -7,7 +7,7 @@ import updateAnchor from "../lesson-utils/updateAnchor";
 import ButtonSimple from "../../button-simple";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import AnchorEditSliders from "../anchor-edit-sliders";
-import uploadFileToS3 from "../../../../utils/api/uploadFileToS3";
+import uploadFileToIPFS from "../../../../utils/api/uploadFileToIPFS";
 import BaseInput from "../../base-input";
 import useDebounce from "../../../hooks/useDebounce";
 import useAnchor from "../hooks/useAnchor";
@@ -53,7 +53,7 @@ export default function AnchorEdit(props: AnchorEditProps): JSX.Element {
   const insertImage = useCallback(
     (image: string) => {
       if (anchor) {
-        uploadFileToS3(image).then((url) => {
+        uploadFileToIPFS(image).then((url) => {
           const imgArr = [...anchor.templates, url];
           update({ templates: imgArr });
         });
