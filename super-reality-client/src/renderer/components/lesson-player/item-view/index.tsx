@@ -7,15 +7,16 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
-import { Item, ItemFocusTriggers } from "../../../items/item";
+import { Item } from "../../../items/item";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import { Rectangle } from "../../../../types/utils";
 import getItemComponent from "../../../items/getItemComponent";
+import { TriggerTypes } from "../../../items/endStep";
 
 interface ItemViewProps {
   item: Item;
   anchorId: string;
-  onSucess: (trigger: number | null) => void;
+  onSucess: (trigger: TriggerTypes | null) => void;
 }
 
 export default function ItemView(props: ItemViewProps) {
@@ -65,10 +66,6 @@ export default function ItemView(props: ItemViewProps) {
     ) {
       setPos(newPos);
       setStyle(newStyle);
-    }
-
-    if (cvFound && item.type == "focus_highlight") {
-      onSucess(ItemFocusTriggers["Target found"]);
     }
   }, [anchor, cvResult, item, onSucess]);
 

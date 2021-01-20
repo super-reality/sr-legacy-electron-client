@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { IStep } from "../../../api/types/step/step";
 import { AppState } from "../../../redux/stores/renderer";
 
-export default function useStep(stepId: string): IStep | null {
+export default function useStep(stepId: string | undefined): IStep | null {
   const { treeSteps } = useSelector((state: AppState) => state.createLessonV2);
 
   const step = useMemo(() => {

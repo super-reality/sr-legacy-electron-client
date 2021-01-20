@@ -8,8 +8,8 @@ export default function editStepItemsRelativePosition(
   prevPos: Rectangle,
   newPos: Rectangle
 ): void {
-  const diffX = newPos.x - prevPos.x;
-  const diffY = newPos.y - prevPos.y;
+  const diffX = prevPos.x - newPos.x;
+  const diffY = prevPos.y - newPos.y;
 
   const { treeSteps, treeItems } = store.getState().createLessonV2;
   const step = treeSteps[stepId];

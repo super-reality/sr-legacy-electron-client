@@ -11,13 +11,24 @@ import Support from "../support";
 
 export default function Channels(): JSX.Element {
   return (
-    <div className="channel-wrapper">
-      <div className="channel">
-        <div className="title">Super Powers</div>
-        <div className="add">
-          <button type="button">
-            <img src={ButtonAdd} />
-          </button>
+    <div className="channel">
+      <div className="channel-title">Super Powers</div>
+      <div className="add">
+        <button type="button">
+          <img src={ButtonAdd} />
+        </button>
+      </div>
+      <div className="channel-container">
+        <div className="channels">
+          <div className="single-channel">
+            {/* <img className="avatar" src={Support} alt="" /> */}
+            <Support />
+            <div className="info">Support</div>
+          </div>
+          <div className="single-channel">
+            <img className="avatar" src={TeacherBot} alt="" />
+            <div className="info">Teacher Bot</div>
+          </div>
         </div>
         <div className="channel-container">
           <div className="channels">
