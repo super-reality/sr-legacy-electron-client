@@ -7,6 +7,8 @@ import BaseInput from "../../../base-input";
 import updateChapter from "../../lesson-utils/updateChapter";
 import useBasePanel from "../useBasePanel";
 
+import { ReactComponent as IconInfo } from "../../../../../assets/svg/information.svg";
+
 interface ChapterInformationPanelProps {
   chapterId: string;
 }
@@ -49,7 +51,7 @@ export default function ChapterInformationPanel(
     [step, chapterName, debouncer]
   );
 
-  const Panel = useBasePanel("Information");
+  const Panel = useBasePanel("Information", IconInfo, {});
 
   return (
     <Panel>

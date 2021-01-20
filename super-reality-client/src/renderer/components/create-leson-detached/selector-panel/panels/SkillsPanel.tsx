@@ -2,9 +2,10 @@ import React from "react";
 import useBasePanel from "../useBasePanel";
 
 import IconAdd from "../../../../../assets/images/small-cirlce-outlined.png";
+import { ReactComponent as IconSkills } from "../../../../../assets/svg/skill-achievement.svg";
 
 export default function SkillsPanel() {
-  const Panel = useBasePanel("Skills and Achievements");
+  const Panel = useBasePanel("Skills and Achievements", IconSkills, {});
 
   return (
     <Panel>
