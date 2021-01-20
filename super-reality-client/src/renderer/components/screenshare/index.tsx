@@ -7,7 +7,7 @@ import Screencast from "../../../assets/images/screencast.png";
 export default function Screenshare(): JSX.Element {
   return (
     <>
-      <div className="title">Screenshares</div>
+      <div className="screenshare-title">Screenshares</div>
       <div className="screenshare-container">
         <div className="screens">
           <div className="single-screen">
