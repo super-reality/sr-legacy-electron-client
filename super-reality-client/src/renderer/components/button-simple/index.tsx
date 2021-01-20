@@ -29,7 +29,7 @@ export default function ButtonSimple(
 
   return (
     <div
-      onClick={onClick}
+      onClick={disabled == true ? undefined : onClick}
       id={id}
       className={`button-simple ${className} ${disabled ? "disabled" : ""}`}
       style={{ margin, width, height, ...style }}

@@ -169,40 +169,6 @@ export default function Auth(props: AuthProps): JSX.Element {
       .catch(handleAuthError);
   }, []);
 
-  // useEffect(() => {
-  //   const messagesClient = client.service("messages");
-  //   const usersClient = client.service("users");
-  //   // On successfull login
-  //   client.on("authenticated", (login) => {
-  //     // Get all users and messages
-  //     Promise.all([
-  //       messagesClient.find({
-  //         query: {
-  //           $sort: { createdAt: -1 },
-  //           $limit: 25,
-  //         },
-  //       }),
-  //       usersClient.find(),
-  //     ]).then(([messagePage, userPage]) => {
-  //       // We want the latest messages but in the reversed order
-  //       const uploadedMessages = messagePage.data.reverse();
-  //       const uploadedUsers = userPage.data;
-  //       console.log(
-  //         "login",
-  //         login,
-  //         "messages",
-  //         uploadedMessages,
-  //         "users",
-  //         uploadedUsers
-  //       );
-  //       // Once both return, update the state
-  //       reduxAction(dispatch, { type: "SET_CHAT_LOGIN_DATA", arg: login });
-  //       reduxAction(dispatch, { type: "SET_MESSAGES", arg: uploadedMessages });
-  //       reduxAction(dispatch, { type: "SET_USERS", arg: uploadedUsers });
-  //     });
-  //   });
-  // }, []);
-
   return (
     <animated.div style={stateSpring} className="auth-scroller">
       <form className="auth-container">

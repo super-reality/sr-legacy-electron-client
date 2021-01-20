@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+import { TriggerTypes } from "../endStep";
 import { BaseItem } from "../item";
 
 export interface BaseBoxProps<T extends BaseItem> {
@@ -11,5 +12,5 @@ export interface BaseBoxProps<T extends BaseItem> {
   style?: CSSProperties;
   item: T;
   clickThrough?: boolean;
-  callback?: (trigger: number) => void;
+  callback?: (trigger: TriggerTypes | null) => void;
 }
