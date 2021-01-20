@@ -23,9 +23,10 @@ export default async function generateSteps(
     currentRecording,
   } = store.getState().createLessonV2;
 
-  const videoHidden = document.getElementById(
-    "video-hidden"
-  ) as HTMLVideoElement;
+  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoCanvas = document.getElementById(
+    "video-canvas-panel"
+  ) as HTMLCanvasElement;
 
   const steps: Record<string, StepData> = {};
   recordingData.step_data.forEach((data) => {
@@ -48,11 +49,14 @@ export default async function generateSteps(
     // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => {
       const timestampTime = timestampToTime(timestamp);
-      videoHidden.currentTime = timestampTime / 1000;
+      videoPanel.currentTime = timestampTime / 1000;
       setTimeout(resolve, 200);
     })
       .then(() =>
-        saveCanvasImage(`${itemsPath}/${sha1(`step-${timestamp}`)}.png`)
+        saveCanvasImage(
+          `${itemsPath}/${sha1(`step-${timestamp}`)}.png`,
+          videoCanvas
+        )
       )
       .then((file) => uploadFileToS3(file))
       .then((url) =>
@@ -60,9 +64,16 @@ export default async function generateSteps(
           {
             name: stepName,
             anchor: recordingData.anchor,
-            recordingId: currentRecording,
-            recordingTimestamp: steps[stepName].time_stamp,
-            snapShot: url,
+            canvas: [
+              {
+                type: "Recording",
+                value: {
+                  recording: currentRecording || "",
+                  timestamp: steps[stepName].time_stamp,
+                  url,
+                },
+              },
+            ],
           },
           currentChapter
         )

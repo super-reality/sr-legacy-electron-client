@@ -34,9 +34,7 @@ export default async function generateClicks(
   anchor: IAnchor
 ): Promise<GeneratedData> {
   const newData = { ...baseData };
-  const videoHidden = document.getElementById(
-    "video-hidden"
-  ) as HTMLVideoElement;
+  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
 
   const { recordingData } = store.getState().createLessonV2;
 
@@ -59,10 +57,10 @@ export default async function generateClicks(
       await new Promise<void>((resolve) => {
         const timestamp = data.time_stamp;
         const timestampTime = timestampToTime(timestamp);
-        videoHidden.currentTime = timestampTime / 1000;
+        videoPanel.currentTime = timestampTime / 1000;
         setTimeout(resolve, 200);
       })
-        .then(() => doCvMatch(anchor.templates, videoHidden, anchor))
+        .then(() => doCvMatch(anchor.templates, videoPanel, anchor))
         .then((cvResult) => {
           reduxAction(store.dispatch, {
             type: "SET_RECORDING_CV_DATA",
