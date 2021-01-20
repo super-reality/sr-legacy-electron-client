@@ -8,7 +8,7 @@ interface FormSliderProps {
   children?: React.ReactNode;
   style?: object;
   slides?: number;
-  width?:number;
+  width?: number;
 }
 
 export default function useFormSlider(steps: number): any {
@@ -21,8 +21,8 @@ export default function useFormSlider(steps: number): any {
       } as any)
   );
 
-  const slideDistance = (100 / (steps));
-  const slideWidth = Math.round(100 / (steps));
+  const slideDistance = 100 / steps;
+  const slideWidth = Math.round(100 / steps);
 
   console.log(slideDistance);
   console.log(slideDistance * index);
@@ -41,7 +41,7 @@ export default function useFormSlider(steps: number): any {
 
   const Slider = ({ children, className }: any) => (
     <FormSlider
-      width={steps*50}
+      width={steps * 50}
       className={className}
       style={stateSpring}
       slides={slideWidth}
@@ -61,11 +61,15 @@ export default function useFormSlider(steps: number): any {
 }
 
 function FormSlider(props: FormSliderProps): JSX.Element {
-  const { children, style, slides, className,width } = props;
+  const { children, style, slides, className, width } = props;
   console.log(`${slides}%`);
   return (
     <animated.div
-      style={{ ...style, ["--slides" as any]: `${slides}%`, ["--width" as any]: `${width}%` }}
+      style={{
+        ...style,
+        ["--slides" as any]: `${slides}%`,
+        ["--width" as any]: `${width}%`,
+      }}
       className={`sliderForm ${className && className}`}
     >
       {children}

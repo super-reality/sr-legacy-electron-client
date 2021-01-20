@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import store, { AppState } from "../../../../redux/stores/renderer";
 import { StepSectionProps } from "..";
 import "./index.scss";
+import ImagePreview from "../../../forms/DropFile/ImagePreview";
 
 export default function StepReview(props: StepSectionProps): JSX.Element {
   const { goNext, goBack } = props;
@@ -16,16 +17,18 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
   console.log(skills);
   console.log(skills !== undefined);
 
-  const getImages =
+  /*   const getImages =
     images &&
     images.map((image) => (
-      <li  key={image.path}>
+      <li key={image.path}>
         <div>
-          <img src={image.path} alt="lol23" />
+          <div>
+            <img src={image.path} alt="lol23" />
+          </div>
           <p>{image.name}</p>
         </div>
       </li>
-    ));
+    )); */
 
   const getSkills =
     skills &&
@@ -38,7 +41,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     <div>
       <div className="title">Step 1 of 5</div>
 
-      <div className="step fade">
+      <div className="step">
         <div className="review-step">
           <div className="step-title">Title</div>
           <p>{title}</p>
@@ -50,8 +53,9 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <div className="step-title">Description</div>
           <p>{description}</p>
           <span>Images</span>
+          {/* <ul>{getImages}</ul> */}
           {images && images.length > 0 ? (
-            <ul >{getImages}</ul>
+            <ImagePreview values={images} removable="false" columns={3} />
           ) : (
             <p>No images selected</p>
           )}
@@ -59,10 +63,9 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
         <div className="review-step">
           <div className="step-title">Skills</div>
-          <ul>{getSkills}</ul>
+          <ul className="skills-list">{getSkills}</ul>
         </div>
 
-      
         <div className="support-buttons">
           <button onClick={goBack} type="button">
             Back

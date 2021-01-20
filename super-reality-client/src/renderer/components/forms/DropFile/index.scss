@@ -21,23 +21,39 @@
     >ul{
         list-style-type: none !important;
         transition: all 1s;
-        display: block!important;
+        padding: 0;
+        display: grid!important;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(auto-fill, 1fr);
+        grid-row-gap: 0;
+        justify-items: center;
+        text-align: center;
         li{
             text-align: center;
-            display: inline-block;
+            
             >div{
                 width: auto;
-                height: auto;
+                height: 100%;
                 display: flex;
+                justify-content: flex-end;
+                align-items: baseline;
                 flex-direction: column;
-                    >img{
-                        width: 180px;
-                        display: block;
+                text-align: center;
+                margin-top: auto;
+                    >div{
+                        width: 100%;
+                        >img{
+                            width:80%;
+                            display: block;
+                        }
                     }
                     >div{
+                        
                         display: flex;
+                        justify-content: center;
                         >p{
                             display: block;
+                            text-align: center;
                         }
                         
                             >.close{

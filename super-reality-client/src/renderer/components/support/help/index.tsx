@@ -40,12 +40,12 @@ const helpSections = [
     title: "Skills",
     icon: IconSkills,
     section: StepSkills,
-  },/* 
+  } /* 
   {
     title: "Profile Sharing",
     icon: IconProfileSharing,
     section: StepProfileSharing,
-  }, */
+  }, */,
   {
     title: "Review",
     icon: IconReview,
@@ -94,7 +94,8 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
                 onClick={() => {
                   if (verifyFill(i)) setIndex(i);
                 }}
-                key={`section-${section.title}`}>
+                key={`section-${section.title}`}
+              >
                 <a>{section.title}</a>
                 <img src={section.icon} />
                 <div className="progress-step">

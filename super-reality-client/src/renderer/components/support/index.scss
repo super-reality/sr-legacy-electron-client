@@ -54,8 +54,7 @@
 }
 
 .support-list {
-  width: 20%;
-  min-width: 20%;
+  min-width: 18%;
   border-right: 1px solid #585286;
   li {
     background: #323052;
@@ -82,6 +81,7 @@
 .support-steps {
   position: relative;
   overflow-y: scroll;
+  height: 100%;
 }
 
 /* .support-scroll {

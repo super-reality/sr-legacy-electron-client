@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import "./index.scss";
+/* import { useSelector } from "react-redux";
+import { AppState } from "../../../../redux/stores/renderer";
+import { useDispatch } from "react-redux";
+import reduxAction from "../../../../redux/reduxAction"; */
 
 import clock from "../../../../../assets/svg/clock.svg";
 import calendar from "../../../../../assets/svg/calendar.svg";

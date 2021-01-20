@@ -1,4 +1,5 @@
 export default interface supportTicker {
+  supportType?: supportType;
   title?:string,
   category?:string,
   skills?: any[],
@@ -9,7 +10,7 @@ export default interface supportTicker {
 export interface tags {
   name: string;
 }
-
+type supportType = "help_short" | "help_long" | "build" | "question"
 interface option {
   name: string;
   description: string;

@@ -12,7 +12,7 @@
   border-bottom: 1px solid #8a88c3;
 }
 
-.review-step > ul {
+.review-step > .skills-list {
   display: block !important;
 }
 
@@ -32,27 +32,4 @@
   }
 }
 
-.imageslist {
 
-  > ul {
-    list-style-type: none !important;
-    transition: all 1s;
-    display: block !important;
-    li {
-      text-align: center;
-      display: inline-block;
-      > div {
-        display: block;
-        > img {
-          width: 180px;
-          display: block;
-        }
-        >p{
-            display: block;
-        }
-
-        
-      }
-    }
-  }
-}

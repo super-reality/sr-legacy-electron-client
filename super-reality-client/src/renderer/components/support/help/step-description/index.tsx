@@ -48,7 +48,7 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
         }}
       >
         {(formik: FormikProps<Values>) => (
-          <Form className="step ss">
+          <Form className="step">
             <div className="step-title">Description</div>A good description of
             your request includes:
             <ul>
