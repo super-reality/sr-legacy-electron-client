@@ -60,8 +60,8 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
   );
   const {
     FormSlider,
-    index,
-    setIndex,
+    index /* ,
+    setIndex, */,
     clickGoNext,
     clickGoBack,
   } = useFormSlider(4);
@@ -91,9 +91,9 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
             return (
               <li
                 className={verifyFill(i) ? "step-selected" : ""}
-                onClick={() => {
+                /* onClick={() => {
                   if (verifyFill(i)) setIndex(i);
-                }}
+                }} */
                 key={`section-${section.title}`}
               >
                 <a>{section.title}</a>

@@ -131,3 +131,4 @@
 [0117/183927.160:ERROR:exception_snapshot_win.cc(99)] thread ID 13556 not found in process
 [0117/183927.160:ERROR:exception_snapshot_win.cc(99)] thread ID 7496 not found in process
 [0118/072816.333:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0120/071043.693:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)

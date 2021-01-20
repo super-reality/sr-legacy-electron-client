@@ -1,10 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.scss";
-/* import { useSelector } from "react-redux";
-import { AppState } from "../../../../redux/stores/renderer";
-import { useDispatch } from "react-redux";
-import reduxAction from "../../../../redux/reduxAction"; */
-
+import { SKILLS_SHORT, SKILLS_LONG } from "..";
 import clock from "../../../../../assets/svg/clock.svg";
 import calendar from "../../../../../assets/svg/calendar.svg";
 
@@ -13,8 +9,19 @@ const LONG = 1;
 
 type SkillsOption = typeof SHORT | typeof LONG;
 
-export default function LearningSkill(): JSX.Element {
-  const [selectedOption, setSelectedOption] = useState<SkillsOption>(SHORT);
+export default function LearningSkill({ type, setType }: any): JSX.Element {
+  const [selectedOption, setSelectedOption] = useState<SkillsOption>(
+    type == SKILLS_SHORT ? SHORT : LONG
+  );
+
+  useEffect(() => {
+    if (selectedOption == SHORT) {
+      setType(SKILLS_SHORT);
+    }
+    if (selectedOption == LONG) {
+      setType(SKILLS_LONG);
+    }
+  });
   return (
     <div className="start-options">
       <div

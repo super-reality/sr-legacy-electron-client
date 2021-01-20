@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import supportTicker from "../../api/types/support-ticket/supportTicket";
 
 const initialState: supportTicker = {
+  supportType: "",
   title: "",
   category: "",
   skills: [],
