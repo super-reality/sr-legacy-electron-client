@@ -80,7 +80,9 @@ export default function OpenItem(props: OpenItemProps) {
           </ButtonSimple>
         </Flex>
 
-        {ItemSettings && <ItemSettings item={item} update={doUpdate} />}
+        <div style={{ margin: "20px 0" }}>
+          {ItemSettings && <ItemSettings item={item} update={doUpdate} />}
+        </div>
 
         <BaseToggle
           title="Use Anchor"

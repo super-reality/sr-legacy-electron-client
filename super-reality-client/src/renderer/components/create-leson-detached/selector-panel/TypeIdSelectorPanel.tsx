@@ -7,7 +7,7 @@ import { RecordingsList, RecordingsView } from "./views/recordings";
 import { RecordingsTrimList, RecordingsTrimView } from "./views/recordingsTrim";
 import { TriggerMouseList, TriggerMouseView } from "./views/triggerMouse";
 
-import { ReactComponent as Dialog } from "../../../../assets/svg/add-dialog.svg";
+import { ReactComponent as DefaultIcon } from "../../../../assets/svg/start-step.svg";
 
 interface TypeIdSelectorPanelProps {
   title: string;
@@ -60,7 +60,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     [data, single, callback]
   );
 
-  const Panel = useBasePanel(title, Dialog, {});
+  const Panel = useBasePanel(title, DefaultIcon, {});
 
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;

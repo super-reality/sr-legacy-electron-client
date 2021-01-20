@@ -16,7 +16,7 @@ import useBasePanel from "../useBasePanel";
 import { ImageFoundList, ImageFoundView } from "../views/imageFound";
 import { RecordingsList, RecordingsView } from "../views/recordings";
 
-import { ReactComponent as IconGenerate } from "../../../../../assets/svg/generate-steps.svg";
+import { ReactComponent as IconGenerate } from "../../../../../assets/svg/canvas.svg";
 
 export default function GeneratePanel() {
   const dispatch = useDispatch();
