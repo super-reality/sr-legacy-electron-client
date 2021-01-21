@@ -1,6 +1,7 @@
 import "./index.scss";
 import React, { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
+// eslint-disable-next-line
 import useResizeObserver from "use-resize-observer";
 import ButtonAdd from "../../../assets/images/add-circle.png";
 
