@@ -1,18 +1,19 @@
-import React, { PropsWithChildren } from "react";
+import React, { CSSProperties, PropsWithChildren } from "react";
 import "./index.scss";
 
 interface ContainerWithCheckProps {
   checked: boolean;
   callback: (val: boolean) => void;
+  style?: CSSProperties;
 }
 
 export default function ContainerWithCheck(
   props: PropsWithChildren<ContainerWithCheckProps>
 ) {
-  const { children, checked, callback } = props;
+  const { children, checked, callback, style } = props;
 
   return (
-    <div className="container-with-check">
+    <div style={style} className="container-with-check">
       <div className="check-container">
         <div
           className={`check ${checked ? "checked" : ""}`}

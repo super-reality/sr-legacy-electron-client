@@ -17,8 +17,7 @@ import setStatus from "../create-leson-detached/lesson-utils/setStatus";
 import { IAnchor } from "../../api/types/anchor/anchor";
 import uploadFileToS3 from "../../../utils/api/uploadFileToS3";
 import newAnchor from "../create-leson-detached/lesson-utils/newAnchor";
-
-// import editStepItemsRelativePosition from "../create-leson-detached/lesson-utils/editStepItemsRelativePosition";
+import pendingReduxAction from "../../redux/utils/pendingReduxAction";
 
 interface AnchorCommandsProps {
   anchorId: string;
@@ -104,36 +103,6 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
   const editCreateNewAnchor = useCallback(
     (fileName: string) => {
       newAnchorPre(fileName)
-        /*
-        .then(
-          (a): Promise<IStep | undefined> => {
-            if (a) {
-              const newTimestamp = timetoTimestamp(videoNavigation[1]);
-              saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
-                .then((file) => uploadFileToS3(file))
-                .then((url) => {
-                  return updateStep(
-                    {
-                      anchor: a._id,
-                      recordingTimestamp: newTimestamp,
-                      snapShot: url,
-                    },
-                    currentStep
-                  ).then((updatedStep) => {
-                    if (updatedStep) {
-                      reduxAction(dispatch, {
-                        type: "CREATE_LESSON_V2_SETSTEP",
-                        arg: { step: updatedStep },
-                      });
-                    }
-                    return updatedStep;
-                  });
-                });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        */
         .then(() => setPreviewMode("IDLE"))
         .catch((e) => {
           console.error(e);
@@ -162,9 +131,39 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
       });
   }, [previewMode, previewEditArea, cvResult]);
 
-  const _doEditTemplate = useCallback(() => {
-    //
-  }, [anchor, anchorId, dispatch, setPreviewMode]);
+  const doEditTemplate = useCallback(() => {
+    setPreviewMode("EDIT_ANCHOR");
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_DATA",
+      arg: {
+        editingAnchor: anchorId || "",
+        previewEditArea: {
+          ...cvResult,
+        },
+      },
+    });
+
+    pendingReduxAction(
+      (state: AppState) => state.createLessonV2.previewMode,
+      "EDIT_ANCHOR",
+      100000
+    ).then((state) => {
+      console.log(state);
+      console.log(state.createLessonV2.treeAnchors[anchorId].templates);
+      const newTemplates = [
+        ...state.createLessonV2.treeAnchors[anchorId]?.templates,
+      ];
+      newTemplates.splice(template, 1);
+      updateAnchor({ templates: newTemplates }, anchorId).then((updated) => {
+        if (updated) {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETANCHOR",
+            arg: { anchor: updated },
+          });
+        }
+      });
+    });
+  }, [anchor, template, anchorId, dispatch, setPreviewMode]);
 
   const doAddTemplate = useCallback(() => {
     setPreviewMode("ADDTO_ANCHOR");
@@ -203,12 +202,12 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
     <div className="anchor-commands-container">
       {previewMode == "IDLE" && (
         <>
-          <RefreshButton className="button" onClick={doAddTemplate} />
+          <RefreshButton className="button" onClick={doEditTemplate} />
           <AddButton className="button" onClick={doAddTemplate} />
           <CloseButton className="button" onClick={doRemoveTemplate} />
         </>
       )}
-      {previewMode == "ADDTO_ANCHOR" && (
+      {(previewMode == "ADDTO_ANCHOR" || previewMode == "EDIT_ANCHOR") && (
         <>
           <AddButton
             className="button"

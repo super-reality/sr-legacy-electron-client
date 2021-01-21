@@ -5,9 +5,7 @@ import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 
 export default async function testFullVideo(anchor: IAnchor): Promise<void> {
-  const videoHidden = document.getElementById(
-    "video-hidden"
-  ) as HTMLVideoElement;
+  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
 
   const { recordingData } = store.getState().createLessonV2;
 
@@ -23,13 +21,13 @@ export default async function testFullVideo(anchor: IAnchor): Promise<void> {
 
     const timestamp = data.time_stamp;
     const timestampTime = timestampToTime(timestamp);
-    videoHidden.currentTime = timestampTime / 1000;
+    videoPanel.currentTime = timestampTime / 1000;
 
     // eslint-disable-next-line no-await-in-loop
     await new Promise((resolve) => {
       setTimeout(() => resolve(), 200);
     })
-      .then(() => doCvMatch(anchor.templates, videoHidden, anchor))
+      .then(() => doCvMatch(anchor.templates, videoPanel, anchor))
       .then((cvResult) => {
         reduxAction(store.dispatch, {
           type: "SET_RECORDING_CV_DATA",

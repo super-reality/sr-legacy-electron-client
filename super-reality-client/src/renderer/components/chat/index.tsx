@@ -225,7 +225,7 @@ export default function Chat(props: ChatProps) {
 
   return (
     <div className="chat-with-title-container">
-      <div className="title">Chat</div>
+      <div className="chat-and-channels-title">Chat</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
           {messages.map((messageObject: any) => {

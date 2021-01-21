@@ -45,6 +45,8 @@ import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import Browser from "../../browser";
+import { MODE_LESSON_CREATOR } from "../../../redux/slices/renderSlice";
+import setAppMode from "../../../redux/utils/setAppMode";
 
 const sidebarIcons = [
   {
@@ -158,6 +160,10 @@ export default function EditorSidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
+  const onClick = useCallback(() => {
+    setAppMode(MODE_LESSON_CREATOR);
+  }, [dispatch]);
+
   return (
     <div
       style={{
@@ -212,7 +218,7 @@ export default function EditorSidebar() {
               <button type="button">
                 <img title="Content" src={ButtonContent} />
               </button>
-              <button type="button">
+              <button type="button" onClick={onClick}>
                 <img title="Teacher" src={ButtonTeacher} />
               </button>
               <button type="button">

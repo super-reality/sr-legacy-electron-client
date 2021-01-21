@@ -1,14 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useRef, useState } from "react";
-import { ItemImageTriggers, ItemVideo } from "../../item";
-import { voidFunction } from "../../../constants";
-import ButtonSimple from "../../../components/button-simple";
+import { ItemVideo } from "../../item";
 import "./index.scss";
 import { BaseBoxProps } from "../boxes";
 
 const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
   (props, forwardedRef) => {
-    const { item, style, pos, callback } = props;
+    const { item, style, pos } = props;
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const [play, setPlay] = useState(true);
@@ -42,24 +40,10 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
           muted={item.muted == undefined ? true : item.muted}
           autoPlay
           style={{
-            maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",
+            maxHeight: "100%",
           }}
           src={item.url}
         />
-        {item.trigger && (
-          <ButtonSimple
-            width="200px"
-            height="24px"
-            margin="auto"
-            onClick={
-              callback
-                ? () => callback(ItemImageTriggers["Click Ok button"])
-                : voidFunction
-            }
-          >
-            Ok
-          </ButtonSimple>
-        )}
       </div>
     );
   }

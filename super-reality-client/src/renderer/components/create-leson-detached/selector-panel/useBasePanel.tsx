@@ -18,24 +18,27 @@ export default function useBasePanel(
   );
 
   const Component = useMemo(
-    () => (props: PropsWithChildren<unknown>) => (
-      <div className="selector-panel-container">
-        <div className="panel-title">
-          <div>{title}</div>
-          <CloseIcon
-            style={{
-              width: "16px",
-              height: "16px",
-              cursor: "pointer",
-            }}
-            stroke="var(--color-icon)"
-            onClick={() => openPanel("")}
-          />
+    // eslint-disable-next-line react/display-name
+    () => (componentProps: PropsWithChildren<unknown>) => {
+      const { children } = componentProps;
+      return (
+        <div className="selector-panel-container">
+          <div className="panel-title">
+            <div>{title}</div>
+            <CloseIcon
+              style={{
+                width: "16px",
+                height: "16px",
+                cursor: "pointer",
+              }}
+              stroke="var(--color-icon)"
+              onClick={() => openPanel("")}
+            />
+          </div>
+          <div className="panels-flex">{children}</div>
         </div>
-        <div className="panels-flex">{props.children}</div>
-      </div>
-    ),
-
+      );
+    },
     [title]
   );
 

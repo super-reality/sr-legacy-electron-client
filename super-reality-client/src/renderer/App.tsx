@@ -31,7 +31,7 @@ import {
 
 import EditorSidebar from "./components/create-leson-detached/editor-sidebar";
 
-import Test from "./views/test";
+// import Test from "./views/test";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -97,9 +97,6 @@ export default function App(): JSX.Element {
           {isAuthenticated ? (
             <div className="browser-container">
               <EditorSidebar />
-              <Switch>
-                <Route path="/test" component={Test} />
-              </Switch>
             </div>
           ) : (
             <Windowlet

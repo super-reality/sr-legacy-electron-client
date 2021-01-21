@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useRef } from "react";
+import globalData from "../globalData";
 
 export default function useTransparentFix(debug?: boolean) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -10,6 +11,8 @@ export default function useTransparentFix(debug?: boolean) {
 
     const target = event.target as HTMLElement;
     if (debug) console.log(target.classList, event);
+    globalData.mouseX = event.clientX;
+    globalData.mouseY = event.clientY;
     if (target?.classList?.contains("click-through") || target?.id == "root") {
       setIgnoreMouseEvents(true, { forward: true });
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
