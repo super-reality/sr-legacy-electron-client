@@ -43,6 +43,7 @@ export default function Browser() {
   const springProps = useSpring({
     config: { ...config.molasses },
     height: showGroupsList ? height : "0px",
+    width: "300px",
   });
   const pages = [ChatContainer, GroupSettings];
   const [browserContent, setBrowserContent] = useState<any>(
@@ -76,10 +77,13 @@ export default function Browser() {
                 ...springProps,
                 overflow: "hidden",
                 position: "relative",
+                width: "200px",
+                zIndex: "2" as any,
+                top: "157px",
               }}
             >
-              <ul ref={ref} className="menu-groups-list">
-                <li key="show-groups">
+              <div ref={ref} className="menu-groups-list">
+                <div key="show-groups">
                   <div
                     className="group-title"
                     onClick={() => {
@@ -88,10 +92,11 @@ export default function Browser() {
                   >
                     {showGroups ? "Show Chat" : "Show Groups"}
                   </div>
-                </li>
+                </div>
                 {groups.map((group) => {
                   return (
-                    <li
+                    <div
+                      className="menu-group-item"
                       key={group._id}
                       onClick={() => {
                         setActiveGroup(group._id);
@@ -105,10 +110,10 @@ export default function Browser() {
                       <div className="menu-list-group-name">
                         {group.collectiveName}
                       </div>
-                    </li>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
             </animated.div>
           </div>
         </div>

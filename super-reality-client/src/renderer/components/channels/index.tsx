@@ -31,7 +31,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
 
   return (
     <div className="channel">
-      <div className="active-group" onClick={showGroupSettings}>
+      <div className="channel-title active-group" onClick={showGroupSettings}>
         {activeGroup.collectiveName}
       </div>
       <animated.div
@@ -51,7 +51,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
         </div>
       </animated.div>
 
-      <div className="title">Super Powers</div>
+      <div className="channel-title">Super Powers</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />

@@ -11,10 +11,9 @@
     max-width: 250px;
     width: 100%;
 
-    .active-group{
+    .active-group {
         cursor: pointer;
     }
-    
 }
 
 .channel-container {
@@ -44,7 +43,6 @@
     align-content: center;
     margin-bottom: 7px;
 
-    
     svg {
         margin-right: 10px;
     }
@@ -77,5 +75,23 @@
     }
     :hover {
         cursor: pointer;
+    }
+}
+
+.active-group {
+    color: #c2c2c2;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:after {
+        content: "";
+        width: 30px;
+        display: block;
+        position: absolute;
+        background-repeat: no-repeat;
+        height: 30px;
+        right: 0;
+        top: 28px;
+        background-image: url("../../../assets/svg/expand.svg");
     }
 }
