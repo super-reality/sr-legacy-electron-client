@@ -15,8 +15,6 @@ import { cursorChecker, voidFunction } from "../../../constants";
 import { itemsPath, recordingPath } from "../../../electron-constants";
 import AnchorBox from "../../../items/boxes/anchor-box";
 import EditAnchorButton from "./edit-anchor-button";
-import timestampToTime from "../../../../utils/timestampToTime";
-import setCanvasSource from "../../../redux/utils/setCanvasSource";
 import downloadFile from "../../../../utils/api/downloadFIle";
 import getPublicPath from "../../../../utils/electron/getPublicPath";
 import Flex from "../../flex";
@@ -29,6 +27,13 @@ import {
   deleteKeyDownListener,
   deleteKeyUpListener,
 } from "../../../../utils/globalKeyListeners";
+import useStep from "../hooks/useStep";
+import useItem from "../hooks/useItem";
+import forceStepBackgroundUpdate from "../lesson-utils/forceStepBackgroundUpdate";
+import ButtonRound from "../../button-round";
+import useLessonPreview from "../lesson-utils/useLessonPreview";
+
+import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
 
 const zoomLevels = [0.125, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5, 6];
 
@@ -39,8 +44,6 @@ export default function VideoPreview(): JSX.Element {
     currentRecording,
     currentStep,
     currentItem,
-    treeItems,
-    treeSteps,
     videoScale,
     videoPos,
     canvasSourceType,
@@ -113,15 +116,8 @@ export default function VideoPreview(): JSX.Element {
 
   const cvEditor: any = useMemo(() => new CVEditor(), []);
 
-  const item = useMemo(
-    () => (currentItem ? treeItems[currentItem] : undefined),
-    [currentItem, treeItems]
-  );
-
-  const step = useMemo(
-    () => (currentStep ? treeSteps[currentStep] : undefined),
-    [currentStep, treeSteps]
-  );
+  const item = useItem(currentItem);
+  const step = useStep(currentStep);
 
   useEffect(() => {
     if (
@@ -177,41 +173,32 @@ export default function VideoPreview(): JSX.Element {
     if (canvasSourceType == "url" && canvasSource && videoCanvasRef) {
       const fileName = canvasSource.split("/")?.pop() || "";
       const file = path.join(itemsPath, fileName);
-      if (!fs.existsSync(file)) {
-        downloadFile(canvasSource, file).then(() => {
-          const img = new Image();
-          img.onload = () => {
-            if (videoCanvasRef.current) {
-              videoCanvasRef.current.width = img.width;
-              videoCanvasRef.current.height = img.height;
-              const ctx = videoCanvasRef.current.getContext("2d");
-              if (ctx) {
-                ctx.drawImage(img, 0, 0);
-                reduxAction(dispatch, {
-                  type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
-                  arg: null,
-                });
-              }
-            }
-          };
-          img.src = file;
-        });
-      } else {
-        const img = new Image();
-        img.onload = () => {
-          if (videoCanvasRef.current) {
-            videoCanvasRef.current.width = img.width;
-            videoCanvasRef.current.height = img.height;
-            const ctx = videoCanvasRef.current.getContext("2d");
-            if (ctx) {
-              ctx.drawImage(img, 0, 0);
-              reduxAction(dispatch, {
-                type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
-                arg: null,
-              });
-            }
+      const img = new Image();
+      img.onload = () => {
+        if (videoCanvasRef.current) {
+          videoCanvasRef.current.width = img.width;
+          videoCanvasRef.current.height = img.height;
+          const ctx = videoCanvasRef.current.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+              arg: null,
+            });
           }
-        };
+        }
+      };
+      if (!fs.existsSync(file)) {
+        img.src = canvasSource;
+        downloadFile(canvasSource, file)
+          .then(() => {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
+              arg: null,
+            });
+          })
+          .catch(console.error);
+      } else {
         img.src = file;
       }
     }
@@ -225,51 +212,7 @@ export default function VideoPreview(): JSX.Element {
   ]);
 
   useEffect(() => {
-    const st = store.getState().createLessonV2.treeSteps[currentStep || ""];
-    if (currentStep && st && st.canvas[0]) {
-      const nav: number[] = [
-        ...store.getState().createLessonV2.videoNavigation,
-      ] || [0, 0, 0];
-
-      const canvasObj = st.canvas[0];
-      if (canvasObj.type == "Image") {
-        setCanvasSource("url", canvasObj.value.url);
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            videoNavigation: nav,
-          },
-        });
-      }
-      if (canvasObj.type == "Recording") {
-        console.log(canvasObj);
-        setCanvasSource("recording", canvasObj.value.recording);
-        if (canvasObj.value.url) {
-          setCanvasSource("url", canvasObj.value.url);
-        } else {
-          nav[1] = timestampToTime(canvasObj.value.timestamp || "00:00:00");
-          console.log(nav[1]);
-          reduxAction(dispatch, {
-            type: "CREATE_LESSON_V2_DATA",
-            arg: {
-              currentRecording: canvasObj.value.recording,
-              videoNavigation: nav,
-            },
-          });
-        }
-      }
-      if (canvasObj.type == "Url") {
-        setCanvasSource("url", canvasObj.value);
-        reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_DATA",
-          arg: {
-            videoNavigation: nav,
-          },
-        });
-      }
-    } else {
-      setCanvasSource(undefined, "");
-    }
+    forceStepBackgroundUpdate();
   }, [currentStep]);
 
   useEffect(() => {
@@ -383,6 +326,8 @@ export default function VideoPreview(): JSX.Element {
     };
   }, []);
 
+  const doPreview = useLessonPreview();
+
   return (
     <>
       <EditAnchorOptions width="540px" height="240px">
@@ -427,6 +372,15 @@ export default function VideoPreview(): JSX.Element {
         <animated.div style={zoomBox as any} className="zoom-container">
           Zoom level: {Math.round(videoScale * 100)}%
         </animated.div>
+        <div className="controls-container">
+          <ButtonRound
+            onClick={doPreview}
+            width="24px"
+            height="24px"
+            svgStyle={{ fill: "var(--color-green)" }}
+            svg={ButtonPlay}
+          />
+        </div>
 
         <div
           ref={containerRef}

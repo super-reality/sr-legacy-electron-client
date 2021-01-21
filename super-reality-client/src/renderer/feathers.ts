@@ -2,10 +2,14 @@ import io from "socket.io-client";
 import feathers from "@feathersjs/client";
 
 // Socket.io is exposed as the `io` global.
-const socket = io("http://3.101.51.61:3040/", {
+const socket = io("http://3.101.51.61:3030/", {
   transports: ["websocket"],
 });
-
+/*
+, {
+  transports: ["websocket"],
+}
+ */
 // @feathersjs/client is exposed as the `feathers` global.
 const client = feathers<any>();
 

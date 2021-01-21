@@ -136,14 +136,24 @@ export default function VideoStatus() {
     <>
       <div className="video-status-container">
         {previewMode == "CREATE_ANCHOR" && (
-          <ButtonSimple
-            width="140px"
-            height="12px"
-            margin="auto auto"
-            onClick={doSaveNewAnchor}
-          >
-            Save anchor
-          </ButtonSimple>
+          <>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doSaveNewAnchor}
+            >
+              Save anchor
+            </ButtonSimple>
+            <ButtonSimple
+              width="140px"
+              height="12px"
+              margin="auto auto"
+              onClick={doExitPreviewModes}
+            >
+              Cancel
+            </ButtonSimple>
+          </>
         )}
 
         <div
