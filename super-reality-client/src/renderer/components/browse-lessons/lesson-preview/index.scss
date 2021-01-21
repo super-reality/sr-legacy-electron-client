@@ -1,3 +1,5 @@
+@import "../../misc.scss";
+
 .lesson-preview {
   width: 100%;
   height: 130px;
@@ -7,6 +9,7 @@
   flex-direction: column;
   cursor: pointer;
   overflow: hidden;
+  @include animated;
 
   &:hover {
     background: var(--color-background-hover);
