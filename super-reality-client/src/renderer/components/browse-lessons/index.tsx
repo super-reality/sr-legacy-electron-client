@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.scss";
 
-import closeWindow from "../../../utils/electron/closeWindow";
+import { useHistory } from "react-router-dom";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import Windowlet from "../windowlet";
 import LessonPreview from "./lesson-preview";
@@ -11,13 +11,14 @@ import { voidFunction } from "../../constants";
 const options = ["My Tutorials", "Shared with me", "Public"];
 
 export default function BrowseLessons() {
+  const history = useHistory();
   return (
     <Windowlet
       width={1100}
       height={600}
       title="Super Reality"
       onMinimize={minimizeWindow}
-      onClose={closeWindow}
+      onClose={() => history.push("/")}
     >
       <div className="browse-lessons-window">
         <div className="controls">
