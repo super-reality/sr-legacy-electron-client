@@ -1,3 +1,6 @@
+.hidden{
+    display: none;
+}
 .title {
     padding: 20px 20px 0 25px;
     color: #585286;
@@ -10,8 +13,28 @@
     height: calc(86vh - 150px);
     max-width: 250px;
     width: 100%;
+
+    .active-group{
+        cursor: pointer;
+    }
+    
 }
 
+.group-settings-dropdown{
+    background-color: var(--color-background-dark);
+    ul{
+        list-style: none;
+        height: inherit;
+        li{
+            cursor: pointer;
+            
+        }
+        :hover{
+            background-color: var(--color-background-hover);
+        }
+        
+    }
+}
 .channel::after {
     // content: "";
     // height: 86% !important;
@@ -49,6 +72,7 @@
     align-content: center;
     margin-bottom: 7px;
 
+    
     svg {
         margin-right: 10px;
     }

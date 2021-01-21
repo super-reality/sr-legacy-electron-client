@@ -232,6 +232,9 @@ a:active {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  ul{
+    list-style: none;
+  }
 }
 
 .animate-gradient {

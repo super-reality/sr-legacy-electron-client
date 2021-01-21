@@ -20,23 +20,6 @@ export default function usePopupCreateGroup(
         groupAvatarField.current &&
         groupAvatarField.current.value
       ) {
-        // console.log(
-        //   "groupAvatarField.current.value",
-        //   groupAvatarField.current.value,
-        //   "groupNameField.current.value",
-        //   groupNameField.current.value
-        // );
-        // (client as any)
-        //   .service("collectives")
-        //   .create({
-        //     collectiveName: "Test Grop from hook",
-
-        //     collectivePhoto:
-        //       "https://i.pinimg.com/originals/e7/f0/c9/e7f0c9b4cdc731cd9b58077af3854118.jpg",
-        //   })
-        //   .catch((err: any) => {
-        //     console.log(err);
-        //   });
         createGroup(
           groupNameField.current.value,
           groupAvatarField.current.value
@@ -67,7 +50,7 @@ export default function usePopupCreateGroup(
               <label>Group Avatar</label>
               <input
                 ref={groupAvatarField}
-                key="gruop-avatar-input"
+                key="group-avatar-input"
                 type="text"
                 placeholder=""
               />

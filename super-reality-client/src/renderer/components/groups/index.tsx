@@ -32,7 +32,7 @@ function SingleGroup(props: GroupProps) {
     <div className="group-card" key={group._id}>
       <div className="group-name">{group.collectiveName}</div>
       {group.collectivePhoto && (
-        <img className="avatar" src={group.collectivePhoto} alt="" />
+        <img className="group-avatar" src={group.collectivePhoto} alt="" />
       )}
       <div className="mebmbers-number">Group members:{group.users.length}</div>
       <ButtonSimple onClick={updateGroup}> Edit</ButtonSimple>

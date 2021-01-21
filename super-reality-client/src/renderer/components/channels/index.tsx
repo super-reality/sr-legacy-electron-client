@@ -1,6 +1,7 @@
 import "./index.scss";
-import React from "react";
-
+import React, { useState } from "react";
+import { useSpring, animated, config } from "react-spring";
+import useResizeObserver from "use-resize-observer";
 import ButtonAdd from "../../../assets/images/add-circle.png";
 
 import PacMan from "../../../assets/images/pacman.png";
@@ -8,21 +9,48 @@ import Sonic from "../../../assets/images/sonic.png";
 import TeacherBot from "../../../assets/svg/teacher-bot.svg";
 import { ReactComponent as Support } from "../../../assets/svg/support.svg";
 import { Group } from "../../../types/chat";
+import { PagesIndex } from "../../../types/browser";
 
 interface ChannelsProps {
   activeGroup: Group;
+  setPage: (pageIndex: any) => void;
 }
 
 export default function Channels(props: ChannelsProps): JSX.Element {
-  const { activeGroup } = props;
+  const { activeGroup, setPage } = props;
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const showGroupSettings = () => {
+    setShowSettings(!showSettings);
+  };
+
+  const { ref, height } = useResizeObserver();
+  const springProps = useSpring({
+    config: { ...config.molasses },
+    height: showSettings ? height : "0px",
+  });
+
   return (
     <div className="channel">
-      <div className="active-group">{activeGroup.collectiveName}</div>
-      <div className="group-settings-dropdown">
-        <ul>
-          <li>Group settings</li>
-        </ul>
+      <div className="active-group" onClick={showGroupSettings}>
+        {activeGroup.collectiveName}
       </div>
+      <animated.div
+        style={{ ...springProps, overflow: "hidden", position: "relative" }}
+      >
+        <div ref={ref} className="group-settings-dropdown">
+          <ul>
+            <li onClick={() => setPage(PagesIndex.groupSettings)}>
+              Group settings
+            </li>
+            <li>Invite People</li>
+            <li>Create Channel</li>
+            <li>Create Category</li>
+            <li>Some settings</li>
+            <li>Some settings</li>
+          </ul>
+        </div>
+      </animated.div>
+
       <div className="title">Super Powers</div>
       <div className="add">
         <button type="button">

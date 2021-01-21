@@ -215,6 +215,7 @@
     "native-addon-loader": "^2.0.1",
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1"
+    "react-test-renderer": "^16.13.1",
+    "use-resize-observer": "^7.0.0"
   }
 }
