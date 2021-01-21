@@ -3,6 +3,7 @@ import "./index.scss";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSpring, animated, config } from "react-spring";
+// eslint-disable-next-line
 import useResizeObserver from "use-resize-observer";
 import { AppState } from "../../redux/stores/renderer";
 
