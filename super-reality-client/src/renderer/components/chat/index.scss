@@ -7,6 +7,7 @@
 .chat-and-channels-container {
     display: flex;
     flex-direction: row;
+    height: 100vh;
     justify-content: space-between;
 }
 .chat-with-title-container {
@@ -25,7 +26,7 @@
     font-size: 14px;
     color: #b8d4f3;
     margin: 20px;
-    height: calc(80vh - 255px);
+    height: calc(100vh - 220px);
 
     .chats {
         overflow-y: scroll;
