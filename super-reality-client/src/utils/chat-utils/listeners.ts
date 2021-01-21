@@ -150,6 +150,10 @@ export const onAuthenticated = () => {
           type: "SET_GROUPS",
           arg: uploadedGroups,
         });
+        reduxAction(store.dispatch, {
+          type: "SET_ACTIVE_GROUP",
+          arg: uploadedGroups[0]._id,
+        });
         // chat listeners
 
         // messages created listener clean up

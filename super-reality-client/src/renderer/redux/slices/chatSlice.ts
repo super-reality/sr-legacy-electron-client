@@ -63,7 +63,7 @@ const chatSlice = createSlice({
       state.groups = updatedGroups;
     },
     updateGroup: (state: ChatState, action: PayloadAction<Group>): void => {
-      const { groups } = state;
+      const { groups, activeGroup } = state;
       // const groupId = groups.findIndex(
       //   ({ _id }) => _id == action.payload._id
       // );
@@ -73,6 +73,9 @@ const chatSlice = createSlice({
       //   ...collectives.slice(collectiveId + 1),
       // ];
       state.groups = updateArray(groups, action.payload);
+      if (activeGroup._id === action.payload._id) {
+        state.activeGroup = action.payload;
+      }
     },
     deleteGroup: (state: ChatState, action: PayloadAction<Group>): void => {
       const filteredGroups = state.groups.filter(
@@ -80,8 +83,11 @@ const chatSlice = createSlice({
       );
       state.groups = filteredGroups;
     },
-    setActiveGroup: (state: ChatState, action: PayloadAction<Group>): void => {
-      state.activeGroup = action.payload;
+    setActiveGroup: (state: ChatState, action: PayloadAction<string>): void => {
+      const { groups } = state;
+      const newActiveGroup = groups.find(({ _id }) => _id === action.payload);
+      console.log(newActiveGroup);
+      if (newActiveGroup) state.activeGroup = newActiveGroup;
     },
   },
 });

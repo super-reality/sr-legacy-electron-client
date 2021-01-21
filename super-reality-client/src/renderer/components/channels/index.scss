@@ -10,6 +10,11 @@
     height: calc(100vh - 150px);
     max-width: 250px;
     width: 100%;
+
+    .active-group{
+        cursor: pointer;
+    }
+    
 }
 
 .channel-container {
@@ -39,6 +44,7 @@
     align-content: center;
     margin-bottom: 7px;
 
+    
     svg {
         margin-right: 10px;
     }
