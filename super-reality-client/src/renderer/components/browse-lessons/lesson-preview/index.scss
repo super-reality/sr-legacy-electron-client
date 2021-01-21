@@ -1,0 +1,45 @@
+.lesson-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: #211B33;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:hover {
+    background: var(--color-background-hover);
+  }
+
+  .image {
+  }
+
+  .title-container {
+    background: #29233D;
+    margin-top: auto;
+    line-height: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: space-between;
+    cursor: auto;
+
+    .title {
+      color: var(--color-text);
+      margin-left: 8px;
+      width: auto;
+    }
+  
+    .options-button {
+      cursor: pointer;
+      width: 18px;
+      height: 100%;
+      margin: auto 0;
+      display: flex;
+
+      svg {
+        margin: auto;
+      }
+    }
+  }
+}
