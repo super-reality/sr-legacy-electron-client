@@ -38,20 +38,15 @@ import ButtonShareNew from "../../../../assets/images/share-btn.png";
 import ButtonAdd from "../../../../assets/images/add-btn.png";
 import ButtonSonic from "../../../../assets/images/sonic-btn.png";
 import ButtonDavinci from "../../../../assets/images/davinci-btn.png";
-import DropdownLogo from "../../../../assets/images/dropdown-logo.png";
 // import ControlButtons from "../../../../assets/images/control-icons.png";
 // import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
 import ButtonRound from "../../button-round";
 import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
-import ChatApplication from "../../chat";
-import Support from "../../support";
-import Solution from "../../solution";
-// import Screenshare from "../../screenshare";
-// import Cams from "../../cams";
-import { ReactComponent as ButtonEye } from "../../../../assets/svg/eye.svg";
-// import Channels from "../../channels";
+import Browser from "../../browser";
+import { MODE_LESSON_CREATOR } from "../../../redux/slices/renderSlice";
+import setAppMode from "../../../redux/utils/setAppMode";
 
 const sidebarIcons = [
   {
@@ -67,19 +62,9 @@ const sidebarIcons = [
     ),
   },
   {
-    title: "Chat",
+    title: "Chat Channel",
     icon: ButtonMessages,
-    component: <ChatApplication />,
-  },
-  {
-    title: "Support",
-    icon: ButtonEye,
-    component: <Support />,
-  },
-  {
-    title: "Solution",
-    icon: ButtonEye,
-    component: <Solution />,
+    component: <Browser />,
   },
 ];
 
@@ -179,17 +164,19 @@ export default function EditorSidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
+  const onClick = useCallback(() => {
+    setAppMode(MODE_LESSON_CREATOR);
+  }, [dispatch]);
+
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
       <div className="sidebar-buttons button-logo">
-        <div className="dropdown">
-          <div className="sidebar-logo" />
-          <div className="dropdown-content">
-            <button type="button">
-              <img src={DropdownLogo} />
-            </button>
-          </div>
-        </div>
+        <div className="sidebar-logo" />
 
         <div className="control-buttons">
           <div className="dropdown">
@@ -213,7 +200,14 @@ export default function EditorSidebar() {
         <div className="communication-buttons">
           <div className="group-buttons">
             <div className="sidebar-group">
-              <div className="open-group" />
+              <div
+                className="open-group"
+                onClick={() => {
+                  setCurrent(2);
+                  setExpanded(!expanded);
+                  setIsChat(!isChat);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -228,7 +222,7 @@ export default function EditorSidebar() {
               <button type="button">
                 <img title="Content" src={ButtonContent} />
               </button>
-              <button type="button">
+              <button type="button" onClick={onClick}>
                 <img title="Teacher" src={ButtonTeacher} />
               </button>
               <button type="button">
@@ -258,7 +252,7 @@ export default function EditorSidebar() {
         </div>
 
         <div className="action-buttons">
-          {sidebarIcons.map((icon, index) => {
+          {/* {sidebarIcons.map((icon, index) => {
             // Limit the loop to the action buttons on the array
             if (index < 2 || index > 8) return null;
             return (
@@ -266,10 +260,8 @@ export default function EditorSidebar() {
                 onClick={() => {
                   setCurrent(index);
                   if (index == current || !expanded) setExpanded(!expanded);
-                  if (index == current && icon.title == "Chat") {
-                    console.log("isChat", isChat);
+                  if (index == current && icon.title == "Chat")
                     setIsChat(!isChat);
-                  }
                 }}
                 width="32px"
                 height="32px"
@@ -278,7 +270,7 @@ export default function EditorSidebar() {
                 title={icon.title}
               />
             );
-          })}
+          })} */}
           <div className="logged-user">
             <ButtonRound
               onClick={doPreview}
@@ -294,6 +286,6 @@ export default function EditorSidebar() {
           {sidebarIcons[current]?.component}
         </div>
       </animated.div>
-    </>
+    </div>
   );
 }

@@ -25,6 +25,7 @@
     font-size: 14px;
     color: #b8d4f3;
     margin: 20px;
+    height: calc(80vh - 255px);
 
     .chats {
         overflow-y: scroll;
@@ -59,10 +60,95 @@
         height: 30px;
         width: 30px;
         border-radius: 4px;
+        position: relative;
+        z-index: 2;
     }
 
     .single-chat {
         padding: 1em;
+    }
+
+    .message-box {
+        position: relative;
+        z-index: 1;
+
+        &:hover {
+            background: #29233c;
+            border-radius: 3px;
+            transition: 0.1s ease-out all;
+        }
+
+        .message {
+            padding: 5px 0;
+        }
+
+        .popup-container {
+            background: #343358;
+            height: unset;
+            width: 200px;
+            left: unset;
+            right: 25px;
+            top: 0;
+            overflow: hidden !important;
+            position: absolute;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+
+            .popup-box {
+                transition: 0.1s ease-out all;
+                -webkit-box-sizing: border-box;
+                overflow: hidden !important;
+                box-sizing: border-box;
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                justify-content: space-between;
+                min-height: 32px;
+                padding: 6px 8px;
+                top: 0;
+                background: transparent;
+                width: 100% !important;
+                height: unset !important;
+                transform: unset;
+            }
+
+            .popup-item {
+                width: unset !important;
+
+                display: flex;
+                padding: 6px 5px;
+                justify-content: space-between;
+
+                img {
+                    height: 14px;
+                    width: 14px;
+                    position: absolute;
+                    right: 20px;
+                }
+
+                &:hover {
+                    border-radius: 4px;
+                    cursor: pointer;
+                    background: #29233c;
+                    transition: 0.2s ease-out all;
+                }
+            }
+        }
+    }
+    .dots-menu {
+        cursor: pointer;
+        color: var(--color-text);
+        font-size: large;
+
+        position: absolute;
+        right: 0;
+        z-index: 1;
+        box-sizing: border-box;
+        height: 25px;
+        border-radius: 4px;
+        background: #343358;
+        top: 0;
+        box-shadow: 0 0px 0px 2px rgba(4, 4, 5, 0.15);
     }
 
     .chat-input {
@@ -73,6 +159,7 @@
         justify-content: space-between;
 
         input {
+            padding-right: 30px;
             background: #2b2641;
             font-size: 14px;
             color: #b8d4f3;
