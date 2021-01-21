@@ -64,7 +64,9 @@
     "ts-ebml": "^2.0.2",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
+    "use-resize-observer": "^7.0.0",
     "wait-on": "^5.2.1"
+    
   },
   "engines": {
     "node": "12.14.0",
@@ -215,7 +217,6 @@
     "native-addon-loader": "^2.0.1",
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
-    "react-test-renderer": "^16.13.1",
-    "use-resize-observer": "^7.0.0"
+    "react-test-renderer": "^16.13.1"
   }
 }
