@@ -1,7 +1,6 @@
 import "./index.scss";
 import React, { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
-import useResizeObserver from "use-resize-observer";
 import ButtonAdd from "../../../assets/images/add-circle.png";
 
 import PacMan from "../../../assets/images/pacman.png";
@@ -23,21 +22,20 @@ export default function Channels(props: ChannelsProps): JSX.Element {
     setShowSettings(!showSettings);
   };
 
-  const { ref, height } = useResizeObserver();
   const springProps = useSpring({
-    config: { ...config.molasses },
-    height: showSettings ? height : "0px",
-  });
+    config: { ...config.gentle },
+    opacity: showSettings ? "1" : "0",
+    transform: showSettings ? `translateY(0)` : `translateY(-50%)`,
+    display: showSettings ? "flex" : "none",
+  } as any);
 
   return (
     <div className="channel">
       <div className="active-group" onClick={showGroupSettings}>
         {activeGroup.collectiveName}
       </div>
-      <animated.div
-        style={{ ...springProps, overflow: "hidden", position: "relative" }}
-      >
-        <div ref={ref} className="group-settings-dropdown">
+      <animated.div style={{ ...springProps }}>
+        <div className="group-settings-dropdown">
           <ul>
             <li onClick={() => setPage(PagesIndex.groupSettings)}>
               Group settings

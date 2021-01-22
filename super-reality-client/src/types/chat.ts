@@ -26,4 +26,19 @@ export interface Message {
   user: ChatUser;
 }
 
+export interface Channel {
+  channelName: string;
+  createdAt: string;
+  messages: Message[];
+  users: ChatUser[];
+  __v: number;
+  _id: string;
+}
+
+export interface ChannelsResult {
+  data: Channel[];
+  limit: number;
+  skip: number;
+  total: number;
+}
 // export interface ChatLoginData {}

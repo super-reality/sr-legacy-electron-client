@@ -2,8 +2,7 @@ import "./index.scss";
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSpring, animated, config } from "react-spring";
-import useResizeObserver from "use-resize-observer";
+import { useSpring, animated } from "react-spring";
 import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
@@ -38,10 +37,12 @@ export default function Browser() {
   const [showGroupsList, setShowGroupsList] = useState<boolean>(false);
   const [showGroups, setShowGroups] = useState(false);
 
-  const { ref, height } = useResizeObserver();
+  const opacitySprings: any = showGroupsList ? "1" : "0";
+  const zIndexSprings: any = showGroupsList ? "1000" : "0";
   const springProps = useSpring({
-    config: { ...config.molasses },
-    height: showGroupsList ? height : "0px",
+    transform: showGroupsList ? `translateY(40)` : `translateY(-100%)`,
+    opacity: opacitySprings,
+    zIndex: zIndexSprings,
   });
   const pages = [ChatContainer, GroupSettings];
   const [browserContent, setBrowserContent] = useState<any>(
@@ -70,14 +71,13 @@ export default function Browser() {
             }}
           >
             <img src={Sonic} alt="" />
+
             <animated.div
               style={{
                 ...springProps,
-                overflow: "hidden",
-                position: "relative",
               }}
             >
-              <ul ref={ref} className="menu-groups-list">
+              <ul className="menu-groups-list">
                 <li key="show-groups">
                   <div
                     className="group-title"
