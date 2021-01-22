@@ -142,10 +142,6 @@ export default function Sidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
-  const onClick = useCallback(() => {
-    history.push("/lesson/create");
-  }, [history]);
-
   return (
     <div className="sidebar-container">
       <div className="sidebar-buttons button-logo">
@@ -192,13 +188,22 @@ export default function Sidebar() {
             </button>
 
             <div className="dropdown-content">
-              <button type="button">
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/create")}
+              >
                 <img title="Content" src={ButtonContent} />
               </button>
-              <button type="button" onClick={onClick}>
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/create")}
+              >
                 <img title="Teacher" src={ButtonTeacher} />
               </button>
-              <button type="button">
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/view")}
+              >
                 <img title="Browser" src={ButtonBrowser} />
               </button>
             </div>
