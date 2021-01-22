@@ -24,6 +24,7 @@ import {
 } from "../utils/globalKeyListeners";
 
 import Sidebar from "./components/sidebar";
+import BrowseLessons from "./components/browse-lessons";
 
 export default function App(): JSX.Element {
   useTransparentFix();
@@ -79,6 +80,7 @@ export default function App(): JSX.Element {
     <ErrorBoundary>
       <Switch>
         <Route exact path="/recorder" component={Recorder} />
+        <Route exact path="/lesson/view" component={BrowseLessons} />
         <Route exact path="/lesson/create" component={CreateLesson} />
       </Switch>
       {isAuthenticated && <Sidebar />}
