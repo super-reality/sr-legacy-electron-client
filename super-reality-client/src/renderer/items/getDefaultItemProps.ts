@@ -20,10 +20,6 @@ export default function getDefaultItemProps(type: BaseItemType): Partial<Item> {
       payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
     payload.muted = true;
   }
-  if (payload.type == "youtube") {
-    if (!payload.relativePos)
-      payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };
-  }
   if (payload.type == "dialog") {
     if (!payload.relativePos)
       payload.relativePos = { x: 0, y: 0, width: 400, height: 200 };

@@ -13,7 +13,6 @@ export type BaseItemType =
   | "focus_highlight"
   | "audio"
   | "video"
-  | "youtube"
   | "image"
   | "dialog"
   | "fx";
@@ -60,11 +59,6 @@ export interface ItemVideo extends BaseItem {
   muted?: boolean;
 }
 
-export interface ItemYoutube extends BaseItem {
-  type: "youtube";
-  url: string;
-}
-
 export interface ItemDialog extends BaseItem {
   type: "dialog";
   text: string;
@@ -75,6 +69,5 @@ export type Item =
   | ItemAudio
   | ItemImage
   | ItemVideo
-  | ItemYoutube
   | ItemDialog
   | ItemFX;
