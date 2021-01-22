@@ -1,4 +1,5 @@
 import { EndStepTypeValue } from "./endStep";
+import { TypeValue } from "../../types/utils";
 
 export interface IAbsolutePos {
   vertical?: number; // In % of screen, not used for anchors
@@ -61,6 +62,24 @@ export interface ItemVideo extends BaseItem {
   loop: boolean;
   muted?: boolean;
 }
+
+interface BaseVideoSourceTypeValue extends TypeValue {
+  type: VideoSource;
+}
+
+export interface VideoSourceRawTypeValue extends BaseVideoSourceTypeValue {
+  type: "raw";
+  value: string;
+}
+
+export interface VideoSourceYoutubeTypeValue extends BaseVideoSourceTypeValue {
+  type: "youtube";
+  value: string;
+}
+
+export type VideoSourceTypeValue =
+  | VideoSourceRawTypeValue
+  | VideoSourceYoutubeTypeValue;
 
 export interface ItemDialog extends BaseItem {
   type: "dialog";
