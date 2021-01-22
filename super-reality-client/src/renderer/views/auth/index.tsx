@@ -47,16 +47,17 @@ export default function Auth(props: AuthProps): JSX.Element {
   const registerEmailField = useRef<HTMLInputElement | null>(null);
   const registerPasswordField = useRef<HTMLInputElement | null>(null);
   const registerCodeField = useRef<HTMLInputElement | null>(null);
+  const registerAvatarField = useRef<HTMLInputElement | null>(null);
 
   const defaultUser = window.localStorage.getItem("username");
   const defaultToken = window.localStorage.getItem("token");
 
-  const loginChat = async (email?: string, password?: string) => {
-    if (email && password) {
+  const loginChat = async (username?: string, password?: string) => {
+    if (username && password) {
       return (client as any)
         .authenticate({
           strategy: "local",
-          email,
+          username,
           password,
         })
         .then((res: any) => {
@@ -84,11 +85,20 @@ export default function Auth(props: AuthProps): JSX.Element {
       });
   };
 
-  const signupChat = async (email: string, password: string) => {
+  interface SignArg {
+    username: string | undefined;
+    password: string | undefined;
+    firstname: string | undefined;
+    lastname: string | undefined;
+    avatar: string | undefined;
+  }
+
+  const signupChat = async (signupData: SignArg) => {
+    const { username, password, firstname, lastname, avatar } = signupData;
     return client
       .service("users")
-      .create({ email, password })
-      .then(() => loginChat(email, password));
+      .create({ username, password, firstname, lastname, avatar })
+      .then(() => loginChat(username, password));
   };
 
   useEffect(() => {
@@ -111,16 +121,7 @@ export default function Auth(props: AuthProps): JSX.Element {
         .then(async (res) => {
           // Try to authenticate the feathers chat with the JWT stored in localStorage
           await loginChat();
-          // try {
-          //   await (client as any).reAuthenticate();
-          //   console.log("whohooo chat reAuth");
-          //   reduxAction(dispatch, { type: "LOGIN_CHAT_SUCCES", arg: null });
-          // } catch (err) {
-          //   const token = localStorage.getItem("token");
-          //   console.log("token", token, "err reAuthenticate", err);
-          //   (client as any).logout();
-          //   reduxAction(dispatch, { type: "LOGIN_CHAT_ERROR", arg: null });
-          // }
+
           handleAuthSignin(res);
           onAuth();
         })
@@ -154,13 +155,19 @@ export default function Auth(props: AuthProps): JSX.Element {
       lastname: registerLastnameField.current?.value,
       invitecode: registerCodeField.current?.value,
       password: registerPasswordField.current?.value,
+      avatar: registerAvatarField.current?.value,
     };
 
     axios
       .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
       .then(async (res) => {
-        if (payload.username && payload.password) {
-          await signupChat(payload.username, payload.password);
+        if (
+          payload.username &&
+          payload.password &&
+          payload.firstname &&
+          payload.lastname
+        ) {
+          await signupChat(payload);
         }
 
         handleAuthSingup(res);
@@ -247,6 +254,16 @@ export default function Auth(props: AuthProps): JSX.Element {
               ref={registerPasswordField}
               key="signup-password"
               type="password"
+              placeholder=""
+              disabled={isPending}
+            />
+          </div>
+          <div className="input-container">
+            <label>Avatar</label>
+            <input
+              ref={registerAvatarField}
+              key="signup-avatar"
+              type="text"
               placeholder=""
               disabled={isPending}
             />
