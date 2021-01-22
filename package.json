@@ -74,6 +74,7 @@
   },
   "scripts": {
     "start": "nf start -p 3000",
+    "commit": "cz",
     "react-start": "node generateInfo.js && craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
@@ -193,7 +194,9 @@
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
     "aws-sdk": "^2.740.0",
+    "commitizen": "^4.2.3",
     "copyfiles": "^2.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^8.2.0",
     "electron": "^9.3.0",
     "electron-builder": "^22.8.0",
@@ -223,5 +226,10 @@
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
     "sinon": "^9.2.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
