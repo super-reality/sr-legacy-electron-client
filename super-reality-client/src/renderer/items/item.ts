@@ -52,9 +52,12 @@ export interface ItemImage extends BaseItem {
   url: string;
 }
 
+export type VideoSource = "raw" | "youtube";
+
 export interface ItemVideo extends BaseItem {
   type: "video";
   url: string;
+  source?: VideoSource;
   loop: boolean;
   muted?: boolean;
 }
