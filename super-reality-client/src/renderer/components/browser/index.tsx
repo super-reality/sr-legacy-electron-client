@@ -2,7 +2,7 @@ import "./index.scss";
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSpring, animated } from "react-spring";
+import { useSpring, animated, config } from "react-spring";
 import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
@@ -40,9 +40,12 @@ export default function Browser() {
   const opacitySprings: any = showGroupsList ? "1" : "0";
   const zIndexSprings: any = showGroupsList ? "1000" : "0";
   const springProps = useSpring({
+    config: { ...config.gentle },
     transform: showGroupsList ? `translateY(40)` : `translateY(-100%)`,
     opacity: opacitySprings,
     zIndex: zIndexSprings,
+    // height: showGroupsList ? height : "0px",
+    width: "300px",
   });
   const pages = [ChatContainer, GroupSettings];
   const [browserContent, setBrowserContent] = useState<any>(
@@ -75,10 +78,15 @@ export default function Browser() {
             <animated.div
               style={{
                 ...springProps,
+                overflow: "hidden",
+                position: "relative",
+                width: "200px",
+                zIndex: "2" as any,
+                top: "157px",
               }}
             >
-              <ul className="menu-groups-list">
-                <li key="show-groups">
+              <div className="menu-groups-list">
+                <div key="show-groups">
                   <div
                     className="group-title"
                     onClick={() => {
@@ -87,10 +95,11 @@ export default function Browser() {
                   >
                     {showGroups ? "Show Chat" : "Show Groups"}
                   </div>
-                </li>
+                </div>
                 {groups.map((group) => {
                   return (
-                    <li
+                    <div
+                      className="menu-group-item"
                       key={group._id}
                       onClick={() => {
                         setActiveGroup(group._id);
@@ -104,10 +113,10 @@ export default function Browser() {
                       <div className="menu-list-group-name">
                         {group.collectiveName}
                       </div>
-                    </li>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
             </animated.div>
           </div>
         </div>

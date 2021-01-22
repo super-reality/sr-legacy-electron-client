@@ -31,7 +31,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
 
   return (
     <div className="channel">
-      <div className="active-group" onClick={showGroupSettings}>
+      <div className="channel-title active-group" onClick={showGroupSettings}>
         {activeGroup.collectiveName}
       </div>
       <animated.div style={{ ...springProps }}>
@@ -68,7 +68,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Rooms</div>
+      <div className="channel-title">Rooms</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
@@ -86,7 +86,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Mentors</div>
+      <div className="channel-title">Mentors</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />
@@ -104,7 +104,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
           </div>
         </div>
       </div>
-      <div className="title">Game</div>
+      <div className="channel-title">Game</div>
       <div className="add">
         <button type="button">
           <img src={ButtonAdd} />

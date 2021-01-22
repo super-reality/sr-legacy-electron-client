@@ -1,10 +1,8 @@
 .button-checked {
-  // background-color: var(--color-pink);
-  background-image: url("../../../../assets/svg/pink-checked.svg");
-  width: 25px;
-  height: 20px;
+  background-image: url("../../../../assets/images/pink-checked.png");
+  width: 43px;
+  height: 50px;
   background-repeat: no-repeat;
-  border-radius: 500px;
 }
 
 .selector-panel-container {
@@ -20,6 +18,7 @@
   .panel-title {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 16px;
     font-weight: bold;
     height: 16px;
@@ -28,17 +27,18 @@
 
   .panels-flex {
     display: flex;
-    overflow: auto;
+    // overflow: auto;
 
     .panel {
-      padding: 16px;
+      padding: 0 16px;
       width: min-content;
       overflow: auto;
-      border-right: 1px solid var(--color-background-hover);
+      height: 85vh;
+      border-right: 2px solid #585286;
 
       input {
         margin: 5px 0;
-        background: #211b33;
+        background: #211b33 !important;
       }
     }
 
@@ -47,7 +47,42 @@
       min-width: 300px;
       width: min-content;
       overflow: auto;
-      border-right: 1px solid var(--color-background-hover);
+
+      .skill-chips {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 1em;
+      }
+
+      .skill-chip {
+        border: 2px solid #b8d4f3;
+        color: #b8d4f3;
+        font-size: 13px;
+        border-radius: 4px;
+        margin: 10px 10px 5px 0px;
+        padding: 2px 1em;
+      }
+
+      select {
+        width: 100%;
+        display: block;
+        background: #211b33;
+        height: 40px;
+        border: 0;
+        color: #b8d4f3;
+        margin: 20px 0;
+        padding: 0 15px;
+        outline: 0;
+        border-radius: 4px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-repeat: no-repeat;
+        background-position-x: 95%;
+        background-position-y: 15px;
+        background-image: url("../../../../assets/svg/chevron-down.svg");
+      }
     }
   }
 }
