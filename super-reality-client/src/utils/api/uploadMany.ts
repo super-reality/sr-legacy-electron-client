@@ -6,7 +6,7 @@ export default function uploadMany(
   const ret: Record<string, string> = {};
   return Promise.all(
     files.map((file) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         if (file.startsWith("http")) {
           ret[file] = file;
           resolve();

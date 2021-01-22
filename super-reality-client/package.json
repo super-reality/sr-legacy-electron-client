@@ -35,6 +35,7 @@
     "interactjs": "^1.9.22",
     "iohook": "^0.6.6",
     "ipfs": "^0.53.0",
+    "ipfs-core-types": "^0.2.1",
     "localforage": "^1.9.0",
     "lodash": "^4.17.20",
     "lodash-move": "^1.1.1",
