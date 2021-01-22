@@ -9,7 +9,6 @@ import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
 import {
-  itemsPath,
   recordingPath,
   stepSnapshotPath,
 } from "../../../../electron-constants";
@@ -18,11 +17,8 @@ import ButtonCheckbox from "../../button-checkbox";
 import reduxAction from "../../../../redux/reduxAction";
 import store, { AppState } from "../../../../redux/stores/renderer";
 import { RecordingCanvasTypeValue } from "../../../../api/types/step/step";
-import timetoTimestamp from "../../../../../utils/timeToTimestamp";
 import timestampToTime from "../../../../../utils/timestampToTime";
 import useDebounce from "../../../../hooks/useDebounce";
-import sha1 from "../../../../../utils/sha1";
-import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
 import usePopupVideoTrim from "../../../../hooks/usePopupVideoTrim";
 import ButtonSimple from "../../../button-simple";
@@ -89,7 +85,7 @@ export function RecordingsTrimView(
     (state: AppState) => state.createLessonV2
   );
 
-  const { id, data, select } = props;
+  const { id, data } = props;
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -141,12 +137,9 @@ export function RecordingsTrimView(
       if (videoRef.current) {
         videoRef.current.currentTime = n[0] / 1000;
         updateCanvas();
-        // if (checked) {
-        //  select("Recording", null);
-        // }
       }
     },
-    [select, updateCanvas, checked, videoRef.current]
+    [updateCanvas, checked, videoRef.current]
   );
 
   const scrubVideo = useCallback(
@@ -156,31 +149,6 @@ export function RecordingsTrimView(
       });
     },
     [debouncer, selectNewTimestamp]
-  );
-
-  const _doCheckToggle = useCallback(
-    (val: boolean) => {
-      const timestamp = timetoTimestamp(
-        (videoRef?.current?.currentTime || 0) * 1000
-      );
-      if (val && canvasRef.current) {
-        saveCanvasImage(
-          `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
-          canvasRef.current
-        )
-          .then(uploadFileToS3)
-          .then((url) => {
-            select("Recording", {
-              recording: id,
-              timestamp,
-              url,
-            });
-          });
-      } else {
-        select("Recording", null);
-      }
-    },
-    [videoRef, id, select]
   );
 
   useEffect(() => {
@@ -219,7 +187,7 @@ export function RecordingsTrimView(
           })
           .then((url) => {
             setStatus("Updating item...");
-            return updateItem<ItemVideo>({ url }, currentItem);
+            return updateItem<ItemVideo>({ url, source: "raw" }, currentItem);
           })
           .then((updatedItem) => {
             if (updatedItem) {
@@ -239,10 +207,7 @@ export function RecordingsTrimView(
     [dispatch, id, currentItem]
   );
 
-  const [TrimPopup, doOpenTrimmer, _doCloseTrimmer] = usePopupVideoTrim(
-    id,
-    callback
-  );
+  const [TrimPopup, doOpenTrimmer] = usePopupVideoTrim(id, callback);
 
   return (
     <>

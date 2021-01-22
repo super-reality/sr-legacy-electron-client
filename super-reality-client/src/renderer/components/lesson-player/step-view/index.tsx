@@ -85,7 +85,6 @@ export default function StepView(props: StepViewProps) {
     fx: 0,
     image: 0,
     video: 0,
-    youtube: 0,
   };
 
   return (
