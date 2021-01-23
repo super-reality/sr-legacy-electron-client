@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import "./index.scss";
 import { animated, useSpring } from "react-spring";
 
-import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as DummyOne } from "../../../assets/svg/new-fx-icon.svg";
 import { ReactComponent as DummyTwo } from "../../../assets/svg/add-video.svg";
@@ -42,10 +41,8 @@ import ButtonDavinci from "../../../assets/images/davinci-btn.png";
 // import ControlButtons from "../../../assets/images/control-icons.png";
 // import { ReactComponent as GameGen } from "../../../assets/svg/game-gen.svg";
 import ButtonRound from "../button-round";
-import reduxAction from "../../redux/reduxAction";
-import idNamePos from "../../../utils/idNamePos";
-import store, { AppState } from "../../redux/stores/renderer";
 import Browser from "../browser";
+import { voidFunction } from "../../constants";
 
 const sidebarIcons = [
   {
@@ -69,12 +66,7 @@ const sidebarIcons = [
 
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
-  const [isChat, setIsChat] = useState(false);
   const [current, setCurrent] = useState(0);
-  const { treeCurrentType } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
-  const dispatch = useDispatch();
   const history = useHistory();
 
   let width = "300px";
@@ -89,58 +81,9 @@ export default function Sidebar() {
   }
 
   const props = useSpring({
-    width: expanded && isChat ? width : "0px", // "550px"
+    width: expanded ? width : "0px", // "550px"
     minWidth: expanded ? width : "0px",
   });
-
-  const doPreviewCurrentToNumber = useCallback(() => {
-    const slice = store.getState().createLessonV2;
-
-    const lessonId = slice.currentLesson;
-    const chapterId = slice.currentChapter;
-    const stepId = slice.currentStep;
-
-    if (lessonId && chapterId && stepId) {
-      const lesson = slice.treeLessons[lessonId];
-      const chapter = slice.treeChapters[chapterId];
-      const chapterPos = lesson ? idNamePos(lesson.chapters, chapterId) : 0;
-      const stepPos = chapter ? idNamePos(chapter.steps, stepId) : 0;
-
-      reduxAction(dispatch, {
-        type: "SET_LESSON_PLAYER_DATA",
-        arg: {
-          playingChapterNumber: chapterPos > -1 ? chapterPos : 0,
-          playingStepNumber: stepPos > -1 ? stepPos : 0,
-        },
-      });
-    } else if (lessonId && chapterId) {
-      const lesson = slice.treeLessons[lessonId];
-      const chapterPos = lesson ? idNamePos(lesson.chapters, chapterId) : 0;
-
-      reduxAction(dispatch, {
-        type: "SET_LESSON_PLAYER_DATA",
-        arg: {
-          playingChapterNumber: chapterPos > -1 ? chapterPos : 0,
-        },
-      });
-    }
-  }, [dispatch]);
-
-  const doPreview = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        lessonPreview: treeCurrentType == "lesson",
-        chapterPreview: treeCurrentType == "chapter",
-        stepPreview: treeCurrentType == "step",
-        itemPreview: treeCurrentType == "item",
-        anchorTestView: false,
-        previewing: true,
-        previewOne: false,
-      },
-    });
-    doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
   return (
     <div className="sidebar-container">
@@ -174,7 +117,6 @@ export default function Sidebar() {
                 onClick={() => {
                   setCurrent(2);
                   setExpanded(!expanded);
-                  setIsChat(!isChat);
                 }}
               />
             </div>
@@ -251,7 +193,7 @@ export default function Sidebar() {
           })} */}
           <div className="logged-user">
             <ButtonRound
-              onClick={doPreview}
+              onClick={voidFunction}
               width="44px"
               height="44px"
               svg={DefaultUser}
