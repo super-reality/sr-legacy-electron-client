@@ -145,6 +145,13 @@
         "filter": [
           "**/*"
         ]
+      },
+      {
+        "from": "./public/icons/",
+        "to": "icons",
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "directories": {

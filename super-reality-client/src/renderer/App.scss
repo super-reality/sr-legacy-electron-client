@@ -2,7 +2,7 @@
 
 body {
   font-family: "Segoe UI" !important;
-  overflow:hidden;
+  overflow: hidden;
   height: 100%;
   @include disable-select;
 }
@@ -228,6 +228,12 @@ a:active {
   }
 }
 
+.browser-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
 .animate-gradient {
   background-image: url("../assets/svg/cool-gradient.svg");
   background-size: 100%;
@@ -250,6 +256,7 @@ a:active {
     background-position: 0% 50%;
   }
 }
+
 @-moz-keyframes gradient-background-animation {
   0% {
     background-position: 0% 50%;
@@ -261,6 +268,7 @@ a:active {
     background-position: 0% 50%;
   }
 }
+
 @keyframes gradient-background-animation {
   0% {
     background-position: 0% 50%;

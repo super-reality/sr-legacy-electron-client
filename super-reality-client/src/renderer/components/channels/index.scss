@@ -58,6 +58,16 @@
     svg {
         margin-right: 10px;
     }
+    .info {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        align-items: center;
+
+        svg {
+            margin-right: 10px;
+        }
+    }
 }
 
 .avatar {

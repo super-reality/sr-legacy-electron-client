@@ -3,6 +3,7 @@ import interact from "interactjs";
 import "./index.scss";
 import fs from "fs";
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import useTransparentFix from "../../hooks/useTransparentFix";
 import store, { AppState } from "../../redux/stores/renderer";
 import reduxAction from "../../redux/reduxAction";
@@ -19,11 +20,9 @@ import { recordingPath, stepSnapshotPath } from "../../electron-constants";
 import { getRawAudioData } from "../recorder/CVEditor";
 import rawAudioToWaveform from "./lesson-utils/rawAudioToWaveform";
 import Windowlet from "../windowlet";
-import { MODE_HOME } from "../../redux/slices/renderSlice";
 import getPrimaryMonitor from "../../../utils/electron/getPrimaryMonitor";
 import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
-import EditorSidebar from "./editor-sidebar";
 import setTopMost from "../../../utils/electron/setTopMost";
 import LeftPanelWrapper from "./left-panel-wrapper";
 
@@ -42,7 +41,7 @@ const restrictMinSize =
     min: { width: 100, height: 100 },
   });
 
-export default function CreateLessonDetached(): JSX.Element {
+export default function CreateLesson(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
 
   const {
@@ -56,6 +55,7 @@ export default function CreateLessonDetached(): JSX.Element {
     openPanel,
   } = useSelector((state: AppState) => state.createLessonV2);
   const dispatch = useDispatch();
+  const history = useHistory();
   useTransparentFix(false);
 
   useEffect(() => {
@@ -196,12 +196,7 @@ export default function CreateLessonDetached(): JSX.Element {
       title="Super Reality"
       topBarContent={<TopMenuBar />}
       onMinimize={minimizeWindow}
-      onClose={() => {
-        reduxAction(dispatch, {
-          type: "SET_APP_MODE",
-          arg: MODE_HOME,
-        });
-      }}
+      onClose={() => history.goBack()}
     >
       <div className="main-container">
         <div className="edit">
@@ -216,7 +211,6 @@ export default function CreateLessonDetached(): JSX.Element {
           <div className="animate-gradient preview">
             <VideoPreview />
           </div>
-          <EditorSidebar />
         </div>
         <VideoStatus />
       </div>

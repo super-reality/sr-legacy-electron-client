@@ -5,15 +5,9 @@ import { CVResult } from "../../../types/utils";
 export type tabNames = "Discover" | "Learn" | "Teach" | "Create";
 
 export const MODE_HOME = 1;
-export const MODE_LESSON_CREATOR = 2;
-export const MODE_RECORDER = 3;
 export const MODE_VOID = 4;
 
-export type UI_MODES =
-  | typeof MODE_HOME
-  | typeof MODE_LESSON_CREATOR
-  | typeof MODE_RECORDER
-  | typeof MODE_VOID;
+export type UI_MODES = typeof MODE_HOME | typeof MODE_VOID;
 
 const initialState = {
   yScroll: 0,

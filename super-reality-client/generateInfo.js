@@ -10,7 +10,7 @@ function generateInfo(branchName) {
     timestamp: new Date().getTime(),
   };
 
-  fs.writeFileSync("./public/info.json", JSON.stringify(informationObject));
+  fs.writeFileSync("./src/info.json", JSON.stringify(informationObject));
 }
 
 exec("git rev-parse --abbrev-ref HEAD", (err, stdout) => {
