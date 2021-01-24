@@ -14,8 +14,8 @@ interface Values {
 
 const descriptionSchema = Yup.object().shape({
   description: Yup.string()
-    .min(20, "*Give us a litle more information pls")
-    .max(100, "*Not so much information thanks")
+    .min(50, "*Give us a litle more information pls")
+    .max(500, "*Not so much information thanks")
     .required("*Required"),
 });
 

@@ -7,17 +7,17 @@ import RadioButtons from "./RadioButtons";
 import TextArea from "./TextArea";
 import DropFile from "./DropFile";
 import SkillsCheckbox from "./SkillsCheckbox";
-/* export interface radioOption {
-  key: string;
-  value: string;
-} */
+import AutoCompleteInput from "./AutoCompleteInput";
+import { IData } from "../../api/types/support-ticket/supportTicket";
 
 export interface InputProps extends FormikProps<any> {
   name: string;
+  secondaryName?:string;
   className?: string;
   label?: string;
   placeholder?: string;
-  options?: any[];
+  options?: IData[];
+  action?: (value: IData) => void;
 }
 
 interface FormControlInput extends InputProps {
@@ -39,6 +39,8 @@ export default function FormControl({
       return <DropFile {...rest} />;
     case "skills":
       return <SkillsCheckbox {...rest} />;
+    case "autocomplete":
+      return <AutoCompleteInput {...rest} />;
 
     default:
       return <></>;

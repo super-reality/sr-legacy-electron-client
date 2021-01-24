@@ -24,9 +24,6 @@ export default function useFormSlider(steps: number): any {
   const slideDistance = 100 / steps;
   const slideWidth = Math.round(100 / steps);
 
-  console.log(slideDistance);
-  console.log(slideDistance * index);
-
   useEffect(() => {
     set({ transform: `translateX(-${slideDistance * index}%)` });
   });
@@ -62,7 +59,6 @@ export default function useFormSlider(steps: number): any {
 
 function FormSlider(props: FormSliderProps): JSX.Element {
   const { children, style, slides, className, width } = props;
-  console.log(`${slides}%`);
   return (
     <animated.div
       style={{

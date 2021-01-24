@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { SupportSectionsProps } from "..";
-/* import { TsupportType } from "../../../api/types/support-ticket/supportTicket"; */
+import { TsupportType } from "../../../api/types/support-ticket/supportTicket";
 import LearningSkill from "./learning-skill";
 
 const NONE = 0;
@@ -21,7 +21,7 @@ interface FormSubmitInterface {
   target: HTMLInputElement;
 }
 
-const verifyState = (value: any) => {
+const verifyState = (value: TsupportType): startoptions => {
   if (value == SKILLS_LONG || value == SKILLS_SHORT) {
     return SKILLS;
   }
@@ -46,10 +46,10 @@ export default function GettingStarted(
   const { goHelp } = props;
 
   const [activeRadio, setactiveRadio] = useState<startoptions>(
-    verifyState(supportType && supportType)
+    verifyState(supportType)
   );
-  const [supportT, setSupportType] = useState(
-    supportType !== "" ? supportType : SKILLS_SHORT
+  const [supportT, setSupportType] = useState<TsupportType>(
+    supportType ?? SKILLS_SHORT
   );
 
   const handleactiveRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +66,7 @@ export default function GettingStarted(
     }
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     reduxAction(dispatch, {
       type: "SET_SUPPORT_TICKET",

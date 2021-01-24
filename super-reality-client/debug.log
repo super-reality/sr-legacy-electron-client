@@ -132,3 +132,30 @@
 [0117/183927.160:ERROR:exception_snapshot_win.cc(99)] thread ID 7496 not found in process
 [0118/072816.333:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
 [0120/071043.693:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0120/183533.968:ERROR:process_reader_win.cc(151)] SuspendThread: Acceso denegado. (0x5)
+[0120/183533.984:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 3280 not found in process
+[0120/183533.984:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 13192 not found in process
+[0120/183533.984:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183533.968:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 6920 not found in process
+[0120/183533.984:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 5424 not found in process
+[0120/183533.999:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 4984 not found in process
+[0120/183533.999:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 18844 not found in process
+[0120/183534.031:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 20184 not found in process
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 10268 not found in process
+[0120/183533.999:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 7936 not found in process
+[0120/183534.359:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.437:ERROR:exception_snapshot_win.cc(99)] thread ID 12780 not found in process
+[0120/183534.359:ERROR:process_reader_win.cc(123)] NtOpenThread: {Acceso denegado} Un proceso ha solicitado acceso a un objeto, pero no se le han concedido esos derechos de acceso. (0xc0000022)
+[0120/183534.452:ERROR:exception_snapshot_win.cc(99)] thread ID 14980 not found in process
+[0120/222911.932:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0122/070825.673:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0122/075212.876:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0124/081036.994:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)

@@ -3,13 +3,22 @@ import "./index.scss";
 import { SKILLS_SHORT, SKILLS_LONG } from "..";
 import clock from "../../../../../assets/svg/clock.svg";
 import calendar from "../../../../../assets/svg/calendar.svg";
+import { TsupportType } from "../../../../api/types/support-ticket/supportTicket";
 
 const SHORT = 0;
 const LONG = 1;
 
 type SkillsOption = typeof SHORT | typeof LONG;
 
-export default function LearningSkill({ type, setType }: any): JSX.Element {
+interface ILearningSkill {
+  type: TsupportType;
+  setType: (value: TsupportType) => void;
+}
+
+export default function LearningSkill({
+  type,
+  setType,
+}: ILearningSkill): JSX.Element {
   const [selectedOption, setSelectedOption] = useState<SkillsOption>(
     type == SKILLS_SHORT ? SHORT : LONG
   );

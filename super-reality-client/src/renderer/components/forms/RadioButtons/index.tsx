@@ -14,18 +14,18 @@ export default function RadioButtons(props: InputProps): JSX.Element {
         {({ field }: FieldProps) => {
           return (
             options &&
-            options.map((option) => {
+            options.slice(0, 3).map((option) => {
               return (
-                <div key={option.key}>
+                <div key={option.id}>
                   <input
                     type="radio"
-                    id={option.value}
+                    id={option.id}
                     {...field}
                     {...rest}
-                    value={option.value}
-                    checked={field.value === option.value}
+                    value={option.id}
+                    checked={field.value === option.id}
                   />
-                  <label htmlFor={option.value}>{option.key}</label>
+                  <label htmlFor={option.id}>{option.name}</label>
                 </div>
               );
             })

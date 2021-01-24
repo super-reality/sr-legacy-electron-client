@@ -16,7 +16,7 @@ import StepSkills from "./step-skills";
 /* import StepProfileSharing from "./step-profile-sharing"; */
 import StepReview from "./step-review";
 import useFormSlider from "../../../hooks/useFormSlider";
-
+import { IData } from "../../../api/types/support-ticket/supportTicket";
 import { SupportSectionsProps } from "..";
 
 export interface StepSectionProps {
@@ -52,6 +52,22 @@ const helpSections = [
     section: StepReview,
   },
 ];
+
+export const getNames = (array: string[], arrayData: IData[]): IData[] => {
+  const resultArray: IData[] = [];
+  array.forEach((el) => {
+    const i = arrayData.map((ele) => ele.name).indexOf(el);
+    if (i !== -1) resultArray.push(arrayData[i]);
+  });
+
+  return resultArray;
+};
+
+export const getSingleName = (name: string, array: IData[]): string => {
+  const i = array.map((el) => el.id).indexOf(name);
+  if (i !== -1) return array[i].name;
+  return name;
+};
 
 export default function Help(props: SupportSectionsProps): JSX.Element {
   const { goStart } = props;

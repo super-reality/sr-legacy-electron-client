@@ -3,6 +3,7 @@ import React from "react";
 import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
 import { InputProps } from "..";
 /* import TextError from "../TextError"; */
+/* import  { Iskills } from "../../../api/types/support-ticket/supportTicket"; */
 import "./index.scss";
 
 export default function CheckboxGroup(props: InputProps): JSX.Element {
@@ -16,17 +17,17 @@ export default function CheckboxGroup(props: InputProps): JSX.Element {
             options &&
             options.map((option) => {
               return (
-                <React.Fragment key={option.key}>
+                <React.Fragment key={option.id}>
                   <input
                     type="checkbox"
-                    id={option.value}
+                    id={option.id}
                     {...field}
                     {...rest}
-                    value={option.value}
-                    checked={field.value.includes(option.value)}
+                    value={option.id}
+                    checked={field.value.includes(option.id)}
                   />
-                  <label className="checkbox-label" htmlFor={option.value}>
-                    {option.key}
+                  <label className="checkbox-label" htmlFor={option.id}>
+                    {option.name}
                   </label>
                 </React.Fragment>
               );

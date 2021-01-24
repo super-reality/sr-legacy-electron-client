@@ -7,6 +7,14 @@ import { InputProps } from "..";
 import ImagesPreview from "./ImagePreview";
 import "./index.scss";
 
+export interface Iimages {
+  lastModified: number;
+  name: string;
+  path: string;
+  size: number;
+  type: string;
+}
+
 export default function DropFile(props: InputProps): JSX.Element {
   const { setFieldValue, name, values } = props;
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
@@ -15,7 +23,7 @@ export default function DropFile(props: InputProps): JSX.Element {
       if (accepted.length === 0) {
         return;
       }
-      const images: any = [];
+      const images: Iimages[] = [];
 
       accepted.forEach((file) => {
         images.push({

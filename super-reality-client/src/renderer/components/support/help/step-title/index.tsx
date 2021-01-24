@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -8,12 +8,8 @@ import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
 import FormControl from "../../../forms";
 import { StepSectionProps } from "..";
+import { IData } from "../../../../api/types/support-ticket/supportTicket";
 
-const RadioButtonOptions = [
-  { key: "Blender Animation", value: "Blender Animation" },
-  { key: "3D Animation", value: "3D Animation" },
-  { key: "2D Pixel Art Animation", value: "2D Pixel Art Animation" },
-];
 const titleSchema = Yup.object().shape({
   title: Yup.string()
     .min(10, "*Give us a litle more information pls")
@@ -21,7 +17,6 @@ const titleSchema = Yup.object().shape({
     .required("*Required"),
   category: Yup.string().required("*Please select a category"),
 });
-
 interface Values {
   title: string | undefined;
   category: string | undefined;
@@ -29,8 +24,19 @@ interface Values {
 
 export default function StepTitle(props: StepSectionProps): JSX.Element {
   const slice = store.getState().createSupportTicket;
+  const [usedCategories, setUsedCategories] = useState(slice.categoryData);
   const dispatch = useDispatch();
   const { goNext, goBack, index } = props;
+
+  const modifyUsedCategories = (value: IData) => {
+    if (usedCategories) {
+      const array: IData[] = [...usedCategories];
+      const i = array.map((e) => e.id).indexOf(value.id);
+      array.splice(i, 1);
+      array.unshift(value);
+      setUsedCategories(array);
+    }
+  };
 
   return (
     <div>
@@ -40,6 +46,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
         initialValues={{
           title: slice.title,
           category: slice.category,
+          newCategory: slice.newCategory,
         }}
         validationSchema={titleSchema}
         onSubmit={(values) => {
@@ -48,6 +55,8 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
             arg: {
               title: values.title,
               category: values.category,
+              categoryData: usedCategories,
+              newCategory:values.newCategory
             },
           });
           goNext();
@@ -81,9 +90,20 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
             <FormControl
               name="category"
               control="radio"
-              options={RadioButtonOptions}
+              options={usedCategories}
               {...formik}
             />
+            <span>Find one!</span>
+            <FormControl
+              name="category"
+              secondaryName="newCategory"
+              control="autocomplete"
+              options={slice.categoryData}
+              action={modifyUsedCategories}
+              {...formik}
+            />
+
+            {/* <AutosuggestInput/> */}
 
             <a className="see-more">See more options</a>
 

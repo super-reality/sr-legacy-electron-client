@@ -1,16 +1,19 @@
 import React from "react";
 import "./index.scss";
 import close from "../../../../../assets/svg/close-img.svg";
+import { Iimages } from "..";
 
 interface IimagePreviewProps {
-  values: any[];
+  values: Iimages[];
   onRemove?: (i: number) => void;
-  removable: string;
+  removable?: string;
   columns: number;
 }
 
-function getImages(values: any, onRemove: any, removable: string): JSX.Element {
-  return values.map((file: any, index: number) => {
+function getImages(props: IimagePreviewProps): JSX.Element[] {
+  const { values, onRemove, removable } = props;
+
+  return values.map((file: Iimages, index: number) => {
     return (
       <li className="image-preview-item" key={file.path}>
         <div>
@@ -22,7 +25,7 @@ function getImages(values: any, onRemove: any, removable: string): JSX.Element {
             {removable === "true" && (
               <img
                 className="close"
-                onClick={() => onRemove(index)}
+                onClick={() => onRemove && onRemove(index)}
                 src={close}
                 alt="lol"
               />
@@ -34,18 +37,14 @@ function getImages(values: any, onRemove: any, removable: string): JSX.Element {
   });
 }
 
-export default function ImagesPreview({
-  values,
-  onRemove,
-  removable,
-  columns,
-}: IimagePreviewProps): JSX.Element {
+export default function ImagesPreview(props: IimagePreviewProps): JSX.Element {
+  const { columns } = props;
   return (
     <ul
       className="image-preview-list"
       style={{ ["--columns" as string]: columns }}
     >
-      {getImages(values, onRemove, removable)}
+      {getImages(props)}
     </ul>
   );
 }

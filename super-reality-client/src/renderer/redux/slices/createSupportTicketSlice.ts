@@ -9,6 +9,11 @@ const initialState: supportTicker = {
   skills: [],
   description: "",
   images: [],
+  newSkills:[],
+  newCategory:"",
+  skillsData: [],
+  searchedSkills:[],
+  categoryData: [],
 };
 
 const createSupportTicketSlice = createSlice({

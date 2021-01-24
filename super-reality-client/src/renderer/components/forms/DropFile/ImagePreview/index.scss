@@ -2,6 +2,7 @@
   list-style-type: none !important;
   transition: all 1s;
   padding: 0;
+  max-width: 100%;
   display: grid !important;
   grid-template-columns: repeat(var(--columns), 1fr);
   grid-template-rows: repeat(auto-fill, 1fr);
@@ -29,7 +30,7 @@
       > div {
         display: flex;
         justify-content: center;
-        margin: 0 10px;
+        
         > p {
           display: block;
           text-align: center;

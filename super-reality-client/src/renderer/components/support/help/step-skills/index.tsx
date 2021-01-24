@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -8,54 +8,57 @@ import reduxAction from "../../../../redux/reduxAction";
 import TextError from "../../../forms/TextError";
 import FormControl from "../../../forms";
 import { StepSectionProps } from "..";
+import supportTicket, {
+  IData,
+} from "../../../../api/types/support-ticket/supportTicket";
 
 const titleSchema = Yup.object().shape({
   skills: Yup.array().min(1, "Please select at least one skill"),
 });
 
 interface Values {
-  skills: any[];
+  skills: string[];
 }
 
 const skillsOpts = [
   {
     name: "Blender",
     options: [
-      { key: "3D Modeling", value: "3D Modeling" },
-      { key: "Grease Pencil", value: "Grease Pencil" },
-      { key: "Curve Editor", value: "Curve Editor" },
-      { key: "Keyframe Animation", value: "Keyframe Animation" },
-      { key: "Rendering", value: "Rendering" },
-      { key: "Shaders", value: "Shaders" },
-      { key: "Particles", value: "Particles" },
+      { id: "3D Modeling", name: "3D Modeling" },
+      { id: "Grease Pencil", name: "Grease Pencil" },
+      { id: "Curve Editor", name: "Curve Editor" },
+      { id: "idframe Animation", name: "idframe Animation" },
+      { id: "Rendering", name: "Rendering" },
+      { id: "Shaders", name: "Shaders" },
+      { id: "Particles", name: "Particles" },
     ],
   },
   {
     name: "3D Animation",
     options: [
-      { key: "Character", value: "Character" },
-      { key: "Physics", value: "Physics" },
-      { key: "Cars", value: "Cars" },
-      { key: "Explosions", value: "Explosions" },
+      { id: "Character", name: "Character" },
+      { id: "Physics", name: "Physics" },
+      { id: "Cars", name: "Cars" },
+      { id: "Explosions", name: "Explosions" },
     ],
   },
 
   {
     name: "Teaching Style",
     options: [
-      { key: "Video Chat", value: "Video Chat" },
-      { key: "Text", value: "Text" },
-      { key: "Easy Going", value: "Easy Going" },
-      { key: "Micromanages", value: "Micromanages" },
+      { id: "Video Chat", name: "Video Chat" },
+      { id: "Text", name: "Text" },
+      { id: "Easy Going", name: "Easy Going" },
+      { id: "Micromanages", name: "Micromanages" },
     ],
   },
   {
     name: "What additional skills are important to accomplish this task?",
     options: [
-      { key: "Game Developer", value: "Game Developer" },
-      { key: "Programmer", value: "Programmer" },
-      { key: "Unity Coder", value: "Unity Coder" },
-      { key: "Pixel Artist", value: "Pixel Artist" },
+      { id: "Game Developer", name: "Game Developer" },
+      { id: "Programmer", name: "Programmer" },
+      { id: "Unity Coder", name: "Unity Coder" },
+      { id: "Pixel Artist", name: "Pixel Artist" },
     ],
   },
 ];
@@ -66,26 +69,49 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
   const slice = store.getState().createSupportTicket;
   const dispatch = useDispatch();
 
+  const [addedSkills, setAddedSkills] = useState<IData[]>(slice.searchedSkills?? []);
+
+
+
+  const addExtraSkill = (value: IData) => {
+    const array = [...addedSkills];
+    const i =array.map(e=>e.id).indexOf(value.id)
+    if(i == -1){
+      array.push(value);
+      setAddedSkills(array);
+    }
+  };
+
+  const valuetoIData=(array:string[]):IData[]=>{
+    let ArrayData:IData[]=[];
+    ArrayData=array.map(e=>({id:e,name:e}));
+
+    return ArrayData;
+  }
+
   return (
     <div>
       <div className="title">Step {index} of 5</div>
       <Formik
         initialValues={{
-          skills: slice.skills ? slice.skills : [],
+          skills: slice.skills ?? [],
+          newSkills:slice.newSkills ?? []
         }}
         validationSchema={titleSchema}
-        onSubmit={(values) => {
+        onSubmit={(names) => {
           reduxAction(dispatch, {
             type: "SET_SUPPORT_TICKET",
             arg: {
-              skills: values.skills,
-            },
+              skills: names.skills,
+              searchedSkills:addedSkills,
+              newSkills:names.newSkills,
+              skillsData:slice.skillsData && [...slice.skillsData, ...valuetoIData(names.newSkills)]
+            } as supportTicket,
           });
           goNext();
 
-          console.log(values);
-        }}
-      >
+          console.log(names);
+        }}>
         {(formik: FormikProps<Values>) => (
           <Form className="step">
             <div className="step-title">Skills</div>
@@ -103,23 +129,22 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
                 />
               </div>
             ))}
-            {/*             <div className="skill">
-              Blender
-              <div className="skillset">
-                <button type="button">+ 3D Modeling</button>
-                <button type="button">+ Grease Pencil</button>
-                <button type="button">+ Curve Editor</button>
-                <button type="button">+ Keyframe Animation</button>
-                <button type="button">+ Rendering</button>
-                <button type="button">+ Shaders</button>
-                <button type="button">+ Particles</button>
-              </div>
-            </div> */}
             <div className="skill">
               Not what you are looking for?
-              <select>
-                <option>Search Skills</option>
-              </select>
+              <FormControl
+                name="skills"
+                secondaryName="newSkills"
+                control="autocomplete"
+                options={slice.skillsData}
+                action={addExtraSkill}
+                {...formik}
+              />
+              <FormControl
+                name="skills"
+                control="skills"
+                options={addedSkills}
+                {...formik}
+              />
             </div>
             <div className="support-buttons">
               <button onClick={goBack} type="button">
