@@ -196,7 +196,7 @@ export default function CreateLesson(): JSX.Element {
       title="Super Reality"
       topBarContent={<TopMenuBar />}
       onMinimize={minimizeWindow}
-      onClose={() => history.goBack()}
+      onClose={() => history.push("/")}
     >
       <div className="main-container">
         <div className="edit">

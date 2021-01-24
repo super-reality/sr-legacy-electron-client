@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./index.scss";
 import { animated, useSpring } from "react-spring";
 
@@ -43,6 +43,7 @@ import ButtonDavinci from "../../../assets/images/davinci-btn.png";
 import ButtonRound from "../button-round";
 import Browser from "../browser";
 import { voidFunction } from "../../constants";
+import SidebarControls from "./sidebar-controls";
 
 const sidebarIcons = [
   {
@@ -69,6 +70,8 @@ export default function Sidebar() {
   const [current, setCurrent] = useState(0);
   const history = useHistory();
 
+  const sidebarContainerRef = useRef<HTMLDivElement>(null);
+
   let width = "300px";
 
   // chat button width
@@ -86,9 +89,13 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="sidebar-container">
+    <div
+      style={{ right: "0px", top: "60px" }}
+      ref={sidebarContainerRef}
+      className="sidebar-container"
+    >
       <div className="sidebar-buttons button-logo">
-        <div className="sidebar-logo" />
+        <SidebarControls sidebarRef={sidebarContainerRef} />
 
         <div className="control-buttons">
           <div className="dropdown">
