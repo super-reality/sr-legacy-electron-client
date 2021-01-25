@@ -12,7 +12,6 @@ import Lesson from "./lessson";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import VideoPreview from "./video-preview";
 import AnchorTester from "./anchor-tester";
-import LessonPlayer from "../lesson-player";
 import { voidFunction } from "../../constants";
 import { RecordingJson } from "../recorder/types";
 import VideoStatus from "./video-status";
@@ -46,7 +45,6 @@ export default function CreateLesson(): JSX.Element {
 
   const {
     currentRecording,
-    currentLesson,
     anchorTestView,
     lessonPreview,
     chapterPreview,
@@ -163,26 +161,6 @@ export default function CreateLesson(): JSX.Element {
             />
           </>
         )}
-        {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
-          currentLesson && (
-            <LessonPlayer
-              lessonId={currentLesson}
-              onFinish={() => {
-                reduxAction(dispatch, {
-                  type: "CREATE_LESSON_V2_DATA",
-                  arg: {
-                    lessonPreview: false,
-                    chapterPreview: false,
-                    stepPreview: false,
-                    itemPreview: false,
-                    anchorTestView: false,
-                    previewing: false,
-                    previewOne: false,
-                  },
-                });
-              }}
-            />
-          )}
       </>
     );
   }
