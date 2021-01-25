@@ -30,7 +30,7 @@ export interface Channel {
   channelName: string;
   createdAt: string;
   messages: Message[];
-  users: ChatUser[];
+  users: string[];
   __v: number;
   _id: string;
 }

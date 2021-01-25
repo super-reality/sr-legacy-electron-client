@@ -84,7 +84,8 @@ const chatSlice = createSlice({
     },
     updateGroup: (state: ChatState, action: PayloadAction<Group>): void => {
       const { groups, activeGroup } = state;
-      state.groups = updateArray(groups, action.payload);
+      const updatedGroups: Group[] = updateArray(groups, action.payload);
+      state.groups = updatedGroups;
       if (activeGroup._id === action.payload._id) {
         state.activeGroup = action.payload;
       }
@@ -109,7 +110,11 @@ const chatSlice = createSlice({
     },
     updateChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
       const { channels, activeCannnel } = state;
-      state.groups = updateArray(channels.data, action.payload);
+      const updatedChannels: Channel[] = updateArray(
+        channels.data,
+        action.payload
+      );
+      state.channels.data = updatedChannels;
       if (activeCannnel._id === action.payload._id) {
         state.activeCannnel = action.payload;
       }
