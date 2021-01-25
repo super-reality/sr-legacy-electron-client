@@ -2,10 +2,15 @@ import React, {
   CSSProperties,
   PropsWithChildren,
   useCallback,
+  useEffect,
   useMemo,
 } from "react";
 import { useDispatch } from "react-redux";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/close.svg";
+import {
+  addKeyUpListener,
+  deleteKeyUpListener,
+} from "../../../../utils/globalKeyListeners";
 import reduxAction from "../../../redux/reduxAction";
 
 export default function useBasePanel(
@@ -29,6 +34,12 @@ export default function useBasePanel(
   );
 
   const SvgElement = svg;
+  useEffect(() => {
+    addKeyUpListener("Escape", () => openPanel(""));
+    return () => {
+      deleteKeyUpListener("Escape");
+    };
+  }, []);
 
   const Component = useMemo(
     // eslint-disable-next-line react/display-name

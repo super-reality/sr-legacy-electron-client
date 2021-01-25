@@ -6,6 +6,7 @@ import { ImageFoundList, ImageFoundView } from "./views/imageFound";
 import { RecordingsList, RecordingsView } from "./views/recordings";
 import { RecordingsTrimList, RecordingsTrimView } from "./views/recordingsTrim";
 import { TriggerMouseList, TriggerMouseView } from "./views/triggerMouse";
+import YoutubeView from "./views/youtube";
 
 import { ReactComponent as DefaultIcon } from "../../../../assets/svg/start-step.svg";
 
@@ -98,7 +99,9 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       SingleView = RecordingsTrimView;
       break;
     // case "File":
-    // case "YouTube":
+    case "YouTube":
+      ListView = YoutubeView;
+      break;
     default:
       break;
   }

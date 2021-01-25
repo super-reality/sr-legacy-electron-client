@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { TypeValue } from "../../../../../types/utils";
-import { ItemVideo } from "../../../../items/item";
+import { ItemVideo, VideoSourceTypeValue } from "../../../../items/item";
 import reduxAction from "../../../../redux/reduxAction";
 import useStep from "../../hooks/useStep";
 import updateItem from "../../lesson-utils/updateItem";
@@ -19,18 +19,19 @@ export default function VideoItemPanel(props: VideoItemPanelProps) {
   const step = useStep(itemId);
 
   const doUpdate = useCallback(
-    (val: TypeValue[]) => {
+    (val: VideoSourceTypeValue[]) => {
       if (val[0]?.value) {
-        updateItem<ItemVideo>({ url: val[0].value as string }, itemId).then(
-          (updated) => {
-            if (updated) {
-              reduxAction(dispatch, {
-                type: "CREATE_LESSON_V2_SETITEM",
-                arg: { item: updated },
-              });
-            }
+        updateItem<ItemVideo>(
+          { source: val[0].type, url: val[0].value },
+          itemId
+        ).then((updated) => {
+          if (updated) {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETITEM",
+              arg: { item: updated },
+            });
           }
-        );
+        });
       }
     },
     [itemId, dispatch]
@@ -43,7 +44,7 @@ export default function VideoItemPanel(props: VideoItemPanelProps) {
       showActive={false}
       types={["Crop", "File", "YouTube"]}
       baseData={step?.canvas || []}
-      callback={doUpdate}
+      callback={doUpdate as (val: TypeValue[]) => void}
     />
   );
 }
