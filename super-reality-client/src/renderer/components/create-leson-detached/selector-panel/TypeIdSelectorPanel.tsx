@@ -5,6 +5,8 @@ import useBasePanel from "./useBasePanel";
 import { ImageFoundList, ImageFoundView } from "./views/imageFound";
 import { RecordingsList, RecordingsView } from "./views/recordings";
 import { RecordingsTrimList, RecordingsTrimView } from "./views/recordingsTrim";
+import { TriggerMouseList, TriggerMouseView } from "./views/triggerMouse";
+import YoutubeView from "./views/youtube";
 
 interface TypeIdSelectorPanelProps {
   title: string;
@@ -25,7 +27,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const doCallback = useCallback(
     (type: string, value: any | null) => {
-      let newData = data;
+      let newData = [...data];
       if (single) {
         newData = [
           {
@@ -35,10 +37,18 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
         ];
       } else {
         // here it will fail for multi selection deselection
-        newData = data.map((d) => {
-          if (type == d.type) return { ...d, value };
-          return d;
+        let found = -1;
+        data.forEach((d, i) => {
+          if (type == d.type) found = i;
         });
+        if (found > -1) {
+          newData.splice(found, 1);
+        } else {
+          newData.push({
+            type,
+            value,
+          });
+        }
       }
 
       const filtered = newData.filter((d) => d.value !== null);
@@ -49,21 +59,28 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     [data, single, callback]
   );
 
-  const doUnCheck = useCallback(
-    (type: string) => {
-      doCallback(type, null);
-    },
-    [doCallback]
-  );
-
-  const active: string[] = [];
-
   const Panel = useBasePanel(title);
 
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;
 
+  const dataIds: Record<string, string[]> = {
+    Mouse: ["mouse-left", "mouse-double", "mouse-hover"],
+  };
+
+  const idsToDataType: Record<string, string> = {};
+  Object.keys(dataIds).forEach((k) =>
+    dataIds[k].forEach((id) => {
+      idsToDataType[id] = k;
+    })
+  );
+
   switch (dataType) {
+    // End step on
+    case "Mouse":
+      ListView = TriggerMouseList;
+      SingleView = TriggerMouseView;
+      break;
     // Canvas
     case "Recording":
       ListView = RecordingsList;
@@ -80,10 +97,21 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
       SingleView = RecordingsTrimView;
       break;
     // case "File":
-    // case "YouTube":
+    case "YouTube":
+      ListView = YoutubeView;
+      break;
     default:
       break;
   }
+
+  const actives: string[] = [];
+  data
+    .map((t) => idsToDataType[t.type] || t.type)
+    .forEach((t) => {
+      if (!actives.includes(t)) {
+        actives.push(t);
+      }
+    });
 
   return (
     <Panel>
@@ -91,27 +119,32 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
         {showActive ? (
           <>
             <div className="panel-subtitle">Active</div>
-            {data.map((t) => {
-              active.push(t.type);
+            {actives.map((t) => {
               return (
                 <ButtonCheckbox
-                  key={`panel-button-active-${t.type}`}
-                  text={t.type}
+                  key={`panel-button-active-${t}`}
+                  text={t}
                   check
                   onButtonClick={() => {
-                    setDataType(t.type);
+                    setDataType(t);
                     setDataId(null);
                   }}
                   onCheckClick={(e) => {
                     e.stopPropagation();
-                    doUnCheck(t.type);
+                    if (dataIds[t]) {
+                      const filtered = data.filter(
+                        (d) => !dataIds[t].includes(d.type)
+                      );
+                      setData(filtered);
+                      callback(filtered);
+                    } else doCallback(t, null);
                   }}
                 />
               );
             })}
             <div className="panel-subtitle">Library</div>
             {types.map((t) => {
-              if (active.includes(t)) return undefined;
+              if (actives.includes(t)) return undefined;
               return (
                 <ButtonCheckbox
                   margin="8px auto"

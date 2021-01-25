@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useRef, useState } from "react";
-import { ItemImageTriggers, ItemVideo } from "../../item";
-import { voidFunction } from "../../../constants";
-import ButtonSimple from "../../../components/button-simple";
+import { useSelector } from "react-redux";
+import { ItemVideo } from "../../item";
 import "./index.scss";
 import { BaseBoxProps } from "../boxes";
+import { AppState } from "../../../redux/stores/renderer";
 
 const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
   (props, forwardedRef) => {
-    const { item, style, pos, callback } = props;
+    const { item, style, pos } = props;
+    const { previewing } = useSelector(
+      (state: AppState) => state.createLessonV2
+    );
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const [play, setPlay] = useState(true);
@@ -25,42 +28,56 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
     }, [play, videoRef]);
 
     return (
-      <div
-        ref={forwardedRef}
-        className="video-box click-on"
-        style={{
-          left: `${pos.x}px`,
-          top: `${pos.y}px`,
-          width: `${pos.width}px`,
-          height: `${pos.height}px`,
-          ...style,
-        }}
-      >
-        <video
-          ref={videoRef}
-          onClick={doClick}
-          muted={item.muted == undefined ? true : item.muted}
-          autoPlay
-          style={{
-            maxHeight: item.trigger ? "calc(100% - 64px)" : "100%",
-          }}
-          src={item.url}
-        />
-        {item.trigger && (
-          <ButtonSimple
-            width="200px"
-            height="24px"
-            margin="auto"
-            onClick={
-              callback
-                ? () => callback(ItemImageTriggers["Click Ok button"])
-                : voidFunction
-            }
+      <>
+        {(!item.source || item.source == "raw") && (
+          <div
+            ref={forwardedRef}
+            className="video-box click-on"
+            style={{
+              left: `${pos.x}px`,
+              top: `${pos.y}px`,
+              width: `${pos.width}px`,
+              height: `${pos.height}px`,
+              ...style,
+            }}
           >
-            Ok
-          </ButtonSimple>
+            <video
+              ref={videoRef}
+              onClick={doClick}
+              muted={item.muted == undefined ? true : item.muted}
+              autoPlay
+              style={{
+                maxHeight: "100%",
+              }}
+              src={item.url}
+            />
+          </div>
         )}
-      </div>
+        {item.source == "youtube" && (
+          <div
+            ref={forwardedRef}
+            className="youtube-box click-on"
+            style={{
+              left: `${pos.x}px`,
+              top: `${pos.y}px`,
+              width: `${pos.width}px`,
+              height: `${pos.height}px`,
+              ...style,
+            }}
+          >
+            <iframe
+              src={`https://www.youtube.com/embed/${item.url}`}
+              style={{
+                pointerEvents: previewing ? "all" : "none",
+                maxHeight: "100%",
+              }}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        )}
+      </>
     );
   }
 );

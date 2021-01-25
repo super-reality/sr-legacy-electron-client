@@ -16,6 +16,8 @@ const globalData = {
   titleUrlDictionary: {} as Record<string, string>,
   documentKeyDownListeners: {} as Record<string, (e: KeyboardEvent) => void>,
   documentKeyUpListeners: {} as Record<string, (e: KeyboardEvent) => void>,
+  mouseX: 0,
+  mouseY: 0,
 };
 
 export default globalData;

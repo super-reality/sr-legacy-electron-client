@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { Item, ItemFocusTriggers } from "../../../items/item";
+import { Item } from "../../../items/item";
 import { IStep } from "../../../api/types/step/step";
 import { AppState } from "../../../redux/stores/renderer";
 import ItemView from "../item-view";
+import { TriggerTypes } from "../../../items/endStep";
 
 type ItemsState = Record<string, boolean>;
 
@@ -32,7 +33,7 @@ export default function StepView(props: StepViewProps) {
       const item: Item | undefined = treeItems[i._id];
       state[i._id] = false;
       show[i._id] = true;
-      if (item && item.trigger == null) {
+      if (item && item.endOn.length == 0) {
         state[i._id] = true;
       }
     });
@@ -41,7 +42,7 @@ export default function StepView(props: StepViewProps) {
   }, [step]);
 
   const itemSuceeded = useCallback(
-    (id: string, trigger: number | null) => {
+    (id: string, trigger: TriggerTypes | null) => {
       console.log(`item sucess event ${id} - trigger: ${trigger}`);
       const state = { ...itemsState };
       state[id] = true;
@@ -56,10 +57,10 @@ export default function StepView(props: StepViewProps) {
   );
 
   const itemSucess = useCallback(
-    (trigger: number | null, item: Item) => {
+    (trigger: TriggerTypes | null, item: Item) => {
       if (
         previewing &&
-        trigger == item.trigger &&
+        item.endOn.filter((t) => t.type == trigger).length > 0 &&
         itemsState[item._id] == false
       ) {
         itemSuceeded(item._id, trigger);
@@ -67,8 +68,7 @@ export default function StepView(props: StepViewProps) {
       if (
         previewing &&
         item.type == "focus_highlight" &&
-        trigger == ItemFocusTriggers["Hover target"] &&
-        item.trigger !== ItemFocusTriggers["Click target"]
+        item.endOn.filter((t) => t.type == "mouse-hover").length > 0
       ) {
         const showState = { ...itemsShow };
         showState[item._id] = false;
@@ -85,7 +85,6 @@ export default function StepView(props: StepViewProps) {
     fx: 0,
     image: 0,
     video: 0,
-    youtube: 0,
   };
 
   return (
@@ -96,13 +95,15 @@ export default function StepView(props: StepViewProps) {
           itemKeys[item.type] += 1;
         }
         return item &&
-          (itemsState[itemId] == false || item.trigger == null) &&
+          (itemsState[itemId] == false || item.endOn.length == 0) &&
           itemsShow[itemId] ? (
           <ItemView
             key={`item-box-${item.type}-${itemKeys[item.type] || item._id}`}
             item={item}
             anchorId={step.anchor || ""}
-            onSucess={(trigger: number | null) => itemSucess(trigger, item)}
+            onSucess={(trigger: TriggerTypes | null) =>
+              itemSucess(trigger, item)
+            }
           />
         ) : (
           <React.Fragment

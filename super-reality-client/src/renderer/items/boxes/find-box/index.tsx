@@ -1,14 +1,13 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animated, useSpring } from "react-spring";
-import getPrimaryMonitor from "../../../../utils/electron/getPrimaryMonitor";
-import { ItemFocus, ItemFocusTriggers } from "../../item";
-import { voidFunction } from "../../../constants";
+import { ItemFocus } from "../../item";
 import { AppState } from "../../../redux/stores/renderer";
 import "./index.scss";
 import { BaseBoxProps } from "../boxes";
+import useItemBehaviour from "../../useItemBehaviour";
 
 export type FindBoxType = "anchor" | "target";
 
@@ -20,58 +19,17 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
     );
 
     const [opacity, setOpacity] = useState(previewing ? 0 : 1);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const _clickCallback = useItemBehaviour(
+      callback,
+      pos,
+      clickThrough || false
+    );
 
     let computedType = "type";
     if (item.focus == "Mouse Point") computedType = "mouse";
     if (item.focus == "Rectangle") computedType = "rectangle";
     if (item.focus == "Area highlight") computedType = "area";
-
-    const clickCallback = useCallback(
-      (e: { x: number; y: number; button: number }) => {
-        if (
-          e.x > pos.x &&
-          e.y > pos.y &&
-          e.x < pos.x + pos.width &&
-          e.y < pos.y + pos.height &&
-          callback
-        ) {
-          callback(ItemFocusTriggers["Click target"]);
-        }
-      },
-      [callback, pos]
-    );
-
-    useEffect(() => {
-      // eslint-disable-next-line no-undef
-      const mouseEvents = __non_webpack_require__("global-mouse-events");
-      const { remote } = require("electron");
-
-      if (callback) {
-        const interval = setInterval(() => {
-          const mouse = remote.screen.getCursorScreenPoint();
-          const diplayPos = getPrimaryMonitor().bounds;
-          if (
-            mouse.x > diplayPos.x + pos.x &&
-            mouse.y > diplayPos.y + pos.y &&
-            mouse.x < diplayPos.x + pos.x + pos.width &&
-            mouse.y < diplayPos.y + pos.y + pos.height
-          ) {
-            callback(ItemFocusTriggers["Hover target"]);
-          }
-        }, 50);
-        timeoutRef.current = interval;
-
-        if (clickThrough) {
-          mouseEvents.on("mousedown", clickCallback);
-        }
-      }
-
-      return () => {
-        if (timeoutRef.current) clearInterval(timeoutRef.current);
-        mouseEvents.removeListener("mousedown", clickCallback);
-      };
-    }, [pos, callback]);
 
     const spring = useSpring({
       left: `${pos.x - 3}px`,
@@ -103,11 +61,6 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
               }),
           ...style,
         }}
-        onClick={
-          callback
-            ? () => callback(ItemFocusTriggers["Click target"])
-            : voidFunction
-        }
       />
     );
   }

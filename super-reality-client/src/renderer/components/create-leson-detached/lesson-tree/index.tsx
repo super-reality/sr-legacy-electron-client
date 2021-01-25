@@ -258,6 +258,7 @@ function TreeFolder(props: TreeFolderProps) {
               currentChapter: parentId,
               currentStep: id,
               currentItem: undefined,
+              openPanel: "",
             },
           });
         }
@@ -486,6 +487,7 @@ function TreeItem(props: TreeItemProps) {
           currentChapter: uniqueId.split(".")[1],
           currentStep: parentId,
           currentItem: id,
+          openPanel: "",
         },
       });
     }
@@ -535,7 +537,7 @@ function TreeItem(props: TreeItemProps) {
         {itemData?.name || itemData?.type || name}
       </div>
       <div className="item-trigger">
-        {itemData && itemData.trigger && (
+        {itemData && itemData.endOn.length > 0 && (
           <TriggerIcon width="14px" height="14px" fill="var(--color-pink)" />
         )}
       </div>

@@ -1,6 +1,15 @@
-import React, { PropsWithChildren, useCallback, useMemo } from "react";
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { useDispatch } from "react-redux";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/close.svg";
+import {
+  addKeyUpListener,
+  deleteKeyUpListener,
+} from "../../../../utils/globalKeyListeners";
 import reduxAction from "../../../redux/reduxAction";
 
 export default function useBasePanel(
@@ -17,25 +26,35 @@ export default function useBasePanel(
     [dispatch]
   );
 
-  const Component = useMemo(
-    () => (props: PropsWithChildren<unknown>) => (
-      <div className="selector-panel-container">
-        <div className="panel-title">
-          <div>{title}</div>
-          <CloseIcon
-            style={{
-              width: "16px",
-              height: "16px",
-              cursor: "pointer",
-            }}
-            stroke="var(--color-icon)"
-            onClick={() => openPanel("")}
-          />
-        </div>
-        <div className="panels-flex">{props.children}</div>
-      </div>
-    ),
+  useEffect(() => {
+    addKeyUpListener("Escape", () => openPanel(""));
+    return () => {
+      deleteKeyUpListener("Escape");
+    };
+  }, []);
 
+  const Component = useMemo(
+    // eslint-disable-next-line react/display-name
+    () => (componentProps: PropsWithChildren<unknown>) => {
+      const { children } = componentProps;
+      return (
+        <div className="selector-panel-container">
+          <div className="panel-title">
+            <div>{title}</div>
+            <CloseIcon
+              style={{
+                width: "16px",
+                height: "16px",
+                cursor: "pointer",
+              }}
+              stroke="var(--color-icon)"
+              onClick={() => openPanel("")}
+            />
+          </div>
+          <div className="panels-flex">{children}</div>
+        </div>
+      );
+    },
     [title]
   );
 

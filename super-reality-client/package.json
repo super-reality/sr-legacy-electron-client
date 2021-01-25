@@ -20,7 +20,7 @@
     "active-win": "^6.2.0",
     "any-shell-escape": "^0.1.1",
     "autoprefixer": "^9.8.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "colorette": "^1.2.0",
     "concurrently": "^5.3.0",
     "craco": "0.0.3",
@@ -139,6 +139,13 @@
       {
         "from": "./public/fluid-simulation/",
         "to": "fluid-simulation",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "./public/icons/",
+        "to": "icons",
         "filter": [
           "**/*"
         ]

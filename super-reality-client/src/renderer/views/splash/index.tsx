@@ -7,6 +7,8 @@ import MuteButton from "../../components/mute-button";
 import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
 
+import infoJson from "../../../info.json";
+
 export default function Splash(): JSX.Element {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -56,6 +58,9 @@ export default function Splash(): JSX.Element {
         <animated.div style={{ ...authSpring }} className="splash-elements">
           <Auth onAuth={beginAuth} />
         </animated.div>
+        <div className="version">{`v${infoJson.version}-${
+          infoJson.branch
+        }, Build date: ${new Date(infoJson.timestamp).toDateString()}`}</div>
       </animated.div>
     </>
   );

@@ -19,8 +19,6 @@ import uploadFileToS3 from "../../../utils/api/uploadFileToS3";
 import newAnchor from "../create-leson-detached/lesson-utils/newAnchor";
 import pendingReduxAction from "../../redux/utils/pendingReduxAction";
 
-// import editStepItemsRelativePosition from "../create-leson-detached/lesson-utils/editStepItemsRelativePosition";
-
 interface AnchorCommandsProps {
   anchorId: string;
   template: number;
@@ -105,36 +103,6 @@ export default function AnchorCommands(props: AnchorCommandsProps) {
   const editCreateNewAnchor = useCallback(
     (fileName: string) => {
       newAnchorPre(fileName)
-        /*
-        .then(
-          (a): Promise<IStep | undefined> => {
-            if (a) {
-              const newTimestamp = timetoTimestamp(videoNavigation[1]);
-              saveCanvasImage(`${itemsPath}/${sha1(newTimestamp)}.png`)
-                .then((file) => uploadFileToS3(file))
-                .then((url) => {
-                  return updateStep(
-                    {
-                      anchor: a._id,
-                      recordingTimestamp: newTimestamp,
-                      snapShot: url,
-                    },
-                    currentStep
-                  ).then((updatedStep) => {
-                    if (updatedStep) {
-                      reduxAction(dispatch, {
-                        type: "CREATE_LESSON_V2_SETSTEP",
-                        arg: { step: updatedStep },
-                      });
-                    }
-                    return updatedStep;
-                  });
-                });
-            }
-            return new Promise((r) => r(undefined));
-          }
-        )
-        */
         .then(() => setPreviewMode("IDLE"))
         .catch((e) => {
           console.error(e);

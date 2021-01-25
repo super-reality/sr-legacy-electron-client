@@ -1,24 +1,18 @@
-import React, { useCallback, useEffect } from "react";
-import { Switch, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Switch, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 import Splash from "./views/splash";
 import Loading from "./components/loading";
-import Tests from "./views/tests";
 import DetachController from "./DetachController";
 import "typeface-roboto";
 import BackgroundController from "./BackgroundController";
 import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
-import CreateLessonDetached from "./components/create-leson-detached";
-import {
-  MODE_HOME,
-  MODE_LESSON_CREATOR,
-  MODE_RECORDER,
-} from "./redux/slices/renderSlice";
+import CreateLesson from "./components/create-leson-detached";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
 import Recorder from "./components/recorder";
@@ -29,15 +23,18 @@ import {
   globalKeyUpListener,
 } from "../utils/globalKeyListeners";
 
-import Test from "./views/test";
+import Sidebar from "./components/sidebar";
+import BrowseLessons from "./components/browse-lessons";
 
 export default function App(): JSX.Element {
   useTransparentFix();
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
-  const { ready, appMode } = useSelector((state: AppState) => state.render);
+  const { ready } = useSelector((state: AppState) => state.render);
 
-  const { isLoading, detached, background } = useSelector(
+  const { pathname } = useLocation();
+
+  const { detached, background } = useSelector(
     (state: AppState) => state.commonProps
   );
   const yScrollMoveTo = useSelector(
@@ -46,13 +43,6 @@ export default function App(): JSX.Element {
 
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
-
-  const handleScroll = useCallback((): void => {
-    if (scrollRef.current) {
-      const { scrollTop } = scrollRef.current;
-      reduxAction(dispatch, { type: "SET_YSCROLL", arg: scrollTop });
-    }
-  }, [scrollRef, dispatch]);
 
   useEffect(() => {
     if (scrollRef.current && yScrollMoveTo !== undefined) {
@@ -63,7 +53,7 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     // Add as more modes are transparent
-    const isTopMost = appMode == MODE_RECORDER;
+    const isTopMost = pathname == "/recorder";
     if (isTopMost) {
       setFocusable(false);
       setTopMost(true);
@@ -71,7 +61,7 @@ export default function App(): JSX.Element {
       setFocusable(true);
       setTopMost(false);
     }
-  }, [appMode]);
+  }, [pathname]);
 
   if (detached) {
     return <DetachController />;
@@ -88,9 +78,13 @@ export default function App(): JSX.Element {
 
   return (
     <ErrorBoundary>
-      {appMode == MODE_RECORDER && <Recorder />}
-      {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
-      {appMode == MODE_HOME && (
+      <Switch>
+        <Route exact path="/recorder" component={Recorder} />
+        <Route exact path="/lesson/view" component={BrowseLessons} />
+        <Route exact path="/lesson/create" component={CreateLesson} />
+      </Switch>
+      {isAuthenticated && <Sidebar />}
+      {!isAuthenticated && (
         <Windowlet
           width={1100}
           height={600}
@@ -98,35 +92,8 @@ export default function App(): JSX.Element {
           onMinimize={minimizeWindow}
           onClose={closeWindow}
         >
-          {isAuthenticated ? (
-            <>
-              <div
-                style={{
-                  overflow: "hidden",
-                  margin: "0",
-                }}
-              >
-                <Loading state={isLoading} />
-                <div
-                  onScroll={handleScroll}
-                  ref={scrollRef}
-                  className="content"
-                >
-                  <Switch>
-                    <Route path="/test" component={Test} />
-                  </Switch>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <Loading state={isPending} />
-              <Switch>
-                <Route exact path="/tests/:id" component={Tests} />
-                <Route path="*" component={Splash} />
-              </Switch>
-            </>
-          )}
+          <Splash />
+          <Loading state={isPending} />
         </Windowlet>
       )}
     </ErrorBoundary>

@@ -10,6 +10,7 @@ import StepInformationPanel from "../selector-panel/panels/StepInformationPanel"
 import SkillsPanel from "../selector-panel/panels/SkillsPanel";
 import AlertsPanel from "../selector-panel/panels/AlertsPanel";
 import VideoItemPanel from "../selector-panel/panels/VideoItemPanel";
+import StepOnSelectorPanel from "../selector-panel/panels/StepOnSelectorPanel";
 
 export default function LeftPanelWrapper(): JSX.Element {
   const { openPanel, currentItem, currentChapter, currentStep } = useSelector(
@@ -19,6 +20,16 @@ export default function LeftPanelWrapper(): JSX.Element {
   let Component: JSX.Element = <></>;
 
   switch (openPanel) {
+    // items
+    case "end-step-on":
+      if (currentItem)
+        Component = (
+          <StepOnSelectorPanel
+            key={`end-stepon-panel-${currentItem}`}
+            itemId={currentItem}
+          />
+        );
+      break;
     // items
     case "item-video":
       if (currentItem) Component = <VideoItemPanel itemId={currentItem} />;

@@ -9,7 +9,7 @@ import Voting from "../../../assets/svg/updown.svg";
 export default function Cams(): JSX.Element {
   return (
     <>
-      <div className="title">Cams</div>
+      <div className="cams-title">Cams</div>
       <div className="cams-container">
         <div className="cams">
           <div className="single-cam">
