@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -18,7 +18,7 @@ const titleSchema = Yup.object().shape({
 
 interface Values {
   skills: string[];
-  newSkills:string[];
+  newSkills: string[];
 }
 
 const skillsOpts = [
@@ -67,7 +67,7 @@ const skillsOpts = [
 export default function StepSkills(props: StepSectionProps): JSX.Element {
   const { goNext, goBack, index } = props;
 
-  const formRef =useRef<FormikProps<Values>>(null);
+  const formRef = useRef<FormikProps<Values>>(null);
 
   const slice = store.getState().createSupportTicket;
   const dispatch = useDispatch();
@@ -92,21 +92,21 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
     return ArrayData;
   };
 
-  const setValues= (value:IData):void=>{
-    const values=formRef.current?.values;
-    const setFieldValue=formRef.current?.setFieldValue;
+  const setValues = (value: IData): void => {
+    const values = formRef.current?.values;
+    const setFieldValue = formRef.current?.setFieldValue;
 
-    if(setFieldValue && values){
-      setFieldValue("skills",values.skills.concat(value.id));
-    if(value.new)setFieldValue("newSkills",values.newSkills.concat(value.id));
+    if (setFieldValue && values) {
+      setFieldValue("skills", values.skills.concat(value.id));
+      if (value.new)
+        setFieldValue("newSkills", values.newSkills.concat(value.id));
     }
+  };
 
-  }
-
-  const initialValues:Values={
+  const initialValues: Values = {
     skills: slice.skills ?? [],
     newSkills: slice.newSkills ?? [],
-  }
+  };
 
   return (
     <div>
