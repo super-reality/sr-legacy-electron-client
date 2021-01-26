@@ -68,6 +68,26 @@
   }
 }
 
+.button-basic{
+
+  cursor: pointer;
+  background-color: var(--color-button);
+  color: var(--color-text);
+  @include animated;
+  @include disable-select;
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+  &:active {
+    background-color: var(--color-background);
+  }
+
+  a {
+    color: var(--color-text);
+  }
+}
+
 .button-login {
   color: var(--color-text-dark);
   background-color: #6fb6ff;

@@ -4,12 +4,17 @@
     font-size: 16px;
 }
 
+.channel-wrapper{
+    height: 100%;
+    width: 100%;
+    display:flex;
+}
 .channel {
     position: relative;
     overflow-y: scroll;
     height: calc(86vh - 150px);
-    max-width: 250px;
-    width: 100%;
+    min-width: 300px;
+    
 }
 
 .channel::after {
@@ -48,11 +53,11 @@
     display: flex;
     align-content: center;
     margin-bottom: 7px;
+    align-items: center;
 
     svg {
         margin-right: 10px;
     }
-
     .info {
         white-space: nowrap;
         overflow: hidden;
