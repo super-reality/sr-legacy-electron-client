@@ -225,7 +225,7 @@ export default function Chat(props: ChatProps) {
       <div className="chat-and-channels-title">Chat</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages.map((messageObject: any) => {
+          {messages?.map((messageObject: any) => {
             const { _id, user, createdAt, text } = messageObject;
             return (
               <MessageBox
