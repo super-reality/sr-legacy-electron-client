@@ -52,7 +52,7 @@ export default function Auth(props: AuthProps): JSX.Element {
   const defaultUser = window.localStorage.getItem("username");
   const defaultToken = window.localStorage.getItem("token");
 
-  const loginChat = async (username?: string, password?: string) => {
+  const loginChat = (username?: string, password?: string): Promise<any> => {
     if (username && password) {
       return (client as any)
         .authenticate({
@@ -118,11 +118,13 @@ export default function Auth(props: AuthProps): JSX.Element {
             Authorization: `Bearer ${defaultToken}`,
           },
         })
-        .then(async (res) => {
+        .then((res) => {
           // Try to authenticate the feathers chat with the JWT stored in localStorage
-          await loginChat();
-
           handleAuthSignin(res);
+          loginChat();
+        })
+        .then((res) => {
+          console.log(res);
           onAuth();
         })
         .catch(handleAuthError);
