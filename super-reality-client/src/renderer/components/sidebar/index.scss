@@ -1,11 +1,10 @@
 .sidebar-container {
   display: flex;
   background: linear-gradient(180deg, #333155 0%, #262036 100%);
-  flex-direction: column;
-  align-content: center;
-  align-items: center;
-  padding: 10px 0;
-  z-index: 2;
+  flex-direction: row;
+  position: absolute;
+  right: 0;
+  z-index: 10;
   height: 100%;
 
   .sidebar-buttons {

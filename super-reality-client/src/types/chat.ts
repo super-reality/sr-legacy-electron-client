@@ -28,6 +28,7 @@ export interface Message {
 
 export interface Channel {
   channelName: string;
+  channelPhoto?: string;
   createdAt: string;
   messages: Message[];
   users: string[];

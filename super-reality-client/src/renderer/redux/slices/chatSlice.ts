@@ -12,7 +12,7 @@ const initialState = {
   isChatAuth: false,
   loginData: {} as any,
   activeGroup: {} as Group,
-  activeCannnel: {} as Channel,
+  activeChannel: {} as Channel,
   messages: [] as Message[],
   users: [] as ChatUser[],
   groups: [] as Group[],
@@ -99,7 +99,7 @@ const chatSlice = createSlice({
     setActiveGroup: (state: ChatState, action: PayloadAction<string>): void => {
       const { groups } = state;
       const newActiveGroup = groups.find(({ _id }) => _id === action.payload);
-      console.log(newActiveGroup);
+
       if (newActiveGroup) state.activeGroup = newActiveGroup;
     },
     setChannnels: (
@@ -109,15 +109,15 @@ const chatSlice = createSlice({
       state.channels = action.payload;
     },
     updateChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
-      const { channels, activeCannnel } = state;
+      const { channels } = state;
       const updatedChannels: Channel[] = updateArray(
         channels.data,
         action.payload
       );
       state.channels.data = updatedChannels;
-      if (activeCannnel._id === action.payload._id) {
-        state.activeCannnel = action.payload;
-      }
+      // if (activeChannel._id === action.payload._id) {
+      //   state.activeChannel = action.payload;
+      // }
     },
     deleteChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
       const filteredChannels = state.channels.data.filter(
@@ -130,14 +130,9 @@ const chatSlice = createSlice({
     },
     setActiveChannel: (
       state: ChatState,
-      action: PayloadAction<string>
+      action: PayloadAction<Channel>
     ): void => {
-      const { channels } = state;
-      const newActiveChannel = channels.data.find(
-        ({ _id }) => _id === action.payload
-      );
-      console.log(newActiveChannel);
-      if (newActiveChannel) state.activeCannnel = newActiveChannel;
+      state.activeChannel = action.payload;
     },
   },
 });

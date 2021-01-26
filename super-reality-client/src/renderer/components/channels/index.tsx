@@ -1,7 +1,7 @@
 import "./index.scss";
 import React, { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ButtonAdd from "../../../assets/images/add-circle.png";
 
 import PacMan from "../../../assets/images/pacman.png";
@@ -13,10 +13,12 @@ import { Channel, ChatUser, Group } from "../../../types/chat";
 import { PagesIndex } from "../../../types/browser";
 import { AppState } from "../../redux/stores/renderer";
 import { channelsClient } from "../../../utils/chat-utils/services";
+import reduxAction from "../../redux/reduxAction";
 
 interface ChannelsProps {
   activeGroup: Group;
   setPage: (pageIndex: any) => void;
+  createChannel: () => void;
 }
 
 interface SingleChannelProps {
@@ -27,14 +29,28 @@ interface SingleChannelProps {
 
 export function SingleChannel(props: SingleChannelProps): JSX.Element {
   const { channel, selfId, chatUsers } = props;
+  const dispatch = useDispatch();
+
   console.log(channel, selfId, chatUsers);
   const { users } = channel;
   const singleUser = users.filter((_id) => _id !== selfId);
   const interlocutor = chatUsers.find(({ _id }) => _id === singleUser[0]);
   console.log("singleUser", singleUser, "interlocutor", interlocutor);
 
+  const setActiveChannel = (activeChannel: Channel) => {
+    reduxAction(dispatch, {
+      type: "SET_ACTIVE_CHANNEL",
+      arg: activeChannel,
+    });
+  };
+
   return (
-    <div className="single-channel">
+    <div
+      className="single-channel"
+      onClick={() => {
+        setActiveChannel(channel);
+      }}
+    >
       <img className="avatar" src={DefaultUser} alt="" />
       <div className="info">{channel.channelName}</div>
     </div>
@@ -42,8 +58,8 @@ export function SingleChannel(props: SingleChannelProps): JSX.Element {
 }
 
 export default function Channels(props: ChannelsProps): JSX.Element {
-  const { activeGroup, setPage } = props;
-  const { loginData, channels, users } = useSelector(
+  const { activeGroup, setPage, createChannel } = props;
+  const { loginData, channels, users, messages } = useSelector(
     (state: AppState) => state.chat
   );
   const { user } = loginData;
@@ -66,16 +82,13 @@ export default function Channels(props: ChannelsProps): JSX.Element {
       </div>
       <animated.div style={{ ...springProps }}>
         <div className="group-settings-dropdown">
-          <ul>
-            <li onClick={() => setPage(PagesIndex.groupSettings)}>
-              Group settings
-            </li>
-            <li>Invite People</li>
-            <li>Create Channel</li>
-            <li>Create Category</li>
-            <li>Some settings</li>
-            <li>Some settings</li>
-          </ul>
+          <div onClick={() => setPage(PagesIndex.groupSettings)}>
+            Group settings
+          </div>
+          <div>Invite People</div>
+          <div>Create Category</div>
+          <div>Some settings</div>
+          <div>Some settings</div>
         </div>
       </animated.div>
 
@@ -85,8 +98,9 @@ export default function Channels(props: ChannelsProps): JSX.Element {
           type="button"
           onClick={() => {
             channelsClient
-              .patch("600b196bf194e54665e59285", {
-                channelName: "update test channel denis",
+              .patch("600eed88f194e54665e59290", {
+                channelName: "Channel 3",
+                messages: messages,
               })
               .catch((err: any) => {
                 console.log(err);
@@ -110,7 +124,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
         </div>
       </div>
       <div className="channel-title">Rooms</div>
-      <div className="add">
+      <div className="add" onClick={createChannel}>
         <button type="button">
           <img src={ButtonAdd} />
         </button>

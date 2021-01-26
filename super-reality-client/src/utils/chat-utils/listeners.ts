@@ -184,16 +184,24 @@ export const onAuthenticated = () => {
           type: "SET_CHANNELS",
           arg: channelsResult,
         });
+        reduxAction(store.dispatch, {
+          type: "SET_ACTIVE_CHANNEL",
+          arg: channelsResult.data[1],
+        });
         // chat listeners
 
         // messages created listener clean up
         messagesClient.off("created", onMessageCreateteListener);
         // add new message to the redux state
-        messagesClient.on("created", (message: any) => {
-          const { chat } = store.getState();
-          onMessageCreateteListener(message, chat.messages);
-          showChatNotification(message);
-        });
+        messagesClient
+          .on("created", (message: any) => {
+            const { chat } = store.getState();
+            onMessageCreateteListener(message, chat.messages);
+            showChatNotification(message);
+          })
+          .catch((err: any) => {
+            console.log(err);
+          });
         // edit message listener
         messagesClient.on("patched", (params: any) => {
           console.log("MESSAGE PATCHED EVENT", params);
@@ -257,6 +265,7 @@ export const onAuthenticated = () => {
         // channels updated listener
         channelsClient.off("patched", onChannelUpdateListener);
         channelsClient.on("patched", (channel: Channel) => {
+          console.log(channel);
           onChannelUpdateListener(channel);
         });
         // channels delete listener

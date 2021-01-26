@@ -14,19 +14,56 @@ import Sonic from "../../../assets/images/sonic.png";
 import GroupSettings from "../groups/group-settings";
 import PagesIndex from "../../../types/browser";
 import reduxAction from "../../redux/reduxAction";
+import { channelsClient } from "../../../utils/chat-utils/services";
+// import { Group } from "../../../types/chat";
+import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
 
 interface ChatContainerProps {
   setPage: (pageIndex: any) => void;
 }
 function ChatContainer(props: ChatContainerProps) {
   const { setPage } = props;
-  const { messages, users, activeGroup } = useSelector(
+  const { activeChannel, activeGroup } = useSelector(
     (state: AppState) => state.chat
   );
+
+  const createChannel = (channelName: string, channelPhoto?: string) => {
+    let createProps;
+    if (channelPhoto) {
+      createProps = {
+        channelName,
+        channelPhoto,
+      };
+      console.log("channelProps", createProps);
+    } else {
+      createProps = {
+        channelName,
+      };
+    }
+
+    channelsClient.create(createProps).catch((err: any) => {
+      console.log(err);
+    });
+  };
+  const [CreateChannelPopup, openChannelCreatePopup] = usePopupCreateChannel({
+    createItem: createChannel,
+  });
   return (
     <>
-      <Channels activeGroup={activeGroup} setPage={setPage} />
-      <Chat messages={messages} users={users} />
+      <CreateChannelPopup
+        width="400px"
+        height="200px"
+        style={{
+          right: "300px",
+        }}
+        itemType="Channel"
+      />
+      <Channels
+        activeGroup={activeGroup}
+        setPage={setPage}
+        createChannel={openChannelCreatePopup}
+      />
+      <Chat messages={activeChannel.messages} />
     </>
   );
 }
@@ -38,10 +75,10 @@ export default function Browser() {
   const [showGroups, setShowGroups] = useState(false);
 
   const opacitySprings: any = showGroupsList ? "1" : "0";
-  const zIndexSprings: any = showGroupsList ? "1000" : "0";
+  const zIndexSprings: any = showGroupsList ? "2" : "0";
   const springProps = useSpring({
     config: { ...config.gentle },
-    transform: showGroupsList ? `translateY(40)` : `translateY(-100%)`,
+    transform: showGroupsList ? `translateY(0)` : `translateY(-100%)`,
     opacity: opacitySprings,
     zIndex: zIndexSprings,
     // height: showGroupsList ? height : "0px",
@@ -74,6 +111,15 @@ export default function Browser() {
             }}
           >
             <img src={Sonic} alt="" />
+            {/* <div className="groups-img">
+              {groups &&
+                groups.map((group: Group) => {
+                  if (group.collectivePhoto) {
+                    return <img src={group.collectivePhoto} alt="" />;
+                  }
+                  return null;
+                })}
+            </div> */}
 
             <animated.div
               style={{
@@ -177,13 +223,3 @@ export default function Browser() {
     </div>
   );
 }
-//  <button
-// type="button"
-// style={{
-//   color: "var(--color-text)",
-//   cursor: "pointer",
-// }}
-// onClick={() => {
-//   setShowGroups(!showGroups);
-// }}
-// />
