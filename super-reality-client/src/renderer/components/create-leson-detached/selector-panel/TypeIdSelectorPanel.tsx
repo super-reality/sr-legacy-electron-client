@@ -8,6 +8,8 @@ import { RecordingsTrimList, RecordingsTrimView } from "./views/recordingsTrim";
 import { TriggerMouseList, TriggerMouseView } from "./views/triggerMouse";
 import YoutubeView from "./views/youtube";
 
+import { ReactComponent as DefaultIcon } from "../../../../assets/svg/start-step.svg";
+
 interface TypeIdSelectorPanelProps {
   title: string;
   single: boolean;
@@ -59,7 +61,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     [data, single, callback]
   );
 
-  const Panel = useBasePanel(title);
+  const Panel = useBasePanel(title, DefaultIcon, {});
 
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;
@@ -149,7 +151,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
                 <ButtonCheckbox
                   margin="8px auto"
                   key={`panel-button-${t}`}
-                  width="145px"
+                  width="165px"
                   height="24px"
                   text={t}
                   check={false}
@@ -167,7 +169,7 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
               <ButtonCheckbox
                 margin="8px auto"
                 key={`panel-button-${t}`}
-                width="145px"
+                width="165px"
                 height="24px"
                 text={t}
                 check={false}

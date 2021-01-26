@@ -4,7 +4,8 @@
     background: #333155;
     display: flex;
     align-items: center;
-    overflow-y: scroll;
+    // overflow-x: scroll;
+    // overflow-y: scroll;
 
     .group-button {
         margin: 0 7px;
@@ -12,10 +13,13 @@
         background: #211b33;
         display: flex;
         height: 45px;
-
+.groups-img{
+    display: flex;
+}
         .single-button {
             display: flex;
             align-items: center;
+            position: relative;
 
             img {
                 margin: 0 15px;
@@ -35,6 +39,17 @@
 
         &:hover {
             cursor: pointer;
+        }
+
+        .menu-groups-list {
+            background: #211b33;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+
+            .menu-group-item {
+                padding: 10px 0;
+            }
         }
     }
 }

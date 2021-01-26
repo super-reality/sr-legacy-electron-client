@@ -67,7 +67,8 @@
     "ts-ebml": "^2.0.2",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
-    "wait-on": "^5.1.0",
+    "wait-on": "^5.2.1",
+    "use-resize-observer": "^7.0.0",
     "warning": "^4.0.3",
     "yup": "^0.32.8"
   },
