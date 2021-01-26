@@ -38,8 +38,10 @@
     background: #323052;
     border-radius: 6px;
     color: #8a88c3;
-    padding: 11px;
+    padding-left: 10px;
+    height: 45px;
     display: flex;
+    align-items: center;
     align-content: center;
     margin-bottom: 7px;
 
@@ -62,8 +64,8 @@
 .avatar {
     float: left;
     margin-right: 10px;
-    height: 25px;
-    width: 25px;
+    max-height: 35px;
+    max-width: 35px;
 }
 
 .add {
@@ -93,5 +95,18 @@
         right: 0;
         top: 28px;
         background-image: url("../../../assets/svg/expand.svg");
+    }
+}
+
+.group-settings-dropdown {
+    background: #211b33;
+    border-radius: 6px;
+    position: relative;
+    top: 10px;
+    padding: 5px 0;
+
+    .dropdown-item {
+        padding: 10px 10px 10px 30px;
+        width: 195px;
     }
 }
