@@ -20,7 +20,7 @@ import SidebarControls from "./sidebar-controls";
 import useLessonPlayer from "../lesson-player/useLessonPlayer";
 import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
-import ActionButtons from "./action-buttons/ActionButtons";
+import ActionButtons from "./action-buttons";
 
 export interface SidebarIcon {
   title: string;
@@ -29,8 +29,8 @@ export interface SidebarIcon {
       title?: string | undefined;
     }
   >;
-  component: JSX.Element | null;
-  subComponent: JSX.Element | null;
+  component: (() => JSX.Element) | null;
+  subComponent: (() => JSX.Element) | null;
   componentWidth: number;
   onClick?: () => void;
 }
@@ -49,13 +49,16 @@ export default function Sidebar() {
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
 
+  // Here we add more buttons to the sidebar!
+  // See GroupsList for how to create a list of items for a button.
+  // DO NOT add icons manually to the sidebar, only here.
   const sidebarIcons: SidebarIcon[] = useMemo(
     () => [
       {
         title: "Groups",
         icon: GroupsIcon,
-        component: <Browser />,
-        subComponent: <GroupsList />,
+        component: Browser,
+        subComponent: GroupsList,
         componentWidth: 700,
       },
       {
@@ -118,6 +121,8 @@ export default function Sidebar() {
     [current, wideView, contentExpanded, sidebarIcons]
   );
 
+  const Expanded = sidebarIcons[current]?.component;
+
   return (
     <>
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
@@ -144,7 +149,6 @@ export default function Sidebar() {
           </div>
 
           <ActionButtons
-            current={current}
             expanded={wideView}
             clickButton={clickActionButton}
             sidebarIcons={sidebarIcons}
@@ -171,7 +175,7 @@ export default function Sidebar() {
         </div>
         <animated.div style={props} className="sidebar-expanded">
           <div className="sidebar-content">
-            {sidebarIcons[current]?.component}
+            {Expanded ? <Expanded /> : <></>}
           </div>
         </animated.div>
       </animated.div>

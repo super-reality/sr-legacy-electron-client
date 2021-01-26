@@ -1,0 +1,47 @@
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin-top: 8px;
+  margin-bottom: auto;
+
+  .action-button-container {
+    display: flex;
+    height: 32px;
+    line-height: 32px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 1px;
+
+    &:hover {
+      background: #414163;
+    }
+
+    .button-round {
+      background-color: transparent;
+      margin: 0 auto;
+
+      svg {
+        fill: var(--color-light);
+        width: 24px;
+        height: 24px;
+        margin: auto;
+      }
+    }
+
+    .action-button-image {
+      width: 24px;
+      height: 24px;
+      margin: auto 4px;
+      background-position: center;
+      background-size: cover;
+      border-radius: 2px;
+    }
+
+    .action-button-title {
+      position: relative;
+      font-weight: 600;
+      overflow: hidden;
+    }
+  }
+}
