@@ -7,8 +7,8 @@ import ButtonAdd from "../../../assets/images/add-circle.png";
 import PacMan from "../../../assets/images/pacman.png";
 import Sonic from "../../../assets/images/sonic.png";
 import DefaultUser from "../../../assets/images/default-chat-icon.png";
-import TeacherBot from "../../../assets/svg/teacher-bot.svg";
-import { ReactComponent as Support } from "../../../assets/svg/support.svg";
+import TeacherBot from "../../../assets/images/teacher-bot.png";
+import Support from "../../../assets/images/support.png";
 import { Channel, ChatUser, Group } from "../../../types/chat";
 import { PagesIndex } from "../../../types/browser";
 import { AppState } from "../../redux/stores/renderer";
@@ -82,13 +82,16 @@ export default function Channels(props: ChannelsProps): JSX.Element {
       </div>
       <animated.div style={{ ...springProps }}>
         <div className="group-settings-dropdown">
-          <div onClick={() => setPage(PagesIndex.groupSettings)}>
+          <div
+            className="dropdown-item"
+            onClick={() => setPage(PagesIndex.groupSettings)}
+          >
             Group settings
           </div>
-          <div>Invite People</div>
-          <div>Create Category</div>
-          <div>Some settings</div>
-          <div>Some settings</div>
+          <div className="dropdown-item">Invite People</div>
+          <div className="dropdown-item">Create Category</div>
+          <div className="dropdown-item">Some settings</div>
+          <div className="dropdown-item">Some settings</div>
         </div>
       </animated.div>
 
@@ -113,8 +116,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
       <div className="channel-container">
         <div className="channels">
           <div className="single-channel">
-            {/* <img className="avatar" src={Support} alt="" /> */}
-            <Support />
+            <img className="avatar" src={Support} alt="" />
             <div className="info">Support</div>
           </div>
           <div className="single-channel">
