@@ -81,7 +81,7 @@ export default function Sidebar() {
 
   // chat button width
   if (current == 2) {
-    width = "700px";
+    width = "1000px";
   }
 
   if (current == 6) {

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ const titleSchema = Yup.object().shape({
 
 interface Values {
   skills: string[];
+  newSkills:string[];
 }
 
 const skillsOpts = [
@@ -66,52 +67,72 @@ const skillsOpts = [
 export default function StepSkills(props: StepSectionProps): JSX.Element {
   const { goNext, goBack, index } = props;
 
+  const formRef =useRef<FormikProps<Values>>(null);
+
   const slice = store.getState().createSupportTicket;
   const dispatch = useDispatch();
 
-  const [addedSkills, setAddedSkills] = useState<IData[]>(slice.searchedSkills?? []);
-
-
+  const [addedSkills, setAddedSkills] = useState<IData[]>(
+    slice.searchedSkills ?? []
+  );
 
   const addExtraSkill = (value: IData) => {
     const array = [...addedSkills];
-    const i =array.map(e=>e.id).indexOf(value.id)
-    if(i == -1){
+    const i = array.map((e) => e.id).indexOf(value.id);
+    if (i == -1) {
       array.push(value);
       setAddedSkills(array);
     }
   };
 
-  const valuetoIData=(array:string[]):IData[]=>{
-    let ArrayData:IData[]=[];
-    ArrayData=array.map(e=>({id:e,name:e}));
+  const valuetoIData = (array: string[]): IData[] => {
+    let ArrayData: IData[] = [];
+    ArrayData = array.map((e) => ({ id: e, name: e }));
 
     return ArrayData;
+  };
+
+  const setValues= (value:IData):void=>{
+    const values=formRef.current?.values;
+    const setFieldValue=formRef.current?.setFieldValue;
+
+    if(setFieldValue && values){
+      setFieldValue("skills",values.skills.concat(value.id));
+    if(value.new)setFieldValue("newSkills",values.newSkills.concat(value.id));
+    }
+
+  }
+
+  const initialValues:Values={
+    skills: slice.skills ?? [],
+    newSkills: slice.newSkills ?? [],
   }
 
   return (
     <div>
       <div className="title">Step {index} of 5</div>
       <Formik
-        initialValues={{
-          skills: slice.skills ?? [],
-          newSkills:slice.newSkills ?? []
-        }}
+        innerRef={formRef}
+        initialValues={initialValues}
         validationSchema={titleSchema}
         onSubmit={(names) => {
           reduxAction(dispatch, {
             type: "SET_SUPPORT_TICKET",
             arg: {
               skills: names.skills,
-              searchedSkills:addedSkills,
-              newSkills:names.newSkills,
-              skillsData:slice.skillsData && [...slice.skillsData, ...valuetoIData(names.newSkills)]
+              searchedSkills: addedSkills,
+              newSkills: names.newSkills,
+              skillsData: slice.skillsData && [
+                ...slice.skillsData,
+                ...valuetoIData(names.newSkills),
+              ],
             } as supportTicket,
           });
           goNext();
 
           console.log(names);
-        }}>
+        }}
+      >
         {(formik: FormikProps<Values>) => (
           <Form className="step">
             <div className="step-title">Skills</div>
@@ -137,6 +158,8 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
                 control="autocomplete"
                 options={slice.skillsData}
                 action={addExtraSkill}
+                placeholder="Search for skills"
+                valuesSet={setValues}
                 {...formik}
               />
               <FormControl

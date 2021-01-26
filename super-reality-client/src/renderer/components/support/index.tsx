@@ -67,7 +67,7 @@ export default function Support(): JSX.Element {
       },
     });
 
-/*     return () => {
+    /*     return () => {
       reduxAction(dispatch, {
         type: "SUPPORT_TICKET_RESET",
         arg: null,

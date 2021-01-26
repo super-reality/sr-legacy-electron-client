@@ -56,7 +56,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
               title: values.title,
               category: values.category,
               categoryData: usedCategories,
-              newCategory:values.newCategory
+              newCategory: values.newCategory,
             },
           });
           goNext();
@@ -100,6 +100,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
               control="autocomplete"
               options={slice.categoryData}
               action={modifyUsedCategories}
+              placeholder="Search for categories"
               {...formik}
             />
 

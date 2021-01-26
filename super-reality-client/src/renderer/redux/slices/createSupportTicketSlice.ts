@@ -9,10 +9,10 @@ const initialState: supportTicker = {
   skills: [],
   description: "",
   images: [],
-  newSkills:[],
-  newCategory:"",
+  newSkills: [],
+  newCategory: "",
   skillsData: [],
-  searchedSkills:[],
+  searchedSkills: [],
   categoryData: [],
 };
 

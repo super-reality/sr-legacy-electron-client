@@ -38,7 +38,7 @@ export default function useFormSlider(steps: number): any {
 
   const Slider = ({ children, className }: any) => (
     <FormSlider
-      width={steps * 50}
+      width={steps * 65}
       className={className}
       style={stateSpring}
       slides={slideWidth}

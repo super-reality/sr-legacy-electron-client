@@ -1,3 +1,5 @@
+import { CodeSuccess, ApiSucess } from "..";
+
 export default interface supportTicker {
   supportType?: TsupportType;
   title?:string;
@@ -15,6 +17,22 @@ export default interface supportTicker {
 export interface IData {
   name: string;
   id: string;
+  new?:boolean;
+}
+
+export interface IDataGet{
+  name: string;
+  _id: string;
+}
+
+export interface ISkillsGet{
+  err_code: CodeSuccess;
+  skill: IDataGet[];
+}
+
+export interface ICategoryGet{
+  err_code: CodeSuccess;
+  category: IData[];
 }
 
 export interface Ioptions {

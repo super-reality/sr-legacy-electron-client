@@ -13,8 +13,8 @@
     position: relative;
     overflow-y: scroll;
     height: calc(86vh - 150px);
-    max-width: 250px;
-    width: 100%;
+    min-width: 300px;
+    
 }
 
 .channel::after {

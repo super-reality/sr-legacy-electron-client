@@ -10,24 +10,25 @@ import SkillsCheckbox from "./SkillsCheckbox";
 import AutoCompleteInput from "./AutoCompleteInput";
 import { IData } from "../../api/types/support-ticket/supportTicket";
 
-export interface InputProps extends FormikProps<any> {
+export interface InputProps<T> extends FormikProps<any> {
   name: string;
-  secondaryName?:string;
+  secondaryName?: string;
   className?: string;
   label?: string;
   placeholder?: string;
-  options?: IData[];
-  action?: (value: IData) => void;
+  options?: T[];
+  action?: (value: T) => void;
+  valuesSet?:(value:T)=>void;
 }
 
-interface FormControlInput extends InputProps {
+interface FormControlInput<T> extends InputProps<T> {
   control: string;
 }
 
-export default function FormControl({
+export default function FormControl<T>({
   control,
   ...rest
-}: FormControlInput): JSX.Element {
+}: FormControlInput<T>): JSX.Element {
   switch (control) {
     case "text":
       return <InputText {...rest} />;
