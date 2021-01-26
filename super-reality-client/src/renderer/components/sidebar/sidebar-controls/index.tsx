@@ -6,8 +6,8 @@ import { cursorChecker, restrictRoot, voidFunction } from "../../../constants";
 import clamp from "../../../../utils/clamp";
 
 import { ReactComponent as PinIcon } from "../../../../assets/svg/win-pin.svg";
-import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
-import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
+// import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
+// import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
 import closeWindow from "../../../../utils/electron/closeWindow";
 import minimizeWindow from "../../../../utils/electron/minimizeWindow";
 import setTopMost from "../../../../utils/electron/setTopMost";
@@ -57,15 +57,11 @@ export default function SidebarControls(props: SidebarControlsProps) {
         <div className={`pin ${pinned ? "active" : ""}`} onClick={onPin}>
           <PinIcon
             style={{ width: "13px", height: "13px" }}
-            fill="var(--color-pink)"
+            fill="var(--color-light)"
           />
         </div>
-        <div className="minimize" onClick={minimizeWindow}>
-          <MinimizeIcon />
-        </div>
-        <div className="close" onClick={closeWindow}>
-          <CloseIcon fill="var(--color-pink)" />
-        </div>
+        <div className="minimize" onClick={minimizeWindow} />
+        <div className="close" onClick={closeWindow} />
       </div>
       <div ref={draggableRef} className="logo" />
     </div>

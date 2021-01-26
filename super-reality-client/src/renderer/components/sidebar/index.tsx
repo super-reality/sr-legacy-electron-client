@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring, useTrail } from "react-spring";
 
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -77,9 +77,16 @@ export default function Sidebar() {
     minWidth: wideView ? `200px` : "64px",
   });
 
+  const userNameProps = useTrail(2, {
+    config: { mass: 5, tension: 2000, friction: 180 },
+    opacity: wideView ? 1 : 0,
+    left: wideView ? 8 : 40,
+    from: { opacity: 0, left: 40 },
+  } as any);
+
   const controlsProps = useSpring({
-    width: wideView ? 32 : 0,
-    left: wideView ? 0 : 32,
+    filter: `opacity(${wideView ? 1 : 0})`,
+    transform: `scale(${wideView ? 1 : 0})`,
   } as any);
 
   const props = useSpring({
@@ -125,21 +132,15 @@ export default function Sidebar() {
           <SidebarControls sidebarRef={sidebarContainerRef} />
 
           <div className="control-buttons">
-            <div
-              style={{
-                margin: wideView ? "auto 0" : "auto",
-                width: "32px",
-                height: "32px",
-              }}
-            >
+            <animated.div style={controlsProps}>
               <LeftArrowIcon onClick={doPrev} />
-            </div>
+            </animated.div>
             <animated.div style={controlsProps}>
               <StopIcon onClick={doClear} />
             </animated.div>
-            <animated.div style={controlsProps}>
+            <div>
               <RightArrowIcon onClick={doNext} />
-            </animated.div>
+            </div>
           </div>
 
           <ActionButtons
@@ -150,12 +151,22 @@ export default function Sidebar() {
           />
 
           <div className="logged-user">
-            <ButtonRound
-              onClick={voidFunction}
-              width="44px"
-              height="44px"
-              svg={DefaultUser}
-            />
+            <div className="avatar-container">
+              <ButtonRound
+                onClick={voidFunction}
+                width="40px"
+                height="40px"
+                svg={DefaultUser}
+              />
+            </div>
+            <div className="name-container">
+              <animated.div style={userNameProps[0]} className="user-name">
+                User Name
+              </animated.div>
+              <animated.div style={userNameProps[1]} className="user-role">
+                Role
+              </animated.div>
+            </div>
           </div>
         </div>
         <animated.div style={props} className="sidebar-expanded">

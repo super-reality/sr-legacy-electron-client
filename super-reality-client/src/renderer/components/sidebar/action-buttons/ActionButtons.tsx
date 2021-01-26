@@ -18,7 +18,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
     width: expanded ? 152 : 0,
     opacity: expanded ? 1 : 0,
     left: expanded ? 8 : 40,
-    from: { width: 0, opacity: 0, left: 64 },
+    from: { width: 0, opacity: 0, left: 40 },
   } as any);
 
   return (
