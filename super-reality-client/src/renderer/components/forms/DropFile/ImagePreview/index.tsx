@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from "react";
 import "./index.scss";
 import close from "../../../../../assets/svg/close-img.svg";

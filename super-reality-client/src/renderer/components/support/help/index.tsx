@@ -69,6 +69,7 @@ export const getSingleName = (name: string, array: IData[]): string => {
   return name;
 };
 
+/* eslint-disable */
 export default function Help(props: SupportSectionsProps): JSX.Element {
   const { goStart } = props;
   const { title, category, skills, description } = useSelector(
