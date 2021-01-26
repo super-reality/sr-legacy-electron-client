@@ -5,9 +5,14 @@ import client from "../../renderer/feathers";
 import reduxAction from "../../renderer/redux/reduxAction";
 import store from "../../renderer/redux/stores/renderer";
 
-import { Group, Message, ChatUser } from "../../types/chat";
+import { Group, Message, ChatUser, Channel } from "../../types/chat";
 import getPublicPath from "../electron/getPublicPath";
-// import NotificationLogo from "../../assets/images/sidebar-logo.png";
+import {
+  channelsClient,
+  groupClient,
+  messagesClient,
+  usersClient,
+} from "./services";
 
 const { Notification, app } = remote;
 const showChatNotification = (message: Message) => {
@@ -90,10 +95,7 @@ export const onDeleteGroupListener = (deletedCollective: Group) => {
   });
 };
 
-const messagesClient = client.service("messages");
-const usersClient = client.service("users");
-const groupClient = client.service("collectives");
-
+// on loguot listener
 export const onLogout = () => {
   client.on("logout", () => {
     console.log("logout");
@@ -101,6 +103,27 @@ export const onLogout = () => {
   });
 };
 
+// channels listeners
+const onChannelCreatedListener = (newChannel: Channel) => {
+  reduxAction(store.dispatch, {
+    type: "ADD_CHANNEL",
+    arg: newChannel,
+  });
+};
+
+const onChannelUpdateListener = (updatetedChannel: Channel) => {
+  reduxAction(store.dispatch, {
+    type: "UPDATE_CHANNEL",
+    arg: updatetedChannel,
+  });
+};
+
+const onChannelDeleteListener = (deletedChannel: Channel) => {
+  reduxAction(store.dispatch, {
+    type: "DELETE_CHANNEL",
+    arg: deletedChannel,
+  });
+};
 // chat realtime listeners
 export const onAuthenticated = () => {
   // On successfull login
@@ -117,8 +140,9 @@ export const onAuthenticated = () => {
       }),
       usersClient.find(),
       groupClient.find(),
+      channelsClient.find(),
     ])
-      .then(([messagesResult, usersResult, groupsResult]) => {
+      .then(([messagesResult, usersResult, groupsResult, channelsResult]) => {
         // We want the latest messages but in the reversed order
         const uploadedMessages = messagesResult.data.reverse();
         const uploadedUsers = usersResult.data;
@@ -131,7 +155,9 @@ export const onAuthenticated = () => {
           "users",
           uploadedUsers,
           "groups",
-          uploadedGroups
+          uploadedGroups,
+          "channels",
+          channelsResult
         );
         // Once both return, update the state
         reduxAction(store.dispatch, {
@@ -154,16 +180,28 @@ export const onAuthenticated = () => {
           type: "SET_ACTIVE_GROUP",
           arg: uploadedGroups[0]._id,
         });
+        reduxAction(store.dispatch, {
+          type: "SET_CHANNELS",
+          arg: channelsResult,
+        });
+        reduxAction(store.dispatch, {
+          type: "SET_ACTIVE_CHANNEL",
+          arg: channelsResult.data[1],
+        });
         // chat listeners
 
         // messages created listener clean up
         messagesClient.off("created", onMessageCreateteListener);
         // add new message to the redux state
-        messagesClient.on("created", (message: any) => {
-          const { chat } = store.getState();
-          onMessageCreateteListener(message, chat.messages);
-          showChatNotification(message);
-        });
+        messagesClient
+          .on("created", (message: any) => {
+            const { chat } = store.getState();
+            onMessageCreateteListener(message, chat.messages);
+            showChatNotification(message);
+          })
+          .catch((err: any) => {
+            console.log(err);
+          });
         // edit message listener
         messagesClient.on("patched", (params: any) => {
           console.log("MESSAGE PATCHED EVENT", params);
@@ -199,7 +237,7 @@ export const onAuthenticated = () => {
         });
 
         // collectives listeners
-        // collectives listeners clean up
+        // collectives created listeners
         groupClient.off("created", onGroupCreatedListener);
         groupClient.on("created", (group: Group) => {
           console.log("group created", group);
@@ -217,6 +255,23 @@ export const onAuthenticated = () => {
         groupClient.on("removed", (group: Group) => {
           console.log("deleted", group);
           onDeleteGroupListener(group);
+        });
+        // channels listeners
+        // channels created listeners
+        channelsClient.off("created", onChannelCreatedListener);
+        channelsClient.on("created", (channel: Channel) => {
+          onChannelCreatedListener(channel);
+        });
+        // channels updated listener
+        channelsClient.off("patched", onChannelUpdateListener);
+        channelsClient.on("patched", (channel: Channel) => {
+          console.log(channel);
+          onChannelUpdateListener(channel);
+        });
+        // channels delete listener
+        channelsClient.off("removed", onChannelDeleteListener);
+        channelsClient.on("removed", (channel: Channel) => {
+          onChannelDeleteListener(channel);
         });
       })
       .catch((err) => {

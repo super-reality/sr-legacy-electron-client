@@ -4,6 +4,7 @@ import { ChatUser } from "../../types/chat";
 export const messagesClient = client.service("messages");
 export const usersClient = client.service("users");
 export const groupClient = client.service("collectives");
+export const channelsClient = client.service("channels");
 
 interface GroupSettings {
   collectiveName?: string;

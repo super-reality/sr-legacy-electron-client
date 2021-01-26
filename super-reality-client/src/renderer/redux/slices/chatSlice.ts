@@ -1,20 +1,36 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Group, ChatUser, Message } from "../../../types/chat";
+import {
+  Group,
+  ChatUser,
+  Message,
+  Channel,
+  ChannelsResult,
+} from "../../../types/chat";
 
 const initialState = {
   isChatAuth: false,
   loginData: {} as any,
   activeGroup: {} as Group,
+  activeChannel: {} as Channel,
   messages: [] as Message[],
   users: [] as ChatUser[],
   groups: [] as Group[],
+  channels: {
+    data: [] as Channel[],
+    limit: 100,
+    skip: 0,
+    total: 0,
+  },
 };
 
 type ChatState = typeof initialState;
+// type StateArray = Group[] | Message[]| ChatUser[]|Channel[];
 
-const updateArray = (arrayToChange: any[], newItem: any) => {
-  const newItemId = arrayToChange.findIndex(({ _id }) => _id == newItem._id);
+const updateArray = (arrayToChange: any, newItem: any) => {
+  const newItemId = arrayToChange.findIndex(
+    ({ _id }: any) => _id == newItem._id
+  );
   const updatedState = [
     ...arrayToChange.slice(0, newItemId),
     newItem,
@@ -22,6 +38,10 @@ const updateArray = (arrayToChange: any[], newItem: any) => {
   ];
   return updatedState;
 };
+
+// add new item to state array
+const addNewItem = (stateArray: any, newItem: any) =>
+  stateArray.concat(newItem);
 
 const chatSlice = createSlice({
   name: "chat",
@@ -64,15 +84,8 @@ const chatSlice = createSlice({
     },
     updateGroup: (state: ChatState, action: PayloadAction<Group>): void => {
       const { groups, activeGroup } = state;
-      // const groupId = groups.findIndex(
-      //   ({ _id }) => _id == action.payload._id
-      // );
-      // const updatedCollectives = [
-      //   ...collectives.slice(0, collectiveId),
-      //   action.payload,
-      //   ...collectives.slice(collectiveId + 1),
-      // ];
-      state.groups = updateArray(groups, action.payload);
+      const updatedGroups: Group[] = updateArray(groups, action.payload);
+      state.groups = updatedGroups;
       if (activeGroup._id === action.payload._id) {
         state.activeGroup = action.payload;
       }
@@ -86,8 +99,40 @@ const chatSlice = createSlice({
     setActiveGroup: (state: ChatState, action: PayloadAction<string>): void => {
       const { groups } = state;
       const newActiveGroup = groups.find(({ _id }) => _id === action.payload);
-      console.log(newActiveGroup);
+
       if (newActiveGroup) state.activeGroup = newActiveGroup;
+    },
+    setChannnels: (
+      state: ChatState,
+      action: PayloadAction<ChannelsResult>
+    ): void => {
+      state.channels = action.payload;
+    },
+    updateChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
+      const { channels } = state;
+      const updatedChannels: Channel[] = updateArray(
+        channels.data,
+        action.payload
+      );
+      state.channels.data = updatedChannels;
+      // if (activeChannel._id === action.payload._id) {
+      //   state.activeChannel = action.payload;
+      // }
+    },
+    deleteChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
+      const filteredChannels = state.channels.data.filter(
+        ({ _id }) => _id != action.payload._id
+      );
+      state.channels.data = filteredChannels;
+    },
+    addNewChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
+      state.channels.data = addNewItem(state.channels.data, action.payload);
+    },
+    setActiveChannel: (
+      state: ChatState,
+      action: PayloadAction<Channel>
+    ): void => {
+      state.activeChannel = action.payload;
     },
   },
 });
@@ -106,6 +151,11 @@ export const {
   updateGroup,
   deleteGroup,
   setActiveGroup,
+  setChannnels,
+  updateChannel,
+  deleteChannel,
+  addNewChannel,
+  setActiveChannel,
 } = chatSlice.actions;
 
 export default chatSlice;
