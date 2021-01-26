@@ -8,7 +8,6 @@ import TextArea from "./TextArea";
 import DropFile from "./DropFile";
 import SkillsCheckbox from "./SkillsCheckbox";
 import AutoCompleteInput from "./AutoCompleteInput";
-import { IData } from "../../api/types/support-ticket/supportTicket";
 
 export interface InputProps<T> extends FormikProps<any> {
   name: string;
@@ -18,7 +17,7 @@ export interface InputProps<T> extends FormikProps<any> {
   placeholder?: string;
   options?: T[];
   action?: (value: T) => void;
-  valuesSet?:(value:T)=>void;
+  valuesSet?: (value: T) => void;
 }
 
 interface FormControlInput<T> extends InputProps<T> {
