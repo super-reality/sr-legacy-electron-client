@@ -7,7 +7,7 @@ import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
 import Chat from "../chat";
-/* import Login from "../chat/login-chat"; */
+import Login from "../chat/login-chat";
 import GroupsPage from "../groups";
 
 import Sonic from "../../../assets/images/sonic.png";
@@ -211,8 +211,7 @@ export default function Browser() {
       </div>
       {!isChatAuth ? (
         <main className="container text-center">
-          {/* <Login /> */}
-          <Channels activeGroup={activeGroup} />
+          <Login />
         </main>
       ) : (
         <div>
