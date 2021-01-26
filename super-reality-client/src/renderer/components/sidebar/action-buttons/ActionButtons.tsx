@@ -14,10 +14,10 @@ export default function ActionButtons(props: ActionButtonsProps) {
   const { current, expanded, clickButton, sidebarIcons } = props;
 
   const actionAnimation = useTrail(sidebarIcons.length, {
-    config: { mass: 5, tension: 2000, friction: 150 },
+    config: { mass: 5, tension: 2000, friction: 180 },
     width: expanded ? 152 : 0,
     opacity: expanded ? 1 : 0,
-    left: expanded ? 16 : 64,
+    left: expanded ? 8 : 40,
     from: { width: 0, opacity: 0, left: 64 },
   } as any);
 

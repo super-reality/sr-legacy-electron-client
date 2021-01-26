@@ -9,9 +9,9 @@ import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
-// import LeftArrowIcon from "../../../assets/svg/left-arrow.svg";
-// import RightArrowIcon from "../../../assets/svg/right-arrow.svg";
-// import StopIcon from "../../../assets/svg/stop.svg";
+import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
+import { ReactComponent as RightArrowIcon } from "../../../assets/svg/right-arrow.svg";
+import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
 
 import ButtonRound from "../button-round";
 import Browser from "../browser";
@@ -77,6 +77,11 @@ export default function Sidebar() {
     minWidth: wideView ? `200px` : "64px",
   });
 
+  const controlsProps = useSpring({
+    width: wideView ? 32 : 0,
+    left: wideView ? 0 : 32,
+  } as any);
+
   const props = useSpring({
     width: contentExpanded
       ? `${sidebarIcons[current]?.componentWidth}px`
@@ -86,7 +91,7 @@ export default function Sidebar() {
       : "0px",
   });
 
-  const [Reality, _doPrev, _doNext, _doPlay, _doClear] = useLessonPlayer(
+  const [Reality, doPrev, doNext, _doPlay, doClear] = useLessonPlayer(
     currentLesson || ""
   );
 
@@ -119,7 +124,23 @@ export default function Sidebar() {
         <div className="sidebar-buttons">
           <SidebarControls sidebarRef={sidebarContainerRef} />
 
-          <div className="control-buttons" />
+          <div className="control-buttons">
+            <div
+              style={{
+                margin: wideView ? "auto 0" : "auto",
+                width: "32px",
+                height: "32px",
+              }}
+            >
+              <LeftArrowIcon onClick={doPrev} />
+            </div>
+            <animated.div style={controlsProps}>
+              <StopIcon onClick={doClear} />
+            </animated.div>
+            <animated.div style={controlsProps}>
+              <RightArrowIcon onClick={doNext} />
+            </animated.div>
+          </div>
 
           <ActionButtons
             current={current}
