@@ -6,7 +6,7 @@ import { InputProps } from "..";
 /* import  { Iskills } from "../../../api/types/support-ticket/supportTicket"; */
 import "./index.scss";
 
-export default function CheckboxGroup(props: InputProps): JSX.Element {
+export default function CheckboxGroup(props: InputProps<any>): JSX.Element {
   const { label, name, options, ...rest } = props;
   return (
     <div className="form-control-skills skillset">

@@ -15,8 +15,9 @@ export interface Iimages {
   type: string;
 }
 
-export default function DropFile(props: InputProps): JSX.Element {
-  const { setFieldValue, name, values,valuesSet } = props;
+export default function DropFile(props: InputProps<any>): JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { setFieldValue, name, values, valuesSet } = props;
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: (accepted) => {
@@ -36,7 +37,7 @@ export default function DropFile(props: InputProps): JSX.Element {
       });
 
       console.log(accepted);
-        setFieldValue(name, values[name].concat(images));
+      setFieldValue(name, values[name].concat(images));
     },
   });
 

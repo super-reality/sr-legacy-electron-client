@@ -5,7 +5,7 @@ import { InputProps } from "..";
 import AutosuggestInput from "../../autosuggest-input";
 import { IData } from "../../../api/types/support-ticket/supportTicket";
 
-export default function AutoCompleteInput(props: InputProps): JSX.Element {
+export default function AutoCompleteInput(props: InputProps<any>): JSX.Element {
   const {
     setFieldValue,
     name,
