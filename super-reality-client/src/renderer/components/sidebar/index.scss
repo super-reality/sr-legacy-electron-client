@@ -16,7 +16,7 @@
     flex-direction: column;
     align-content: center;
     align-items: center;
-    padding: 10px 0;
+    padding: 4px 0 10px 0;
     z-index: 2;
   
     .button-round {
@@ -34,22 +34,7 @@
     }
   }
   
-  .sidebar-logo {
-    background-image: url("../../../assets/images/sidebar-logo.png");
-    background-repeat: no-repeat;
-    width: 90px;
-    height: 100px;
-  }
   
-  .sidebar-logo::after {
-    content: "";
-    position: absolute;
-    top: 100px;
-    left: 12px;
-    height: 0;
-    width: 65%;
-    border-bottom: 2px solid #3f3b60;
-  }
 }
 
 
