@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, CSSProperties } from "react";
 
 import { animated, useSpring } from "react-spring";
 import "./index.scss";
@@ -6,7 +6,7 @@ import "./index.scss";
 interface FormSliderProps {
   className?: string;
   children?: React.ReactNode;
-  style?: object;
+  style?: CSSProperties;
   slides?: number;
   width?: number;
 }

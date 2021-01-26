@@ -1,11 +1,10 @@
 import { AxiosResponse } from "axios";
 import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
-import { IDataGet } from "./types/support-ticket/supportTicket";
-import { ISkillsGet } from "./types/support-ticket/supportTicket";
+import { IDataGet, ISkillsGet } from "./types/support-ticket/supportTicket";
 
 /* eslint-disable camelcase */
-//hola
+// hola
 export default function handleChapterGet(
   res: AxiosResponse<ISkillsGet | ApiError>
 ): Promise<IDataGet[]> {

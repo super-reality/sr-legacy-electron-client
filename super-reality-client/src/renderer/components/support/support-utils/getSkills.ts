@@ -1,8 +1,11 @@
 import Axios from "axios";
 import handleSupportSkillsGet from "../../../api/handleSupportSkillsGet";
 import { ApiError } from "../../../api/types";
-import { IDataGet } from "../../../api/types/support-ticket/supportTicket";
-import { ISkillsGet } from "../../../api/types/support-ticket/supportTicket";
+import {
+  IDataGet,
+  ISkillsGet,
+} from "../../../api/types/support-ticket/supportTicket";
+
 import { API_URL } from "../../../constants";
 
 export default function getSkills(name: string): Promise<IDataGet[]> {
