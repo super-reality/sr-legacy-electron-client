@@ -61,11 +61,13 @@ function FormSlider(props: FormSliderProps): JSX.Element {
   const { children, style, slides, className, width } = props;
   return (
     <animated.div
-      style={{
-        ...style,
-        ["--slides" as any]: `${slides}%`,
-        ["--width" as any]: `${width}%`,
-      }}
+      style={
+        {
+          ...style,
+          ["--slides" as any]: `${slides}%`,
+          ["--width" as any]: `${width}%`,
+        } as any
+      }
       className={`sliderForm ${className && className}`}
     >
       {children}
