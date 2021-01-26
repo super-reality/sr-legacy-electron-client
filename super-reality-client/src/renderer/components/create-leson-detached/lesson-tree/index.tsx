@@ -258,6 +258,7 @@ function TreeFolder(props: TreeFolderProps) {
               currentChapter: parentId,
               currentStep: id,
               currentItem: undefined,
+              openPanel: "",
             },
           });
         }
@@ -486,6 +487,7 @@ function TreeItem(props: TreeItemProps) {
           currentChapter: uniqueId.split(".")[1],
           currentStep: parentId,
           currentItem: id,
+          openPanel: "",
         },
       });
     }

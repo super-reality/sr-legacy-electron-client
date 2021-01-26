@@ -23,16 +23,30 @@ export default function SettingsVideo(props: BaseSettingsProps<ItemVideo>) {
 
   return (
     <>
-      <video
-        style={{
-          background: "var(--color-background-dark)",
-          maxWidth: "100%",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-        onClick={() => openPanel("item-video")}
-        src={item.url}
-      />
+      {(!item.source || item.source == "raw") && (
+        <video
+          style={{
+            background: "var(--color-background-dark)",
+            maxWidth: "100%",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+          onClick={() => openPanel("item-video")}
+          src={item.url}
+        />
+      )}
+      {item.source == "youtube" && (
+        <iframe
+          src={`https://www.youtube.com/embed/${item.url}`}
+          style={{
+            pointerEvents: "none",
+            maxHeight: "100%",
+          }}
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      )}
       <BaseInput
         title="Video URL"
         value={item.url}
