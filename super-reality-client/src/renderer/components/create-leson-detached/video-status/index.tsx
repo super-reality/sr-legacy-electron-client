@@ -157,7 +157,12 @@ export default function VideoStatus() {
         )}
 
         <div
-          style={{ fontFamily: "monospace", marginLeft: "auto" }}
+          style={{
+            color: "#04aff0",
+            textShadow: "0px 1px #a6b1bd",
+            fontFamily: "monospace",
+            marginLeft: "auto",
+          }}
         >{`${canvasSourceDesc} / ${status}`}</div>
         <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
       </div>

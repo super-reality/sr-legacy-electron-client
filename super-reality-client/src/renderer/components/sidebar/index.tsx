@@ -85,13 +85,17 @@ export default function Sidebar() {
 
   let width = "300px";
 
-  // chat button width
+  // chat button
   if (current == 2) {
     width = "700px";
   }
-
-  if (current == 6) {
-    width = "250px";
+  // support button
+  if (current == 3) {
+    width = "720px";
+  }
+  // solution button
+  if (current == 4) {
+    width = "820px";
   }
 
   const props = useSpring({

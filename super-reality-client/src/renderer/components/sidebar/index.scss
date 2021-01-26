@@ -1,11 +1,11 @@
 .sidebar-container {
   display: flex;
+  background: linear-gradient(180deg, #333155 0%, #262036 100%);
   flex-direction: row;
   position: absolute;
   right: 0;
-  height: calc(100% - 120px);
-  top: 60px;
   z-index: 10;
+  height: 100%;
 
   .sidebar-buttons {
     position: relative;

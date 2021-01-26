@@ -16,6 +16,8 @@ import useBasePanel from "../useBasePanel";
 import { ImageFoundList, ImageFoundView } from "../views/imageFound";
 import { RecordingsList, RecordingsView } from "../views/recordings";
 
+import { ReactComponent as IconGenerate } from "../../../../../assets/svg/canvas.svg";
+
 export default function GeneratePanel() {
   const dispatch = useDispatch();
   const { treeAnchors } = useSelector(
@@ -92,7 +94,7 @@ export default function GeneratePanel() {
     [doCallback]
   );
 
-  const Panel = useBasePanel("Generate from Recording");
+  const Panel = useBasePanel("Generate from Recording", IconGenerate, {});
 
   let ListView: ((props: any) => JSX.Element) | null = null;
   let SingleView: ((props: any) => JSX.Element) | null = null;

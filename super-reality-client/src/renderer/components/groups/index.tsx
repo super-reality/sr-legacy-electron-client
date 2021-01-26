@@ -4,7 +4,7 @@ import { Group } from "../../../types/chat";
 import { AppState } from "../../redux/stores/renderer";
 import ButtonAdd from "../../../assets/images/add-btn.png";
 import client from "../../feathers";
-import usePopupCreateGroup from "../../hooks/usePopupCreateGroup";
+import usePopupCreateGroup from "../../hooks/usePopupCreateChatItem";
 import "./index.scss";
 import ButtonSimple from "../button-simple";
 
@@ -32,7 +32,7 @@ function SingleGroup(props: GroupProps) {
     <div className="group-card" key={group._id}>
       <div className="group-name">{group.collectiveName}</div>
       {group.collectivePhoto && (
-        <img className="avatar" src={group.collectivePhoto} alt="" />
+        <img className="group-avatar" src={group.collectivePhoto} alt="" />
       )}
       <div className="mebmbers-number">Group members:{group.users.length}</div>
       <ButtonSimple onClick={updateGroup}> Edit</ButtonSimple>
@@ -65,25 +65,27 @@ export default function GroupsPage() {
       };
     }
     console.log("groupProps", groupProps);
-    groupClient
-      .create(groupProps)
-      .then((res: any) => {
-        console.log(res);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    groupClient.create(groupProps).catch((err: any) => {
+      console.log(err);
+    });
   };
 
   const [CreateGroupMenu, openGroupPopup] = usePopupCreateGroup({
-    createGroup,
+    createItem: createGroup,
   });
   return (
     <div className="groups-page">
       <button type="button">
         <img title="Content" src={ButtonAdd} onClick={openGroupPopup} />
       </button>
-      <CreateGroupMenu />
+      <CreateGroupMenu
+        width="400px"
+        height="200px"
+        style={{
+          right: "300px",
+        }}
+        itemType="Group"
+      />
       <GroupsList />
     </div>
   );
