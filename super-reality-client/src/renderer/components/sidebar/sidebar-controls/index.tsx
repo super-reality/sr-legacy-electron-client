@@ -34,7 +34,7 @@ export default function SidebarControls(props: SidebarControlsProps) {
               (document.getElementById("root")?.offsetHeight || 99999) -
               (sidebarRef.current?.offsetHeight || 0);
 
-            sidebarRef.current.style.right = `${x}px`;
+            sidebarRef.current.style.right = `${Math.max(0, x)}px`;
             sidebarRef.current.style.top = `${clamp(0, rootHeight, y)}px`;
           }
         });
