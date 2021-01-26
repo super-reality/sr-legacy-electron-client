@@ -29,8 +29,8 @@ export interface SidebarIcon {
       title?: string | undefined;
     }
   >;
-  component: (() => JSX.Element) | null;
-  subComponent: (() => JSX.Element) | null;
+  component: JSX.Element | any | null;
+  subComponent: JSX.Element | any | null;
   componentWidth: number;
   onClick?: () => void;
 }
@@ -39,6 +39,7 @@ export default function Sidebar() {
   const [wideView, setWideView] = useState(false);
   const [contentExpanded, setContentExpanded] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [currentSub, setCurrentSub] = useState<string | undefined>(undefined);
   const history = useHistory();
 
   const {
@@ -57,8 +58,27 @@ export default function Sidebar() {
       {
         title: "Groups",
         icon: GroupsIcon,
-        component: Browser,
-        subComponent: GroupsList,
+        component: <Browser />,
+        subComponent: (
+          <GroupsList
+            currentSub={currentSub}
+            click={(id) => {
+              // 0 is this array position
+              setCurrent(0);
+              if (current == 0 && currentSub == id) {
+                setContentExpanded(!contentExpanded);
+                if (contentExpanded) {
+                  setCurrentSub(undefined);
+                } else {
+                  setCurrentSub(id);
+                }
+              } else {
+                setContentExpanded(true);
+                setCurrentSub(id);
+              }
+            }}
+          />
+        ),
         componentWidth: 700,
       },
       {
@@ -70,7 +90,7 @@ export default function Sidebar() {
         componentWidth: 700,
       },
     ],
-    [history]
+    [history, current, currentSub, contentExpanded]
   );
 
   const sidebarContainerRef = useRef<HTMLDivElement>(null);
@@ -107,12 +127,9 @@ export default function Sidebar() {
 
   const clickActionButton = useCallback(
     (id: number) => {
-      setCurrent(id);
       const icon = sidebarIcons[id];
       if (icon.subComponent) {
         setWideView(current == id ? !wideView : true);
-      } else if (icon.component) {
-        setContentExpanded(current == id ? !contentExpanded : true);
       }
       if (icon.onClick) {
         icon.onClick();
@@ -121,19 +138,17 @@ export default function Sidebar() {
     [current, wideView, contentExpanded, sidebarIcons]
   );
 
-  const Expanded = sidebarIcons[current]?.component;
-
   return (
     <>
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
         currentLesson &&
         Reality}
-      <animated.div
-        style={{ right: "0px", top: "60px", ...mainProps }}
+      <div
+        style={{ right: "0px", top: "60px" }}
         ref={sidebarContainerRef}
         className="sidebar-container"
       >
-        <div className="sidebar-buttons">
+        <animated.div className="sidebar-buttons" style={mainProps}>
           <SidebarControls sidebarRef={sidebarContainerRef} />
 
           <div className="control-buttons">
@@ -172,13 +187,17 @@ export default function Sidebar() {
               </animated.div>
             </div>
           </div>
-        </div>
+        </animated.div>
         <animated.div style={props} className="sidebar-expanded">
           <div className="sidebar-content">
-            {Expanded ? <Expanded /> : <></>}
+            {sidebarIcons[current]?.component ? (
+              sidebarIcons[current]?.component
+            ) : (
+              <></>
+            )}
           </div>
         </animated.div>
-      </animated.div>
+      </div>
     </>
   );
 }

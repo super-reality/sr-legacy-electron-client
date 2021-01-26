@@ -3,6 +3,7 @@ import "./index.scss";
 import { animated, useTrail } from "react-spring";
 import { SidebarIcon } from "..";
 import ButtonRound from "../../button-round";
+import { voidFunction } from "../../../constants";
 
 interface ActionButtonsProps {
   expanded: boolean;
@@ -25,7 +26,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
     sidebarIcons.map(() => false)
   );
 
-  const toggleOpen = useCallback(
+  const groupToggle = useCallback(
     (index: number) => {
       const newGroups = [...openGroups];
       newGroups[index] = !openGroups[index];
@@ -34,7 +35,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
     [openGroups]
   );
 
-  const toggleClose = useCallback(
+  const groupClose = useCallback(
     (index: number) => {
       const newGroups = [...openGroups];
       newGroups[index] = false;
@@ -46,25 +47,20 @@ export default function ActionButtons(props: ActionButtonsProps) {
   return (
     <div className="action-buttons">
       {sidebarIcons.map((icon, index) => {
-        const Group = icon.subComponent as any;
         return (
           <>
             <div
               className="action-button-container"
               onClick={() => {
-                if (icon.subComponent && expanded) toggleOpen(index);
-                else toggleClose(index);
+                if (!expanded && icon.subComponent) clickButton(index);
+                if (expanded && icon.subComponent) groupToggle(index);
+                else groupClose(index);
                 if (!icon.subComponent) clickButton(index);
               }}
               key={icon.title}
             >
               <ButtonRound
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (openGroups[index] == true) toggleClose(index);
-                  clickButton(index);
-                }}
+                onClick={voidFunction}
                 width="32px"
                 height="32px"
                 svg={icon.icon}
@@ -77,7 +73,9 @@ export default function ActionButtons(props: ActionButtonsProps) {
                 {icon.title}
               </animated.div>
             </div>
-            {openGroups[index] == true && icon.subComponent ? <Group /> : <></>}
+            {openGroups[index] == true && icon.subComponent
+              ? icon.subComponent
+              : undefined}
           </>
         );
       })}

@@ -18,7 +18,14 @@ const groups = [
   },
 ];
 
-export default function GroupsList() {
+interface GroupsListProps {
+  click: (id: string) => void;
+  currentSub: string | undefined;
+}
+
+export default function GroupsList(props: GroupsListProps) {
+  const { click, currentSub } = props;
+
   const actionAnimation = useTrail(groups.length, {
     config: { mass: 5, tension: 2000, friction: 180 },
     opacity: 1,
@@ -41,7 +48,7 @@ export default function GroupsList() {
           <animated.div
             style={{ ...actionAnimation[index], position: "relative" }}
             className="action-button-container"
-            onClick={() => console.log(group.title)}
+            onClick={() => click(group.title)}
             key={group.title}
           >
             <div
@@ -51,6 +58,11 @@ export default function GroupsList() {
             <div style={{ left: "8px" }} className="action-button-title">
               {group.title}
             </div>
+            {currentSub == group.title ? (
+              <div className="action-button-selected" />
+            ) : (
+              <></>
+            )}
           </animated.div>
         );
       })}

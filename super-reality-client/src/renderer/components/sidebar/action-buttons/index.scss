@@ -43,5 +43,13 @@
       font-weight: 600;
       overflow: hidden;
     }
+
+    .action-button-selected {
+      width: 6px;
+      height: 80%;
+      margin: auto 0 auto auto;
+      background: var(--color-green);
+      border-radius: 4px 0 0 4px;
+    }
   }
 }
