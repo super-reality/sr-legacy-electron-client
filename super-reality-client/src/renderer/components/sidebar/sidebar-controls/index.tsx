@@ -14,11 +14,12 @@ import setTopMost from "../../../../utils/electron/setTopMost";
 import setFocusable from "../../../../utils/electron/setFocusable";
 
 interface SidebarControlsProps {
+  setWideView: () => void;
   sidebarRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function SidebarControls(props: SidebarControlsProps) {
-  const { sidebarRef } = props;
+  const { setWideView, sidebarRef } = props;
   const draggableRef = useRef<HTMLDivElement>(null);
   const [pinned, setPinned] = useState(false);
 
@@ -63,7 +64,7 @@ export default function SidebarControls(props: SidebarControlsProps) {
         <div className="minimize" onClick={minimizeWindow} />
         <div className="close" onClick={closeWindow} />
       </div>
-      <div ref={draggableRef} className="logo" />
+      <div ref={draggableRef} onClick={setWideView} className="logo" />
     </div>
   );
 }

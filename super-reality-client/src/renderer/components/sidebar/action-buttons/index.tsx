@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./index.scss";
 import { animated, useTrail } from "react-spring";
 import { SidebarIcon } from "..";
@@ -43,6 +43,8 @@ export default function ActionButtons(props: ActionButtonsProps) {
     },
     [openGroups]
   );
+
+  useEffect(() => setOpenGroups(sidebarIcons.map(() => false)), [expanded]);
 
   return (
     <div className="action-buttons">

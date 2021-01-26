@@ -149,7 +149,10 @@ export default function Sidebar() {
         className="sidebar-container"
       >
         <animated.div className="sidebar-buttons" style={mainProps}>
-          <SidebarControls sidebarRef={sidebarContainerRef} />
+          <SidebarControls
+            setWideView={() => setWideView(!wideView)}
+            sidebarRef={sidebarContainerRef}
+          />
 
           <div className="control-buttons">
             <animated.div style={controlsProps}>
