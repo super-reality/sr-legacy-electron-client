@@ -7,7 +7,6 @@ import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
 import Chat from "../chat";
-import Login from "../chat/login-chat";
 import GroupsPage from "../groups";
 
 import Sonic from "../../../assets/images/sonic.png";
@@ -23,7 +22,7 @@ interface ChatContainerProps {
 }
 function ChatContainer(props: ChatContainerProps) {
   const { setPage } = props;
-  const { activeChannel, activeGroup } = useSelector(
+  const { messages, activeGroup } = useSelector(
     (state: AppState) => state.chat
   );
 
@@ -63,13 +62,13 @@ function ChatContainer(props: ChatContainerProps) {
         setPage={setPage}
         createChannel={openChannelCreatePopup}
       />
-      <Chat messages={activeChannel.messages} />
+      <Chat messages={messages} />
     </>
   );
 }
 
 export default function Browser() {
-  const { isChatAuth, groups } = useSelector((state: AppState) => state.chat);
+  const { groups } = useSelector((state: AppState) => state.chat);
   const dispatch = useDispatch();
   const [showGroupsList, setShowGroupsList] = useState<boolean>(false);
   const [showGroups, setShowGroups] = useState(false);
@@ -209,17 +208,12 @@ export default function Browser() {
           </div>
         </div>
       </div>
-      {!isChatAuth ? (
-        <main className="container text-center">
-          <Login />
-        </main>
-      ) : (
-        <div>
-          <div className="chat-and-channels-container">
-            {showGroups ? <GroupsPage /> : <CurrentPage setPage={setPage} />}
-          </div>
+
+      <div>
+        <div className="chat-and-channels-container">
+          {showGroups ? <GroupsPage /> : <CurrentPage setPage={setPage} />}
         </div>
-      )}
+      </div>
     </div>
   );
 }
