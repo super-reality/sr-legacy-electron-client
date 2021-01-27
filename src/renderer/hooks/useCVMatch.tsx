@@ -68,6 +68,7 @@ export default function useCVMatch(
   }, [capturing, frames, opt]);
 
   const Component = useMemo(
+    // eslint-disable-next-line react/display-name
     () => () => (
       <div
         style={{
