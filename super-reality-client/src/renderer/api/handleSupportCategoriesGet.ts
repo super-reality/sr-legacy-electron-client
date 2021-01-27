@@ -1,15 +1,15 @@
 import { AxiosResponse } from "axios";
 import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
-import { IDataGet, ISkillsGet } from "./types/support-ticket/supportTicket";
+import { IDataGet, ICategoriesGet } from "./types/support-ticket/supportTicket";
 
 /* eslint-disable camelcase */
 export default function handleChapterGet(
-  res: AxiosResponse<ISkillsGet | ApiError>
+  res: AxiosResponse<ICategoriesGet | ApiError>
 ): Promise<IDataGet[]> {
   return new Promise((resolve, reject) => {
-    apiErrorHandler<ISkillsGet>(res)
-      .then((d) => resolve(d.skill))
+    apiErrorHandler<ICategoriesGet>(res)
+      .then((d) => resolve(d.category))
       .catch(reject);
   });
 }

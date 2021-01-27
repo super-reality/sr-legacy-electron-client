@@ -12,6 +12,14 @@ interface Values {
   description: string | undefined;
 }
 
+export interface Iimages {
+  lastModified: number;
+  name: string;
+  path: string;
+  size: number;
+  type: string;
+}
+
 const descriptionSchema = Yup.object().shape({
   description: Yup.string()
     .min(50, "*Give us a litle more information pls")
