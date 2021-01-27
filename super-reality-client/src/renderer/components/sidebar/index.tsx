@@ -3,50 +3,49 @@ import "./index.scss";
 import { animated, useSpring } from "react-spring";
 
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as DummyOne } from "../../../../assets/svg/new-fx-icon.svg";
-import { ReactComponent as DummyTwo } from "../../../../assets/svg/add-video.svg";
-// import { ReactComponent as ButtonPlay } from "../../../../assets/svg/play.svg";
-// import { ReactComponent as ButtonMic } from "../../../../assets/svg/mic.svg";
-// import { ReactComponent as ButtonShareScreen } from "../../../../assets/svg/share-screen.svg";
-// import { ReactComponent as ButtonGamepad } from "../../../../assets/svg/gamepad.svg";
-// import { ReactComponent as ButtonVideocam } from "../../../../assets/svg/videocam.svg";
-// import { ReactComponent as ButtonAirplay } from "../../../../assets/svg/airplay.svg";
-// import { ReactComponent as ButtonPencil } from "../../../../assets/svg/pencil.svg";
-// import { ReactComponent as ButtonSideBarAdd } from "../../../../assets/svg/sidebar-add.svg";
+import { useHistory } from "react-router-dom";
+import { ReactComponent as DummyOne } from "../../../assets/svg/new-fx-icon.svg";
+import { ReactComponent as DummyTwo } from "../../../assets/svg/add-video.svg";
+// import { ReactComponent as ButtonPlay } from "../../../assets/svg/play.svg";
+// import { ReactComponent as ButtonMic } from "../../../assets/svg/mic.svg";
+// import { ReactComponent as ButtonShareScreen } from "../../../assets/svg/share-screen.svg";
+// import { ReactComponent as ButtonGamepad } from "../../../assets/svg/gamepad.svg";
+// import { ReactComponent as ButtonVideocam } from "../../../assets/svg/videocam.svg";
+// import { ReactComponent as ButtonAirplay } from "../../../assets/svg/airplay.svg";
+// import { ReactComponent as ButtonPencil } from "../../../assets/svg/pencil.svg";
+// import { ReactComponent as ButtonSideBarAdd } from "../../../assets/svg/sidebar-add.svg";
 
-// import { ReactComponent as ButtonScreenShare } from "../../../../assets/svg/screenshare.svg";
-// import { ReactComponent as ButtonPeople } from "../../../../assets/svg/people.svg";
-// import { ReactComponent as ButtonRecentPeople } from "../../../../assets/svg/recent-actors.svg";
-import { ReactComponent as ButtonMessages } from "../../../../assets/svg/messages.svg";
-// import { ReactComponent as ButtonNotification } from "../../../../assets/svg/notification.svg";
-// import { ReactComponent as ButtonError } from "../../../../assets/svg/error.svg";
-// import { ReactComponent as ButtonTick } from "../../../../assets/svg/tickmark.svg";
-// import { ReactComponent as ButtonRefresh } from "../../../../assets/svg/refresh.svg";
-// import { ReactComponent as ButtonPlayNew } from "../../../../assets/svg/play-new.svg";
-import { ReactComponent as DefaultUser } from "../../../../assets/svg/default-user.svg";
-// import { ReactComponent as ButtonShare } from "../../../../assets/svg/share-new.svg";
-// import SidebarLogo from "../../../../assets/images/sidebar-log.png";
-// import SidebarLogoSvg from "../../../../assets/svg/sidebar-logo.svg";
-import ButtonForward from "../../../../assets/images/forward-btn.png";
-import ButtonBack from "../../../../assets/images/back-btn.png";
-import ButtonRefresh from "../../../../assets/images/refresh-btn.png";
-import ButtonEdit from "../../../../assets/images/edit-btn.png";
-import ButtonTeacher from "../../../../assets/images/teacher.png";
-import ButtonBrowser from "../../../../assets/images/browser.png";
-import ButtonContent from "../../../../assets/images/content.png";
-import ButtonShareNew from "../../../../assets/images/share-btn.png";
-import ButtonAdd from "../../../../assets/images/add-btn.png";
-import ButtonSonic from "../../../../assets/images/sonic-btn.png";
-import ButtonDavinci from "../../../../assets/images/davinci-btn.png";
-// import ControlButtons from "../../../../assets/images/control-icons.png";
-// import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
-import ButtonRound from "../../button-round";
-import reduxAction from "../../../redux/reduxAction";
-import idNamePos from "../../../../utils/idNamePos";
-import store, { AppState } from "../../../redux/stores/renderer";
-import Browser from "../../browser";
-import { MODE_LESSON_CREATOR } from "../../../redux/slices/renderSlice";
-import setAppMode from "../../../redux/utils/setAppMode";
+// import { ReactComponent as ButtonScreenShare } from "../../../assets/svg/screenshare.svg";
+// import { ReactComponent as ButtonPeople } from "../../../assets/svg/people.svg";
+// import { ReactComponent as ButtonRecentPeople } from "../../../assets/svg/recent-actors.svg";
+import { ReactComponent as ButtonMessages } from "../../../assets/svg/messages.svg";
+// import { ReactComponent as ButtonNotification } from "../../../assets/svg/notification.svg";
+// import { ReactComponent as ButtonError } from "../../../assets/svg/error.svg";
+// import { ReactComponent as ButtonTick } from "../../../assets/svg/tickmark.svg";
+// import { ReactComponent as ButtonRefresh } from "../../../assets/svg/refresh.svg";
+// import { ReactComponent as ButtonPlayNew } from "../../../assets/svg/play-new.svg";
+import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
+// import { ReactComponent as ButtonShare } from "../../../assets/svg/share-new.svg";
+// import SidebarLogo from "../../../assets/images/sidebar-log.png";
+// import SidebarLogoSvg from "../../../assets/svg/sidebar-logo.svg";
+import ButtonForward from "../../../assets/images/forward-btn.png";
+import ButtonBack from "../../../assets/images/back-btn.png";
+import ButtonRefresh from "../../../assets/images/refresh-btn.png";
+import ButtonEdit from "../../../assets/images/edit-btn.png";
+import ButtonTeacher from "../../../assets/images/teacher.png";
+import ButtonBrowser from "../../../assets/images/browser.png";
+import ButtonContent from "../../../assets/images/content.png";
+import ButtonShareNew from "../../../assets/images/share-btn.png";
+import ButtonAdd from "../../../assets/images/add-btn.png";
+import ButtonSonic from "../../../assets/images/sonic-btn.png";
+import ButtonDavinci from "../../../assets/images/davinci-btn.png";
+// import ControlButtons from "../../../assets/images/control-icons.png";
+// import { ReactComponent as GameGen } from "../../../assets/svg/game-gen.svg";
+import ButtonRound from "../button-round";
+import reduxAction from "../../redux/reduxAction";
+import idNamePos from "../../../utils/idNamePos";
+import store, { AppState } from "../../redux/stores/renderer";
+import Browser from "../browser";
 
 const sidebarIcons = [
   {
@@ -68,7 +67,7 @@ const sidebarIcons = [
   },
 ];
 
-export default function EditorSidebar() {
+export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   const [isChat, setIsChat] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -76,6 +75,7 @@ export default function EditorSidebar() {
     (state: AppState) => state.createLessonV2
   );
   const dispatch = useDispatch();
+  const history = useHistory();
 
   let width = "300px";
 
@@ -126,24 +126,6 @@ export default function EditorSidebar() {
     }
   }, [dispatch]);
 
-  /*
-  const doPreviewOne = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        lessonPreview: treeCurrentType == "lesson",
-        chapterPreview: treeCurrentType == "chapter",
-        stepPreview: treeCurrentType == "step",
-        itemPreview: treeCurrentType == "item",
-        anchorTestView: false,
-        previewing: true,
-        previewOne: true,
-      },
-    });
-    doPreviewCurrentToNumber();
-  }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
-  */
-
   const doPreview = useCallback(() => {
     reduxAction(dispatch, {
       type: "CREATE_LESSON_V2_DATA",
@@ -160,17 +142,8 @@ export default function EditorSidebar() {
     doPreviewCurrentToNumber();
   }, [dispatch, treeCurrentType, doPreviewCurrentToNumber]);
 
-  const onClick = useCallback(() => {
-    setAppMode(MODE_LESSON_CREATOR);
-  }, [dispatch]);
-
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-      }}
-    >
+    <div className="sidebar-container">
       <div className="sidebar-buttons button-logo">
         <div className="sidebar-logo" />
 
@@ -215,13 +188,22 @@ export default function EditorSidebar() {
             </button>
 
             <div className="dropdown-content">
-              <button type="button">
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/create")}
+              >
                 <img title="Content" src={ButtonContent} />
               </button>
-              <button type="button" onClick={onClick}>
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/create")}
+              >
                 <img title="Teacher" src={ButtonTeacher} />
               </button>
-              <button type="button">
+              <button
+                type="button"
+                onClick={() => history.push("/lesson/view")}
+              >
                 <img title="Browser" src={ButtonBrowser} />
               </button>
             </div>

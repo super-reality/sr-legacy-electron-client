@@ -1,0 +1,26 @@
+.browse-lessons-window {
+  background: var(--color-section);
+  height: 100%;
+
+  .controls {
+    height: 48px;
+    line-height: 48px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+
+  .grid {
+    display: grid;
+    height: calc(100% - 64px);
+    width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-rows: repeat(auto-fit, 130px);
+    justify-content: center;
+    padding: 16px;
+    grid-gap: 20px;
+    justify-items: center;
+  }
+}

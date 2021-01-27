@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
 import { ReactComponent as PauseIcon } from "../../../assets/svg/pause.svg";
@@ -13,8 +14,6 @@ import CVRecorder from "./CVRecorder";
 
 import "./index.scss";
 import { voidFunction } from "../../constants";
-import setAppMode from "../../redux/utils/setAppMode";
-import { MODE_HOME } from "../../redux/slices/renderSlice";
 
 // eslint-disable-next-line no-undef
 const activeWin = __non_webpack_require__("active-win");
@@ -39,6 +38,11 @@ export default function Recorder(): JSX.Element {
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
   const recorder: any = useMemo(() => new CVRecorder(), []);
+
+  const history = useHistory();
+  const closeRecorder = useCallback(() => {
+    history.goBack();
+  }, [history]);
 
   const processEvent = useCallback(
     (
@@ -141,8 +145,8 @@ export default function Recorder(): JSX.Element {
     iohook.removeAllListeners("keyup");
     iohook.unload();
     iohook.stop();
-    setAppMode(MODE_HOME);
-  }, [recorder]);
+    closeRecorder();
+  }, [recorder, closeRecorder]);
 
   const getCurrentSource = useCallback(
     (sources: Electron.DesktopCapturerSource[]) => {
@@ -271,7 +275,7 @@ export default function Recorder(): JSX.Element {
           title="Super Reality Recorder"
           width={298}
           height={320}
-          onClose={() => setAppMode(MODE_HOME)}
+          onClose={closeRecorder}
         >
           <video muted autoPlay style={{ width: "100%", height: "100%" }}>
             <source src="countdown.mp4" type="video/mp4" />
@@ -285,7 +289,7 @@ export default function Recorder(): JSX.Element {
           title="Super Reality Recorder"
           width={540}
           height={200}
-          onClose={() => setAppMode(MODE_HOME)}
+          onClose={closeRecorder}
         >
           <Flex column style={{ height: "100%" }}>
             <Flex
@@ -347,7 +351,7 @@ export default function Recorder(): JSX.Element {
           title="Super Reality Recorder"
           width={300}
           height={100}
-          onClose={() => setAppMode(MODE_HOME)}
+          onClose={closeRecorder}
           initialPosX={98}
           initialPosY={98}
           style={{ backgroundColor: "#2f3136" }}

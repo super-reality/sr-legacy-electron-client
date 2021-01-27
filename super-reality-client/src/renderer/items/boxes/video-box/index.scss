@@ -1,5 +1,17 @@
 @import "../index.scss";
 
+.youtube-box {
+  @include item-base;
+  box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
+  @include item-solid;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
 .video-box {
   @include item-base;
   box-shadow: 18px 18px 23px rgba(0, 0, 0, 0.322);
