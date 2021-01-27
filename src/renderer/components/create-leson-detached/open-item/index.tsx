@@ -74,20 +74,23 @@ export default function OpenItem(props: OpenItemProps) {
         }}
       >
         <Flex column>
-          <BaseToggle
-            title="Use Anchor"
-            value={item.anchor}
-            callback={(val) => {
-              doUpdate({ anchor: val });
-            }}
-          />
           <ButtonSimple style={style} onClick={() => openPanel("end-step-on")}>
             <IconEndStep />
             End Step On
           </ButtonSimple>
         </Flex>
 
-        {ItemSettings && <ItemSettings item={item} update={doUpdate} />}
+        <div style={{ margin: "20px 0" }}>
+          {ItemSettings && <ItemSettings item={item} update={doUpdate} />}
+        </div>
+
+        <BaseToggle
+          title="Use Anchor"
+          value={item.anchor}
+          callback={(val) => {
+            doUpdate({ anchor: val });
+          }}
+        />
       </TabsContainer>
     </>
   );

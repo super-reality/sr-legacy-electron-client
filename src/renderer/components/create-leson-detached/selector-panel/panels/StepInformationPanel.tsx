@@ -7,6 +7,8 @@ import BaseInput from "../../../base-input";
 import updateStep from "../../lesson-utils/updateStep";
 import useBasePanel from "../useBasePanel";
 
+import { ReactComponent as IconInfo } from "../../../../../assets/svg/information.svg";
+
 interface StepInformationPanelProps {
   stepId: string;
 }
@@ -45,7 +47,7 @@ export default function StepInformationPanel(props: StepInformationPanelProps) {
     [step, stepName, debouncer]
   );
 
-  const Panel = useBasePanel("Information");
+  const Panel = useBasePanel("Information", IconInfo, {});
 
   return (
     <Panel>

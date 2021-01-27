@@ -7,19 +7,13 @@
 .channel {
     position: relative;
     overflow-y: scroll;
-    height: calc(86vh - 150px);
+    height: calc(100vh - 150px);
     max-width: 250px;
     width: 100%;
-}
 
-.channel::after {
-    // content: "";
-    // height: 86% !important;
-    // width: 2px;
-    // top: 7%;
-    // position: absolute;
-    // background-color: #585286;
-    // right: 3%;
+    .active-group {
+        cursor: pointer;
+    }
 }
 
 .channel-container {
@@ -81,5 +75,23 @@
     }
     :hover {
         cursor: pointer;
+    }
+}
+
+.active-group {
+    color: #c2c2c2;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:after {
+        content: "";
+        width: 30px;
+        display: block;
+        position: absolute;
+        background-repeat: no-repeat;
+        height: 30px;
+        right: 0;
+        top: 28px;
+        background-image: url("../../../assets/svg/expand.svg");
     }
 }

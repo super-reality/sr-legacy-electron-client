@@ -1,10 +1,26 @@
-import React, { PropsWithChildren, useCallback, useMemo } from "react";
+import React, {
+  CSSProperties,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import { useDispatch } from "react-redux";
 import { ReactComponent as CloseIcon } from "../../../../assets/svg/close.svg";
+import {
+  addKeyUpListener,
+  deleteKeyUpListener,
+} from "../../../../utils/globalKeyListeners";
 import reduxAction from "../../../redux/reduxAction";
 
 export default function useBasePanel(
-  title: string
+  title: string,
+  svg: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & {
+      title?: string | undefined;
+    }
+  >,
+  svgStyle: CSSProperties
 ): (props: PropsWithChildren<unknown>) => JSX.Element {
   const dispatch = useDispatch();
   const openPanel = useCallback(
@@ -17,6 +33,14 @@ export default function useBasePanel(
     [dispatch]
   );
 
+  const SvgElement = svg;
+  useEffect(() => {
+    addKeyUpListener("Escape", () => openPanel(""));
+    return () => {
+      deleteKeyUpListener("Escape");
+    };
+  }, []);
+
   const Component = useMemo(
     // eslint-disable-next-line react/display-name
     () => (componentProps: PropsWithChildren<unknown>) => {
@@ -24,6 +48,7 @@ export default function useBasePanel(
       return (
         <div className="selector-panel-container">
           <div className="panel-title">
+            <SvgElement className="svg-icon" style={svgStyle} />
             <div>{title}</div>
             <CloseIcon
               style={{

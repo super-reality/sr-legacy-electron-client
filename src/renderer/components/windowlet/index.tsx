@@ -11,6 +11,7 @@ import interact from "interactjs";
 import { animated, useSpring } from "react-spring";
 import { ReactComponent as CloseIcon } from "../../../assets/svg/win-close.svg";
 import { ReactComponent as MinimizeIcon } from "../../../assets/svg/win-minimize.svg";
+import { ReactComponent as MaximizeIcon } from "../../../assets/svg/win-maximize.svg";
 import {
   cursorChecker,
   restrictMinSize,
@@ -172,6 +173,16 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
     return voidFunction;
   }, [resizeContainer]);
 
+  const onMaximize = useCallback(() => {
+    if (resizeContainer.current) {
+      const primarySize = getPrimaryMonitor().workArea;
+      resizeContainer.current.style.width = `${primarySize.width}px`;
+      resizeContainer.current.style.height = `${primarySize.height}px`;
+      resizeContainer.current.style.left = "0px";
+      resizeContainer.current.style.top = "0px";
+    }
+  }, [resizeContainer]);
+
   return (
     <animated.div
       className="window-container click-on"
@@ -193,6 +204,9 @@ export default function Windowlet(props: PropsWithChildren<WindowletProps>) {
               <MinimizeIcon style={{ margin: "auto" }} />
             </div>
           )}
+          <div className="maximize" onClick={onMaximize}>
+            <MaximizeIcon style={{ margin: "auto" }} />
+          </div>
           <div className="close" onClick={() => setState(false)}>
             <CloseIcon style={{ margin: "auto" }} fill="var(--color-pink)" />
           </div>

@@ -9,11 +9,11 @@
   color: var(--color-text);
   line-height: 24px;
   font-size: 14px;
-  border-radius: 8px;
-  background-color: var(--color-section-separator);
+  border-radius: 4px;
+  background-color: #211b33;
 
   &:hover {
-    background-color: var(--color-section-separator-hover);
+    background-color: var(--color-background-hover);
   }
 }
 
@@ -31,7 +31,7 @@
 }
 
 .icon-collapse {
-  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
   transform: rotate(-90deg);
 
   &.open {

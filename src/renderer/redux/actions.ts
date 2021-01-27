@@ -84,6 +84,11 @@ export const actions = {
   SET_ACTIVE_GROUP: chatSlice.setActiveGroup,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
   UPDATE_MESSAGE: chatSlice.updateMessage,
+  SET_CHANNELS: chatSlice.setChannnels,
+  UPDATE_CHANNEL: chatSlice.updateChannel,
+  DELETE_CHANNEL: chatSlice.deleteChannel,
+  ADD_CHANNEL: chatSlice.addNewChannel,
+  SET_ACTIVE_CHANNEL: chatSlice.setActiveChannel,
 };
 
 export type ActionKeys = keyof typeof actions;

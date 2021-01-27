@@ -1,6 +1,11 @@
+.settings-popup {
+    display: flex;
+    width: 80vw;
+    height: 90vh;
+}
 .settings-popup-inner {
     background-color: var(--color-section);
-    color: #B8D4F3;
+    color: #b8d4f3;
     font-size: 13px;
     margin: 10px 10px 10px 10px;
     border-radius: 15px;
@@ -14,7 +19,9 @@
     border: 1px solid #343358;
 }
 .settings-popup-options {
+    font-size: 13px;
     margin-top: 15px;
+    color: #c2c2c2;
 }
 .popup-settings-input-container {
     margin: 0 20px 0 5px;

@@ -47,12 +47,13 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
     <button
       style={{
         cursor: "pointer",
-        width: "calc(25% - 10px)",
-        height: "calc(25% - 10px)",
+        width: "100px",
+        height: "100px",
         minWidth: "100px",
         minHeight: "85px",
         padding: "0px",
         margin: "5px",
+        marginBottom: "15px",
       }}
       key={name}
       id={id}
@@ -197,7 +198,85 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
   const previewEffect = getEffectById(preview);
 
   return (
-    <>
+    <div className="settings-popup">
+      <div
+        className="settings-popup-inner"
+        style={{
+          backgroundColor: "var(--color-section)",
+          borderRadius: "0",
+          borderRight: "1px solid #3B3865",
+          width: "90%",
+        }}
+      >
+        <SettingsInput
+          handleSearch={handleSearch}
+          handleOnChange={handleOnChange}
+          inputValue={inputValue}
+        />
+        <div
+          className="settings-popup-tags-container"
+          style={{
+            display: "flex",
+            height: "35px",
+          }}
+        >
+          <ButtonSimple
+            style={{
+              border: "#343358 solid 1px",
+              color: "#B8D4F3",
+              fontSize: "14px",
+              borderRadius: "3px",
+              margin: "5px 10px 5px 5px",
+            }}
+            onClick={clearAllFilters}
+          >
+            Remove filters
+          </ButtonSimple>
+          {filters.map((filter, indx) => {
+            return (
+              <ButtonSimple
+                key={filter}
+                style={{
+                  backgroundColor: "inherit",
+                  border: "1px solid #343358",
+                  fontSize: "13px",
+                  color: "#B8D4F3",
+                  borderRadius: "9px",
+                  margin: "5px 10px 5px 0px",
+                }}
+                onClick={() => {
+                  removeItem(indx, filters);
+                }}
+              >
+                {filter}
+                <CloseIcon
+                  style={{ marginLeft: "10px" }}
+                  height="10px"
+                  width="10px"
+                />
+              </ButtonSimple>
+            );
+          })}
+        </div>
+
+        <Flex
+          style={{
+            overflow: "auto",
+            maxHeight: "85%",
+            flexWrap: "wrap",
+          }}
+        >
+          {fxItems.map((key) => {
+            return (
+              <PopUpSettingsItem
+                key={key.name}
+                item={key}
+                callback={previewItem}
+              />
+            );
+          })}
+        </Flex>
+      </div>
       <div style={{ marginRight: "0px" }} className="settings-popup-inner">
         <div
           style={{
@@ -309,83 +388,7 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
           </ButtonSimple>
         </div>
       </div>
-      <div
-        className="settings-popup-inner"
-        style={{
-          backgroundColor: "var(--color-section)",
-          borderRadius: "0",
-          borderLeft: "1px solid #3B3865",
-        }}
-      >
-        <SettingsInput
-          handleSearch={handleSearch}
-          handleOnChange={handleOnChange}
-          inputValue={inputValue}
-        />
-        <div
-          className="settings-popup-tags-container"
-          style={{
-            display: "flex",
-            height: "35px",
-          }}
-        >
-          <ButtonSimple
-            style={{
-              border: "#343358 solid 1px",
-              color: "#B8D4F3",
-              fontSize: "14px",
-              borderRadius: "3px",
-              margin: "5px 10px 5px 5px",
-            }}
-            onClick={clearAllFilters}
-          >
-            Remove filters
-          </ButtonSimple>
-          {filters.map((filter, indx) => {
-            return (
-              <ButtonSimple
-                key={filter}
-                style={{
-                  backgroundColor: "inherit",
-                  border: "var(--color-text) solid 1px",
-                  fontSize: "14px",
-                  borderRadius: "9px",
-                  margin: "5px 10px 5px 0px",
-                }}
-                onClick={() => {
-                  removeItem(indx, filters);
-                }}
-              >
-                {filter}
-                <CloseIcon
-                  style={{ marginLeft: "10px" }}
-                  height="10px"
-                  width="10px"
-                />
-              </ButtonSimple>
-            );
-          })}
-        </div>
-
-        <Flex
-          style={{
-            overflow: "auto",
-            maxHeight: "85%",
-            flexWrap: "wrap",
-          }}
-        >
-          {fxItems.map((key) => {
-            return (
-              <PopUpSettingsItem
-                key={key.name}
-                item={key}
-                callback={previewItem}
-              />
-            );
-          })}
-        </Flex>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -401,8 +404,9 @@ function SettingsInput(props: SettingsInputProps): JSX.Element {
       <input
         style={{
           borderRadius: "8px",
-          height: "34px",
+          height: "30px",
           background: "#29233D",
+          width: "60%",
         }}
         autoFocus
         className="popup-settings-input-container-input"
@@ -457,12 +461,13 @@ export default function usePopupItemSettings(): [JSX.Element, () => void] {
       style={{
         display: "flex",
         flexDirection: "row",
-        top: "-8%",
-        left: "10%",
+        top: "0",
+        left: "6%",
         borderRadius: "15px",
+        backgroundColor: "transparent",
       }}
-      width="57%"
-      height="72%"
+      width="auto"
+      height="auto"
     >
       <FXPopUpSettings
         previewItem={previewItem}

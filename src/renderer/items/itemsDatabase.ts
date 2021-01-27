@@ -5,7 +5,6 @@ import SettingsFocusHighlight from "./settings/settings-focus-highlight";
 import SettingsFX from "./settings/settings-fx";
 import SettingsImage from "./settings/settings-image";
 import SettingsVideo from "./settings/settings-video";
-import SettingsYoutube from "./settings/settings-youtube";
 
 import { ReactComponent as IconAddAudio } from "../../assets/svg/add-audio.svg";
 import { ReactComponent as IconAddDialog } from "../../assets/svg/add-tts.svg";
@@ -13,12 +12,10 @@ import { ReactComponent as IconAddFocus } from "../../assets/svg/add-focus.svg";
 import { ReactComponent as IconAddImage } from "../../assets/svg/add-image.svg";
 import { ReactComponent as IconAddVideo } from "../../assets/svg/add-video.svg";
 import { ReactComponent as IconAddFX } from "../../assets/svg/new-fx-icon.svg";
-import { ReactComponent as IconAddYoutube } from "../../assets/svg/youtube.svg";
 import FindBox from "./boxes/find-box";
 import FXBox from "./boxes/fx-box";
 import ImageBox from "./boxes/image-box";
 import VideoBox from "./boxes/video-box";
-import YoutubeBox from "./boxes/youtube-box";
 import DialogBox from "./boxes/dialog-box";
 
 type ItemIcon = React.FunctionComponent<
@@ -66,12 +63,6 @@ const itemsDatabase: Record<Item["type"], ItemDatabaseEntry> = {
     settings: SettingsVideo,
     component: VideoBox,
     icon: IconAddVideo,
-  },
-  youtube: {
-    name: "YouTube",
-    settings: SettingsYoutube,
-    component: YoutubeBox,
-    icon: IconAddYoutube,
   },
   dialog: {
     name: "Dialog",
