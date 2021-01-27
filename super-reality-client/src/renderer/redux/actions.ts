@@ -11,6 +11,7 @@ import * as settingsSlice from "./slices/settingsSlice";
 import * as backgroundSlice from "./slices/backgroundSlice";
 import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
 import * as chatSlice from "./slices/chatSlice";
+import * as createSupportTicketSlice from "./slices/createSupportTicketSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -83,6 +84,9 @@ export const actions = {
   DELETE_GROUP: chatSlice.deleteGroup,
   SET_ACTIVE_GROUP: chatSlice.setActiveGroup,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
+  SET_SUPPORT_TICKET: createSupportTicketSlice.setData,
+  /*   SET_IMAGES_SUPPORT_TICKET:createSupportTicketSlice.addImages, */
+  SUPPORT_TICKET_RESET: createSupportTicketSlice.reset,
   UPDATE_MESSAGE: chatSlice.updateMessage,
   SET_CHANNELS: chatSlice.setChannnels,
   UPDATE_CHANNEL: chatSlice.updateChannel,

@@ -1,0 +1,44 @@
+.form-control-skills{
+
+        
+        >input  {
+            /* remove standard background appearance */
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              appearance: none;
+              
+              /* create custom radiobutton appearance */
+
+              display: inline-block;
+                width: 0px;
+                height: 12px;
+                padding: 0px;
+                border:0;
+                margin: 8px 0;
+                border-radius: 0;
+                background-color: transparent;
+                
+        }
+        >.checkbox-label{
+            display: inline-block;
+            margin: 8px 8px 8px 0;
+            border-radius: 25px;
+            padding: 5px;
+            color: #b8d4f3;
+            transition: all .5s;
+            font: 400 13.3333px Arial;
+            font-family: Segoe UI;
+            cursor: pointer;
+            &::before{
+                content: "+ ";
+            }
+        }
+    
+}
+input:checked +.checkbox-label {
+    background-color: #0898eb;
+    color: #2D2A44;
+    &::before{
+        content: "- ";
+    }
+}
