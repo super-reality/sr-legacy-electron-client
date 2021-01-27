@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useMemo, useRef } from "react";
 import interact from "interactjs";
 import "./index.scss";
@@ -210,10 +211,18 @@ export default function CreateLessonDetached(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
+            {/* For shooting star animation - START */}
+            <span />
+            <span />
+            {/* For shooting start animation - END */}
             <Lesson />
           </div>
           {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
+            {/* For shooting star animation - START */}
+            <span />
+            <span />
+            {/* For shooting start animation - END */}
             <VideoPreview />
           </div>
           <EditorSidebar />
