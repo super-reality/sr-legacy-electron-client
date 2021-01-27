@@ -4,7 +4,7 @@
   position: absolute;
   min-width: 100px;
   min-height: 100px;
-  background: var(--main-gradient);
+  background-color: var(--color-background);
   display: flex;
   flex-direction: column;
   @include mid-shadow;
