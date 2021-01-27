@@ -1,0 +1,16 @@
+
+
+
+.step-selected{
+    background:  #222138!important;
+     >img{
+        filter: invert(32%) sepia(43%) saturate(2314%) hue-rotate(279deg) brightness(95%) contrast(107%)!important;
+     }
+
+     .progress-step{
+         >img{
+            filter: invert(49%) sepia(88%) saturate(1247%) hue-rotate(160deg) brightness(97%) contrast(97%);
+         }
+     }
+
+}

@@ -1,76 +1,45 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
-import { animated, useSpring } from "react-spring";
+import { animated, useSpring, useTrail } from "react-spring";
 
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { ReactComponent as DummyOne } from "../../../assets/svg/new-fx-icon.svg";
-import { ReactComponent as DummyTwo } from "../../../assets/svg/add-video.svg";
-// import { ReactComponent as ButtonPlay } from "../../../assets/svg/play.svg";
-// import { ReactComponent as ButtonMic } from "../../../assets/svg/mic.svg";
-// import { ReactComponent as ButtonShareScreen } from "../../../assets/svg/share-screen.svg";
-// import { ReactComponent as ButtonGamepad } from "../../../assets/svg/gamepad.svg";
-// import { ReactComponent as ButtonVideocam } from "../../../assets/svg/videocam.svg";
-// import { ReactComponent as ButtonAirplay } from "../../../assets/svg/airplay.svg";
-// import { ReactComponent as ButtonPencil } from "../../../assets/svg/pencil.svg";
-// import { ReactComponent as ButtonSideBarAdd } from "../../../assets/svg/sidebar-add.svg";
 
-// import { ReactComponent as ButtonScreenShare } from "../../../assets/svg/screenshare.svg";
-// import { ReactComponent as ButtonPeople } from "../../../assets/svg/people.svg";
-// import { ReactComponent as ButtonRecentPeople } from "../../../assets/svg/recent-actors.svg";
-import { ReactComponent as ButtonMessages } from "../../../assets/svg/messages.svg";
-// import { ReactComponent as ButtonNotification } from "../../../assets/svg/notification.svg";
-// import { ReactComponent as ButtonError } from "../../../assets/svg/error.svg";
-// import { ReactComponent as ButtonTick } from "../../../assets/svg/tickmark.svg";
-// import { ReactComponent as ButtonRefresh } from "../../../assets/svg/refresh.svg";
-// import { ReactComponent as ButtonPlayNew } from "../../../assets/svg/play-new.svg";
+import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
+import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
+
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
-// import { ReactComponent as ButtonShare } from "../../../assets/svg/share-new.svg";
-// import SidebarLogo from "../../../assets/images/sidebar-log.png";
-// import SidebarLogoSvg from "../../../assets/svg/sidebar-logo.svg";
-import ButtonForward from "../../../assets/images/forward-btn.png";
-import ButtonBack from "../../../assets/images/back-btn.png";
-import ButtonRefresh from "../../../assets/images/refresh-btn.png";
-import ButtonEdit from "../../../assets/images/edit-btn.png";
-import ButtonTeacher from "../../../assets/images/teacher.png";
-import ButtonBrowser from "../../../assets/images/browser.png";
-import ButtonContent from "../../../assets/images/content.png";
-import ButtonShareNew from "../../../assets/images/share-btn.png";
-import ButtonAdd from "../../../assets/images/add-btn.png";
-import ButtonSonic from "../../../assets/images/sonic-btn.png";
-import ButtonDavinci from "../../../assets/images/davinci-btn.png";
-// import ControlButtons from "../../../assets/images/control-icons.png";
-// import { ReactComponent as GameGen } from "../../../assets/svg/game-gen.svg";
+import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
+import { ReactComponent as RightArrowIcon } from "../../../assets/svg/right-arrow.svg";
+import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
+
 import ButtonRound from "../button-round";
 import Browser from "../browser";
 import { voidFunction } from "../../constants";
 import SidebarControls from "./sidebar-controls";
 import useLessonPlayer from "../lesson-player/useLessonPlayer";
 import { AppState } from "../../redux/stores/renderer";
+import GroupsList from "./groups-list";
+import ActionButtons from "./action-buttons";
 
-const sidebarIcons = [
-  {
-    title: "dummy one",
-    icon: DummyOne,
-    component: <>Dummy One</>,
-  },
-  {
-    title: "dummy two",
-    icon: DummyTwo,
-    component: (
-      <>{`Dummy Two Title! put a whole jsx component here, like "<Component>"`}</>
-    ),
-  },
-  {
-    title: "Chat Channel",
-    icon: ButtonMessages,
-    component: <Browser />,
-  },
-];
+export interface SidebarIcon {
+  title: string;
+  icon: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & {
+      title?: string | undefined;
+    }
+  >;
+  component: JSX.Element | any | null;
+  subComponent: JSX.Element | any | null;
+  componentWidth: number;
+  onClick?: () => void;
+}
 
 export default function Sidebar() {
-  const [expanded, setExpanded] = useState(false);
+  const [wideView, setWideView] = useState(false);
+  const [contentExpanded, setContentExpanded] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [currentSub, setCurrentSub] = useState<string | undefined>(undefined);
   const history = useHistory();
 
   const {
@@ -81,30 +50,92 @@ export default function Sidebar() {
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
 
+  // Here we add more buttons to the sidebar!
+  // See GroupsList for how to create a list of items for a button.
+  // DO NOT add icons manually to the sidebar, only here.
+  const sidebarIcons: SidebarIcon[] = useMemo(
+    () => [
+      {
+        title: "Groups",
+        icon: GroupsIcon,
+        component: <Browser />,
+        subComponent: (
+          <GroupsList
+            currentSub={currentSub}
+            click={(id) => {
+              // 0 is this array position
+              setCurrent(0);
+              if (current == 0 && currentSub == id) {
+                setContentExpanded(!contentExpanded);
+                if (contentExpanded) {
+                  setCurrentSub(undefined);
+                } else {
+                  setCurrentSub(id);
+                }
+              } else {
+                setContentExpanded(true);
+                setCurrentSub(id);
+              }
+            }}
+          />
+        ),
+        componentWidth: 700,
+      },
+      {
+        title: "Tutorials",
+        icon: TutorialsIcon,
+        component: null,
+        subComponent: null,
+        onClick: () => history.push("/lesson/create"),
+        componentWidth: 700,
+      },
+    ],
+    [history, current, currentSub, contentExpanded]
+  );
+
   const sidebarContainerRef = useRef<HTMLDivElement>(null);
 
-  let width = "300px";
+  const mainProps = useSpring({
+    width: wideView ? `200px` : "64px",
+    minWidth: wideView ? `200px` : "64px",
+  });
 
-  // chat button
-  if (current == 2) {
-    width = "700px";
-  }
-  // support button
-  if (current == 3) {
-    width = "720px";
-  }
-  // solution button
-  if (current == 4) {
-    width = "820px";
-  }
+  const userNameProps = useTrail(2, {
+    config: { mass: 5, tension: 2000, friction: 180 },
+    opacity: wideView ? 1 : 0,
+    left: wideView ? 8 : 40,
+    from: { opacity: 0, left: 40 },
+  } as any);
+
+  const controlsProps = useSpring({
+    filter: `opacity(${wideView ? 1 : 0})`,
+    transform: `scale(${wideView ? 1 : 0})`,
+  } as any);
 
   const props = useSpring({
-    width: expanded ? width : "0px", // "550px"
-    minWidth: expanded ? width : "0px",
+    width: contentExpanded
+      ? `${sidebarIcons[current]?.componentWidth}px`
+      : "0px",
+    minWidth: contentExpanded
+      ? `${sidebarIcons[current]?.componentWidth}px`
+      : "0px",
   });
 
   const [Reality, doPrev, doNext, _doPlay, doClear] = useLessonPlayer(
     currentLesson || ""
+  );
+
+  const clickActionButton = useCallback(
+    (id: number) => {
+      const icon = sidebarIcons[id];
+      if (icon.subComponent) {
+        setWideView(current == id ? !wideView : true);
+      }
+      if (icon.onClick) {
+        icon.onClick();
+      }
+    },
+    [current, wideView, contentExpanded, sidebarIcons]
   );
 
   return (
@@ -117,123 +148,56 @@ export default function Sidebar() {
         ref={sidebarContainerRef}
         className="sidebar-container"
       >
-        <div className="sidebar-buttons button-logo">
-          <SidebarControls sidebarRef={sidebarContainerRef} />
+        <animated.div className="sidebar-buttons" style={mainProps}>
+          <SidebarControls
+            setWideView={() => setWideView(!wideView)}
+            sidebarRef={sidebarContainerRef}
+          />
 
           <div className="control-buttons">
-            <div className="dropdown">
-              <div className="button-forward">
-                <button type="button" onClick={doNext}>
-                  <img src={ButtonForward} />
-                </button>
-              </div>
-
-              <div className="dropdown-content">
-                <button type="button" onClick={doClear}>
-                  <img src={ButtonRefresh} />
-                </button>
-                <button type="button" onClick={doPrev}>
-                  <img src={ButtonBack} />
-                </button>
-              </div>
+            <animated.div style={controlsProps}>
+              <LeftArrowIcon onClick={doPrev} />
+            </animated.div>
+            <animated.div style={controlsProps}>
+              <StopIcon onClick={doClear} />
+            </animated.div>
+            <div>
+              <RightArrowIcon onClick={doNext} />
             </div>
           </div>
 
-          <div className="communication-buttons">
-            <div className="group-buttons">
-              <div className="sidebar-group">
-                <div
-                  className="open-group"
-                  onClick={() => {
-                    setCurrent(2);
-                    setExpanded(!expanded);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          <ActionButtons
+            expanded={wideView}
+            clickButton={clickActionButton}
+            sidebarIcons={sidebarIcons}
+          />
 
-          <div className="action-buttons button-edit">
-            <div className="dropdown">
-              <button type="button">
-                <img src={ButtonEdit} />
-              </button>
-
-              <div className="dropdown-content">
-                <button
-                  type="button"
-                  onClick={() => history.push("/lesson/create")}
-                >
-                  <img title="Content" src={ButtonContent} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => history.push("/lesson/create")}
-                >
-                  <img title="Teacher" src={ButtonTeacher} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => history.push("/lesson/view")}
-                >
-                  <img title="Browser" src={ButtonBrowser} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="action-buttons button-share">
-            <div className="dropdown">
-              <button type="button">
-                <img src={ButtonShareNew} />
-              </button>
-              <div className="dropdown-content">
-                <button type="button">
-                  <img title="Add" src={ButtonAdd} />
-                </button>
-                <button type="button">
-                  <img title="Sonic" src={ButtonSonic} />
-                </button>
-                <button type="button">
-                  <img title="Davinci" src={ButtonDavinci} />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="action-buttons">
-            {/* {sidebarIcons.map((icon, index) => {
-            // Limit the loop to the action buttons on the array
-            if (index < 2 || index > 8) return null;
-            return (
-              <ButtonRound
-                onClick={() => {
-                  setCurrent(index);
-                  if (index == current || !expanded) setExpanded(!expanded);
-                  if (index == current && icon.title == "Chat")
-                    setIsChat(!isChat);
-                }}
-                width="32px"
-                height="32px"
-                key={icon.title}
-                svg={icon.icon}
-                title={icon.title}
-              />
-            );
-          })} */}
-            <div className="logged-user">
+          <div className="logged-user">
+            <div className="avatar-container">
               <ButtonRound
                 onClick={voidFunction}
-                width="44px"
-                height="44px"
+                width="40px"
+                height="40px"
                 svg={DefaultUser}
               />
             </div>
+            <div className="name-container">
+              <animated.div style={userNameProps[0]} className="user-name">
+                User Name
+              </animated.div>
+              <animated.div style={userNameProps[1]} className="user-role">
+                Role
+              </animated.div>
+            </div>
           </div>
-        </div>
+        </animated.div>
         <animated.div style={props} className="sidebar-expanded">
           <div className="sidebar-content">
-            {sidebarIcons[current]?.component}
+            {sidebarIcons[current]?.component ? (
+              sidebarIcons[current]?.component
+            ) : (
+              <></>
+            )}
           </div>
         </animated.div>
       </div>
