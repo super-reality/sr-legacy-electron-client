@@ -1,244 +1,110 @@
+@import "../misc.scss";
+
 .sidebar-container {
   display: flex;
   background: linear-gradient(180deg, #333155 0%, #262036 100%);
   flex-direction: row;
   position: absolute;
   right: 0;
+  height: calc(100% - 120px);
+  top: 60px;
   z-index: 10;
-  height: 100%;
+  border-radius: 6px 0 0 6px;
+  overflow: hidden;
 
   .sidebar-buttons {
-    position: relative;
-    min-width: 70px;
-    width: 70px;
+    min-width: 64px;
+    width: 100%;
     display: flex;
     background: linear-gradient(180deg, #333155 0%, #262036 100%);
     flex-direction: column;
     align-content: center;
     align-items: center;
-    padding: 4px 0 10px 0;
+    padding: 5px 0 10px 0;
     z-index: 2;
-  
-    .button-round {
-      background-color: transparent;
+    overflow: hidden;
+
+    .control-buttons {
+      display: flex;
       margin: 0 auto;
-      padding: 2px 0;
+      width: calc(100% - 8px);
+      height: 80px;
+      justify-content: flex-end;
+      border-bottom: 1px solid #3f3b60;
+
+      div {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        margin: auto 16px;
+        cursor: pointer;
+        opacity: 0.7;
+        -webkit-transition: opacity, margin 0.25s cubic-bezier(0, 0, 0.2, 1);
+
+        &:hover {
+          opacity: 1;
+        }
+
+        svg {
+          fill: var(--color-light);
+          margin: auto;
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
+
+    .logged-user {
+      width: 90%;
+      margin: 0 auto;
+      border-top: 1px solid #3f3b60;
+      height: 70px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+
+      .avatar-container {
+        margin: auto 10px;
+      }
+      .name-container {
+        height: 100%;
+        width: fit-content;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        .user-name {
+          font-weight: 500;
+        }
+
+        .user-role {
+          font-style: italic;
+        }
+        .user-name,
+        .user-role {
+          position: relative;
+          width: fit-content;
+          text-align: left;
+          white-space: nowrap;
+          height: 20px;
+        }
+      }
     }
   }
-  
-  .dropdown {
-    position: relative;
-  
-    :hover {
-      cursor: pointer;
-    }
-  }
-  
-  
-}
-
-
-.button-logo {
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background: #313050;
-    z-index: -1;
-    border-radius: 20px 0 0 20px;
-    height: 70px;
-  }
-}
-
-.control-buttons {
-  position: relative;
-
-  .dropdown-content {
-    opacity: 0;
-    position: absolute;
-    // background: linear-gradient(180deg, #323054 0%, #302e4f 100%);
-    background: #2f2d4b;
-    z-index: -1;
-    border-radius: 20px 0 0 20px;
-    height: 70px;
-  }
-
-  .dropdown:hover .dropdown-content {
-    transition: opacity 0.4s;
-    -webkit-transition: opacity 0.4s;
-    opacity: 1;
-    top: 155px;
-    right: 75px;
-  }
-}
-
-.action-buttons {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-
-  button {
-    width: 70px;
-  }
-
-  .dropdown {
-    height: 60px;
-  }
-
-  .dropdown-content {
-    opacity: 0;
-    position: absolute;
-    background: linear-gradient(180deg, #2d2948 0%, #2b2743 100%);
-    z-index: -1;
-    border-radius: 20px 0 0 20px;
-    height: 70px;
-  }
-
-  .button-round {
-    margin: 5px auto;
-  }
-}
-
-.button-logo .dropdown:hover .dropdown-content {
-  display: flex;
-  right: 80px;
-  top: 15px;
-  height: 60px;
-  // width: 65%;
-  max-width: 950px;
-  justify-content: space-around;
-  flex-direction: row-reverse;
-  transition: opacity 0.4s;
-  -webkit-transition: opacity 0.4s;
-  display: block;
-}
-
-.control-buttons .dropdown:hover .dropdown-content {
-  display: flex;
-  right: 75px;
-  height: 60px;
-  top: 8px;
-  width: 210px;
-  justify-content: space-around;
-  flex-direction: row-reverse;
-  align-items: center;
-  transition: opacity 0.4s;
-  -webkit-transition: opacity 0.4s;
-  opacity: 1;
-}
-.button-edit .dropdown:hover .dropdown-content {
-  display: flex;
-  right: 58px;
-  height: 60px;
-  top: -15px;
-  width: 220px;
-  justify-content: space-around;
-  flex-direction: row-reverse;
-  transition: opacity 0.4s;
-  -webkit-transition: opacity 0.4s;
-  opacity: 1;
-
-  button {
-    width: 80px;
-    &:hover {
-      cursor: pointer;
-    }
-  }
-}
-
-.button-share .dropdown:hover .dropdown-content {
-  display: flex;
-  right: 56px;
-  height: 60px;
-  top: -10px;
-  width: 210px;
-  justify-content: space-around;
-  flex-direction: row-reverse;
-  transition: opacity 0.4s;
-  -webkit-transition: opacity 0.4s;
-  opacity: 1;
-}
-
-.group-buttons {
-  position: relative;
-}
-.sidebar-group::before {
-  content: "";
-  position: absolute;
-  top: 63px;
-  height: 0;
-  width: 100%;
-  border-bottom: 2px solid #3f3b60;
-}
-
-.open-group::before {
-  content: "";
-  position: absolute;
-  background: #6758c5;
-  height: 51px;
-  width: 6px;
-  left: -10px;
-  top: 0;
-  border-radius: 0 10px 10px 0;
-}
-
-.control-buttons::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  height: 0;
-  width: 65%;
-  border-bottom: 2px solid #3f3b60;
-  bottom: 0;
-}
-
-.communication-buttons {
-  padding-bottom: 20px;
 }
 
 .sidebar-expanded {
   overflow: hidden;
-  background: linear-gradient(180deg, #272035 0%, #2d2a44 6.7%, #2d2b45 94.1%, #261f34 100%);
+  background: linear-gradient(
+    180deg,
+    #272035 0%,
+    #2d2a44 6.7%,
+    #2d2b45 94.1%,
+    #261f34 100%
+  );
 
   .sidebar-content {
     height: 100%;
     width: 100%;
   }
-}
-
-.sidebar-group {
-  background-color: #0d081d;
-  height: 48px;
-  margin: 15px auto;
-  width: 48px;
-  border-radius: 6px;
-}
-
-.open-group {
-  width: 48px;
-  height: 48px;
-  padding: 4px;
-  background-image: url("../../../assets/svg/game-gen.svg");
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-
-.closed-group {
-  width: 48px;
-  height: 48px;
-  padding: 4px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  display: grid;
-  grid-template: 1fr 1fr/1fr 1fr;
-  justify-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.small-group-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 5px;
-  background-color: #fff;
 }

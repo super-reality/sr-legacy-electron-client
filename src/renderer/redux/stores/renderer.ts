@@ -13,6 +13,7 @@ import userDataSlice from "../slices/userDataSlice";
 import settingsSlice from "../slices/settingsSlice";
 import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 import chatSlice from "../slices/chatSlice";
+import createSupportTicketSlice from "../slices/createSupportTicketSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   settings: settingsSlice.reducer,
   lessonPlayer: lessonPlayerSlice.reducer,
   chat: chatSlice.reducer,
+  createSupportTicket: createSupportTicketSlice.reducer,
 });
 
 const store = configureStore({

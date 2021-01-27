@@ -6,19 +6,20 @@ import { cursorChecker, restrictRoot, voidFunction } from "../../../constants";
 import clamp from "../../../../utils/clamp";
 
 import { ReactComponent as PinIcon } from "../../../../assets/svg/win-pin.svg";
-import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
-import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
+// import { ReactComponent as MinimizeIcon } from "../../../../assets/svg/win-minimize.svg";
+// import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
 import closeWindow from "../../../../utils/electron/closeWindow";
 import minimizeWindow from "../../../../utils/electron/minimizeWindow";
 import setTopMost from "../../../../utils/electron/setTopMost";
 import setFocusable from "../../../../utils/electron/setFocusable";
 
 interface SidebarControlsProps {
+  setWideView: () => void;
   sidebarRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function SidebarControls(props: SidebarControlsProps) {
-  const { sidebarRef } = props;
+  const { setWideView, sidebarRef } = props;
   const draggableRef = useRef<HTMLDivElement>(null);
   const [pinned, setPinned] = useState(false);
 
@@ -34,7 +35,7 @@ export default function SidebarControls(props: SidebarControlsProps) {
               (document.getElementById("root")?.offsetHeight || 99999) -
               (sidebarRef.current?.offsetHeight || 0);
 
-            sidebarRef.current.style.right = `${x}px`;
+            sidebarRef.current.style.right = `${Math.max(0, x)}px`;
             sidebarRef.current.style.top = `${clamp(0, rootHeight, y)}px`;
           }
         });
@@ -57,17 +58,13 @@ export default function SidebarControls(props: SidebarControlsProps) {
         <div className={`pin ${pinned ? "active" : ""}`} onClick={onPin}>
           <PinIcon
             style={{ width: "13px", height: "13px" }}
-            fill="var(--color-pink)"
+            fill="var(--color-light)"
           />
         </div>
-        <div className="minimize" onClick={minimizeWindow}>
-          <MinimizeIcon />
-        </div>
-        <div className="close" onClick={closeWindow}>
-          <CloseIcon fill="var(--color-pink)" />
-        </div>
+        <div className="minimize" onClick={minimizeWindow} />
+        <div className="close" onClick={closeWindow} />
       </div>
-      <div ref={draggableRef} className="logo" />
+      <div ref={draggableRef} onClick={setWideView} className="logo" />
     </div>
   );
 }
