@@ -4,8 +4,7 @@
   position: absolute;
   min-width: 100px;
   min-height: 100px;
-  background: transparent; // For voltron
-  // background-color: var(--color-background);
+  background-color: var(--color-background);
   display: flex;
   flex-direction: column;
   @include mid-shadow;
