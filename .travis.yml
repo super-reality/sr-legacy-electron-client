@@ -11,8 +11,6 @@ env:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
-cache: npm
-
 filter_secrets: false
 
 addons:
