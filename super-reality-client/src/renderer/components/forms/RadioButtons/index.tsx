@@ -5,7 +5,7 @@ import { InputProps } from "..";
 import TextError from "../TextError";
 import "./index.scss";
 
-export default function RadioButtons(props: InputProps<any>): JSX.Element {
+export default function RadioButtons(props: InputProps): JSX.Element {
   const { label, name, options, ...rest } = props;
   return (
     <div className="form-control">

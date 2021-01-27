@@ -4,7 +4,7 @@ import { Field, ErrorMessage } from "formik";
 import { InputProps } from "..";
 import TextError from "../TextError";
 
-export default function InputText(props: InputProps<any>): JSX.Element {
+export default function InputText(props: InputProps): JSX.Element {
   const { label, name, ...rest } = props;
   return (
     <div className="form-control">
