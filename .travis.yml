@@ -27,8 +27,8 @@ jobs:
         - npm install
         - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
+        - npm run electron-rebuild
         - npm run pre-build-iohook-win
-        - npm run build:web
         - npm run build
         - node ./rm-unpacked.js
       deploy:
