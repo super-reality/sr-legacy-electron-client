@@ -26,7 +26,7 @@ export default function SettingsDialog(props: BaseSettingsProps<ItemDialog>) {
 
   return (
     <BaseTextArea
-      title="Text"
+      title=""
       value={text}
       onChange={(e) => {
         setText(e.currentTarget.value);

@@ -1,4 +1,5 @@
 import React, {
+  CSSProperties,
   PropsWithChildren,
   useCallback,
   useEffect,
@@ -13,7 +14,13 @@ import {
 import reduxAction from "../../../redux/reduxAction";
 
 export default function useBasePanel(
-  title: string
+  title: string,
+  svg: React.FunctionComponent<
+    React.SVGProps<SVGSVGElement> & {
+      title?: string | undefined;
+    }
+  >,
+  svgStyle: CSSProperties
 ): (props: PropsWithChildren<unknown>) => JSX.Element {
   const dispatch = useDispatch();
   const openPanel = useCallback(
@@ -26,6 +33,7 @@ export default function useBasePanel(
     [dispatch]
   );
 
+  const SvgElement = svg;
   useEffect(() => {
     addKeyUpListener("Escape", () => openPanel(""));
     return () => {
@@ -40,6 +48,7 @@ export default function useBasePanel(
       return (
         <div className="selector-panel-container">
           <div className="panel-title">
+            <SvgElement className="svg-icon" style={svgStyle} />
             <div>{title}</div>
             <CloseIcon
               style={{

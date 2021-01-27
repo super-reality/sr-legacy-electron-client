@@ -7,6 +7,7 @@
 .chat-and-channels-container {
     display: flex;
     flex-direction: row;
+    height: 100vh;
     justify-content: space-between;
 }
 .chat-with-title-container {
@@ -14,6 +15,7 @@
     flex-direction: column;
     max-width: 500px;
     width: 100%;
+    // height: 100vh;
 }
 .chat-container {
     display: flex;
@@ -24,12 +26,13 @@
     font-size: 14px;
     color: #b8d4f3;
     margin: 20px;
-    height: calc(80vh - 255px);
+    height: calc(100vh - 200px);
+    // height: calc(100vh - 250px);
+    
 
     .chats {
         overflow-y: scroll;
-        // height: calc(85vh - 220px);
-        height: calc(86vh - 250px);
+        height: calc(100vh - 220px);
     }
 
     .user {

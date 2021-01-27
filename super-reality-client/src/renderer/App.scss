@@ -52,6 +52,8 @@ body {
   --color-cyan: #00fef6;
   --color-white: #fff;
 
+  --color-light: #A8A8C9;
+
   --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
 
@@ -157,7 +159,9 @@ a:active {
 }
 
 ::-webkit-resizer {
-  background: #a3258c;
+  // background: #a3258c;
+  border-bottom: 30px solid #3f3b60;
+  border-left: 30px solid transparent;
 }
 
 ::-webkit-scrollbar-corner {
@@ -232,6 +236,7 @@ a:active {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-top: 40px;
 }
 
 .animate-gradient {

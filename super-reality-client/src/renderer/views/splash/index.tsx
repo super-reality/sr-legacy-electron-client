@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import MuteButton from "../../components/mute-button";
 import Auth from "../auth";
 import reduxAction from "../../redux/reduxAction";
-
+// eslint-disable-next-line
 import infoJson from "../../../info.json";
 
 export default function Splash(): JSX.Element {

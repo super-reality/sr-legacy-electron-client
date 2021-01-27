@@ -68,6 +68,26 @@
   }
 }
 
+.button-basic{
+
+  cursor: pointer;
+  background-color: var(--color-button);
+  color: var(--color-text);
+  @include animated;
+  @include disable-select;
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+  &:active {
+    background-color: var(--color-background);
+  }
+
+  a {
+    color: var(--color-text);
+  }
+}
+
 .button-login {
   color: var(--color-text-dark);
   background-color: #6fb6ff;
@@ -101,9 +121,12 @@
   background-color: var(--color-background-hover);
 
   &.checked {
-    background-image: url("../../assets/svg/pink-checked.svg");
+    background-image: url("../../assets/images/pink-checked.png");
     background-color: transparent;
-    height: 20px;
+    width: 50px;
+    height: 50px;
+    background-position-x: -8px;
+    background-position-y: -8px;
     background-repeat: no-repeat;
   }
 

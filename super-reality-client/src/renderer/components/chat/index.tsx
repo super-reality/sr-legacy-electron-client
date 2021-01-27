@@ -9,10 +9,10 @@ import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import client from "../../feathers";
 import usePopupMessageMenu from "../../hooks/usePopupMessageMenu";
+import { Message } from "../../../types/chat";
 
 interface ChatProps {
-  users: any[];
-  messages: any[];
+  messages: Message[];
 }
 
 interface User {
@@ -32,7 +32,7 @@ interface MessageProps {
   text: string;
 }
 
-export function Message(props: MessageProps) {
+export function MessageBox(props: MessageProps) {
   const { _id, user, createdAt, text } = props;
 
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -174,7 +174,7 @@ export function Message(props: MessageProps) {
 }
 
 export default function Chat(props: ChatProps) {
-  const { users, messages } = props;
+  const { messages } = props;
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -182,9 +182,6 @@ export default function Chat(props: ChatProps) {
     const message = e.target.value;
     setTextMessage(message);
   };
-
-  console.log("users:", users, "messages", messages);
-  // const dispatch = useDispatch();
 
   const sendMessage = (text: string) => {
     if (text !== "") {
@@ -228,10 +225,10 @@ export default function Chat(props: ChatProps) {
       <div className="chat-and-channels-title">Chat</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages.map((messageObject: any) => {
+          {messages?.map((messageObject: any) => {
             const { _id, user, createdAt, text } = messageObject;
             return (
-              <Message
+              <MessageBox
                 key={_id}
                 _id={_id}
                 user={user}
@@ -260,114 +257,3 @@ export default function Chat(props: ChatProps) {
     </div>
   );
 }
-
-/*
-<div className="title">Chat</div>
-      <div className="chat-container">
-        <div className="chats">
-          <div className="single-chat">
-            <img className="avatar" src={Sonic} alt="sonic" />
-            <div className="info">
-              <div className="user">Sonic</div>
-              <div className="timestamp">Dec 22,2020</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-
-          <div className="single-chat">
-            <img className="avatar" src={Nick} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Nick Marks</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">Thank you so much!</div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-          <div className="single-chat">
-            <img className="avatar" src={Pacman} alt="Nick Mark" />
-            <div className="info">
-              <div className="user">Pac-Girl</div>
-              <div className="timestamp">Today at 12:30pm</div>
-            </div>
-            <div className="message">
-              I love this lesson! Thanks so much for making it!
-            </div>
-          </div>
-        </div>
-        <div className="chat-input">
-          <input type="text" placeholder="You rock!" />
-          <SendButton />
-        </div>
-      </div>
-*/

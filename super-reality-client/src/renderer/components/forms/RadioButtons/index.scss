@@ -1,0 +1,20 @@
+input[type="radio" ] {
+    /* remove standard background appearance */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      /* create custom radiobutton appearance */
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      padding: 0px;
+      /* background-color only for content */
+      background-clip: content-box;
+      background-color:  #8A88C3;
+      border-radius: 50%;
+
+}
+
+input[type="radio"]:checked {
+  background-color: #D330B6;
+}
