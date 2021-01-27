@@ -56,7 +56,7 @@ const helpSections = [
 export const getNames = (array: string[], arrayData: IData[]): IData[] => {
   const resultArray: IData[] = [];
   array.forEach((el) => {
-    const i = arrayData.map((ele) => ele.name).indexOf(el);
+    const i = arrayData.map((ele) => ele._id).indexOf(el);
     if (i !== -1) resultArray.push(arrayData[i]);
   });
 
@@ -64,7 +64,7 @@ export const getNames = (array: string[], arrayData: IData[]): IData[] => {
 };
 
 export const getSingleName = (name: string, array: IData[]): string => {
-  const i = array.map((el) => el.id).indexOf(name);
+  const i = array.map((el) => el._id).indexOf(name);
   if (i !== -1) return array[i].name;
   return name;
 };

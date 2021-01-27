@@ -7,7 +7,9 @@ import { useDispatch } from "react-redux";
 import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
 import FormControl from "../../../forms";
+import { capitalize } from "../../../forms/AutoCompleteInput";
 import { StepSectionProps } from "..";
+import getCategories from "../../support-utils/getCategories";
 import { IData } from "../../../../api/types/support-ticket/supportTicket";
 
 const titleSchema = Yup.object().shape({
@@ -20,7 +22,20 @@ const titleSchema = Yup.object().shape({
 interface Values {
   title: string | undefined;
   category: string | undefined;
+  newCategoryName: string | undefined;
 }
+
+let searchedCategories: IData[] = [];
+
+const searchCategories = (value: string) => {
+  getCategories(value).then((categories) => {
+    searchedCategories = [...categories];
+  });
+
+  return searchedCategories.length > 0
+    ? searchedCategories
+    : [{ _id: capitalize(value), name: capitalize(value), new: true }];
+};
 
 export default function StepTitle(props: StepSectionProps): JSX.Element {
   const slice = store.getState().createSupportTicket;
@@ -31,7 +46,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
   const modifyUsedCategories = (value: IData) => {
     if (usedCategories) {
       const array: IData[] = [...usedCategories];
-      const i = array.map((e) => e.id).indexOf(value.id);
+      const i = array.map((e) => e._id).indexOf(value._id);
       array.splice(i, 1);
       array.unshift(value);
       setUsedCategories(array);
@@ -46,7 +61,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
         initialValues={{
           title: slice.title,
           category: slice.category,
-          newCategory: slice.newCategory,
+          newCategoryName: slice.newCategoryName,
         }}
         validationSchema={titleSchema}
         onSubmit={(values) => {
@@ -56,7 +71,10 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
               title: values.title,
               category: values.category,
               categoryData: usedCategories,
-              newCategory: values.newCategory,
+              newCategoryName: values.newCategoryName,
+              newCategory:
+                values.newCategoryName !== "" &&
+                values.newCategoryName === values.category,
             },
           });
           goNext();
@@ -96,11 +114,12 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
             <span>Find one!</span>
             <FormControl
               name="category"
-              secondaryName="newCategory"
+              secondaryName="newCategoryName"
               control="autocomplete"
               options={slice.categoryData}
               action={modifyUsedCategories}
               placeholder="Search for categories"
+              filter={searchCategories}
               {...formik}
             />
 
