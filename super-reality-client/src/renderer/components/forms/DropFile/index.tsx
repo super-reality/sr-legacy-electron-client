@@ -16,7 +16,7 @@ export interface Iimages {
 }
 
 export default function DropFile(props: InputProps): JSX.Element {
-  const { setFieldValue, name, values,valuesSet } = props;
+  const { setFieldValue, name, values, valuesSet } = props;
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: (accepted) => {
@@ -36,7 +36,11 @@ export default function DropFile(props: InputProps): JSX.Element {
       });
 
       console.log(accepted);
+      if (valuesSet) {
+        valuesSet(images);
+      } else {
         setFieldValue(name, values[name].concat(images));
+      }
     },
   });
 

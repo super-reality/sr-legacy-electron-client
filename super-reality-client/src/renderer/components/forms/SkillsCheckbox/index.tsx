@@ -17,16 +17,16 @@ export default function CheckboxGroup(props: InputProps): JSX.Element {
             options &&
             options.map((option) => {
               return (
-                <React.Fragment key={option.id}>
+                <React.Fragment key={option._id}>
                   <input
                     type="checkbox"
-                    id={option.id}
+                    id={option._id}
                     {...field}
                     {...rest}
-                    value={option.id}
-                    checked={field.value.includes(option.id)}
+                    value={option._id}
+                    checked={field.value.includes(option._id)}
                   />
-                  <label className="checkbox-label" htmlFor={option.id}>
+                  <label className="checkbox-label" htmlFor={option._id}>
                     {option.name}
                   </label>
                 </React.Fragment>

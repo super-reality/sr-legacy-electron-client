@@ -4,9 +4,13 @@ import { AppState } from "../../../../redux/stores/renderer";
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
 import ImagePreview from "../../../forms/DropFile/ImagePreview";
+import postSupportTicket from "../../support-utils/postSupportTicket";
+import { supportTicketPayload } from "../../../../api/types/support-ticket/supportTicket";
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export default function StepReview(props: StepSectionProps): JSX.Element {
-  const { goNext, goBack, index } = props;
+  const { goBack, index } = props;
 
   const {
     title,
@@ -16,16 +20,56 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     images,
     skillsData,
     categoryData,
+    supportType,
+    newCategory,
+    newCategoryName,
+    newSkill,
+    newSkillName,
   } = useSelector((state: AppState) => state.createSupportTicket);
 
   const getSkills =
     skills &&
     skillsData &&
     getNames(skills, skillsData).map((skill) => (
-      <li className="review-skill" key={skill.id}>
+      <li className="review-skill" key={skill._id}>
         {skill.name}
       </li>
     ));
+
+  const sendSupportTicket = (): void => {
+    const skillArray: string[] = [...skills!];
+
+    const i = skillArray.indexOf(newSkillName!);
+    console.log(i);
+
+    if (i !== -1) skillArray.splice(i, 1);
+
+    let payload: supportTicketPayload = {
+      title: title!,
+      description: description!,
+      supportType: supportType!,
+      skills: skillArray!,
+      supportCategory: category!,
+      newCategory: newCategory!,
+      newSkill: newSkill!,
+    };
+
+    if (newSkillName !== "" && newSkill) {
+      payload = Object.assign(payload, { newSkillName: newSkillName });
+    }
+
+    if (newCategoryName !== "" && newCategory) {
+      payload = Object.assign(payload, { newCategoryName: newCategoryName });
+      delete payload.supportCategory;
+    }
+
+    console.log(payload);
+    postSupportTicket(payload)
+      .then((res: supportTicketPayload) => {
+        console.log(res);
+      })
+      .catch((e: any) => console.log(e));
+  };
 
   return (
     <div>
@@ -62,7 +106,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <button onClick={goBack} type="button">
             Back
           </button>
-          <button onClick={goNext} type="button">
+          <button onClick={sendSupportTicket} type="button">
             Ask for help
           </button>
         </div>

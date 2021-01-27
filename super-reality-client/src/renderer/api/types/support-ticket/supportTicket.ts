@@ -7,16 +7,37 @@ export default interface supportTicker {
   skills?: string[];
   description?: string;
   images?: File[];
-  newSkills?:string[];
-  newCategory?:string;
+  newSkill?:boolean;
+  newSkillName?:string;
+  newCategory?:boolean;
+  newCategoryName?:string;
   skillsData?: IData[];
   searchedSkills?: IData[];
   categoryData?: IData[];
 }
 
+export interface supportTicketPayload {
+  title: string;
+  supportType: TsupportType;
+  supportCategory?: string;
+  description: string;
+  files?: string[];
+  skills: string[];
+  newCategory:boolean;
+  newCategoryName?:string;
+  newSkill:boolean;
+  newSkillName?:string;
+}
+
+export interface supportTicketPayloadGet{
+  err_code: CodeSuccess;
+  ticket: supportTicketPayload;
+}
+
+
 export interface IData {
   name: string;
-  id: string;
+  _id: string;
   new?:boolean;
 }
 
@@ -30,10 +51,17 @@ export interface ISkillsGet{
   skill: IDataGet[];
 }
 
+export interface ICategoriesGet{
+  err_code: CodeSuccess;
+  category: IDataGet[];
+}
+
 export interface ICategoryGet{
   err_code: CodeSuccess;
   category: IData[];
 }
+
+
 
 export interface Ioptions {
   id:string;

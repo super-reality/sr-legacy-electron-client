@@ -5,6 +5,10 @@ import { InputProps } from "..";
 import AutosuggestInput from "../../autosuggest-input";
 import { IData } from "../../../api/types/support-ticket/supportTicket";
 
+export const capitalize = (string: string) => {
+  return string.replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
 export default function AutoCompleteInput(props: InputProps): JSX.Element {
   const {
     setFieldValue,
@@ -15,14 +19,11 @@ export default function AutoCompleteInput(props: InputProps): JSX.Element {
     action,
     placeholder,
     valuesSet,
+    filter,
   } = props;
 
   const iff = (condition: any, then: any, otherwise: any) =>
     condition ? then : otherwise;
-
-  const capitalize = (string: string) => {
-    return string.replace(/\b\w/g, (l) => l.toUpperCase());
-  };
 
   const filterOptions = (
     opts: IData[],
@@ -37,14 +38,14 @@ export default function AutoCompleteInput(props: InputProps): JSX.Element {
       ? array
       : [
           {
-            id: capitalize(inputValue),
+            _id: capitalize(inputValue),
             name: capitalize(inputValue),
             new: true,
           },
         ];
   };
 
-  const filter = (value: string) => {
+  const filterOpt = (value: string) => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     return inputLength === 0
@@ -56,8 +57,8 @@ export default function AutoCompleteInput(props: InputProps): JSX.Element {
         );
   };
 
-  const getSingleName = (id: string, array: IData[]): string => {
-    const i = array.map((el) => el.id).indexOf(id);
+  const getSingleName = (_id: string, array: IData[]): string => {
+    const i = array.map((el) => el._id).indexOf(_id);
     if (i !== -1) return array[i].name;
     return "";
   };
@@ -69,12 +70,12 @@ export default function AutoCompleteInput(props: InputProps): JSX.Element {
       valuesSet(value);
     } else {
       if (values[name] && Array.isArray(values[name])) {
-        setFieldValue(name, values[name].concat(value.id));
+        setFieldValue(name, values[name].concat(value._id));
       } else {
-        setFieldValue(name, value.id);
+        setFieldValue(name, value._id);
       }
 
-      if (secondaryName) {
+      if (secondaryName && value.new) {
         if (values[secondaryName] && Array.isArray(values[secondaryName])) {
           setFieldValue(
             secondaryName,
@@ -101,7 +102,7 @@ export default function AutoCompleteInput(props: InputProps): JSX.Element {
 
   return (
     <AutosuggestInput<IData>
-      filter={filter}
+      filter={filter ?? filterOpt}
       getValue={(suggestion) => suggestion.name}
       renderSuggestion={renderSuggestion}
       submitCallback={setValue}

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState,useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -7,9 +7,12 @@ import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
 import TextError from "../../../forms/TextError";
 import FormControl from "../../../forms";
+import { capitalize } from "../../../forms/AutoCompleteInput";
 import { StepSectionProps } from "..";
+import GetSkills from "../../support-utils/getSkills";
 import supportTicket, {
   IData,
+  IDataGet,
 } from "../../../../api/types/support-ticket/supportTicket";
 
 const titleSchema = Yup.object().shape({
@@ -18,48 +21,48 @@ const titleSchema = Yup.object().shape({
 
 interface Values {
   skills: string[];
-  newSkills:string[];
+  newSkillName: string;
 }
 
 const skillsOpts = [
   {
     name: "Blender",
     options: [
-      { id: "3D Modeling", name: "3D Modeling" },
-      { id: "Grease Pencil", name: "Grease Pencil" },
-      { id: "Curve Editor", name: "Curve Editor" },
-      { id: "idframe Animation", name: "idframe Animation" },
-      { id: "Rendering", name: "Rendering" },
-      { id: "Shaders", name: "Shaders" },
-      { id: "Particles", name: "Particles" },
+      { _id: "3D Modeling", name: "3D Modeling" },
+      { _id: "Grease Pencil", name: "Grease Pencil" },
+      { _id: "Curve Editor", name: "Curve Editor" },
+      { _id: "idframe Animation", name: "idframe Animation" },
+      { _id: "Rendering", name: "Rendering" },
+      { _id: "Shaders", name: "Shaders" },
+      { _id: "Particles", name: "Particles" },
     ],
   },
   {
     name: "3D Animation",
     options: [
-      { id: "Character", name: "Character" },
-      { id: "Physics", name: "Physics" },
-      { id: "Cars", name: "Cars" },
-      { id: "Explosions", name: "Explosions" },
+      { _id: "Character", name: "Character" },
+      { _id: "Physics", name: "Physics" },
+      { _id: "Cars", name: "Cars" },
+      { _id: "Explosions", name: "Explosions" },
     ],
   },
 
   {
     name: "Teaching Style",
     options: [
-      { id: "Video Chat", name: "Video Chat" },
-      { id: "Text", name: "Text" },
-      { id: "Easy Going", name: "Easy Going" },
-      { id: "Micromanages", name: "Micromanages" },
+      { _id: "Video Chat", name: "Video Chat" },
+      { _id: "Text", name: "Text" },
+      { _id: "Easy Going", name: "Easy Going" },
+      { _id: "Micromanages", name: "Micromanages" },
     ],
   },
   {
     name: "What additional skills are important to accomplish this task?",
     options: [
-      { id: "Game Developer", name: "Game Developer" },
-      { id: "Programmer", name: "Programmer" },
-      { id: "Unity Coder", name: "Unity Coder" },
-      { id: "Pixel Artist", name: "Pixel Artist" },
+      { _id: "Game Developer", name: "Game Developer" },
+      { _id: "Programmer", name: "Programmer" },
+      { _id: "Unity Coder", name: "Unity Coder" },
+      { _id: "Pixel Artist", name: "Pixel Artist" },
     ],
   },
 ];
@@ -67,7 +70,7 @@ const skillsOpts = [
 export default function StepSkills(props: StepSectionProps): JSX.Element {
   const { goNext, goBack, index } = props;
 
-  const formRef =useRef<FormikProps<Values>>(null);
+  const formRef = useRef<FormikProps<Values>>(null);
 
   const slice = store.getState().createSupportTicket;
   const dispatch = useDispatch();
@@ -76,37 +79,58 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
     slice.searchedSkills ?? []
   );
 
+  let searchedSkills: IData[] = [];
+
+  const SearchSkills = (value: string): IData[] => {
+    console.log(value);
+    GetSkills(value)
+      .then((skills: IDataGet[]) => {
+        searchedSkills = [...skills];
+      })
+      .catch((e) => console.log(e));
+
+    return searchedSkills.length > 0
+      ? searchedSkills
+      : [{ _id: capitalize(value), name: capitalize(value), new: true }];
+  };
+
   const addExtraSkill = (value: IData) => {
     const array = [...addedSkills];
-    const i = array.map((e) => e.id).indexOf(value.id);
+    const i = array.map((e) => e._id).indexOf(value._id);
     if (i == -1) {
       array.push(value);
       setAddedSkills(array);
     }
   };
 
-  const valuetoIData = (array: string[]): IData[] => {
+  /*   const valuetoIData = (array: string[]): IData[] => {
     let ArrayData: IData[] = [];
-    ArrayData = array.map((e) => ({ id: e, name: e }));
+    ArrayData = array.map((e) => ({ _id: e, name: e }));
 
     return ArrayData;
+  }; */
+
+  const singleValuetoIData = (value: string): IData => {
+    return { _id: value, name: value, new: true };
   };
 
-  const setValues= (value:IData):void=>{
-    const values=formRef.current?.values;
-    const setFieldValue=formRef.current?.setFieldValue;
+  function setValues(value: IData): void {
+    console.log(value);
+    const values = formRef.current?.values;
+    const setFieldValue = formRef.current?.setFieldValue;
 
-    if(setFieldValue && values){
-      setFieldValue("skills",values.skills.concat(value.id));
-    if(value.new)setFieldValue("newSkills",values.newSkills.concat(value.id));
+    if (setFieldValue && values) {
+      setFieldValue("skills", values.skills.concat(value._id));
+      if (value.new)
+        /*  setFieldValue("newSkillName", values.newSkillName.concat(value._id)); */
+        setFieldValue("newSkillName", value._id);
     }
-
   }
 
-  const initialValues:Values={
+  const initialValues: Values = {
     skills: slice.skills ?? [],
-    newSkills: slice.newSkills ?? [],
-  }
+    newSkillName: slice.newSkillName ?? "",
+  };
 
   return (
     <div>
@@ -121,11 +145,15 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             arg: {
               skills: names.skills,
               searchedSkills: addedSkills,
-              newSkills: names.newSkills,
-              skillsData: slice.skillsData && [
+              newSkillName: names.newSkillName,
+              skillsData: slice.skillsData?.concat(
+                singleValuetoIData(names.newSkillName),
+                addedSkills
+              ) /* slice.skillsData && [
                 ...slice.skillsData,
-                ...valuetoIData(names.newSkills),
-              ],
+                ...valuetoIData(names.newSkillName),
+              ] */,
+              newSkill: names.newSkillName != "",
             } as supportTicket,
           });
           goNext();
@@ -160,6 +188,7 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
                 action={addExtraSkill}
                 placeholder="Search for skills"
                 valuesSet={setValues}
+                filter={SearchSkills}
                 {...formik}
               />
               <FormControl
