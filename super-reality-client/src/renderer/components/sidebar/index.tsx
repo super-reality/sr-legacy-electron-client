@@ -131,6 +131,10 @@ export default function Sidebar() {
       if (icon.subComponent) {
         setWideView(current == id ? !wideView : true);
       }
+      if (!icon.subComponent && icon.component && !icon.onClick) {
+        setCurrent(id);
+        setContentExpanded(!contentExpanded);
+      }
       if (icon.onClick) {
         icon.onClick();
       }
