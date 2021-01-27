@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 /* eslint-disable-next-line */
 import moment from "moment";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
@@ -8,8 +8,10 @@ import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import client from "../../feathers";
-import usePopupMessageMenu from "../../hooks/usePopupMessageMenu";
+import useDetectOutsideClick from "../../hooks/useDetectOutsideClick";
 import { Message } from "../../../types/chat";
+import IconEdit from "../../../assets/images/popup-edit.png";
+import IconDelete from "../../../assets/images/popup-delete.png";
 
 interface ChatProps {
   messages: Message[];
@@ -32,12 +34,67 @@ interface MessageProps {
   text: string;
 }
 
+interface MessageDropdownProps {
+  removeMessage: () => void;
+  startEditMessage: () => void;
+  closeFunction: () => void;
+}
+
+function MessageDropdouwn(props: MessageDropdownProps) {
+  const { removeMessage, startEditMessage, closeFunction } = props;
+
+  const dots2Ref = useRef<HTMLDivElement>(null);
+
+  useDetectOutsideClick(dots2Ref, closeFunction);
+
+  const deleteMessage = () => {
+    removeMessage();
+    closeFunction();
+  };
+
+  const editMessage = () => {
+    startEditMessage();
+    closeFunction();
+  };
+  return (
+    <div ref={dots2Ref} className="message-dropdown">
+      <div className="dropdown-item">
+        <button
+          type="button"
+          style={{
+            cursor: "pointer",
+            color: "var(--color-text)",
+          }}
+          onClick={editMessage}
+        >
+          Edit Message
+          <img src={IconEdit} alt="" />
+        </button>
+      </div>
+      <div className="dropdown-item">
+        <button
+          type="button"
+          style={{
+            cursor: "pointer",
+            color: "var(--color-text)",
+          }}
+          onClick={deleteMessage}
+        >
+          Delete Message
+          <img src={IconDelete} alt="" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function MessageBox(props: MessageProps) {
   const { _id, user, createdAt, text } = props;
 
   const [isHover, setIsHover] = useState<boolean>(false);
   const [textEdit, setTextEdit] = useState("");
   const [edit, setEdit] = useState<boolean>(false);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
   const dotsRef = useRef<HTMLDivElement>(null);
 
   const showMessageMenu = () => {
@@ -45,9 +102,14 @@ export function MessageBox(props: MessageProps) {
   };
 
   const hideMessageMenu = () => {
+    if (!showMenu) {
+      setIsHover(false);
+    }
+  };
+  const closeDropdown = () => {
+    setShowMenu(false);
     setIsHover(false);
   };
-
   const onTextChange = (e: any) => {
     const message = e.target.value;
     setTextEdit(message);
@@ -94,15 +156,18 @@ export function MessageBox(props: MessageProps) {
     setEdit(false);
     setTextEdit("");
   };
+  const openDropdown = useCallback(() => {
+    setShowMenu(!showMenu);
+  }, []);
 
   // Popup menu
-  const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
-    removeMessage,
-    startEditMessage,
-  });
-  console.log(user.avatar);
+  // const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
+  //   removeMessage,
+  //   startEditMessage,
+  // });
+  // console.log(user.avatar);
   return (
-    <div className="single-chat" key={_id}>
+    <div className={`single-chat ${isHover ? "hovered" : ""}`} key={_id}>
       <img className="avatar" src={user.avatar || DefaultIcon} alt="avatar" />
       <div className="info">
         <div className="user">{user.username}</div>
@@ -118,13 +183,19 @@ export function MessageBox(props: MessageProps) {
           <div className="message" ref={dotsRef}>
             {text}
           </div>
-
+          {showMenu && (
+            <MessageDropdouwn
+              removeMessage={removeMessage}
+              startEditMessage={startEditMessage}
+              closeFunction={closeDropdown}
+            />
+          )}
           {isHover ? (
             <div className="message-settings-box">
               <button
                 type="button"
                 className="dots-menu"
-                onClick={openMessagePopup}
+                onClick={openDropdown}
               >
                 ...
               </button>
@@ -168,7 +239,6 @@ export function MessageBox(props: MessageProps) {
           </button>
         </div>
       )}
-      <PopupMenu />
     </div>
   );
 }
