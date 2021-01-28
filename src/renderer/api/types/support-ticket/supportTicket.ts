@@ -30,6 +30,14 @@ export interface supportTicketPayload {
   newSkillName?: string;
 }
 
+export interface IFile{
+  lastModified: number;
+  name: string;
+  path: string;
+  size: number;
+  type: string;
+}
+
 export interface supportTicketPayloadGet {
   err_code: CodeSuccess;
   ticket: supportTicketPayload;

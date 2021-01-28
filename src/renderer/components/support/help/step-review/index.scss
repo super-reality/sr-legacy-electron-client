@@ -34,4 +34,25 @@
   }
 }
 
+.review-modal{
+  height: 100%;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  >div{
+    margin: 0!important;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:10px;
+    >button:last-child{
+      margin:0;
+    }
+  }
+}
+
 

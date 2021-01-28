@@ -6,14 +6,15 @@ import { InputProps } from "..";
 /* import close from "../../../../assets/svg/close-img.svg"; */
 import ImagesPreview from "./ImagePreview";
 import "./index.scss";
+import { IFile } from "../../../api/types/support-ticket/supportTicket";
+import uploadMany from "../../../../utils/api/uploadMany";
 
-export interface Iimages {
-  lastModified: number;
-  name: string;
-  path: string;
-  size: number;
-  type: string;
-}
+export const uploadFiles = async (files: IFile[]): Promise<string[]> => {
+  const filesString: string[] = files.map((f) => f.path);
+  return uploadMany(filesString).then((fs) => {
+    return Object.keys(fs).map((key) => fs[key]);
+  });
+};
 
 export default function DropFile(props: InputProps): JSX.Element {
   const { setFieldValue, name, values, valuesSet } = props;
@@ -23,7 +24,7 @@ export default function DropFile(props: InputProps): JSX.Element {
       if (accepted.length === 0) {
         return;
       }
-      const images: Iimages[] = [];
+      const images: IFile[] = [];
 
       accepted.forEach((file) => {
         images.push({
@@ -35,7 +36,6 @@ export default function DropFile(props: InputProps): JSX.Element {
         });
       });
 
-      console.log(accepted);
       if (valuesSet) {
         valuesSet(images);
       } else {

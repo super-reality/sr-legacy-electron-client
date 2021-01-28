@@ -9,12 +9,12 @@ export default function uploadMany(
       return new Promise((resolve, reject) => {
         if (file.startsWith("http")) {
           ret[file] = file;
-          resolve();
+          resolve(ret);
         } else {
           uploadFileToS3(file)
             .then((f) => {
               ret[file] = f;
-              resolve();
+              resolve(ret);
             })
             .catch((e) => {
               reject(e);
