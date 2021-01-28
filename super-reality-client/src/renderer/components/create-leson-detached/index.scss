@@ -100,6 +100,8 @@
 
 @keyframes shootingStar1 {
   0% {
+    box-shadow: 
+        0 0 60px 30px #413db6;
     left: -100%
   }
   50%, 100% {
@@ -109,6 +111,8 @@
 
 @keyframes shootingStar2 {
   0% {
+    box-shadow: 
+        0 0 60px 30px #413db6;
     top: -100%
   }
   50%, 100% {
@@ -152,34 +156,31 @@
       background: var(--main-gradient);
       position: relative;
       top: -100%;
-      animation: fromTop 1.25s ease forwards;
-      animation-delay: 1.25s;
+      animation: fromTop .75s ease forwards;
+      animation-delay: .75s;
 
-      span {
+      span#animation-1 {
         position: absolute;
         display: block;
-        box-shadow: 
-        0 0 60px 30px #413db6;
-      }
-
-      span:nth-child(1) {
         left: -100%;
         top: 0;
         width: 100%;
         height: 2px;
         background: linear-gradient(90deg, transparent, #03e9f4);
-        animation: shootingStar1 1s linear ;
-        animation-delay: 3s;
+        animation: shootingStar1 1s linear forwards;
+        animation-delay: 1.5s;
       }
 
-      span:nth-child(2) {
+      span#animation-2 {
+        position: absolute;
+        display: block;
         top: -100%;
         right: 0;
         width: 2px;
         height: 100%;
         background: linear-gradient(180deg, transparent, #03e9f4);
-        animation: shootingStar2 1s linear ;
-        animation-delay: 3.25s;
+        animation: shootingStar2 1s linear forwards;
+        animation-delay: 1.75s;
       }
       
     }
@@ -198,32 +199,30 @@
       overflow: hidden;
       position: relative;
       right: -100%;
-      animation: fromRight 1.25s ease forwards;
-      span {
+      animation: fromRight .75s ease forwards;
+
+      span#animation-1 {
         position: absolute;
         display: block;
-        box-shadow: 
-        inset 0 60px 30px #413db6;
-      }
-
-      span:nth-child(1) {
         left: -100%;
         bottom: 0;
         width: 100%;
         height: 2px;
         background: linear-gradient(90deg, transparent, #03e9f4);
-        animation: shootingStar1 1s linear ;
-        animation-delay: 3.5s;
+        animation: shootingStar1 1s linear forwards ;
+        animation-delay: 2s;
       }
 
-      span:nth-child(2) {
+      span#animation-2 {
+        position: absolute;
+        display: block;
         top: -100%;
         left: 0;
         width: 2px;
         height: 100%;
         background: linear-gradient(180deg, transparent, #03e9f4);
-        animation: shootingStar2 1s linear ;
-        animation-delay: 3.25s;
+        animation: shootingStar2 1s linear forwards;
+        animation-delay: 1.75s;
       }
     }
   }
