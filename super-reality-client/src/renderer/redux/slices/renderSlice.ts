@@ -16,6 +16,7 @@ const initialState = {
   topInputStates: {} as Record<string, string>,
   appMode: MODE_HOME as UI_MODES,
   ready: false,
+  topMost: false,
   cvResult: {
     dist: 0,
     sizeFactor: 0,
@@ -38,6 +39,9 @@ const renderSlice = createSlice({
     },
     setAppMode: (state: RenderState, action: PayloadAction<UI_MODES>): void => {
       state.appMode = action.payload;
+    },
+    setTopMost: (state: RenderState, action: PayloadAction<boolean>): void => {
+      state.topMost = action.payload;
     },
     setYScrollMoveTo: (
       state: RenderState,
@@ -70,6 +74,7 @@ const renderSlice = createSlice({
 export const {
   setYScroll,
   setAppMode,
+  setTopMost,
   setYScrollMoveTo,
   setTopInput,
   setCvResult,

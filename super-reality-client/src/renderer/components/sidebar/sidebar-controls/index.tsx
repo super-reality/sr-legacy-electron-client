@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import "./index.scss";
 
 import interact from "interactjs";
+import { useDispatch, useSelector } from "react-redux";
+import { animated, useSpring } from "react-spring";
 import { cursorChecker, restrictRoot, voidFunction } from "../../../constants";
 import clamp from "../../../../utils/clamp";
 
@@ -10,18 +12,32 @@ import { ReactComponent as PinIcon } from "../../../../assets/svg/win-pin.svg";
 // import { ReactComponent as CloseIcon } from "../../../../assets/svg/win-close.svg";
 import closeWindow from "../../../../utils/electron/closeWindow";
 import minimizeWindow from "../../../../utils/electron/minimizeWindow";
-import setTopMost from "../../../../utils/electron/setTopMost";
-import setFocusable from "../../../../utils/electron/setFocusable";
+import { AppState } from "../../../redux/stores/renderer";
+import reduxAction from "../../../redux/reduxAction";
 
 interface SidebarControlsProps {
   setWideView: () => void;
+  wideView?: boolean;
   sidebarRef: React.RefObject<HTMLDivElement>;
 }
 
 export default function SidebarControls(props: SidebarControlsProps) {
-  const { setWideView, sidebarRef } = props;
+  const { setWideView, wideView, sidebarRef } = props;
   const draggableRef = useRef<HTMLDivElement>(null);
-  const [pinned, setPinned] = useState(false);
+  const dispatch = useDispatch();
+
+  const { topMost } = useSelector((state: AppState) => state.render);
+
+  const setTopMost = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "SET_TOPMOST",
+      arg: !topMost,
+    });
+  }, [topMost, dispatch]);
+
+  const buttonsProps = useSpring({
+    left: wideView ? "8px" : "2px",
+  });
 
   useEffect(() => {
     if (draggableRef.current) {
@@ -46,16 +62,10 @@ export default function SidebarControls(props: SidebarControlsProps) {
     return voidFunction;
   }, [sidebarRef]);
 
-  const onPin = useCallback(() => {
-    setPinned(!pinned);
-    setFocusable(pinned);
-    setTopMost(!pinned);
-  }, [pinned]);
-
   return (
     <div className="sidebar-controls-container">
-      <div className="buttons">
-        <div className={`pin ${pinned ? "active" : ""}`} onClick={onPin}>
+      <animated.div style={buttonsProps} className="buttons">
+        <div className={`pin ${topMost ? "active" : ""}`} onClick={setTopMost}>
           <PinIcon
             style={{ width: "13px", height: "13px" }}
             fill="var(--color-light)"
@@ -63,7 +73,7 @@ export default function SidebarControls(props: SidebarControlsProps) {
         </div>
         <div className="minimize" onClick={minimizeWindow} />
         <div className="close" onClick={closeWindow} />
-      </div>
+      </animated.div>
       <div ref={draggableRef} onClick={setWideView} className="logo" />
     </div>
   );

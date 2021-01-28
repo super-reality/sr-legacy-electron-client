@@ -37,8 +37,8 @@ export default function App(): JSX.Element {
   const { detached, background } = useSelector(
     (state: AppState) => state.commonProps
   );
-  const yScrollMoveTo = useSelector(
-    (state: AppState) => state.render.yScrollMoveTo
+  const { yScrollMoveTo, topMost } = useSelector(
+    (state: AppState) => state.render
   );
 
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
@@ -53,7 +53,7 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     // Add as more modes are transparent
-    const isTopMost = pathname == "/recorder";
+    const isTopMost = topMost || pathname == "/recorder";
     if (isTopMost) {
       setFocusable(false);
       setTopMost(true);
@@ -61,7 +61,7 @@ export default function App(): JSX.Element {
       setFocusable(true);
       setTopMost(false);
     }
-  }, [pathname]);
+  }, [topMost, pathname]);
 
   if (detached) {
     return <DetachController />;
