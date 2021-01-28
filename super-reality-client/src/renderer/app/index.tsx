@@ -1,30 +1,30 @@
 import React, { useEffect } from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import "./App.scss";
-import reduxAction from "./redux/reduxAction";
-import { AppState } from "./redux/stores/renderer";
-import Splash from "./views/splash";
-import Loading from "./components/loading";
-import DetachController from "./DetachController";
+import "../index.scss";
+import reduxAction from "../redux/reduxAction";
+import { AppState } from "../redux/stores/renderer";
+import Splash from "../views/splash";
+import Loading from "../components/loading";
+import DetachController from "../DetachController";
 import "typeface-roboto";
-import BackgroundController from "./BackgroundController";
-import Windowlet from "./components/windowlet";
-import closeWindow from "../utils/electron/closeWindow";
-import useTransparentFix from "./hooks/useTransparentFix";
-import CreateLesson from "./components/create-leson-detached";
-import ErrorBoundary from "./ErrorBoundary";
-import minimizeWindow from "../utils/electron/minimizeWindow";
-import Recorder from "./components/recorder";
-import setFocusable from "../utils/electron/setFocusable";
-import setTopMost from "../utils/electron/setTopMost";
+import BackgroundController from "../BackgroundController";
+import Windowlet from "../components/windowlet";
+import closeWindow from "../../utils/electron/closeWindow";
+import useTransparentFix from "../hooks/useTransparentFix";
+import CreateLesson from "../components/create-leson-detached";
+import ErrorBoundary from "../ErrorBoundary";
+import minimizeWindow from "../../utils/electron/minimizeWindow";
+import Recorder from "../components/recorder";
+import setFocusable from "../../utils/electron/setFocusable";
+import setTopMost from "../../utils/electron/setTopMost";
 import {
   globalKeyDownListener,
   globalKeyUpListener,
-} from "../utils/globalKeyListeners";
+} from "../../utils/globalKeyListeners";
 
-import Sidebar from "./components/sidebar";
-import BrowseLessons from "./components/browse-lessons";
+import Sidebar from "../components/sidebar";
+import BrowseLessons from "../components/browse-lessons";
 
 export default function App(): JSX.Element {
   useTransparentFix();

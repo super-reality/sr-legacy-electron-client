@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.scss";
+import "./index.scss";
 import { useSelector } from "react-redux";
 import { AppState } from "./redux/stores/renderer";
 import ViewLesson from "./components/view-lesson";
