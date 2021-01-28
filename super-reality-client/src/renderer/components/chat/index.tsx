@@ -9,12 +9,13 @@ import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import client from "../../feathers";
 import useDetectOutsideClick from "../../hooks/useDetectOutsideClick";
-import { Message } from "../../../types/chat";
+import { Channel, Message } from "../../../types/chat";
 import IconEdit from "../../../assets/images/popup-edit.png";
 import IconDelete from "../../../assets/images/popup-delete.png";
 
 interface ChatProps {
   messages: Message[];
+  activeChannel: Channel;
 }
 
 interface User {
@@ -29,7 +30,7 @@ interface User {
 
 interface MessageProps {
   _id: string;
-  user: User;
+  user?: User;
   createdAt: string;
   text: string;
 }
@@ -168,11 +169,19 @@ export function MessageBox(props: MessageProps) {
   // console.log(user.avatar);
   return (
     <div className={`single-chat ${isHover ? "hovered" : ""}`} key={_id}>
-      <img className="avatar" src={user.avatar || DefaultIcon} alt="avatar" />
-      <div className="info">
-        <div className="user">{user.username}</div>
-        <div className="timestamp">{messageTime(createdAt)}</div>
-      </div>
+      {user && (
+        <>
+          <img
+            className="avatar"
+            src={user.avatar || DefaultIcon}
+            alt="avatar"
+          />
+          <div className="info">
+            <div className="user">{user.username}</div>
+            <div className="timestamp">{messageTime(createdAt)}</div>
+          </div>
+        </>
+      )}
 
       {!edit ? (
         <div
@@ -244,7 +253,7 @@ export function MessageBox(props: MessageProps) {
 }
 
 export default function Chat(props: ChatProps) {
-  const { messages } = props;
+  const { messages, activeChannel } = props;
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -286,17 +295,37 @@ export default function Chat(props: ChatProps) {
   // TO DO create listener
   useEffect(scrollToBottom, [messages]);
 
-  // const dispatch = useDispatch();
-  // chat functions
-  // const { messages, users } = useSelector((state: AppState) => state.chat);
+  const checkMessageTime = (currentTime: string, prevTime: string) => {
+    return moment(currentTime).minutes() === moment(prevTime).minutes();
+  };
 
   return (
     <div className="chat-with-title-container">
-      <div className="chat-and-channels-title">Chat</div>
+      <div className="chat-and-channels-title">{activeChannel.channelName}</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages?.map((messageObject: any) => {
-            const { _id, user, createdAt, text } = messageObject;
+          {messages?.map((messageObject: Message, index) => {
+            const { _id, user, createdAt, text, userId } = messageObject;
+            const prevMessage = messages[index - 1];
+
+            if (
+              index !== 0 &&
+              prevMessage.userId == userId &&
+              checkMessageTime(createdAt, prevMessage.createdAt)
+            ) {
+              console.log(
+                "checkMessageTime",
+                checkMessageTime(createdAt, prevMessage.createdAt)
+              );
+              return (
+                <MessageBox
+                  key={_id}
+                  _id={_id}
+                  createdAt={createdAt}
+                  text={text}
+                />
+              );
+            }
             return (
               <MessageBox
                 key={_id}

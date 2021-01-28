@@ -1,5 +1,6 @@
 import React from "react";
 import { animated, useSpring, useTrail } from "react-spring";
+import { Group } from "../../../../types/chat";
 
 const groups = [
   {
@@ -21,6 +22,7 @@ const groups = [
 interface GroupsListProps {
   click: (id: string) => void;
   currentSub: string | undefined;
+  groups: Group[];
 }
 
 export default function GroupsList(props: GroupsListProps) {
