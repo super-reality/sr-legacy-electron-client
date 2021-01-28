@@ -185,16 +185,16 @@ export default function CreateLesson(): JSX.Element {
             ref={resizeContainer}
           >
             {/* For shooting star animation - START */}
-            <span />
-            <span />
+            <span id="animation-1" />
+            <span id="animation-2" />
             {/* For shooting start animation - END */}
             <Lesson />
           </div>
           {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             {/* For shooting star animation - START */}
-            <span />
-            <span />
+            <span id="animation-1" />
+            <span id="animation-2" />
             {/* For shooting start animation - END */}
             <VideoPreview />
           </div>
