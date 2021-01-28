@@ -22,7 +22,7 @@ interface ChatContainerProps {
 }
 function ChatContainer(props: ChatContainerProps) {
   const { setPage } = props;
-  const { messages, activeGroup } = useSelector(
+  const { messages, activeGroup, activeChannel } = useSelector(
     (state: AppState) => state.chat
   );
 
@@ -62,7 +62,7 @@ function ChatContainer(props: ChatContainerProps) {
         setPage={setPage}
         createChannel={openChannelCreatePopup}
       />
-      <Chat messages={messages} />
+      <Chat messages={messages} activeChannel={activeChannel} />
     </>
   );
 }
