@@ -1,34 +1,40 @@
 .sidebar-controls-container {
-  width: calc(100% - 10px);
+  width: 100%;
   position: relative;
   margin: 0 auto;
 
   .buttons {
     display: flex;
+    position: relative;
     -webkit-app-region: no-drag;
     line-height: 24px;
     height: 24px;
-    width: 50px;
+    width: 60px;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   
     .minimize {
-      background-color: #FFBB00;
+      background-color: #FABD3E;
+      border-color: #CBA864;
     }
 
     .close {
-      background-color: #FF2C00;
+      background-color: #FD5F5C;
+      border-color: #AE545E;
     }
   
     .maximize,
     .minimize,
     .pin,
     .close {
-      width: 14px;
-      height: 14px;
+      width: 12px;
+      height: 12px;
+      margin: 0 4px;
+      border-width: 1px;
       border-radius: 500px;
       display: flex;
       cursor: auto;
+      overflow: hidden;
 
       svg {
         margin: auto;
@@ -37,7 +43,11 @@
 
     .pin {
       &.active {
-        background-color: var(--color-button);
+        background-color: var(--color-background-dark);
+
+        svg {
+          fill: var(--color-icon);
+        }
       }
     }
 

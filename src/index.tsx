@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
-import App from "./renderer/App";
+import App from "./renderer/app";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
 import handleIpc from "./utils/handleIpc";
@@ -30,7 +30,7 @@ ReactDOM.render(
 if (module.hot && process.env.NODE_ENV === "development") {
   module.hot.accept();
   // eslint-disable-next-line global-require
-  const NextApp = require("./renderer/App").default;
+  const NextApp = require("./renderer/app").default;
   ReactDOM.render(
     <React.StrictMode>
       <Provider store={store}>

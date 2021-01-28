@@ -26,6 +26,7 @@ export const actions = {
   SET_CV_RESULT: renderSlice.setCvResult,
   SET_READY: renderSlice.setReady,
   SET_APP_MODE: renderSlice.setAppMode,
+  SET_TOPMOST: renderSlice.setTopMost,
   CLEAR_RECORDING_CV_DATA: createLessonSliceV2.clearRecordingCVData,
   SET_RECORDING_CV_DATA: createLessonSliceV2.setRecordingCVData,
   SET_RECORDING_DATA: createLessonSliceV2.setRecordingData,
