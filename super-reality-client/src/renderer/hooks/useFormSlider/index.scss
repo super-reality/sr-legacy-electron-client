@@ -1,12 +1,12 @@
 .sliderForm {
   width: var(--width);
   display: flex;
-  height: 100vh;
+  height: 100%;
 }
 
 .sliderForm > div {
   position: relative;
-  height: 85vh;
+  height: 100%;
   overflow-y: scroll;
   flex-direction: column;
   min-width: var(--slides);

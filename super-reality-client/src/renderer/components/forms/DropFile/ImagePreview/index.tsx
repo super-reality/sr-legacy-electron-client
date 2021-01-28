@@ -2,10 +2,10 @@
 import React from "react";
 import "./index.scss";
 import close from "../../../../../assets/svg/close-img.svg";
-import { Iimages } from "..";
+import { IFile } from "../../../../api/types/support-ticket/supportTicket";
 
 interface IimagePreviewProps {
-  values: Iimages[];
+  values: IFile[];
   onRemove?: (i: number) => void;
   removable?: string;
   columns: number;
@@ -14,7 +14,7 @@ interface IimagePreviewProps {
 function getImages(props: IimagePreviewProps): JSX.Element[] {
   const { values, onRemove, removable } = props;
 
-  return values.map((file: Iimages, index: number) => {
+  return values.map((file: IFile, index: number) => {
     return (
       <li className="image-preview-item" key={file.path}>
         <div>
