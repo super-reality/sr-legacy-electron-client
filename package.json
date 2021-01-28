@@ -98,8 +98,7 @@
     "build": "npm run electron-rebuild && npm run react-build && npm run electron-build",
     "electron-rebuild": "electron-rebuild",
     "pre-build-iohook-win": "copyfiles -f iohooks/** node_modules/iohook/builds/electron-v80-win32-x64/build/Release",
-    "postinstall": "node add-ffmpeg.js",
-    "commitmsg": "validate-commit-msg"
+    "postinstall": "node add-ffmpeg.js"
   },
   "build": {
     "appId": "com.super.reality.client",
@@ -231,30 +230,16 @@
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
-    "sinon": "^9.2.3",
-    "validate-commit-msg": "^2.14.0"
+    "sinon": "^9.2.3"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    },
-    "validate-commit-msg": {
-      "types": [
-        "feat",
-        "fix",
-        "docs",
-        "style",
-        "refactor",
-        "perf",
-        "test",
-        "chore",
-        "revert"
-      ],
-      "warnOnFail": false,
-      "maxSubjectLength": 100,
-      "subjectPattern": "^[A-Z]+-[0-9]+ - .*",
-      "subjectPatternErrorMsg": "Subject must be in format 'CMS-123 - Commit message'",
-      "helpMessage": ""
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
     }
   }
 }
