@@ -15,6 +15,7 @@ export default function usePopupImage(): [
   }, []);
 
   const Image = useMemo(
+    // eslint-disable-next-line react/display-name
     () => () => {
       return (
         <Popup

@@ -6,12 +6,13 @@ services:
 node_js:
   - '12.14.0'
 
+install:
+  - npm install
+
 env:
   global:
   - ELECTRON_CACHE=$HOME/.cache/electron
   - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-
-cache: npm
 
 filter_secrets: false
 
@@ -24,12 +25,10 @@ jobs:
       os: windows
       env: YARN_GPG=no
       script:
-        - cd super-reality-client
-        - npm install
         - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
+        - npm run electron-rebuild
         - npm run pre-build-iohook-win
-        - npm run build:web
         - npm run build
         - node ./rm-unpacked.js
       deploy:
