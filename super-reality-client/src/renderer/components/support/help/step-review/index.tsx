@@ -1,10 +1,7 @@
-import React from "react";
-/* import { remote } from "electron"; */
-/* import os from "os";
-import path from "path"; */
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import reduxAction from "../../../../redux/reduxAction";
 import { AppState } from "../../../../redux/stores/renderer";
-
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
 import { ImagesPreview } from "../../../forms";
@@ -14,11 +11,9 @@ import { uploadFiles } from "../../../forms/DropFile";
 import usePopUp from "../../../../hooks/usePopup";
 import useNotification from "../../../../hooks/useNotification";
 import Support from "../../../../../assets/images/support.png";
-/* import getPublicPath from "../../../../../utils/electron/getPublicPath"; */
+import SupperSpinner from "../../../super-spinner";
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-/* const { Notification,app} = remote; */
 
 export default function StepReview(props: StepSectionProps): JSX.Element {
   const { goBack, index } = props;
@@ -39,6 +34,10 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
   } = useSelector((state: AppState) => state.createSupportTicket);
 
   const [PopUp, openPopup, closePopup] = usePopUp(false);
+
+  const [popupLoading, setPopupLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const getSkills =
     skills &&
@@ -101,36 +100,56 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
   });
 
   const ManageTicket = async (): Promise<void> => {
+    setPopupLoading(true);
     await sendSupportTicket();
     closePopup();
     showNotification();
+    reduxAction(dispatch, {
+      type: "SUPPORT_TICKET_RESET",
+      arg: null,
+    });
+
+    reduxAction(dispatch, {
+      type: "SET_SUPPORT_TICKET",
+      arg: {
+        supportScreen: 0,
+      },
+    });
+    setPopupLoading(false);
   };
   return (
     <div>
-      <PopUp
-        style={{ position: "absolute", top: "30%", left: "6%" }}
-        width="350px"
-        height="170px"
-      >
-        <div className="review-modal">
-          <img src={Support} />
-          <div className="step-title">
-            You ready for sending the support ticket?
-          </div>
-          <div className="support-buttons">
-            <button onClick={closePopup} type="button">
-              no
-            </button>
-            <button onClick={ManageTicket} type="button">
-              Send
-            </button>
-          </div>
-        </div>
-      </PopUp>
-
       <div className="title">Step {index} of 5</div>
 
       <div className="step">
+        <PopUp
+          style={{ position: "absolute", top: "30%", left: "6%" }}
+          width="350px"
+          height="170px"
+        >
+          <div className="review-modal">
+            {popupLoading ? (
+              <>
+                <SupperSpinner width="60px" text="Uploading" />
+              </>
+            ) : (
+              <>
+                <img src={Support} />
+                <div className="step-title">
+                  Ready for sending a support ticket?
+                </div>
+                <div className="support-buttons">
+                  <button onClick={closePopup} type="button">
+                    No
+                  </button>
+                  <button onClick={ManageTicket} type="button">
+                    Send It!
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </PopUp>
         <div className="review-step">
           <div className="step-title">Title</div>
           <p>{title}</p>
