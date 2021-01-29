@@ -1,0 +1,40 @@
+.lesson-container {
+  background-color: var(--color-section-inner);
+  height: 32px;
+  border-radius: 24px;
+  margin: 8px auto;
+  padding: 4px;
+  display: flex;
+
+  .lesson-icon {
+  }
+
+  .lesson-title {
+    font-size: 14px;
+    line-height: 16px;
+
+    .lesson-name {
+    }
+
+    .lesson-creator {
+      opacity: 0.6;
+    }  
+  }
+
+
+  .lesson-social {
+    align-self: center;
+    margin-left: auto;
+    margin-right: 8px;
+
+    .lesson-rating {
+    }
+  
+    .lesson-share {
+    }
+  
+    .lesson-completed {
+    }
+  }
+}
+

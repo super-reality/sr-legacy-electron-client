@@ -1,0 +1,117 @@
+.channel-title {
+    padding: 20px 20px 0 25px;
+    color: #585286;
+    font-size: 16px;
+}
+
+.channel-wrapper{
+    height: 100%;
+    width: 100%;
+    display:flex;
+}
+.channel {
+    position: relative;
+    overflow-y: scroll;
+    height: calc(100vh - 150px);
+    max-width: 250px;
+    width: 100%;
+
+    .active-group {
+        cursor: pointer;
+    }
+}
+
+.channel-container {
+    font-size: 14px;
+    color: #c2c2c2;
+    padding: 20px;
+    position: relative;
+    cursor: pointer;
+}
+
+.channel-container::after {
+    content: "";
+    height: 2px !important;
+    width: 83%;
+    top: 95%;
+    position: absolute;
+    background-color: #585286;
+    transition: 0.4s ease-out all 0.1s;
+}
+
+.single-channel {
+    background: #323052;
+    border-radius: 6px;
+    color: #8a88c3;
+    padding-left: 10px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    margin-bottom: 7px;
+    align-items: center;
+
+    svg {
+        margin-right: 10px;
+    }
+    .info {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        align-items: center;
+
+        svg {
+            margin-right: 10px;
+        }
+    }
+}
+
+.avatar {
+    float: left;
+    margin-right: 10px;
+    max-height: 35px;
+    max-width: 35px;
+}
+
+.add {
+    position: relative;
+    button {
+        position: absolute;
+        right: 15px;
+        top: -20px;
+    }
+    :hover {
+        cursor: pointer;
+    }
+}
+
+.active-group {
+    color: #c2c2c2;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:after {
+        content: "";
+        width: 30px;
+        display: block;
+        position: absolute;
+        background-repeat: no-repeat;
+        height: 30px;
+        right: 0;
+        top: 28px;
+        background-image: url("../../../assets/svg/expand.svg");
+    }
+}
+
+.group-settings-dropdown {
+    background: #211b33;
+    border-radius: 6px;
+    position: relative;
+    top: 10px;
+    padding: 5px 0;
+
+    .dropdown-item {
+        padding: 10px 10px 10px 30px;
+        width: 195px;
+    }
+}

@@ -1,0 +1,54 @@
+.splash-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+
+  .video-container {
+    width: -webkit-fill-available;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+
+    video {
+      object-fit: cover;
+      display: block;
+      height: 100%;
+      margin: auto;
+    }  
+  }
+
+  .splash-elements {
+    overflow: hidden;
+    position: relative;
+    width: 400px;
+    min-width: 400px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background: var(--color-section);
+  }
+
+  .splash-button {
+    width: 100%;
+    position: absolute;
+  }
+
+  .version {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    font-size: 14px;
+    color: var(--color-magenda);
+  }
+}
+
+.splash-mute {
+  margin: 8px;
+  display: flex;
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+}

@@ -1,0 +1,28 @@
+.step-container {
+  background-color: var(--color-section-inner);
+  display: flex;
+  border-radius: 24px;
+  height: 32px;
+  line-height: 32px;
+  padding: 8px;
+  margin: 4px 0;
+  justify-content: space-between;
+
+  .step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    background: var(--color-section);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .step-title {
+    margin-left: 8px;
+    flex-grow: 2;
+  }
+
+  .step-rating {
+    margin-right: 8px;
+  }
+}

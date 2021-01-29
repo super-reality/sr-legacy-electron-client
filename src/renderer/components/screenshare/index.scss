@@ -1,0 +1,43 @@
+.screenshare-title {
+    padding: 20px 20px 0 25px;
+    color: #585286;
+    font-size: 16px;
+}
+
+.screenshare-container {
+    font-size: 14px;
+    color: #c2c2c2;
+    padding: 20px;
+}
+
+.screens {
+    position: relative;
+}
+
+.screen-title {
+    border-radius: 6px 6px 0 0;
+    padding: 10px;
+    background: #585286;
+}
+
+.screen {
+    border-radius: 0 0 6px 6px;
+    position: relative;
+    max-height: 200px;
+
+    img {
+        width: 100%;
+        border-radius: 0 0 6px 6px;
+    }
+
+    .user-avatar {
+        position: absolute;
+        bottom: 0%;
+    }
+}
+
+.single-screen {
+    margin-bottom: 20px;
+}
+
+
