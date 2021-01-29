@@ -78,7 +78,6 @@
   },
   "scripts": {
     "start": "nf start -p 3000",
-    "commit": "cz",
     "react-start": "node generateInfo.js && craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
@@ -226,6 +225,7 @@
     "jest": "24.9.0",
     "jest-image-snapshot": "^4.1.0",
     "jest-puppeteer": "^4.4.0",
+    "lint-staged": "^10.5.3",
     "native-addon-loader": "^2.0.1",
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
@@ -239,7 +239,13 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
   }
 }

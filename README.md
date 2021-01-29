@@ -66,7 +66,7 @@ All visual tests are declared in `src/__tests__/electron.ts` and the code for th
 
 2. Submit PR, merge into `develop`
 
-Try to keep `develop` in a buildable and runnable state. We use [commitzen](https://commitizen.github.io/cz-cli/) to enforce commits format, You can use `npx cz` or `npm run commit` to create a new valid commit.
+Try to keep `develop` in a buildable and runnable state. We use [commitzen](https://commitizen.github.io/cz-cli/) to enforce commits format, You can use `npx cz` to create a new valid commit.
 
 Merging to `master` triggers automatic version bump.
 
