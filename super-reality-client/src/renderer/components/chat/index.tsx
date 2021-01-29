@@ -31,7 +31,7 @@ interface User {
 interface MessageProps {
   _id: string;
   user?: User;
-  createdAt: string;
+  createdAt?: string;
   text: string;
 }
 
@@ -44,9 +44,9 @@ interface MessageDropdownProps {
 function MessageDropdouwn(props: MessageDropdownProps) {
   const { removeMessage, startEditMessage, closeFunction } = props;
 
-  const dots2Ref = useRef<HTMLDivElement>(null);
+  const dotsRef = useRef<HTMLDivElement>(null);
 
-  useDetectOutsideClick(dots2Ref, closeFunction);
+  useDetectOutsideClick(dotsRef, closeFunction);
 
   const deleteMessage = () => {
     removeMessage();
@@ -58,32 +58,18 @@ function MessageDropdouwn(props: MessageDropdownProps) {
     closeFunction();
   };
   return (
-    <div ref={dots2Ref} className="message-dropdown">
-      <div className="dropdown-item">
-        <button
-          type="button"
-          style={{
-            cursor: "pointer",
-            color: "var(--color-text)",
-          }}
-          onClick={editMessage}
-        >
+    <div ref={dotsRef} className="message-dropdown">
+      <div className="dropdown-item" onClick={editMessage}>
+        <div>
           Edit Message
           <img src={IconEdit} alt="" />
-        </button>
+        </div>
       </div>
-      <div className="dropdown-item">
-        <button
-          type="button"
-          style={{
-            cursor: "pointer",
-            color: "var(--color-text)",
-          }}
-          onClick={deleteMessage}
-        >
+      <div className="dropdown-item" onClick={deleteMessage}>
+        <div>
           Delete Message
           <img src={IconDelete} alt="" />
-        </button>
+        </div>
       </div>
     </div>
   );
@@ -96,7 +82,6 @@ export function MessageBox(props: MessageProps) {
   const [textEdit, setTextEdit] = useState("");
   const [edit, setEdit] = useState<boolean>(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
-  const dotsRef = useRef<HTMLDivElement>(null);
 
   const showMessageMenu = () => {
     setIsHover(true);
@@ -126,7 +111,12 @@ export function MessageBox(props: MessageProps) {
 
   // delete message function
   const removeMessage = () => {
-    (client as any).service("messages").remove(_id);
+    (client as any)
+      .service("messages")
+      .remove(_id)
+      .catch((err: any) => {
+        console.log(err);
+      });
   };
 
   // edit message
@@ -137,9 +127,14 @@ export function MessageBox(props: MessageProps) {
 
   // patch updated message
   const submitEditMessage = (id: string, updatedMessage: string) => {
-    (client as any).service("messages").patch(id, {
-      text: updatedMessage,
-    });
+    (client as any)
+      .service("messages")
+      .patch(id, {
+        text: updatedMessage,
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
     setEdit(false);
     setTextEdit("");
   };
@@ -168,7 +163,12 @@ export function MessageBox(props: MessageProps) {
   // });
   // console.log(user.avatar);
   return (
-    <div className={`single-chat ${isHover ? "hovered" : ""}`} key={_id}>
+    <div
+      className={`single-chat ${isHover ? "hovered" : ""} ${
+        createdAt ? "" : "no-time-message"
+      }`}
+      key={_id}
+    >
       {user && (
         <>
           <img
@@ -178,7 +178,9 @@ export function MessageBox(props: MessageProps) {
           />
           <div className="info">
             <div className="user">{user.username}</div>
-            <div className="timestamp">{messageTime(createdAt)}</div>
+            <div className="timestamp">
+              {createdAt && messageTime(createdAt)}
+            </div>
           </div>
         </>
       )}
@@ -189,9 +191,7 @@ export function MessageBox(props: MessageProps) {
           onMouseEnter={showMessageMenu}
           onMouseLeave={hideMessageMenu}
         >
-          <div className="message" ref={dotsRef}>
-            {text}
-          </div>
+          <div className="message">{text}</div>
           {showMenu && (
             <MessageDropdouwn
               removeMessage={removeMessage}
@@ -296,7 +296,12 @@ export default function Chat(props: ChatProps) {
   useEffect(scrollToBottom, [messages]);
 
   const checkMessageTime = (currentTime: string, prevTime: string) => {
-    return moment(currentTime).minutes() === moment(prevTime).minutes();
+    const timeDifference =
+      moment(currentTime).hours() * 60 +
+      moment(currentTime).minutes() -
+      moment(prevTime).hours() * 60 -
+      moment(prevTime).minutes();
+    return timeDifference < 10;
   };
 
   return (
@@ -313,19 +318,10 @@ export default function Chat(props: ChatProps) {
               prevMessage.userId == userId &&
               checkMessageTime(createdAt, prevMessage.createdAt)
             ) {
-              console.log(
-                "checkMessageTime",
-                checkMessageTime(createdAt, prevMessage.createdAt)
-              );
-              return (
-                <MessageBox
-                  key={_id}
-                  _id={_id}
-                  createdAt={createdAt}
-                  text={text}
-                />
-              );
+              console.log("close time", _id);
+              return <MessageBox key={_id} _id={_id} text={text} />;
             }
+            console.log("diff time", _id);
             return (
               <MessageBox
                 key={_id}

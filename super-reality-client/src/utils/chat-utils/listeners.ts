@@ -31,14 +31,10 @@ const showChatNotification = (message: Message) => {
 // chat listeners
 // message listeners
 // message created listener
-const onMessageCreateteListener = (
-  newMessage: Message,
-  stateMessages: Message[]
-) => {
-  console.log("message created", newMessage, "messages", stateMessages);
-  const newMessages = [...stateMessages, newMessage];
+const onMessageCreateListener = (newMessage: Message) => {
+  console.log("message created", newMessage);
 
-  reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessage });
 };
 // message updated listener
 const onMessageUpdate = (updatedMessage: Message) => {
@@ -128,7 +124,7 @@ const onChannelDeleteListener = (deletedChannel: Channel) => {
 export const onAuthenticated = () => {
   // On successfull login
   console.log("authenticated listener");
-  client.on("authenticated", (login) => {
+  client.on("authenticated", (login: any) => {
     // Get all users and messages
     console.log("authenticated listener start. login:", login);
     Promise.all([
@@ -186,23 +182,19 @@ export const onAuthenticated = () => {
         });
         reduxAction(store.dispatch, {
           type: "SET_ACTIVE_CHANNEL",
-          arg: channelsResult.data[1],
+          arg: channelsResult.data[0],
         });
         // chat listeners
 
         // messages created listener clean up
-        messagesClient.off("created", onMessageCreateteListener);
+        messagesClient.off("created", onMessageCreateListener);
         // add new message to the redux state
-        messagesClient
-          .on("created", (message: any) => {
-            const { chat } = store.getState();
-            onMessageCreateteListener(message, chat.messages);
-            showChatNotification(message);
-          })
-          .catch((err: any) => {
-            console.log(err);
-          });
+        messagesClient.on("created", (message: any) => {
+          onMessageCreateListener(message);
+          showChatNotification(message);
+        });
         // edit message listener
+        messagesClient.off("patched", onMessageUpdate);
         messagesClient.on("patched", (params: any) => {
           console.log("MESSAGE PATCHED EVENT", params);
           onMessageUpdate(params);
@@ -222,7 +214,7 @@ export const onAuthenticated = () => {
             arg: updatedMessages,
           });
         });
-
+        console.log("listeners test");
         // users listener clean up
         usersClient.off("created", onUserCreatedListener);
         // Add new users to the user list
