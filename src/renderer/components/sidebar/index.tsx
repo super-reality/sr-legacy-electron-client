@@ -95,7 +95,7 @@ export default function Sidebar() {
         icon: TutorialsIcon,
         component: <Support />,
         subComponent: null,
-        componentWidth: 900,
+        componentWidth: 700,
       },
     ],
     [history, current, currentSub, contentExpanded]

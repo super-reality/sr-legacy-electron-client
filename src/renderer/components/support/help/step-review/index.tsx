@@ -1,11 +1,17 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import reduxAction from "../../../../redux/reduxAction";
 import { AppState } from "../../../../redux/stores/renderer";
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
-import ImagePreview from "../../../forms/DropFile/ImagePreview";
+import { ImagesPreview } from "../../../forms";
 import postSupportTicket from "../../support-utils/postSupportTicket";
 import { supportTicketPayload } from "../../../../api/types/support-ticket/supportTicket";
+import { uploadFiles } from "../../../forms/DropFile";
+import usePopUp from "../../../../hooks/usePopup";
+import useNotification from "../../../../hooks/useNotification";
+import Support from "../../../../../assets/images/support.png";
+import SupperSpinner from "../../../super-spinner";
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
@@ -27,6 +33,12 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     newSkillName,
   } = useSelector((state: AppState) => state.createSupportTicket);
 
+  const [PopUp, openPopup, closePopup] = usePopUp(false);
+
+  const [popupLoading, setPopupLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
   const getSkills =
     skills &&
     skillsData &&
@@ -36,11 +48,10 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
       </li>
     ));
 
-  const sendSupportTicket = (): void => {
+  const sendSupportTicket = async (): Promise<void> => {
     const skillArray: string[] = [...skills!];
 
     const i = skillArray.indexOf(newSkillName!);
-    console.log(i);
 
     if (i !== -1) skillArray.splice(i, 1);
 
@@ -53,6 +64,16 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
       newCategory: newCategory!,
       newSkill: newSkill!,
     };
+    let filesArray: string[] = [];
+
+    if (images && images?.length > 0) {
+      await uploadFiles(images)
+        .then((files) => {
+          filesArray = [...files];
+        })
+        .catch((e) => console.log(e));
+      payload = Object.assign(payload, { files: filesArray });
+    }
 
     if (newSkillName !== "" && newSkill) {
       payload = Object.assign(payload, { newSkillName: newSkillName });
@@ -64,18 +85,71 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     }
 
     console.log(payload);
-    postSupportTicket(payload)
+    await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
         console.log(res);
       })
       .catch((e: any) => console.log(e));
   };
 
+  const [showNotification] = useNotification({
+    title: "Support ticket added!",
+    subtitle: title!,
+    body: title!,
+    icon: "/icons/logo-os-notification.png",
+  });
+
+  const ManageTicket = async (): Promise<void> => {
+    setPopupLoading(true);
+    await sendSupportTicket();
+    closePopup();
+    showNotification();
+    reduxAction(dispatch, {
+      type: "SUPPORT_TICKET_RESET",
+      arg: null,
+    });
+
+    reduxAction(dispatch, {
+      type: "SET_SUPPORT_TICKET",
+      arg: {
+        supportScreen: 0,
+      },
+    });
+    setPopupLoading(false);
+  };
   return (
     <div>
       <div className="title">Step {index} of 5</div>
 
       <div className="step">
+        <PopUp
+          style={{ position: "absolute", top: "30%", left: "6%" }}
+          width="350px"
+          height="170px"
+        >
+          <div className="review-modal">
+            {popupLoading ? (
+              <>
+                <SupperSpinner width="60px" text="Uploading" />
+              </>
+            ) : (
+              <>
+                <img src={Support} />
+                <div className="step-title">
+                  Ready for sending a support ticket?
+                </div>
+                <div className="support-buttons">
+                  <button onClick={closePopup} type="button">
+                    No
+                  </button>
+                  <button onClick={ManageTicket} type="button">
+                    Send It!
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </PopUp>
         <div className="review-step">
           <div className="step-title">Title</div>
           <p>{title}</p>
@@ -91,7 +165,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <span>Images</span>
           {/* <ul>{getImages}</ul> */}
           {images && images.length > 0 ? (
-            <ImagePreview values={images} removable="false" columns={3} />
+            <ImagesPreview values={images} removable="false" columns={3} />
           ) : (
             <p>No images selected</p>
           )}
@@ -106,7 +180,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <button onClick={goBack} type="button">
             Back
           </button>
-          <button onClick={sendSupportTicket} type="button">
+          <button onClick={openPopup} type="button">
             Ask for help
           </button>
         </div>
