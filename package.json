@@ -78,6 +78,7 @@
   },
   "scripts": {
     "start": "nf start -p 3000",
+    "cm": "git-cz",
     "react-start": "node generateInfo.js && craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
@@ -239,7 +240,6 @@
   },
   "husky": {
     "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
       "pre-commit": "lint-staged"
     }
   },

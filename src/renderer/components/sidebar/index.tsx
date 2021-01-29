@@ -30,7 +30,6 @@ export interface SidebarIcon {
       title?: string | undefined;
     }
   >;
-
   component: JSX.Element | any | null;
   subComponent: JSX.Element | any | null;
   componentWidth: number;
