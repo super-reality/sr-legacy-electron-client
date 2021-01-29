@@ -7,6 +7,7 @@ import ImagePreview from "../../../forms/DropFile/ImagePreview";
 import postSupportTicket from "../../support-utils/postSupportTicket";
 import { supportTicketPayload } from "../../../../api/types/support-ticket/supportTicket";
 
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export default function StepReview(props: StepSectionProps): JSX.Element {
