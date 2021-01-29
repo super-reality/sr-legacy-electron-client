@@ -1,7 +1,5 @@
 import * as AuthSlice from "./slices/authSlice";
 import * as renderSlice from "./slices/renderSlice";
-import * as createCollectionSlice from "./slices/createCollectionSlice";
-import * as createSubjectSlice from "./slices/createSubjectSlice";
 import * as createLessonSliceV2 from "./slices/createLessonSliceV2";
 import * as commonPropSlice from "./slices/commonPropSlice";
 import * as userDataSlice from "./slices/userDataSlice";
@@ -44,12 +42,6 @@ export const actions = {
   CREATE_LESSON_V2_SETANCHOR: createLessonSliceV2.setAnchor,
   CREATE_LESSON_V2_DELETEANCHOR: createLessonSliceV2.deleteAnchor,
   CREATE_LESSON_V2_TRIGGER_CV_MATCH: createLessonSliceV2.doTriggerCvMatch,
-  CREATE_COLLECTION_DATA: createCollectionSlice.setData,
-  CREATE_COLLECTION_TAG: createCollectionSlice.addTag,
-  CREATE_COLLECTION_RESET: createCollectionSlice.reset,
-  CREATE_SUBJECT_DATA: createSubjectSlice.setData,
-  CREATE_SUBJECT_TAG: createSubjectSlice.addTag,
-  CREATE_SUBJECT_RESET: createSubjectSlice.reset,
   SET_LOADING_STATE: commonPropSlice.setIsLoading,
   SET_DETACHED: commonPropSlice.setDetached,
   SET_BACKGROUND: commonPropSlice.setBackground,

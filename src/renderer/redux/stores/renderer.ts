@@ -3,8 +3,6 @@ import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "../slices/authSlice";
 import renderSlice from "../slices/renderSlice";
 import backgroundSlice from "../slices/backgroundSlice";
-import createCollectionSlice from "../slices/createCollectionSlice";
-import createSubjectSlice from "../slices/createSubjectSlice";
 import createLessonSliceV2 from "../slices/createLessonSliceV2";
 import commonPropSlice from "../slices/commonPropSlice";
 import userDataSlice from "../slices/userDataSlice";
@@ -17,8 +15,6 @@ const rootReducer = combineReducers({
   auth: authSlice.reducer,
   render: renderSlice.reducer,
   background: backgroundSlice.reducer,
-  createCollection: createCollectionSlice.reducer,
-  createSubject: createSubjectSlice.reducer,
   createLessonV2: createLessonSliceV2.reducer,
   commonProps: commonPropSlice.reducer,
   userData: userDataSlice.reducer,
