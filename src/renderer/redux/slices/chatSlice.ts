@@ -59,11 +59,21 @@ const chatSlice = createSlice({
     updateUser: (state: ChatState, action: PayloadAction<any>): void => {
       state.loginData.user = action.payload;
     },
-    setMessages: (state: ChatState, action: PayloadAction<Message[]>): void => {
-      state.messages = action.payload;
+    setMessages: (
+      state: ChatState,
+      action: PayloadAction<Message[] | Message>
+    ): void => {
+      const newMessages = state.messages.concat(action.payload);
+      state.messages = newMessages;
     },
     updateMessage: (state: ChatState, action: PayloadAction<Message>): void => {
       state.messages = updateArray(state.messages, action.payload);
+    },
+    deleteMessage: (state: ChatState, action: PayloadAction<Message>): void => {
+      const filteredMessages = state.messages.filter(
+        ({ _id }) => _id != action.payload._id
+      );
+      state.messages = filteredMessages;
     },
     setUsers: (state: ChatState, action: PayloadAction<ChatUser[]>): void => {
       state.users = action.payload;
@@ -74,13 +84,18 @@ const chatSlice = createSlice({
     ): void => {
       state.users = updateArray(state.users, action.payload);
     },
-
+    deleteUser: (state: ChatState, action: PayloadAction<Message>): void => {
+      const filteredUsers = state.users.filter(
+        ({ _id }) => _id != action.payload._id
+      );
+      state.users = filteredUsers;
+    },
     setGroups: (state: ChatState, action: PayloadAction<Group[]>): void => {
       state.groups = action.payload;
     },
     addNewGroup: (state: ChatState, action: PayloadAction<Group>): void => {
-      const updatedGroups = state.groups.concat(action.payload);
-      state.groups = updatedGroups;
+      const newGroups = state.groups.concat(action.payload);
+      state.groups = newGroups;
     },
     updateGroup: (state: ChatState, action: PayloadAction<Group>): void => {
       const { groups, activeGroup } = state;
@@ -109,15 +124,15 @@ const chatSlice = createSlice({
       state.channels = action.payload;
     },
     updateChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
-      const { channels } = state;
+      const { channels, activeChannel } = state;
       const updatedChannels: Channel[] = updateArray(
         channels.data,
         action.payload
       );
       state.channels.data = updatedChannels;
-      // if (activeChannel._id === action.payload._id) {
-      //   state.activeChannel = action.payload;
-      // }
+      if (activeChannel._id === action.payload._id) {
+        state.activeChannel = action.payload;
+      }
     },
     deleteChannel: (state: ChatState, action: PayloadAction<Channel>): void => {
       const filteredChannels = state.channels.data.filter(
@@ -144,8 +159,10 @@ export const {
   updateUser,
   setMessages,
   updateMessage,
+  deleteMessage,
   setUsers,
   updateChatUsers,
+  deleteUser,
   setGroups,
   addNewGroup,
   updateGroup,

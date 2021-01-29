@@ -53,7 +53,7 @@ export default function GeneralSettings(props: SettingsProps) {
             <label>Change Group Avatar</label>
             <input
               ref={groupAvatarField}
-              key="gruop-avatar-input"
+              key="group-avatar-input"
               type="text"
               placeholder=""
             />
