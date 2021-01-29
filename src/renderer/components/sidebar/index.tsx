@@ -21,7 +21,7 @@ import useLessonPlayer from "../lesson-player/useLessonPlayer";
 import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
-import Support from '../support';
+import Support from "../support";
 
 export interface SidebarIcon {
   title: string;
@@ -93,7 +93,7 @@ export default function Sidebar() {
       {
         title: "Support",
         icon: TutorialsIcon,
-        component: <Support/>,
+        component: <Support />,
         subComponent: null,
         componentWidth: 900,
       },
