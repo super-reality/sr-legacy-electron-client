@@ -1,3 +1,17 @@
 {
-  "branches": ["master", "develop"]
+  "branches": ["master", "develop", "Continuous-Deployment"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          "dist/*.exe"
+        ]
+      }
+    ],
+    "@semantic-release/git"
+  ],
+  "preset": "angular"
 }
