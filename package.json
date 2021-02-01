@@ -231,6 +231,7 @@
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
+    "semantic-release": "^17.3.7",
     "sinon": "^9.2.3"
   },
   "config": {
