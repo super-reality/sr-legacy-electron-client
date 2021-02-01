@@ -6,8 +6,7 @@ import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
-import FormControl from "../../../forms";
-import { capitalize } from "../../../forms/AutoCompleteInput";
+import FormControl, { capitalize } from "../../../forms";
 import { StepSectionProps } from "..";
 import getCategories from "../../support-utils/getCategories";
 import { IData } from "../../../../api/types/support-ticket/supportTicket";
@@ -27,7 +26,7 @@ interface Values {
 
 let searchedCategories: IData[] = [];
 
-const searchCategories = (value: string) => {
+const searchCategories = (value: string): IData[] => {
   getCategories(value).then((categories) => {
     searchedCategories = [...categories];
   });

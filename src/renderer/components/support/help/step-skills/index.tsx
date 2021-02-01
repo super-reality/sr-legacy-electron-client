@@ -6,8 +6,7 @@ import { useDispatch } from "react-redux";
 import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
 import TextError from "../../../forms/TextError";
-import FormControl from "../../../forms";
-import { capitalize } from "../../../forms/AutoCompleteInput";
+import FormControl, { capitalize, singleValuetoIData } from "../../../forms";
 import { StepSectionProps } from "..";
 import GetSkills from "../../support-utils/getSkills";
 import supportTicket, {
@@ -101,17 +100,6 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
       array.push(value);
       setAddedSkills(array);
     }
-  };
-
-  /*   const valuetoIData = (array: string[]): IData[] => {
-    let ArrayData: IData[] = [];
-    ArrayData = array.map((e) => ({ _id: e, name: e }));
-
-    return ArrayData;
-  }; */
-
-  const singleValuetoIData = (value: string): IData => {
-    return { _id: value, name: value, new: true };
   };
 
   function setValues(value: IData): void {

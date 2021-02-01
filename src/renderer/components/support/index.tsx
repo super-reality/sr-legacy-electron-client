@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { /* useState, useCallback, */ useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import reduxAction from "../../redux/reduxAction";
@@ -52,18 +52,20 @@ type sections = typeof START | typeof HELP;
 
 const sections = [GettingStarted, Help];
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 export default function Support(): JSX.Element {
-  const [currentSection, setCurrentSection] = useState(START);
   const dispatch = useDispatch();
-  const { skillsData, categoryData } = useSelector(
+  const { skillsData, categoryData, supportScreen } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
   useEffect(() => {
     reduxAction(dispatch, {
       type: "SET_SUPPORT_TICKET",
       arg: {
-        skillsData: skillsData?.length == 0 ? Skills : skillsData,
-        categoryData: categoryData?.length == 0 ? Category : categoryData,
+        skillsData: skillsData && skillsData.length ? skillsData : Skills,
+        categoryData:
+          categoryData && categoryData.length ? categoryData : Category,
       },
     });
 
@@ -73,17 +75,27 @@ export default function Support(): JSX.Element {
         arg: null,
       });
     }; */
-  }, []);
+  });
 
-  const ClickGotSart = useCallback(() => {
-    setCurrentSection(START);
-  }, [currentSection]);
+  const ClickGotSart = () => {
+    reduxAction(dispatch, {
+      type: "SET_SUPPORT_TICKET",
+      arg: {
+        supportScreen: START,
+      },
+    });
+  };
 
-  const ClickGotHelp = useCallback(() => {
-    setCurrentSection(HELP);
-  }, [currentSection]);
+  const ClickGotHelp = () => {
+    reduxAction(dispatch, {
+      type: "SET_SUPPORT_TICKET",
+      arg: {
+        supportScreen: HELP,
+      },
+    });
+  };
 
-  const CurrentSectionComponent = sections[currentSection];
+  const CurrentSectionComponent = sections[supportScreen!];
 
   return (
     <>
