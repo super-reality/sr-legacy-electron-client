@@ -22,6 +22,7 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
+import SupportTickets from "../support-tickets";
 
 export interface SidebarIcon {
   title: string;
@@ -96,6 +97,13 @@ export default function Sidebar() {
         component: <Support />,
         subComponent: null,
         componentWidth: 700,
+      },
+      {
+        title: "Support Tickets",
+        icon: TutorialsIcon,
+        component: <SupportTickets />,
+        subComponent: null,
+        componentWidth: 900,
       },
     ],
     [history, current, currentSub, contentExpanded]
