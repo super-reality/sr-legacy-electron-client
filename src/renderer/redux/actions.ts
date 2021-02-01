@@ -66,6 +66,7 @@ export const actions = {
   USERDATA_TOGGLE_COLLECTION: userDataSlice.toggleCollection,
   USERDATA_TOGGLE_SUBJECT: userDataSlice.toggleSubject,
   USERDATA_TOGGLE_LESSON: userDataSlice.toggleLesson,
+  RESET: userDataSlice.reset,
   CLEAR_SETTINGS: settingsSlice.clearsettings,
   SET_SETTINGS: settingsSlice.setSettings,
   SET_CV_SETTINGS: settingsSlice.setCVSettings,
