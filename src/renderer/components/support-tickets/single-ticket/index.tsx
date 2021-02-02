@@ -1,5 +1,5 @@
 import React from "react";
-import moment from 'moment';
+import moment from "moment";
 import voteup from "../../../../assets/images/voteup.png";
 import votedown from "../../../../assets/images/votedown.png";
 import ticketuser from "../../../../assets/images/ticket-user.png";
