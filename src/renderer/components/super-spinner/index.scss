@@ -1,0 +1,51 @@
+
+
+.super-spinner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.super-spinner-text{
+    font-size: 1em;
+    font-weight: bold;
+    color: #c2c2c2;
+    margin-bottom: 15px;
+    >span{
+        animation: dots 1.4s infinite both;
+
+        &:nth-child(2){
+            animation-delay: .2s;
+        }
+        &:nth-child(3){
+            animation-delay: .4s;
+        }
+    }
+}
+.rotate {
+    animation: rotation 1.5s infinite ease;
+  }
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(718deg);
+      }
+  }
+
+  @keyframes dots {
+
+    0% {
+      opacity: .2;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: .2;
+    }
+}

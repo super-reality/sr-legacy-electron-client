@@ -1,0 +1,23 @@
+.sliderForm {
+  width: var(--width);
+  display: flex;
+  height: 100%;
+}
+
+.sliderForm > div {
+  position: relative;
+  height: 100%;
+  overflow-y: scroll;
+  flex-direction: column;
+  min-width: var(--slides);
+  animation: fade ease-in-out 0.5s;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

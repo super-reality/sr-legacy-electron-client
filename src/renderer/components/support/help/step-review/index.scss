@@ -1,0 +1,58 @@
+.review-step > span {
+  display: block;
+  padding: 5px 0;
+  color: #c2c2c2;
+  font-size: 15px;
+}
+.review-step > p {
+  font-size: 14px;
+  word-break: break-word;
+
+}
+.review-step {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #8a88c3;
+}
+
+.review-step > .skills-list {
+  display: block !important;
+}
+
+.review-skill {
+  display: inline-block;
+  margin: 8px 8px 8px 0;
+  border-radius: 25px !important;
+  padding: 5px !important;
+  color: #2d2a44 !important;
+  transition: all 0.5s;
+  font: 400 13.3333px Arial;
+  font-family: Segoe UI;
+  background-color: #0898eb;
+  cursor: pointer;
+  &::before {
+    content: "+ ";
+  }
+}
+
+.review-modal{
+  height: 100%;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  >div{
+    margin: 0!important;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding:10px;
+    >button:last-child{
+      margin:0;
+    }
+  }
+}
+
+
