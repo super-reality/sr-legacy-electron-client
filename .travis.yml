@@ -53,4 +53,4 @@ jobs:
         provider: script
         skip_cleanup: true
         script:
-          - npx semantic-release
+          - npx semantic-release || travis_terminate 1
