@@ -15,14 +15,13 @@ export default interface supportTicker {
   skillsData?: IData[];
   searchedSkills?: IData[];
   categoryData?: IData[];
-  supportScreen?:TSupportScreen;
+  supportScreen?: TSupportScreen;
 }
 
-const START=0;
-const HELP=1;
+const START = 0;
+const HELP = 1;
 
-type TSupportScreen= typeof START | typeof HELP;
-
+type TSupportScreen = typeof START | typeof HELP;
 
 export interface supportTicketPayload {
   title: string;
@@ -31,18 +30,24 @@ export interface supportTicketPayload {
   description: string;
   files?: string[];
   skills: string[];
-  newCategory: boolean;
+  newCategory?: boolean;
   newCategoryName?: string;
-  newSkill: boolean;
+  newSkill?: boolean;
   newSkillName?: string;
+  createdAt?: string;
 }
 
-export interface IFile{
+export interface IFile {
   lastModified: number;
   name: string;
   path: string;
   size: number;
   type: string;
+}
+
+export interface supportTicketsGet {
+  err_code: CodeSuccess;
+  ticket: supportTicketPayload[];
 }
 
 export interface supportTicketPayloadGet {
