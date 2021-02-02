@@ -41,6 +41,9 @@ const userDataSlice = createSlice({
     toggleLesson: (state: AuthState, action: PayloadAction<string>): void => {
       state.lessons = toggleFromArray(state.lessons, action.payload);
     },
+    reset: (_state: AuthState, _action: PayloadAction<null>): void => {
+      // Do nothing, resets the redux state
+    },
   },
 });
 
@@ -49,6 +52,7 @@ export const {
   toggleCollection,
   toggleSubject,
   toggleLesson,
+  reset,
 } = userDataSlice.actions;
 
 export default userDataSlice;

@@ -15,7 +15,7 @@ import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 import chatSlice from "../slices/chatSlice";
 import createSupportTicketSlice from "../slices/createSupportTicketSlice";
 
-const rootReducer = combineReducers({
+const combinedReducer = combineReducers({
   auth: authSlice.reducer,
   render: renderSlice.reducer,
   background: backgroundSlice.reducer,
@@ -32,9 +32,18 @@ const rootReducer = combineReducers({
   createSupportTicket: createSupportTicketSlice.reducer,
 });
 
+type RootReducerType = typeof combinedReducer;
+
+const rootReducer: RootReducerType = (state, action) => {
+  if (action.type === "userData/reset") {
+    return combinedReducer(undefined, action);
+  }
+  return combinedReducer(state, action);
+};
+
 const store = configureStore({
   reducer: rootReducer,
 });
 
 export default store;
-export type AppState = ReturnType<typeof rootReducer>;
+export type AppState = ReturnType<typeof combinedReducer>;

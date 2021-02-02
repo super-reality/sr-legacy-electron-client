@@ -62,13 +62,13 @@ All visual tests are declared in `src/__tests__/electron.ts` and the code for th
 
 ## Making changes
 
-1. Branch from `develop`
+1. For every new task Branch from `develop`
 
 2. Submit PR, merge into `develop`
 
-Try to keep `develop` in a buildable and runnable state. We use [commitzen](https://commitizen.github.io/cz-cli/) to enforce commits format, You can use `npx cz` or `npm run commit` to create a new valid commit.
+We use [commitzen](https://commitizen.github.io/cz-cli/) to enforce commits format, You can use `npx cz` or `npm run cm` to create a new valid commit. Releases, semantic version numbers, tags, changelogs and publishing will automatically be handled based on these commits thanks to [semantic-release](https://github.com/semantic-release/semantic-release) (WIP).
 
-Merging to `master` triggers automatic version bump.
+Try to keep `develop` in a buildable and runnable state.
 
 ## Troubleshooting
 
