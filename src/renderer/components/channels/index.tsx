@@ -31,7 +31,7 @@ export function SingleChannel(props: SingleChannelProps): JSX.Element {
   const [showButton, setShowButton] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  console.log(channel, selfId, chatUsers);
+  console.log("selfId", selfId);
   // const { users } = channel;
   // const singleUser = users.filter((_id) => _id !== selfId);
   // const interlocutor = chatUsers.find(({ _id }) => _id === singleUser[0]);

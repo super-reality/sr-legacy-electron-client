@@ -30,7 +30,7 @@ interface GroupsListProps {
 export default function GroupsList(props: GroupsListProps) {
   const { click, currentSub, groups } = props;
   const dispatch = useDispatch();
-
+  console.log(groups);
   const actionAnimation = useTrail(groups.length, {
     config: { mass: 5, tension: 2000, friction: 180 },
     opacity: 1,
@@ -61,13 +61,15 @@ export default function GroupsList(props: GroupsListProps) {
             className="action-button-container"
             onClick={() => {
               click(group.collectiveName);
-              setActiveGroup(group._id);
             }}
             key={group.collectiveName}
           >
             <div
               className="action-button-image"
               style={{ backgroundImage: `url(${group.collectivePhoto})` }}
+              onClick={() => {
+                setActiveGroup(group._id);
+              }}
             />
             <div style={{ left: "8px" }} className="action-button-title">
               {group.collectiveName}

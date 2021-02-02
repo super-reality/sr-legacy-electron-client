@@ -318,10 +318,9 @@ export default function Chat(props: ChatProps) {
               prevMessage.userId == userId &&
               checkMessageTime(createdAt, prevMessage.createdAt)
             ) {
-              console.log("close time", _id);
               return <MessageBox key={_id} _id={_id} text={text} />;
             }
-            console.log("diff time", _id);
+
             return (
               <MessageBox
                 key={_id}

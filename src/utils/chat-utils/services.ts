@@ -24,8 +24,8 @@ interface CategorySettings {
 
 export const messagesClient = client.service("messages");
 export const usersClient = client.service("users");
-export const groupClient = client.service("collectives");
-export const categoryClient = client.service("categories");
+export const groupClient = client.service("groups");
+export const categoryClient = client.service("category");
 export const channelsClient = client.service("channels");
 
 export function updateGroup(id: string, groupSettings: GroupSettings) {
