@@ -5,7 +5,7 @@ function generateInfo(branchName) {
   const packageJson = JSON.parse(fs.readFileSync("./package.json"));
 
   const informationObject = {
-    version: packageJson.version,
+    version: process.argv[1] || packageJson.version,
     branch: branchName,
     timestamp: new Date().getTime(),
   };
@@ -13,6 +13,7 @@ function generateInfo(branchName) {
   fs.writeFileSync("./src/info.json", JSON.stringify(informationObject));
 }
 
+/*
 exec("npm run next-version", (err, stdout) => {
   if (err) {
     console.log(err);
@@ -20,6 +21,7 @@ exec("npm run next-version", (err, stdout) => {
     console.log("Next tag version is: ", stdout);
   }
 });
+*/
 
 exec("git rev-parse --abbrev-ref HEAD", (err, stdout) => {
   if (err) {

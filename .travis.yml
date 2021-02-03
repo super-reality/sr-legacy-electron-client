@@ -35,7 +35,6 @@ jobs:
       env: YARN_GPG=no
       script:
         - npm run next-version
-        - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
     - stage: Build
       os: windows
