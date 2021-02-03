@@ -1,5 +1,8 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { ReactNode } from "react";
+import Windowlet from "./components/windowlet";
+import reduxAction from "./redux/reduxAction";
+import store from "./redux/stores/renderer";
 
 interface ErrorState {
   error: any;
@@ -25,9 +28,10 @@ export default class ErrorBoundary extends React.Component<
   }
 
   closeErrorDialog = (): void => {
-    // const dispatcher = store.dispatch;
-    // reduxAction(dispatcher, { type: "", arg: null });
+    const dispatcher = store.dispatch;
     setTimeout(() => {
+      reduxAction(dispatcher, { type: "RESET", arg: null });
+      reduxAction(dispatcher, { type: "SET_READY", arg: true });
       this.setState({
         error: null,
         errorInfo: null,
@@ -36,24 +40,22 @@ export default class ErrorBoundary extends React.Component<
   };
 
   render(): ReactNode {
-    return (
-      <>
-        {this.state.errorInfo ? (
-          <div className="error-boundary">
-            {
-              // <div className="error-info-top" />
-            }
-            <div className="error-info-text">
-              <div>{this.state.error && this.state.error.toString()}</div>
-              <details style={{ whiteSpace: "pre-wrap" }}>
-                <div>{this.state.errorInfo.componentStack}</div>
-              </details>
-            </div>
-          </div>
-        ) : (
-          this.props.children
-        )}
-      </>
+    return this.state.errorInfo ? (
+      <Windowlet
+        title="Error"
+        width={600}
+        height={400}
+        onClose={this.closeErrorDialog}
+      >
+        <div className="error-info-text">
+          <div>{this.state.error && this.state.error.toString()}</div>
+          <details style={{ whiteSpace: "pre-wrap" }}>
+            <div>{this.state.errorInfo.componentStack}</div>
+          </details>
+        </div>
+      </Windowlet>
+    ) : (
+      this.props.children
     );
   }
 }

@@ -30,10 +30,11 @@ export interface supportTicketPayload {
   description: string;
   files?: string[];
   skills: string[];
-  newCategory: boolean;
+  newCategory?: boolean;
   newCategoryName?: string;
-  newSkill: boolean;
+  newSkill?: boolean;
   newSkillName?: string;
+  createdAt?: string;
 }
 
 export interface IFile {
@@ -42,6 +43,11 @@ export interface IFile {
   path: string;
   size: number;
   type: string;
+}
+
+export interface supportTicketsGet {
+  err_code: CodeSuccess;
+  ticket: supportTicketPayload[];
 }
 
 export interface supportTicketPayloadGet {

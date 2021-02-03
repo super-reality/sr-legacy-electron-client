@@ -124,7 +124,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
       <div className="step">
         <PopUp
-          style={{ position: "absolute", top: "30%", left: "6%" }}
+          /* style={{ position: "absolute", top: "30%", left: "6%" }} */
           width="350px"
           height="170px"
         >
