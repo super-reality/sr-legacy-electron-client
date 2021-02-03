@@ -61,7 +61,17 @@ export default function BrowseLessons() {
               <LessonPreview
                 key={`lesson-preview-${id}`}
                 onClick={() => {
-                  //
+                  reduxAction(dispatch, {
+                    type: "CREATE_LESSON_V2_DATA",
+                    arg: {
+                      lessons: [
+                        {
+                          _id: id,
+                          name: lesson.name,
+                        },
+                      ],
+                    },
+                  });
                 }}
                 title={lesson.name || "Unnamed Lesson"}
               />
