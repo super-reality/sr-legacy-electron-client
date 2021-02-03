@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 /* eslint-disable-next-line */
 import moment from "moment";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
@@ -8,11 +8,14 @@ import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 import { ReactComponent as SendButton } from "../../../assets/svg/send.svg";
 import "./index.scss";
 import client from "../../feathers";
-import usePopupMessageMenu from "../../hooks/usePopupMessageMenu";
-import { Message } from "../../../types/chat";
+import useDetectOutsideClick from "../../hooks/useDetectOutsideClick";
+import { Channel, Message } from "../../../types/chat";
+import IconEdit from "../../../assets/images/popup-edit.png";
+import IconDelete from "../../../assets/images/popup-delete.png";
 
 interface ChatProps {
   messages: Message[];
+  activeChannel: Channel;
 }
 
 interface User {
@@ -27,9 +30,49 @@ interface User {
 
 interface MessageProps {
   _id: string;
-  user: User;
-  createdAt: string;
+  user?: User;
+  createdAt?: string;
   text: string;
+}
+
+interface MessageDropdownProps {
+  removeMessage: () => void;
+  startEditMessage: () => void;
+  closeFunction: () => void;
+}
+
+function MessageDropdouwn(props: MessageDropdownProps) {
+  const { removeMessage, startEditMessage, closeFunction } = props;
+
+  const dotsRef = useRef<HTMLDivElement>(null);
+
+  useDetectOutsideClick(dotsRef, closeFunction);
+
+  const deleteMessage = () => {
+    removeMessage();
+    closeFunction();
+  };
+
+  const editMessage = () => {
+    startEditMessage();
+    closeFunction();
+  };
+  return (
+    <div ref={dotsRef} className="message-dropdown">
+      <div className="dropdown-item" onClick={editMessage}>
+        <div>
+          Edit Message
+          <img src={IconEdit} alt="" />
+        </div>
+      </div>
+      <div className="dropdown-item" onClick={deleteMessage}>
+        <div>
+          Delete Message
+          <img src={IconDelete} alt="" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function MessageBox(props: MessageProps) {
@@ -38,16 +81,21 @@ export function MessageBox(props: MessageProps) {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [textEdit, setTextEdit] = useState("");
   const [edit, setEdit] = useState<boolean>(false);
-  const dotsRef = useRef<HTMLDivElement>(null);
+  const [showMenu, setShowMenu] = useState<boolean>(false);
 
   const showMessageMenu = () => {
     setIsHover(true);
   };
 
   const hideMessageMenu = () => {
+    if (!showMenu) {
+      setIsHover(false);
+    }
+  };
+  const closeDropdown = () => {
+    setShowMenu(false);
     setIsHover(false);
   };
-
   const onTextChange = (e: any) => {
     const message = e.target.value;
     setTextEdit(message);
@@ -63,7 +111,12 @@ export function MessageBox(props: MessageProps) {
 
   // delete message function
   const removeMessage = () => {
-    (client as any).service("messages").remove(_id);
+    (client as any)
+      .service("messages")
+      .remove(_id)
+      .catch((err: any) => {
+        console.log(err);
+      });
   };
 
   // edit message
@@ -74,9 +127,14 @@ export function MessageBox(props: MessageProps) {
 
   // patch updated message
   const submitEditMessage = (id: string, updatedMessage: string) => {
-    (client as any).service("messages").patch(id, {
-      text: updatedMessage,
-    });
+    (client as any)
+      .service("messages")
+      .patch(id, {
+        text: updatedMessage,
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
     setEdit(false);
     setTextEdit("");
   };
@@ -94,20 +152,38 @@ export function MessageBox(props: MessageProps) {
     setEdit(false);
     setTextEdit("");
   };
+  const openDropdown = useCallback(() => {
+    setShowMenu(!showMenu);
+  }, []);
 
   // Popup menu
-  const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
-    removeMessage,
-    startEditMessage,
-  });
-  console.log(user.avatar);
+  // const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
+  //   removeMessage,
+  //   startEditMessage,
+  // });
+  // console.log(user.avatar);
   return (
-    <div className="single-chat" key={_id}>
-      <img className="avatar" src={user.avatar || DefaultIcon} alt="avatar" />
-      <div className="info">
-        <div className="user">{user.username}</div>
-        <div className="timestamp">{messageTime(createdAt)}</div>
-      </div>
+    <div
+      className={`single-chat ${isHover ? "hovered" : ""} ${
+        createdAt ? "" : "no-time-message"
+      }`}
+      key={_id}
+    >
+      {user && (
+        <>
+          <img
+            className="avatar"
+            src={user.avatar || DefaultIcon}
+            alt="avatar"
+          />
+          <div className="info">
+            <div className="user">{user.username}</div>
+            <div className="timestamp">
+              {createdAt && messageTime(createdAt)}
+            </div>
+          </div>
+        </>
+      )}
 
       {!edit ? (
         <div
@@ -115,16 +191,20 @@ export function MessageBox(props: MessageProps) {
           onMouseEnter={showMessageMenu}
           onMouseLeave={hideMessageMenu}
         >
-          <div className="message" ref={dotsRef}>
-            {text}
-          </div>
-
+          <div className="message">{text}</div>
+          {showMenu && (
+            <MessageDropdouwn
+              removeMessage={removeMessage}
+              startEditMessage={startEditMessage}
+              closeFunction={closeDropdown}
+            />
+          )}
           {isHover ? (
             <div className="message-settings-box">
               <button
                 type="button"
                 className="dots-menu"
-                onClick={openMessagePopup}
+                onClick={openDropdown}
               >
                 ...
               </button>
@@ -168,13 +248,12 @@ export function MessageBox(props: MessageProps) {
           </button>
         </div>
       )}
-      <PopupMenu />
     </div>
   );
 }
 
 export default function Chat(props: ChatProps) {
-  const { messages } = props;
+  const { messages, activeChannel } = props;
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -216,17 +295,32 @@ export default function Chat(props: ChatProps) {
   // TO DO create listener
   useEffect(scrollToBottom, [messages]);
 
-  // const dispatch = useDispatch();
-  // chat functions
-  // const { messages, users } = useSelector((state: AppState) => state.chat);
+  const checkMessageTime = (currentTime: string, prevTime: string) => {
+    const timeDifference =
+      moment(currentTime).hours() * 60 +
+      moment(currentTime).minutes() -
+      moment(prevTime).hours() * 60 -
+      moment(prevTime).minutes();
+    return timeDifference < 10;
+  };
 
   return (
     <div className="chat-with-title-container">
-      <div className="chat-and-channels-title">Chat</div>
+      <div className="chat-and-channels-title">{activeChannel.channelName}</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages?.map((messageObject: any) => {
-            const { _id, user, createdAt, text } = messageObject;
+          {messages?.map((messageObject: Message, index) => {
+            const { _id, user, createdAt, text, userId } = messageObject;
+            const prevMessage = messages[index - 1];
+
+            if (
+              index !== 0 &&
+              prevMessage.userId == userId &&
+              checkMessageTime(createdAt, prevMessage.createdAt)
+            ) {
+              return <MessageBox key={_id} _id={_id} text={text} />;
+            }
+
             return (
               <MessageBox
                 key={_id}

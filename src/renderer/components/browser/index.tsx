@@ -1,8 +1,7 @@
 import "./index.scss";
 
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useSpring, animated, config } from "react-spring";
+import { useSelector } from "react-redux";
 import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
@@ -12,9 +11,7 @@ import GroupsPage from "../groups";
 import Sonic from "../../../assets/images/sonic.png";
 import GroupSettings from "../groups/group-settings";
 import PagesIndex from "../../../types/browser";
-import reduxAction from "../../redux/reduxAction";
 import { channelsClient } from "../../../utils/chat-utils/services";
-// import { Group } from "../../../types/chat";
 import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
 
 interface ChatContainerProps {
@@ -22,7 +19,7 @@ interface ChatContainerProps {
 }
 function ChatContainer(props: ChatContainerProps) {
   const { setPage } = props;
-  const { messages, activeGroup } = useSelector(
+  const { messages, activeGroup, activeChannel } = useSelector(
     (state: AppState) => state.chat
   );
 
@@ -62,27 +59,15 @@ function ChatContainer(props: ChatContainerProps) {
         setPage={setPage}
         createChannel={openChannelCreatePopup}
       />
-      <Chat messages={messages} />
+      <Chat messages={messages} activeChannel={activeChannel} />
     </>
   );
 }
 
 export default function Browser() {
-  const { groups } = useSelector((state: AppState) => state.chat);
-  const dispatch = useDispatch();
   const [showGroupsList, setShowGroupsList] = useState<boolean>(false);
   const [showGroups, setShowGroups] = useState(false);
 
-  const opacitySprings: any = showGroupsList ? "1" : "0";
-  const zIndexSprings: any = showGroupsList ? "2" : "0";
-  const springProps = useSpring({
-    config: { ...config.gentle },
-    transform: showGroupsList ? `translateY(0)` : `translateY(-100%)`,
-    opacity: opacitySprings,
-    zIndex: zIndexSprings,
-    // height: showGroupsList ? height : "0px",
-    width: "300px",
-  });
   const pages = [ChatContainer, GroupSettings];
   const [browserContent, setBrowserContent] = useState<any>(
     PagesIndex.chatContainer
@@ -93,12 +78,6 @@ export default function Browser() {
   };
   const CurrentPage = pages[browserContent];
 
-  const setActiveGroup = (id: string) => {
-    reduxAction(dispatch, {
-      type: "SET_ACTIVE_GROUP",
-      arg: id,
-    });
-  };
   return (
     <div>
       <div className="browser-nav">
@@ -110,17 +89,18 @@ export default function Browser() {
             }}
           >
             <img src={Sonic} alt="" />
-            {/* <div className="groups-img">
-              {groups &&
-                groups.map((group: Group) => {
-                  if (group.collectivePhoto) {
-                    return <img src={group.collectivePhoto} alt="" />;
-                  }
-                  return null;
-                })}
-            </div> */}
+            <div key="show-groups">
+              <div
+                className="group-title"
+                onClick={() => {
+                  setShowGroups(!showGroups);
+                }}
+              >
+                {showGroups ? "Show Chat" : "Explore the Groups"}
+              </div>
+            </div>
 
-            <animated.div
+            {/* <animated.div
               style={{
                 ...springProps,
                 overflow: "hidden",
@@ -162,7 +142,7 @@ export default function Browser() {
                   );
                 })}
               </div>
-            </animated.div>
+            </animated.div> */}
           </div>
         </div>
         <div className="group-button">

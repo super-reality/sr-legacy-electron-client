@@ -26,7 +26,7 @@
     font-size: 14px;
     color: #b8d4f3;
     margin: 20px;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 280px);
     // height: calc(100vh - 250px);
     
 
@@ -69,22 +69,64 @@
 
     .single-chat {
         padding: 1em;
+        // &:hover {
+        //     background: #29233c;
+        //     border-radius: 3px;
+        //     transition: 0.1s ease-out all;
+        // }
+        
+    }
+    
+    .no-time-message{
+        padding: 0 1em 1em 4em;
+    }
+    .hovered{
+        background: #29233c;
+            border-radius: 3px;
+            transition: 0.1s ease-out all;
     }
 
     .message-box {
         position: relative;
         z-index: 1;
 
-        &:hover {
-            background: #29233c;
-            border-radius: 3px;
-            transition: 0.1s ease-out all;
-        }
 
         .message {
             padding: 5px 0;
         }
+        .message-dropdown{
+            background: #343358;
+            width: 200px;
+            overflow: hidden;
+            position: absolute;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.24);
+            left: 38%;
+            top: 0;
 
+            .dropdown-item {
+                width: unset !important;
+    
+                display: flex;
+                padding: 6px 5px;
+                justify-content: space-between;
+    
+                img {
+                    height: 14px;
+                    width: 14px;
+                    position: absolute;
+                    right: 20px;
+                }
+    
+                &:hover {
+                    border-radius: 4px;
+                    cursor: pointer;
+                    background: #29233c;
+                    transition: 0.2s ease-out all;
+                }
+            }
+        }
+        
         .popup-container {
             background: #343358;
             height: unset;
