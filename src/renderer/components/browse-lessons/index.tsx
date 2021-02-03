@@ -11,6 +11,7 @@ import { voidFunction } from "../../constants";
 import { AppState } from "../../redux/stores/renderer";
 import getLesson from "../create-leson-detached/lesson-utils/getLesson";
 import reduxAction from "../../redux/reduxAction";
+import newLesson from "../create-leson-detached/lesson-utils/newLesson";
 
 const options = ["My Tutorials", "Shared with me", "Public"];
 
@@ -68,7 +69,7 @@ export default function BrowseLessons() {
           })}
           <LessonPreviewAdd
             onClick={() => {
-              //
+              newLesson({ name: "New Lesson", description: "New Lesson" });
             }}
           />
         </div>
