@@ -79,7 +79,7 @@
   "scripts": {
     "start": "nf start -p 3000",
     "cm": "git-cz",
-    "next-version": "semantic-releas --dry-run",
+    "next-version": "semantic-release --dry-run",
     "react-start": "node generateInfo.js && craco start",
     "react-build": "craco build",
     "start:web": "craco start --config craco.web.config.js",
