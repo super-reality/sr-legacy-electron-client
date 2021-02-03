@@ -1,17 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.scss";
 
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import minimizeWindow from "../../../utils/electron/minimizeWindow";
 import Windowlet from "../windowlet";
-import LessonPreview from "./lesson-preview";
+import LessonPreview, { LessonPreviewAdd } from "./lesson-preview";
 import ReactSelect from "../top-select";
 import { voidFunction } from "../../constants";
+import { AppState } from "../../redux/stores/renderer";
+import getLesson from "../create-leson-detached/lesson-utils/getLesson";
+import reduxAction from "../../redux/reduxAction";
 
 const options = ["My Tutorials", "Shared with me", "Public"];
 
 export default function BrowseLessons() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { lessons } = useSelector((state: AppState) => state.userData);
+  const { treeLessons } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+
+  useEffect(() => {
+    lessons.forEach((id) => {
+      getLesson(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETLESSON",
+            arg: data,
+          });
+        })
+        .catch(console.error);
+    });
+  }, [dispatch, lessons]);
+
   return (
     <Windowlet
       width={1100}
@@ -31,11 +54,23 @@ export default function BrowseLessons() {
           />
         </div>
         <div className="grid">
-          <LessonPreview title="How to make Pong" />
-          <LessonPreview title="This is a dummy" />
-          <LessonPreview title="Another dummy" />
-          <LessonPreview title="Learn how to make CS:GO" />
-          <LessonPreview title="Make fun stuff" />
+          {lessons.map((id) => {
+            const lesson = treeLessons[id];
+            return (
+              <LessonPreview
+                key={`lesson-preview-${id}`}
+                onClick={() => {
+                  //
+                }}
+                title={lesson.name || "Unnamed Lesson"}
+              />
+            );
+          })}
+          <LessonPreviewAdd
+            onClick={() => {
+              //
+            }}
+          />
         </div>
       </div>
     </Windowlet>

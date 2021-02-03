@@ -29,17 +29,11 @@ const userDataSlice = createSlice({
     clearUserData: (state: AuthState): void => {
       Object.assign(state, initialState);
     },
-    toggleCollection: (
-      state: AuthState,
-      action: PayloadAction<string>
-    ): void => {
-      state.collections = toggleFromArray(state.collections, action.payload);
-    },
-    toggleSubject: (state: AuthState, action: PayloadAction<string>): void => {
-      state.subjects = toggleFromArray(state.subjects, action.payload);
-    },
     toggleLesson: (state: AuthState, action: PayloadAction<string>): void => {
       state.lessons = toggleFromArray(state.lessons, action.payload);
+    },
+    setLessons: (state: AuthState, action: PayloadAction<string[]>): void => {
+      state.lessons = [...action.payload];
     },
     reset: (_state: AuthState, _action: PayloadAction<null>): void => {
       // Do nothing, resets the redux state
@@ -49,9 +43,8 @@ const userDataSlice = createSlice({
 
 export const {
   clearUserData,
-  toggleCollection,
-  toggleSubject,
   toggleLesson,
+  setLessons,
   reset,
 } = userDataSlice.actions;
 
