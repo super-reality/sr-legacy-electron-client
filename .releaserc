@@ -22,7 +22,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npm version ${nextRelease.version} && node generateInfo.js"
+        "prepareCmd": "npm version ${nextRelease.version} --git-tag-version false && node generateInfo.js"
       }
     ],
     "@semantic-release/git"
