@@ -57,6 +57,7 @@ export default function BrowseLessons() {
         <div className="grid">
           {lessons.map((id) => {
             const lesson = treeLessons[id];
+            if (!lesson) return <></>;
             return (
               <LessonPreview
                 key={`lesson-preview-${id}`}
@@ -72,6 +73,7 @@ export default function BrowseLessons() {
                       ],
                     },
                   });
+                  history.push(`/lesson/create/${id}`);
                 }}
                 title={lesson.name || "Unnamed Lesson"}
               />
