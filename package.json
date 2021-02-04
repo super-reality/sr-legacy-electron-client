@@ -112,20 +112,20 @@
     "win": {
       "target": "NSIS",
       "icon": "public/favicon.ico",
-      "artifactName": "${productName}-${version}.${ext}",
+      "artifactName": "${productName}.${ext}",
       "extraFiles": {
         "from": "node_modules/opencv-build/opencv/build/x64/vc15/bin"
       }
     },
     "mac": {
       "target": "pkg",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}.${ext}"
     },
     "linux": {
       "target": "AppImage",
       "category": "Utility;",
       "icon": "public/logo512.png",
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}.${ext}"
     },
     "extraResources": [
       {
