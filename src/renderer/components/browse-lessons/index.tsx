@@ -79,7 +79,15 @@ export default function BrowseLessons() {
           })}
           <LessonPreviewAdd
             onClick={() => {
-              newLesson({ name: "New Lesson", description: "New Lesson" });
+              newLesson({ name: "New Lesson" }).then((lesson) => {
+                if (lesson) {
+                  console.log(lesson);
+                  reduxAction(dispatch, {
+                    type: "USERDATA_SET_LESSONS",
+                    arg: [...lessons, lesson._id],
+                  });
+                }
+              });
             }}
           />
         </div>
