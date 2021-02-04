@@ -65,6 +65,9 @@
 
       .avatar-container {
         margin: auto 10px;
+        .rounded-img{
+          border-radius: 50%;
+        }
       }
       .name-container {
         height: 100%;
