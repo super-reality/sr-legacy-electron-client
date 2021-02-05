@@ -30,17 +30,23 @@ after_failure:
 
 jobs:
   include:
-    - stage: Windows
+    - stage: Tests
       os: windows
       env: YARN_GPG=no
       script:
         - npm run next-version
         - npm run test:all || travis_terminate 1
+    - stage: Build
+      os: windows
+      env: YARN_GPG=no
       script:
         - npm run electron-rebuild
         - npm run pre-build-iohook-win
         - npm run build
         - node ./rm-unpacked.js
+    - stage: Release
+      os: windows
+      env: YARN_GPG=no
       deploy:
         on:
           all_branches: true
