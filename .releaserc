@@ -24,12 +24,6 @@
           "dist/**"
         ]
       }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "npm version ${nextRelease.version} --git-tag-version false && node generateInfo.js"
-      }
     ]
   ],
   "preset": "angular"
