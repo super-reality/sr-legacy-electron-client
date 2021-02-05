@@ -19,9 +19,6 @@ export default function BrowseLessons() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { lessons } = useSelector((state: AppState) => state.userData);
-  const { treeLessons } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
 
   useEffect(() => {
     lessons.forEach((id) => {
@@ -56,28 +53,7 @@ export default function BrowseLessons() {
         </div>
         <div className="grid">
           {lessons.map((id) => {
-            const lesson = treeLessons[id];
-            if (!lesson) return <></>;
-            return (
-              <LessonPreview
-                key={`lesson-preview-${id}`}
-                onClick={() => {
-                  reduxAction(dispatch, {
-                    type: "CREATE_LESSON_V2_DATA",
-                    arg: {
-                      lessons: [
-                        {
-                          _id: id,
-                          name: lesson.name,
-                        },
-                      ],
-                    },
-                  });
-                  history.push(`/lesson/create/${id}`);
-                }}
-                title={lesson.name || "Unnamed Lesson"}
-              />
-            );
+            return <LessonPreview key={`lesson-preview-${id}`} id={id} />;
           })}
           <LessonPreviewAdd
             onClick={() => {

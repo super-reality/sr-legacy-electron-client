@@ -1,25 +1,75 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./index.scss";
 
+import { useHistory } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { ReactComponent as ThreeDots } from "../../../../assets/svg/three-dots.svg";
+import useLesson from "../../create-leson-detached/hooks/useLesson";
+import reduxAction from "../../../redux/reduxAction";
+import useDropdown from "../../../hooks/useDropdown";
 
 interface LessonPreviewProps {
-  title: string;
-  onClick: () => void;
+  id: string;
 }
 
 export default function LessonPreview(props: LessonPreviewProps) {
-  const { title, onClick } = props;
+  const { id } = props;
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const lesson = useLesson(id);
+
+  const onClick = useCallback(() => {
+    if (lesson) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          lessons: [
+            {
+              _id: id,
+              name: lesson.name,
+            },
+          ],
+        },
+      });
+    }
+
+    history.push(`/lesson/create/${id}`);
+  }, [history, lesson, dispatch]);
+
+  const dropdownClick = useCallback((_title: string) => {
+    //
+  }, []);
+
+  const [Dropdown, setOpen] = useDropdown(
+    [{ title: "Open" }, { title: "Rename" }, { title: "Delete" }],
+    dropdownClick
+  );
 
   return (
-    <div className="lesson-preview" onClick={onClick}>
-      <div className="image" />
-      <div className="title-container">
-        <div className="title">{title}</div>
-        <div className="options-button">
-          <ThreeDots fill="var(--color-icon)" />
-        </div>
-      </div>
+    <div className="lesson-preview">
+      <div className="image" onClick={onClick} />
+      {lesson ? (
+        <>
+          <div className="title-container">
+            <div className="title">{lesson.name}</div>
+            <div
+              className="options-button"
+              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                setOpen(
+                  e.currentTarget.offsetLeft + 9,
+                  e.currentTarget.offsetTop + 13
+                );
+              }}
+            >
+              <ThreeDots fill="var(--color-icon)" />
+              <Dropdown />
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
