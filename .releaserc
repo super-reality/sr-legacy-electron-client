@@ -11,7 +11,6 @@
       "@semantic-release/git",
       {
         "assets": [
-          "dist/**",
           "docs",
           "package.json"
         ],
@@ -31,8 +30,7 @@
       {
         "prepareCmd": "npm version ${nextRelease.version} --git-tag-version false && node generateInfo.js"
       }
-    ],
-    "@semantic-release/git"
+    ]
   ],
   "preset": "angular"
 }
