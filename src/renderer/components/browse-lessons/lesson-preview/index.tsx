@@ -7,6 +7,8 @@ import { ReactComponent as ThreeDots } from "../../../../assets/svg/three-dots.s
 import useLesson from "../../create-leson-detached/hooks/useLesson";
 import reduxAction from "../../../redux/reduxAction";
 import useDropdown from "../../../hooks/useDropdown";
+import usePopupInput from "../../../hooks/usePopupInput";
+import updateLesson from "../../create-leson-detached/lesson-utils/updateLesson";
 
 interface LessonPreviewProps {
   id: string;
@@ -37,9 +39,28 @@ export default function LessonPreview(props: LessonPreviewProps) {
     history.push(`/lesson/create/${id}`);
   }, [history, lesson, dispatch]);
 
-  const dropdownClick = useCallback((_title: string) => {
-    //
-  }, []);
+  const [RenamePopup, openRename] = usePopupInput("Rename:", (name: string) => {
+    updateLesson({ name }, id).then((updatedLesson) => {
+      if (updatedLesson) {
+        reduxAction(dispatch, {
+          type: "CREATE_LESSON_V2_SETLESSON",
+          arg: updatedLesson,
+        });
+      }
+    });
+  });
+
+  const dropdownClick = useCallback(
+    (selected: string) => {
+      if (selected == "Open") {
+        onClick();
+      }
+      if (selected == "Rename") {
+        openRename();
+      }
+    },
+    [onClick, openRename]
+  );
 
   const [Dropdown, setOpen] = useDropdown(
     [{ title: "Open" }, { title: "Rename" }, { title: "Delete" }],
@@ -48,6 +69,7 @@ export default function LessonPreview(props: LessonPreviewProps) {
 
   return (
     <div className="lesson-preview">
+      <RenamePopup />
       <div className="image" onClick={onClick} />
       {lesson ? (
         <>
