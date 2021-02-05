@@ -9,6 +9,9 @@ import reduxAction from "../../../redux/reduxAction";
 import useDropdown from "../../../hooks/useDropdown";
 import usePopupInput from "../../../hooks/usePopupInput";
 import updateLesson from "../../create-leson-detached/lesson-utils/updateLesson";
+import usePopupModal from "../../../hooks/usePopupModal";
+import deleteGeneric from "../../create-leson-detached/lesson-utils/deleteGeneric";
+import store from "../../../redux/stores/renderer";
 
 interface LessonPreviewProps {
   id: string;
@@ -39,16 +42,35 @@ export default function LessonPreview(props: LessonPreviewProps) {
     history.push(`/lesson/create/${id}`);
   }, [history, lesson, dispatch]);
 
-  const [RenamePopup, openRename] = usePopupInput("Rename:", (name: string) => {
-    updateLesson({ name }, id).then((updatedLesson) => {
-      if (updatedLesson) {
+  const [RenamePopup, openRename] = usePopupInput(
+    "Rename:",
+    (name: string) => {
+      updateLesson({ name }, id).then((updatedLesson) => {
+        if (updatedLesson) {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETLESSON",
+            arg: updatedLesson,
+          });
+        }
+      });
+    },
+    lesson?.name
+  );
+
+  const [PopupModal, openDeleteModal] = usePopupModal(
+    "Are you sure? This cannot be undone.",
+    () => {
+      deleteGeneric("lesson", id).then(() => {
+        const { lessons } = store.getState().userData;
+        const newLessons = [...lessons];
+        newLessons.splice(lessons.indexOf(id), 1);
         reduxAction(dispatch, {
-          type: "CREATE_LESSON_V2_SETLESSON",
-          arg: updatedLesson,
+          type: "USERDATA_SET_LESSONS",
+          arg: newLessons,
         });
-      }
-    });
-  });
+      });
+    }
+  );
 
   const dropdownClick = useCallback(
     (selected: string) => {
@@ -58,8 +80,11 @@ export default function LessonPreview(props: LessonPreviewProps) {
       if (selected == "Rename") {
         openRename();
       }
+      if (selected == "Delete") {
+        openDeleteModal();
+      }
     },
-    [onClick, openRename]
+    [onClick, openRename, openDeleteModal]
   );
 
   const [Dropdown, setOpen] = useDropdown(
@@ -69,6 +94,7 @@ export default function LessonPreview(props: LessonPreviewProps) {
 
   return (
     <div className="lesson-preview">
+      <PopupModal />
       <RenamePopup />
       <div className="image" onClick={onClick} />
       {lesson ? (

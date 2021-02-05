@@ -38,6 +38,7 @@ export default function useDropdown(
                   className="option"
                   key={`option-${option.id || option.title}`}
                   onClick={() => {
+                    setOpen(false);
                     onSelect(option.id || option.title);
                   }}
                 >
