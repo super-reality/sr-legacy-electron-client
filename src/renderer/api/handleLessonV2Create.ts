@@ -11,7 +11,7 @@ export default function handleLessonV2Create(
   return new Promise((resolve, reject) => {
     apiErrorHandler<LessonV2Create>(res)
       .then((d) => {
-        resolve(d.data);
+        resolve(d.lesson);
       })
       .catch(reject);
   });

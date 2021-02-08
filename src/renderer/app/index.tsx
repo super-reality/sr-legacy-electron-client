@@ -81,7 +81,7 @@ export default function App(): JSX.Element {
       <Switch>
         <Route exact path="/recorder" component={Recorder} />
         <Route exact path="/lesson/view" component={BrowseLessons} />
-        <Route exact path="/lesson/create" component={CreateLesson} />
+        <Route path="/lesson/create/:id" component={CreateLesson} />
       </Switch>
       {isAuthenticated && <Sidebar />}
       {!isAuthenticated && (
