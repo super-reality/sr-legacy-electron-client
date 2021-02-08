@@ -11,7 +11,7 @@ import GroupsPage from "../groups";
 import Sonic from "../../../assets/images/sonic.png";
 import GroupSettings from "../groups/group-settings";
 import PagesIndex from "../../../types/browser";
-import { channelsClient } from "../../../utils/chat-utils/services";
+import { createChannel } from "../../../utils/chat-utils/channels-services";
 import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
 
 interface ChatContainerProps {
@@ -19,47 +19,48 @@ interface ChatContainerProps {
 }
 function ChatContainer(props: ChatContainerProps) {
   const { setPage } = props;
-  const { messages, activeGroup, activeChannel } = useSelector(
-    (state: AppState) => state.chat
+  const {
+    messages,
+    activeGroup,
+    activeChannel,
+    channels,
+    groups,
+    categories,
+  } = useSelector((state: AppState) => state.chat);
+  const [categoryId, setCategoryId] = useState<string>("");
+
+  const activeChannelObject = channels.data.find(
+    ({ _id }) => _id === activeChannel
   );
 
-  const createChannel = (channelName: string, channelPhoto?: string) => {
-    let createProps;
-    if (channelPhoto) {
-      createProps = {
-        channelName,
-        channelPhoto,
-      };
-      console.log("channelProps", createProps);
-    } else {
-      createProps = {
-        channelName,
-      };
+  const createCategoryChannel = (
+    channelName: string,
+    channelPhoto?: string
+  ) => {
+    if (categoryId !== "") {
+      createChannel(categoryId, channelName, channelPhoto);
     }
-
-    channelsClient.create(createProps).catch((err: any) => {
-      console.log(err);
-    });
   };
+
   const [CreateChannelPopup, openChannelCreatePopup] = usePopupCreateChannel({
-    createItem: createChannel,
+    createItem: createCategoryChannel,
   });
+
   return (
     <>
-      <CreateChannelPopup
-        width="400px"
-        height="200px"
-        style={{
-          right: "300px",
-        }}
-        itemType="Channel"
-      />
+      <CreateChannelPopup width="300px" height="200px" itemType="Channel" />
       <Channels
         activeGroup={activeGroup}
+        channels={channels}
+        groups={groups}
+        categories={categories}
         setPage={setPage}
         createChannel={openChannelCreatePopup}
+        setCategory={setCategoryId}
       />
-      <Chat messages={messages} activeChannel={activeChannel} />
+      {activeChannelObject && (
+        <Chat messages={messages} activeChannel={activeChannelObject} />
+      )}
     </>
   );
 }
@@ -99,50 +100,6 @@ export default function Browser() {
                 {showGroups ? "Show Chat" : "Explore the Groups"}
               </div>
             </div>
-
-            {/* <animated.div
-              style={{
-                ...springProps,
-                overflow: "hidden",
-                position: "relative",
-                width: "200px",
-                zIndex: "2" as any,
-                top: "157px",
-              }}
-            >
-              <div className="menu-groups-list">
-                <div key="show-groups">
-                  <div
-                    className="group-title"
-                    onClick={() => {
-                      setShowGroups(!showGroups);
-                    }}
-                  >
-                    {showGroups ? "Show Chat" : "Show Groups"}
-                  </div>
-                </div>
-                {groups.map((group) => {
-                  return (
-                    <div
-                      className="menu-group-item"
-                      key={group._id}
-                      onClick={() => {
-                        setActiveGroup(group._id);
-                      }}
-                    >
-                      <img
-                        src={group.collectivePhoto}
-                        className="avatar"
-                        alt=""
-                      />
-                      <div className="menu-list-group-name">
-                        {group.collectiveName}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </animated.div> */}
           </div>
         </div>
         <div className="group-button">
