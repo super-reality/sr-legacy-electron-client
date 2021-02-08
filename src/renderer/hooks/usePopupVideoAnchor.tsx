@@ -1,19 +1,89 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import fs from "fs";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/lib/ReactCrop.scss";
 import "./video-trim.scss";
+import { useDispatch, useSelector } from "react-redux";
 import ButtonSimple from "../components/button-simple";
 import VideoNavigation from "../components/create-leson-detached/video-navigation";
-import { recordingPath } from "../electron-constants";
+import { recordingPath, stepSnapshotPath } from "../electron-constants";
 import useDebounce from "./useDebounce";
 import usePopup from "./usePopup";
 import { Rectangle } from "../../types/utils";
+import { RecordingJson } from "../components/recorder/types";
+import { getRawAudioData } from "../components/recorder/CVEditor";
+import reduxAction from "../redux/reduxAction";
+import rawAudioToWaveform from "../components/create-leson-detached/lesson-utils/rawAudioToWaveform";
+import VideoData from "../components/create-leson-detached/video-data";
+import { AppState } from "../redux/stores/renderer";
 
 export default function usePopupVideoAnchor(
   id: string,
   callback: (rect: Rectangle, position: number) => void
 ): [() => JSX.Element, () => void, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
+  const dispatch = useDispatch();
+
+  const { recordingData } = useSelector(
+    (state: AppState) => state.createLessonV2
+  );
+
+  useEffect(() => {
+    let json: RecordingJson = {
+      step_data: [],
+      spectrum: [],
+    };
+
+    try {
+      const file = fs
+        .readFileSync(`${stepSnapshotPath}/${id}.webm.json`)
+        .toString("utf8");
+      json = JSON.parse(file);
+    } catch (e) {
+      console.warn(
+        `.json for recording ${id} does not exist! Some data about it might be unavailable.`
+      );
+    }
+    getRawAudioData(`${recordingPath}aud-${id}.webm`)
+      .then((data) => {
+        reduxAction(dispatch, {
+          type: "SET_RECORDING_DATA",
+          arg: { spectrum: rawAudioToWaveform(data) },
+        });
+      })
+      .catch(() => {
+        console.warn(`recording ${id} does not have any local audio files.`);
+      });
+    reduxAction(dispatch, {
+      type: "SET_RECORDING_DATA",
+      arg: json,
+    });
+    reduxAction(dispatch, {
+      type: "CLEAR_RECORDING_CV_DATA",
+      arg: null,
+    });
+  }, [id, dispatch]);
+
+  const meoizedSpectrum = useMemo(() => {
+    return (
+      <div className="spectrum-container">
+        {recordingData.spectrum.map((n, i) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={`spectrum-key-${i}`}
+            className="spectrum-bar"
+            style={{ height: `${n * 100}%` }}
+          />
+        ))}
+      </div>
+    );
+  }, [recordingData]);
 
   const VideoTrimPopup = () => {
     const [nav, setNav] = useState([0, 0, 100]);
@@ -109,6 +179,8 @@ export default function usePopupVideoAnchor(
             slideCallback={debounceVideoNav}
             isBackgroundSync
           />
+          <VideoData />
+          {meoizedSpectrum}
         </div>
       </Popup>
     );
