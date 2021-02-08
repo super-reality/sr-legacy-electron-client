@@ -18,6 +18,9 @@ filter_secrets: false
 
 addons:
   hostname: localhost
+  ssh_known_hosts:
+  - git@github.com:super-reality
+  - github.com/super-reality
 
 after_success:
   - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
@@ -33,8 +36,9 @@ jobs:
     - stage: Tests
       os: windows
       env: YARN_GPG=no
+      before_script:
+        - echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
       script:
-        - echo -e “Host *\n\tStrictHostKeyChecking no\n” >> ~/.ssh/config
         - npm run semantic-release-dry
         - npm run test:all || travis_terminate 1
     - stage: Build
