@@ -10,7 +10,7 @@ export type EditorMenues =
   | "Open Source";
 
 const selectOptionsByMenu: Record<EditorMenues, string[]> = {
-  Create: ["Recorder", ".."],
+  Create: ["Recording", ".."],
   Library: ["library", "etc"],
   Teach: ["Teach", "Teach more", "Lots of teaching"],
   Resources: ["Resources", "Buy stuff"],

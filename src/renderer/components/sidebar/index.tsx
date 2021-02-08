@@ -92,7 +92,7 @@ export default function Sidebar() {
         icon: TutorialsIcon,
         component: null,
         subComponent: null,
-        onClick: () => history.push("/lesson/create"),
+        onClick: () => history.push("/lesson/view"),
         componentWidth: 700,
       },
       {

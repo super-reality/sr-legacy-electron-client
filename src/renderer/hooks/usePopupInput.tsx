@@ -9,10 +9,11 @@ interface InputProps {
 
 export default function usePopupInput(
   title: string,
-  callback: (val: string) => void
+  callback: (val: string) => void,
+  value: string | undefined = undefined
 ): [(props: InputProps) => JSX.Element, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
-  const [inputVal, setInputVal] = useState<string>("");
+  const [inputVal, setInputVal] = useState<string>(value || "");
 
   const onChange = useCallback((e: InputChangeEv) => {
     setInputVal(e.currentTarget.value);

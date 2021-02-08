@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useParams } from "react-router-dom";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Item } from "../../../items/item";
@@ -545,22 +546,29 @@ function TreeItem(props: TreeItemProps) {
   );
 }
 
+interface LessonParameters {
+  id: string;
+}
+
 export default function LessonTree() {
-  const { lessons } = useSelector((state: AppState) => state.createLessonV2);
+  const { id } = useParams<LessonParameters>();
+
   return (
     <Flex column>
-      {lessons.map((d, idx) => (
+      {id ? (
         <TreeFolder
-          siblings={lessons}
-          tabIndex={idx}
-          uniqueId={`${d._id}`}
+          siblings={[]}
+          tabIndex={0}
+          uniqueId={id}
           parentId=""
-          key={`${d._id}`}
-          id={d._id}
-          name={d.name}
+          key={id}
+          id={id}
+          name=""
           type="lesson"
         />
-      ))}
+      ) : (
+        <></>
+      )}
     </Flex>
   );
 }
