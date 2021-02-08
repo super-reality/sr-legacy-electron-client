@@ -17,6 +17,10 @@ export default function handleAuthSignin(
         type: "AUTH_SUCCESSFUL",
         arg: res.data,
       });
+      reduxAction(store.dispatch, {
+        type: "USERDATA_SET_LESSONS",
+        arg: res.data.user.lessons,
+      });
       return;
     }
   }

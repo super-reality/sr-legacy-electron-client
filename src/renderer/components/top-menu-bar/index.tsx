@@ -26,7 +26,7 @@ export default function TopMenuBar() {
         }
       }
     },
-    [open]
+    [history, open]
   );
 
   const [Dropdown, dropdownRef] = useTopNavDropdown(open, onSelect);
