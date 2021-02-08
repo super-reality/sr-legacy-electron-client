@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Group } from "../../../../types/chat";
-import { updateGroup } from "../../../../utils/chat-utils/services";
+import { updateGroup } from "../../../../utils/chat-utils/groups-services";
 import ButtonSimple from "../../button-simple";
 
 interface SettingsProps {
@@ -26,7 +26,7 @@ export default function GeneralSettings(props: SettingsProps) {
         };
       } else {
         groupProps = {
-          groupName: "Test",
+          groupName: groupNameField.current.value,
         };
       }
       updateGroup(_id, groupProps);

@@ -64,6 +64,11 @@ export default function GroupsList(props: GroupsListProps) {
           type: "SET_ACTIVE_CHANNEL",
           arg: activeChannel._id,
         });
+      } else {
+        reduxAction(dispatch, {
+          type: "SET_ACTIVE_CHANNEL",
+          arg: "",
+        });
       }
     }
   };

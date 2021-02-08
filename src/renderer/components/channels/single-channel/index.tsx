@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
-import DefaultUser from "../../../../assets/images/default-chat-icon.png";
+import DefaultIcon from "../../../../assets/images/logo-icon.png";
 import { Channel } from "../../../../types/chat";
 
 interface SingleChannelProps {
@@ -40,7 +40,7 @@ export default function SingleChannel(props: SingleChannelProps): JSX.Element {
     >
       <img
         className="avatar"
-        src={channel.channelPhoto ? channel.channelPhoto : DefaultUser}
+        src={channel.channelPhoto ? channel.channelPhoto : DefaultIcon}
         alt=""
       />
       <div className="info">{channel.channelName}</div>

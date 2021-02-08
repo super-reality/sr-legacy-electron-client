@@ -9,7 +9,7 @@ import {
   createGroup,
   updateGroup,
   deleteGroup,
-} from "../../../utils/chat-utils/services";
+} from "../../../utils/chat-utils/groups-services";
 
 interface GroupProps {
   group: Group;

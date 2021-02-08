@@ -1,11 +1,15 @@
-import { CategorySettings } from "../../types/chat";
+import { Category, CategorySettings } from "../../types/chat";
+import { createChannel } from "./channels-services";
 import { categoryClient } from "./services";
 
 export const createCategory = (groupId: string) => {
   categoryClient
     .create({
       groupId,
-      categoryName: "New Category",
+      categoryName: "New Group Category",
+    })
+    .then((category: Category) => {
+      createChannel(category._id, "new text channel");
     })
     .catch((err: any) => {
       console.log(err);

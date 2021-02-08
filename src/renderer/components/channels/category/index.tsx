@@ -4,7 +4,7 @@ import { Category, Channel, ChannelsResult } from "../../../../types/chat";
 import ButtonAdd from "../../../../assets/images/add-circle.png";
 import SingleChannel from "../single-channel";
 import { onTextChange } from "../../../../utils/chat-utils/common-functions";
-import { UpdateGroupType } from "../../../../utils/chat-utils/services";
+import { UpdateGroupType } from "../../../../utils/chat-utils/groups-services";
 import { UpdateCategoryType } from "../../../../utils/chat-utils/categories-services";
 import "./index.scss";
 
