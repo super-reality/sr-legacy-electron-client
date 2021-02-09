@@ -22,10 +22,16 @@ import reduxAction from "../redux/reduxAction";
 import rawAudioToWaveform from "../components/create-leson-detached/lesson-utils/rawAudioToWaveform";
 import VideoData from "../components/create-leson-detached/video-data";
 import { AppState } from "../redux/stores/renderer";
+import userDataPath from "../../utils/files/userDataPath";
+import saveCanvasImage from "../../utils/saveCanvasImage";
+import cropImage from "../../utils/cropImage";
+
+const userData = userDataPath();
+const captureFileName = `${userData}/capture.png`;
 
 export default function usePopupVideoAnchor(
   id: string,
-  callback: (rect: Rectangle, position: number) => void
+  callback: (croppedFile: string) => void
 ): [() => JSX.Element, () => void, () => void] {
   const [Popup, doOpen, close] = usePopup(false);
   const dispatch = useDispatch();
@@ -68,7 +74,7 @@ export default function usePopupVideoAnchor(
       type: "CLEAR_RECORDING_CV_DATA",
       arg: null,
     });
-  }, [id, dispatch]);
+  }, [dispatch]);
 
   const meoizedSpectrum = useMemo(() => {
     return (
@@ -89,6 +95,7 @@ export default function usePopupVideoAnchor(
     const [nav, setNav] = useState([0, 0, 100]);
     const [videoDuration, setVideoDuration] = useState(100);
     const videoRef = useRef<HTMLVideoElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [crop, setCrop] = useState<Rectangle | null>(null);
 
     const debouncer = useDebounce(50);
@@ -108,9 +115,42 @@ export default function usePopupVideoAnchor(
       [videoRef, nav, debouncer]
     );
 
+    const generateImageFromArea = useCallback(
+      (scale: number) => {
+        if (crop && canvasRef.current && videoRef.current) {
+          const ctx = canvasRef.current.getContext("2d");
+          canvasRef.current.width = videoRef.current.videoWidth;
+          canvasRef.current.height = videoRef.current.videoHeight;
+          if (ctx) {
+            ctx.drawImage(
+              videoRef.current,
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height
+            );
+
+            return saveCanvasImage(captureFileName, canvasRef.current).then(
+              (image) =>
+                cropImage(image, {
+                  x: crop.x / scale,
+                  y: crop.y / scale,
+                  width: crop.width / scale,
+                  height: crop.height / scale,
+                })
+            );
+          }
+          return Promise.reject();
+        }
+        return Promise.reject();
+      },
+      [crop, canvasRef, videoRef]
+    );
+
     const Video = useMemo(
       () => (
         <video
+          id="trim-popup-video"
           key={`trim-popup-video-${id}`}
           muted
           ref={videoRef}
@@ -128,28 +168,31 @@ export default function usePopupVideoAnchor(
           src={`${recordingPath}/vid-${id}.webm`}
         />
       ),
-      [id]
+      []
     );
 
     const onDone = useCallback(() => {
       if (videoRef.current && crop) {
         const scale =
           videoRef.current.offsetHeight / videoRef.current.videoHeight;
-        callback(
-          {
-            x: crop.x / scale,
-            y: crop.y / scale,
-            width: crop.width / scale,
-            height: crop.height / scale,
-          },
-          nav[1]
-        );
-        close();
+
+        generateImageFromArea(scale).then(callback);
+        // close();
       }
-    }, [callback, nav, crop, videoRef]);
+    }, [callback, generateImageFromArea, nav, crop, canvasRef, videoRef]);
+
+    const videoDomain = useMemo(() => [0, videoDuration], [videoDuration]);
+    const defaultNavigation = useMemo(() => [0, 0, videoDuration], [
+      videoDuration,
+    ]);
 
     return (
       <Popup width="calc(100% - 128px)" height="calc(100% - 128px)">
+        <canvas
+          id="trim-popup-canvas"
+          style={{ display: "none" }}
+          ref={canvasRef}
+        />
         <div
           style={{
             height: "calc(100% - 240px)",
@@ -172,8 +215,8 @@ export default function usePopupVideoAnchor(
         <div style={{ overflow: "hidden" }}>
           <VideoNavigation
             singleNav
-            domain={[0, videoDuration]}
-            defaultValues={nav}
+            domain={videoDomain}
+            defaultValues={defaultNavigation}
             ticksNumber={100}
             callback={debounceVideoNav}
             slideCallback={debounceVideoNav}

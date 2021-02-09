@@ -52,7 +52,6 @@ export default function VideoStatus() {
     canvasSourceType,
     canvasSourceDesc,
     canvasSource,
-    status,
     triggerCvMatch,
     previewEditArea,
     previewMode,
@@ -163,7 +162,7 @@ export default function VideoStatus() {
             fontFamily: "monospace",
             marginLeft: "auto",
           }}
-        >{`${canvasSourceDesc} / ${status}`}</div>
+        >{`${canvasSourceDesc}`}</div>
         <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
       </div>
     </>

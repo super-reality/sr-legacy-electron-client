@@ -34,7 +34,12 @@ export default async function generateClicks(
   anchor: IAnchor
 ): Promise<GeneratedData> {
   const newData = { ...baseData };
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
+  const canvasPanel = document.getElementById(
+    "trim-popup-canvas"
+  ) as HTMLCanvasElement;
 
   const { recordingData } = store.getState().createLessonV2;
 
@@ -74,7 +79,7 @@ export default async function generateClicks(
         .then((item) => newItem(item, stepId))
         .then((item) => {
           if (item) newData.items[item.name] = item;
-          return saveCanvasImage(`${itemsPath}/${stepId}.png`);
+          return saveCanvasImage(`${itemsPath}/${stepId}.png`, canvasPanel);
         });
     }
   }

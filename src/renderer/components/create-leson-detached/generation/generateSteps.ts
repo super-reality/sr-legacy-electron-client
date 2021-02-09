@@ -23,9 +23,11 @@ export default async function generateSteps(
     currentRecording,
   } = store.getState().createLessonV2;
 
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
   const videoCanvas = document.getElementById(
-    "video-canvas-panel"
+    "trim-popup-canvas"
   ) as HTMLCanvasElement;
 
   const steps: Record<string, StepData> = {};

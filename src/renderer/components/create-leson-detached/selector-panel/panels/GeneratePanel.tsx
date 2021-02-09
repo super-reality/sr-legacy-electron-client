@@ -7,58 +7,16 @@ import { RecordingsList, RecordingsView } from "../views/recordings";
 import { ReactComponent as IconGenerate } from "../../../../../assets/svg/canvas.svg";
 import usePopupVideoAnchor from "../../../../hooks/usePopupVideoAnchor";
 import { voidFunction } from "../../../../constants";
+import useLessonGenerator from "../../../../hooks/useLessonGenerator";
 
 export default function GeneratePanel() {
   const [dataId, setDataId] = useState<string | null>(null);
 
-  /*
-  const doGenerate = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-
-    if (anchorObj) {
-      setStatus(`Generating`);
-      const generatedData = generateBaseData();
-      generateSteps(generatedData)
-        .then((data) => generateDialogues(data))
-        .then((data) => generateClicks(data, anchorObj))
-        .then(() => generationDone())
-        .catch((e) => {
-          logger("error", e);
-          console.error(e);
-          clearTempFolder();
-          setStatus(`Error generating`);
-        });
-    } else {
-      setStatus(`No anchor selected`);
-    }
-  }, [anchor, treeAnchors]);
-  */
-
-  /*
-  const checkAnchor = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: {
-        currentItem: undefined,
-        currentStep: undefined,
-        currentAnchor: recordingData.anchor,
-        recordingCvFrame: 0,
-      },
-    });
-    testFullVideo(anchor);
-  }, [recordingData, anchor]);
-  */
+  const [GeneratorPopup, openGenerator] = useLessonGenerator();
 
   const [AnchorPopup, doOpenAnchorPopup] = usePopupVideoAnchor(
     dataId || "",
-    console.log
+    openGenerator
   );
 
   const Panel = useBasePanel("Generate from Recording", IconGenerate, {});
@@ -66,6 +24,7 @@ export default function GeneratePanel() {
   return (
     <>
       <AnchorPopup />
+      <GeneratorPopup />
       <Panel>
         <div className="panel">
           <ButtonCheckbox
