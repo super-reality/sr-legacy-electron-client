@@ -3,7 +3,7 @@ import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 import "./chat-popup.scss";
 
-interface CreateGroupProps {
+interface CreateItemProps {
   createItem: (itemName: string, itemPhoto?: string) => void;
 }
 interface ChatItemModalProps {
@@ -12,15 +12,15 @@ interface ChatItemModalProps {
   height: string;
   itemType: string;
 }
-export default function usePopupCreateGroup(
-  props: CreateGroupProps
+export default function usePopupCreateChatItem(
+  props: CreateItemProps
 ): [(props: ChatItemModalProps) => JSX.Element, () => void] {
   const { createItem } = props;
   const [CreateChatItemPopup, doOpen, close] = usePopup(false);
   const itemNameField = useRef<HTMLInputElement | null>(null);
   const itemAvatarField = useRef<HTMLInputElement | null>(null);
 
-  const submitCreateGroup = () => {
+  const submitCreateItem = () => {
     if (itemNameField.current) {
       if (itemAvatarField.current && itemAvatarField.current.value) {
         createItem(itemNameField.current.value, itemAvatarField.current.value);
@@ -60,15 +60,15 @@ export default function usePopupCreateGroup(
           <div className="buttons-container">
             <ButtonSimple
               margin="8px auto"
-              width="140px"
+              width="70px"
               height="16px"
-              onClick={submitCreateGroup}
+              onClick={submitCreateItem}
             >
               Ok
             </ButtonSimple>
             <ButtonSimple
               margin="8px auto"
-              width="140px"
+              width="70px"
               height="16px"
               onClick={() => {
                 close();
