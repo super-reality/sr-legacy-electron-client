@@ -52,9 +52,11 @@ export default function Sidebar() {
     itemPreview,
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const { loginData, groups } = useSelector((state: AppState) => state.chat);
+  const { loginData, groups, categories, channels } = useSelector(
+    (state: AppState) => state.chat
+  );
   const { user } = loginData;
-
+  // console.log(groups);
   // Here we add more buttons to the sidebar!
   // See GroupsList for how to create a list of items for a button.
   // DO NOT add icons manually to the sidebar, only here.
@@ -67,6 +69,8 @@ export default function Sidebar() {
         subComponent: (
           <GroupsList
             groups={groups}
+            categories={categories}
+            channels={channels.data}
             currentSub={currentSub}
             click={(id) => {
               // 0 is this array position
@@ -110,7 +114,7 @@ export default function Sidebar() {
         componentWidth: 900,
       },
     ],
-    [history, current, currentSub, contentExpanded]
+    [history, current, currentSub, contentExpanded, groups]
   );
 
   const sidebarContainerRef = useRef<HTMLDivElement>(null);

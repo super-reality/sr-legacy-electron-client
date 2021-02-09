@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 /* eslint-disable-next-line */
 import moment from "moment";
+import { useDispatch } from "react-redux";
 import DefaultIcon from "../../../assets/images/default-chat-icon.png";
 // import Sonic from "../../../assets/images/sonic.png";
 // import Nick from "../../../assets/images/Nick.png";
@@ -12,6 +13,8 @@ import useDetectOutsideClick from "../../hooks/useDetectOutsideClick";
 import { Channel, Message } from "../../../types/chat";
 import IconEdit from "../../../assets/images/popup-edit.png";
 import IconDelete from "../../../assets/images/popup-delete.png";
+import { getMessages } from "../../../utils/chat-utils/message-services";
+import reduxAction from "../../redux/reduxAction";
 
 interface ChatProps {
   messages: Message[];
@@ -148,10 +151,12 @@ export function MessageBox(props: MessageProps) {
       setTextEdit("");
     }
   };
+
   const cancelEditingMessage = () => {
     setEdit(false);
     setTextEdit("");
   };
+
   const openDropdown = useCallback(() => {
     setShowMenu(!showMenu);
   }, []);
@@ -253,9 +258,27 @@ export function MessageBox(props: MessageProps) {
 }
 
 export default function Chat(props: ChatProps) {
-  const { messages, activeChannel } = props;
+  const { activeChannel, messages } = props;
   const [textMessage, setTextMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getMessages(activeChannel._id)
+      .then((res: any) => {
+        console.log("messageResult", res);
+        // We want the latest messages but in the reversed order
+        const uploadedMessages = res.data.reverse();
+        console.log("messages", uploadedMessages);
+        reduxAction(dispatch, {
+          type: "SET_MESSAGES",
+          arg: uploadedMessages,
+        });
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  }, [activeChannel]);
 
   const onTextChange = (e: any) => {
     const message = e.target.value;
@@ -264,12 +287,11 @@ export default function Chat(props: ChatProps) {
 
   const sendMessage = (text: string) => {
     if (text !== "") {
-      console.log(text);
       client
         .service("messages")
-        .create({ text })
-        .then((res: any) => {
-          console.log("create message res", res);
+        .create({ channelId: activeChannel._id, text })
+        .catch((err: any) => {
+          console.log("create message error", err);
         });
     }
   };
@@ -309,28 +331,29 @@ export default function Chat(props: ChatProps) {
       <div className="chat-and-channels-title">{activeChannel.channelName}</div>
       <div className="chat-container">
         <div className="chats" ref={messagesEndRef}>
-          {messages?.map((messageObject: Message, index) => {
-            const { _id, user, createdAt, text, userId } = messageObject;
-            const prevMessage = messages[index - 1];
+          {messages &&
+            messages.map((messageObject: Message, index) => {
+              const { _id, user, createdAt, text, userId } = messageObject;
+              const prevMessage = messages[index - 1];
 
-            if (
-              index !== 0 &&
-              prevMessage.userId == userId &&
-              checkMessageTime(createdAt, prevMessage.createdAt)
-            ) {
-              return <MessageBox key={_id} _id={_id} text={text} />;
-            }
+              if (
+                index !== 0 &&
+                prevMessage.userId == userId &&
+                checkMessageTime(createdAt, prevMessage.createdAt)
+              ) {
+                return <MessageBox key={_id} _id={_id} text={text} />;
+              }
 
-            return (
-              <MessageBox
-                key={_id}
-                _id={_id}
-                user={user}
-                createdAt={createdAt}
-                text={text}
-              />
-            );
-          })}
+              return (
+                <MessageBox
+                  key={_id}
+                  _id={_id}
+                  user={user}
+                  createdAt={createdAt}
+                  text={text}
+                />
+              );
+            })}
         </div>
 
         <div className="chat-input">
