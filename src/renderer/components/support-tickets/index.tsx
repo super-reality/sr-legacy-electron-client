@@ -4,6 +4,7 @@ import "./index.scss";
 import { supportTicketPayload } from "../../api/types/support-ticket/supportTicket";
 
 import getSupportTickets from "./support-tickets-utils/getSupportTickets";
+/* import searchSupportTickets from "./support-tickets-utils/searchSupportTickets"; */
 
 /* import voteup from "../../../assets/images/voteup.png";
 import votedown from "../../../assets/images/votedown.png";
@@ -26,8 +27,14 @@ import SingleTicket from "./single-ticket";
 
 import SupperSpinner from "../super-spinner";
 
+const options = ["one", "two", "three"];
+
 export default function SupportTickets(): JSX.Element {
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
+
+  const [filterOption, setFilterOption] = useState<string>("newest");
+
+  const [searchOption, setSearchOption] = useState<string>("Anmiation");
 
   useEffect(() => {
     (async () => {
@@ -37,46 +44,92 @@ export default function SupportTickets(): JSX.Element {
     })();
   }, []);
 
+  useEffect(() => {
+    let arrayTickets: supportTicketPayload[] = [];
+    if (filterOption === "oldest") {
+      arrayTickets = [...tickets];
+      setTickets(arrayTickets.reverse());
+    }
+
+    if (filterOption === "newest") {
+      arrayTickets = [...tickets];
+      setTickets(arrayTickets.reverse());
+    }
+  }, [filterOption]);
+
+  /* useEffect(() => {
+    console.log(searchOption);
+    const arrayTickets: supportTicketPayload[] = [...tickets];
+    console.log(arrayTickets);
+    console.log(arrayTickets.filter((t) => t.title == searchOption));
+    if (arrayTickets.filter((t) => t.title == searchOption).length > 0) {
+      setTickets(arrayTickets.filter((t) => t.title == searchOption));
+    } 
+    if(searchOption.length !=0){
+      (async () => {
+      const ob = {
+        name: searchOption,
+      };
+      await searchSupportTickets(ob).then((ticks) => setTickets(ticks));
+    })();
+    }
+  }, [searchOption]);*/
+
+  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterOption(e.target.value);
+  };
+
+  const searchTickets = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchOption(e.target.value);
+  };
+
   return (
     <>
-      {tickets.length === 0 ? (
-        <div className="loading-tickets">
-          <SupperSpinner width="100px" text="Loading Tickets" />
-        </div>
-      ) : (
-        <>
-          <div className="ticket-title">Filter By</div>
-          <div className="ticket-container">
-            <div className="ticket-category">
-              Category
-              <input type="text" value="Select Categories" />
-            </div>
+      <>
+        <div className="ticket-title">Filter By</div>
+        <div className="ticket-container">
+          <div className="ticket-category">
+            Category
+            <input type="text" value="Select Categories" />
+          </div>
 
-            <div className="ticket-search">
-              <div className="ticket-wrapper">
-                <input type="text" value="Animation" />
-                <a href="">Advanced Search</a>
-                <div className="request-count">
-                  {tickets.length} Help Requests
-                  <div className="sort-filter">
-                    <select>
-                      <option>Newest</option>
-                    </select>
-                  </div>
+          <div className="ticket-search">
+            <div className="ticket-wrapper">
+              <input
+                type="text"
+                value={searchOption}
+                onChange={searchTickets}
+              />
+              <a href="">Advanced Search</a>
+              <div className="request-count">
+                {tickets.length} Help Requests
+                <div className="sort-filter">
+                  <select value={filterOption} onChange={handleFilter}>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                  </select>
                 </div>
+              </div>
+
+              {tickets.length == 0 ? (
+                <div className="loading-tickets">
+                  <SupperSpinner width="100px" text="Loading Tickets" />
+                </div>
+              ) : (
                 <div className="ticket-list">
-                  {tickets.map((ticket) => (
+                  {tickets.map((ticket, index) => (
                     <SingleTicket
+                      index={index}
                       {...ticket}
                       timeposted={ticket.createdAt!}
                     />
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
     </>
   );
 }

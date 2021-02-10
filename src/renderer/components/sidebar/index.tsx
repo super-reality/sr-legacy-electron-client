@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
+import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
+import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg";
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
@@ -93,14 +95,14 @@ export default function Sidebar() {
       },
       {
         title: "Support",
-        icon: TutorialsIcon,
+        icon: SupportIcon,
         component: <Support />,
         subComponent: null,
         componentWidth: 700,
       },
       {
         title: "Support Tickets",
-        icon: TutorialsIcon,
+        icon: SupportListIcon,
         component: <SupportTickets />,
         subComponent: null,
         componentWidth: 900,

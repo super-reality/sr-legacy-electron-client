@@ -9,7 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 55vh;
     width: 100%;
 }
 
@@ -81,6 +81,25 @@
             background-position-x: 90%;
             background-position-y: 10px;
             background-image: url("../../../assets/svg/chevron-down.svg");
+            >option{
+                -webkit-appearance: none;
+                appearance: none;
+                background: #211b33;
+                &:focus{
+                    background: #211b33;
+                    cursor:pointer 
+                }
+                &:active{
+                    background: #211b33;
+                    cursor:pointer 
+                }
+
+                &:hover{
+                    background: #211b33;
+                    cursor:pointer  
+                }
+               
+            }
         }
     }
 
