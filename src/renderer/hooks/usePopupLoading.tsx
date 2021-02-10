@@ -1,11 +1,12 @@
 import React from "react";
 import Spinner from "../components/super-spinner";
+import { voidFunction } from "../constants";
 import usePopup from "./usePopup";
 
 export default function usePopupLoading(
   text: string
 ): [() => JSX.Element, () => void, () => void] {
-  const [SimplePopup, doOpen, doClose] = usePopup(false);
+  const [SimplePopup, doOpen, doClose] = usePopup(false, voidFunction, true);
 
   const Modal = () => {
     return (

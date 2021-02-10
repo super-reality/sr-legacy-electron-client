@@ -2,29 +2,22 @@ import React, { useState } from "react";
 import ButtonSimple from "../../../button-simple";
 import ButtonCheckbox from "../../button-checkbox";
 import useBasePanel from "../useBasePanel";
-import { RecordingsList, RecordingsView } from "../views/recordings";
+import { RecordingsList, RecordingsViewNoSlider } from "../views/recordings";
 
 import { ReactComponent as IconGenerate } from "../../../../../assets/svg/canvas.svg";
-import usePopupVideoAnchor from "../../../../hooks/usePopupVideoAnchor";
 import { voidFunction } from "../../../../constants";
-import useLessonGenerator from "../../../../hooks/useLessonGenerator";
+import _beginGenerating from "../../generation/beginGenerating";
+import GeneratorPopup from "../../generation/generator-popup";
 
 export default function GeneratePanel() {
   const [dataId, setDataId] = useState<string | null>(null);
 
-  const [GeneratorPopup, openGenerator] = useLessonGenerator();
-
-  const [AnchorPopup, doOpenAnchorPopup] = usePopupVideoAnchor(
-    dataId || "",
-    openGenerator
-  );
-
   const Panel = useBasePanel("Generate from Recording", IconGenerate, {});
+
+  const [openGenerator, setOpenGenerator] = useState(false);
 
   return (
     <>
-      <AnchorPopup />
-      <GeneratorPopup />
       <Panel>
         <div className="panel">
           <ButtonCheckbox
@@ -38,19 +31,25 @@ export default function GeneratePanel() {
         </div>
         {dataId && (
           <div className="panel">
-            <RecordingsView
-              key={`single-view-${dataId}`}
+            {openGenerator && (
+              <GeneratorPopup
+                id={dataId}
+                close={() => setOpenGenerator(false)}
+              />
+            )}
+
+            <RecordingsViewNoSlider
+              key={`single-recording-view-${dataId}`}
               id={dataId}
               data={[]}
               open={setDataId}
-              noUpload
               select={voidFunction}
             />
             <ButtonSimple
               width="145px"
               height="20px"
               margin="8px auto"
-              onClick={doOpenAnchorPopup}
+              onClick={() => setOpenGenerator(true)}
             >
               Start
             </ButtonSimple>

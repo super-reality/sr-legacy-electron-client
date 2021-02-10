@@ -5,7 +5,9 @@ import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 
 export default async function testFullVideo(anchor: IAnchor): Promise<void> {
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
 
   const { recordingData } = store.getState().createLessonV2;
 

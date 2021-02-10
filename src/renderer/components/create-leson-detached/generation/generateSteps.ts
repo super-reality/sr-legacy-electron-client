@@ -7,7 +7,7 @@ import { itemsPath } from "../../../electron-constants";
 import store from "../../../redux/stores/renderer";
 import newStep from "../lesson-utils/newStep";
 import setStatus from "../lesson-utils/setStatus";
-import { StepData } from "../../recorder/types";
+import { RecordingJson, StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
 function onlyUnique(value: any, index: number, self: Array<any>) {
@@ -15,17 +15,17 @@ function onlyUnique(value: any, index: number, self: Array<any>) {
 }
 
 export default async function generateSteps(
-  baseData: GeneratedData
+  baseData: GeneratedData,
+  recordingData: RecordingJson,
+  recordingId: string
 ): Promise<GeneratedData> {
-  const {
-    recordingData,
-    currentChapter,
-    currentRecording,
-  } = store.getState().createLessonV2;
+  const { currentChapter } = store.getState().createLessonV2;
 
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
   const videoCanvas = document.getElementById(
-    "video-canvas-panel"
+    "trim-popup-canvas"
   ) as HTMLCanvasElement;
 
   const steps: Record<string, StepData> = {};
@@ -68,7 +68,7 @@ export default async function generateSteps(
               {
                 type: "Recording",
                 value: {
-                  recording: currentRecording || "",
+                  recording: recordingId || "",
                   timestamp: steps[stepName].time_stamp,
                   url,
                 },
