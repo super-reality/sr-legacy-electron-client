@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
+import "../buttons.scss";
 import { animated, useSpring, useTrail } from "react-spring";
 
 import { useHistory } from "react-router-dom";
@@ -53,7 +54,11 @@ export default function Sidebar() {
     itemPreview,
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
-
+  const { loginData, groups, categories, channels } = useSelector(
+    (state: AppState) => state.chat
+  );
+  const { user } = loginData;
+  // console.log(groups);
   // Here we add more buttons to the sidebar!
   // See GroupsList for how to create a list of items for a button.
   // DO NOT add icons manually to the sidebar, only here.
@@ -65,6 +70,9 @@ export default function Sidebar() {
         component: <Browser />,
         subComponent: (
           <GroupsList
+            groups={groups}
+            categories={categories}
+            channels={channels.data}
             currentSub={currentSub}
             click={(id) => {
               // 0 is this array position
@@ -90,7 +98,7 @@ export default function Sidebar() {
         icon: TutorialsIcon,
         component: null,
         subComponent: null,
-        onClick: () => history.push("/lesson/create"),
+        onClick: () => history.push("/lesson/view"),
         componentWidth: 700,
       },
       {
@@ -108,7 +116,7 @@ export default function Sidebar() {
         componentWidth: 900,
       },
     ],
-    [history, current, currentSub, contentExpanded]
+    [history, current, currentSub, contentExpanded, groups]
   );
 
   const sidebarContainerRef = useRef<HTMLDivElement>(null);
@@ -197,16 +205,28 @@ export default function Sidebar() {
 
           <div className="logged-user">
             <div className="avatar-container">
-              <ButtonRound
-                onClick={voidFunction}
-                width="40px"
-                height="40px"
-                svg={DefaultUser}
-              />
+              {user && user.avatar ? (
+                <div className="button-round ">
+                  <img
+                    className="rounded-img"
+                    src={user.avatar}
+                    width="40px"
+                    height="40px"
+                    alt=""
+                  />
+                </div>
+              ) : (
+                <ButtonRound
+                  onClick={voidFunction}
+                  width="40px"
+                  height="40px"
+                  svg={DefaultUser}
+                />
+              )}
             </div>
             <div className="name-container">
               <animated.div style={userNameProps[0]} className="user-name">
-                User Name
+                {user && user.username}
               </animated.div>
               <animated.div style={userNameProps[1]} className="user-role">
                 Role

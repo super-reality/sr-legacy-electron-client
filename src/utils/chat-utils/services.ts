@@ -1,19 +1,13 @@
 import client from "../../renderer/feathers";
-import { ChatUser } from "../../types/chat";
+import { ChannelSettings } from "../../types/chat";
 
-export const messagesClient = client.service("messages");
 export const usersClient = client.service("users");
-export const groupClient = client.service("collectives");
+export const groupClient = client.service("groups");
+export const categoryClient = client.service("category");
 export const channelsClient = client.service("channels");
+export const messagesClient = client.service("messages");
 
-interface GroupSettings {
-  collectiveName?: string;
-  collectivePhoto?: string;
-  ownerId?: string;
-  users?: ChatUser[];
-  channels?: [];
+export function updateUser(id: string, userSettings: ChannelSettings) {
+  usersClient.patch(id, userSettings);
 }
-
-export function updateGroup(id: string, groupSettings: GroupSettings) {
-  groupClient.patch(id, groupSettings);
-}
+export const feathersClient = client;

@@ -1,72 +1,44 @@
 import "./index.scss";
 import React, { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
-import { useDispatch, useSelector } from "react-redux";
-import ButtonAdd from "../../../assets/images/add-circle.png";
-
-import PacMan from "../../../assets/images/pacman.png";
-import Sonic from "../../../assets/images/sonic.png";
-import DefaultUser from "../../../assets/images/default-chat-icon.png";
-import TeacherBot from "../../../assets/images/teacher-bot.png";
-import Support from "../../../assets/images/support.png";
-import { Channel, ChatUser, Group } from "../../../types/chat";
+import { Category, Group, ChannelsResult } from "../../../types/chat";
 import { PagesIndex } from "../../../types/browser";
-import { AppState } from "../../redux/stores/renderer";
-import { channelsClient } from "../../../utils/chat-utils/services";
-import reduxAction from "../../redux/reduxAction";
+import {
+  createCategory,
+  updateCategory,
+} from "../../../utils/chat-utils/categories-services";
+import SingleCategory from "./category";
 
 interface ChannelsProps {
-  activeGroup: Group;
+  activeGroup: string;
+  groups: Group[];
+  categories: Category[];
+  channels: ChannelsResult;
   setPage: (pageIndex: any) => void;
   createChannel: () => void;
-}
-
-interface SingleChannelProps {
-  channel: Channel;
-  selfId: string;
-  chatUsers: ChatUser[];
-}
-
-export function SingleChannel(props: SingleChannelProps): JSX.Element {
-  const { channel, selfId, chatUsers } = props;
-  const dispatch = useDispatch();
-
-  console.log(channel, selfId, chatUsers);
-  const { users } = channel;
-  const singleUser = users.filter((_id) => _id !== selfId);
-  const interlocutor = chatUsers.find(({ _id }) => _id === singleUser[0]);
-  console.log("singleUser", singleUser, "interlocutor", interlocutor);
-
-  const setActiveChannel = (activeChannel: Channel) => {
-    reduxAction(dispatch, {
-      type: "SET_ACTIVE_CHANNEL",
-      arg: activeChannel,
-    });
-  };
-
-  return (
-    <div
-      className="single-channel"
-      onClick={() => {
-        setActiveChannel(channel);
-      }}
-    >
-      <img className="avatar" src={DefaultUser} alt="" />
-      <div className="info">{channel.channelName}</div>
-    </div>
-  );
+  setCategory: (id: string) => void;
 }
 
 export default function Channels(props: ChannelsProps): JSX.Element {
-  const { activeGroup, setPage, createChannel } = props;
-  const { loginData, channels, users, messages } = useSelector(
-    (state: AppState) => state.chat
-  );
-  const { user } = loginData;
+  const {
+    activeGroup,
+    channels,
+    categories,
+    groups,
+    setPage,
+    createChannel,
+    setCategory,
+  } = props;
+
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const showGroupSettings = () => {
     setShowSettings(!showSettings);
   };
+
+  const groupCategories = categories.filter(
+    ({ groupId }) => groupId === activeGroup
+  );
+  const activeGroupObject = groups.find(({ _id }) => _id === activeGroup);
 
   const springProps = useSpring({
     config: { ...config.gentle },
@@ -78,7 +50,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
   return (
     <div className="channel">
       <div className="channel-title active-group" onClick={showGroupSettings}>
-        {activeGroup.collectiveName}
+        {activeGroupObject && activeGroupObject.groupName}
       </div>
       <animated.div style={{ ...springProps }}>
         <div className="group-settings-dropdown">
@@ -89,27 +61,45 @@ export default function Channels(props: ChannelsProps): JSX.Element {
             Group settings
           </div>
           <div className="dropdown-item">Invite People</div>
-          <div className="dropdown-item">Create Category</div>
+          <div
+            className="dropdown-item"
+            onClick={() => {
+              createCategory(activeGroup);
+            }}
+          >
+            Create Category
+          </div>
           <div className="dropdown-item">Some settings</div>
           <div className="dropdown-item">Some settings</div>
         </div>
       </animated.div>
+      {groupCategories &&
+        groupCategories.map((category: Category) => {
+          return (
+            <SingleCategory
+              key={category._id}
+              category={category}
+              channels={channels}
+              createChannel={createChannel}
+              setCategory={setCategory}
+              updateCategory={updateCategory}
+            />
+          );
+        })}
+    </div>
+  );
+}
 
-      <div className="channel-title">Super Powers</div>
+/*
+
+import ButtonAdd from "../../../assets/images/add-circle.png";
+import PacMan from "../../../assets/images/pacman.png";
+import Sonic from "../../../assets/images/sonic.png";
+import TeacherBot from "../../../assets/images/teacher-bot.png";
+import Support from "../../../assets/images/support.png";
+<div className="channel-title">Super Powers</div>
       <div className="add">
-        <button
-          type="button"
-          onClick={() => {
-            channelsClient
-              .patch("600eed88f194e54665e59290", {
-                channelName: "Channel 3",
-                messages: messages,
-              })
-              .catch((err: any) => {
-                console.log(err);
-              });
-          }}
-        >
+        <button type="button">
           <img src={ButtonAdd} />
         </button>
       </div>
@@ -133,16 +123,6 @@ export default function Channels(props: ChannelsProps): JSX.Element {
       </div>
       <div className="channel-container">
         <div className="channels">
-          {channels.data.map((channel: Channel) => {
-            return (
-              <SingleChannel
-                key={channel._id}
-                channel={channel}
-                selfId={user._id}
-                chatUsers={users}
-              />
-            );
-          })}
           <div className="single-channel">
             <img className="avatar" src={PacMan} alt="" />
             <div className="info">Meeting Room A</div>
@@ -197,6 +177,4 @@ export default function Channels(props: ChannelsProps): JSX.Element {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+      */

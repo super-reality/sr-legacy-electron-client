@@ -5,9 +5,10 @@ import client from "../../renderer/feathers";
 import reduxAction from "../../renderer/redux/reduxAction";
 import store from "../../renderer/redux/stores/renderer";
 
-import { Group, Message, ChatUser, Channel } from "../../types/chat";
+import { Group, Message, ChatUser, Channel, Category } from "../../types/chat";
 import getPublicPath from "../electron/getPublicPath";
 import {
+  categoryClient,
   channelsClient,
   groupClient,
   messagesClient,
@@ -31,14 +32,10 @@ const showChatNotification = (message: Message) => {
 // chat listeners
 // message listeners
 // message created listener
-const onMessageCreateteListener = (
-  newMessage: Message,
-  stateMessages: Message[]
-) => {
-  console.log("message created", newMessage, "messages", stateMessages);
-  const newMessages = [...stateMessages, newMessage];
+const onMessageCreateListener = (newMessage: Message) => {
+  console.log("message created", newMessage);
 
-  reduxAction(store.dispatch, { type: "SET_MESSAGES", arg: newMessages });
+  reduxAction(store.dispatch, { type: "ADD_MESSAGE", arg: newMessage });
 };
 // message updated listener
 const onMessageUpdate = (updatedMessage: Message) => {
@@ -73,36 +70,50 @@ export const logoutListener = () => {
   reduxAction(store.dispatch, { type: "SET_USERS", arg: [] });
 };
 
-// collectives listeners functions
-export const onGroupCreatedListener = (newCollective: Group) => {
+// group listeners functions
+export const onGroupCreatedListener = (newGroup: Group) => {
   reduxAction(store.dispatch, {
     type: "ADD_GROUP",
-    arg: newCollective,
+    arg: newGroup,
   });
 };
 
-export const onGroupUpdatedListener = (updatedCollective: Group) => {
+export const onGroupUpdatedListener = (updatedGroup: Group) => {
   reduxAction(store.dispatch, {
     type: "UPDATE_GROUP",
-    arg: updatedCollective,
+    arg: updatedGroup,
   });
 };
 
-export const onDeleteGroupListener = (deletedCollective: Group) => {
+export const onDeleteGroupListener = (deletedGroup: Group) => {
   reduxAction(store.dispatch, {
     type: "DELETE_GROUP",
-    arg: deletedCollective,
+    arg: deletedGroup,
   });
 };
 
-// on loguot listener
-export const onLogout = () => {
-  client.on("logout", () => {
-    console.log("logout");
-    logoutListener();
+// categories listeners
+export const onCategoryCreatedListener = (newCategory: Category) => {
+  console.log(newCategory);
+  reduxAction(store.dispatch, {
+    type: "ADD_CATEGORY",
+    arg: newCategory,
   });
 };
 
+export const onCategoryUpdatedListener = (updatedCategory: Category) => {
+  reduxAction(store.dispatch, {
+    type: "UPDATE_CATEGORY",
+    arg: updatedCategory,
+  });
+};
+
+export const onDeleteCategoryListener = (deletedCategory: Category) => {
+  reduxAction(store.dispatch, {
+    type: "DELETE_CATEGORY",
+    arg: deletedCategory._id,
+  });
+};
 // channels listeners
 const onChannelCreatedListener = (newChannel: Channel) => {
   reduxAction(store.dispatch, {
@@ -125,37 +136,39 @@ const onChannelDeleteListener = (deletedChannel: Channel) => {
   });
 };
 // chat realtime listeners
+// on loguot listener
+export const onLogout = () => {
+  client.on("logout", () => {
+    console.log("logout");
+    logoutListener();
+  });
+};
+
 export const onAuthenticated = () => {
   // On successfull login
   console.log("authenticated listener");
-  client.on("authenticated", (login) => {
+  client.on("authenticated", (login: any) => {
     // Get all users and messages
     console.log("authenticated listener start. login:", login);
     Promise.all([
-      messagesClient.find({
-        query: {
-          $sort: { createdAt: -1 },
-          $limit: 25,
-        },
-      }),
       usersClient.find(),
       groupClient.find(),
+      categoryClient.find(),
       channelsClient.find(),
     ])
-      .then(([messagesResult, usersResult, groupsResult, channelsResult]) => {
-        // We want the latest messages but in the reversed order
-        const uploadedMessages = messagesResult.data.reverse();
+      .then(([usersResult, groupsResult, categoryResult, channelsResult]) => {
         const uploadedUsers = usersResult.data;
         const uploadedGroups = groupsResult.data;
+        const uploadedCategories = categoryResult.data;
         console.log(
           "login",
           login,
-          "messages",
-          uploadedMessages,
           "users",
           uploadedUsers,
           "groups",
           uploadedGroups,
+          "categories",
+          categoryResult,
           "channels",
           channelsResult
         );
@@ -164,10 +177,7 @@ export const onAuthenticated = () => {
           type: "SET_CHAT_LOGIN_DATA",
           arg: login,
         });
-        reduxAction(store.dispatch, {
-          type: "SET_MESSAGES",
-          arg: uploadedMessages,
-        });
+
         reduxAction(store.dispatch, {
           type: "SET_USERS",
           arg: uploadedUsers,
@@ -181,28 +191,28 @@ export const onAuthenticated = () => {
           arg: uploadedGroups[0]._id,
         });
         reduxAction(store.dispatch, {
+          type: "SET_CATEGORIES",
+          arg: uploadedCategories,
+        });
+        reduxAction(store.dispatch, {
           type: "SET_CHANNELS",
           arg: channelsResult,
         });
         reduxAction(store.dispatch, {
           type: "SET_ACTIVE_CHANNEL",
-          arg: channelsResult.data[1],
+          arg: channelsResult.data[9]._id,
         });
         // chat listeners
 
         // messages created listener clean up
-        messagesClient.off("created", onMessageCreateteListener);
+        messagesClient.off("created", onMessageCreateListener);
         // add new message to the redux state
-        messagesClient
-          .on("created", (message: any) => {
-            const { chat } = store.getState();
-            onMessageCreateteListener(message, chat.messages);
-            showChatNotification(message);
-          })
-          .catch((err: any) => {
-            console.log(err);
-          });
+        messagesClient.on("created", (message: any) => {
+          onMessageCreateListener(message);
+          showChatNotification(message);
+        });
         // edit message listener
+        messagesClient.off("patched", onMessageUpdate);
         messagesClient.on("patched", (params: any) => {
           console.log("MESSAGE PATCHED EVENT", params);
           onMessageUpdate(params);
@@ -216,13 +226,13 @@ export const onAuthenticated = () => {
           const updatedMessages = chat.messages.filter(
             ({ _id }) => _id != message._id
           );
-          console.log("remove message state", updatedMessages);
+
           reduxAction(store.dispatch, {
             type: "SET_MESSAGES",
             arg: updatedMessages,
           });
         });
-
+        console.log("listeners test");
         // users listener clean up
         usersClient.off("created", onUserCreatedListener);
         // Add new users to the user list
@@ -236,26 +246,40 @@ export const onAuthenticated = () => {
           onUpdatedChatUser(user);
         });
 
-        // collectives listeners
-        // collectives created listeners
+        // groups listeners
+        // groups created listeners
         groupClient.off("created", onGroupCreatedListener);
         groupClient.on("created", (group: Group) => {
           console.log("group created", group);
 
           onGroupCreatedListener(group);
         });
-        // collective updated listener
+        // groups updated listener
         groupClient.off("patched", onGroupUpdatedListener);
         groupClient.on("patched", (group: Group) => {
           console.log("patched", group);
           onGroupUpdatedListener(group);
         });
-        // collective delete listener
+        // groups delete listener
         groupClient.off("removed", onDeleteGroupListener);
         groupClient.on("removed", (group: Group) => {
           console.log("deleted", group);
           onDeleteGroupListener(group);
         });
+
+        // categories listeners
+        // categories created listener
+        categoryClient.off("created", onCategoryCreatedListener);
+        categoryClient.on("created", onCategoryCreatedListener);
+
+        // categories updated listener
+        categoryClient.off("patched", onCategoryUpdatedListener);
+        categoryClient.on("patched", onCategoryUpdatedListener);
+
+        // categories deleted listener
+        categoryClient.off("removed", onDeleteCategoryListener);
+        categoryClient.on("removed", onDeleteCategoryListener);
+
         // channels listeners
         // channels created listeners
         channelsClient.off("created", onChannelCreatedListener);
