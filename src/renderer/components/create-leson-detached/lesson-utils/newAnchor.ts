@@ -20,7 +20,10 @@ export default function newAnchor(
         arg: { anchor: data, step },
       });
       if (step) {
-        updateStep({ anchor: data._id }, step);
+        updateStep(
+          { startWhen: [{ type: "Image Found", value: data._id }] },
+          step
+        );
       }
       return data;
     })

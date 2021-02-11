@@ -1,9 +1,9 @@
-import store from "../../../redux/stores/renderer";
+import { RecordingJson } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
-export default function generateBaseData(): GeneratedData {
-  const { recordingData } = store.getState().createLessonV2;
-
+export default function generateBaseData(
+  recordingData: RecordingJson
+): GeneratedData {
   const itemToStep: Record<string, string> = {};
   let lastStep = "";
   recordingData.step_data.forEach((data, index) => {
