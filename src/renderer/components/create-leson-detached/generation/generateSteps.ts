@@ -7,25 +7,27 @@ import { itemsPath } from "../../../electron-constants";
 import store from "../../../redux/stores/renderer";
 import newStep from "../lesson-utils/newStep";
 import setStatus from "../lesson-utils/setStatus";
-import { StepData } from "../../recorder/types";
+import { RecordingJson, StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
+import { IAnchor } from "../../../api/types/anchor/anchor";
 
 function onlyUnique(value: any, index: number, self: Array<any>) {
   return self.indexOf(value) === index;
 }
 
 export default async function generateSteps(
-  baseData: GeneratedData
+  baseData: GeneratedData,
+  recordingData: RecordingJson,
+  recordingId: string,
+  anchorObj: IAnchor
 ): Promise<GeneratedData> {
-  const {
-    recordingData,
-    currentChapter,
-    currentRecording,
-  } = store.getState().createLessonV2;
+  const { currentChapter } = store.getState().createLessonV2;
 
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
   const videoCanvas = document.getElementById(
-    "video-canvas-panel"
+    "trim-popup-canvas"
   ) as HTMLCanvasElement;
 
   const steps: Record<string, StepData> = {};
@@ -63,12 +65,12 @@ export default async function generateSteps(
         newStep(
           {
             name: stepName,
-            anchor: recordingData.anchor,
+            startWhen: [{ type: "Image Found", value: anchorObj._id }],
             canvas: [
               {
                 type: "Recording",
                 value: {
-                  recording: currentRecording || "",
+                  recording: recordingId || "",
                   timestamp: steps[stepName].time_stamp,
                   url,
                 },

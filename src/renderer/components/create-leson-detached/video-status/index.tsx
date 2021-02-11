@@ -52,7 +52,6 @@ export default function VideoStatus() {
     canvasSourceType,
     canvasSourceDesc,
     canvasSource,
-    status,
     triggerCvMatch,
     previewEditArea,
     previewMode,
@@ -62,7 +61,12 @@ export default function VideoStatus() {
     // const slice = store.getState().createLessonV2;
     const step: IStep | null = treeSteps[currentStep || ""];
 
-    return treeAnchors[step?.anchor || currentAnchor || ""] || null;
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    return (
+      treeAnchors[(anchors[0]?.value as string) || currentAnchor || ""] || null
+    );
   }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
 
   const cvDebouncer = useDebounce(1000);
@@ -163,7 +167,7 @@ export default function VideoStatus() {
             fontFamily: "monospace",
             marginLeft: "auto",
           }}
-        >{`${canvasSourceDesc} / ${status}`}</div>
+        >{`${canvasSourceDesc}`}</div>
         <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
       </div>
     </>

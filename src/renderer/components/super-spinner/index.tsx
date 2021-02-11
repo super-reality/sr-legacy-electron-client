@@ -13,9 +13,7 @@ export default function Spinner(props: ISpinner): JSX.Element {
   const { width, height, style, text } = props;
   return (
     <div className="super-spinner" style={{ ...style, width, height }}>
-      <div>
-        <img className="rotate" width="100%" src={Logo} />
-      </div>
+      <div className="rotate" style={{ backgroundImage: `url("${Logo}")` }} />
       {text && (
         <div className="super-spinner-text">
           {text}
