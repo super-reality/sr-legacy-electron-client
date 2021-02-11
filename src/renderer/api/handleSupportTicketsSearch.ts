@@ -3,15 +3,15 @@ import apiErrorHandler from "./apiErrorHandler";
 import { ApiError } from "./types";
 import {
   supportTicketPayload,
-  supportTicketsGet,
+  supportTicketsSearch,
 } from "./types/support-ticket/supportTicket";
 
 /* eslint-disable camelcase */
 export default function handleTicketsGet(
-  res: AxiosResponse<supportTicketsGet | ApiError>
+  res: AxiosResponse<supportTicketsSearch | ApiError>
 ): Promise<supportTicketPayload[]> {
   return new Promise((resolve, reject) => {
-    apiErrorHandler<supportTicketsGet>(res)
+    apiErrorHandler<supportTicketsSearch>(res)
       .then((d) => resolve(d.tickets))
       .catch(reject);
   });

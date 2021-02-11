@@ -178,7 +178,12 @@ export default function Sidebar() {
         ref={sidebarContainerRef}
         className="sidebar-container"
       >
-        <animated.div className="sidebar-buttons" style={mainProps}>
+        <animated.div
+          onMouseOver={() => setWideView(true)}
+          onMouseOut={() => setWideView(false)}
+          className="sidebar-buttons"
+          style={mainProps}
+        >
           <SidebarControls
             wideView={wideView}
             setWideView={() => setWideView(!wideView)}

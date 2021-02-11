@@ -11,7 +11,7 @@
   }
 
   .center {
-    left: calc(50% - 100px);
+    left: calc(50% - 60px);
   }
 
   .right {
@@ -23,7 +23,7 @@
   background-color: #585286;
   border-radius: 40px;
   height: 40px;
-  width: 200px;
+  width: 133px;
   position: absolute;
   transition: all 0.3s;
   top: -35px;
@@ -35,7 +35,7 @@
 }
 
 [class*="reaction-"] {
-  width: 25%;
+  width: 60px;
   font-size: 10px;
   display: flex;
   justify-content: center;
@@ -49,19 +49,28 @@
   cursor: pointer;
   > img {
     width: 100%;
+    transition: .5s;
   }
 }
 .reaction-title {
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
   border-radius: 25px;
-  top: -35px;
+  position: absolute;
   height: auto;
   font-size: 15px;
-  width: auto;
+  text-align: center;
+  min-width: 100%;
   padding: 5px 10px;
   opacity: 0;
   transition: 1s;
+}
+
+.reaction-title-long {
+  top: -50px;
+}
+.reaction-title-short {
+  top: -35px;
 }
 
 .vibeEmoji-selected {
@@ -109,6 +118,9 @@
   .reaction-title {
     opacity: 1;
   }
+  >img{
+    opacity: 1;
+  }
 }
 
 /* .vibeEmoji-selector:hover ~ .vibeEmoji-Container,  */
@@ -132,18 +144,49 @@
 
 .reaction-1 {
   left: 0;
+  > img {
+    opacity: 0.2;
+  }
 }
 .reaction-2 {
   left: 38px;
+  > img {
+    opacity: 0.4;
+  }
 }
 .reaction-3 {
   left: 76px;
+  > img {
+    opacity: 0.6;
+  }
 }
 .reaction-4 {
   left: 114px;
+  > img {
+    opacity: 0.8;
+  }
 }
 .reaction-5 {
   left: 150px;
+  > img {
+    opacity: 1;
+  }
+}
+
+.result-1{
+  opacity: 0.33;
+}
+.result-2{
+  opacity: 0.66;
+}
+.result-3{
+  opacity: 1;
+}
+.result-4{
+  opacity: 0.8;
+}
+.result-5{
+  opacity: 1;
 }
 
 @keyframes fadeIn {

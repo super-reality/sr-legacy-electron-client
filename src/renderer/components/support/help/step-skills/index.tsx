@@ -11,9 +11,6 @@ import FormControl, { capitalize, singleValuetoIData } from "../../../forms";
 import { StepSectionProps } from "..";
 import GetSkills from "../../support-utils/getSkills";
 import SingleCategory from "./single-category";
-/* import EditableCategory from "./editable-category";
-
-import { ReactComponent as AddButtonIcon } from "../../../../../assets/svg/add-btn.svg"; */
 
 import supportTicket, {
   IData,
@@ -86,11 +83,10 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
   );
 
   const [subCategories, setSubCategories] = useState<any[]>([]);
-  /*  const [newSubCategories, setNewSubCategories] = useState<any[]>([]); */
 
   useMemo(() => {
     setSubCategories([...skillsOpts]);
-  }, []);
+  }, [skillsOpts]);
 
   let searchedSkills: IData[] = [];
 
@@ -107,30 +103,6 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
       : [{ _id: capitalize(value), name: capitalize(value), new: true }];
   };
 
-  /*   const addNewCategory = () => {
-    const array = [...newSubCategories];
-    array.push({
-      name: "",
-      options: [],
-    });
-
-    setNewSubCategories(array);
-
-    const setFieldValue = formRef.current?.setFieldValue;
-    const values = formRef.current?.values;
-
-    if (setFieldValue)
-      setFieldValue(
-        "newCategories",
-        values?.newCategories.concat([
-          {
-            name: "",
-            options: [],
-          },
-        ])
-      );
-  };
- */
   const addExtraSkill = (value: IData) => {
     const array = [...addedSkills];
     const i = array.map((e) => e._id).indexOf(value._id);

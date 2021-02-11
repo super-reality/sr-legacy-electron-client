@@ -2,17 +2,26 @@ import React, { useEffect } from "react";
 import "./index.scss";
 import VibeEmoji from "./VibeEmojiMy";
 
-import emoji1 from "../../../../assets/svg/emoji1.svg";
-import emoji2 from "../../../../assets/svg/emoji2.svg";
-import emoji3 from "../../../../assets/svg/emoji3.svg";
-import emoji4 from "../../../../assets/svg/emoji4.svg";
-import emoji5 from "../../../../assets/svg/emoji5.svg";
-import emoji6 from "../../../../assets/svg/emoji6.svg";
-import emoji7 from "../../../../assets/svg/emoji7.svg";
-import emoji8 from "../../../../assets/svg/emoji8.svg";
-import emoji9 from "../../../../assets/svg/emoji9.svg";
+import VibeAmusement from "../../../../assets/svg/vibe-amusment.svg";
+import VibeAnger from "../../../../assets/svg/vibe-anger.svg";
+import VibeAnnoyance from "../../../../assets/svg/vibe-annoyance.svg";
+import VibeAwe from "../../../../assets/svg/vibe-awe.svg";
+import VibeCompassion from "../../../../assets/svg/vibe-compasion.svg";
+import VibeContent from "../../../../assets/svg/vibe-content.svg";
+import VibeCool from "../../../../assets/svg/vibe-cool.svg";
+import VibeDisgust from "../../../../assets/svg/vibe-disgust.svg";
+import VibeFear from "../../../../assets/svg/vibe-fear.svg";
+import VibeHope from "../../../../assets/svg/vibe-hope.svg";
+import VibeInterest from "../../../../assets/svg/vibe-interest.svg";
+import VibeJoy from "../../../../assets/svg/vibe-joy.svg";
+import VibeLoneliness from "../../../../assets/svg/vibe-loneliness.svg";
+import VibeLove from "../../../../assets/svg/vibe-love.svg";
+import VibeMelancholy from "../../../../assets/svg/vibe-melancholy.svg";
+import VibePride from "../../../../assets/svg/vibe-pride.svg";
+import VibeRage from "../../../../assets/svg/vibe-rage.svg";
+import VibeSadness from "../../../../assets/svg/vibe-sadness.svg";
 
-const PositiveEmojis = [
+/* const PositiveEmojis = [
   { emoji: emoji2, title: "Puke" },
   { emoji: emoji3, title: "Gross" },
   { emoji: emoji4, title: "Curious" },
@@ -22,11 +31,94 @@ const PositiveEmojis = [
 
 const NegativeEmojis = [
   { emoji: emoji1, title: "Sad" },
-  { emoji: emoji7, title: "Angry" },
-  { emoji: emoji8, title: "Angry" },
+  { emoji: emoji7, title: "Level 1" },
+  { emoji: emoji8, title: "Very Angry" },
   { emoji: emoji9, title: "Crying" },
   { emoji: emoji2, title: "puke" },
+]; */
+
+const PositiveVibes = [
+  {
+    title: "Cool",
+    emoji: VibeCool,
+  },
+  {
+    title: "Amusement",
+    emoji: VibeAmusement,
+  },
+  {
+    title: "Awe",
+    emoji: VibeAwe,
+  },
+  {
+    title: "Compassion",
+    emoji: VibeCompassion,
+  },
+  {
+    title: "Content",
+    emoji: VibeContent,
+  },
+  {
+    title: "Gratitude",
+    emoji: VibeContent,
+  },
+  {
+    title: "Hope",
+    emoji: VibeHope,
+  },
+  {
+    title: "Interest",
+    emoji: VibeInterest,
+  },
+  {
+    title: "Joy",
+    emoji: VibeJoy,
+  },
+  {
+    title: "Love",
+    emoji: VibeLove,
+  },
+  {
+    title: "Pride",
+    emoji: VibePride,
+  },
 ];
+
+const NegativeVibes = [
+  {
+    title: "Fear",
+    emoji: VibeFear,
+  },
+  {
+    title: "Anger",
+    emoji: VibeAnger,
+  },
+  {
+    title: "Disgust",
+    emoji: VibeDisgust,
+  },
+  {
+    title: "Sadness",
+    emoji: VibeSadness,
+  },
+  {
+    title: "Rage",
+    emoji: VibeRage,
+  },
+  {
+    title: "Loneliness",
+    emoji: VibeLoneliness,
+  },
+  {
+    title: "Melancholy",
+    emoji: VibeMelancholy,
+  },
+  {
+    title: "Annoyance",
+    emoji: VibeAnnoyance,
+  },
+];
+
 export default function VineGroup(): JSX.Element {
   function HorizontallyBound(parentDiv: Element, childDiv: Element) {
     const parentRect = parentDiv.getBoundingClientRect();
@@ -63,147 +155,171 @@ export default function VineGroup(): JSX.Element {
       <div className="vibe-group">
         Positive
         <div className="vibe-emojis">
-          <div>
-            <VibeEmoji
-              title="Cool"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Amusement"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Awe"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Compassion"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Content"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Gratitude"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Hope"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Interest"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Joy"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Love"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Pride"
-              checkBoundaries={checkBoundaries}
-              emojis={PositiveEmojis}
-            />
-          </div>
+          {PositiveVibes.map((vibe) => (
+            <div key={`${vibe.title}-${vibe.emoji}`}>
+              <VibeEmoji
+                title={vibe.title}
+                checkBoundaries={checkBoundaries}
+                emoji={vibe.emoji}
+              />
+            </div>
+          ))}
         </div>
       </div>
 
       <div className="vibe-group">
         Negative
         <div className="vibe-emojis">
-          <div>
-            <VibeEmoji
-              title="Fear"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Anger"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Disgust"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Sadness"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Rage"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Loneliness"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Melancholy"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
-          <div>
-            <VibeEmoji
-              title="Annoyance"
-              checkBoundaries={checkBoundaries}
-              emojis={NegativeEmojis}
-            />
-          </div>
+          {NegativeVibes.map((vibe) => (
+            <div key={`${vibe.title}-${vibe.emoji}`}>
+              <VibeEmoji
+                title={vibe.title}
+                checkBoundaries={checkBoundaries}
+                emoji={vibe.emoji}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </>
   );
 }
+/* 
+<div className="vibe-emojis">
+<div>
+  <VibeEmoji
+    title="Fear"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Anger"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Disgust"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Sadness"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Rage"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Loneliness"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Melancholy"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+<div>
+  <VibeEmoji
+    title="Annoyance"
+    checkBoundaries={checkBoundaries}
+    emoji={NegativeEmojis}
+  />
+</div>
+</div> */
+
+/* <div className="vibe-emojis">
+          <div>
+            <VibeEmoji
+              title="Cool"
+              checkBoundaries={checkBoundaries}
+              emoji={VibeCool}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Amusement"
+              checkBoundaries={checkBoundaries}
+              emoji={VibeAmusement}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Awe"
+              checkBoundaries={checkBoundaries}
+              emoji={VibeAwe}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Compassion"
+              checkBoundaries={checkBoundaries}
+              emoji={VibeCompassion}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Content"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Gratitude"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Hope"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Interest"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Joy"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Love"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+          <div>
+            <VibeEmoji
+              title="Pride"
+              checkBoundaries={checkBoundaries}
+              emoji={PositiveEmojis}
+            />
+          </div>
+        </div> */
