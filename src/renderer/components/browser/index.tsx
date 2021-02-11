@@ -2,6 +2,7 @@ import "./index.scss";
 
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+
 import { AppState } from "../../redux/stores/renderer";
 
 import Channels from "../channels";
@@ -9,16 +10,15 @@ import Chat from "../chat";
 import GroupsPage from "../groups";
 
 import Sonic from "../../../assets/images/sonic.png";
-import GroupSettings from "../groups/group-settings";
-import PagesIndex from "../../../types/browser";
+import ChatSettings from "../chat-settings";
 import { createChannel } from "../../../utils/chat-utils/channels-services";
 import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
+import usePopup from "../../hooks/usePopup";
 
-interface ChatContainerProps {
-  setPage: (pageIndex: any) => void;
-}
-function ChatContainer(props: ChatContainerProps) {
-  const { setPage } = props;
+// interface ChatContainerProps {
+//   setPage: (pageIndex: any) => void;
+// }
+function ChatContainer() {
   const {
     messages,
     activeGroup,
@@ -45,18 +45,21 @@ function ChatContainer(props: ChatContainerProps) {
   const [CreateChannelPopup, openChannelCreatePopup] = usePopupCreateChannel({
     createItem: createCategoryChannel,
   });
-
+  const [ChatSettingsPopup, doOpen, close] = usePopup(false);
   return (
     <>
       <CreateChannelPopup width="300px" height="200px" itemType="Channel" />
+      <ChatSettingsPopup width="100%" height="100%">
+        <ChatSettings close={close} />
+      </ChatSettingsPopup>
       <Channels
         activeGroup={activeGroup}
         channels={channels}
         groups={groups}
         categories={categories}
-        setPage={setPage}
         createChannel={openChannelCreatePopup}
         setCategory={setCategoryId}
+        openSettings={doOpen}
       />
       {activeChannelObject && (
         <Chat messages={messages} activeChannel={activeChannelObject} />
@@ -69,15 +72,15 @@ export default function Browser() {
   const [showGroupsList, setShowGroupsList] = useState<boolean>(false);
   const [showGroups, setShowGroups] = useState(false);
 
-  const pages = [ChatContainer, GroupSettings];
-  const [browserContent, setBrowserContent] = useState<any>(
-    PagesIndex.chatContainer
-  );
+  // const pages = [ChatContainer, GroupSettings];
+  // const [browserContent, setBrowserContent] = useState<any>(
+  //   PagesIndex.chatContainer
+  // );
 
-  const setPage = (pageIndex: any) => {
-    setBrowserContent(pageIndex);
-  };
-  const CurrentPage = pages[browserContent];
+  // const setPage = (pageIndex: any) => {
+  //   setBrowserContent(pageIndex);
+  // };
+  // const CurrentPage = pages[browserContent];
 
   return (
     <div>
@@ -148,7 +151,7 @@ export default function Browser() {
 
       <div>
         <div className="chat-and-channels-container">
-          {showGroups ? <GroupsPage /> : <CurrentPage setPage={setPage} />}
+          {showGroups ? <GroupsPage /> : <ChatContainer />}
         </div>
       </div>
     </div>

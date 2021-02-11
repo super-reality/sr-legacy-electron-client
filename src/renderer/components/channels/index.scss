@@ -4,10 +4,10 @@
     font-size: 16px;
 }
 
-.channel-wrapper{
+.channel-wrapper {
     height: 100%;
     width: 100%;
-    display:flex;
+    display: flex;
 }
 .channel {
     position: relative;
@@ -21,7 +21,7 @@
     }
 }
 
-.channel-container {
+.channels-container {
     font-size: 14px;
     color: #c2c2c2;
     padding: 20px;
@@ -29,7 +29,7 @@
     cursor: pointer;
 }
 
-.channel-container::after {
+.channels-container::after {
     content: "";
     height: 2px !important;
     width: 83%;

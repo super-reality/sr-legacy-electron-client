@@ -35,39 +35,41 @@ export default function GeneralSettings(props: SettingsProps) {
 
   return (
     <div className="general-group-settings">
-      {activeGroup.groupPhoto && (
-        <img className="group-avatar" src={activeGroup.groupPhoto} alt="" />
-      )}
-      <form className="update-group-form">
-        <fieldset>
-          <div className="input-container">
-            <label>Change Group Name</label>
-            <input
-              ref={groupNameField}
-              key="group-name"
-              type="text"
-              placeholder=""
-            />
-          </div>
-          <div className="input-container">
-            <label>Change Group Avatar</label>
-            <input
-              ref={groupAvatarField}
-              key="group-avatar-input"
-              type="text"
-              placeholder=""
-            />
-          </div>
-        </fieldset>
-        <ButtonSimple
-          margin="8px auto"
-          width="140px"
-          height="16px"
-          onClick={submitUpdateGroup}
-        >
-          Update Group
-        </ButtonSimple>
-      </form>
+      <div className="avatar-settings">
+        {activeGroup.groupPhoto && (
+          <img className="item-avatar" src={activeGroup.groupPhoto} alt="" />
+        )}
+        <div className="input-container">
+          <div className="settings-label">Change Group Avatar</div>
+
+          <input
+            className="avatar-input"
+            ref={groupAvatarField}
+            key="group-avatar-input"
+            type="text"
+            placeholder=""
+          />
+        </div>
+      </div>
+      <div className="input-container">
+        <div className="settings-label">Change Group Name</div>
+        <input
+          className="name-input"
+          ref={groupNameField}
+          key="group-name"
+          type="text"
+          placeholder=""
+        />
+      </div>
+
+      <ButtonSimple
+        margin="8px auto"
+        width="140px"
+        height="16px"
+        onClick={submitUpdateGroup}
+      >
+        Update Group
+      </ButtonSimple>
     </div>
   );
 }

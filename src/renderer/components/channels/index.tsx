@@ -1,22 +1,23 @@
 import "./index.scss";
 import React, { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
+import { useDispatch } from "react-redux";
 import { Category, Group, ChannelsResult } from "../../../types/chat";
-import { PagesIndex } from "../../../types/browser";
 import {
   createCategory,
   updateCategory,
 } from "../../../utils/chat-utils/categories-services";
 import SingleCategory from "./category";
+import reduxAction from "../../redux/reduxAction";
 
 interface ChannelsProps {
   activeGroup: string;
   groups: Group[];
   categories: Category[];
   channels: ChannelsResult;
-  setPage: (pageIndex: any) => void;
   createChannel: () => void;
   setCategory: (id: string) => void;
+  openSettings: () => void;
 }
 
 export default function Channels(props: ChannelsProps): JSX.Element {
@@ -25,20 +26,27 @@ export default function Channels(props: ChannelsProps): JSX.Element {
     channels,
     categories,
     groups,
-    setPage,
     createChannel,
     setCategory,
+    openSettings,
   } = props;
 
   const [showSettings, setShowSettings] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
   const showGroupSettings = () => {
     setShowSettings(!showSettings);
   };
-
   const groupCategories = categories.filter(
     ({ groupId }) => groupId === activeGroup
   );
   const activeGroupObject = groups.find(({ _id }) => _id === activeGroup);
+  const setSettingsType = () => {
+    reduxAction(dispatch, {
+      type: "SET_CHAT_SETTINGS_TYPE",
+      arg: "group",
+    });
+  };
 
   const springProps = useSpring({
     config: { ...config.gentle },
@@ -46,7 +54,6 @@ export default function Channels(props: ChannelsProps): JSX.Element {
     transform: showSettings ? `translateY(0)` : `translateY(-50%)`,
     display: showSettings ? "flex" : "none",
   } as any);
-
   return (
     <div className="channel">
       <div className="channel-title active-group" onClick={showGroupSettings}>
@@ -56,7 +63,10 @@ export default function Channels(props: ChannelsProps): JSX.Element {
         <div className="group-settings-dropdown">
           <div
             className="dropdown-item"
-            onClick={() => setPage(PagesIndex.groupSettings)}
+            onClick={() => {
+              setSettingsType();
+              openSettings();
+            }}
           >
             Group settings
           </div>
@@ -83,6 +93,7 @@ export default function Channels(props: ChannelsProps): JSX.Element {
               createChannel={createChannel}
               setCategory={setCategory}
               updateCategory={updateCategory}
+              openSettings={openSettings}
             />
           );
         })}

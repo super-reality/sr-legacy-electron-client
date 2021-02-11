@@ -14,7 +14,7 @@ interface CategoryProps {
   createChannel: () => void;
   setCategory: (id: string) => void;
   updateCategory: UpdateCategoryType;
-  // (id: string, params: CategorySettings) => void;
+  openSettings: () => void;
 }
 export default function SingleCategory(props: CategoryProps): JSX.Element {
   const {
@@ -23,6 +23,7 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
     createChannel,
     setCategory,
     updateCategory,
+    openSettings,
   } = props;
   const [edit, setEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(category.categoryName);
@@ -71,7 +72,7 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
   } as any);
 
   return (
-    <>
+    <div className="single-category">
       <div
         className="channel-title"
         onDoubleClick={() => {
@@ -89,7 +90,7 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
             }}
             value={text}
             type={text}
-            placeholder="You rock!"
+            placeholder="Category Name"
             onChange={(e) => {
               onTextChange(e, setText);
             }}
@@ -104,15 +105,21 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
           <img src={ButtonAdd} />
         </button>
       </div>
-      <div className="channel-container">
+      <div className="channels-container">
         <div className="channels">
           {categoryChannels &&
             categoryChannels.map((channel: Channel) => {
-              return <SingleChannel key={channel._id} channel={channel} />;
+              return (
+                <SingleChannel
+                  key={channel._id}
+                  channel={channel}
+                  openSettings={openSettings}
+                />
+              );
             })}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 /*

@@ -101,6 +101,7 @@ export const actions = {
   DELETE_CHANNEL: chatSlice.deleteChannel,
   ADD_CHANNEL: chatSlice.addNewChannel,
   SET_ACTIVE_CHANNEL: chatSlice.setActiveChannel,
+  SET_CHAT_SETTINGS_TYPE: chatSlice.setSettingsType,
 };
 
 export type ActionKeys = keyof typeof actions;

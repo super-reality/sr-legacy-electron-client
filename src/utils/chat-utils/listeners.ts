@@ -33,8 +33,6 @@ const showChatNotification = (message: Message) => {
 // message listeners
 // message created listener
 const onMessageCreateListener = (newMessage: Message) => {
-  console.log("message created", newMessage);
-
   reduxAction(store.dispatch, { type: "ADD_MESSAGE", arg: newMessage });
 };
 // message updated listener

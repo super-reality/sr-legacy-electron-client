@@ -9,12 +9,19 @@ import {
   ChannelsResult,
 } from "../../../types/chat";
 
+type SettingsType = "group" | "channel";
+
 const initialState = {
   isChatAuth: false,
+  settingsType: "" as SettingsType,
   loginData: {} as any,
   activeGroup: {} as string,
   activeChannel: "" as string,
   messages: [] as Message[],
+  trayMessages: {
+    messages: {} as Record<string, Message>,
+    allIds: [] as string[],
+  },
   users: [] as ChatUser[],
   groups: [] as Group[],
   categories: [] as Category[],
@@ -55,6 +62,12 @@ const chatSlice = createSlice({
     loginChatError: (state: ChatState, _action: PayloadAction<null>): void => {
       state.isChatAuth = false;
     },
+    setSettingsType: (
+      state: ChatState,
+      action: PayloadAction<SettingsType>
+    ): void => {
+      state.settingsType = action.payload;
+    },
     setChatLoginData: (state: ChatState, action: PayloadAction<any>): void => {
       state.loginData = action.payload;
     },
@@ -67,7 +80,15 @@ const chatSlice = createSlice({
     },
 
     addNewMessage: (state: ChatState, action: PayloadAction<Message>): void => {
-      state.messages = addNewItem(state.messages, action.payload);
+      const newMessage = action.payload;
+      if (newMessage.channelId === state.activeChannel) {
+        state.messages = addNewItem(state.messages, newMessage);
+      } else {
+        state.trayMessages.messages[newMessage._id] = newMessage;
+        state.trayMessages.allIds = state.trayMessages.allIds.concat(
+          newMessage._id
+        );
+      }
     },
     updateMessage: (state: ChatState, action: PayloadAction<Message>): void => {
       state.messages = updateArray(state.messages, action.payload);
@@ -206,6 +227,7 @@ export const {
   deleteChannel,
   addNewChannel,
   setActiveChannel,
+  setSettingsType,
 } = chatSlice.actions;
 
 export default chatSlice;

@@ -160,13 +160,6 @@ export function MessageBox(props: MessageProps) {
   const openDropdown = useCallback(() => {
     setShowMenu(!showMenu);
   }, []);
-
-  // Popup menu
-  // const [PopupMenu, openMessagePopup] = usePopupMessageMenu({
-  //   removeMessage,
-  //   startEditMessage,
-  // });
-  // console.log(user.avatar);
   return (
     <div
       className={`single-chat ${isHover ? "hovered" : ""} ${

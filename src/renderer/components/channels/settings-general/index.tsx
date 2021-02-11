@@ -31,43 +31,44 @@ export default function ChannelGeneralSettings(props: SettingsProps) {
 
   return (
     <div className="general-channel-settings">
-      {activeChannel.channelPhoto && (
-        <img
-          className="channel-avatar"
-          src={activeChannel.channelPhoto}
-          alt=""
+      <div className="avatar-settings">
+        {activeChannel.channelPhoto && (
+          <img
+            className="item-avatar"
+            src={activeChannel.channelPhoto}
+            alt=""
+          />
+        )}
+        <div className="input-container">
+          <div className="settings-label">Change Channel Avatar</div>
+          <input
+            className="avatar-input"
+            ref={channelAvatarField}
+            key="channel-avatar-input"
+            type="text"
+            placeholder=""
+          />
+        </div>
+      </div>
+
+      <div className="input-container">
+        <div className="settings-label">Change Channel Name</div>
+        <input
+          className="name-input"
+          ref={channelNameField}
+          key="channel-name"
+          type="text"
+          placeholder=""
         />
-      )}
-      <form className="update-channel-form">
-        <fieldset>
-          <div className="input-container">
-            <label>Change Channel Name</label>
-            <input
-              ref={channelNameField}
-              key="channel-name"
-              type="text"
-              placeholder=""
-            />
-          </div>
-          <div className="input-container">
-            <label>Change Channel Avatar</label>
-            <input
-              ref={channelAvatarField}
-              key="channel-avatar-input"
-              type="text"
-              placeholder=""
-            />
-          </div>
-        </fieldset>
-        <ButtonSimple
-          margin="8px auto"
-          width="140px"
-          height="16px"
-          onClick={submitUpdateChannel}
-        >
-          Update Channel
-        </ButtonSimple>
-      </form>
+      </div>
+      <ButtonSimple
+        margin="8px auto"
+        width="140px"
+        height="16px"
+        onClick={submitUpdateChannel}
+      >
+        Update Channel
+      </ButtonSimple>
     </div>
   );
 }

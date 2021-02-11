@@ -2,17 +2,19 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import DefaultIcon from "../../../../assets/images/logo-icon.png";
+import { ReactComponent as SettingsIcon } from "../../../../assets/svg/settings-gear2.svg";
 import { Channel } from "../../../../types/chat";
 
 interface SingleChannelProps {
   channel: Channel;
+  openSettings: () => void;
 }
 
 export default function SingleChannel(props: SingleChannelProps): JSX.Element {
-  const { channel } = props;
+  const { channel, openSettings } = props;
   const [showButton, setShowButton] = useState<boolean>(false);
   const dispatch = useDispatch();
-
+  console.log(showButton);
   // const { users } = channel;
   // const singleUser = users.filter((_id) => _id !== selfId);
   // const interlocutor = chatUsers.find(({ _id }) => _id === singleUser[0]);
@@ -24,7 +26,12 @@ export default function SingleChannel(props: SingleChannelProps): JSX.Element {
       arg: activeChannel,
     });
   };
-
+  const setSettingsType = () => {
+    reduxAction(dispatch, {
+      type: "SET_CHAT_SETTINGS_TYPE",
+      arg: "channel",
+    });
+  };
   return (
     <div
       className="single-channel"
@@ -45,9 +52,13 @@ export default function SingleChannel(props: SingleChannelProps): JSX.Element {
       />
       <div className="info">{channel.channelName}</div>
       {showButton && (
-        <div
+        <SettingsIcon
+          onClick={() => {
+            setSettingsType();
+            openSettings();
+          }}
+          fill="#8a88c3"
           style={{
-            backgroundColor: "var(--color-button-hover)",
             width: "20px",
             height: "20px",
             borderRadius: "50%",
