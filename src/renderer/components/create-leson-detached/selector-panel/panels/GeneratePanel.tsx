@@ -51,7 +51,7 @@ export default function GeneratePanel() {
               margin="8px auto"
               onClick={() => setOpenGenerator(true)}
             >
-              Start
+              Start Generation
             </ButtonSimple>
           </div>
         )}

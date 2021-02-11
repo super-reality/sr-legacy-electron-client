@@ -214,37 +214,44 @@ export default function GeneratorPopup(props: GeneratorPopupProps) {
         />
         <div
           style={{
-            height: "calc(100% - 240px)",
-            margin: "32px auto",
-            width: "fit-content",
-            overflow: "hidden",
+            height: "calc(100% - 160px)",
+            width: "100%",
+            display: "flex",
           }}
         >
-          <ReactCrop crop={crop} onChange={setCrop} renderComponent={Video} />
+          <Flex column style={{ width: "300px" }}>
+            <ButtonSimple
+              disabled={crop?.height == 0 && crop?.width == 0}
+              margin="auto"
+              width="200px"
+              height="24px"
+              onClick={onGenerate}
+            >
+              Generate
+            </ButtonSimple>
+            <ButtonSimple
+              margin="auto"
+              width="200px"
+              height="24px"
+              onClick={close}
+            >
+              Cancel
+            </ButtonSimple>
+          </Flex>
+          <div
+            style={{
+              height: "calc(100% - 32px)",
+              margin: "auto",
+              width: "fit-content",
+              overflow: "hidden",
+            }}
+          >
+            <ReactCrop crop={crop} onChange={setCrop} renderComponent={Video} />
+          </div>
         </div>
-        <Flex>
-          <ButtonSimple
-            disabled={crop?.height == 0 && crop?.width == 0}
-            margin="auto"
-            width="200px"
-            height="24px"
-            onClick={onGenerate}
-          >
-            Generate
-          </ButtonSimple>
-          <ButtonSimple
-            margin="auto"
-            width="200px"
-            height="24px"
-            onClick={close}
-          >
-            Cancel
-          </ButtonSimple>
-        </Flex>
 
         <div style={{ overflow: "hidden" }}>
           <VideoNavigation
-            singleNav
             domain={videoDomain}
             defaultValues={defaultNavigation}
             ticksNumber={100}
