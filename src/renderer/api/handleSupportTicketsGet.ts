@@ -12,7 +12,7 @@ export default function handleTicketsGet(
 ): Promise<supportTicketPayload[]> {
   return new Promise((resolve, reject) => {
     apiErrorHandler<supportTicketsGet>(res)
-      .then((d) => resolve(d.ticket))
+      .then((d) => resolve(d.tickets))
       .catch(reject);
   });
 }

@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
+import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
+import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg";
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
@@ -52,9 +54,11 @@ export default function Sidebar() {
     itemPreview,
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const { loginData, groups } = useSelector((state: AppState) => state.chat);
+  const { loginData, groups, categories, channels } = useSelector(
+    (state: AppState) => state.chat
+  );
   const { user } = loginData;
-
+  // console.log(groups);
   // Here we add more buttons to the sidebar!
   // See GroupsList for how to create a list of items for a button.
   // DO NOT add icons manually to the sidebar, only here.
@@ -67,6 +71,8 @@ export default function Sidebar() {
         subComponent: (
           <GroupsList
             groups={groups}
+            categories={categories}
+            channels={channels.data}
             currentSub={currentSub}
             click={(id) => {
               // 0 is this array position
@@ -97,20 +103,20 @@ export default function Sidebar() {
       },
       {
         title: "Support",
-        icon: TutorialsIcon,
+        icon: SupportIcon,
         component: <Support />,
         subComponent: null,
         componentWidth: 700,
       },
       {
         title: "Support Tickets",
-        icon: TutorialsIcon,
+        icon: SupportListIcon,
         component: <SupportTickets />,
         subComponent: null,
         componentWidth: 900,
       },
     ],
-    [history, current, currentSub, contentExpanded]
+    [history, current, currentSub, contentExpanded, groups]
   );
 
   const sidebarContainerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +178,12 @@ export default function Sidebar() {
         ref={sidebarContainerRef}
         className="sidebar-container"
       >
-        <animated.div className="sidebar-buttons" style={mainProps}>
+        <animated.div
+          onMouseOver={() => setWideView(true)}
+          onMouseOut={() => setWideView(false)}
+          className="sidebar-buttons"
+          style={mainProps}
+        >
           <SidebarControls
             wideView={wideView}
             setWideView={() => setWideView(!wideView)}

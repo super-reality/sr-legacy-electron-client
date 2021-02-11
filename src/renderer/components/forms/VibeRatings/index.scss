@@ -1,0 +1,13 @@
+.vibe-group {
+    color: #c2c2c2;
+    margin: 25px 0 5px 0;
+    font-size: 14px;
+    font-weight: 600;
+    >.vibe-emojis{        
+        >div{
+            display: inline-block;
+            margin-top: 10px;
+            margin-right: 20px;
+        }
+    }
+}

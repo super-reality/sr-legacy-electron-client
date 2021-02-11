@@ -60,6 +60,7 @@ export const actions = {
   LOGIN_CHAT_SUCCES: chatSlice.loginChatSucces,
   LOGIN_CHAT_ERROR: chatSlice.loginChatError,
   SET_MESSAGES: chatSlice.setMessages,
+  ADD_MESSAGE: chatSlice.addNewMessage,
   UPDATE_MESSAGE: chatSlice.updateMessage,
   DELETE_MESSAGES: chatSlice.deleteMessage,
   SET_USERS: chatSlice.setUsers,
@@ -70,6 +71,10 @@ export const actions = {
   UPDATE_GROUP: chatSlice.updateGroup,
   DELETE_GROUP: chatSlice.deleteGroup,
   SET_ACTIVE_GROUP: chatSlice.setActiveGroup,
+  SET_CATEGORIES: chatSlice.setCategories,
+  ADD_CATEGORY: chatSlice.addNewCategory,
+  UPDATE_CATEGORY: chatSlice.updateCategory,
+  DELETE_CATEGORY: chatSlice.deleteCategory,
   SET_CHAT_LOGIN_DATA: chatSlice.setChatLoginData,
   SET_SUPPORT_TICKET: createSupportTicketSlice.setData,
   /*   SET_IMAGES_SUPPORT_TICKET:createSupportTicketSlice.addImages, */

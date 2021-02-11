@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Channel } from "../../../../types/chat";
-import { updateChannel } from "../../../../utils/chat-utils/services";
+import { updateChannel } from "../../../../utils/chat-utils/channels-services";
 import ButtonSimple from "../../button-simple";
 
 interface SettingsProps {
