@@ -43,7 +43,11 @@ export default function useLessonPlayer(
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor;
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    const anchorId = (anchors[0]?.value as string) || null;
+
     return anchorId ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
 

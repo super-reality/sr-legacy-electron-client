@@ -31,7 +31,12 @@ export default function beginGenerating(
       if (anchorObj) {
         setStatus(`Generating`);
         const generatedData = generateBaseData(recordingData);
-        return generateSteps(generatedData, recordingData, recordingId)
+        return generateSteps(
+          generatedData,
+          recordingData,
+          recordingId,
+          anchorObj
+        )
           .then((data) => generateDialogues(data, recordingData, recordingId))
           .then((data) => generateClicks(data, anchorObj, recordingData))
           .then(() => generationDone())

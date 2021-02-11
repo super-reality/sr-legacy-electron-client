@@ -161,13 +161,17 @@ export default function GeneratorPopup(props: GeneratorPopupProps) {
           setCrop(null);
           return beginGenerating(uri, recordingData, id);
         })
-        .then(unsetLoading)
+        .then(() => {
+          unsetLoading();
+          close();
+        })
         .catch(unsetLoading);
     }
   }, [
     generateImageFromArea,
     setLoading,
     unsetLoading,
+    close,
     nav,
     id,
     crop,

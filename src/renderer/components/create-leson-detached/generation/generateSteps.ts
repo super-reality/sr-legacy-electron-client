@@ -9,6 +9,7 @@ import newStep from "../lesson-utils/newStep";
 import setStatus from "../lesson-utils/setStatus";
 import { RecordingJson, StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
+import { IAnchor } from "../../../api/types/anchor/anchor";
 
 function onlyUnique(value: any, index: number, self: Array<any>) {
   return self.indexOf(value) === index;
@@ -17,7 +18,8 @@ function onlyUnique(value: any, index: number, self: Array<any>) {
 export default async function generateSteps(
   baseData: GeneratedData,
   recordingData: RecordingJson,
-  recordingId: string
+  recordingId: string,
+  anchorObj: IAnchor
 ): Promise<GeneratedData> {
   const { currentChapter } = store.getState().createLessonV2;
 
@@ -63,7 +65,7 @@ export default async function generateSteps(
         newStep(
           {
             name: stepName,
-            anchor: recordingData.anchor,
+            startWhen: [{ type: "Image Found", value: anchorObj._id }],
             canvas: [
               {
                 type: "Recording",
