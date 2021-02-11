@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
+import "./index.scss";
+import React, { useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import store from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
-import FormControl from "../../../forms";
+import FormControl, { FormObserver } from "../../../forms";
 import { StepSectionProps } from "..";
 
 interface Values {
@@ -23,7 +24,7 @@ export interface Iimages {
 const descriptionSchema = Yup.object().shape({
   description: Yup.string()
     .min(50, "*Give us a litle more information pls")
-    .max(500, "*Not so much information thanks")
+    .max(5000, "*Not so much information thanks")
     .required("*Required"),
 });
 
@@ -31,6 +32,8 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
   const { goNext, goBack, index } = props;
   const slice = store.getState().createSupportTicket;
   const dispatch = useDispatch();
+
+  const [descriptionLenght, setDescriptionLenght] = useState<number>(0);
 
   return (
     <div>
@@ -67,8 +70,24 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
               <li>Need a gaming buddy? We will find you one!</li>
             </ul>
             <FormControl name="description" control="textarea" {...formik} />
+            <div className="description-count">
+              <p>{`${descriptionLenght}/5000 (50 minimum)`}</p>
+            </div>
             <p>Additional files ( optional )</p>
             <FormControl name="images" control="file" {...formik} />
+            <FormObserver
+              value={formik.values.description}
+              onChange={(value: typeof formik.values.description) => {
+                if (value) {
+                  if (value.length == 0) {
+                    console.log("HI");
+                    setDescriptionLenght(0);
+                  } else {
+                    setDescriptionLenght(value?.length);
+                  }
+                }
+              }}
+            />
             <div className="support-buttons">
               <button onClick={goBack} type="button">
                 Back

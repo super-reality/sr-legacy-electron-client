@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 
-import { supportTicketPayload } from "../../api/types/support-ticket/supportTicket";
+import {
+  supportTicketPayload,
+  IData,
+} from "../../api/types/support-ticket/supportTicket";
 
 import getSupportTickets from "./support-tickets-utils/getSupportTickets";
+import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
+import getCategories from "../support/support-utils/getCategories";
+import AutosuggestInput from "../autosuggest-input";
 
 /* import voteup from "../../../assets/images/voteup.png";
 import votedown from "../../../assets/images/votedown.png";
@@ -25,9 +31,46 @@ import chats from "../../../assets/images/chats.png"; */
 import SingleTicket from "./single-ticket";
 
 import SupperSpinner from "../super-spinner";
+import { countBy } from "lodash";
+
+const options = ["one", "two", "three"];
+
+interface IfilterOptions {
+  name?: string;
+  category?: string;
+}
 
 export default function SupportTickets(): JSX.Element {
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
+
+  const [filterOption, setFilterOption] = useState<string>("");
+
+  const [searchOption, setSearchOption] = useState<string>("");
+
+  const [searchCategory, setSearchCategory] = useState<string>("");
+
+  let searchedCategories: IData[] = [];
+  let searchResults: supportTicketPayload[] = [];
+
+  const searchCategories = (value: string): IData[] => {
+    (async () => {
+      await getCategories(value).then((categories) => {
+        searchedCategories = [...categories];
+      });
+    })();
+    console.log(searchedCategories);
+    return searchedCategories;
+  };
+
+  const filterTickets = (search: IfilterOptions) => {
+    (async () => {
+      await searchSupportTickets(search).then((ticks) => {
+        setTickets(ticks);
+      });
+    })();
+
+    return searchResults;
+  };
 
   useEffect(() => {
     (async () => {
@@ -37,46 +80,120 @@ export default function SupportTickets(): JSX.Element {
     })();
   }, []);
 
+  useEffect(() => {
+    let arrayTickets: supportTicketPayload[] = [];
+    if (filterOption === "oldest") {
+      arrayTickets = [...tickets];
+      setTickets(arrayTickets.reverse());
+    }
+
+    if (filterOption === "newest") {
+      arrayTickets = [...tickets];
+      setTickets(arrayTickets.reverse());
+    }
+  }, [filterOption]);
+
+  useEffect(() => {
+    let ob: IfilterOptions = {};
+    if (searchOption != "" && searchCategory != "") {
+      console.log("SI");
+      ob = {
+        name: searchOption,
+        category: searchCategory,
+      };
+      console.log(ob);
+      (async () => {
+        await filterTickets(ob);
+      })();
+    }
+
+    if (searchOption != "" && searchCategory == "") {
+      console.log("NO");
+      ob = {
+        name: searchOption,
+      };
+      (async () => {
+        await filterTickets(ob);
+      })();
+    }
+
+    if (searchOption == "" && searchCategory != "") {
+      console.log("TALVEZ");
+      ob = {
+        category: searchCategory,
+      };
+      console.log(ob);
+      (async () => {
+        await filterTickets(ob);
+      })();
+    }
+  }, [searchOption, searchCategory]);
+
+  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterOption(e.target.value);
+  };
+
+  const searchTickets = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchOption(e.target.value);
+  };
+
   return (
     <>
-      {tickets.length === 0 ? (
-        <div className="loading-tickets">
-          <SupperSpinner width="100px" text="Loading Tickets" />
-        </div>
-      ) : (
-        <>
-          <div className="ticket-title">Filter By</div>
-          <div className="ticket-container">
-            <div className="ticket-category">
-              Category
-              <input type="text" value="Select Categories" />
-            </div>
+      <>
+        <div className="ticket-title">Filter By</div>
+        <div className="ticket-container">
+          <div className="ticket-category">
+            Category
+            <AutosuggestInput<IData>
+              filter={searchCategories}
+              getValue={(suggestion: IData) => suggestion.name}
+              renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
+              initialValue={""}
+              id={"category-search"}
+              submitCallback={(value: IData) => setSearchCategory(value._id)}
+              placeholder={"Select Category"}
+            />
+            {/*  <input type="text" value="Select Categories" /> */}
+          </div>
 
-            <div className="ticket-search">
-              <div className="ticket-wrapper">
-                <input type="text" value="Animation" />
-                <a href="">Advanced Search</a>
-                <div className="request-count">
-                  {tickets.length} Help Requests
-                  <div className="sort-filter">
-                    <select>
-                      <option>Newest</option>
-                    </select>
-                  </div>
+          <div className="ticket-search">
+            <div className="ticket-wrapper">
+              <input
+                type="text"
+                value={searchOption}
+                onChange={searchTickets}
+                placeholder="Search title"
+              />
+              <a href="">Advanced Search</a>
+              <div className="request-count">
+                {tickets.length} Help Requests
+                <div className="sort-filter">
+                  <select value={filterOption} onChange={handleFilter}>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                  </select>
                 </div>
+              </div>
+
+              {tickets.length == 0 ? (
+                <div className="loading-tickets">
+                  <SupperSpinner width="100px" text="Loading Tickets" />
+                </div>
+              ) : (
                 <div className="ticket-list">
-                  {tickets.map((ticket) => (
+                  {tickets.map((ticket, index) => (
                     <SingleTicket
+                      index={index}
                       {...ticket}
                       timeposted={ticket.createdAt!}
                     />
                   ))}
                 </div>
-              </div>
+              )}
             </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
     </>
   );
 }
