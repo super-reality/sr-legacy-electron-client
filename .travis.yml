@@ -25,6 +25,9 @@ after_failure:
   - chmod +x send.sh
   - ./send.sh failure $WEBHOOK_URL
 
+before_install:
+  - echo -e "machine github.com\n  login $GH_TOKEN" > ~/.netrc
+
 jobs:
   include:
     - stage: Tests
