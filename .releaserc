@@ -4,6 +4,7 @@
     "develop",
     "Continuous-Deployment"
   ],
+  "repositoryUrl": "https://github.com/super-reality/super-reality-client.git",
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
