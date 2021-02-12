@@ -35,6 +35,7 @@ export interface supportTicketPayload {
   newSkill?: boolean;
   newSkillName?: string;
   createdAt?: string;
+  _id?: string;
 }
 
 export interface IFile {

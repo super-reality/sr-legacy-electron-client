@@ -31,13 +31,13 @@ import chats from "../../../assets/images/chats.png"; */
 import SingleTicket from "./single-ticket";
 
 import SupperSpinner from "../super-spinner";
-import { countBy } from "lodash";
 
 const options = ["one", "two", "three"];
 
 interface IfilterOptions {
   name?: string;
   category?: string;
+  limit?:number;
 }
 
 export default function SupportTickets(): JSX.Element {
@@ -100,6 +100,7 @@ export default function SupportTickets(): JSX.Element {
       ob = {
         name: searchOption,
         category: searchCategory,
+        limit:10
       };
       console.log(ob);
       (async () => {
@@ -111,6 +112,7 @@ export default function SupportTickets(): JSX.Element {
       console.log("NO");
       ob = {
         name: searchOption,
+        limit:10
       };
       (async () => {
         await filterTickets(ob);
@@ -121,6 +123,7 @@ export default function SupportTickets(): JSX.Element {
       console.log("TALVEZ");
       ob = {
         category: searchCategory,
+        limit:10
       };
       console.log(ob);
       (async () => {
@@ -183,6 +186,7 @@ export default function SupportTickets(): JSX.Element {
                 <div className="ticket-list">
                   {tickets.map((ticket, index) => (
                     <SingleTicket
+                      key={ticket._id}
                       index={index}
                       {...ticket}
                       timeposted={ticket.createdAt!}
