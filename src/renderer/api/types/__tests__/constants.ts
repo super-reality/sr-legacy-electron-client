@@ -1,12 +1,7 @@
 /* eslint-env jest */
 import constant from "../../constant";
 import { DifficultyOptions, EntryOptions } from "../lesson/lesson";
-import {
-  InitalFnOptions,
-  FnOptions,
-  NextStepOptions,
-  TriggerOptions,
-} from "../step-old/step";
+
 import { LessonSortOptions } from "../lesson/search";
 import { SubjectSortOptions } from "../subject/search";
 
@@ -29,23 +24,5 @@ test("Lesson constants are updated", () => {
 
   expect(Object.values(SubjectSortOptions).sort()).toStrictEqual(
     Object.values(constant.Subject_Sort).sort()
-  );
-});
-
-test("Step constants are updated", () => {
-  expect(Object.values(InitalFnOptions).sort()).toStrictEqual(
-    Object.values(constant.Image_Function).sort()
-  );
-
-  expect(Object.values(FnOptions).sort()).toStrictEqual(
-    Object.values(constant.Image_Function_Additional).sort()
-  );
-
-  expect(Object.values(NextStepOptions).sort()).toStrictEqual(
-    Object.values(constant.Next_Step).sort()
-  );
-
-  expect(Object.values(TriggerOptions).sort()).toStrictEqual(
-    Object.values(constant.Step_Trigger).sort()
   );
 });
