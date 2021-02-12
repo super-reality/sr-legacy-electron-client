@@ -36,7 +36,7 @@ export default function SidebarControls(props: SidebarControlsProps) {
   }, [topMost, dispatch]);
 
   const buttonsProps = useSpring({
-    left: wideView ? "8px" : "2px",
+    right: wideView ? "6px" : "0px",
   });
 
   useEffect(() => {
