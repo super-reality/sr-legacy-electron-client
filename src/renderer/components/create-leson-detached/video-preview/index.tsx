@@ -119,14 +119,19 @@ export default function VideoPreview(): JSX.Element {
   const item = useItem(currentItem);
   const step = useStep(currentStep);
 
+  const anchors =
+    step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
   useEffect(() => {
     if (
       !canvasSourceType &&
-      step?.anchor &&
+      anchors.length > 0 &&
       anchorImageRef.current &&
       containerRef.current
     ) {
-      const anchor = store.getState().createLessonV2.treeAnchors[step?.anchor];
+      const anchor = store.getState().createLessonV2.treeAnchors[
+        anchors[0]?.value as string
+      ];
       [anchorImageRef.current.src] = anchor?.templates || "";
       if (anchor) {
         reduxAction(dispatch, {
@@ -428,7 +433,7 @@ export default function VideoPreview(): JSX.Element {
               <AnchorBox pos={cvResult} />
               <EditAnchorButton
                 openEditAnchorOptions={openEditAnchorOptions}
-                anchor={step?.anchor || null}
+                anchor={(anchors[0]?.value as string) || null}
                 pos={cvResult}
               />
             </>

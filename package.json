@@ -16,7 +16,7 @@
     "@types/jest-image-snapshot": "^3.1.0",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
-    "@welldone-software/why-did-you-render": "^5.0.0-alpha.2",
+    "@welldone-software/why-did-you-render": "^6.0.5",
     "active-win": "^6.2.0",
     "any-shell-escape": "^0.1.1",
     "autoprefixer": "^9.8.0",
@@ -67,8 +67,8 @@
     "ts-ebml": "^2.0.2",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
-    "wait-on": "^5.2.1",
     "use-resize-observer": "^7.0.0",
+    "wait-on": "^5.2.1",
     "warning": "^4.0.3",
     "yup": "^0.32.8"
   },

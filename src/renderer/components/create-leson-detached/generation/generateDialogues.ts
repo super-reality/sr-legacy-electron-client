@@ -2,7 +2,7 @@ import getSTT from "../../../../utils/api/getSTT";
 import timestampToTime from "../../../../utils/timestampToTime";
 import trimAudio from "../../../../utils/trimAudio";
 import { recordingPath, tempPath } from "../../../electron-constants";
-import store from "../../../redux/stores/renderer";
+import { RecordingJson } from "../../recorder/types";
 import newItem from "../lesson-utils/newItem";
 import setStatus from "../lesson-utils/setStatus";
 import { GeneratedData } from "./types";
@@ -50,10 +50,11 @@ function makeDialogsFromPieces(
 }
 
 export default async function generateDialogues(
-  baseData: GeneratedData
+  baseData: GeneratedData,
+  recordingData: RecordingJson,
+  recordingId: string
 ): Promise<GeneratedData> {
   const audioPieces: AudioPiece[] = [];
-  const { recordingData, currentRecording } = store.getState().createLessonV2;
 
   // Split the recording data between clicks
   let last = 0;
@@ -89,7 +90,7 @@ export default async function generateDialogues(
     await trimAudio(
       `${from}`,
       `${to - from}`,
-      `${recordingPath}aud-${currentRecording}.webm`,
+      `${recordingPath}aud-${recordingId}.webm`,
       `${tempPath}${from}-${to}.webm`
     )
       .then((file) =>

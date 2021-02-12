@@ -13,6 +13,7 @@ import useNotification from "../../../../hooks/useNotification";
 import Support from "../../../../../assets/images/support.png";
 import SupperSpinner from "../../../super-spinner";
 
+// https://rules.sonarsource.com/typescript/RSPEC-2966
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 export default function StepReview(props: StepSectionProps): JSX.Element {

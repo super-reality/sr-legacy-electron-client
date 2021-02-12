@@ -72,25 +72,24 @@ export default function ItemPreview(props: ItemPreviewProps) {
     treeSteps,
   ]);
 
-  const anchor = useAnchor(step?.anchor || undefined);
+  const anchors =
+    step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+  const anchorId = (anchors[0]?.value as string) || null;
+
+  const anchor = useAnchor(anchorId || undefined);
 
   const updatePos = useCallback(() => {
     const newPos = {
-      x:
-        step?.anchor && item?.anchor
-          ? cvResult.x + (item?.relativePos.x || 0)
-          : 0,
-      y:
-        step?.anchor && item?.anchor
-          ? cvResult.y + (item?.relativePos.y || 0)
-          : 0,
+      x: anchorId && item?.anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
+      y: anchorId && item?.anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
       width: item?.relativePos.width || 400,
       height: item?.relativePos.height || 300,
     };
     setPos(newPos);
 
     const newStyle =
-      step?.anchor && item?.anchor
+      anchorId && item?.anchor
         ? {}
         : {
             left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
@@ -198,7 +197,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("resizeend", () => {
           const div = dragContainer.current;
-          if (step.anchor && item?.anchor) {
+          if (anchorId && item?.anchor) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
@@ -227,7 +226,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("dragend", () => {
           const div = dragContainer.current;
-          if (step.anchor && item?.anchor) {
+          if (anchorId && item?.anchor) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {

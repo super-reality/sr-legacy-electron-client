@@ -41,11 +41,10 @@ const restrictMinSize =
     min: { width: 100, height: 100 },
   });
 
-export default function CreateLesson(): JSX.Element {
+function CreateLesson(): JSX.Element {
   const resizeContainer = useRef<HTMLDivElement>(null);
 
   const {
-    currentRecording,
     anchorTestView,
     lessonPreview,
     chapterPreview,
@@ -81,45 +80,6 @@ export default function CreateLesson(): JSX.Element {
     }
     return voidFunction;
   }, [resizeContainer]);
-
-  useEffect(() => {
-    let json: RecordingJson = {
-      step_data: [],
-      spectrum: [],
-    };
-    if (currentRecording) {
-      try {
-        const file = fs
-          .readFileSync(`${stepSnapshotPath}/${currentRecording}.webm.json`)
-          .toString("utf8");
-        json = JSON.parse(file);
-      } catch (e) {
-        console.warn(
-          `.json for recording ${currentRecording} does not exist! Some data about it might be unavailable.`
-        );
-      }
-      getRawAudioData(`${recordingPath}aud-${currentRecording}.webm`)
-        .then((data) => {
-          reduxAction(dispatch, {
-            type: "SET_RECORDING_DATA",
-            arg: { spectrum: rawAudioToWaveform(data) },
-          });
-        })
-        .catch(() => {
-          console.warn(
-            `recording ${currentRecording} does not have any local audio files.`
-          );
-        });
-    }
-    reduxAction(dispatch, {
-      type: "SET_RECORDING_DATA",
-      arg: json,
-    });
-    reduxAction(dispatch, {
-      type: "CLEAR_RECORDING_CV_DATA",
-      arg: null,
-    });
-  }, [dispatch, currentRecording]);
 
   const isTransparent = useMemo(
     () =>
@@ -204,3 +164,7 @@ export default function CreateLesson(): JSX.Element {
     </Windowlet>
   );
 }
+
+// CreateLesson.whyDidYouRender = true;
+
+export default CreateLesson;

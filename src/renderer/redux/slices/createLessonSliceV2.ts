@@ -343,7 +343,9 @@ const createLessonSlice = createSlice({
       const { anchor, step } = action.payload;
 
       if (step) {
-        state.treeSteps[step].anchor = anchor._id;
+        state.treeSteps[step].startWhen = [
+          { type: "Image Found", value: anchor._id },
+        ];
       }
 
       state.treeAnchors = {

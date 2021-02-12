@@ -1,3 +1,10 @@
+.super-spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
 
 .super-spinner-wrapper{
   position: relative;
@@ -38,18 +45,19 @@
     >span{
         animation: dots 1.4s infinite both;
 
-        &:nth-child(2){
-            animation-delay: .2s;
-        }
-        &:nth-child(3){
-            animation-delay: .4s;
-        }
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
     }
 }
 .rotate {
     animation: rotation 1.5s infinite ease;
     
   }
+}
 
 .logo-2{
   animation-delay: 3ms;
@@ -116,23 +124,22 @@
 
 
 @keyframes rotation {
-    from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(718deg);
-      }
+  from {
+    transform: rotate(0deg);
   }
+  to {
+    transform: rotate(718deg);
+  }
+}
 
-  @keyframes dots {
-
-    0% {
-      opacity: .2;
-    }
-    20% {
-      opacity: 1;
-    }
-    100% {
-      opacity: .2;
-    }
+@keyframes dots {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }

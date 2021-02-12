@@ -13,6 +13,8 @@ import usePopupModal from "../../../hooks/usePopupModal";
 import deleteGeneric from "../../create-leson-detached/lesson-utils/deleteGeneric";
 import store from "../../../redux/stores/renderer";
 
+import { ReactComponent as VisibilityIcon } from "../../../../assets/svg/public.svg";
+
 interface LessonPreviewProps {
   id: string;
 }
@@ -57,6 +59,21 @@ export default function LessonPreview(props: LessonPreviewProps) {
     lesson?.name
   );
 
+  const togglePublic = useCallback(() => {
+    if (lesson) {
+      updateLesson({ visibility: lesson.visibility == 1 ? 0 : 1 }, id).then(
+        (updatedLesson) => {
+          if (updatedLesson) {
+            reduxAction(dispatch, {
+              type: "CREATE_LESSON_V2_SETLESSON",
+              arg: updatedLesson,
+            });
+          }
+        }
+      );
+    }
+  }, [dispatch, lesson]);
+
   const [PopupModal, openDeleteModal] = usePopupModal(
     "Are you sure? This cannot be undone.",
     () => {
@@ -96,7 +113,20 @@ export default function LessonPreview(props: LessonPreviewProps) {
     <div className="lesson-preview">
       <PopupModal />
       <RenamePopup />
-      <div className="image" onClick={onClick} />
+      <div className="image" onClick={onClick}>
+        <div
+          className={`visibility-icon ${
+            lesson?.visibility == 1 ? "public" : "private"
+          }`}
+          onClick={(e) => {
+            togglePublic();
+            e.stopPropagation();
+          }}
+        >
+          <VisibilityIcon />
+        </div>
+      </div>
+
       {lesson ? (
         <>
           <div className="title-container">
@@ -104,6 +134,7 @@ export default function LessonPreview(props: LessonPreviewProps) {
             <div
               className="options-button"
               onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+                e.stopPropagation();
                 setOpen(
                   e.currentTarget.offsetLeft + 9,
                   e.currentTarget.offsetTop + 13
