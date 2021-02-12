@@ -21,7 +21,7 @@
       "@semantic-release/github",
       {
         "assets": [
-          "dist/**"
+          "dist/**", "dist/**/*.exe", "dist/**/*.blockmap", "dist/**/*.yml"
         ]
       }
     ]
