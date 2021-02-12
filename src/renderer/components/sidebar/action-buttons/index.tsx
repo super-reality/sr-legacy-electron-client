@@ -47,7 +47,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
   useEffect(() => setOpenGroups(sidebarIcons.map(() => false)), [expanded]);
 
   return (
-    <div className="action-buttons">
+    <div className="action-buttons" onMouseOut={(e) => e.stopPropagation()}>
       {sidebarIcons.map((icon, index) => {
         return (
           <>

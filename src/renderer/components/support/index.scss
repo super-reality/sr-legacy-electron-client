@@ -33,6 +33,7 @@
 
   .progress-step {
     float: right;
+    transition: .5s;
   }
 
   .active {
@@ -65,16 +66,24 @@
     background: #323052;
     transition: 0.5s;
     cursor: pointer;
-    img {
+    svg {
       float: left;
       margin-right: 10px;
+      transition: 0.5s;
+      path{
+        transition: 0.5s;
+      }
+      
     }
 
     &:hover {
       background: #222138;
-      > img {
-        filter: invert(32%) sepia(43%) saturate(2314%) hue-rotate(279deg)
-          brightness(95%) contrast(107%);
+      > svg  {
+        path{
+          fill: #d330b6!important;
+        }
+       /*  filter: invert(32%) sepia(43%) saturate(2314%) hue-rotate(279deg)
+          brightness(95%) contrast(107%); */
       }
     }
     &:active {

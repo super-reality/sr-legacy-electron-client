@@ -47,12 +47,32 @@ export interface IFile {
 
 export interface supportTicketsGet {
   err_code: CodeSuccess;
-  ticket: supportTicketPayload[];
+  tickets: supportTicketPayload[];
+}
+
+export interface supportTicketsSearch {
+  err_code: CodeSuccess;
+  tickets: supportTicketPayload[];
+}
+
+export interface ISearchSupportTickets {
+  name?: string;
+  category?: string;
+  limit?: number;
 }
 
 export interface supportTicketPayloadGet {
   err_code: CodeSuccess;
   ticket: supportTicketPayload;
+}
+
+export interface IVibeRatings {
+  vibes: IVibeRating[];
+}
+
+export interface IVibeRating {
+  name: string;
+  emoji: string;
 }
 
 export interface IData {

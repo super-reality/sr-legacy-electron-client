@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, /*  useEffect, */ useMemo } from "react";
+import "./index.scss";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -9,6 +10,8 @@ import TextError from "../../../forms/TextError";
 import FormControl, { capitalize, singleValuetoIData } from "../../../forms";
 import { StepSectionProps } from "..";
 import GetSkills from "../../support-utils/getSkills";
+import SingleCategory from "./single-category";
+
 import supportTicket, {
   IData,
   IDataGet,
@@ -21,6 +24,7 @@ const titleSchema = Yup.object().shape({
 interface Values {
   skills: string[];
   newSkillName: string;
+  newCategories: any[];
 }
 
 const skillsOpts = [
@@ -78,6 +82,12 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
     slice.searchedSkills ?? []
   );
 
+  const [subCategories, setSubCategories] = useState<any[]>([]);
+
+  useMemo(() => {
+    setSubCategories([...skillsOpts]);
+  }, [skillsOpts]);
+
   let searchedSkills: IData[] = [];
 
   const SearchSkills = (value: string): IData[] => {
@@ -118,6 +128,7 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
   const initialValues: Values = {
     skills: slice.skills ?? [],
     newSkillName: slice.newSkillName ?? "",
+    newCategories: [],
   };
 
   return (
@@ -155,17 +166,26 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             What are skills and expertise area most important to in your
             request? This will help pair you with teacher.
             <ErrorMessage component={TextError} name="skills" />
-            {skillsOpts.map((skill) => (
-              <div className="skill" key={skill.name}>
-                {skill.name}
-                <FormControl
-                  name="skills"
-                  control="skills"
-                  options={skill.options}
-                  {...formik}
-                />
-              </div>
+            {subCategories.map((skill) => (
+              <SingleCategory
+                key={skill.name}
+                name={skill.name}
+                options={skill.options}
+                context={{ ...formik }}
+              />
             ))}
+            {/*             {newSubCategories.map((c, i) => (
+              <EditableCategory
+                key={c.name}
+                index={i}
+                options={c.options}
+                context={{ ...formik }}
+              />
+            ))} */}
+            {/*             <div className="addSkill skill">
+              <AddButtonIcon onClick={addNewCategory} />
+              Add New category
+            </div> */}
             <div className="skill">
               Not what you are looking for?
               <FormControl
@@ -187,6 +207,9 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
               />
             </div>
             <div className="support-buttons">
+              {/* <button onClick={addNewCategory} type="button">
+                Random
+              </button> */}
               <button onClick={goBack} type="button">
                 Back
               </button>

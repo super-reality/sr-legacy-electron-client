@@ -86,3 +86,14 @@
     }
   }
 }
+
+.loading-spinner-popup {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  background-color: #00000036;
+  display: flex;
+  z-index: 35;
+  border-radius: 4px;
+}

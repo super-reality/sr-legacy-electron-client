@@ -87,6 +87,11 @@ export default function StepView(props: StepViewProps) {
     video: 0,
   };
 
+  const anchors =
+    step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+  const anchorId = (anchors[0]?.value as string) || "";
+
   return (
     <>
       {Object.keys(itemsState).map((itemId) => {
@@ -100,7 +105,7 @@ export default function StepView(props: StepViewProps) {
           <ItemView
             key={`item-box-${item.type}-${itemKeys[item.type] || item._id}`}
             item={item}
-            anchorId={step.anchor || ""}
+            anchorId={anchorId}
             onSucess={(trigger: TriggerTypes | null) =>
               itemSucess(trigger, item)
             }

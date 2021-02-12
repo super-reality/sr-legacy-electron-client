@@ -17,6 +17,13 @@ import {
 import "../../containers.scss";
 import "./index.scss";
 
+const singleNavMode: CustomMode = (curr, next) => {
+  const nextCenter = next[1];
+  if (curr[0].val !== next[0].val) nextCenter.val = next[0].val;
+  if (curr[2].val !== next[2].val) nextCenter.val = next[2].val;
+  return [curr[0], nextCenter, curr[2]];
+};
+
 const customMode: CustomMode = (curr, next) => {
   const handle2Moved = next[2].val != curr[2].val;
   // const handle1Moved = next[1].val != curr[1].val;
@@ -186,6 +193,7 @@ function Tick({ tick, count, index }: TickProps) {
 interface VideoNavigationProps {
   domain: number[];
   defaultValues: number[];
+  singleNav?: boolean;
   step?: number;
   callback?: (n: readonly number[]) => void;
   slideCallback?: (n: readonly number[]) => void;
@@ -212,6 +220,7 @@ export default function VideoNavigation(
   const {
     domain,
     defaultValues,
+    singleNav,
     step,
     callback,
     slideCallback,
@@ -263,7 +272,7 @@ export default function VideoNavigation(
         }}
       >
         <Slider
-          mode={customMode}
+          mode={singleNav ? singleNavMode : customMode}
           step={step || 10}
           disabled={disabled}
           domain={domain}

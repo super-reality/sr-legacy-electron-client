@@ -7,7 +7,10 @@ import LessonUpdate from "../../../api/types/lesson-v2/update";
 import { API_URL } from "../../../constants";
 import store from "../../../redux/stores/renderer";
 
-export default function updateLesson(data: Partial<ILessonV2>, id: string) {
+export default function updateLesson(
+  data: Partial<ILessonV2>,
+  id: string
+): Promise<ILessonV2 | undefined> {
   const updated = store.getState().createLessonV2.treeLessons[id];
   const newData = {
     chapters: updated.chapters,
@@ -15,7 +18,7 @@ export default function updateLesson(data: Partial<ILessonV2>, id: string) {
     lesson_id: id,
   };
 
-  Axios.put<LessonUpdate | ApiError>(
+  return Axios.put<LessonUpdate | ApiError>(
     `${API_URL}lesson`,
     _.omit(newData, ["_id", "__v", "createdBy", "createdAt", "updatedAt"])
   )

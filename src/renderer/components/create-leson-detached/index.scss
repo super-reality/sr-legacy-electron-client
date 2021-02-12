@@ -240,13 +240,12 @@
 }
 
 .spectrum-container {
-  width: calc(100% - 28px);
+  width: calc(100% - 32px);
   height: 30px;
   position: absolute;
   display: flex;
-  bottom: -5px;
-  margin-left: 8px;
-  margin-top: -39px;
+  bottom: 16px;
+  margin-left: 16px;
   align-items: center;
   z-index: 1;
   // background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
