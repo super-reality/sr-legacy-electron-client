@@ -15,7 +15,34 @@
     background: var(--color-background-hover);
   }
 
+  .visibility-icon {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    @include animated;
+
+    &.public {
+      opacity: 0.8;
+    }
+
+    &.private {
+      opacity: 0.3;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+
+    svg {
+      fill: var(--color-icon);
+    }
+  }
+
   .image {
+    position: relative;
     background-position: center;
     background-size: cover;
     width: 100%;
