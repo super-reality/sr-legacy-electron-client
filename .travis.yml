@@ -34,7 +34,6 @@ jobs:
       os: windows
       env: YARN_GPG=no
       script:
-        - npm run semantic-release-dry
         - npm run test:all || travis_terminate 1
     - stage: Build
       os: windows
