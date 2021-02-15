@@ -34,7 +34,7 @@ export default function StartStepSelectorPanel(
         // wait for cv update
         // update children items relative positions
         const prevCvResult = store.getState().render.cvResult;
-        updateStep({ anchor: val[0]?.value }, stepId).then((updated) => {
+        updateStep({ startWhen: val }, stepId).then((updated) => {
           if (updated) {
             reduxAction(store.dispatch, {
               type: "CREATE_LESSON_V2_SETSTEP",
@@ -72,16 +72,7 @@ export default function StartStepSelectorPanel(
         "Object Found",
         "GPS Found",
       ]}
-      baseData={
-        step?.anchor
-          ? [
-              {
-                type: "Image Found",
-                value: step.anchor,
-              },
-            ]
-          : []
-      }
+      baseData={step?.startWhen || []}
       callback={doUpdate}
     />
   );

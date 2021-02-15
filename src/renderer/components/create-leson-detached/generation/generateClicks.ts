@@ -9,7 +9,7 @@ import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 import newItem from "../lesson-utils/newItem";
 import setStatus from "../lesson-utils/setStatus";
-import { StepData } from "../../recorder/types";
+import { RecordingJson, StepData } from "../../recorder/types";
 import { GeneratedData } from "./types";
 
 function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {
@@ -31,12 +31,16 @@ function makeClick(cvResult: CVResult, data: StepData): Partial<ItemFocus> {
 
 export default async function generateClicks(
   baseData: GeneratedData,
-  anchor: IAnchor
+  anchor: IAnchor,
+  recordingData: RecordingJson
 ): Promise<GeneratedData> {
   const newData = { ...baseData };
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
-
-  const { recordingData } = store.getState().createLessonV2;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
+  const videoCanvas = document.getElementById(
+    "trim-popup-canvas"
+  ) as HTMLCanvasElement;
 
   const filtered = recordingData.step_data.filter(
     (d) =>
@@ -62,6 +66,7 @@ export default async function generateClicks(
       })
         .then(() => doCvMatch(anchor.templates, videoPanel, anchor))
         .then((cvResult) => {
+          console.log(cvResult);
           reduxAction(store.dispatch, {
             type: "SET_RECORDING_CV_DATA",
             arg: {
@@ -74,7 +79,7 @@ export default async function generateClicks(
         .then((item) => newItem(item, stepId))
         .then((item) => {
           if (item) newData.items[item.name] = item;
-          return saveCanvasImage(`${itemsPath}/${stepId}.png`);
+          return saveCanvasImage(`${itemsPath}/${stepId}.png`, videoCanvas);
         });
     }
   }

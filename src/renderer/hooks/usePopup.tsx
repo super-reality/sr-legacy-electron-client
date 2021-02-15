@@ -21,7 +21,8 @@ type PopupProps = PropsWithChildren<{
  */
 export default function usePopup(
   open: boolean,
-  onClose?: () => void
+  onClose?: () => void,
+  persistent?: boolean
 ): [(props: PopupProps) => JSX.Element, () => void, () => void] {
   const [state, setState] = useState({
     display: open,
@@ -61,7 +62,7 @@ export default function usePopup(
       <animated.div
         style={alphaSpring}
         className="popup-container"
-        onClick={beginClose}
+        onClick={persistent ? undefined : beginClose}
       >
         <animated.div
           className="popup-box"

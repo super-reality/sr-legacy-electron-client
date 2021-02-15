@@ -142,21 +142,31 @@ function TreeFolder(props: TreeFolderProps) {
       setState(STATE_OK);
       getStep(id)
         .then((data) => {
+          const anchors = data.startWhen.filter(
+            (tv) => tv.type == "Image Found"
+          );
+
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETSTEP",
             arg: { step: data },
           });
           setState(STATE_OK);
-          if (
-            data.anchor &&
-            store.getState().createLessonV2.treeAnchors[data.anchor] ==
-              undefined
-          ) {
-            getAnchor(data.anchor).then((anchor) => {
-              reduxAction(store.dispatch, {
-                type: "CREATE_LESSON_V2_SETANCHOR",
-                arg: { anchor: anchor },
-              });
+          if (anchors.length > 0) {
+            anchors.forEach((typeval) => {
+              if (
+                store.getState().createLessonV2.treeAnchors[
+                  typeval.value as string
+                ] == undefined
+              ) {
+                getAnchor(typeval.value as string)
+                  .then((anchor) => {
+                    reduxAction(store.dispatch, {
+                      type: "CREATE_LESSON_V2_SETANCHOR",
+                      arg: { anchor: anchor },
+                    });
+                  })
+                  .catch(() => setState(STATE_ERR));
+              }
             });
           }
         })

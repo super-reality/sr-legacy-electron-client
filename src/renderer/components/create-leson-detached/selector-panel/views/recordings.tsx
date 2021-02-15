@@ -24,6 +24,7 @@ import useDebounce from "../../../../hooks/useDebounce";
 import sha1 from "../../../../../utils/sha1";
 import saveCanvasImage from "../../../../../utils/saveCanvasImage";
 import uploadFileToS3 from "../../../../../utils/api/uploadFileToS3";
+import usePopupLoading from "../../../../hooks/usePopupLoading";
 
 export function RecordingsList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
@@ -97,6 +98,8 @@ export function RecordingsView(
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  const [LoadingPopup, setLoading, unsetLoading] = usePopupLoading("Uploading");
+
   const updateCanvas = useCallback(() => {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
@@ -165,6 +168,7 @@ export function RecordingsView(
       const timestamp = timetoTimestamp(
         (videoRef?.current?.currentTime || 0) * 1000
       );
+
       if (val && canvasRef.current) {
         if (noUpload) {
           select("Recording", {
@@ -172,6 +176,7 @@ export function RecordingsView(
             timestamp,
           });
         } else {
+          setLoading();
           saveCanvasImage(
             `${itemsPath}/${sha1(`step-${id}-${timestamp}`)}.png`,
             canvasRef.current
@@ -183,7 +188,9 @@ export function RecordingsView(
                 timestamp,
                 url,
               });
-            });
+              unsetLoading();
+            })
+            .catch(unsetLoading);
         }
       } else {
         select("Recording", null);
@@ -208,8 +215,13 @@ export function RecordingsView(
     }
   }, [videoRef.current, updateCanvas]);
 
+  const videoDomain = useMemo(() => [0, duration], [duration]);
+  const defaultNavigation = useMemo(() => [defaultTime * 1000], [defaultTime]);
+  const stepValue = useMemo(() => 100, []);
+
   return (
     <>
+      <LoadingPopup />
       <ContainerWithCheck checked={checked} callback={doCheckToggle}>
         <canvas
           id="video-canvas-panel"
@@ -224,11 +236,35 @@ export function RecordingsView(
         />
       </ContainerWithCheck>
       <BaseSlider
-        domain={[0, duration]}
-        step={100}
-        defaultValues={[defaultTime * 1000]}
+        domain={videoDomain}
+        step={stepValue}
+        defaultValues={defaultNavigation}
         callback={scrubVideo}
         slideCallback={scrubVideo}
+      />
+    </>
+  );
+}
+
+export function RecordingsViewNoSlider(
+  props: BasePanelViewProps<RecordingCanvasTypeValue> & {
+    id: string;
+    noUpload?: boolean;
+  }
+) {
+  const { id } = props;
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  return (
+    <>
+      <video
+        id="video-autoplay-panel"
+        style={{ width: "300px" }}
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        src={`${recordingPath}/vid-${id}.webm`}
       />
     </>
   );

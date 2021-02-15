@@ -3,18 +3,20 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 
-import IconTitle from "../../../../assets/svg/title.svg";
-import IconDescription from "../../../../assets/svg/description.svg";
-import IconSkills from "../../../../assets/svg/skills.svg";
+import { ReactComponent as IconTitle } from "../../../../assets/svg/title.svg";
+import { ReactComponent as IconDescription } from "../../../../assets/svg/description.svg";
+import { ReactComponent as IconSkills } from "../../../../assets/svg/skills.svg";
 /* import IconProfileSharing from "../../../../assets/svg/profile-sharing.svg"; */
-import IconReview from "../../../../assets/svg/review.svg";
-import IconCircleTick from "../../../../assets/svg/circle-tick.svg";
+import { ReactComponent as IconReview } from "../../../../assets/svg/review.svg";
+import { ReactComponent as IconCircleTick } from "../../../../assets/svg/circle-tick.svg";
+import { ReactComponent as IconVibes } from "../../../../assets/svg/vibes-icon.svg";
 
 import StepTitle from "./step-title";
 import StepDescription from "./step-description";
 import StepSkills from "./step-skills";
 /* import StepProfileSharing from "./step-profile-sharing"; */
 import StepReview from "./step-review";
+import StepVibes from "./step-vibes";
 import useFormSlider from "../../../hooks/useFormSlider";
 import { IData } from "../../../api/types/support-ticket/supportTicket";
 import { SupportSectionsProps } from "..";
@@ -46,6 +48,11 @@ const helpSections = [
     icon: IconProfileSharing,
     section: StepProfileSharing,
   }, */,
+  {
+    title: "Vibes",
+    icon: IconVibes,
+    section: StepVibes,
+  },
   {
     title: "Review",
     icon: IconReview,
@@ -81,7 +88,7 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
     setIndex, */,
     clickGoNext,
     clickGoBack,
-  } = useFormSlider(4);
+  } = useFormSlider(5);
 
   const verifyFill = (i: number) => {
     switch (i) {
@@ -111,12 +118,11 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
                 /* onClick={() => {
                   if (verifyFill(i)) setIndex(i);
                 }} */
-                key={`section-${section.title}`}
-              >
+                key={`section-${section.title}`}>
                 <a>{section.title}</a>
-                <img src={section.icon} />
+                <section.icon />
                 <div className="progress-step">
-                  <img src={IconCircleTick} alt="ds" />
+                  <IconCircleTick />
                 </div>
               </li>
             );
@@ -132,6 +138,12 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
             goNext={clickGoNext}
           />
           <StepSkills
+            index={index + 1}
+            goBack={clickGoBack}
+            goNext={clickGoNext}
+          />
+
+          <StepVibes
             index={index + 1}
             goBack={clickGoBack}
             goNext={clickGoNext}

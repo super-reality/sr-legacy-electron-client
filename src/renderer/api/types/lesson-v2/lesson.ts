@@ -26,4 +26,5 @@ export interface ILessonV2 {
   setupScreenshots: string[];
   setupInstructions: string;
   setupFiles: string[];
+  visibility: number;
 }

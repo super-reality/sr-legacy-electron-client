@@ -9,46 +9,46 @@ import reduxAction from "../../redux/reduxAction";
 import BaseToggle from "../base-toggle";
 
 export default function CVSettings(): JSX.Element {
-  const stepData = useSelector((state: AppState) => state.createStep);
+  const cvSettings = useSelector((state: AppState) => state.settings.cv);
 
   const setMatchValue = useCallback((n: readonly number[]) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvMatchValue: n[0] },
     });
   }, []);
 
   const setCanvasSize = useCallback((n: readonly number[]) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvCanvas: n[0] },
     });
   }, []);
 
   const setDelay = useCallback((n: readonly number[]) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvDelay: n[0] },
     });
   }, []);
 
   const setGrayscale = useCallback((val: boolean) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvGrayscale: val },
     });
   }, []);
 
   const setApplyThreshold = useCallback((val: boolean) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvApplyThreshold: val },
     });
   }, []);
 
   const setThreshold = useCallback((n: readonly number[]) => {
     reduxAction(store.dispatch, {
-      type: "CREATE_STEP_DATA",
+      type: "SET_CV_SETTINGS",
       arg: { cvThreshold: n[0] },
     });
   }, []);
@@ -56,19 +56,19 @@ export default function CVSettings(): JSX.Element {
   return (
     <>
       <BaseSlider
-        title={`Match Value: ${stepData.cvMatchValue}`}
+        title={`Match Value: ${cvSettings.cvMatchValue}`}
         domain={[800, 1000]}
-        defaultValues={[stepData.cvMatchValue]}
+        defaultValues={[cvSettings.cvMatchValue]}
         ticksNumber={10}
         callback={setMatchValue}
         slideCallback={setMatchValue}
       />
       <BaseSlider
-        title={`Canvas Size: ${stepData.cvCanvas}% (${Math.round(
-          (window.screen.width / 100) * stepData.cvCanvas
+        title={`Canvas Size: ${cvSettings.cvCanvas}% (${Math.round(
+          (window.screen.width / 100) * cvSettings.cvCanvas
         )}px)`}
         domain={[10, 200]}
-        defaultValues={[stepData.cvCanvas]}
+        defaultValues={[cvSettings.cvCanvas]}
         ticksNumber={8}
         step={10}
         callback={setCanvasSize}
@@ -76,26 +76,26 @@ export default function CVSettings(): JSX.Element {
       />
       <BaseToggle
         title="Grayscale"
-        value={stepData.cvGrayscale}
+        value={cvSettings.cvGrayscale}
         callback={setGrayscale}
       />
       <BaseToggle
         title="Apply Threshold"
-        value={stepData.cvApplyThreshold}
+        value={cvSettings.cvApplyThreshold}
         callback={setApplyThreshold}
       />
       <BaseSlider
-        title={`Threshold: ${stepData.cvThreshold}`}
+        title={`Threshold: ${cvSettings.cvThreshold}`}
         domain={[0, 255]}
-        defaultValues={[stepData.cvThreshold]}
+        defaultValues={[cvSettings.cvThreshold]}
         ticksNumber={10}
         callback={setThreshold}
         slideCallback={setThreshold}
       />
       <BaseSlider
-        title={`Delay: ${stepData.cvDelay}ms`}
+        title={`Delay: ${cvSettings.cvDelay}ms`}
         domain={[1, 200]}
-        defaultValues={[stepData.cvDelay]}
+        defaultValues={[cvSettings.cvDelay]}
         ticksNumber={10}
         callback={setDelay}
         slideCallback={setDelay}
