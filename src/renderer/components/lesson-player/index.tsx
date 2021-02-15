@@ -94,6 +94,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   const updateCv = useCallback(() => {
     if (anchor) {
+      console.log("LessonPlayer updateCv trigger");
       ipcSend({
         method: "cv",
         arg: {
