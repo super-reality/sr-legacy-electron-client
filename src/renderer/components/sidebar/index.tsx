@@ -147,7 +147,7 @@ export default function Sidebar() {
       : "0px",
   });
 
-  const [Reality, doPrev, doNext, _doPlay, doClear] = useLessonPlayer(
+  const [Reality, doPrev, doNext, doPlay, doClear] = useLessonPlayer(
     currentLesson || ""
   );
 
@@ -200,7 +200,12 @@ export default function Sidebar() {
               <LeftArrowIcon onClick={doPrev} />
             </animated.div>
             <animated.div style={controlsProps}>
-              <StopIcon onClick={doClear} />
+              <StopIcon
+                onClick={() => {
+                  doClear();
+                  doPlay(false);
+                }}
+              />
             </animated.div>
             <div>
               <RightArrowIcon onClick={doNext} />

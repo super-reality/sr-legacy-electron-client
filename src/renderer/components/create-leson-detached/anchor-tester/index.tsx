@@ -57,6 +57,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
   useEffect(() => {
     const interval = setInterval(() => {
       if (anchor) {
+        console.log("AnchorTester cv trigger");
         ipcSend({
           method: "cv",
           arg: {

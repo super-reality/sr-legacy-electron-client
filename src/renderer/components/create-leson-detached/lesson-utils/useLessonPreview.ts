@@ -41,6 +41,10 @@ export default function useLessonPreview() {
         },
       });
     }
+    reduxAction(dispatch, {
+      type: "SET_LESSON_PLAYING",
+      arg: true,
+    });
   }, [dispatch]);
 
   const doPreview = useCallback(() => {
