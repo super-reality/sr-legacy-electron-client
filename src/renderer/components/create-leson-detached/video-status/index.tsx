@@ -52,7 +52,6 @@ export default function VideoStatus() {
     canvasSourceType,
     canvasSourceDesc,
     canvasSource,
-    status,
     triggerCvMatch,
     previewEditArea,
     previewMode,
@@ -62,7 +61,12 @@ export default function VideoStatus() {
     // const slice = store.getState().createLessonV2;
     const step: IStep | null = treeSteps[currentStep || ""];
 
-    return treeAnchors[step?.anchor || currentAnchor || ""] || null;
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    return (
+      treeAnchors[(anchors[0]?.value as string) || currentAnchor || ""] || null
+    );
   }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
 
   const cvDebouncer = useDebounce(1000);
@@ -79,6 +83,7 @@ export default function VideoStatus() {
     if (canvasSourceType == "file" && canvasSource) {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
+        console.log("do cv match file");
         doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
@@ -86,8 +91,10 @@ export default function VideoStatus() {
     } else if (canvasSourceType == "url" && canvasSource) {
       const fileName = canvasSource.split("/")?.pop() || "";
       const file = path.join(itemsPath, fileName);
+      console.log("canvasSourceType url", file);
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
+        console.log("do cv match url");
         doCvMatch(anchor.templates, file, anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
@@ -98,6 +105,7 @@ export default function VideoStatus() {
       ) as HTMLVideoElement;
       if (videoHidden) {
         cvDebouncer(() => {
+          console.log("do cv match video");
           // trigger cv match on current video/recording
           doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
             reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
@@ -163,7 +171,7 @@ export default function VideoStatus() {
             fontFamily: "monospace",
             marginLeft: "auto",
           }}
-        >{`${canvasSourceDesc} / ${status}`}</div>
+        >{`${canvasSourceDesc}`}</div>
         <canvas style={{ display: "none", width: "300px" }} id="canvasOutput" />
       </div>
     </>

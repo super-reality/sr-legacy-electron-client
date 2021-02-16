@@ -26,7 +26,7 @@ import {
 import Sidebar from "../components/sidebar";
 import BrowseLessons from "../components/browse-lessons";
 
-export default function App(): JSX.Element {
+function MainApp() {
   useTransparentFix();
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
@@ -34,9 +34,8 @@ export default function App(): JSX.Element {
 
   const { pathname } = useLocation();
 
-  const { detached, background } = useSelector(
-    (state: AppState) => state.commonProps
-  );
+  const { detached } = useSelector((state: AppState) => state.commonProps);
+
   const { yScrollMoveTo, topMost } = useSelector(
     (state: AppState) => state.render
   );
@@ -66,9 +65,6 @@ export default function App(): JSX.Element {
   if (detached) {
     return <DetachController />;
   }
-  if (background) {
-    return <BackgroundController />;
-  }
   if (!ready) {
     return <></>;
   }
@@ -81,7 +77,7 @@ export default function App(): JSX.Element {
       <Switch>
         <Route exact path="/recorder" component={Recorder} />
         <Route exact path="/lesson/view" component={BrowseLessons} />
-        <Route exact path="/lesson/create" component={CreateLesson} />
+        <Route path="/lesson/create/:id" component={CreateLesson} />
       </Switch>
       {isAuthenticated && <Sidebar />}
       {!isAuthenticated && (
@@ -98,4 +94,13 @@ export default function App(): JSX.Element {
       )}
     </ErrorBoundary>
   );
+}
+
+export default function App(): JSX.Element {
+  const { background } = useSelector((state: AppState) => state.commonProps);
+
+  if (background) {
+    return <BackgroundController />;
+  }
+  return <MainApp />;
 }

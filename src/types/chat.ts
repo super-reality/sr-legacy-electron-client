@@ -8,27 +8,33 @@ export interface ChatUser {
   updatedAt: string;
 }
 export interface Group {
-  collectiveName: string;
-  collectivePhoto?: string;
+  groupName: string;
+  groupPhoto?: string;
   _id: string;
   ownerId?: string;
   createdAt: string;
   updatedAt: string;
-  users: ChatUser[];
+  users: string[];
   channels: [];
 }
 
-export interface Message {
+export interface Category {
   _id: string;
-  text: string;
-  userId: string;
-  createdAt: string;
-  user: ChatUser;
+  groupId: string;
+  categoryName: string;
+  channels: string[];
+}
+
+export interface CategorySettings {
+  categoryName?: string;
+  categoryPhoto?: string;
+  channels?: string[];
 }
 
 export interface Channel {
   channelName: string;
   channelPhoto?: string;
+  categoryId: string;
   createdAt: string;
   messages: Message[];
   users: string[];
@@ -42,4 +48,21 @@ export interface ChannelsResult {
   skip: number;
   total: number;
 }
+
+export interface ChannelSettings {
+  channelName?: string;
+  channelPhoto?: string;
+  users?: ChatUser[];
+  categoryId?: string;
+}
+
+export interface Message {
+  _id: string;
+  channelId: string;
+  text: string;
+  userId: string;
+  createdAt: string;
+  user: ChatUser;
+}
+
 // export interface ChatLoginData {}

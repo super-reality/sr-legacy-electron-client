@@ -12,11 +12,14 @@ interface GroupSettingsProps {
 }
 export default function GroupSettings(props: GroupSettingsProps) {
   const { setPage } = props;
-  const { activeGroup } = useSelector((state: AppState) => state.chat);
+  const { activeGroup, groups } = useSelector((state: AppState) => state.chat);
+  const activeGroupObject = groups.find(({ _id }) => _id === activeGroup);
   return (
     <div className="group-settings">
       <div className="left-container">
-        <div className="group-name">{activeGroup.collectiveName}</div>
+        <div className="group-name">
+          {activeGroupObject && activeGroupObject.groupName}
+        </div>
         <div className="setttings-list">
           <div className="settings-list-item">General</div>
           <div className="settings-list-item">settings-list-item</div>
@@ -28,7 +31,9 @@ export default function GroupSettings(props: GroupSettingsProps) {
 
       <div className="settings-content-container">
         <div className="settings-content">
-          <GeneralSettings activeGroup={activeGroup} />
+          {activeGroupObject && (
+            <GeneralSettings activeGroup={activeGroupObject} />
+          )}
         </div>
         <ButtonRound
           svg={Close}

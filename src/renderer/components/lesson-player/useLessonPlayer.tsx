@@ -13,7 +13,7 @@ import ChapterView from "./chapter-view";
 
 export default function useLessonPlayer(
   lessonId: string
-): [JSX.Element, () => void, () => void, () => void, () => void] {
+): [JSX.Element, () => void, () => void, (play: boolean) => void, () => void] {
   const dispatch = useDispatch();
   const { treeAnchors, treeSteps, treeChapters, treeLessons } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -22,6 +22,7 @@ export default function useLessonPlayer(
   const { playingStepNumber, playingChapterNumber, playing } = useSelector(
     (state: AppState) => state.lessonPlayer
   );
+
   const { cvResult } = useSelector((state: AppState) => state.render);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [timeTick, setTimeTick] = useState(0);
@@ -34,16 +35,20 @@ export default function useLessonPlayer(
   const chapter = useMemo(() => {
     const chapterIdName = lesson?.chapters[playingChapterNumber];
     return chapterIdName ? treeChapters[chapterIdName._id] : undefined;
-  }, [playingChapterNumber, treeChapters]);
+  }, [playingChapterNumber, lesson, treeChapters]);
 
   const step = useMemo(() => {
     const stepIdName = chapter?.steps[playingStepNumber];
     return stepIdName ? treeSteps[stepIdName._id] : undefined;
-  }, [playingStepNumber, treeSteps]);
+  }, [playingStepNumber, chapter, treeSteps]);
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor;
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    const anchorId = (anchors[0]?.value as string) || null;
+
     return anchorId ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
 
@@ -80,6 +85,7 @@ export default function useLessonPlayer(
 
   const updateCv = useCallback(() => {
     if (anchor) {
+      console.log("useLessonPlayer updateCv trigger");
       ipcSend({
         method: "cv",
         arg: {
@@ -95,6 +101,7 @@ export default function useLessonPlayer(
   }, [anchor]);
 
   useEffect(() => {
+    console.log("timeTick useEffect: playing? ", timeTick, playing);
     if (playing) {
       updateCv();
     }
@@ -102,8 +109,11 @@ export default function useLessonPlayer(
 
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    console.log("timeoutRef useEffect");
     timeoutRef.current = setTimeout(() => {
-      setTimeTick(new Date().getTime());
+      const newtime = new Date().getTime();
+      console.log("newTimeTick ", newtime);
+      setTimeTick(newtime);
     }, anchor?.cvDelay || 500);
   }, [timeoutRef, anchor, cvResult]);
 
@@ -162,6 +172,16 @@ export default function useLessonPlayer(
     [dispatch]
   );
 
+  /*
+  const togglePlay = useCallback(() => {
+    reduxAction(dispatch, {
+      type: "SET_LESSON_PLAYING",
+      arg: !playing,
+    });
+  }, [dispatch, playing]);
+  */
+
+  /*
   useEffect(() => {
     doPlay(true);
     // hacky hack ahead!
@@ -171,6 +191,7 @@ export default function useLessonPlayer(
     setTimeout(() => doPlay(false), 100);
     setTimeout(() => doPlay(true), 2000);
   }, [doPlay]);
+  */
 
   const Reality =
     playing && chapter ? (
@@ -179,5 +200,5 @@ export default function useLessonPlayer(
       <></>
     );
 
-  return [Reality, doPrev, doNext, () => doPlay(!playing), onFinish];
+  return [Reality, doPrev, doNext, doPlay, onFinish];
 }

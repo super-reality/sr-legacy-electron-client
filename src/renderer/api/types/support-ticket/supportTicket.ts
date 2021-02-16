@@ -16,6 +16,7 @@ export default interface supportTicker {
   searchedSkills?: IData[];
   categoryData?: IData[];
   supportScreen?: TSupportScreen;
+  vibes?: IVibe[];
 }
 
 const START = 0;
@@ -35,6 +36,7 @@ export interface supportTicketPayload {
   newSkill?: boolean;
   newSkillName?: string;
   createdAt?: string;
+  _id?: string;
 }
 
 export interface IFile {
@@ -45,14 +47,40 @@ export interface IFile {
   type: string;
 }
 
+export interface IVibe {
+  _id: string;
+  name: string;
+  level: number;
+}
+
 export interface supportTicketsGet {
   err_code: CodeSuccess;
-  ticket: supportTicketPayload[];
+  tickets: supportTicketPayload[];
+}
+
+export interface supportTicketsSearch {
+  err_code: CodeSuccess;
+  tickets: supportTicketPayload[];
+}
+
+export interface ISearchSupportTickets {
+  name?: string;
+  category?: string;
+  limit?: number;
 }
 
 export interface supportTicketPayloadGet {
   err_code: CodeSuccess;
   ticket: supportTicketPayload;
+}
+
+export interface IVibeRatings {
+  vibes: IVibeRating[];
+}
+
+export interface IVibeRating {
+  name: string;
+  emoji: string;
 }
 
 export interface IData {

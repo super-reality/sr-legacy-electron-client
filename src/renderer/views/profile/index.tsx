@@ -3,7 +3,6 @@ import "./index.scss";
 import "../../components/containers.scss";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/stores/renderer";
-import CVSettings from "../../components/cv-settings";
 
 export default function Profile(): JSX.Element {
   const { name, avatarUrl } = useSelector((state: AppState) => state.auth);
@@ -20,9 +19,6 @@ export default function Profile(): JSX.Element {
             <div className="lesson-subtitle">User</div>
           </div>
         </div>
-      </div>
-      <div className="mid">
-        <CVSettings />
       </div>
     </>
   );

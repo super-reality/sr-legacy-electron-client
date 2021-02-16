@@ -119,14 +119,19 @@ export default function VideoPreview(): JSX.Element {
   const item = useItem(currentItem);
   const step = useStep(currentStep);
 
+  const anchors =
+    step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
   useEffect(() => {
     if (
       !canvasSourceType &&
-      step?.anchor &&
+      anchors.length > 0 &&
       anchorImageRef.current &&
       containerRef.current
     ) {
-      const anchor = store.getState().createLessonV2.treeAnchors[step?.anchor];
+      const anchor = store.getState().createLessonV2.treeAnchors[
+        anchors[0]?.value as string
+      ];
       [anchorImageRef.current.src] = anchor?.templates || "";
       if (anchor) {
         reduxAction(dispatch, {
@@ -174,18 +179,25 @@ export default function VideoPreview(): JSX.Element {
       const fileName = canvasSource.split("/")?.pop() || "";
       const file = path.join(itemsPath, fileName);
       const img = new Image();
-      img.onload = () => {
+      img.onload = (e) => {
+        console.log("ON LOAD", e);
         if (videoCanvasRef.current) {
+          console.log(img);
           videoCanvasRef.current.width = img.width;
           videoCanvasRef.current.height = img.height;
           const ctx = videoCanvasRef.current.getContext("2d");
           if (ctx) {
             ctx.drawImage(img, 0, 0);
+            console.log("ctx OK!!");
             reduxAction(dispatch, {
               type: "CREATE_LESSON_V2_TRIGGER_CV_MATCH",
               arg: null,
             });
+          } else {
+            console.log("ctx", ctx);
           }
+        } else {
+          console.log("videoCanvasRef.current", videoCanvasRef.current);
         }
       };
       if (!fs.existsSync(file)) {
@@ -428,7 +440,7 @@ export default function VideoPreview(): JSX.Element {
               <AnchorBox pos={cvResult} />
               <EditAnchorButton
                 openEditAnchorOptions={openEditAnchorOptions}
-                anchor={step?.anchor || null}
+                anchor={(anchors[0]?.value as string) || null}
                 pos={cvResult}
               />
             </>

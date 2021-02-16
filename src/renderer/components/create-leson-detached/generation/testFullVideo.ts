@@ -5,7 +5,9 @@ import reduxAction from "../../../redux/reduxAction";
 import store from "../../../redux/stores/renderer";
 
 export default async function testFullVideo(anchor: IAnchor): Promise<void> {
-  const videoPanel = document.getElementById("video-panel") as HTMLVideoElement;
+  const videoPanel = document.getElementById(
+    "trim-popup-video"
+  ) as HTMLVideoElement;
 
   const { recordingData } = store.getState().createLessonV2;
 
@@ -24,7 +26,7 @@ export default async function testFullVideo(anchor: IAnchor): Promise<void> {
     videoPanel.currentTime = timestampTime / 1000;
 
     // eslint-disable-next-line no-await-in-loop
-    await new Promise((resolve) => {
+    await new Promise<void>((resolve) => {
       setTimeout(() => resolve(), 200);
     })
       .then(() => doCvMatch(anchor.templates, videoPanel, anchor))

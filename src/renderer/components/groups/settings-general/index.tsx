@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Group } from "../../../../types/chat";
-import { updateGroup } from "../../../../utils/chat-utils/services";
+import { updateGroup } from "../../../../utils/chat-utils/groups-services";
 import ButtonSimple from "../../button-simple";
 
 interface SettingsProps {
@@ -14,29 +14,29 @@ export default function GeneralSettings(props: SettingsProps) {
 
   const submitUpdateGroup = () => {
     if (groupNameField.current) {
+      let groupProps;
       if (
         groupNameField.current &&
         groupAvatarField.current &&
         groupAvatarField.current.value
       ) {
-        updateGroup(_id, {
-          collectiveName: groupNameField.current.value,
-          collectivePhoto: groupAvatarField.current.value,
-        });
+        groupProps = {
+          groupName: groupNameField.current.value,
+          groupPhoto: groupAvatarField.current.value,
+        };
       } else {
-        updateGroup(_id, { collectiveName: groupNameField.current.value });
+        groupProps = {
+          groupName: groupNameField.current.value,
+        };
       }
+      updateGroup(_id, groupProps);
     }
   };
 
   return (
     <div className="general-group-settings">
-      {activeGroup.collectivePhoto && (
-        <img
-          className="group-avatar"
-          src={activeGroup.collectivePhoto}
-          alt=""
-        />
+      {activeGroup.groupPhoto && (
+        <img className="group-avatar" src={activeGroup.groupPhoto} alt="" />
       )}
       <form className="update-group-form">
         <fieldset>

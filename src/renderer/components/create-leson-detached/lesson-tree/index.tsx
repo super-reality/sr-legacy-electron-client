@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { useParams } from "react-router-dom";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
 import { Item } from "../../../items/item";
@@ -141,21 +142,31 @@ function TreeFolder(props: TreeFolderProps) {
       setState(STATE_OK);
       getStep(id)
         .then((data) => {
+          const anchors = data.startWhen.filter(
+            (tv) => tv.type == "Image Found"
+          );
+
           reduxAction(dispatch, {
             type: "CREATE_LESSON_V2_SETSTEP",
             arg: { step: data },
           });
           setState(STATE_OK);
-          if (
-            data.anchor &&
-            store.getState().createLessonV2.treeAnchors[data.anchor] ==
-              undefined
-          ) {
-            getAnchor(data.anchor).then((anchor) => {
-              reduxAction(store.dispatch, {
-                type: "CREATE_LESSON_V2_SETANCHOR",
-                arg: { anchor: anchor },
-              });
+          if (anchors.length > 0) {
+            anchors.forEach((typeval) => {
+              if (
+                store.getState().createLessonV2.treeAnchors[
+                  typeval.value as string
+                ] == undefined
+              ) {
+                getAnchor(typeval.value as string)
+                  .then((anchor) => {
+                    reduxAction(store.dispatch, {
+                      type: "CREATE_LESSON_V2_SETANCHOR",
+                      arg: { anchor: anchor },
+                    });
+                  })
+                  .catch(() => setState(STATE_ERR));
+              }
             });
           }
         })
@@ -545,22 +556,29 @@ function TreeItem(props: TreeItemProps) {
   );
 }
 
+interface LessonParameters {
+  id: string;
+}
+
 export default function LessonTree() {
-  const { lessons } = useSelector((state: AppState) => state.createLessonV2);
+  const { id } = useParams<LessonParameters>();
+
   return (
     <Flex column>
-      {lessons.map((d, idx) => (
+      {id ? (
         <TreeFolder
-          siblings={lessons}
-          tabIndex={idx}
-          uniqueId={`${d._id}`}
+          siblings={[]}
+          tabIndex={0}
+          uniqueId={id}
           parentId=""
-          key={`${d._id}`}
-          id={d._id}
-          name={d.name}
+          key={id}
+          id={id}
+          name=""
           type="lesson"
         />
-      ))}
+      ) : (
+        <></>
+      )}
     </Flex>
   );
 }

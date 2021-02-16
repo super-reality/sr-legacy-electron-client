@@ -17,6 +17,7 @@ const initialState: supportTicker = {
   searchedSkills: [],
   categoryData: [],
   supportScreen: 0,
+  vibes: [],
 };
 
 const createSupportTicketSlice = createSlice({

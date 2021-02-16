@@ -55,8 +55,11 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   // Get step's anchor or just the one in use
   const anchor = useMemo(() => {
-    const anchorId = step?.anchor;
-    return anchorId ? treeAnchors[anchorId] : undefined;
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    const anchorId = anchors[0]?.value as string;
+    return (anchors[0]?.value as string) ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
 
   const clearCv = useCallback(() => {
@@ -91,6 +94,7 @@ export default function LessonPlayer(props: LessonPlayerProps) {
 
   const updateCv = useCallback(() => {
     if (anchor) {
+      console.log("LessonPlayer updateCv trigger");
       ipcSend({
         method: "cv",
         arg: {

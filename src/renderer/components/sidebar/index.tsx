@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
+import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
+import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg";
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
@@ -23,7 +25,7 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-import SupportTickets from "../support-tickets";
+import SupportTickets from "../support/support-tickets";
 
 export interface SidebarIcon {
   title: string;
@@ -52,9 +54,11 @@ export default function Sidebar() {
     itemPreview,
     currentLesson,
   } = useSelector((state: AppState) => state.createLessonV2);
-  const { loginData, groups } = useSelector((state: AppState) => state.chat);
+  const { loginData, groups, categories, channels } = useSelector(
+    (state: AppState) => state.chat
+  );
   const { user } = loginData;
-
+  // console.log(groups);
   // Here we add more buttons to the sidebar!
   // See GroupsList for how to create a list of items for a button.
   // DO NOT add icons manually to the sidebar, only here.
@@ -67,6 +71,8 @@ export default function Sidebar() {
         subComponent: (
           <GroupsList
             groups={groups}
+            categories={categories}
+            channels={channels.data}
             currentSub={currentSub}
             click={(id) => {
               // 0 is this array position
@@ -92,25 +98,25 @@ export default function Sidebar() {
         icon: TutorialsIcon,
         component: null,
         subComponent: null,
-        onClick: () => history.push("/lesson/create"),
+        onClick: () => history.push("/lesson/view"),
         componentWidth: 700,
       },
       {
         title: "Support",
-        icon: TutorialsIcon,
+        icon: SupportIcon,
         component: <Support />,
         subComponent: null,
-        componentWidth: 700,
+        componentWidth: 900,
       },
       {
         title: "Support Tickets",
-        icon: TutorialsIcon,
+        icon: SupportListIcon,
         component: <SupportTickets />,
         subComponent: null,
         componentWidth: 900,
       },
     ],
-    [history, current, currentSub, contentExpanded]
+    [history, current, currentSub, contentExpanded, groups]
   );
 
   const sidebarContainerRef = useRef<HTMLDivElement>(null);
@@ -141,7 +147,7 @@ export default function Sidebar() {
       : "0px",
   });
 
-  const [Reality, doPrev, doNext, _doPlay, doClear] = useLessonPlayer(
+  const [Reality, doPrev, doNext, doPlay, doClear] = useLessonPlayer(
     currentLesson || ""
   );
 
@@ -152,8 +158,13 @@ export default function Sidebar() {
         setWideView(current == id ? !wideView : true);
       }
       if (!icon.subComponent && icon.component && !icon.onClick) {
+        if (current == id && contentExpanded) {
+          setContentExpanded(false);
+        } else {
+          setContentExpanded(true);
+        }
         setCurrent(id);
-        setContentExpanded(!contentExpanded);
+        /* setContentExpanded(contentExpanded); */
       }
       if (icon.onClick) {
         icon.onClick();
@@ -193,7 +204,12 @@ export default function Sidebar() {
         }
         onMouseLeave={() => setSidebarProps({ xys: [0, 0, 1] })}
       >
-        <animated.div className="sidebar-buttons" style={mainProps}>
+        <animated.div
+          onMouseOver={() => setWideView(true)}
+          onMouseLeave={() => setWideView(false)}
+          className="sidebar-buttons"
+          style={mainProps}
+        >
           <SidebarControls
             wideView={wideView}
             setWideView={() => setWideView(!wideView)}
@@ -205,7 +221,12 @@ export default function Sidebar() {
               <LeftArrowIcon onClick={doPrev} />
             </animated.div>
             <animated.div style={controlsProps}>
-              <StopIcon onClick={doClear} />
+              <StopIcon
+                onClick={() => {
+                  doClear();
+                  doPlay(false);
+                }}
+              />
             </animated.div>
             <div>
               <RightArrowIcon onClick={doNext} />

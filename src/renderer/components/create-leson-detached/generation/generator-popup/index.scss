@@ -1,0 +1,37 @@
+.generator-popup-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000085;
+  display: flex;
+  z-index: 25;
+  cursor: auto;
+
+  .generator-popup {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    margin: auto 24px;
+    background: linear-gradient(180deg, #29233c 0%, #353459 50.2%, #261f34 100%);
+    width: calc(100% - 128px);
+    height: calc(100% - 48px);
+    position: relative;
+    box-shadow: 0px 7px 12px 4px #0000004f;
+  }
+}
+
+.ReactCrop {
+  overflow: hidden;
+  height: 100%;
+  border-radius: 6px;
+
+  div {
+    height: 100%;
+
+    video {
+      height: 100%;
+    }
+  }
+}

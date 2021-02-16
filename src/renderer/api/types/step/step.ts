@@ -40,7 +40,7 @@ export interface IStep {
   summary: string;
   startWhen: TypeValue[];
   canvas: CanvasTypeValue[];
-  anchor: string | null;
+  // anchor: string | null;
   items: IDName[];
   // recordingId?: string;
   // recordingTimestamp?: string;

@@ -7,7 +7,10 @@ import RadioButtons from "./RadioButtons";
 import TextArea from "./TextArea";
 import DropFile, { uploadFiles } from "./DropFile";
 import SkillsCheckbox from "./SkillsCheckbox";
+import EditableText from "./EditableText";
 import AutoCompleteInput, { capitalize } from "./AutoCompleteInput";
+import FormObserver from "./FormObserver";
+import VibeRatings from "./VibeRatings";
 import { IData } from "../../api/types/support-ticket/supportTicket";
 
 import ImagesPreview from "./DropFile/ImagePreview";
@@ -59,6 +62,8 @@ interface FormControlInput extends InputProps {
   control: string;
 }
 
+export { FormObserver };
+
 export default function FormControl({
   control,
   ...rest
@@ -76,6 +81,10 @@ export default function FormControl({
       return <SkillsCheckbox {...rest} />;
     case "autocomplete":
       return <AutoCompleteInput {...rest} />;
+    case "editable":
+      return <EditableText {...rest} />;
+    case "vibes":
+      return <VibeRatings {...rest} />;
 
     default:
       return <></>;

@@ -1,0 +1,24 @@
+.addSkill {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    >svg{
+        margin-bottom: 10px;
+        width: 40px;
+        height: auto;
+        cursor: pointer;
+        fill:#a8a8c9;
+        &:hover{
+            fill:#797994;
+        }
+
+        transition: all .5s;
+    }
+
+    .add-btn{
+        fill:black;
+    }
+
+}
