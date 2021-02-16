@@ -25,6 +25,7 @@ import TopMenuBar from "../top-menu-bar";
 import setFocusable from "../../../utils/electron/setFocusable";
 import setTopMost from "../../../utils/electron/setTopMost";
 import LeftPanelWrapper from "./left-panel-wrapper";
+import ShootingStar from "../animations";
 
 function setMocks() {
   reduxAction(store.dispatch, {
@@ -145,16 +146,28 @@ function CreateLesson(): JSX.Element {
             ref={resizeContainer}
           >
             {/* For shooting star animation - START */}
-            <span id="animation-1" />
-            <span id="animation-2" />
+            <ShootingStar
+              style={{ animationDelay: "1.5s", top: 0 }}
+              direction="left"
+            />
+            <ShootingStar
+              style={{ animationDelay: "1.75s", right: 0 }}
+              direction="bottom"
+            />
             {/* For shooting start animation - END */}
             <Lesson />
           </div>
           {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
             {/* For shooting star animation - START */}
-            <span id="animation-1" />
-            <span id="animation-2" />
+            <ShootingStar
+              style={{ animationDelay: "2s", bottom: 0 }}
+              direction="left"
+            />
+            <ShootingStar
+              style={{ animationDelay: "1.75s", left: 0 }}
+              direction="bottom"
+            />
             {/* For shooting start animation - END */}
             <VideoPreview />
           </div>

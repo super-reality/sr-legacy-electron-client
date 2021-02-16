@@ -250,6 +250,28 @@ a:active {
   animation: gradient-background-animation 60s ease infinite alternate-reverse;
 }
 
+/* Shooting star animation */
+span#shooting-star-to-left {
+  position: absolute;
+  display: block;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03e9f4);
+  animation: shootingStar1 1s linear forwards ;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-bottom {
+  position: absolute;
+  display: block;
+  top: -100%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar2 1s linear forwards;
+}
+
 @-webkit-keyframes gradient-background-animation {
   0% {
     background-position: 0% 50%;
@@ -283,5 +305,27 @@ a:active {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes shootingStar1 {
+  0% {
+    box-shadow: 
+        0 0 60px 30px #413db6;
+    left: -100%
+  }
+  50%, 100% {
+    left: 100%
+  }
+}
+
+@keyframes shootingStar2 {
+  0% {
+    box-shadow: 
+        0 0 60px 30px #413db6;
+    top: -100%
+  }
+  50%, 100% {
+    top: 100%
   }
 }

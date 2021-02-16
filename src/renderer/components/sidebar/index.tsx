@@ -26,6 +26,7 @@ import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
 import SupportTickets from "../support/support-tickets";
+import ShootingStar from "../animations";
 
 export interface SidebarIcon {
   title: string;
@@ -210,6 +211,21 @@ export default function Sidebar() {
           className="sidebar-buttons"
           style={mainProps}
         >
+          <ShootingStar
+            style={{
+              left: 0,
+              animationIterationCount: "infinite",
+            }}
+            direction="bottom"
+          />
+          <ShootingStar
+            style={{
+              bottom: 0,
+              animationDelay: "1s",
+              animationIterationCount: "infinite",
+            }}
+            direction="left"
+          />
           <SidebarControls
             wideView={wideView}
             setWideView={() => setWideView(!wideView)}
