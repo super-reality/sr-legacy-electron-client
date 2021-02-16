@@ -162,15 +162,36 @@ export default function Sidebar() {
     [current, wideView, contentExpanded, sidebarIcons]
   );
 
+  const calc = (x: number, y: number) => [
+    -(y - window.innerHeight / 2) / 60,
+    (x - window.innerWidth / 2) / 60,
+    1,
+  ];
+  const trans = (x: number, y: number, s: number) =>
+    `perspective(50rem) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
+
+  const [sidebarProps, setSidebarProps] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 170, friction: 60 },
+  }));
+
   return (
     <>
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
         currentLesson &&
         Reality}
-      <div
-        style={{ right: "0px", top: "60px" }}
+      <animated.div
+        style={{
+          right: "0px",
+          top: "60px",
+          transform: sidebarProps.xys.to(trans),
+        }}
         ref={sidebarContainerRef}
         className="sidebar-container"
+        onMouseMove={({ clientX: x, clientY: y }) =>
+          setSidebarProps({ xys: calc(x, y) })
+        }
+        onMouseLeave={() => setSidebarProps({ xys: [0, 0, 1] })}
       >
         <animated.div className="sidebar-buttons" style={mainProps}>
           <SidebarControls
@@ -237,7 +258,7 @@ export default function Sidebar() {
             )}
           </div>
         </animated.div>
-      </div>
+      </animated.div>
     </>
   );
 }
