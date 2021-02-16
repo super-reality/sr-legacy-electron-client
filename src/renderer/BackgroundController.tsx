@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import initializeBackground from "../background/initializeBackground";
+import { CVResult } from "../types/utils";
 import ipcSend from "../utils/ipcSend";
 import CvComponents from "./components/CvComponents";
 import useCVMatch from "./hooks/useCVMatch";
@@ -16,11 +17,11 @@ export default function BackgroundController(): JSX.Element {
   const [sendTo, setSendTo] = useState("");
 
   const cvCallback = useCallback(
-    (arg) => {
+    (arg: CVResult) => {
       setProcessingCv(false);
       ipcSend({
         method: "cvResult",
-        arg: { ...arg, id: anchorId },
+        arg: { ...arg, id: anchorId, time: new Date().getTime() },
         to: sendTo,
       });
     },
