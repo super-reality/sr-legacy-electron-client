@@ -68,6 +68,7 @@
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.7",
     "use-resize-observer": "^7.0.0",
+    "vivus": "^0.4.5",
     "wait-on": "^5.2.1",
     "warning": "^4.0.3",
     "yup": "^0.32.8"
@@ -193,6 +194,7 @@
     "@types/puppeteer": "^3.0.1",
     "@types/react-autosuggest": "^9.3.14",
     "@types/react-test-renderer": "^16.9.3",
+    "@types/vivus": "^0.4.3",
     "@types/warning": "^3.0.0",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "^3.9.0",

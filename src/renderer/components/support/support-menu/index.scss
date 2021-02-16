@@ -1,0 +1,63 @@
+#give,
+#ask {
+  svg {
+    path,
+    line,
+    polyline {
+      stroke: #d330b6;
+      stroke-width: 4px;
+    }
+
+    path {
+      fill: transparent;
+    }
+  }
+}
+
+.support-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+
+  svg {
+    width: 150px;
+    height: auto;
+  }
+  .support-container-title {
+    margin-bottom: 40px;
+    font-size: 40px;
+    font-weight: bold;
+  }
+  .support-choices {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    .support-choice {
+      cursor: pointer;
+      background: #323052;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 15px;
+      height: 250px;
+      width: 250px;
+      margin-right: 20px;
+      transition: all 0.5s;
+      .support-choice-title {
+        font-size: 25px;
+        font-weight: bold;
+      }
+      &:hover {
+        background-color: #211b33;
+      }
+    }
+  }
+
+  &:first-child {
+    margin: 0;
+  }
+}
