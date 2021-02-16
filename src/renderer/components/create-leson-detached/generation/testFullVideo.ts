@@ -29,7 +29,7 @@ export default async function testFullVideo(anchor: IAnchor): Promise<void> {
     await new Promise<void>((resolve) => {
       setTimeout(() => resolve(), 200);
     })
-      .then(() => doCvMatch(anchor.templates, videoPanel, anchor))
+      .then(() => doCvMatch(anchor.templates, videoPanel, "video", anchor))
       .then((cvResult) => {
         reduxAction(store.dispatch, {
           type: "SET_RECORDING_CV_DATA",

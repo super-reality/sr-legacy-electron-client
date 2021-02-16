@@ -8,6 +8,9 @@ import useCVMatch from "./hooks/useCVMatch";
 import reduxAction from "./redux/reduxAction";
 import { AppState } from "./redux/stores/renderer";
 
+// eslint-disable-next-line no-undef
+const Capturer = __non_webpack_require__("desktop-capture");
+
 export default function BackgroundController(): JSX.Element {
   const dispatch = useDispatch();
   const [processingCv, setProcessingCv] = useState<boolean>(false);
@@ -35,6 +38,10 @@ export default function BackgroundController(): JSX.Element {
 
   useEffect(() => {
     initializeBackground();
+    Capturer.init(false);
+    Capturer.start();
+
+    return () => Capturer.close();
   }, []);
 
   useEffect(() => {

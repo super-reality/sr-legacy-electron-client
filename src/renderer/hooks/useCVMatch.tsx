@@ -7,6 +7,9 @@ import doCvMatch from "../../utils/cv/doCVMatch";
 import { CVResult } from "../../types/utils";
 import { initialCVSettings } from "../redux/static";
 
+// eslint-disable-next-line no-undef
+const Capturer = __non_webpack_require__("desktop-capture");
+
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
@@ -15,10 +18,6 @@ export default function useCVMatch(
   const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
   const [frames, setFrames] = useState(0);
-
-  const videoElement = document.getElementById(
-    "videoOutput"
-  ) as HTMLVideoElement | null;
 
   const opt: typeof initialCVSettings = useMemo(() => {
     return {
@@ -38,22 +37,21 @@ export default function useCVMatch(
   const doMatch = useCallback(() => {
     console.log(opt);
     const dateStart = new Date().getTime();
-    if (videoElement) {
-      doCvMatch(images, videoElement, opt)
-        .then((res) => {
-          callback(res);
-          if (globalData.debugCv) {
-            console.log(
-              `${`CV match time taken - ${new Date().getTime() - dateStart}`}ms`
-            );
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
+    const frame = Capturer.getFrame();
+    doCvMatch(images, frame, "buffer", opt)
+      .then((res) => {
+        callback(res);
+        if (globalData.debugCv) {
+          console.log(
+            `${`CV match time taken - ${new Date().getTime() - dateStart}`}ms`
+          );
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     setFrames(frames + 1);
-  }, [callback, images, capturing, frames, videoElement, opt]);
+  }, [callback, images, capturing, frames, opt]);
 
   useEffect(() => {
     setFrames(0);
