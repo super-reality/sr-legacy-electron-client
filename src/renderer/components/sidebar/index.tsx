@@ -25,7 +25,7 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-import SupportTickets from "../support-tickets";
+import SupportTickets from "../support/support-tickets";
 
 export interface SidebarIcon {
   title: string;
@@ -106,7 +106,7 @@ export default function Sidebar() {
         icon: SupportIcon,
         component: <Support />,
         subComponent: null,
-        componentWidth: 700,
+        componentWidth: 900,
       },
       {
         title: "Support Tickets",
@@ -158,8 +158,13 @@ export default function Sidebar() {
         setWideView(current == id ? !wideView : true);
       }
       if (!icon.subComponent && icon.component && !icon.onClick) {
+        if (current == id && contentExpanded) {
+          setContentExpanded(false);
+        } else {
+          setContentExpanded(true);
+        }
         setCurrent(id);
-        setContentExpanded(!contentExpanded);
+        /* setContentExpanded(contentExpanded); */
       }
       if (icon.onClick) {
         icon.onClick();
@@ -180,7 +185,7 @@ export default function Sidebar() {
       >
         <animated.div
           onMouseOver={() => setWideView(true)}
-          onMouseOut={() => setWideView(false)}
+          onMouseLeave={() => setWideView(false)}
           className="sidebar-buttons"
           style={mainProps}
         >

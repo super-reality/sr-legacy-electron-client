@@ -59,6 +59,10 @@ export default function ActionButtons(props: ActionButtonsProps) {
                 else groupClose(index);
                 if (!icon.subComponent) clickButton(index);
               }}
+              onMouseOver={() => {
+                if (expanded && icon.subComponent) groupToggle(index);
+                else groupClose(index);
+              }}
               key={icon.title}
             >
               <ButtonRound

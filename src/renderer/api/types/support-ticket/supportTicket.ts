@@ -16,6 +16,7 @@ export default interface supportTicker {
   searchedSkills?: IData[];
   categoryData?: IData[];
   supportScreen?: TSupportScreen;
+  vibes?: IVibe[];
 }
 
 const START = 0;
@@ -44,6 +45,12 @@ export interface IFile {
   path: string;
   size: number;
   type: string;
+}
+
+export interface IVibe {
+  _id: string;
+  name: string;
+  level: number;
 }
 
 export interface supportTicketsGet {
