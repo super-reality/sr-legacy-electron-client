@@ -59,6 +59,8 @@ export default function Sidebar() {
     (state: AppState) => state.chat
   );
 
+  const { playing } = useSelector((state: AppState) => state.lessonPlayer);
+
   const { width } = useSelector((state: AppState) => state.sidebar);
 
   const { user } = loginData;
@@ -199,20 +201,27 @@ export default function Sidebar() {
             sidebarRef={sidebarContainerRef}
           />
 
-          <div className="control-buttons">
+          <div
+            className={`control-buttons ${playing ? "enabled" : ""}`}
+            style={{ opacity: playing ? 1 : 0.5 }}
+          >
             <animated.div style={controlsProps}>
-              <LeftArrowIcon onClick={doPrev} />
+              <LeftArrowIcon onClick={playing ? doPrev : undefined} />
             </animated.div>
             <animated.div style={controlsProps}>
               <StopIcon
-                onClick={() => {
-                  doClear();
-                  doPlay(false);
-                }}
+                onClick={
+                  playing
+                    ? () => {
+                        doClear();
+                        doPlay(false);
+                      }
+                    : undefined
+                }
               />
             </animated.div>
             <div>
-              <RightArrowIcon onClick={doNext} />
+              <RightArrowIcon onClick={playing ? doNext : undefined} />
             </div>
           </div>
 
