@@ -154,7 +154,7 @@
       border-right: 1px solid var(--color-section);
       overflow: hidden;
       background: var(--main-gradient);
-      position: relative;
+      /* position: relative; */
       top: -100%;
       animation: fromTop .75s ease forwards;
       animation-delay: .75s;
