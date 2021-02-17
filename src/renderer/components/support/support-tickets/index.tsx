@@ -197,7 +197,7 @@ export default function SupportTickets({
 
               {tickets.length == 0 ? (
                 <div className="loading-tickets">
-                  <SupperSpinner width="100px" text="Loading Tickets" />
+                  <SupperSpinner size="100px" text="Loading Tickets" />
                 </div>
               ) : (
                 <div className="ticket-list">

@@ -145,7 +145,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
             {popupLoading ? (
               <>
                 <div>
-                  <SupperSpinner width="80px" text="Uploading" />
+                  <SupperSpinner size="80px" text="Uploading" />
                 </div>
               </>
             ) : (
