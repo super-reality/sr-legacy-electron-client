@@ -12,7 +12,7 @@ import emoji5 from "../../../../../assets/svg/emoji5.svg";
 interface IVibeEmoji {
   title: string;
   checkBoundaries: () => void;
-  emoji: string;
+  Emoji: any;
   field: FieldProps["field"];
   setEmoji: FormikProps<any>["setFieldValue"];
 }
@@ -37,7 +37,7 @@ function countWords(str: string) {
 } */
 
 export function VibeEmoji(props: IVibeEmoji): JSX.Element {
-  const { title, checkBoundaries, emoji, field, setEmoji } = props;
+  const { title, checkBoundaries, Emoji, field, setEmoji } = props;
   const [selectedEmoji, setSelectedEmoji] = useState<number>(
     field.value.map((f: any) => f._id).indexOf(title) != -1
       ? field.value[field.value.map((f: any) => f._id).indexOf(title)].level
@@ -95,12 +95,11 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
           selectedEmoji != NONE && "vibeEmoji-selected"
         }`}
       >
-        {title} +
-        {selectedEmoji == EMOJI1 && <img className="result-1" src={emoji} />}
-        {selectedEmoji == EMOJI2 && <img className="result-2" src={emoji} />}
-        {selectedEmoji == EMOJI3 && <img className="result-3" src={emoji} />}
-        {selectedEmoji == EMOJI4 && <img className="result-4" src={emoji} />}
-        {selectedEmoji == EMOJI5 && <img className="result-5" src={emoji} />}
+        {title} +{selectedEmoji == EMOJI1 && <Emoji className="result-1" />}
+        {selectedEmoji == EMOJI2 && <Emoji className="result-2" />}
+        {selectedEmoji == EMOJI3 && <Emoji className="result-3" />}
+        {selectedEmoji == EMOJI4 && <Emoji className="result-4" />}
+        {selectedEmoji == EMOJI5 && <Emoji className="result-5" />}
       </div>
       <div className="vibeEmoji-Container">
         {Array.from(Array(3)).map((item, index) => {
@@ -110,11 +109,10 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
               <div className="reaction-title reaction-title-short">
                 {`Level ${index + 1}`}
               </div>
-              <img
+              <Emoji
                 onClick={() => {
                   changeEmoji(index + 1);
                 }}
-                src={emoji}
               />
             </div>
           );

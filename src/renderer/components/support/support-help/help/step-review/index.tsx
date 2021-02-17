@@ -5,7 +5,7 @@ import { AppState } from "../../../../../redux/stores/renderer";
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
 import { ImagesPreview } from "../../../../forms";
-import postSupportTicket from "../../support-help-utils/postSupportTicket";
+/* import postSupportTicket from "../../support-help-utils/postSupportTicket"; */
 import { supportTicketPayload } from "../../../../../api/types/support-ticket/supportTicket";
 import { uploadFiles } from "../../../../forms/DropFile";
 import usePopUp from "../../../../../hooks/usePopup";
@@ -65,6 +65,8 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
     if (i !== -1) skillArray.splice(i, 1);
 
+    const vibesList = vibes && vibes.map((vibe) => vibe._id);
+    const vibesLevelList = vibes && vibes.map((vibe) => vibe.level);
     let payload: supportTicketPayload = {
       title: title!,
       description: description!,
@@ -73,6 +75,8 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
       supportCategory: category!,
       newCategory: newCategory!,
       newSkill: newSkill!,
+      vibes: vibesList!,
+      vibesLevels: vibesLevelList!,
     };
     let filesArray: string[] = [];
 
@@ -95,11 +99,11 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     }
 
     console.log(payload);
-    await postSupportTicket(payload)
+    /*     await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
         console.log(res);
       })
-      .catch((e: any) => console.log(e));
+      .catch((e: any) => console.log(e)); */
   };
 
   const [showNotification] = useNotification({

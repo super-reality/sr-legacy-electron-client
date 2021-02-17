@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
 import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
-import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg";
+/* import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg"; */
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
@@ -26,7 +26,7 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-import SupportTickets from "../support/support-tickets";
+/* import SupportTickets from "../support/support-tickets"; */
 
 export interface SidebarIcon {
   title: string;
@@ -111,14 +111,14 @@ export default function Sidebar() {
         component: <Support />,
         subComponent: null,
         componentWidth: 900,
-      },
+      } /* ,
       {
         title: "Support Tickets",
         icon: SupportListIcon,
         component: <SupportTickets />,
         subComponent: null,
         componentWidth: 900,
-      },
+      }, */,
     ],
     [history, current, currentSub, contentExpanded, groups]
   );

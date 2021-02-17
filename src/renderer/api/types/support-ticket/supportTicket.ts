@@ -37,6 +37,8 @@ export interface supportTicketPayload {
   newSkillName?: string;
   createdAt?: string;
   _id?: string;
+  vibes: string[];
+  vibesLevels: number[];
 }
 
 export interface IFile {

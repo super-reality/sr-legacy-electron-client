@@ -5,6 +5,7 @@ import { ReactComponent as SupportIcon } from "../../../../assets/svg/support-ic
 import SupportAskIcon from "../../../../assets/svg/support-ask.svg";
 import SupportHelpIcon from "../../../../assets/svg/support-help.svg";
 import { TSupportOptions, ASK, SEARCH } from "..";
+import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
 
 interface ISupportMenuProps {
   setSupportChoice: (value: TSupportOptions) => void;
@@ -31,6 +32,7 @@ export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
         animTimingFunction: Vivus.EASE_IN,
       })
     );
+    setSidebarWidth(700);
   }, []);
 
   return (

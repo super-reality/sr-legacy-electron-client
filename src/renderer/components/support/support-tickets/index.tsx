@@ -10,6 +10,7 @@ import getSupportTickets from "./support-tickets-utils/getSupportTickets";
 import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
 import getCategories from "../support-help/support-help-utils/getCategories";
 import AutosuggestInput from "../../autosuggest-input";
+import BackToSupport from "../support-menu/goback-button";
 
 /* import voteup from "../../../assets/images/voteup.png";
 import votedown from "../../../assets/images/votedown.png";
@@ -34,14 +35,19 @@ import SupperSpinner from "../../super-spinner";
 
 import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
 
-
 interface IfilterOptions {
   name?: string;
   category?: string;
   limit?: number;
 }
 
-export default function SupportTickets(): JSX.Element {
+interface ISupportTicketsProps {
+  goToMenu: () => void;
+}
+
+export default function SupportTickets({
+  goToMenu,
+}: ISupportTicketsProps): JSX.Element {
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
 
   const [filterOption, setFilterOption] = useState<string>("");
@@ -157,6 +163,15 @@ export default function SupportTickets(): JSX.Element {
               id={"category-search"}
               submitCallback={(value: IData) => setSearchCategory(value._id)}
               placeholder={"Select Category"}
+            />
+            <BackToSupport
+              onClick={goToMenu}
+              style={{
+                position: "absolute",
+                left: 0,
+                bottom: 0,
+                width: "85%",
+              }}
             />
             {/*  <input type="text" value="Select Categories" /> */}
           </div>
