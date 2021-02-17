@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
 import "../buttons.scss";
+
 import { animated, useSpring, useTrail } from "react-spring";
 
 import { useHistory } from "react-router-dom";
@@ -57,6 +58,9 @@ export default function Sidebar() {
   const { loginData, groups, categories, channels } = useSelector(
     (state: AppState) => state.chat
   );
+
+  const { width } = useSelector((state: AppState) => state.sidebar);
+
   const { user } = loginData;
   // console.log(groups);
   // Here we add more buttons to the sidebar!
@@ -140,10 +144,10 @@ export default function Sidebar() {
 
   const props = useSpring({
     width: contentExpanded
-      ? `${sidebarIcons[current]?.componentWidth}px`
+      ? `${width ?? sidebarIcons[current]?.componentWidth}px`
       : "0px",
     minWidth: contentExpanded
-      ? `${sidebarIcons[current]?.componentWidth}px`
+      ? `${width ?? sidebarIcons[current]?.componentWidth}px`
       : "0px",
   });
 

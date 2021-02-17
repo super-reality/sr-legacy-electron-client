@@ -13,6 +13,7 @@ import GroupSettings from "../groups/group-settings";
 import PagesIndex from "../../../types/browser";
 import { createChannel } from "../../../utils/chat-utils/channels-services";
 import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
+import { setSidebarWidth } from "../../../utils/setSidebarWidth";
 
 interface ChatContainerProps {
   setPage: (pageIndex: any) => void;
@@ -32,6 +33,10 @@ function ChatContainer(props: ChatContainerProps) {
   const activeChannelObject = channels.data.find(
     ({ _id }) => _id === activeChannel
   );
+
+  React.useEffect(() => {
+    setSidebarWidth(700);
+  }, []);
 
   const createCategoryChannel = (
     channelName: string,
