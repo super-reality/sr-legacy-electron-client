@@ -3,14 +3,17 @@ import React from "react";
 import { ItemImage } from "../../item";
 import "./index.scss";
 import { BaseBoxProps } from "../boxes";
+import useItemBehaviour from "../../useItemBehaviour";
 
 const ImageBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemImage>>(
   (props, forwardedRef) => {
-    const { item, style, pos } = props;
+    const { item, style, pos, callback } = props;
+
+    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true);
 
     return (
       <div
-        ref={forwardedRef}
+        ref={combinedRef}
         className="image-box click-on"
         style={{
           left: `${pos.x}px`,
