@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { animated, useSpring } from "react-spring";
 import { Category, Channel, ChannelsResult } from "../../../../types/chat";
 import ButtonAdd from "../../../../assets/images/add-circle.png";
 import SingleChannel from "../single-channel";
-import { onTextChange } from "../../../../utils/chat-utils/common-functions";
-import { UpdateGroupType } from "../../../../utils/chat-utils/groups-services";
 import { UpdateCategoryType } from "../../../../utils/chat-utils/categories-services";
 import "./index.scss";
+import useAnimatedInput from "../../../hooks/useAnimatedInput";
 
 interface CategoryProps {
   category: Category;
@@ -25,81 +23,48 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
     updateCategory,
     openSettings,
   } = props;
+  const { _id } = category;
   const [edit, setEdit] = useState<boolean>(false);
-  const [text, setText] = useState<string>(category.categoryName);
 
   const categoryChannels = channels.data.filter(
-    ({ categoryId }) => categoryId === category._id
+    ({ categoryId }) => categoryId === _id
   );
 
   const addNewChannel = () => {
-    setCategory(category._id);
+    setCategory(_id);
     createChannel();
   };
 
-  // function for changing the category name
-  const submitEditText = (
-    id: string,
-    updatedText: string,
-    updateService: UpdateCategoryType | UpdateGroupType,
-    editSetFunc: (param: boolean) => void,
-    textSetFunc: (param: string) => void
-  ) => {
-    updateService(id, { categoryName: updatedText });
-    editSetFunc(false);
-    textSetFunc("");
+  const closeEdit = () => {
+    setEdit(false);
   };
 
-  const handleEnterDownEdit = (
-    id: string,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter") {
-      submitEditText(id, text, updateCategory, setEdit, setText);
-    }
+  // this function updates the category name
+  // by calling updateCategory service
+  const submitEditCategoryName = (newName: string) => {
+    updateCategory(_id, { categoryName: newName });
+    setEdit(false);
   };
 
-  const nameProps = useSpring({
-    config: { mass: 4, tension: 1500, friction: 180 },
-    opacity: edit ? 1 : 0,
-    width: edit ? "70%" : "0%",
-    right: edit ? "20%" : "50%",
-    zIndex: 1,
-    position: "absolute",
-    top: "8%",
-    boxShadow: "0 7px 10px rgba(0, 0, 0, 0.24)",
-    // from: { opacity: 0, width: "0" },
-  } as any);
+  const CategoryInput = useAnimatedInput(
+    edit,
+    category.categoryName,
+    submitEditCategoryName,
+    closeEdit
+  );
 
   return (
     <div className="single-category">
       <div
         className="channel-title"
         onDoubleClick={() => {
-          setEdit(!edit);
-          setText(category.categoryName);
+          setEdit(true);
         }}
       >
         {category.categoryName}
       </div>
-      <animated.div style={nameProps}>
-        <div className="category-input">
-          <input
-            style={{
-              textAlign: "center",
-            }}
-            value={text}
-            type={text}
-            placeholder="Category Name"
-            onChange={(e) => {
-              onTextChange(e, setText);
-            }}
-            onKeyDown={(e) => {
-              handleEnterDownEdit(category._id, e);
-            }}
-          />
-        </div>
-      </animated.div>
+      {CategoryInput}
+      {}
       <div className="add" onClick={addNewChannel}>
         <button type="button">
           <img src={ButtonAdd} />
@@ -142,3 +107,22 @@ export default function SingleCategory(props: CategoryProps): JSX.Element {
         )}
         
 */
+/* <animated.div style={nameProps}>
+        <div className="category-input">
+          <input
+            ref={inputRef}
+            style={{
+              textAlign: "center",
+            }}
+            value={categoryValue}
+            type="text"
+            placeholder="Category Name"
+            onChange={onChangeHandler}
+            onKeyDown={(e) => {
+              handleEnterDownEdit(e, submitEditText);
+            }}
+          />
+        </div>
+      </animated.div> */
+// // activate the outside element click hook
+// useDetectOutsideClick(inputRef, closeEdit);
