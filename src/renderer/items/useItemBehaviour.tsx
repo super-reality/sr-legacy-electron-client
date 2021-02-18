@@ -1,23 +1,37 @@
-import { useCallback, useEffect, useRef } from "react";
-import { Rectangle } from "../../types/utils";
+import { MutableRefObject, useCallback, useEffect, useRef } from "react";
 import getPrimaryMonitor from "../../utils/electron/getPrimaryMonitor";
 import globalData from "../globalData";
+import useCombinedRefs from "../hooks/useCombinedRef";
 import { TriggerTypes } from "./endStep";
 
+/**
+ * Basic item behaviour hook, manages triggers/callbacks and reference objects.
+ * @param callback Events callback, "endOn" triggers
+ * @param ref Mutable reference (passed by forwardRef)
+ * @param clickThrough Is it a clicktrough item?
+ */
 export default function useItemBehaviour(
   callback: ((trigger: TriggerTypes | null) => void) | undefined,
-  pos: Rectangle,
+  ref:
+    | ((instance: HTMLDivElement | null) => void)
+    | MutableRefObject<HTMLDivElement | null>
+    | null,
   clickThrough: boolean
 ) {
   const lastClickRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
+  const combinedRef = useCombinedRefs<HTMLDivElement>(ref, itemRef);
 
   const clickCallback = useCallback(() => {
+    const diplayPos = getPrimaryMonitor().bounds;
+    const div = combinedRef?.current;
     if (
-      globalData.mouseX > pos.x &&
-      globalData.mouseY > pos.y &&
-      globalData.mouseX < pos.x + pos.width &&
-      globalData.mouseY < pos.y + pos.height &&
+      div &&
+      globalData.mouseX > diplayPos.x + div.offsetLeft &&
+      globalData.mouseY > diplayPos.y + div.offsetTop &&
+      globalData.mouseX < diplayPos.x + div.offsetLeft + div.offsetWidth &&
+      globalData.mouseY < diplayPos.y + div.offsetTop + div.offsetHeight &&
       callback
     ) {
       const timeNow = new Date().getTime();
@@ -28,7 +42,7 @@ export default function useItemBehaviour(
       }
       lastClickRef.current = timeNow;
     }
-  }, [callback, pos]);
+  }, [callback]);
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
@@ -37,11 +51,13 @@ export default function useItemBehaviour(
     if (callback) {
       const interval = setInterval(() => {
         const diplayPos = getPrimaryMonitor().bounds;
+        const div = combinedRef?.current;
         if (
-          globalData.mouseX > diplayPos.x + pos.x &&
-          globalData.mouseY > diplayPos.y + pos.y &&
-          globalData.mouseX < diplayPos.x + pos.x + pos.width &&
-          globalData.mouseY < diplayPos.y + pos.y + pos.height
+          div &&
+          globalData.mouseX > diplayPos.x + div.offsetLeft &&
+          globalData.mouseY > diplayPos.y + div.offsetTop &&
+          globalData.mouseX < diplayPos.x + div.offsetLeft + div.offsetWidth &&
+          globalData.mouseY < diplayPos.y + div.offsetTop + div.offsetHeight
         ) {
           callback("mouse-hover");
         }
@@ -57,7 +73,7 @@ export default function useItemBehaviour(
       if (timeoutRef.current) clearInterval(timeoutRef.current);
       mouseEvents.removeListener("mousedown", clickCallback);
     };
-  }, [pos, callback]);
+  }, [callback]);
 
-  return clickCallback;
+  return [combinedRef, itemRef, clickCallback];
 }

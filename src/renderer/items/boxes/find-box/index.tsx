@@ -20,9 +20,9 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
 
     const [opacity, setOpacity] = useState(previewing ? 0 : 1);
 
-    const _clickCallback = useItemBehaviour(
+    const [combinedRef] = useItemBehaviour(
       callback,
-      pos,
+      forwardedRef,
       clickThrough || false
     );
 
@@ -45,7 +45,7 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
 
     return (
       <animated.div
-        ref={forwardedRef}
+        ref={combinedRef}
         className={`find-box ${
           clickThrough ? "click-through" : ""
         } ${computedType}`}
