@@ -149,6 +149,7 @@ export default function VideoPreview(): JSX.Element {
             sizeFactor: 1,
             dist: 0,
             time: 0,
+            date: 0,
           },
         });
       }

@@ -14,6 +14,7 @@ export interface CVResult {
   width: number;
   height: number;
   time: number;
+  date: number;
   id: string;
 }
 

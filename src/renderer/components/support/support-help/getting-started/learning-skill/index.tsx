@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./index.scss";
 
 import { SKILLS_SHORT, SKILLS_LONG } from "..";
-import clock from "../../../../../../assets/svg/clock.svg";
-import calendar from "../../../../../../assets/svg/calendar.svg";
+import { ReactComponent as ClockIcon } from "../../../../../../assets/svg/clock.svg";
+import { ReactComponent as CalendarIcon } from "../../../../../../assets/svg/calendar.svg";
 import { TsupportType } from "../../../../../api/types/support-ticket/supportTicket";
 
 const SHORT = 0;
@@ -40,7 +40,7 @@ export default function LearningSkill({
       >
         <div className="start-option-content">
           <div className="option-dot" />
-          <img src={clock} />
+          <ClockIcon />
           <div className="start-option-content-title">Short term problem</div>
           <div className="start-option-content-description">
             Less than 1 day
@@ -53,7 +53,7 @@ export default function LearningSkill({
       >
         <div className="start-option-content">
           <div className="option-dot" />
-          <img src={calendar} />
+          <CalendarIcon />
           <div className="start-option-content-title">Long term problems</div>
           <div className="start-option-content-description">
             More than a day

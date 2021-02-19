@@ -1,14 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
-import { AppState } from "../../redux/stores/renderer";
+import store, { AppState } from "../../redux/stores/renderer";
+import pendingReduxAction from "../../redux/utils/pendingReduxAction";
 import ChapterView from "./chapter-view";
 
 export default function useLessonPlayer(
@@ -19,13 +14,11 @@ export default function useLessonPlayer(
     (state: AppState) => state.createLessonV2
   );
 
+  const [ticker, setTicker] = useState(0);
+
   const { playingStepNumber, playingChapterNumber, playing } = useSelector(
     (state: AppState) => state.lessonPlayer
   );
-
-  const { cvResult } = useSelector((state: AppState) => state.render);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [timeTick, setTimeTick] = useState(0);
 
   const lesson = useMemo(() => (lessonId ? treeLessons[lessonId] : undefined), [
     lessonId,
@@ -57,6 +50,7 @@ export default function useLessonPlayer(
       type: "SET_CV_RESULT",
       arg: {
         time: new Date().getTime(),
+        date: new Date().getTime(),
         id: "",
         dist: 0,
         sizeFactor: 0,
@@ -83,14 +77,15 @@ export default function useLessonPlayer(
     });
   }, [dispatch]);
 
-  const updateCv = useCallback(() => {
+  const triggerCvUpdate = useCallback(() => {
     if (anchor) {
-      console.log("useLessonPlayer updateCv trigger");
+      // console.log("useLessonPlayer triggerCvUpdate");
       ipcSend({
         method: "cv",
         arg: {
           ...anchor,
           anchorId: anchor._id,
+          // 0 should be used when you want to see the cv regardless of the sucess (debug)
           // cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "renderer",
@@ -101,21 +96,20 @@ export default function useLessonPlayer(
   }, [anchor]);
 
   useEffect(() => {
-    console.log("timeTick useEffect: playing? ", timeTick, playing);
+    // console.log("timeTick useEffect: playing? ", playing, ticker);
     if (playing) {
-      updateCv();
+      triggerCvUpdate();
+      const prevDate = (store.getState() as AppState).render.cvResult.date;
+      pendingReduxAction((state) => state.render.cvResult.date, prevDate, 3000)
+        .then((state) => {
+          setTicker(state.render.cvResult.date);
+        })
+        .catch((e) => {
+          console.error(e);
+          triggerCvUpdate();
+        });
     }
-  }, [playing, timeTick, updateCv]);
-
-  useEffect(() => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    console.log("timeoutRef useEffect");
-    timeoutRef.current = setTimeout(() => {
-      const newtime = new Date().getTime();
-      console.log("newTimeTick ", newtime);
-      setTimeTick(newtime);
-    }, anchor?.cvDelay || 500);
-  }, [timeoutRef, anchor, cvResult]);
+  }, [playing, ticker, triggerCvUpdate]);
 
   const doPrev = useCallback(() => {
     if (playingStepNumber > 0) {
@@ -171,27 +165,6 @@ export default function useLessonPlayer(
     },
     [dispatch]
   );
-
-  /*
-  const togglePlay = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "SET_LESSON_PLAYING",
-      arg: !playing,
-    });
-  }, [dispatch, playing]);
-  */
-
-  /*
-  useEffect(() => {
-    doPlay(true);
-    // hacky hack ahead!
-    // First CV find target against a video stream source always fails, I set some
-    // timeout to pretend we send one then stop, and set again, since we rely on
-    // the CV find result to continue with the loop.
-    setTimeout(() => doPlay(false), 100);
-    setTimeout(() => doPlay(true), 2000);
-  }, [doPlay]);
-  */
 
   const Reality =
     playing && chapter ? (
