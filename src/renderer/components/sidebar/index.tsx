@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
 import "../buttons.scss";
+
 import { animated, useSpring, useTrail } from "react-spring";
 
 import { useHistory } from "react-router-dom";
@@ -25,7 +26,7 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-import SupportTickets from "../support-tickets";
+import SupportTickets from "../support/support-tickets";
 
 export interface SidebarIcon {
   title: string;
@@ -57,6 +58,9 @@ export default function Sidebar() {
   const { loginData, groups, categories, channels } = useSelector(
     (state: AppState) => state.chat
   );
+
+  const { width } = useSelector((state: AppState) => state.sidebar);
+
   const { user } = loginData;
   // console.log(groups);
   // Here we add more buttons to the sidebar!
@@ -106,7 +110,7 @@ export default function Sidebar() {
         icon: SupportIcon,
         component: <Support />,
         subComponent: null,
-        componentWidth: 700,
+        componentWidth: 900,
       },
       {
         title: "Support Tickets",
@@ -140,14 +144,14 @@ export default function Sidebar() {
 
   const props = useSpring({
     width: contentExpanded
-      ? `${sidebarIcons[current]?.componentWidth}px`
+      ? `${width ?? sidebarIcons[current]?.componentWidth}px`
       : "0px",
     minWidth: contentExpanded
-      ? `${sidebarIcons[current]?.componentWidth}px`
+      ? `${width ?? sidebarIcons[current]?.componentWidth}px`
       : "0px",
   });
 
-  const [Reality, doPrev, doNext, _doPlay, doClear] = useLessonPlayer(
+  const [Reality, doPrev, doNext, doPlay, doClear] = useLessonPlayer(
     currentLesson || ""
   );
 
@@ -158,8 +162,13 @@ export default function Sidebar() {
         setWideView(current == id ? !wideView : true);
       }
       if (!icon.subComponent && icon.component && !icon.onClick) {
+        if (current == id && contentExpanded) {
+          setContentExpanded(false);
+        } else {
+          setContentExpanded(true);
+        }
         setCurrent(id);
-        setContentExpanded(!contentExpanded);
+        /* setContentExpanded(contentExpanded); */
       }
       if (icon.onClick) {
         icon.onClick();
@@ -180,7 +189,7 @@ export default function Sidebar() {
       >
         <animated.div
           onMouseOver={() => setWideView(true)}
-          onMouseOut={() => setWideView(false)}
+          onMouseLeave={() => setWideView(false)}
           className="sidebar-buttons"
           style={mainProps}
         >
@@ -195,7 +204,12 @@ export default function Sidebar() {
               <LeftArrowIcon onClick={doPrev} />
             </animated.div>
             <animated.div style={controlsProps}>
-              <StopIcon onClick={doClear} />
+              <StopIcon
+                onClick={() => {
+                  doClear();
+                  doPlay(false);
+                }}
+              />
             </animated.div>
             <div>
               <RightArrowIcon onClick={doNext} />

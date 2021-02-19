@@ -8,6 +8,7 @@ import * as backgroundSlice from "./slices/backgroundSlice";
 import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
 import * as chatSlice from "./slices/chatSlice";
 import * as createSupportTicketSlice from "./slices/createSupportTicketSlice";
+import * as sidebarSlice from "./slices/sidebarSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -85,6 +86,7 @@ export const actions = {
   ADD_CHANNEL: chatSlice.addNewChannel,
   SET_ACTIVE_CHANNEL: chatSlice.setActiveChannel,
   SET_CHAT_SETTINGS_TYPE: chatSlice.setSettingsType,
+  SET_CONTENT_WIDTH: sidebarSlice.setWidth,
 };
 
 export type ActionKeys = keyof typeof actions;

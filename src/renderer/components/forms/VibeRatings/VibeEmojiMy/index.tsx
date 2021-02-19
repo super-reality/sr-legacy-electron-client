@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import "./index.scss";
+import { FieldProps, FormikProps } from "formik";
 import emoji1 from "../../../../../assets/svg/emoji1.svg";
 /* import emoji2 from "../../../../../assets/svg/emoji2.svg";
 import emoji3 from "../../../../../assets/svg/emoji3.svg";
@@ -12,6 +13,8 @@ interface IVibeEmoji {
   title: string;
   checkBoundaries: () => void;
   emoji: string;
+  field: FieldProps["field"];
+  setEmoji: FormikProps<any>["setFieldValue"];
 }
 
 const NONE = 0;
@@ -34,9 +37,12 @@ function countWords(str: string) {
 } */
 
 export function VibeEmoji(props: IVibeEmoji): JSX.Element {
-  const [selectedEmoji, setSelectedEmoji] = useState<number>(NONE);
-
-  const { title, checkBoundaries, emoji } = props;
+  const { title, checkBoundaries, emoji, field, setEmoji } = props;
+  const [selectedEmoji, setSelectedEmoji] = useState<number>(
+    field.value.map((f: any) => f._id).indexOf(title) != -1
+      ? field.value[field.value.map((f: any) => f._id).indexOf(title)].level
+      : NONE
+  );
 
   const isInitialMount = useRef(true);
   useEffect(() => {
@@ -44,6 +50,30 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
       isInitialMount.current = false;
     } else {
       checkBoundaries();
+      const index = field.value.map((f: any) => f._id).indexOf(title);
+      console.log(index);
+      if (index != -1) {
+        const fieldValues = [...field.value];
+        console.log(selectedEmoji);
+        if (selectedEmoji != NONE) {
+          const vibe = { ...fieldValues[index] };
+          vibe.level = selectedEmoji;
+          fieldValues.splice(index, 1);
+          fieldValues.splice(index, 0, vibe);
+        } else {
+          fieldValues.splice(index, 1);
+          console.log(fieldValues);
+        }
+
+        setEmoji(field.name, fieldValues);
+      } else if (selectedEmoji != NONE) {
+        setEmoji(
+          field.name,
+          field.value.concat([
+            { _id: title, name: title, level: selectedEmoji },
+          ])
+        );
+      }
     }
   }, [selectedEmoji]);
 
@@ -89,13 +119,19 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
 
-        {/* {selectedEmoji == EMOJI2 && <img src={emojis[1].emoji} />}
+export default React.memo(VibeEmoji);
+
+/* {selectedEmoji == EMOJI2 && <img src={emojis[1].emoji} />}
         {selectedEmoji == EMOJI3 && <img src={emojis[2].emoji} />}
         {selectedEmoji == EMOJI4 && <img src={emojis[3].emoji} />}
-        {selectedEmoji == EMOJI5 && <img src={emojis[4].emoji} />} */}
+        {selectedEmoji == EMOJI5 && <img src={emojis[4].emoji} />} */
 
-        {/*         {emojis.map((emoji, index) => (
+/*         {emojis.map((emoji, index) => (
           <div key={`${emoji.emoji}`} className={`reaction-${index + 1}`}>
             <div
               className={`reaction-title ${
@@ -113,8 +149,9 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
               src={emoji.emoji}
             />
           </div>
-        ))} */}
-        {/*         <div className="reaction-1">
+        ))} */
+
+/*         <div className="reaction-1">
           <div className="reaction-title">sad</div>
           <img
             onClick={() => {
@@ -158,10 +195,4 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
             }}
             src={emoji5}
           />
-        </div> */}
-      </div>
-    </div>
-  );
-}
-
-export default React.memo(VibeEmoji);
+        </div> */

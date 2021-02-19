@@ -140,6 +140,7 @@ export default function doCvMatch(
           const ret: CVResult = {
             id: "",
             time: new Date().getTime() - beginTime,
+            date: new Date().getTime(),
             dist: bestDist,
             sizeFactor: 0,
             x: Math.round(xScale * bestPoint.x),

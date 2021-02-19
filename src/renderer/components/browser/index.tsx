@@ -14,6 +14,7 @@ import ChatSettings from "../chat-settings";
 import { createChannel } from "../../../utils/chat-utils/channels-services";
 import usePopupCreateChannel from "../../hooks/usePopupCreateChatItem";
 import usePopup from "../../hooks/usePopup";
+import { setSidebarWidth } from "../../../utils/setSidebarWidth";
 
 // interface ChatContainerProps {
 //   setPage: (pageIndex: any) => void;
@@ -32,6 +33,10 @@ function ChatContainer() {
   const activeChannelObject = channels.data.find(
     ({ _id }) => _id === activeChannel
   );
+
+  React.useEffect(() => {
+    setSidebarWidth(700);
+  }, []);
 
   const createCategoryChannel = (
     channelName: string,

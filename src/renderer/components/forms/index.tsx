@@ -10,6 +10,7 @@ import SkillsCheckbox from "./SkillsCheckbox";
 import EditableText from "./EditableText";
 import AutoCompleteInput, { capitalize } from "./AutoCompleteInput";
 import FormObserver from "./FormObserver";
+import VibeRatings from "./VibeRatings";
 import { IData } from "../../api/types/support-ticket/supportTicket";
 
 import ImagesPreview from "./DropFile/ImagePreview";
@@ -82,6 +83,8 @@ export default function FormControl({
       return <AutoCompleteInput {...rest} />;
     case "editable":
       return <EditableText {...rest} />;
+    case "vibes":
+      return <VibeRatings {...rest} />;
 
     default:
       return <></>;
