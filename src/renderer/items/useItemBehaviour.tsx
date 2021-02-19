@@ -1,8 +1,18 @@
-import { MutableRefObject, useCallback, useEffect, useRef } from "react";
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import "./index.scss";
 import getPrimaryMonitor from "../../utils/electron/getPrimaryMonitor";
 import globalData from "../globalData";
 import useCombinedRefs from "../hooks/useCombinedRef";
 import { TriggerTypes } from "./endStep";
+
+import { ReactComponent as MouseClick } from "../../assets/svg/mouse-click.svg";
+import { BaseItem } from "./item";
 
 /**
  * Basic item behaviour hook, manages triggers/callbacks and reference objects.
@@ -16,8 +26,14 @@ export default function useItemBehaviour(
     | ((instance: HTMLDivElement | null) => void)
     | MutableRefObject<HTMLDivElement | null>
     | null,
-  clickThrough: boolean
-) {
+  clickThrough: boolean,
+  item: BaseItem
+): [
+  React.MutableRefObject<HTMLDivElement | null>,
+  React.RefObject<HTMLDivElement>,
+  () => void,
+  JSX.Element
+] {
   const lastClickRef = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const itemRef = useRef<HTMLDivElement>(null);
@@ -75,5 +91,15 @@ export default function useItemBehaviour(
     };
   }, [callback]);
 
-  return [combinedRef, itemRef, clickCallback];
+  const infoBox = useMemo(() => {
+    return item.endOn.length > 0 ? (
+      <div className="item-info-box">
+        <MouseClick />
+      </div>
+    ) : (
+      <></>
+    );
+  }, [item]);
+
+  return [combinedRef, itemRef, clickCallback, infoBox];
 }

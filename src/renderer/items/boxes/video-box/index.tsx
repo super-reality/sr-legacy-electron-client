@@ -17,7 +17,12 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
 
     const [play, setPlay] = useState(true);
 
-    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true);
+    const [combinedRef, , , InfoBox] = useItemBehaviour(
+      callback,
+      forwardedRef,
+      true,
+      item
+    );
 
     const doClick = useCallback(() => {
       setPlay(!play);
@@ -54,6 +59,7 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
               }}
               src={item.url}
             />
+            {InfoBox}
           </div>
         )}
         {item.source == "youtube" && (
@@ -78,6 +84,7 @@ const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+            {InfoBox}
           </div>
         )}
       </>

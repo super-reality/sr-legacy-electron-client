@@ -9,7 +9,12 @@ const ImageBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemImage>>(
   (props, forwardedRef) => {
     const { item, style, pos, callback } = props;
 
-    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true);
+    const [combinedRef, , , InfoBox] = useItemBehaviour(
+      callback,
+      forwardedRef,
+      true,
+      item
+    );
 
     return (
       <div
@@ -29,6 +34,7 @@ const ImageBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemImage>>(
           }}
           src={item.url}
         />
+        {InfoBox}
       </div>
     );
   }

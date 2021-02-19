@@ -14,7 +14,12 @@ const YoutubeBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
       (state: AppState) => state.createLessonV2
     );
 
-    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true);
+    const [combinedRef, , , InfoBox] = useItemBehaviour(
+      callback,
+      forwardedRef,
+      true,
+      item
+    );
 
     return (
       <div
@@ -38,6 +43,7 @@ const YoutubeBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
+        {InfoBox}
       </div>
     );
   }

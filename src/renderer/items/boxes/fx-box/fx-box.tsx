@@ -13,7 +13,7 @@ const FXBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFX>>(
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const srcFX = getEffectById(item.effect);
 
-    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true);
+    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true, item);
 
     return (
       <>

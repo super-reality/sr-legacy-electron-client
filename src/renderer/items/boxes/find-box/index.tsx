@@ -23,7 +23,8 @@ const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
     const [combinedRef] = useItemBehaviour(
       callback,
       forwardedRef,
-      clickThrough || false
+      clickThrough || false,
+      item
     );
 
     let computedType = "type";
