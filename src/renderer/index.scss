@@ -251,7 +251,7 @@ a:active {
 }
 
 /* Shooting star animation */
-span#shooting-star-to-left {
+span#shooting-star-to-right {
   position: absolute;
   display: block;
   left: -100%;
@@ -270,6 +270,28 @@ span#shooting-star-to-bottom {
   height: 100%;
   background: linear-gradient(180deg, transparent, #03e9f4);
   animation: shootingStar2 1s linear forwards;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-left {
+  position: absolute;
+  display: block;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar4 1s linear forwards;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-top {
+  position: absolute;
+  display: block;
+  bottom: -100%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar3 1s linear forwards;
 }
 
 @-webkit-keyframes gradient-background-animation {
@@ -311,7 +333,7 @@ span#shooting-star-to-bottom {
 @keyframes shootingStar1 {
   0% {
     box-shadow: 
-        0 0 60px 30px #413db6;
+        0 0 30px 10px #413db6;
     left: -100%
   }
   50%, 100% {
@@ -322,10 +344,32 @@ span#shooting-star-to-bottom {
 @keyframes shootingStar2 {
   0% {
     box-shadow: 
-        0 0 60px 30px #413db6;
+        0 0 30px 10px #413db6;
     top: -100%
   }
   50%, 100% {
     top: 100%
+  }
+}
+
+@keyframes shootingStar3 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    bottom: -100%
+  }
+  50%, 100% {
+    bottom: 100%
+  }
+}
+
+@keyframes shootingStar4 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    right: -100%
+  }
+  50%, 100% {
+    right: 100%
   }
 }

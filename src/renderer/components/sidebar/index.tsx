@@ -200,10 +200,18 @@ export default function Sidebar() {
         }}
         ref={sidebarContainerRef}
         className="sidebar-container"
-        onMouseMove={({ clientX: x, clientY: y }) =>
-          setSidebarProps({ xys: calc(x, y) })
-        }
-        onMouseLeave={() => setSidebarProps({ xys: [0, 0, 1] })}
+        onMouseEnter={() => {
+          const app = document.getElementById("root");
+          if (app) app.onmousemove = null;
+          setSidebarProps({ xys: [0, 0, 1] });
+        }}
+        onMouseLeave={() => {
+          const app = document.getElementById("root");
+          if (app) {
+            app.onmousemove = ({ clientX: x, clientY: y }) =>
+              setSidebarProps({ xys: calc(x, y) });
+          }
+        }}
       >
         <animated.div
           onMouseOver={() => setWideView(true)}
@@ -221,7 +229,23 @@ export default function Sidebar() {
           <ShootingStar
             style={{
               bottom: 0,
-              animationDelay: "1s",
+              animationDelay: "1.25s",
+              animationIterationCount: "infinite",
+            }}
+            direction="right"
+          />
+          <ShootingStar
+            style={{
+              right: 0,
+              animationDelay: "1.5s",
+              animationIterationCount: "infinite",
+            }}
+            direction="top"
+          />
+          <ShootingStar
+            style={{
+              top: 0,
+              animationDelay: "1.75s",
               animationIterationCount: "infinite",
             }}
             direction="left"

@@ -148,7 +148,7 @@ function CreateLesson(): JSX.Element {
             {/* For shooting star animation - START */}
             <ShootingStar
               style={{ animationDelay: "1.5s", top: 0 }}
-              direction="left"
+              direction="right"
             />
             <ShootingStar
               style={{ animationDelay: "1.75s", right: 0 }}
@@ -162,7 +162,7 @@ function CreateLesson(): JSX.Element {
             {/* For shooting star animation - START */}
             <ShootingStar
               style={{ animationDelay: "2s", bottom: 0 }}
-              direction="left"
+              direction="right"
             />
             <ShootingStar
               style={{ animationDelay: "1.75s", left: 0 }}
