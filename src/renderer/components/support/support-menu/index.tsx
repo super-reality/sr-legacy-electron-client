@@ -4,18 +4,12 @@ import Vivus from "vivus";
 import { ReactComponent as SupportIcon } from "../../../../assets/svg/support-icon.svg";
 import SupportAskIcon from "../../../../assets/svg/support-ask.svg";
 import SupportHelpIcon from "../../../../assets/svg/support-help.svg";
-import { TSupportOptions, ASK, SEARCH } from "..";
+import { chooseOption, ASK, SEARCH } from "..";
 import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
 
-interface ISupportMenuProps {
-  setSupportChoice: (value: TSupportOptions) => void;
-}
-
-export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
+export default function SupportMenu(): JSX.Element {
   const [giveAnimation, setGiveAnimation] = React.useState<any>();
   const [askAnimation, setAskAnimation] = React.useState<any>();
-
-  const { setSupportChoice } = props;
 
   React.useEffect(() => {
     setGiveAnimation(
@@ -41,7 +35,7 @@ export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
       <div className="support-container-title">Support</div>
       <div className="support-choices">
         <div
-          onClick={() => setSupportChoice(SEARCH)}
+          onClick={() => chooseOption(SEARCH)}
           className="support-choice"
           onMouseEnter={() => {
             giveAnimation.reset();
@@ -55,7 +49,7 @@ export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
           <div className="support-choice-title">Give suppport</div>
         </div>
         <div
-          onClick={() => setSupportChoice(ASK)}
+          onClick={() => chooseOption(ASK)}
           className="support-choice"
           onMouseEnter={() => {
             askAnimation.reset();

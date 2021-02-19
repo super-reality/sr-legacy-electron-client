@@ -1,9 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./index.scss";
+import { useSelector, useDispatch } from "react-redux";
 import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
-import { InputProps } from "..";
-import VibeEmoji from "./VibeEmojiMy";
-import { ReactComponent as VibeAmusement } from "../../../../assets/svg/vibe-amusment.svg";
+import reduxAction from "../../../redux/reduxAction";
+import { AppState } from "../../../redux/stores/renderer";
+
+import { InputProps, PositiveVibes } from "..";
+import getVibes from "../../support/support-help/support-help-utils/getVibes";
+import { IGetVibe } from "../../../api/types/support-ticket/supportTicket";
+import VibeEmoji from "./vibeEmojiMy2";
+
+/* import { ReactComponent as VibeAmusement } from "../../../../assets/svg/vibe-amusment.svg";
 import { ReactComponent as VibeAnger } from "../../../../assets/svg/vibe-anger.svg";
 import { ReactComponent as VibeAnnoyance } from "../../../../assets/svg/vibe-annoyance.svg";
 import { ReactComponent as VibeAwe } from "../../../../assets/svg/vibe-awe.svg";
@@ -20,107 +27,25 @@ import { ReactComponent as VibeLove } from "../../../../assets/svg/vibe-love.svg
 import { ReactComponent as VibeMelancholy } from "../../../../assets/svg/vibe-melancholy.svg";
 import { ReactComponent as VibePride } from "../../../../assets/svg/vibe-pride.svg";
 import { ReactComponent as VibeRage } from "../../../../assets/svg/vibe-rage.svg";
-import { ReactComponent as VibeSadness } from "../../../../assets/svg/vibe-sadness.svg";
+import { ReactComponent as VibeSadness } from "../../../../assets/svg/vibe-sadness.svg"; */
 
 /* const PositiveEmojis = [
-  { Emoji: emoji2, title: "Puke" },
-  { Emoji: emoji3, title: "Gross" },
-  { Emoji: emoji4, title: "Curious" },
-  { Emoji: emoji5, title: "Happy" },
-  { Emoji: emoji6, title: "Stars" },
+  { emoji: emoji2, title: "Puke" },
+  { emoji: emoji3, title: "Gross" },
+  { emoji: emoji4, title: "Curious" },
+  { emoji: emoji5, title: "Happy" },
+  { emoji: emoji6, title: "Stars" },
 ];
 
 const NegativeEmojis = [
-  { Emoji: emoji1, title: "Sad" },
-  { Emoji: emoji7, title: "Level 1" },
-  { Emoji: emoji8, title: "Very Angry" },
-  { Emoji: emoji9, title: "Crying" },
-  { Emoji: emoji2, title: "puke" },
+  { emoji: emoji1, title: "Sad" },
+  { emoji: emoji7, title: "Level 1" },
+  { emoji: emoji8, title: "Very Angry" },
+  { emoji: emoji9, title: "Crying" },
+  { emoji: emoji2, title: "puke" },
 ]; */
 
-const PositiveVibes = [
-  {
-    title: "Cool",
-    Emoji: VibeCool,
-  },
-  {
-    title: "Amusement",
-    Emoji: VibeAmusement,
-  },
-  {
-    title: "Awe",
-    Emoji: VibeAwe,
-  },
-  {
-    title: "Compassion",
-    Emoji: VibeCompassion,
-  },
-  {
-    title: "Content",
-    Emoji: VibeContent,
-  },
-  {
-    title: "Gratitude",
-    Emoji: VibeContent,
-  },
-  {
-    title: "Hope",
-    Emoji: VibeHope,
-  },
-  {
-    title: "Interest",
-    Emoji: VibeInterest,
-  },
-  {
-    title: "Joy",
-    Emoji: VibeJoy,
-  },
-  {
-    title: "Love",
-    Emoji: VibeLove,
-  },
-  {
-    title: "Pride",
-    Emoji: VibePride,
-  },
-];
-
-const NegativeVibes = [
-  {
-    title: "Fear",
-    Emoji: VibeFear,
-  },
-  {
-    title: "Anger",
-    Emoji: VibeAnger,
-  },
-  {
-    title: "Disgust",
-    Emoji: VibeDisgust,
-  },
-  {
-    title: "Sadness",
-    Emoji: VibeSadness,
-  },
-  {
-    title: "Rage",
-    Emoji: VibeRage,
-  },
-  {
-    title: "Loneliness",
-    Emoji: VibeLoneliness,
-  },
-  {
-    title: "Melancholy",
-    Emoji: VibeMelancholy,
-  },
-  {
-    title: "Annoyance",
-    Emoji: VibeAnnoyance,
-  },
-];
-
-export default function VineGroup(props: InputProps): JSX.Element {
+export default function VibeGroup(props: InputProps): JSX.Element {
   function HorizontallyBound(parentDiv: Element, childDiv: Element) {
     const parentRect = parentDiv.getBoundingClientRect();
     const childRect = childDiv.getBoundingClientRect();
@@ -140,6 +65,10 @@ export default function VineGroup(props: InputProps): JSX.Element {
   }
   const { name, setFieldValue } = props;
 
+  const { vibeData } = useSelector(
+    (state: AppState) => state.createSupportTicket
+  );
+  const dispatch = useDispatch();
   const checkBoundaries = () => {
     const vibesGroups = document.querySelector(".vibe-emojis");
 
@@ -148,9 +77,29 @@ export default function VineGroup(props: InputProps): JSX.Element {
     });
   };
 
+  const [positiveVibes] = useState<IGetVibe[]>(vibeData?.positiveVibes ?? []);
+
+  const setVibes = useCallback(() => {
+    (async () => {
+      await getVibes().then((result) => {
+        reduxAction(dispatch, {
+          type: "SET_SUPPORT_TICKET",
+          arg: {
+            vibeData: result,
+          },
+        });
+      });
+    })();
+  }, [positiveVibes]);
+
   useEffect(() => {
+    console.log("RERENDER");
     checkBoundaries();
-    console.log(typeof VibeInterest);
+    if (vibeData && vibeData.positiveVibes.length == 0) {
+      (async () => {
+        await setVibes();
+      })();
+    }
   }, []);
 
   return (
@@ -161,36 +110,37 @@ export default function VineGroup(props: InputProps): JSX.Element {
             <div className="vibe-group">
               Positive
               <div className="vibe-emojis">
-                {PositiveVibes.map((vibe) => (
-                  <div key={`${vibe.title}-${vibe.Emoji}`}>
+                {positiveVibes.map((vibe, index) => (
+                  <div key={`${vibe.title}-${vibe.emoji}`}>
                     <VibeEmoji
                       title={vibe.title}
                       checkBoundaries={checkBoundaries}
-                      Emoji={vibe.Emoji}
+                      emoji={PositiveVibes[index].emoji}
                       field={{ ...field }}
                       setEmoji={setFieldValue}
+                      _id={vibe._id}
                     />
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="vibe-group">
+            {/* <div className="vibe-group">
               Negative
               <div className="vibe-emojis">
                 {NegativeVibes.map((vibe) => (
-                  <div key={`${vibe.title}-${vibe.Emoji}`}>
+                  <div key={`${vibe.title}-${vibe.emoji}`}>
                     <VibeEmoji
                       title={vibe.title}
                       checkBoundaries={checkBoundaries}
-                      Emoji={vibe.Emoji}
+                      emoji={vibe.emoji}
                       field={{ ...field }}
                       setEmoji={setFieldValue}
                     />
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </>
         );
       }}
@@ -203,56 +153,56 @@ export default function VineGroup(props: InputProps): JSX.Element {
   <VibeEmoji
     title="Fear"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Anger"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Disgust"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Sadness"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Rage"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Loneliness"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Melancholy"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 <div>
   <VibeEmoji
     title="Annoyance"
     checkBoundaries={checkBoundaries}
-    Emoji={NegativeEmojis}
+    emoji={NegativeEmojis}
   />
 </div>
 </div> */
@@ -262,77 +212,77 @@ export default function VineGroup(props: InputProps): JSX.Element {
             <VibeEmoji
               title="Cool"
               checkBoundaries={checkBoundaries}
-              Emoji={VibeCool}
+              emoji={VibeCool}
             />
           </div>
           <div>
             <VibeEmoji
               title="Amusement"
               checkBoundaries={checkBoundaries}
-              Emoji={VibeAmusement}
+              emoji={VibeAmusement}
             />
           </div>
           <div>
             <VibeEmoji
               title="Awe"
               checkBoundaries={checkBoundaries}
-              Emoji={VibeAwe}
+              emoji={VibeAwe}
             />
           </div>
           <div>
             <VibeEmoji
               title="Compassion"
               checkBoundaries={checkBoundaries}
-              Emoji={VibeCompassion}
+              emoji={VibeCompassion}
             />
           </div>
           <div>
             <VibeEmoji
               title="Content"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Gratitude"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Hope"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Interest"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Joy"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Love"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
           <div>
             <VibeEmoji
               title="Pride"
               checkBoundaries={checkBoundaries}
-              Emoji={PositiveEmojis}
+              emoji={PositiveEmojis}
             />
           </div>
         </div> */

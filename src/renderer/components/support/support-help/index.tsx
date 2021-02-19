@@ -43,11 +43,6 @@ const Skills: IData[] = [
 export interface SupportSectionsProps {
   goStart: () => void;
   goHelp: () => void;
-  goToMenu?: () => void;
-}
-
-interface ISupportProps {
-  goToMenu: () => void;
 }
 
 const START = 0;
@@ -59,7 +54,7 @@ const sections = [GettingStarted, Help];
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-export default function Support({ goToMenu }: ISupportProps): JSX.Element {
+export default function Support(): JSX.Element {
   const dispatch = useDispatch();
   const { skillsData, categoryData, supportScreen } = useSelector(
     (state: AppState) => state.createSupportTicket
@@ -104,11 +99,7 @@ export default function Support({ goToMenu }: ISupportProps): JSX.Element {
 
   return (
     <>
-      <CurrentSectionComponent
-        goToMenu={goToMenu}
-        goStart={ClickGotSart}
-        goHelp={ClickGotHelp}
-      />
+      <CurrentSectionComponent goStart={ClickGotSart} goHelp={ClickGotHelp} />
     </>
   );
 }

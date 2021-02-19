@@ -79,7 +79,7 @@ export const getSingleName = (name: string, array: IData[]): string => {
 /* eslint-disable */
 export default function Help(props: SupportSectionsProps): JSX.Element {
   const { goStart } = props;
-  const { title, category, skills, description } = useSelector(
+  const { title, category, skills, description, vibes } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
   const {
@@ -101,6 +101,8 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
       case 2:
         if (skills && skills.length > 0) return true;
         break;
+      case 3:
+        if (vibes && vibes.length > 0) return true;
       default:
         return false;
     }

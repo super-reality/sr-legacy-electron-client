@@ -7,6 +7,7 @@ import { SupportSectionsProps } from "..";
 import { TsupportType } from "../../../../api/types/support-ticket/supportTicket";
 import LearningSkill from "./learning-skill";
 import BackToSupport from "../../support-menu/goback-button";
+import { returnToMenu } from "../..";
 
 const NONE = 0;
 const SKILLS = 1;
@@ -44,7 +45,7 @@ export default function GettingStarted(
     (state: AppState) => state.createSupportTicket
   );
   const dispatch = useDispatch();
-  const { goHelp, goToMenu } = props;
+  const { goHelp } = props;
 
   const [activeRadio, setactiveRadio] = useState<startoptions>(
     verifyState(supportType)
@@ -129,15 +130,14 @@ export default function GettingStarted(
             {activeRadio == CONNECT && <h1>CONNECT</h1>}
 
             <div className="support-buttons">
-              {goToMenu && (
-                <BackToSupport
-                  style={{
-                    marginBottom: 0,
-                    marginRight: "25px",
-                  }}
-                  onClick={goToMenu}
-                />
-              )}
+              <BackToSupport
+                style={{
+                  marginBottom: 0,
+                  marginRight: "25px",
+                }}
+                onClick={returnToMenu}
+              />
+
               <button
                 disabled={activeRadio == NONE && true}
                 onClick={handleSubmit}

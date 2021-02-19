@@ -16,6 +16,8 @@ export default interface supportTicker {
   searchedSkills?: IData[];
   categoryData?: IData[];
   supportScreen?: TSupportScreen;
+  supportOption?: TSupportOption;
+  vibeData?: IGetVibesObjectResult;
   vibes?: IVibe[];
 }
 
@@ -23,6 +25,12 @@ const START = 0;
 const HELP = 1;
 
 type TSupportScreen = typeof START | typeof HELP;
+
+const MENU = 0;
+const ASK = 1;
+const SEARCH = 2;
+
+type TSupportOption = typeof MENU | typeof ASK | typeof SEARCH;
 
 export interface supportTicketPayload {
   title: string;
@@ -51,8 +59,24 @@ export interface IFile {
 
 export interface IVibe {
   _id: string;
-  name: string;
+  title: string;
   level: number;
+}
+
+export interface IGetVibe {
+  _id: string;
+  title: string;
+  emoji: string;
+  type: string;
+}
+export interface IGetVibesObjectResult {
+  positiveVibes: IGetVibe[];
+  negativeVibes: IGetVibe[];
+}
+
+export interface IGetVibes {
+  err_code: CodeSuccess;
+  result: IGetVibesObjectResult;
 }
 
 export interface supportTicketsGet {

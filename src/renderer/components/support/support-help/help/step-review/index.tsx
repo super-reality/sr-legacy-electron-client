@@ -4,15 +4,14 @@ import reduxAction from "../../../../../redux/reduxAction";
 import { AppState } from "../../../../../redux/stores/renderer";
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
-import { ImagesPreview } from "../../../../forms";
-/* import postSupportTicket from "../../support-help-utils/postSupportTicket"; */
+import { ImagesPreview, PositiveVibes } from "../../../../forms";
+import postSupportTicket from "../../support-help-utils/postSupportTicket";
 import { supportTicketPayload } from "../../../../../api/types/support-ticket/supportTicket";
 import { uploadFiles } from "../../../../forms/DropFile";
 import usePopUp from "../../../../../hooks/usePopup";
 import useNotification from "../../../../../hooks/useNotification";
 import Support from "../../../../../../assets/images/support.png";
 import SupperSpinner from "../../../../super-spinner";
-
 // https://rules.sonarsource.com/typescript/RSPEC-2966
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
@@ -54,7 +53,14 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     vibes &&
     vibes.map((vibe) => (
       <li className="review-skill" key={vibe._id}>
-        {vibe.name}
+        {vibe.title}{" "}
+        <img
+          className={`result-${vibe.level}`}
+          src={
+            PositiveVibes[PositiveVibes.map((v) => v.title).indexOf(vibe.title)]
+              .emoji
+          }
+        />
       </li>
     ));
 
@@ -99,11 +105,11 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     }
 
     console.log(payload);
-    /*     await postSupportTicket(payload)
+    await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
         console.log(res);
       })
-      .catch((e: any) => console.log(e)); */
+      .catch((e: any) => console.log(e));
   };
 
   const [showNotification] = useNotification({

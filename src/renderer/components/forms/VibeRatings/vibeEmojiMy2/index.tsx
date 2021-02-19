@@ -10,9 +10,10 @@ import emoji5 from "../../../../../assets/svg/emoji5.svg";
 /* type TEmojiObject = { emoji: typeof emoji1; title: string }; */
 
 interface IVibeEmoji {
+  _id: string;
   title: string;
   checkBoundaries: () => void;
-  Emoji: any;
+  emoji: string;
   field: FieldProps["field"];
   setEmoji: FormikProps<any>["setFieldValue"];
 }
@@ -37,10 +38,11 @@ function countWords(str: string) {
 } */
 
 export function VibeEmoji(props: IVibeEmoji): JSX.Element {
-  const { title, checkBoundaries, Emoji, field, setEmoji } = props;
+  const { title, checkBoundaries, emoji, field, setEmoji, _id } = props;
+  /*   const Emojisrc = React.lazy(() => import(emoji)); */
   const [selectedEmoji, setSelectedEmoji] = useState<number>(
-    field.value.map((f: any) => f._id).indexOf(title) != -1
-      ? field.value[field.value.map((f: any) => f._id).indexOf(title)].level
+    field.value.map((f: any) => f._id).indexOf(_id) != -1
+      ? field.value[field.value.map((f: any) => f._id).indexOf(_id)].level
       : NONE
   );
 
@@ -69,9 +71,7 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
       } else if (selectedEmoji != NONE) {
         setEmoji(
           field.name,
-          field.value.concat([
-            { _id: title, title: title, level: selectedEmoji },
-          ])
+          field.value.concat([{ _id: _id, title: title, level: selectedEmoji }])
         );
       }
     }
@@ -95,11 +95,12 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
           selectedEmoji != NONE && "vibeEmoji-selected"
         }`}
       >
-        {title} +{selectedEmoji == EMOJI1 && <Emoji className="result-1" />}
-        {selectedEmoji == EMOJI2 && <Emoji className="result-2" />}
-        {selectedEmoji == EMOJI3 && <Emoji className="result-3" />}
-        {selectedEmoji == EMOJI4 && <Emoji className="result-4" />}
-        {selectedEmoji == EMOJI5 && <Emoji className="result-5" />}
+        {title} +
+        {selectedEmoji == EMOJI1 && <img className="result-1" src={emoji} />}
+        {selectedEmoji == EMOJI2 && <img className="result-2" src={emoji} />}
+        {selectedEmoji == EMOJI3 && <img className="result-3" src={emoji} />}
+        {selectedEmoji == EMOJI4 && <img className="result-4" src={emoji} />}
+        {selectedEmoji == EMOJI5 && <img className="result-5" src={emoji} />}
       </div>
       <div className="vibeEmoji-Container">
         {Array.from(Array(3)).map((item, index) => {
@@ -109,10 +110,11 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
               <div className="reaction-title reaction-title-short">
                 {`Level ${index + 1}`}
               </div>
-              <Emoji
+              <img
                 onClick={() => {
                   changeEmoji(index + 1);
                 }}
+                src={emoji}
               />
             </div>
           );

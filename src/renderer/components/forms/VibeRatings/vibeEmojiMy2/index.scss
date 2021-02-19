@@ -1,0 +1,200 @@
+.vibeEmojis-wrapper {
+  position: relative;
+  width: auto;
+  display: inline-block;
+  padding: 5px;
+}
+
+.vibeEmojis-wrapper {
+  .left {
+    left: 0;
+  }
+
+  .center {
+    left: calc(50% - 60px);
+  }
+
+  .right {
+    right: 0;
+  }
+}
+
+.vibeEmoji-Container {
+  background-color: #585286;
+  border-radius: 40px;
+  height: 40px;
+  width: 133px;
+  position: absolute;
+  transition: all 0.3s;
+  top: -35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[class*="reaction-"] {
+  width: 60px;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: calc(50% -35px);
+  height: 35px;
+  transform: translateY(20px) scale(0.2);
+  transition: all 0.2s;
+  cursor: pointer;
+  > img {
+    width: auto;
+    height: 100%;
+    transition: 0.5s;
+  }
+}
+.reaction-title {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 25px;
+  position: absolute;
+  height: auto;
+  font-size: 15px;
+  text-align: center;
+  min-width: 100%;
+  padding: 5px 10px;
+  opacity: 0;
+  transition: 1s;
+}
+
+.reaction-title-long {
+  top: -50px;
+}
+.reaction-title-short {
+  top: -35px;
+}
+
+.vibeEmoji-selected {
+  background-color: #0898eb;
+  cursor: pointer;
+}
+
+.vibeEmoji-selector {
+  display: block;
+  position: relative;
+  color: #b8d4f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  padding: 5px;
+  img {
+    margin-left: 5px;
+  }
+}
+
+/* .vibeEmoji-selector:hover ~ .vibeEmoji-Container , */
+.vibeEmojis-wrapper:hover {
+  .vibeEmoji-Container,
+  .vibeEmoji-Container:hover {
+    opacity: 1;
+    top: -40px;
+    pointer-events: all;
+  }
+}
+
+/* .vibeEmojis-wrapper:hover ~ .vibeEmoji-Container [class*="reaction-"], */
+.vibeEmojis-wrapper:hover {
+  .vibeEmoji-Container {
+    [class*="reaction-"] {
+      transform: translateY(0px) scale(0.8);
+    }
+  }
+}
+
+.vibeEmojis-wrapper:hover
+  .vibeEmoji-Container:hover
+  [class*="reaction-"]:hover {
+  transform: scale(1) translateY(-5px);
+  .reaction-title {
+    opacity: 1;
+  }
+  > img {
+    opacity: 1;
+  }
+}
+
+/* .vibeEmoji-selector:hover ~ .vibeEmoji-Container,  */
+.vibeEmojis-wrapper:hover {
+  .vibeEmoji-Container,
+  .vibeEmoji-Container:hover {
+    .reaction-2 {
+      transition-delay: 0.05s;
+    }
+    .reaction-3 {
+      transition-delay: 0.1s;
+    }
+    .reaction-4 {
+      transition-delay: 0.15s;
+    }
+    .reaction-5 {
+      transition-delay: 0.2s;
+    }
+  }
+}
+
+.reaction-1 {
+  left: 0;
+  > img {
+    opacity: 0.2;
+  }
+}
+.reaction-2 {
+  left: 38px;
+  > img {
+    opacity: 0.4;
+  }
+}
+.reaction-3 {
+  left: 76px;
+  > img {
+    opacity: 0.6;
+  }
+}
+.reaction-4 {
+  left: 114px;
+  > img {
+    opacity: 0.8;
+  }
+}
+.reaction-5 {
+  left: 150px;
+  > img {
+    opacity: 1;
+  }
+}
+
+.result-1 {
+  opacity: 0.33;
+}
+.result-2 {
+  opacity: 0.66;
+}
+.result-3 {
+  opacity: 1;
+}
+.result-4 {
+  opacity: 0.8;
+}
+.result-5 {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

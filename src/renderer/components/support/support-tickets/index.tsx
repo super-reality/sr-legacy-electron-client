@@ -11,6 +11,7 @@ import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
 import getCategories from "../support-help/support-help-utils/getCategories";
 import AutosuggestInput from "../../autosuggest-input";
 import BackToSupport from "../support-menu/goback-button";
+import { returnToMenu } from "..";
 
 /* import voteup from "../../../assets/images/voteup.png";
 import votedown from "../../../assets/images/votedown.png";
@@ -41,13 +42,7 @@ interface IfilterOptions {
   limit?: number;
 }
 
-interface ISupportTicketsProps {
-  goToMenu: () => void;
-}
-
-export default function SupportTickets({
-  goToMenu,
-}: ISupportTicketsProps): JSX.Element {
+export default function SupportTickets(): JSX.Element {
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
 
   const [filterOption, setFilterOption] = useState<string>("");
@@ -165,7 +160,7 @@ export default function SupportTickets({
               placeholder={"Select Category"}
             />
             <BackToSupport
-              onClick={goToMenu}
+              onClick={returnToMenu}
               style={{
                 position: "absolute",
                 left: 0,

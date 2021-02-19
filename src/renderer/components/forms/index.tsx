@@ -13,6 +13,27 @@ import FormObserver from "./FormObserver";
 import VibeRatings from "./VibeRatings";
 import { IData } from "../../api/types/support-ticket/supportTicket";
 
+/* EMOJIS */
+
+import VibeAmusement from "../../../assets/images/VibeAmusement.png";
+import VibeAnger from "../../../assets/images/VibeAnger.png";
+import VibeAnnoyance from "../../../assets/images/VibeAnnoyance.png";
+import VibeAwe from "../../../assets/images/VibeAwe.png";
+import VibeCompassion from "../../../assets/images/VibeCompasion.png";
+import VibeContent from "../../../assets/images/VibeContent.png";
+import VibeCool from "../../../assets/images/VibeCool.png";
+import VibeDisgust from "../../../assets/images/VibeDisgust.png";
+import VibeFear from "../../../assets/images/VibeFear.png";
+import VibeHope from "../../../assets/images/VibeHope.png";
+import VibeInterest from "../../../assets/images/VibeInterest.png";
+import VibeJoy from "../../../assets/images/VibeJoy.png";
+import VibeLoneliness from "../../../assets/images/VibeLoneliness.png";
+import VibeLove from "../../../assets/images/VibeLove.png";
+import VibeMelancholy from "../../../assets/images/VibeMelancholy.png";
+import VibePride from "../../../assets/images/VibePride.png";
+import VibeRage from "../../../assets/images/VibeRage.png";
+import VibeSadness from "../../../assets/images/VibeSadness.png";
+
 import ImagesPreview from "./DropFile/ImagePreview";
 
 export { capitalize };
@@ -61,6 +82,88 @@ export interface InputProps extends FormikProps<any> {
 interface FormControlInput extends InputProps {
   control: string;
 }
+
+export const PositiveVibes = [
+  {
+    title: "Cool",
+    emoji: VibeCool,
+  },
+  {
+    title: "Amusement",
+    emoji: VibeAmusement,
+  },
+  {
+    title: "Awe",
+    emoji: VibeAwe,
+  },
+  {
+    title: "Compassion",
+    emoji: VibeCompassion,
+  },
+  {
+    title: "Content",
+    emoji: VibeContent,
+  },
+  {
+    title: "Gratitude",
+    emoji: VibeContent,
+  },
+  {
+    title: "Hope",
+    emoji: VibeHope,
+  },
+  {
+    title: "Interest",
+    emoji: VibeInterest,
+  },
+  {
+    title: "Joy",
+    emoji: VibeJoy,
+  },
+  {
+    title: "Love",
+    emoji: VibeLove,
+  },
+  {
+    title: "Pride",
+    emoji: VibePride,
+  },
+];
+
+export const NegativeVibes = [
+  {
+    title: "Fear",
+    emoji: VibeFear,
+  },
+  {
+    title: "Anger",
+    emoji: VibeAnger,
+  },
+  {
+    title: "Disgust",
+    emoji: VibeDisgust,
+  },
+  {
+    title: "Sadness",
+    emoji: VibeSadness,
+  },
+  {
+    title: "Rage",
+    emoji: VibeRage,
+  },
+  {
+    title: "Loneliness",
+    emoji: VibeLoneliness,
+  },
+  {
+    title: "Melancholy",
+    emoji: VibeMelancholy,
+  },
+  {
+    title: "Annoyance",
+    emoji: VibeAnnoyance,
+  },
+];
 
 export { FormObserver };
 
