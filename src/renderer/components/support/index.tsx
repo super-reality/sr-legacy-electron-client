@@ -12,7 +12,6 @@ export const ASK = 1;
 export const SEARCH = 2;
 
 export const chooseOption = (index: TSupportOptions) => {
-  console.log("gola");
   reduxAction(store.dispatch, {
     type: "SET_SUPPORT_TICKET",
     arg: {
@@ -22,7 +21,6 @@ export const chooseOption = (index: TSupportOptions) => {
 };
 
 export const returnToMenu = () => {
-  console.log("gola");
   reduxAction(store.dispatch, {
     type: "SET_SUPPORT_TICKET",
     arg: {
@@ -42,6 +40,6 @@ export default function Support(): JSX.Element {
     (state: AppState) => state.createSupportTicket
   );
   // eslint-disable-next-line
-  const CurrentOption = options[supportOption!];
+  const CurrentOption = options[supportOption];
   return <CurrentOption />;
 }

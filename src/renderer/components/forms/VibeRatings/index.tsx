@@ -95,7 +95,7 @@ export default function VibeGroup(props: InputProps): JSX.Element {
   useEffect(() => {
     console.log("RERENDER");
     checkBoundaries();
-    if (vibeData && vibeData.positiveVibes.length == 0) {
+    if (vibeData.positiveVibes.length == 0) {
       (async () => {
         await setVibes();
       })();

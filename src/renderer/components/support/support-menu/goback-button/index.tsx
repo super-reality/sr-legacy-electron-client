@@ -12,7 +12,7 @@ export default function GoBackButton({
   style,
 }: IGobackButton): JSX.Element {
   return (
-    <div onClick={onClick} style={style ?? {}} className="support-menu-goback">
+    <div onClick={onClick} style={style} className="support-menu-goback">
       <SupportIcon />
       Back to main
     </div>

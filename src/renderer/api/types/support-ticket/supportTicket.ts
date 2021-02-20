@@ -2,23 +2,23 @@
 import { CodeSuccess } from "..";
 
 export default interface supportTicker {
-  supportType?: TsupportType;
-  title?: string;
-  category?: string;
-  skills?: string[];
-  description?: string;
+  supportType: TsupportType;
+  title: string;
+  category: string;
+  skills: string[];
+  description: string;
   images?: File[];
   newSkill?: boolean;
   newSkillName?: string;
   newCategory?: boolean;
   newCategoryName?: string;
-  skillsData?: IData[];
-  searchedSkills?: IData[];
-  categoryData?: IData[];
-  supportScreen?: TSupportScreen;
-  supportOption?: TSupportOption;
-  vibeData?: IGetVibesObjectResult;
-  vibes?: IVibe[];
+  skillsData: IData[];
+  searchedSkills: IData[];
+  categoryData: IData[];
+  supportScreen: TSupportScreen;
+  supportOption: TSupportOption;
+  vibeData: IGetVibesObjectResult;
+  vibes: IVibe[];
 }
 
 const START = 0;

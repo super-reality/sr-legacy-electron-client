@@ -28,7 +28,7 @@ const createSupportTicketSlice = createSlice({
   reducers: {
     setData: (
       state: supportTicker,
-      action: PayloadAction<supportTicker>
+      action: PayloadAction<Partial<supportTicker>>
     ): void => {
       state = Object.assign(state, action.payload);
     },

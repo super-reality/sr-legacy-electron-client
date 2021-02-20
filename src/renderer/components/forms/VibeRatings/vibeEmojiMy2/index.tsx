@@ -19,11 +19,11 @@ interface IVibeEmoji {
 }
 
 const NONE = 0;
-const EMOJI1 = 1;
+/* const EMOJI1 = 1;
 const EMOJI2 = 2;
 const EMOJI3 = 3;
 const EMOJI4 = 4;
-const EMOJI5 = 5;
+const EMOJI5 = 5; */
 
 /* type TEmojiChoice =
   | typeof EMOJI1
@@ -96,11 +96,9 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
         }`}
       >
         {title} +
-        {selectedEmoji == EMOJI1 && <img className="result-1" src={emoji} />}
-        {selectedEmoji == EMOJI2 && <img className="result-2" src={emoji} />}
-        {selectedEmoji == EMOJI3 && <img className="result-3" src={emoji} />}
-        {selectedEmoji == EMOJI4 && <img className="result-4" src={emoji} />}
-        {selectedEmoji == EMOJI5 && <img className="result-5" src={emoji} />}
+        {selectedEmoji != NONE && (
+          <img className={`result-${selectedEmoji}`} src={emoji} />
+        )}
       </div>
       <div className="vibeEmoji-Container">
         {Array.from(Array(3)).map((item, index) => {

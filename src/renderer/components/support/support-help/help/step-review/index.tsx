@@ -40,29 +40,24 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
   const dispatch = useDispatch();
 
-  const getSkills =
-    skills &&
-    skillsData &&
-    getNames(skills, skillsData).map((skill) => (
-      <li className="review-skill" key={skill._id}>
-        {skill.name}
-      </li>
-    ));
+  const getSkills = getNames(skills, skillsData).map((skill) => (
+    <li className="review-skill" key={skill._id}>
+      {skill.name}
+    </li>
+  ));
 
-  const getVibes =
-    vibes &&
-    vibes.map((vibe) => (
-      <li className="review-skill" key={vibe._id}>
-        {vibe.title}{" "}
-        <img
-          className={`result-${vibe.level}`}
-          src={
-            PositiveVibes[PositiveVibes.map((v) => v.title).indexOf(vibe.title)]
-              .emoji
-          }
-        />
-      </li>
-    ));
+  const getVibes = vibes.map((vibe) => (
+    <li className="review-skill" key={vibe._id}>
+      {vibe.title}
+      <img
+        className={`result-${vibe.level}`}
+        src={
+          PositiveVibes[PositiveVibes.map((v) => v.title).indexOf(vibe.title)]
+            .emoji
+        }
+      />
+    </li>
+  ));
 
   const sendSupportTicket = async (): Promise<void> => {
     const skillArray: string[] = [...skills!];
@@ -71,18 +66,18 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
     if (i !== -1) skillArray.splice(i, 1);
 
-    const vibesList = vibes && vibes.map((vibe) => vibe._id);
-    const vibesLevelList = vibes && vibes.map((vibe) => vibe.level);
+    const vibesList = vibes.map((vibe) => vibe._id);
+    const vibesLevelList = vibes.map((vibe) => vibe.level);
     let payload: supportTicketPayload = {
-      title: title!,
-      description: description!,
-      supportType: supportType!,
-      skills: skillArray!,
-      supportCategory: category!,
-      newCategory: newCategory!,
-      newSkill: newSkill!,
-      vibes: vibesList!,
-      vibesLevels: vibesLevelList!,
+      title: title,
+      description: description,
+      supportType: supportType,
+      skills: skillArray,
+      supportCategory: category,
+      newCategory: newCategory,
+      newSkill: newSkill,
+      vibes: vibesList,
+      vibesLevels: vibesLevelList,
     };
     let filesArray: string[] = [];
 
@@ -176,9 +171,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           <div className="step-title">Title</div>
           <p>{title}</p>
           <span>Requested category</span>
-          <p>
-            {category && categoryData && getSingleName(category, categoryData)}
-          </p>
+          <p>{getSingleName(category, categoryData)}</p>
         </div>
 
         <div className="review-step imageslist">

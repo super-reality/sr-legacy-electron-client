@@ -26,7 +26,7 @@ export default function StepVibes(props: StepSectionProps): JSX.Element {
     <div>
       <div className="title">Step {index} of 5</div>
       <Formik
-        initialValues={{ vibes: vibes ?? [] }}
+        initialValues={{ vibes: vibes }}
         validationSchema={vibesSchema}
         onSubmit={(values) => {
           console.log(values);

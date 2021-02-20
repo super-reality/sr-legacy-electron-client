@@ -99,10 +99,10 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
         if (description !== "") return true;
         break;
       case 2:
-        if (skills && skills.length > 0) return true;
+        if (skills.length > 0) return true;
         break;
       case 3:
-        if (vibes && vibes.length > 0) return true;
+        if (vibes.length > 0) return true;
       default:
         return false;
     }

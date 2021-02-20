@@ -32,6 +32,26 @@
   align-items: center;
   opacity: 0;
   pointer-events: none;
+  .reaction-title {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 25px;
+    position: absolute;
+    height: auto;
+    font-size: 15px;
+    text-align: center;
+    min-width: 100%;
+    padding: 5px 10px;
+    opacity: 0;
+    transition: 1s;
+  }
+
+  .reaction-title-long {
+    top: -50px;
+  }
+  .reaction-title-short {
+    top: -35px;
+  }
 }
 
 [class*="reaction-"] {
@@ -52,26 +72,6 @@
     height: 100%;
     transition: 0.5s;
   }
-}
-.reaction-title {
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  border-radius: 25px;
-  position: absolute;
-  height: auto;
-  font-size: 15px;
-  text-align: center;
-  min-width: 100%;
-  padding: 5px 10px;
-  opacity: 0;
-  transition: 1s;
-}
-
-.reaction-title-long {
-  top: -50px;
-}
-.reaction-title-short {
-  top: -35px;
 }
 
 .vibeEmoji-selected {
