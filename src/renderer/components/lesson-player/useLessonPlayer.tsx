@@ -106,7 +106,7 @@ export default function useLessonPlayer(
         })
         .catch((e) => {
           console.error(e);
-          triggerCvUpdate();
+          setTicker(new Date().getTime());
         });
     }
   }, [playing, ticker, triggerCvUpdate]);

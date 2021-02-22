@@ -1,0 +1,17 @@
+.item-info-box {
+  width: 32px;
+  height: 32px;
+  position: relative;
+  background-color: var(--color-background-hover);
+  border-radius: 4px;
+  left: calc(50% - 24px);
+  top: 8px;
+  padding: 8px;
+
+  svg {
+    margin: auto;
+    fill: var(--color-light);
+    height: 100%;
+    width: 100%;
+  }
+}
