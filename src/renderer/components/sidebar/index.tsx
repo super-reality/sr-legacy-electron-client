@@ -224,41 +224,18 @@ export default function Sidebar() {
           style={mainProps}
         >
           <ShootingStar
-            style={{
-              left: 0,
-              animationIterationCount: "infinite",
-            }}
-            direction="bottom"
-          />
-          <ShootingStar
-            style={{
-              bottom: 0,
-              animationDelay: "1.25s",
-              animationIterationCount: "infinite",
-            }}
-            direction="right"
-          />
-          <ShootingStar
-            style={{
-              right: 0,
-              animationDelay: "1.5s",
-              animationIterationCount: "infinite",
-            }}
-            direction="top"
-          />
-          <ShootingStar
-            style={{
-              top: 0,
-              animationDelay: "1.75s",
-              animationIterationCount: "infinite",
-            }}
-            direction="left"
-          />
-          <SidebarControls
-            wideView={wideView}
-            setWideView={() => setWideView(!wideView)}
-            sidebarRef={sidebarContainerRef}
-          />
+            top={{ reverse: true, style: { animationDelay: "1s" } }}
+            left={{ reverse: true, style: { animationDelay: "1s" } }}
+            bottom={{ style: { animationDelay: "1s" } }}
+            right={{ style: { animationDelay: "1s" } }}
+            triggerOnComponentUpdate
+          >
+            <SidebarControls
+              wideView={wideView}
+              setWideView={() => setWideView(!wideView)}
+              sidebarRef={sidebarContainerRef}
+            />
+          </ShootingStar>
 
           <div className="control-buttons">
             <animated.div style={controlsProps}>
@@ -314,6 +291,7 @@ export default function Sidebar() {
             </div>
           </div>
         </animated.div>
+
         <animated.div style={props} className="sidebar-expanded">
           <div className="sidebar-content">
             {sidebarIcons[current]?.component ? (
