@@ -2,20 +2,23 @@
 import React, { useRef } from "react";
 import { getEffectById } from "../../../constants";
 import { ItemFX } from "../../item";
+import useItemBehaviour from "../../useItemBehaviour";
 import { BaseBoxProps } from "../boxes";
 
 import "./index.scss";
 
 const FXBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFX>>(
   (props, forwardedRef) => {
-    const { item, style, pos, clickThrough } = props;
+    const { item, style, pos, clickThrough, callback } = props;
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const srcFX = getEffectById(item.effect);
+
+    const [combinedRef] = useItemBehaviour(callback, forwardedRef, true, item);
 
     return (
       <>
         <div
-          ref={forwardedRef}
+          ref={combinedRef}
           className={`fx-box ${clickThrough ? "click-through" : ""}`}
           style={{
             left: `${pos.x}px`,

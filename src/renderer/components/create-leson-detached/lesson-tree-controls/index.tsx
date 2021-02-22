@@ -16,9 +16,9 @@ export default function LessonTreeControls() {
   const dispatch = useDispatch();
   const {
     treeCurrentType,
-    treeCurrentId,
     currentLesson,
     currentChapter,
+    currentStep,
   } = useSelector((state: AppState) => state.createLessonV2);
 
   const doAddStep = useCallback(
@@ -33,11 +33,11 @@ export default function LessonTreeControls() {
 
   const doAddItem = useCallback(
     (type: BaseItemType) => {
-      if (treeCurrentType == "step") {
-        newItem(type, treeCurrentId);
+      if (treeCurrentType == "step" || treeCurrentType == "item") {
+        newItem(type, currentStep);
       }
     },
-    [treeCurrentType, treeCurrentId]
+    [treeCurrentType, currentStep]
   );
 
   const [ChapterInput, openNewChapterInput] = usePopupInput(
