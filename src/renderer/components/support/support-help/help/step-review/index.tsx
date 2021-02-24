@@ -4,7 +4,7 @@ import reduxAction from "../../../../../redux/reduxAction";
 import { AppState } from "../../../../../redux/stores/renderer";
 import { StepSectionProps, getNames, getSingleName } from "..";
 import "./index.scss";
-import { ImagesPreview, PositiveVibes } from "../../../../forms";
+import { ImagesPreview, PositiveVibes, NegativeVibes } from "../../../../forms";
 import postSupportTicket from "../../support-help-utils/postSupportTicket";
 import { supportTicketPayload } from "../../../../../api/types/support-ticket/supportTicket";
 import { uploadFiles } from "../../../../forms/DropFile";
@@ -46,18 +46,20 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     </li>
   ));
 
-  const getVibes = vibes.map((vibe) => (
-    <li className="review-skill" key={vibe._id}>
-      {vibe.title}
-      <img
-        className={`result-${vibe.level}`}
-        src={
-          PositiveVibes[PositiveVibes.map((v) => v.title).indexOf(vibe.title)]
-            .emoji
-        }
-      />
-    </li>
-  ));
+  const getVibes = vibes.map((vibe) => {
+    const VibesArray = PositiveVibes.concat(NegativeVibes);
+    return (
+      <li className="review-skill" key={vibe._id}>
+        {vibe.title}
+        <img
+          className={`result-${vibe.level}`}
+          src={
+            VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)].emoji
+          }
+        />
+      </li>
+    );
+  });
 
   const sendSupportTicket = async (): Promise<void> => {
     const skillArray: string[] = [...skills!];

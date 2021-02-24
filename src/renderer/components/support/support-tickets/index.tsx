@@ -12,6 +12,7 @@ import getCategories from "../support-help/support-help-utils/getCategories";
 import AutosuggestInput from "../../autosuggest-input";
 import BackToSupport from "../support-menu/goback-button";
 import { returnToMenu } from "..";
+import SupportTicket from "./support-ticket";
 
 /* import voteup from "../../../assets/images/voteup.png";
 import votedown from "../../../assets/images/votedown.png";
@@ -51,6 +52,8 @@ export default function SupportTickets(): JSX.Element {
 
   const [searchCategory, setSearchCategory] = useState<string>("");
 
+  const [selectedTicket, setSelectedTicket] = useState<string>("");
+
   let searchedCategories: IData[] = [];
   let searchResults: supportTicketPayload[] = [];
 
@@ -82,6 +85,12 @@ export default function SupportTickets(): JSX.Element {
       });
     })();
   }, []);
+
+  useEffect(() => {
+    if (selectedTicket == "") {
+      setSidebarWidth(900);
+    }
+  }, [selectedTicket]);
 
   useEffect(() => {
     let arrayTickets: supportTicketPayload[] = [];
@@ -143,73 +152,84 @@ export default function SupportTickets(): JSX.Element {
     setSearchOption(e.target.value);
   };
 
+  const goBack = React.useCallback(() => {
+    setSelectedTicket("");
+  }, [selectedTicket]);
+
   return (
     <>
-      <>
-        <div className="ticket-title">Filter By</div>
-        <div className="ticket-container">
-          <div className="ticket-category">
-            Category
-            <AutosuggestInput<IData>
-              filter={searchCategories}
-              getValue={(suggestion: IData) => suggestion.name}
-              renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
-              initialValue={""}
-              id={"category-search"}
-              submitCallback={(value: IData) => setSearchCategory(value._id)}
-              placeholder={"Select Category"}
-            />
-            <BackToSupport
-              onClick={returnToMenu}
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: 0,
-                width: "85%",
-              }}
-            />
-            {/*  <input type="text" value="Select Categories" /> */}
-          </div>
-
-          <div className="ticket-search">
-            <div className="ticket-wrapper">
-              <input
-                type="text"
-                value={searchOption}
-                onChange={searchTickets}
-                placeholder="Search title"
+      {selectedTicket != "" ? (
+        <SupportTicket goback={goBack} id={selectedTicket} />
+      ) : (
+        <>
+          <div className="ticket-title">Filter By</div>
+          <div className="ticket-container">
+            <div className="ticket-category">
+              Category
+              <AutosuggestInput<IData>
+                filter={searchCategories}
+                getValue={(suggestion: IData) => suggestion.name}
+                renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
+                initialValue={""}
+                id={"category-search"}
+                submitCallback={(value: IData) => setSearchCategory(value._id)}
+                placeholder={"Select Category"}
               />
-              <a href="">Advanced Search</a>
-              <div className="request-count">
-                {tickets.length} Help Requests
-                <div className="sort-filter">
-                  <select value={filterOption} onChange={handleFilter}>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                  </select>
-                </div>
-              </div>
+              <BackToSupport
+                onClick={returnToMenu}
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  bottom: 0,
+                  width: "85%",
+                }}
+              />
+              {/*  <input type="text" value="Select Categories" /> */}
+            </div>
 
-              {tickets.length == 0 ? (
-                <div className="loading-tickets">
-                  <SupperSpinner size="200px" text="Loading Tickets" />
+            <div className="ticket-search">
+              <div className="ticket-wrapper">
+                <input
+                  type="text"
+                  value={searchOption}
+                  onChange={searchTickets}
+                  placeholder="Search title"
+                />
+                <a href="">Advanced Search</a>
+                <div className="request-count">
+                  {tickets.length} Help Requests
+                  <div className="sort-filter">
+                    <select value={filterOption} onChange={handleFilter}>
+                      <option value="newest">Newest</option>
+                      <option value="oldest">Oldest</option>
+                    </select>
+                  </div>
                 </div>
-              ) : (
-                <div className="ticket-list">
-                  {tickets.map((ticket, index) => (
-                    <SingleTicket
-                      key={ticket._id}
-                      index={index}
-                      {...ticket}
-                      timeposted={ticket.createdAt!}
-                    />
-                  ))}
-                </div>
-              )}
+
+                {tickets.length == 0 ? (
+                  <div className="loading-tickets">
+                    <SupperSpinner size="200px" text="Loading Tickets" />
+                  </div>
+                ) : (
+                  <div className="ticket-list">
+                    {tickets.map((ticket, index) => (
+                      <SingleTicket
+                        onClick={() =>
+                          ticket._id && setSelectedTicket(ticket._id)
+                        }
+                        key={ticket._id}
+                        index={index}
+                        {...ticket}
+                        timeposted={ticket.createdAt!}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </>
+        </>
+      )}
     </>
   );
 }

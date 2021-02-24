@@ -5,7 +5,7 @@ import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
 import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 
-import { InputProps, PositiveVibes } from "..";
+import { InputProps, PositiveVibes, NegativeVibes } from "..";
 import getVibes from "../../support/support-help/support-help-utils/getVibes";
 import { IGetVibe } from "../../../api/types/support-ticket/supportTicket";
 import VibeEmoji from "./vibeEmojiMy2";
@@ -78,7 +78,7 @@ export default function VibeGroup(props: InputProps): JSX.Element {
   };
 
   const [positiveVibes] = useState<IGetVibe[]>(vibeData?.positiveVibes ?? []);
-
+  const [negativeVibes] = useState<IGetVibe[]>(vibeData?.negativeVibes ?? []);
   const setVibes = useCallback(() => {
     (async () => {
       await getVibes().then((result) => {
@@ -125,22 +125,23 @@ export default function VibeGroup(props: InputProps): JSX.Element {
               </div>
             </div>
 
-            {/* <div className="vibe-group">
+            <div className="vibe-group">
               Negative
               <div className="vibe-emojis">
-                {NegativeVibes.map((vibe) => (
+                {negativeVibes.map((vibe, index) => (
                   <div key={`${vibe.title}-${vibe.emoji}`}>
                     <VibeEmoji
                       title={vibe.title}
                       checkBoundaries={checkBoundaries}
-                      emoji={vibe.emoji}
+                      emoji={NegativeVibes[index].emoji}
                       field={{ ...field }}
                       setEmoji={setFieldValue}
+                      _id={vibe._id}
                     />
                   </div>
                 ))}
               </div>
-            </div> */}
+            </div>
           </>
         );
       }}

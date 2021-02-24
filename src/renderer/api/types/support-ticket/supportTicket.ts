@@ -49,6 +49,27 @@ export interface supportTicketPayload {
   vibesLevels: number[];
 }
 
+export interface singleSupportTicketsPayload {
+  title: string;
+  supportType: TsupportType;
+  description: string;
+  files?: string[];
+  skills: string[];
+  category: {
+    name: string;
+  };
+  skill: { name: string }[];
+  createdAt: string;
+  creatorInfo: {
+    firstname: string;
+    lastname: string;
+    username: string;
+  };
+  _id: string;
+  vibes: string[];
+  vibesLevels: number[];
+}
+
 export interface IFile {
   lastModified: number;
   name: string;
@@ -82,6 +103,11 @@ export interface IGetVibes {
 export interface supportTicketsGet {
   err_code: CodeSuccess;
   tickets: supportTicketPayload[];
+}
+
+export interface singleSupportTicketsGet {
+  err_code: CodeSuccess;
+  ticket: singleSupportTicketsPayload;
 }
 
 export interface supportTicketsSearch {

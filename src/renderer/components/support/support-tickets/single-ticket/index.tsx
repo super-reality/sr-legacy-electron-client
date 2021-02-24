@@ -28,6 +28,7 @@ interface ICreatorInfo {
 }
 
 interface IsingleTicket {
+  onClick: () => void;
   index: number;
   title: string;
   description: string;
@@ -36,7 +37,7 @@ interface IsingleTicket {
 }
 
 export default function singleTicket(props: IsingleTicket): JSX.Element {
-  const { title, description, timeposted, creatorInfo, index } = props;
+  const { title, description, timeposted, creatorInfo, index, onClick } = props;
 
   return (
     <div className="single-query">
@@ -54,7 +55,7 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
         </div>
       </div>
 
-      <div className="content">
+      <div className="content" onClick={onClick}>
         <div className="query">{title}</div>
         <div className="description">{description}</div>
         <div className="ticket-user-info">
