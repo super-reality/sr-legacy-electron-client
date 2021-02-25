@@ -55,10 +55,6 @@ export interface singleSupportTicketsPayload {
   description: string;
   files?: string[];
   skills: string[];
-  category: {
-    name: string;
-  };
-  skill: { name: string }[];
   createdAt: string;
   creatorInfo: {
     firstname: string;
@@ -68,6 +64,11 @@ export interface singleSupportTicketsPayload {
   _id: string;
   vibes: string[];
   vibesLevels: number[];
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
 }
 
 export interface IFile {
@@ -108,6 +109,11 @@ export interface supportTicketsGet {
 export interface singleSupportTicketsGet {
   err_code: CodeSuccess;
   ticket: singleSupportTicketsPayload;
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
 }
 
 export interface supportTicketsSearch {

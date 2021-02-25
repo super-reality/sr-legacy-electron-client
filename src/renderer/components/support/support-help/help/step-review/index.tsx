@@ -2,9 +2,15 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import reduxAction from "../../../../../redux/reduxAction";
 import { AppState } from "../../../../../redux/stores/renderer";
-import { StepSectionProps, getNames, getSingleName } from "..";
+import { StepSectionProps } from "..";
 import "./index.scss";
-import { ImagesPreview, PositiveVibes, NegativeVibes } from "../../../../forms";
+import {
+  ImagesPreview,
+  SkillsRenderer,
+  VibesRenderer,
+  getNames,
+  getSingleName,
+} from "../../../../forms";
 import postSupportTicket from "../../support-help-utils/postSupportTicket";
 import { supportTicketPayload } from "../../../../../api/types/support-ticket/supportTicket";
 import { uploadFiles } from "../../../../forms/DropFile";
@@ -40,13 +46,13 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
   const dispatch = useDispatch();
 
-  const getSkills = getNames(skills, skillsData).map((skill) => (
+  /*   const getSkills = getNames(skills, skillsData).map((skill) => (
     <li className="review-skill" key={skill._id}>
       {skill.name}
     </li>
-  ));
+  )); */
 
-  const getVibes = vibes.map((vibe) => {
+  /*   const getVibes = vibes.map((vibe) => {
     const VibesArray = PositiveVibes.concat(NegativeVibes);
     return (
       <li className="review-skill" key={vibe._id}>
@@ -59,7 +65,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
         />
       </li>
     );
-  });
+  }); */
 
   const sendSupportTicket = async (): Promise<void> => {
     const skillArray: string[] = [...skills!];
@@ -190,12 +196,12 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
         <div className="review-step">
           <div className="step-title">Skills</div>
-          <ul className="skills-list">{getSkills}</ul>
+          <SkillsRenderer skills={getNames(skills, skillsData)} />
         </div>
 
         <div className="review-step">
           <div className="step-title">Vibes</div>
-          <ul className="skills-list">{getVibes}</ul>
+          <VibesRenderer vibes={vibes} />
         </div>
 
         <div className="support-buttons">

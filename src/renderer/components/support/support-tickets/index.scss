@@ -116,10 +116,15 @@
     display: flex;
     align-items: center;
     background: #323052;
+    transition: all 0.5s;
     padding: 12px;
     border-radius: 4px;
     margin-bottom: 10px;
 
+    &:hover {
+      transform: scale(1.05);
+      background: #3e3c64;
+    }
     .content {
       font-size: 12px;
       color: #8a88c3;

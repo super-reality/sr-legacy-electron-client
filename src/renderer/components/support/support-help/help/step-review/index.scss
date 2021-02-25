@@ -7,7 +7,6 @@
 .review-step > p {
   font-size: 14px;
   word-break: break-word;
-
 }
 .review-step {
   margin-bottom: 10px;
@@ -20,7 +19,7 @@
 
 .review-skill {
   display: inline-block;
-  margin: 8px 8px 8px 0;
+  margin: 8px 8px 8px 0 !important;
   border-radius: 25px !important;
   padding: 5px !important;
   color: #2d2a44 !important;
@@ -34,25 +33,23 @@
   }
 }
 
-.review-modal{
+.review-modal {
   height: 100%;
-  width:100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
-  >div{
-    margin: 0!important;
+  > div {
+    margin: 0 !important;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding:10px;
-    >button:last-child{
-      margin:0;
+    padding: 10px;
+    > button:last-child {
+      margin: 0;
     }
   }
 }
-
-

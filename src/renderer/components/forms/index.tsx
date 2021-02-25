@@ -11,7 +11,11 @@ import EditableText from "./EditableText";
 import AutoCompleteInput, { capitalize } from "./AutoCompleteInput";
 import FormObserver from "./FormObserver";
 import VibeRatings from "./VibeRatings";
-import { IData } from "../../api/types/support-ticket/supportTicket";
+import {
+  IData,
+  singleSupportTicketsPayload,
+  IVibe,
+} from "../../api/types/support-ticket/supportTicket";
 
 /* EMOJIS */
 
@@ -82,6 +86,21 @@ export interface InputProps extends FormikProps<any> {
 interface FormControlInput extends InputProps {
   control: string;
 }
+
+/* export VibesRenderer =(vibes:{_id:string; name:string;}[])=>vibes.map((vibe) => {
+  const VibesArray = PositiveVibes.concat(NegativeVibes);
+  return (
+    <li className="review-skill" key={vibe._id}>
+      {vibe.title}
+      <img
+        className={`result-${vibe.level}`}
+        src={
+          VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)].emoji
+        }
+      />
+    </li>
+  );
+}) */
 
 export const PositiveVibes = [
   {
@@ -164,6 +183,48 @@ export const NegativeVibes = [
     emoji: VibeAnnoyance,
   },
 ];
+
+interface ISkillsRendererProps {
+  skills: singleSupportTicketsPayload["skill"];
+}
+
+export function SkillsRenderer({ skills }: ISkillsRendererProps): JSX.Element {
+  return (
+    <ul className="skills-list">
+      {skills.map((skill) => (
+        <li className="review-skill" key={skill._id}>
+          {skill.name}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+interface IVibesRendererProps {
+  vibes: IVibe[];
+}
+
+export function VibesRenderer({ vibes }: IVibesRendererProps): JSX.Element {
+  return (
+    <ul className="skills-list">
+      {vibes.map((vibe) => {
+        const VibesArray = PositiveVibes.concat(NegativeVibes);
+        return (
+          <li className="review-skill" key={vibe._id}>
+            {vibe.title}
+            <img
+              className={`result-${vibe.level}`}
+              src={
+                VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)]
+                  .emoji
+              }
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 export { FormObserver };
 

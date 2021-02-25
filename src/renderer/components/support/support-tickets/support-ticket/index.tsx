@@ -6,6 +6,8 @@ import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
 import { singleSupportTicketsPayload } from "../../../../api/types/support-ticket/supportTicket";
 import getTicket from "../support-tickets-utils/getSingleSupportTicket";
 import SuperSpinner from "../../../super-spinner";
+import { SkillsRenderer } from "../../../forms";
+
 /* import futurecar from "../../../../../assets/images/future-car.png"; */
 
 interface ISupportTicketProps {
@@ -23,6 +25,7 @@ export default function SupportTicker({
   React.useEffect(() => {
     setSidebarWidth(600);
     getTicket(id).then((tick) => {
+      console.log(tick);
       setTicket(tick);
       setLoading(false);
     });
@@ -37,7 +40,7 @@ export default function SupportTicker({
           <div className="solution-search">
             <div className="solution-wrapper">
               <div className="query-title">{ticket?.title}</div>
-              <span className="white">{ticket?.category}</span>
+              <span className="white">{ticket?.category?.name}</span>
               <div>Posted {moment(ticket?.createdAt).fromNow()}</div>
               <div className="border-bottom">
                 <div className="white">1</div> Mentor Helping
@@ -49,7 +52,15 @@ export default function SupportTicker({
                 listens to music he always marks his current emotion as
                 happiness.
               </div>
-              <ul>
+
+              <div className="border-bottom">
+                <span className="white">Skills</span>
+                {ticket?.skill && <SkillsRenderer skills={ticket.skill} />}
+              </div>
+              {/* <div className="border-bottom">
+                {ticket?.vibes && <VibesRenderer vibes={ticket.vibes} />}
+              </div> */}
+              <ul className="list-arrow">
                 <li>
                   Engagement in last <div className="blue">3 days</div>
                 </li>
