@@ -3,7 +3,7 @@ import moment from "moment";
 import voteup from "../../../../../assets/images/voteup.png";
 import votedown from "../../../../../assets/images/votedown.png";
 import ticketuser from "../../../../../assets/images/ticket-user.png";
-import emoji1 from "../../../../../assets/svg/emoji1.svg";
+/* import emoji1 from "../../../../../assets/svg/emoji1.svg";
 import emoji2 from "../../../../../assets/svg/emoji2.svg";
 import emoji3 from "../../../../../assets/svg/emoji3.svg";
 
@@ -15,11 +15,15 @@ import emoji7 from "../../../../../assets/svg/emoji7.svg";
 import emoji8 from "../../../../../assets/svg/emoji8.svg";
 
 import emoji9 from "../../../../../assets/svg/emoji9.svg";
-
+ */
 /* eslint-disable */
 
 import timepostedIcon from "../../../../../assets/images/timeposted.png";
 import chats from "../../../../../assets/images/chats.png";
+
+import { useSelector } from "react-redux";
+import { AppState } from "../../../../redux/stores/renderer";
+import { getVibes as getVibesName, AllVibes } from "../../../forms";
 
 interface ICreatorInfo {
   firstname: string;
@@ -34,10 +38,24 @@ interface IsingleTicket {
   description: string;
   timeposted: string;
   creatorInfo?: ICreatorInfo;
+  vibes: string[];
+  vibesLevels: number[];
 }
 
 export default function singleTicket(props: IsingleTicket): JSX.Element {
-  const { title, description, timeposted, creatorInfo, index, onClick } = props;
+  const {
+    title,
+    description,
+    timeposted,
+    creatorInfo,
+    onClick,
+    vibes,
+    vibesLevels,
+  } = props;
+
+  const { vibeData } = useSelector(
+    (state: AppState) => state.createSupportTicket
+  );
 
   return (
     <div className="single-query">
@@ -66,7 +84,42 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
           <div className="vibe-rating">
             Vibe Rating
             <div className="emojis">
-              {index == 0 && (
+              {getVibesName(
+                vibes,
+                vibeData.negativeVibes.concat(vibeData.positiveVibes)
+              ).map((v, index) => {
+                const vibeIndex = AllVibes.map((vi) => vi.title).indexOf(
+                  v.title
+                );
+                if (vibeIndex != -1) {
+                  if (index < 3) {
+                    return (
+                      <img
+                        src={AllVibes[vibeIndex].emoji}
+                        className={`result-${vibesLevels[index]}`}
+                        alt=""
+                      />
+                    );
+                  }
+                }
+              })}
+            </div>
+          </div>
+          <div className="timeposted">
+            <img src={timepostedIcon} alt="" />
+            {moment(timeposted).fromNow()}
+          </div>
+          <div className="ticket-chats">
+            <img src={chats} alt="" />
+            50+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/*{index == 0 && (
                 <>
                   <img src={emoji1} alt="" />
                   <img src={emoji2} alt="" />
@@ -96,19 +149,4 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
                   <img src={emoji5} alt="" />
                   <img src={emoji6} alt="" />
                 </>
-              )}
-            </div>
-          </div>
-          <div className="timeposted">
-            <img src={timepostedIcon} alt="" />
-            {moment(timeposted).fromNow()}
-          </div>
-          <div className="ticket-chats">
-            <img src={chats} alt="" />
-            50+
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+              )} */

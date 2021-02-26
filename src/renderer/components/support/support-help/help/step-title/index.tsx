@@ -14,7 +14,7 @@ import { IData } from "../../../../../api/types/support-ticket/supportTicket";
 const titleSchema = Yup.object().shape({
   title: Yup.string()
     .min(10, "*Give us a litle more information pls")
-    .max(50, "*Not so much information thanks")
+    .max(150, "*Not so much information thanks")
     .required("*Required"),
   category: Yup.string().required("*Please select a category"),
 });

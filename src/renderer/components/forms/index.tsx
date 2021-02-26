@@ -15,6 +15,7 @@ import {
   IData,
   singleSupportTicketsPayload,
   IVibe,
+  IGetVibe,
 } from "../../api/types/support-ticket/supportTicket";
 
 /* EMOJIS */
@@ -52,6 +53,19 @@ export const getNames = (array: string[], arrayData: IData[]): IData[] => {
   });
 
   return resultArray;
+};
+
+export const getVibes = (
+  array: string[],
+  arrayData: IGetVibe[]
+): IGetVibe[] => {
+  const resultDataArray: IGetVibe[] = [];
+  array.forEach((el) => {
+    const i = arrayData.map((ele) => ele._id).indexOf(el);
+    if (i !== -1) resultDataArray.push(arrayData[i]);
+  });
+
+  return resultDataArray;
 };
 
 export const valuetoIData = (array: string[]): IData[] => {
@@ -183,6 +197,8 @@ export const NegativeVibes = [
     emoji: VibeAnnoyance,
   },
 ];
+
+export const AllVibes = PositiveVibes.concat(NegativeVibes);
 
 interface ISkillsRendererProps {
   skills: singleSupportTicketsPayload["skill"];

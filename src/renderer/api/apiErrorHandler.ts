@@ -10,6 +10,7 @@ export default function apiErrorHandler<T extends ApiSucess>(
         resolve(res.data);
       } else {
         // Should popup the error to the screen
+
         reject(res.data.message);
       }
     } else {

@@ -38,11 +38,11 @@ export default function SupportMenu(): JSX.Element {
           onClick={() => chooseOption(SEARCH)}
           className="support-choice"
           onMouseEnter={() => {
-            giveAnimation.reset();
-            giveAnimation.play();
+            if (giveAnimation) giveAnimation.reset();
+            if (giveAnimation) giveAnimation.play();
           }}
           onMouseLeave={() => {
-            giveAnimation.finish();
+            if (giveAnimation) giveAnimation.finish();
           }}
         >
           <div id="give" />

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 
+import { useDispatch } from "react-redux";
+import reduxAction from "../../../redux/reduxAction";
+
 import {
   supportTicketPayload,
   IData,
@@ -9,6 +12,7 @@ import {
 import getSupportTickets from "./support-tickets-utils/getSupportTickets";
 import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
 import getCategories from "../support-help/support-help-utils/getCategories";
+import getVibes from "../support-help/support-help-utils/getVibes";
 import AutosuggestInput from "../../autosuggest-input";
 import BackToSupport from "../support-menu/goback-button";
 import { returnToMenu } from "..";
@@ -44,6 +48,7 @@ interface IfilterOptions {
 }
 
 export default function SupportTickets(): JSX.Element {
+  const dispatch = useDispatch();
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
 
   const [filterOption, setFilterOption] = useState<string>("");
@@ -79,6 +84,16 @@ export default function SupportTickets(): JSX.Element {
 
   useEffect(() => {
     setSidebarWidth(900);
+    (async () => {
+      await getVibes().then((result) => {
+        reduxAction(dispatch, {
+          type: "SET_SUPPORT_TICKET",
+          arg: {
+            vibeData: result,
+          },
+        });
+      });
+    })();
     (async () => {
       await getSupportTickets().then((tickets) => {
         setTickets(tickets.reverse());

@@ -1,12 +1,16 @@
 import "./index.scss";
 import React from "react";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
 import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
 import { singleSupportTicketsPayload } from "../../../../api/types/support-ticket/supportTicket";
 import getTicket from "../support-tickets-utils/getSingleSupportTicket";
 import SuperSpinner from "../../../super-spinner";
-import { SkillsRenderer } from "../../../forms";
+import { SkillsRenderer, VibesRenderer, getVibes } from "../../../forms";
+import createGPT3Question from "../../../../../utils/api/createGPT3Question";
+import { IPostQuestion, IGetQuestion } from "../../../../api/types/gpt-3/GPT3";
 
 /* import futurecar from "../../../../../assets/images/future-car.png"; */
 
@@ -21,13 +25,42 @@ export default function SupportTicker({
 }: ISupportTicketProps): JSX.Element {
   const [ticket, setTicket] = React.useState<singleSupportTicketsPayload>();
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [gpt3Suggestions, setGpt3Suggestions] = React.useState<IGetQuestion[]>(
+    []
+  );
+
+  const gpt3SuggestionsCopy: IGetQuestion[] = [];
+
+  const { vibeData } = useSelector(
+    (state: AppState) => state.createSupportTicket
+  );
 
   React.useEffect(() => {
     setSidebarWidth(600);
     getTicket(id).then((tick) => {
       console.log(tick);
       setTicket(tick);
-      setLoading(false);
+      const question: IPostQuestion = {
+        question: tick.title,
+        engine_name: "curie",
+        document_name: tick._id,
+      };
+
+      (async () => {
+        /* eslint-disable no-await-in-loop */
+        for (let i = 0; i < 3; i += 1) {
+          await createGPT3Question(question)
+            .then((resp) => {
+              console.log(resp);
+              gpt3SuggestionsCopy.push(resp);
+              if (i == 2) {
+                setGpt3Suggestions(gpt3SuggestionsCopy);
+                setLoading(false);
+              }
+            })
+            .catch((e: any) => console.log(e));
+        }
+      })();
     });
   }, []);
 
@@ -60,6 +93,21 @@ export default function SupportTicker({
               {/* <div className="border-bottom">
                 {ticket?.vibes && <VibesRenderer vibes={ticket.vibes} />}
               </div> */}
+
+              <div className="border-bottom">
+                <span className="white">Vibes</span>
+                {ticket?.skill && (
+                  <VibesRenderer
+                    vibes={getVibes(
+                      ticket?.vibes,
+                      vibeData.negativeVibes.concat(vibeData.positiveVibes)
+                    ).map((vib, index) => ({
+                      ...vib,
+                      level: ticket?.vibesLevels[index],
+                    }))}
+                  />
+                )}
+              </div>
               <ul className="list-arrow">
                 <li>
                   Engagement in last <div className="blue">3 days</div>
@@ -75,17 +123,16 @@ export default function SupportTicker({
             <div className="suggest-solution">
               <div className="title">Suggest Solutions</div>
               <ol>
-                <li>
-                  Try this lesson!{" "}
-                  <div className="blue">
-                    Animating Cubes In Blender ( RASA )
-                  </div>
-                </li>
-                <li>
-                  What type of program are you trying to animate in? Your goals
-                  have you learning Blender. Is that correct? ( RASA )
-                </li>
-                <li>What are you trying to animate? ( GPT-3 )</li>
+                {gpt3Suggestions.length > 0 &&
+                  gpt3Suggestions.map((suggestion) => (
+                    <li key={`${suggestion.answer}`}>{suggestion.answer}</li>
+                  ))}
+
+                {/*
+                <div className="blue">
+                  Animating Cubes In Blender ( RASA )
+                </div>{" "}
+                */}
               </ol>
               <div className="title">
                 Create Your Own Solution

@@ -28,6 +28,10 @@
   font-family: Segoe UI;
   background-color: #0898eb;
   cursor: pointer;
+  img {
+    float: right;
+    margin-left: 10px;
+  }
   &::before {
     content: "+ ";
   }
