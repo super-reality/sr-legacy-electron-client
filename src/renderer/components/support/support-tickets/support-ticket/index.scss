@@ -1,15 +1,26 @@
+.support-ticket-spinner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .solution-container {
   padding: 20px;
   display: flex;
   height: 100%;
 
-  input {
+  textarea {
     background: #211b33;
     height: 30px;
     color: #b8d4f3;
     margin: 10px;
     margin-left: 0;
     border-radius: 3px;
+
+    word-wrap: break-word;
+    word-break: break-all;
   }
 }
 
@@ -192,11 +203,24 @@
         font-weight: 500;
       }
     }
-    ol {
+    .AI-suggestion {
+      list-style-type: none;
+      padding-left: 0px;
       li {
-        list-style-type: upper-alpha;
+        list-style-type: none;
         position: unset;
         color: #b8d4f3;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 25px;
+        transition: all 0.5s;
+        &:hover {
+          background-color: #211b33;
+          transform: scale(1.05);
+        }
+        &::before {
+          background-color: #211b33;
+        }
       }
     }
 
@@ -209,7 +233,7 @@
       border: 0;
     }
 
-    input {
+    textarea {
       height: 200px;
     }
 

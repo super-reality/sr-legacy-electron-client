@@ -6,12 +6,14 @@ import { IData } from "../../../api/types/support-ticket/supportTicket";
 import { AppState } from "../../../redux/stores/renderer";
 import GettingStarted from "./getting-started";
 import Help from "./help";
+import getVibes from "./support-help-utils/getVibes";
 import "./index.scss";
 
 const Category: IData[] = [
-  { _id: "12313123123", name: "Blender Animation" },
+  { _id: "600ee83930404f258c70267b", name: "Blender" },
+  { _id: "601428b7aa97791f0c660c35", name: "2D Pixel Art Animation" },
+  { _id: "603917c51135c537364f2d85", name: "Mathematics" },
   { _id: "123123212312", name: "3D Animation" },
-  { _id: "1232312313123", name: "2D Pixel Art Animation" },
   { _id: "123qweqeqqweeq", name: "Neuronal Networks" },
   { _id: "123231sadasdasd", name: "Gaming" },
   { _id: "123czxcczxccb23", name: "Programing" },
@@ -56,7 +58,7 @@ const sections = [GettingStarted, Help];
 
 export default function Support(): JSX.Element {
   const dispatch = useDispatch();
-  const { skillsData, categoryData, supportScreen } = useSelector(
+  const { skillsData, categoryData, supportScreen, vibeData } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
   useEffect(() => {
@@ -69,13 +71,26 @@ export default function Support(): JSX.Element {
       },
     });
 
+    if (vibeData.positiveVibes.length == 0) {
+      (async () => {
+        await getVibes().then((result) => {
+          reduxAction(dispatch, {
+            type: "SET_SUPPORT_TICKET",
+            arg: {
+              vibeData: result,
+            },
+          });
+        });
+      })();
+    }
+
     /*     return () => {
       reduxAction(dispatch, {
         type: "SUPPORT_TICKET_RESET",
         arg: null,
       });
     }; */
-  });
+  }, []);
 
   const ClickGotSart = () => {
     reduxAction(dispatch, {

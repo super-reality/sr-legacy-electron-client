@@ -29,6 +29,8 @@ export default function SupportTicker({
     []
   );
 
+  const [inputValue, setInputValue] = React.useState("");
+
   const gpt3SuggestionsCopy: IGetQuestion[] = [];
 
   const { vibeData } = useSelector(
@@ -67,7 +69,9 @@ export default function SupportTicker({
   return (
     <>
       {loading ? (
-        <SuperSpinner size="30%" text="Loading Ticket" />
+        <div className="support-ticket-spinner">
+          <SuperSpinner size="30%" text="Loading Ticket" />
+        </div>
       ) : (
         <div className="solution-container">
           <div className="solution-search">
@@ -122,18 +126,45 @@ export default function SupportTicker({
             </div>
             <div className="suggest-solution">
               <div className="title">Suggest Solutions</div>
-              <ol>
+              <ul className="AI-suggestion">
                 {gpt3Suggestions.length > 0 &&
                   gpt3Suggestions.map((suggestion) => (
-                    <li key={`${suggestion.answer}`}>{suggestion.answer}</li>
+                    <li
+                      onClick={() => {
+                        if (inputValue == "") {
+                          setInputValue(`${suggestion.answer}`);
+                        } else {
+                          setInputValue(
+                            `${inputValue} \n\n${suggestion.answer}`
+                          );
+                        }
+                      }}
+                      key={`${suggestion.answer}`}
+                    >
+                      <b>Gaia says: </b>
+                      {suggestion.answer}
+                    </li>
                   ))}
+
+                <li
+                  onClick={() =>
+                    setInputValue("The answer is always on your heart")
+                  }
+                >
+                  <b>Nick Marks says: </b>
+                  The answer is always on your heart
+                </li>
+                <li onClick={() => setInputValue("Idk go ask manwe")}>
+                  <b>Nick Marks says: </b>
+                  Idk go ask manwe
+                </li>
 
                 {/*
                 <div className="blue">
                   Animating Cubes In Blender ( RASA )
                 </div>{" "}
                 */}
-              </ol>
+              </ul>
               <div className="title">
                 Create Your Own Solution
                 <div className="purple">
@@ -157,7 +188,10 @@ export default function SupportTicker({
 
               <img src={formbuttons} alt="" />
 
-              <input type="text" />
+              <textarea
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+              />
 
               <div className="help-buttons">
                 <button type="button" onClick={goback}>

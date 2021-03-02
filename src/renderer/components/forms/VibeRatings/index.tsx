@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.scss";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
-import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
+import { IGetVibe } from "../../../api/types/support-ticket/supportTicket";
 
 import { InputProps, PositiveVibes, NegativeVibes } from "..";
-import getVibes from "../../support/support-help/support-help-utils/getVibes";
-import { IGetVibe } from "../../../api/types/support-ticket/supportTicket";
 import VibeEmoji from "./vibeEmojiMy2";
 
 /* import { ReactComponent as VibeAmusement } from "../../../../assets/svg/vibe-amusment.svg";
@@ -68,7 +66,7 @@ export default function VibeGroup(props: InputProps): JSX.Element {
   const { vibeData } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
-  const dispatch = useDispatch();
+  /*   const dispatch = useDispatch(); */
   const checkBoundaries = () => {
     const vibesGroups = document.querySelector(".vibe-emojis");
 
@@ -79,27 +77,10 @@ export default function VibeGroup(props: InputProps): JSX.Element {
 
   const [positiveVibes] = useState<IGetVibe[]>(vibeData?.positiveVibes ?? []);
   const [negativeVibes] = useState<IGetVibe[]>(vibeData?.negativeVibes ?? []);
-  const setVibes = useCallback(() => {
-    (async () => {
-      await getVibes().then((result) => {
-        reduxAction(dispatch, {
-          type: "SET_SUPPORT_TICKET",
-          arg: {
-            vibeData: result,
-          },
-        });
-      });
-    })();
-  }, [positiveVibes]);
 
   useEffect(() => {
     console.log("RERENDER");
     checkBoundaries();
-    if (vibeData.positiveVibes.length == 0) {
-      (async () => {
-        await setVibes();
-      })();
-    }
   }, []);
 
   return (

@@ -113,7 +113,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     console.log(payload);
     await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
-        let document_context = `You are an expert in ${getSingleName(
+        let document_context = `You are a teacher expert in ${getSingleName(
           category,
           categoryData
         )}. You have skills in `;
@@ -128,6 +128,24 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           }
         });
 
+        document_context += `\n\nAnd the problem your student is telling you about is ${description}.`;
+
+        vibes.forEach((vibe, ind) => {
+          const levels = [
+            "a little bit of",
+            "a considerable amount of",
+            "a lot of",
+          ];
+          if (ind == 0) {
+            document_context += `\n\nAlso your student is feeling ${
+              levels[vibe.level - 1]
+            } ${vibe.title}`;
+          } else if (ind == vibes.length - 1) {
+            document_context += ` and ${levels[vibe.level - 1]} ${vibe.title}.`;
+          } else {
+            document_context += `, ${levels[vibe.level - 1]} ${vibe.title}`;
+          }
+        });
         const document: IPostDocument = {
           document_name: res._id ?? "name",
           engine: "curie",

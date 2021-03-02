@@ -102,7 +102,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
               <li>Need a gaming buddy? We will find you one!</li>
             </ul>
 
-            <span>Request Category</span>
+            <span>Request what your teacher should be expert in: </span>
 
             <FormControl
               name="category"
