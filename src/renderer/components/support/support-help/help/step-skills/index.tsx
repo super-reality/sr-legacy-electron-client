@@ -84,6 +84,7 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
 
   const [subCategories, setSubCategories] = useState<any[]>([]);
 
+  console.log(subCategories);
   useMemo(() => {
     setSubCategories([...skillsOpts]);
   }, [skillsOpts]);
@@ -166,14 +167,15 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             What are skills and expertise area most important to in your
             request? This will help pair you with teacher.
             <ErrorMessage component={TextError} name="skills" />
-            {subCategories.map((skill) => (
-              <SingleCategory
-                key={skill.name}
-                name={skill.name}
-                options={skill.options}
-                context={{ ...formik }}
-              />
-            ))}
+            {slice.subcategories &&
+              slice.subcategories.map((skill, i) => (
+                <SingleCategory
+                  key={skill.name}
+                  name={skill.name}
+                  options={skillsOpts[i].options}
+                  context={{ ...formik }}
+                />
+              ))}
             {/*             {newSubCategories.map((c, i) => (
               <EditableCategory
                 key={c.name}

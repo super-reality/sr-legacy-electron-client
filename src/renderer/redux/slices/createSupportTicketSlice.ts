@@ -16,6 +16,7 @@ const initialState: supportTicker = {
   skillsData: [],
   searchedSkills: [],
   categoryData: [],
+  subcategories: [],
   supportScreen: 0,
   supportOption: 0,
   vibes: [],

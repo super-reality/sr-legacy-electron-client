@@ -8,8 +8,10 @@ import GettingStarted from "./getting-started";
 import Help from "./help";
 import getVibes from "./support-help-utils/getVibes";
 import "./index.scss";
+import getSingleCategory from "./support-help-utils/getSingleCategory";
+import getAllCategories from "./support-help-utils/getAllCategories";
 
-const Category: IData[] = [
+export const Category: IData[] = [
   { _id: "600ee83930404f258c70267b", name: "Blender" },
   { _id: "601428b7aa97791f0c660c35", name: "2D Pixel Art Animation" },
   { _id: "603917c51135c537364f2d85", name: "Mathematics" },
@@ -58,18 +60,28 @@ const sections = [GettingStarted, Help];
 
 export default function Support(): JSX.Element {
   const dispatch = useDispatch();
-  const { skillsData, categoryData, supportScreen, vibeData } = useSelector(
-    (state: AppState) => state.createSupportTicket
-  );
+  const {
+    skillsData,
+    categoryData,
+    supportScreen,
+    vibeData,
+    category,
+    newCategoryName,
+  } = useSelector((state: AppState) => state.createSupportTicket);
   useEffect(() => {
-    reduxAction(dispatch, {
-      type: "SET_SUPPORT_TICKET",
-      arg: {
-        skillsData: skillsData && skillsData.length ? skillsData : Skills,
-        categoryData:
-          categoryData && categoryData.length ? categoryData : Category,
-      },
-    });
+    if (!skillsData.length && !categoryData.length) {
+      (async () => {
+        getAllCategories().then((categories) => {
+          reduxAction(dispatch, {
+            type: "SET_SUPPORT_TICKET",
+            arg: {
+              skillsData: Skills,
+              categoryData: categories.reverse(),
+            },
+          });
+        });
+      })();
+    }
 
     if (vibeData.positiveVibes.length == 0) {
       (async () => {
@@ -91,6 +103,21 @@ export default function Support(): JSX.Element {
       });
     }; */
   }, []);
+
+  useEffect(() => {
+    if (newCategoryName == "") {
+      (async () => {
+        await getSingleCategory(category).then((cat) => {
+          reduxAction(dispatch, {
+            type: "SET_SUPPORT_TICKET",
+            arg: {
+              subcategories: cat.subcategories,
+            },
+          });
+        });
+      })();
+    }
+  }, [category]);
 
   const ClickGotSart = () => {
     reduxAction(dispatch, {

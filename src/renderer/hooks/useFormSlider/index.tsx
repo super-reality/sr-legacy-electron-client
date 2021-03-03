@@ -1,4 +1,7 @@
-import React, { useEffect, useCallback, useState, CSSProperties } from "react";
+import React /* useState, */, {
+  useEffect,
+  /*  useCallback, */ CSSProperties,
+} from "react";
 
 import { animated, useSpring } from "react-spring";
 import "./index.scss";
@@ -10,10 +13,13 @@ interface FormSliderProps {
   slides?: number;
   width?: number;
 }
-
+let index = 0;
 export default function useFormSlider(steps: number): any {
-  const [index, setIndex] = useState(0);
+  console.log(index);
 
+  useEffect(() => {
+    index = 0;
+  }, []);
   const [stateSpring, set] = useSpring(
     () =>
       ({
@@ -24,18 +30,29 @@ export default function useFormSlider(steps: number): any {
   const slideDistance = 100 / steps;
   const slideWidth = Math.round(100 / steps);
 
-  useEffect(() => {
+  const clickGoNext = () => {
+    index += 1;
     set({ transform: `translateX(-${slideDistance * index}%)` });
-  });
+  };
 
-  const clickGoNext = useCallback(() => {
+  const clickGoBack = () => {
+    index -= 1;
+    set({ transform: `translateX(-${slideDistance * index}%)` });
+  };
+
+  const setIndex = (i: number) => {
+    if (i <= steps && i > 0) {
+      index = i;
+    }
+  };
+
+  /*   const clickGoNext = useCallback(() => {
     setIndex(index + 1);
   }, [index]);
 
   const clickGoBack = useCallback(() => {
     setIndex(index - 1);
-  }, [index]);
-
+  }, [index]); */
   const Slider = ({ children, className }: any) => (
     <FormSlider
       width={steps * 100}

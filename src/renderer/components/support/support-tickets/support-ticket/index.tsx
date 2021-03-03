@@ -8,7 +8,13 @@ import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
 import { singleSupportTicketsPayload } from "../../../../api/types/support-ticket/supportTicket";
 import getTicket from "../support-tickets-utils/getSingleSupportTicket";
 import SuperSpinner from "../../../super-spinner";
-import { SkillsRenderer, VibesRenderer, getVibes } from "../../../forms";
+
+import {
+  SkillsRenderer,
+  VibesRenderer,
+  getVibes,
+  ImagesPreviewString,
+} from "../../../forms";
 import createGPT3Question from "../../../../../utils/api/createGPT3Question";
 import { IPostQuestion, IGetQuestion } from "../../../../api/types/gpt-3/GPT3";
 
@@ -112,6 +118,14 @@ export default function SupportTicker({
                   />
                 )}
               </div>
+
+              {ticket?.files && ticket?.files?.length > 0 && (
+                <div className="border-bottom">
+                  <span className="white">Files</span>
+
+                  <ImagesPreviewString values={ticket?.files} columns={3} />
+                </div>
+              )}
               <ul className="list-arrow">
                 <li>
                   Engagement in last <div className="blue">3 days</div>
@@ -147,14 +161,28 @@ export default function SupportTicker({
                   ))}
 
                 <li
-                  onClick={() =>
-                    setInputValue("The answer is always on your heart")
-                  }
+                  onClick={() => {
+                    if (inputValue == "") {
+                      setInputValue(`The answer is always on your heart`);
+                    } else {
+                      setInputValue(
+                        `${inputValue} \n\nThe answer is always on your heart`
+                      );
+                    }
+                  }}
                 >
                   <b>Nick Marks says: </b>
                   The answer is always on your heart
                 </li>
-                <li onClick={() => setInputValue("Idk go ask manwe")}>
+                <li
+                  onClick={() => {
+                    if (inputValue == "") {
+                      setInputValue(`Idk go ask manwe`);
+                    } else {
+                      setInputValue(`${inputValue} \n\nIdk go ask manwe`);
+                    }
+                  }}
+                >
                   <b>Nick Marks says: </b>
                   Idk go ask manwe
                 </li>

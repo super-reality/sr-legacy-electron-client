@@ -11,6 +11,11 @@ interface IimagePreviewProps {
   columns: number;
 }
 
+interface IimagePreviewStringProps {
+  values: string[];
+  columns: number;
+}
+
 function getImages(props: IimagePreviewProps): JSX.Element[] {
   const { values, onRemove, removable } = props;
 
@@ -46,6 +51,38 @@ export default function ImagesPreview(props: IimagePreviewProps): JSX.Element {
       style={{ ["--columns" as string]: columns }}
     >
       {getImages(props)}
+    </ul>
+  );
+}
+
+function getImagesString(props: IimagePreviewStringProps): JSX.Element[] {
+  const { values } = props;
+
+  return values.map((file) => {
+    return (
+      <li className="image-preview-item" key={file}>
+        <div>
+          <div className="image-preview-image">
+            <a href={file}>
+              <img src={file} alt="lol23" />
+            </a>
+          </div>
+        </div>
+      </li>
+    );
+  });
+}
+
+export function ImagesPreviewString(
+  props: IimagePreviewStringProps
+): JSX.Element {
+  const { columns } = props;
+  return (
+    <ul
+      className="image-preview-list"
+      style={{ ["--columns" as string]: columns }}
+    >
+      {getImagesString(props)}
     </ul>
   );
 }

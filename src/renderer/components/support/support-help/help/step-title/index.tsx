@@ -76,8 +76,8 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
                 values.newCategoryName === values.category,
             },
           });
-          goNext();
 
+          goNext();
           console.log(values);
         }}
       >

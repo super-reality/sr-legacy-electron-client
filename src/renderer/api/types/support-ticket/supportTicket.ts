@@ -15,6 +15,7 @@ export default interface supportTicker {
   skillsData: IData[];
   searchedSkills: IData[];
   categoryData: IData[];
+  subcategories: ISubcategory[];
   supportScreen: TSupportScreen;
   supportOption: TSupportOption;
   vibeData: IGetVibesObjectResult;
@@ -165,6 +166,20 @@ export interface ICategoriesGet {
 export interface ICategoryGet {
   err_code: CodeSuccess;
   category: IData[];
+}
+
+export interface ISingleCategoryGet {
+  err_code: CodeSuccess;
+  category: {
+    _id: string;
+    name: string;
+    subcategories: ISubcategory[];
+  };
+}
+
+export interface ISubcategory {
+  _id: string;
+  name: string;
 }
 
 export interface Ioptions {

@@ -39,11 +39,12 @@ import VibePride from "../../../assets/images/VibePride.png";
 import VibeRage from "../../../assets/images/VibeRage.png";
 import VibeSadness from "../../../assets/images/VibeSadness.png";
 
-import ImagesPreview from "./DropFile/ImagePreview";
+import ImagesPreview, { ImagesPreviewString } from "./DropFile/ImagePreview";
 
 export { capitalize };
 export { uploadFiles };
 export { ImagesPreview };
+export { ImagesPreviewString };
 
 export const getNames = (array: string[], arrayData: IData[]): IData[] => {
   const resultArray: IData[] = [];

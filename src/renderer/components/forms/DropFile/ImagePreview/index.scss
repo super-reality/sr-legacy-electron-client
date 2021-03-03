@@ -1,4 +1,4 @@
-.image-preview-list{
+.image-preview-list {
   list-style-type: none !important;
   transition: all 1s;
   padding: 0;
@@ -9,9 +9,9 @@
   grid-row-gap: 0;
   justify-items: center;
   text-align: center;
-  >.image-preview-item{
+  > .image-preview-item {
     text-align: center;
-    animation: fade .5s;
+    animation: fade 0.5s;
     > div {
       width: auto;
       display: flex;
@@ -26,11 +26,19 @@
           width: 80%;
           display: block;
         }
+
+        > a {
+          width: 100%;
+          > img {
+            width: 80%;
+            display: block;
+          }
+        }
       }
       > div {
         display: flex;
         justify-content: center;
-        
+
         > p {
           display: block;
           text-align: center;
@@ -52,13 +60,13 @@
   }
 }
 .image-preview-item.removing {
-    animation: fade 1s;
+  animation: fade 1s;
 }
 @keyframes fade {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
