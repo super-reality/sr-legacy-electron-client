@@ -5,17 +5,25 @@ import { ItemVideo } from "../../item";
 import "./index.scss";
 import { BaseBoxProps } from "../boxes";
 import { AppState } from "../../../redux/stores/renderer";
+import useItemBehaviour from "../../useItemBehaviour";
 
 const YoutubeBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
   (props, forwardedRef) => {
-    const { item, style, pos } = props;
+    const { item, style, pos, callback } = props;
     const { previewing } = useSelector(
       (state: AppState) => state.createLessonV2
     );
 
+    const [combinedRef, , , InfoBox] = useItemBehaviour(
+      callback,
+      forwardedRef,
+      true,
+      item
+    );
+
     return (
       <div
-        ref={forwardedRef}
+        ref={combinedRef}
         className="youtube-box click-on"
         style={{
           left: `${pos.x}px`,
@@ -35,6 +43,7 @@ const YoutubeBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
+        {InfoBox}
       </div>
     );
   }
