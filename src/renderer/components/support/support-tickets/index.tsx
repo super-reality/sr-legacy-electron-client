@@ -32,7 +32,8 @@ import SingleTicket from "./single-ticket";
 
 import SupperSpinner from "../../super-spinner";
 
-const options = ["one", "two", "three"];
+import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
+
 
 interface IfilterOptions {
   name?: string;
@@ -73,6 +74,7 @@ export default function SupportTickets(): JSX.Element {
   };
 
   useEffect(() => {
+    setSidebarWidth(900);
     (async () => {
       await getSupportTickets().then((tickets) => {
         setTickets(tickets.reverse());
@@ -180,7 +182,7 @@ export default function SupportTickets(): JSX.Element {
 
               {tickets.length == 0 ? (
                 <div className="loading-tickets">
-                  <SupperSpinner width="100px" text="Loading Tickets" />
+                  <SupperSpinner size="100px" text="Loading Tickets" />
                 </div>
               ) : (
                 <div className="ticket-list">
