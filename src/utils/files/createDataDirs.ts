@@ -2,6 +2,7 @@ import fs from "fs";
 import {
   fxPath,
   itemsPath,
+  ocrCachePath,
   recordingPath,
   stepPath,
   stepSnapshotPath,
@@ -29,5 +30,6 @@ export default function createDataDirs(): Promise<boolean> {
     .then(() => makeDataDir(stepSnapshotPath))
     .then(() => makeDataDir(itemsPath))
     .then(() => makeDataDir(tempPath))
-    .then(() => makeDataDir(fxPath));
+    .then(() => makeDataDir(fxPath))
+    .then(() => makeDataDir(ocrCachePath));
 }

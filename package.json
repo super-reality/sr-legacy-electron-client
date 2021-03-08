@@ -63,6 +63,7 @@
     "redux": "^4.0.5",
     "request": "^2.88.2",
     "socket.io-client": "^2.3.0",
+    "tesseract.js": "^2.1.4",
     "tmp": "^0.2.1",
     "ts-ebml": "^2.0.2",
     "typeface-roboto": "0.0.75",

@@ -39,7 +39,8 @@
     height: 64px;
     width: 64px;
     background-position: center;
-    background-size: auto;
+    background-repeat: no-repeat;
+    background-size: contain;
     background-color: var(--color-background-dark);
 
     &.selected {
