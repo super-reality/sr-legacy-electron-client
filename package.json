@@ -27,6 +27,7 @@
     "cross-env": "^7.0.2",
     "crypto": "^1.0.1",
     "d3-array": "^2.9.1",
+    "desktop-capture": "file:desktop-capture",
     "electron-devtools-installer": "^3.1.1",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.2.4",

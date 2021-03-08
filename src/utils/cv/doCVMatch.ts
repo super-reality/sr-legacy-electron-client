@@ -2,17 +2,18 @@ import globalData from "../../renderer/globalData";
 import store, { AppState } from "../../renderer/redux/stores/renderer";
 import { CVResult } from "../../types/utils";
 import getLocalMat from "./getLocalMat";
-import getMatFromVideo from "./getMatFromVideo";
 import getUrlMat from "./getUrlMat";
-import matToCanvas from "./matToCanvas";
+// import matToCanvas from "./matToCanvas";
 import * as cv from "../opencv/opencv";
+import getPrimaryMonitor from "../electron/getPrimaryMonitor";
+import matToCanvas from "./matToCanvas";
 
 export default function doCvMatch(
   images: string[],
-  sourceElement: string | HTMLVideoElement,
+  sourceElement: any,
+  sourceType: "filename" | "video" | "buffer",
   options: Partial<AppState["settings"]["cv"]>
 ): Promise<CVResult> {
-  const beginTime = new Date().getTime();
   // Feed default settings from redux store + passed settings
   const opt: AppState["settings"]["cv"] = {
     ...store.getState().settings.cv,
@@ -20,6 +21,7 @@ export default function doCvMatch(
   };
 
   return new Promise((resolve, reject) => {
+    const beginTime = new Date().getTime();
     if (globalData.debugCv) {
       // console.log(cv ? "CV Ok" : "CV Error", images);
     }
@@ -31,7 +33,7 @@ export default function doCvMatch(
     let xScale = 1;
     let yScale = 1;
 
-    if (typeof sourceElement == "string") {
+    if (sourceType == "filename") {
       srcMat = cv.imread(sourceElement);
       width = (srcMat.cols / 100) * opt.cvCanvas;
       height = (srcMat.rows / 100) * opt.cvCanvas;
@@ -40,26 +42,48 @@ export default function doCvMatch(
       width = Math.round(width);
       height = Math.round(height);
       srcMat = srcMat.resize(height, width);
-    } else {
+    } else if (sourceType == "video") {
       width = (sourceElement.videoWidth / 100) * opt.cvCanvas;
       height = (sourceElement.videoHeight / 100) * opt.cvCanvas;
       xScale = sourceElement.videoWidth / width;
       yScale = sourceElement.videoHeight / height;
       width = Math.round(width);
       height = Math.round(height);
-      const ogMat = getMatFromVideo(sourceElement, width, height);
+      const ogMat = new cv.Mat(sourceElement, height, width, cv.CV_8UC4);
       if (ogMat) srcMat = ogMat;
+    } else if (sourceType == "buffer") {
+      const primary = getPrimaryMonitor();
+      width = (primary.bounds.width / 100) * opt.cvCanvas;
+      height = (primary.bounds.height / 100) * opt.cvCanvas;
+      xScale = primary.bounds.width / width;
+      yScale = primary.bounds.height / height;
+      width = Math.round(width);
+      height = Math.round(height);
+
+      srcMat = new cv.Mat(
+        Buffer.from(sourceElement as Uint8Array),
+        primary.bounds.height,
+        primary.bounds.width,
+        cv.CV_8UC4
+      );
+      srcMat = srcMat.resize(height, width);
     }
 
+    matToCanvas(srcMat, "canvasOutput");
+
     if (globalData.debugCv) {
-      console.log(`sourceElement: ${sourceElement}`);
+      // console.log(`sourceElement: ${sourceElement}`);
       console.log(`Source: ${width}x${height}, Scaling: ${xScale}/${yScale}`);
     }
 
     // Source Mat and Template mat filters should be applied in the same order!
     if (opt.cvGrayscale && srcMat) {
       srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
+    } else if (sourceType == "buffer") {
+      // Add an || for any input that is RGBA
+      srcMat = srcMat.cvtColor(cv.COLOR_RGBA2RGB);
     }
+
     if (opt.cvApplyThreshold && srcMat) {
       srcMat = srcMat.threshold(
         opt.cvThreshold,
@@ -137,10 +161,11 @@ export default function doCvMatch(
               )},${Math.round(yScale * bestPoint.y)}`
             );
           }
+          const endTime = new Date().getTime();
           const ret: CVResult = {
             id: "",
-            time: new Date().getTime() - beginTime,
-            date: new Date().getTime(),
+            time: endTime - beginTime,
+            date: endTime,
             dist: bestDist,
             sizeFactor: 0,
             x: Math.round(xScale * bestPoint.x),

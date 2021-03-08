@@ -46,7 +46,7 @@ describe("Computer Vision", () => {
   };
 
   test("Can find code", async (done) => {
-    await doCvMatch([matchCode], capture, codeOptions)
+    await doCvMatch([matchCode], capture, "filename", codeOptions)
       .then((res) => {
         expect(res.dist).toBeGreaterThan(0.99);
         expect(isNear(res.x, 394, 2)).toBeTruthy();
@@ -61,6 +61,7 @@ describe("Computer Vision", () => {
     await doCvMatch(
       [matchGoogle, matchSonic, matchCode, matchColor1],
       capture,
+      "filename",
       thresholdOptions
     )
       .then((res) => {
@@ -71,7 +72,7 @@ describe("Computer Vision", () => {
   });
 
   test("Can find test target with default settings", async (done) => {
-    await doCvMatch([matchGoogle], capture, defaultOptions)
+    await doCvMatch([matchGoogle], capture, "filename", defaultOptions)
       .then((res) => {
         expect(res.dist).toBeGreaterThan(0.99);
         expect(isNear(res.x, 1153, 2)).toBeTruthy();

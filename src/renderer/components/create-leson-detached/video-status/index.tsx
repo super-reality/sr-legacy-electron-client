@@ -84,9 +84,12 @@ export default function VideoStatus() {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
         // console.log("do cv match file");
-        doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
-          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-        );
+        doCvMatch(
+          anchor.templates,
+          canvasSource,
+          "filename",
+          anchor
+        ).then((arg) => reduxAction(dispatch, { type: "SET_CV_RESULT", arg }));
       });
     } else if (canvasSourceType == "url" && canvasSource) {
       const fileName = canvasSource.split("/")?.pop() || "";
@@ -95,7 +98,7 @@ export default function VideoStatus() {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
         // console.log("do cv match url");
-        doCvMatch(anchor.templates, file, anchor).then((arg) =>
+        doCvMatch(anchor.templates, file, "filename", anchor).then((arg) =>
           reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
         );
       });
@@ -107,7 +110,12 @@ export default function VideoStatus() {
         cvDebouncer(() => {
           // console.log("do cv match video");
           // trigger cv match on current video/recording
-          doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
+          doCvMatch(
+            anchor.templates,
+            videoHidden,
+            "video",
+            anchor
+          ).then((arg) =>
             reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
           );
         });
