@@ -38,7 +38,7 @@ export default function useCVMatch(
     console.log(opt);
     const dateStart = new Date().getTime();
     const frame = Capturer.getFrame();
-    doCvMatch(images, frame, "buffer", opt)
+    doCvMatch(images, frame, "buffer", "template", opt)
       .then((res) => {
         callback(res);
         if (globalData.debugCv) {

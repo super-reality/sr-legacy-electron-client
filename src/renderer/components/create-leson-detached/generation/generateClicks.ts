@@ -64,7 +64,9 @@ export default async function generateClicks(
         videoPanel.currentTime = timestampTime / 1000;
         setTimeout(resolve, 200);
       })
-        .then(() => doCvMatch(anchor.templates, videoPanel, "video", anchor))
+        .then(() =>
+          doCvMatch(anchor.templates, videoPanel, "video", "template", anchor)
+        )
         .then((cvResult) => {
           console.log(cvResult);
           reduxAction(store.dispatch, {

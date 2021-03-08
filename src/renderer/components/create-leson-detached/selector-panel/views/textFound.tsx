@@ -1,15 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useState } from "react";
 import { BasePanelViewProps } from "../viewTypes";
-import ContainerWithCheck from "../../../container-with-check";
-import { AppState } from "../../../../redux/stores/renderer";
-import AnchorEdit from "../../anchor-edit";
-import { IAnchor } from "../../../../api/types/anchor/anchor";
-import ImageCheckbox from "../../image-checkbox";
-import AnchorCommands from "../../../anchor-commands";
-import useAnchor from "../../hooks/useAnchor";
-import ButtonSimple from "../../../button-simple";
-import reduxAction from "../../../../redux/reduxAction";
+import BaseToggle from "../../../base-toggle";
+import BaseTextArea from "../../../base-textarea";
 
 export interface TextFoundTypeValue {
   type: "Text Found";
@@ -17,132 +9,41 @@ export interface TextFoundTypeValue {
 }
 
 export function TextFoundList(props: BasePanelViewProps<TextFoundTypeValue>) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { select, data, open } = props;
-  const dispatch = useDispatch();
+  const { select, data } = props;
 
-  const { treeAnchors } = useSelector(
-    (state: AppState) => state.createLessonV2
-  );
+  const filterFn = () => data.filter((d) => d.type == "Text Found")[0];
+  const filterFnCheck = () => !!filterFn();
 
-  const anchors = useMemo(
-    () => Object.keys(treeAnchors).map((a) => treeAnchors[a]),
-    [treeAnchors]
-  );
+  const [value, setValue] = useState(filterFn()?.value || "");
 
-  const setCreateAnchorMode = useCallback(() => {
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_DATA",
-      arg: { previewMode: "CREATE_ANCHOR" },
-    });
-  }, [dispatch]);
-
-  const doUnCheck = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      e.stopPropagation();
-      select("Text Found", null);
+  const toggleCheck = useCallback(
+    (val: boolean) => {
+      if (!val) {
+        select("Text Found", null);
+      } else {
+        select("Text Found", value);
+      }
     },
-    [select]
+    [select, value]
   );
-
-  const filterFn = (a: IAnchor) =>
-    data.filter((d) => d.type == "Text Found" && d.value == a._id)[0];
-  const filterFnCheck = (a: IAnchor) => !!filterFn(a);
-  const filterFnUnCheck = (a: IAnchor) => !filterFn(a);
 
   return (
     <>
-      <ButtonSimple width="200px" height="24px" onClick={setCreateAnchorMode}>
-        Create new
-      </ButtonSimple>
-      <div className="panel-subtitle">Active</div>
-      {anchors.filter(filterFnCheck).map((a) => (
-        <ImageCheckbox
-          image={a.templates[0]}
-          margin="8px auto"
-          key={`text-found-button-${a._id}`}
-          showDisabled={false}
-          check
-          onButtonClick={() => open(a._id)}
-          onCheckClick={doUnCheck}
-        />
-      ))}
-      <div className="panel-subtitle">Library</div>
-      {anchors.filter(filterFnUnCheck).map((a) => (
-        <ImageCheckbox
-          image={a.templates[0]}
-          margin="8px auto"
-          key={`text-found-button-${a._id}`}
-          showDisabled={false}
-          check={false}
-          onButtonClick={() => open(a._id)}
-          onCheckClick={doUnCheck}
-        />
-      ))}
-    </>
-  );
-}
-
-export function TextFoundView(
-  props: BasePanelViewProps<TextFoundTypeValue> & {
-    id: string;
-  }
-) {
-  const [currentTemplate, setCurrentTemplate] = useState(0);
-  const { id, data, select } = props;
-
-  const anchor = useAnchor(id);
-
-  const doCheckToggle = useCallback(
-    (val: boolean) => select("Text Found", val ? id : null),
-    [id, select]
-  );
-
-  const prevTemplate = useCallback(() => {
-    if (currentTemplate > 0) setCurrentTemplate(currentTemplate - 1);
-    else if (anchor) setCurrentTemplate(anchor.templates.length - 1);
-  }, [currentTemplate, anchor]);
-
-  const nextTemplate = useCallback(() => {
-    if (anchor && currentTemplate < anchor.templates.length)
-      setCurrentTemplate(currentTemplate + 1);
-    else setCurrentTemplate(0);
-  }, [currentTemplate, anchor]);
-
-  const checked = !!data.filter(
-    (d) => d.type == "Text Found" && d.value == anchor?._id
-  )[0];
-
-  return (
-    <>
-      <ContainerWithCheck checked={checked} callback={doCheckToggle}>
-        <div
-          className="anchor-image-preview"
-          style={{
-            backgroundImage: `url(${anchor?.templates[currentTemplate]})`,
-          }}
-        />
-        <AnchorCommands
-          key={`anchor-commands-${id}`}
-          template={currentTemplate}
-          anchorId={id}
-        />
-      </ContainerWithCheck>
-      <div className="anchor-templates-carousel">
-        <div className="left-arrow" onClick={prevTemplate} />
-        {anchor?.templates.map((t, i) => {
-          return (
-            <div
-              key={`carousel-image-${t}`}
-              style={{ backgroundImage: `url(${t})` }}
-              onClick={() => setCurrentTemplate(i)}
-              className={`template ${currentTemplate == i ? "selected" : ""}`}
-            />
-          );
-        })}
-        <div className="right-arrow" onClick={nextTemplate} />
-      </div>
-      <AnchorEdit key={`anchor-edit-${id}`} anchorId={id} />
+      <BaseToggle
+        title="Enable"
+        value={filterFnCheck()}
+        callback={(v) => toggleCheck(v)}
+      />
+      <BaseTextArea
+        title="Text"
+        value={value}
+        onChange={(e: any) => {
+          setValue(e.target.value);
+          if (filterFnCheck()) {
+            select("Text Found", e.target.value);
+          }
+        }}
+      />
     </>
   );
 }
