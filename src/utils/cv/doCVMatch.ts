@@ -6,6 +6,7 @@ import getUrlMat from "./getUrlMat";
 // import matToCanvas from "./matToCanvas";
 import * as cv from "../opencv/opencv";
 import getPrimaryMonitor from "../electron/getPrimaryMonitor";
+import matToCanvas from "./matToCanvas";
 
 export default function doCvMatch(
   images: string[],
@@ -68,7 +69,7 @@ export default function doCvMatch(
       srcMat = srcMat.resize(height, width);
     }
 
-    // matToCanvas(srcMat, "canvasOutput");
+    matToCanvas(srcMat, "canvasOutput");
 
     if (globalData.debugCv) {
       // console.log(`sourceElement: ${sourceElement}`);
@@ -78,7 +79,11 @@ export default function doCvMatch(
     // Source Mat and Template mat filters should be applied in the same order!
     if (opt.cvGrayscale && srcMat) {
       srcMat = srcMat.cvtColor(cv.COLOR_RGBA2GRAY);
+    } else if (sourceType == "buffer") {
+      // Add an || for any input that is RGBA
+      srcMat = srcMat.cvtColor(cv.COLOR_RGBA2RGB);
     }
+
     if (opt.cvApplyThreshold && srcMat) {
       srcMat = srcMat.threshold(
         opt.cvThreshold,
@@ -168,7 +173,7 @@ export default function doCvMatch(
             width: Math.round(templates[bestIndex].cols * xScale),
             height: Math.round(templates[bestIndex].rows * yScale),
           };
-          // matToCanvas(srcMat, "canvasTestOutput");
+          matToCanvas(srcMat, "canvasTestOutput");
           resolve(ret);
         })
         .catch(reject);
