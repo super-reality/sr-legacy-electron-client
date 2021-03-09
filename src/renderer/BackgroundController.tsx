@@ -14,7 +14,7 @@ const Capturer = __non_webpack_require__("desktop-capture");
 export default function BackgroundController(): JSX.Element {
   const dispatch = useDispatch();
   const [processingCv, setProcessingCv] = useState<boolean>(false);
-  const { cvTemplates, cvTo, anchorId } = useSelector(
+  const { cvTemplates, cvTo, cvType, anchorId } = useSelector(
     (state: AppState) => state.background
   );
   const [sendTo, setSendTo] = useState("");
@@ -33,7 +33,8 @@ export default function BackgroundController(): JSX.Element {
 
   const [CV, _isCapturing, _startCV, _endCV, doMatch] = useCVMatch(
     cvTemplates,
-    cvCallback
+    cvCallback,
+    cvType
   );
 
   useEffect(() => {

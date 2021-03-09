@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { AppState } from "../redux/stores/renderer";
 import globalData from "../globalData";
 import doCvMatch from "../../utils/cv/doCVMatch";
-import { CVResult } from "../../types/utils";
+import { CVResult, CVTypes } from "../../types/utils";
 import { initialCVSettings } from "../redux/static";
 
 // eslint-disable-next-line no-undef
@@ -13,6 +13,7 @@ const Capturer = __non_webpack_require__("desktop-capture");
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
+  type: CVTypes,
   options?: typeof initialCVSettings
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const settings = useSelector((state: AppState) => state.settings.cv);
@@ -38,7 +39,7 @@ export default function useCVMatch(
     console.log(opt);
     const dateStart = new Date().getTime();
     const frame = Capturer.getFrame();
-    doCvMatch(images, frame, "buffer", "template", opt)
+    doCvMatch(images, frame, "buffer", type, opt)
       .then((res) => {
         callback(res);
         if (globalData.debugCv) {
@@ -51,7 +52,7 @@ export default function useCVMatch(
         console.log(e);
       });
     setFrames(frames + 1);
-  }, [callback, images, capturing, frames, opt]);
+  }, [callback, images, capturing, frames, type, opt]);
 
   useEffect(() => {
     setFrames(0);

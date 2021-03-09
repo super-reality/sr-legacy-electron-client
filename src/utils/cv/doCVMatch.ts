@@ -1,19 +1,18 @@
 import globalData from "../../renderer/globalData";
 import store, { AppState } from "../../renderer/redux/stores/renderer";
-import { CVResult, Rectangle } from "../../types/utils";
+import { CVResult, CVTypes, Rectangle } from "../../types/utils";
 import getLocalMat from "./getLocalMat";
 import getUrlMat from "./getUrlMat";
 // import matToCanvas from "./matToCanvas";
 import * as cv from "../opencv/opencv";
 import getPrimaryMonitor from "../electron/getPrimaryMonitor";
 import matToCanvas from "./matToCanvas";
-import OcrService from "../ocr/ocrService";
 
 export default function doCvMatch(
   images: string[],
   sourceElement: any,
   sourceType: "filename" | "video" | "buffer",
-  templateType: "template" | "ocr",
+  templateType: CVTypes,
   options: Partial<AppState["settings"]["cv"]>
 ): Promise<CVResult> {
   // Feed default settings from redux store + passed settings
@@ -193,16 +192,14 @@ export default function doCvMatch(
         Promise.all(
           images.map(
             (findText): Promise<any> => {
-              const ocrService = new OcrService();
-              return ocrService
-                .initialize("eng")
-                .then(() => ocrService.getResult(srcMatBuffer || ""))
+              return globalData.ocrService
+                .getResult(srcMatBuffer || "")
                 .then((res) => {
                   res.data.lines.forEach((line) => {
                     line.words.forEach((word) => {
                       if (
                         word.text == findText &&
-                        word.confidence > 80 &&
+                        word.confidence > 70 && // Hardocded minimun confidence value
                         bestDist < word.confidence
                       ) {
                         bestDist = word.confidence;
@@ -229,7 +226,7 @@ export default function doCvMatch(
             id: "",
             time: endTime - beginTime,
             date: endTime,
-            dist: bestDist,
+            dist: bestDist / 100,
             sizeFactor: 0,
             x: Math.round(xScale * bbox.x),
             y: Math.round(yScale * bbox.y),

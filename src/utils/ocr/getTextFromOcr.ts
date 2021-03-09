@@ -1,18 +1,14 @@
+import globalData from "../../renderer/globalData";
 import getImageForOcr from "./getImageForOcr";
-import OcrService from "./ocrService";
 
 export default function getTextFromOcr(
   language: string,
   imageUrl: string
 ): Promise<string> {
   return new Promise((resolve) => {
-    const ocrService = new OcrService();
-    ocrService
-      .initialize(language)
-      .then(() => {
-        getImageForOcr(imageUrl).then((imgBuffer) => {
-          resolve(ocrService.getText(imgBuffer));
-        });
+    return getImageForOcr(imageUrl)
+      .then((imgBuffer) => {
+        resolve(globalData.ocrService.getText(imgBuffer));
       })
       .catch((error) => {
         console.error(error);

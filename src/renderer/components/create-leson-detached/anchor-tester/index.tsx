@@ -66,6 +66,7 @@ export default function AnchorTester(props: AnchorTesterProps): JSX.Element {
             cvMatchValue: 0,
             cvTemplates: anchor.templates,
             cvTo: "renderer",
+            cvType: "template",
           },
           to: "background",
         });
