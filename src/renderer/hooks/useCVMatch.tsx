@@ -37,15 +37,13 @@ export default function useCVMatch(
 
   const doMatch = useCallback(() => {
     console.log(opt);
-    const dateStart = new Date().getTime();
+    const dateStart = Date.now();
     const frame = Capturer.getFrame();
     doCvMatch(images, frame, "buffer", type, opt)
       .then((res) => {
         callback(res);
         if (globalData.debugCv) {
-          console.log(
-            `${`CV match time taken - ${new Date().getTime() - dateStart}`}ms`
-          );
+          console.log(`${`CV match time taken - ${Date.now() - dateStart}`}ms`);
         }
       })
       .catch((e) => {

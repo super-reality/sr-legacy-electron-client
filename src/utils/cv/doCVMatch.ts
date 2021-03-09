@@ -21,8 +21,9 @@ export default function doCvMatch(
     ...options,
   };
 
+  const beginTime = Date.now();
+
   return new Promise((resolve, reject) => {
-    const beginTime = new Date().getTime();
     if (globalData.debugCv) {
       // console.log(cv ? "CV Ok" : "CV Error", images);
     }
@@ -170,7 +171,7 @@ export default function doCvMatch(
                 )},${Math.round(yScale * bestPoint.y)}`
               );
             }
-            const endTime = new Date().getTime();
+            const endTime = Date.now();
             const ret: CVResult = {
               id: "",
               time: endTime - beginTime,
@@ -199,7 +200,7 @@ export default function doCvMatch(
                     line.words.forEach((word) => {
                       if (
                         word.text == findText &&
-                        word.confidence > 70 && // Hardocded minimun confidence value
+                        word.confidence > 80 && // Hardocded minimun confidence value
                         bestDist < word.confidence
                       ) {
                         bestDist = word.confidence;
@@ -221,7 +222,7 @@ export default function doCvMatch(
             }
           )
         ).then(() => {
-          const endTime = new Date().getTime();
+          const endTime = Date.now();
           const ret: CVResult = {
             id: "",
             time: endTime - beginTime,

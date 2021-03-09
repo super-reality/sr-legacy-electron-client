@@ -23,5 +23,6 @@ const globalData = {
 };
 
 globalData.ocrService.initialize("eng");
+console.error("OCR SERVICE INIT");
 
 export default globalData;

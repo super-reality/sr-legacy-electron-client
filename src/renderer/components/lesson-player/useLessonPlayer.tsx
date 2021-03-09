@@ -128,7 +128,11 @@ export default function useLessonPlayer(
     if (playing) {
       triggerCvUpdate();
       const prevDate = (store.getState() as AppState).render.cvResult.date;
-      pendingReduxAction((state) => state.render.cvResult.date, prevDate, 3000)
+      pendingReduxAction(
+        (state) => state.render.cvResult.date,
+        prevDate,
+        100000
+      )
         .then((state) => {
           setTicker(state.render.cvResult.date);
         })
