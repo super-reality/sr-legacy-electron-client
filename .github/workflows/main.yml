@@ -1,0 +1,29 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - Continuous-Deployment
+
+jobs:
+  release:
+    name: Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.14.0'
+      - name: Install dependencies
+        run: npm install
+      - name: Semantic Release Dry
+        run: npm rum semantic-release-dry
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
