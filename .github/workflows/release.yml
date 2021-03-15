@@ -1,7 +1,10 @@
 name: Release
 on:
   push:
-    branches: '**'
+    branches:
+      - master
+      - develop
+      - Continuous-Deployment
 
 jobs:
   release:
