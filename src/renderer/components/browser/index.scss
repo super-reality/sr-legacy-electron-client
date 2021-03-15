@@ -1,0 +1,55 @@
+.browser-nav {
+    width: 700px;
+    height: 80px;
+    background: #333155;
+    display: flex;
+    align-items: center;
+    // overflow-x: scroll;
+    // overflow-y: scroll;
+
+    .group-button {
+        margin: 0 7px;
+        border-radius: 4px;
+        background: #211b33;
+        display: flex;
+        height: 45px;
+.groups-img{
+    display: flex;
+}
+        .single-button {
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            img {
+                margin: 0 15px;
+            }
+
+            .group-title {
+                font-size: 14px;
+                color: #b8d4f3;
+                padding-right: 35px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                max-width: 100px;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        .menu-groups-list {
+            background: #211b33;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+
+            .menu-group-item {
+                padding: 10px 0;
+            }
+        }
+    }
+}

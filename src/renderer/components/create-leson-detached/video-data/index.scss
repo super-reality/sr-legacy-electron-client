@@ -1,0 +1,123 @@
+.video-data {
+  display: flex;
+  bottom: -26px;
+  height: 22px;
+  position: absolute;
+  width: calc(100% - 56px);
+  left: 28px;
+  z-index: 2;
+}
+
+@mixin video-data-item {
+  bottom: 50px;
+  position: absolute;
+  margin: auto 0;
+  width: 16px;
+  margin-left: -8px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: 0px 0px 4px 1px rgba(255, 255, 255, 0.5);
+  background-color: var(--color-white) !important;
+  z-index: 1;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #98c9fb;
+  }
+}
+
+.video-data-left_click {
+  @include video-data-item;
+}
+
+.video-data-right_click {
+  @include video-data-item;
+}
+
+.video-data-wheel_click {
+  @include video-data-item;
+}
+
+.video-data-left_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-right_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-wheel_release {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+.video-data-scroll_down {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+  background-color: var(--color-magenda);
+  &:hover {
+    background-color: #98fbc9;
+  }
+}
+
+.video-data-scroll_up {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+  background-color: var(--color-green);
+  &:hover {
+    background-color: #98fbc9;
+  }
+}
+
+.video-data-keydown {
+  @include video-data-item;
+  background-color: var(--color-pink);
+  &:hover {
+    background-color: #fbac98;
+  }
+}
+
+.video-data-keyup {
+  @include video-data-item;
+  width: 12px;
+  margin: 2px 0 2px -6px;
+  height: 12px;
+}
+
+
+.video-cv-data {
+  display: flex;
+  margin-top: -42px;
+  margin-left: 8px;
+  height: 8px;
+  position: absolute;
+  width: calc(100% - 28px);
+}
+
+.video-cv-data-current {
+  border-right: 1px solid var(--color-green);
+  position: relative;
+  height: 80px;
+  top: -38px;
+}
+
+.video-cv-data-item {
+  width: -webkit-fill-available;
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  background-color: var(--color-green);
+  z-index: 1;
+}

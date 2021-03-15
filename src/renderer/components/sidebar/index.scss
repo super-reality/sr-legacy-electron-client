@@ -1,0 +1,118 @@
+@import "../misc.scss";
+
+.sidebar-container {
+  display: flex;
+  background: linear-gradient(180deg, #333155 0%, #262036 100%);
+  flex-direction: row;
+  position: absolute;
+  right: 0;
+  height: calc(100% - 120px);
+  top: 60px;
+  z-index: 10;
+  border-radius: 6px 0 0 6px;
+  overflow: hidden;
+
+  .sidebar-buttons {
+    min-width: 64px;
+    width: 100%;
+    display: flex;
+    background: linear-gradient(180deg, #333155 0%, #262036 100%);
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    padding: 5px 0 10px 0;
+    z-index: 2;
+    overflow: hidden;
+
+    .enabled {
+      div {
+        cursor: pointer;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    
+    .control-buttons {
+      display: flex;
+      margin: 0 auto;
+      width: calc(100% - 8px);
+      height: 80px;
+      justify-content: flex-end;
+      border-bottom: 1px solid #3f3b60;
+
+      div {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        margin: auto 16px;
+        opacity: 0.7;
+        -webkit-transition: opacity, margin 0.25s cubic-bezier(0, 0, 0.2, 1);
+
+        svg {
+          fill: var(--color-light);
+          margin: auto;
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
+
+    .logged-user {
+      width: 90%;
+      margin: 0 auto;
+      border-top: 1px solid #3f3b60;
+      height: 70px;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+
+      .avatar-container {
+        margin: auto 10px;
+        .rounded-img{
+          border-radius: 50%;
+        }
+      }
+      .name-container {
+        height: 100%;
+        width: fit-content;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        .user-name {
+          font-weight: 500;
+        }
+
+        .user-role {
+          font-style: italic;
+        }
+        .user-name,
+        .user-role {
+          position: relative;
+          width: fit-content;
+          text-align: left;
+          white-space: nowrap;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+.sidebar-expanded {
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    #272035 0%,
+    #2d2a44 6.7%,
+    #2d2b45 94.1%,
+    #261f34 100%
+  );
+
+  .sidebar-content {
+    height: 100%;
+    width: 100%;
+  }
+}

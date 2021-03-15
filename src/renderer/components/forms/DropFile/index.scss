@@ -1,0 +1,81 @@
+.upload-image {
+    height: 150px;
+    align-items: center;
+    display: flex;
+    border-radius: 4px;
+    border: 2px dashed #04aff0;
+
+    p {
+        margin: auto;
+        font-size: 14px;
+    }
+
+    
+}
+.droplist{
+    >h4{
+        color: #c2c2c2;
+        margin-bottom: 2px;
+    }
+
+    >ul{
+        list-style-type: none !important;
+        transition: all 1s;
+        padding: 0;
+        display: grid!important;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(auto-fill, 1fr);
+        grid-row-gap: 0;
+        justify-items: center;
+        text-align: center;
+        li{
+            text-align: center;
+            
+            >div{
+                width: auto;
+                height: 100%;
+                display: flex;
+                justify-content: flex-end;
+                align-items: baseline;
+                flex-direction: column;
+                text-align: center;
+                margin-top: auto;
+                    >div{
+                        width: 100%;
+                        >img{
+                            width:80%;
+                            display: block;
+                        }
+                    }
+                    >div{
+                        
+                        display: flex;
+                        justify-content: center;
+                        >p{
+                            display: block;
+                            text-align: center;
+                        }
+                        
+                            >.close{
+                                display: inline-block;
+                            width: 12px;
+                            margin-left: 10px;
+                            cursor: pointer;
+                            
+                            &:hover {
+                                filter: invert(24%) sepia(86%) saturate(2894%) hue-rotate(293deg) brightness(93%) contrast(85%);
+                            }
+                        }
+                    }
+    
+                   
+    
+                
+            }
+        }
+    }
+    
+}
+.upload-image-drag {
+    border: 2px dashed #D330B6!important;
+}

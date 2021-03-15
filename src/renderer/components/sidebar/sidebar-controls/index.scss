@@ -1,0 +1,73 @@
+.sidebar-controls-container {
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+
+  .buttons {
+    display: flex;
+    position: relative;
+    -webkit-app-region: no-drag;
+    line-height: 24px;
+    height: 24px;
+    width: 60px;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+  
+    .minimize {
+      background-color: #FABD3E;
+      border-color: #CBA864;
+    }
+
+    .close {
+      background-color: #FD5F5C;
+      border-color: #AE545E;
+    }
+  
+    .maximize,
+    .minimize,
+    .pin,
+    .close {
+      width: 12px;
+      height: 12px;
+      margin: 0 4px;
+      border-width: 1px;
+      border-radius: 500px;
+      display: flex;
+      cursor: auto;
+      overflow: hidden;
+
+      svg {
+        margin: auto;
+      }
+    }
+
+    .pin {
+      &.active {
+        background-color: var(--color-background-dark);
+
+        svg {
+          fill: var(--color-icon);
+        }
+      }
+    }
+
+    .pin:hover,
+    .close:hover,
+    .minimize:hover,
+    .maximize:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+
+  .logo {
+    background-image: url("../../../../assets/images/sidebar-logo.png");
+    background-repeat: no-repeat;
+    background-size: inherit;
+    background-position: center;
+    width: 100%;
+    height: 80px;
+    border-bottom: 1px solid #3f3b60;
+  }
+}

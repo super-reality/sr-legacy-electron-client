@@ -1,0 +1,375 @@
+@import "./components/misc.scss";
+
+body {
+  font-family: "Segoe UI" !important;
+  overflow: hidden;
+  height: 100%;
+  @include disable-select;
+}
+
+.click-on {
+  pointer-events: all;
+}
+
+.click-through {
+  pointer-events: none;
+}
+
+:root {
+  --color-background: #202225;
+  --color-background-dark: #1b1f33;
+  // --color-section: #2b2542;
+  --color-section: linear-gradient(180deg, #353358 0%, #302d4d 43.89%, #29233b 100%);
+
+  --main-gradient: linear-gradient(180deg, #29233c 0%, #353459 40.2%, #261f34 100%);
+
+  --color-rainbow: linear-gradient(
+    270deg,
+    #ffffff 0%,
+    #feb666 14.2%,
+    #fe923d 26.8%,
+    #fb4256 47.3%,
+    #a7258a 64%,
+    #0d4ee4 77.8%,
+    #06abed 93.7%,
+    #ffffff 100%
+  );
+
+  --color-less-rainbow: linear-gradient(90.79deg, #fa255a -1.12%, #8c2799 44.72%, #0f32e1 99.41%);
+
+  --color-button: #29233c;
+  --color-button-hover: #585286;
+  --color-text: #bbbbbb;
+  --color-text-active: #c2c2c2;
+  --color-icon: #a8abaf;
+
+  --color-checked: #43b581;
+  --color-green: #43b581;
+  --color-magenda: #9391ce;
+  --color-red: #f04747;
+  --color-blue: #04aff0;
+  --color-pink: #d232b5;
+  --color-cyan: #00fef6;
+  --color-white: #fff;
+
+  --color-light: #A8A8C9;
+
+  --color-section-separator: #393c43;
+  --color-section-separator-hover: #43464e;
+
+  --color-section-hover: #444e58;
+  --color-section-inner-hover: #393c40;
+  --color-background-hover: #3f3e6f;
+  --color-text-disabled: #808284;
+  --color-text-dark: #242526;
+  --color-separator: #6f6f6f;
+}
+
+.shadow-blue {
+  svg {
+    filter: drop-shadow(0px 0px 5px #00fef6);
+  }
+}
+.shadow-pink {
+  svg {
+    filter: drop-shadow(0px 0px 5px #e85fcf);
+  }
+}
+
+body {
+  display: flex;
+  overflow: hidden;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+  margin: 0px;
+  font-family: Roboto;
+  pointer-events: all;
+}
+
+button {
+  border-style: none;
+  -webkit-appearance: none;
+  background-color: rgba(0, 0, 0, 0);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+input,
+textarea {
+  font-family: "Segoe UI";
+  background: var(--color-background-dark);
+  border: 1px solid var(--color-background);
+  border-radius: 4px;
+  height: 27px;
+  width: -webkit-fill-available;
+  margin: auto;
+  color: var(--color-text);
+  padding: 0 8px;
+}
+
+textarea {
+  padding: 8px;
+}
+
+input:active,
+input:focus,
+textarea:active,
+textarea:focus {
+  border: 1px solid var(--color-background-hover);
+  outline: none;
+}
+
+a:focus,
+a:hover,
+a:visited,
+a:link,
+a:active {
+  text-decoration: none;
+}
+
+#root {
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: all;
+}
+
+.content {
+  overflow: auto;
+  height: calc(100% - 45px);
+}
+
+.content-detached {
+  overflow: auto;
+  height: 100vh;
+}
+
+.content-wrapper {
+  @include media-screen-max($break-wrapper) {
+    width: auto;
+  }
+  @include media-screen-min($break-wrapper) {
+    width: $break-wrapper;
+    margin: auto;
+  }
+}
+
+::-webkit-resizer {
+  // background: #a3258c;
+  border-bottom: 30px solid #3f3b60;
+  border-left: 30px solid transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: #a3258c;
+}
+
+::-webkit-scrollbar {
+  background: --var(--color-text-dark);
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background: transparent;
+  margin-right: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #29233d;
+  opacity: 0.5;
+  border-radius: 8px;
+}
+
+.animation-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.animation-el {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.error-boundary {
+  max-width: 800px;
+  margin: auto;
+  background-color: var(--color-background);
+  padding: 64px;
+
+  .error-info-top {
+    background-color: var(--color-r);
+    border-radius: 3px 3px 0 0;
+    padding: 24px;
+    height: 48px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .error-info-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .error-info-text {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .error-info-bottom {
+    border-radius: 3px;
+    padding: 6px;
+    height: calc(100% - 112px);
+    overflow: scroll;
+  }
+}
+
+.browser-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 40px;
+}
+
+.animate-gradient {
+  background-image: url("../assets/svg/cool-gradient.svg");
+  background-size: 100%;
+  background-size: cover;
+  height: 100%;
+  background-repeat: no-repeat;
+  -webkit-animation: gradient-background-animation 60s ease infinite alternate-reverse;
+  -moz-animation: gradient-background-animation 60s ease infinite alternate-reverse;
+  animation: gradient-background-animation 60s ease infinite alternate-reverse;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-right {
+  position: absolute;
+  display: block;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #03e9f4);
+  animation: shootingStar1 1s linear forwards ;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-bottom {
+  position: absolute;
+  display: block;
+  top: -100%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar2 1s linear forwards;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-left {
+  position: absolute;
+  display: block;
+  right: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar4 1s linear forwards;
+}
+
+/* Shooting star animation */
+span#shooting-star-to-top {
+  position: absolute;
+  display: block;
+  bottom: -100%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, #03e9f4);
+  animation: shootingStar3 1s linear forwards;
+}
+
+@-webkit-keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@-moz-keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-background-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 51%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shootingStar1 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    left: -100%
+  }
+  50%, 100% {
+    left: 100%
+  }
+}
+
+@keyframes shootingStar2 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    top: -100%
+  }
+  50%, 100% {
+    top: 100%
+  }
+}
+
+@keyframes shootingStar3 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    bottom: -100%
+  }
+  50%, 100% {
+    bottom: 100%
+  }
+}
+
+@keyframes shootingStar4 {
+  0% {
+    box-shadow: 
+        0 0 30px 10px #413db6;
+    right: -100%
+  }
+  50%, 100% {
+    right: 100%
+  }
+}

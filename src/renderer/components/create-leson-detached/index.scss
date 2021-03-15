@@ -1,0 +1,187 @@
+@import "../misc.scss";
+
+.transparent-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.solid-container {
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background);
+  border: 1px solid rgb(45, 45, 45);
+}
+
+.top-bar {
+  height: 24px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+  font-size: 14px;
+  line-height: 24px;
+  display: flex;
+
+  .name {
+    padding-left: 8px;
+    margin-right: auto;
+  }
+
+  .buttons {
+    display: flex;
+    -webkit-app-region: no-drag;
+    text-align: center;
+    line-height: 24px;
+
+    .minimize {
+      width: 34px;
+      height: 100%;
+      display: flex;
+    }
+
+    .maximize {
+      width: 34px;
+      height: 100%;
+      display: flex;
+    }
+
+    .close {
+      width: 34px;
+      height: 100%;
+      display: flex;
+    }
+
+    .minimize:hover,
+    .maximize:hover {
+      background-color: var(--color-button);
+    }
+
+    .close:hover {
+      background-color: var(--color-red);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    background: linear-gradient(180deg, rgba(41, 35, 60, 0) 0%, rgba(53, 52, 89, 0) 40.2%, rgba(38, 31, 52, 0) 100%);
+  }
+  10%{
+    background: linear-gradient(180deg, rgba(41, 35, 60, .1) 0%, rgba(53, 52, 89, .1) 40.2%, rgba(38, 31, 52, .1) 100%);;
+  }
+  30%{
+    background: linear-gradient(180deg, rgba(41, 35, 60, .3) 0%, rgba(53, 52, 89, .3) 40.2%, rgba(38, 31, 52, .3) 100%);;
+  }
+  50% {
+    background: linear-gradient(180deg, rgba(41, 35, 60, .5) 0%, rgba(53, 52, 89, .5) 40.2%, rgba(38, 31, 52, .5) 100%);;
+  }
+  70% {
+    background: linear-gradient(180deg, rgba(41, 35, 60, .7) 0%, rgba(53, 52, 89, .7) 40.2%, rgba(38, 31, 52, .7) 100%);;
+  }
+  100% {
+    background: linear-gradient(180deg, rgba(41, 35, 60, 1) 0%, rgba(53, 52, 89, 1) 40.2%, rgba(38, 31, 52, 1) 100%);;
+  }
+}
+
+@keyframes fromTop {
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes fromRight {
+  100% {
+    right: 0;
+  }
+}
+
+
+.main-container {
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto 20px;
+  grid-template-areas: "edit" "status";
+  grid-gap: 5px;
+  padding: 5px;
+  // background: var(--main-gradient);
+  background: transparent; // For Voltron
+
+  animation-name: fadeIn;
+  animation-duration: .5s;
+  animation-delay: 1s;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+
+  .edit {
+    display: flex;
+    grid-area: edit;
+    overflow: hidden;
+    height: 100%;
+
+    .creator {
+      border-radius: 3px;
+      min-width: 300px;
+      display: grid;
+      grid-template-rows: auto 48px 320px;
+      grid-gap: 8px;
+      border-right: 1px solid var(--color-section);
+      overflow: hidden;
+      background: var(--main-gradient);
+      /* position: relative; */
+      top: -100%;
+      animation: fromTop .75s ease forwards;
+      animation-delay: .75s;
+    }
+
+    .anchor-edit {
+      min-width: 300px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--color-section);
+    }
+
+    .preview {
+      width: auto;
+      flex-grow: 2;
+      overflow: hidden;
+      position: relative;
+      right: -100%;
+      animation: fromRight .75s ease forwards;
+    }
+  }
+
+  .nav {
+    position: relative;
+    grid-area: nav;
+    background: var(--color-section);
+  }
+}
+
+.name {
+  padding-left: 8px;
+  margin-right: auto;
+}
+
+.spectrum-container {
+  width: calc(100% - 32px);
+  height: 30px;
+  position: absolute;
+  display: flex;
+  bottom: 16px;
+  margin-left: 16px;
+  align-items: center;
+  z-index: 1;
+  // background: linear-gradient(180deg, #343358 0%, #2b2641 68.4%);
+
+  .spectrum-bar {
+    width: 3px;
+    background: #343358;
+    display: flex;
+  }
+}

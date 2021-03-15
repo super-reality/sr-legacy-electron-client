@@ -1,0 +1,62 @@
+@import "../misc.scss";
+
+.collapsible-box {
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  margin: 8px 0;
+  padding: 0 12px;
+  color: var(--color-text);
+  line-height: 24px;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: #211b33;
+
+  &:hover {
+    background-color: var(--color-background-hover);
+  }
+}
+
+.collapsible-box-outer {
+  cursor: pointer;
+  display: flex;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 12px;
+  color: var(--color-text);
+  font-size: 14px;
+
+  &:hover {
+  }
+}
+
+.icon-collapse {
+  transition: all .2s ease-in-out;
+  transform: rotate(-90deg);
+
+  &.open {
+    transform: rotate(0deg);
+  }
+}
+
+.icon-detach {
+  opacity: 0.66;
+  height: 16px;
+  width: 16px;
+  margin: auto 0 auto auto;
+  @include animated;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.collapsible-content {
+  overflow: hidden;
+
+  &.expanded {
+    overflow: inherit;
+    height: auto !important;
+  }
+}
+

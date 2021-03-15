@@ -1,0 +1,50 @@
+.anchor-image-preview {
+  width: 300px;
+  height: 180px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto;
+  background-color: #211b33;
+}
+
+.anchor-templates-carousel {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+
+  .left-arrow {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 40%;
+    background-image:url("../../../../../assets/svg/left-arrow.svg");
+    background-repeat: no-repeat;
+    cursor: pointer;
+
+  }
+
+  .right-arrow {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: 40%;
+    background-image:url("../../../../../assets/svg/right-arrow.svg");
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+
+  .template {
+    cursor: pointer;
+    height: 64px;
+    width: 64px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: var(--color-background-dark);
+
+    &.selected {
+      background-color: var(--color-background-dark);
+    }
+  }
+}

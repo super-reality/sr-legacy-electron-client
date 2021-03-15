@@ -1,0 +1,88 @@
+@import "../components/misc.scss";
+
+.popup-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #00000085;
+  display: flex;
+  z-index: 25;
+  cursor: auto;
+
+  .popup-box {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    min-width: 100px;
+    min-height: 100px;
+    margin: auto;
+    background: linear-gradient(
+      180deg,
+      #29233c 0%,
+      #353459 50.2%,
+      #261f34 100%
+    );
+    max-width: calc(100% - 16px);
+    max-height: calc(100% - 128px);
+    overflow: auto;
+    position: relative;
+    top: 32px;
+    box-shadow: 0px 7px 12px 4px #0000004f;
+  }
+}
+
+.topnav-dropdown-container {
+  position: absolute;
+  width: 200px;
+  background-color: #41336B;
+  z-index: 15;
+  @include diffuse-shadow;
+
+  .option {
+    color: #C2C2C2;
+    line-height: 24px;
+    cursor: pointer;
+    padding: 5px 15px;
+    margin: 0px;
+    @include animated;
+
+    &:hover {
+      background-color: var(--color-button);
+    }
+  }
+}
+
+.dropdown-container {
+  position: absolute;
+  width: 200px;
+  background-color: #2f3136;
+  padding: 4px;
+  border-radius: 0 0 5px 5px;
+  z-index: 15;
+  @include diffuse-shadow;
+
+  @include media-screen-min($break-desktop) {
+    margin-top: 37px;
+  }
+
+  @include media-screen-max($break-desktop) {
+    margin-top: 77px;
+  }
+
+  .option {
+    height: 24px;
+    line-height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 4px 8px;
+    background-color: var(--color-button);
+    margin: 4px;
+    @include animated;
+
+    &:hover {
+      background-color: var(--color-section-hover);
+    }
+  }
+}
