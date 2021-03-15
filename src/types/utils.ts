@@ -14,8 +14,11 @@ export interface CVResult {
   width: number;
   height: number;
   time: number;
+  date: number;
   id: string;
 }
+
+export type CVTypes = "template" | "ocr";
 
 export type Rectangle = {
   x: number;

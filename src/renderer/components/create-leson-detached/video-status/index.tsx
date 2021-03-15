@@ -16,6 +16,7 @@ import newAnchor from "../lesson-utils/newAnchor";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import useDebounce from "../../../hooks/useDebounce";
 import { itemsPath } from "../../../electron-constants";
+import { CVResult } from "../../../../types/utils";
 
 function doNewAnchor(url: string) {
   return newAnchor({
@@ -57,7 +58,17 @@ export default function VideoStatus() {
     previewMode,
   } = useSelector((state: AppState) => state.createLessonV2);
 
-  const anchor: IAnchor | null = useMemo(() => {
+  const ocr: string[] = useMemo(() => {
+    const step: IStep | null = treeSteps[currentStep || ""];
+
+    return (
+      step?.startWhen
+        .filter((tv) => tv.type == "Text Found")
+        .map((tv) => tv.value as string) || []
+    );
+  }, [treeSteps, currentStep]);
+
+  const anchor: IAnchor | undefined = useMemo(() => {
     // const slice = store.getState().createLessonV2;
     const step: IStep | null = treeSteps[currentStep || ""];
 
@@ -69,12 +80,41 @@ export default function VideoStatus() {
     );
   }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
 
+  const anchorOptions: Partial<AppState["settings"]["cv"]> = useMemo(() => {
+    // const slice = store.getState().createLessonV2;
+    const step: IStep | null = treeSteps[currentStep || ""];
+
+    const anchors =
+      step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
+
+    return (
+      treeAnchors[(anchors[0]?.value as string) || currentAnchor || ""] || {
+        cvMatchValue: 990,
+        cvCanvas: 100,
+        cvDelay: 50,
+        cvGrayscale: true,
+        cvApplyThreshold: false,
+        cvThreshold: 127,
+      }
+    );
+  }, [treeAnchors, currentAnchor, treeSteps, currentStep]);
+
   const cvDebouncer = useDebounce(1000);
 
+  const setMatchCvResult = (arg: CVResult) =>
+    reduxAction(dispatch, { type: "SET_CV_RESULT", arg });
+
   useEffect(() => {
-    if (!anchor) return;
+    if (!anchor && ocr.length == 0) return;
+
+    const templatesList = anchor?.templates || ocr;
+    let templateType: "template" | "ocr" = "template";
+    if (!anchor?.templates) templateType = "ocr";
+
     console.log(
       "Do cv match trigger:",
+      templateType,
+      templatesList,
       triggerCvMatch,
       canvasSourceType,
       canvasSource
@@ -83,33 +123,49 @@ export default function VideoStatus() {
     if (canvasSourceType == "file" && canvasSource) {
       // Trigger CV match on current preview canvas
       cvDebouncer(() => {
-        doCvMatch(anchor.templates, canvasSource, anchor).then((arg) =>
-          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-        );
+        doCvMatch(
+          templatesList,
+          canvasSource,
+          "filename",
+          templateType,
+          anchorOptions
+        ).then(setMatchCvResult);
       });
     } else if (canvasSourceType == "url" && canvasSource) {
+      // Trigger CV match on current preview canvas
       const fileName = canvasSource.split("/")?.pop() || "";
       const file = path.join(itemsPath, fileName);
-      // Trigger CV match on current preview canvas
+      console.log("canvasSourceType url", file);
+      //
       cvDebouncer(() => {
-        doCvMatch(anchor.templates, file, anchor).then((arg) =>
-          reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-        );
+        doCvMatch(
+          templatesList,
+          file,
+          "filename",
+          templateType,
+          anchorOptions
+        ).then(setMatchCvResult);
       });
     } else {
+      // trigger cv match on current video/recording
       const videoHidden = document.getElementById(
         "video-hidden"
       ) as HTMLVideoElement;
       if (videoHidden) {
+        //
         cvDebouncer(() => {
-          // trigger cv match on current video/recording
-          doCvMatch(anchor.templates, videoHidden, anchor).then((arg) =>
-            reduxAction(dispatch, { type: "SET_CV_RESULT", arg })
-          );
+          doCvMatch(
+            templatesList,
+            videoHidden,
+            "video",
+            templateType,
+            anchorOptions
+          ).then(setMatchCvResult);
         });
       }
     }
   }, [
+    ocr,
     dispatch,
     cvDebouncer,
     anchor,

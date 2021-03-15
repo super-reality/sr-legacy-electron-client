@@ -19,7 +19,9 @@ export default function pendingReduxAction<T>(
       }
       if (new Date().getTime() - startTime > maxWait) {
         clearInterval(interval);
-        reject();
+        reject(
+          new Error(`Pending redux action listener timeout (${maxWait} ms)`)
+        );
       }
     }, 100);
   });

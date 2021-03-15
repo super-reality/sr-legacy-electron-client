@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import "./index.scss";
+import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
+import { InputProps } from "..";
 import VibeEmoji from "./VibeEmojiMy";
 
 import VibeAmusement from "../../../../assets/svg/vibe-amusment.svg";
@@ -119,7 +121,7 @@ const NegativeVibes = [
   },
 ];
 
-export default function VineGroup(): JSX.Element {
+export default function VineGroup(props: InputProps): JSX.Element {
   function HorizontallyBound(parentDiv: Element, childDiv: Element) {
     const parentRect = parentDiv.getBoundingClientRect();
     const childRect = childDiv.getBoundingClientRect();
@@ -137,6 +139,7 @@ export default function VineGroup(): JSX.Element {
       childDiv.classList.add("center");
     }
   }
+  const { name, setFieldValue } = props;
 
   const checkBoundaries = () => {
     const vibesGroups = document.querySelector(".vibe-emojis");
@@ -151,37 +154,47 @@ export default function VineGroup(): JSX.Element {
   }, []);
 
   return (
-    <>
-      <div className="vibe-group">
-        Positive
-        <div className="vibe-emojis">
-          {PositiveVibes.map((vibe) => (
-            <div key={`${vibe.title}-${vibe.emoji}`}>
-              <VibeEmoji
-                title={vibe.title}
-                checkBoundaries={checkBoundaries}
-                emoji={vibe.emoji}
-              />
+    <Field name={name}>
+      {({ field }: FieldProps) => {
+        return (
+          <>
+            <div className="vibe-group">
+              Positive
+              <div className="vibe-emojis">
+                {PositiveVibes.map((vibe) => (
+                  <div key={`${vibe.title}-${vibe.emoji}`}>
+                    <VibeEmoji
+                      title={vibe.title}
+                      checkBoundaries={checkBoundaries}
+                      emoji={vibe.emoji}
+                      field={{ ...field }}
+                      setEmoji={setFieldValue}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      <div className="vibe-group">
-        Negative
-        <div className="vibe-emojis">
-          {NegativeVibes.map((vibe) => (
-            <div key={`${vibe.title}-${vibe.emoji}`}>
-              <VibeEmoji
-                title={vibe.title}
-                checkBoundaries={checkBoundaries}
-                emoji={vibe.emoji}
-              />
+            <div className="vibe-group">
+              Negative
+              <div className="vibe-emojis">
+                {NegativeVibes.map((vibe) => (
+                  <div key={`${vibe.title}-${vibe.emoji}`}>
+                    <VibeEmoji
+                      title={vibe.title}
+                      checkBoundaries={checkBoundaries}
+                      emoji={vibe.emoji}
+                      field={{ ...field }}
+                      setEmoji={setFieldValue}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </>
+          </>
+        );
+      }}
+    </Field>
   );
 }
 /* 

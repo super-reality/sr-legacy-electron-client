@@ -10,6 +10,7 @@ import settingsSlice from "../slices/settingsSlice";
 import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 import chatSlice from "../slices/chatSlice";
 import createSupportTicketSlice from "../slices/createSupportTicketSlice";
+import sidebarSlice from "../slices/sidebarSlice";
 
 const combinedReducer = combineReducers({
   auth: authSlice.reducer,
@@ -22,6 +23,7 @@ const combinedReducer = combineReducers({
   lessonPlayer: lessonPlayerSlice.reducer,
   chat: chatSlice.reducer,
   createSupportTicket: createSupportTicketSlice.reducer,
+  sidebar: sidebarSlice.reducer,
 });
 
 type RootReducerType = typeof combinedReducer;

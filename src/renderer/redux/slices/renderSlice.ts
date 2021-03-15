@@ -24,6 +24,8 @@ const initialState = {
     y: 0,
     width: 0,
     height: 0,
+    time: 0,
+    date: 0,
   } as CVResult,
 };
 
