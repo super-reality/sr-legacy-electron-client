@@ -1,3 +1,10 @@
+## [2.0.10](https://github.com/super-reality/super-reality-client/compare/v2.0.9...v2.0.10) (2021-03-17)
+
+
+### Bug Fixes
+
+* **ci:** dont skip ci on tagged release commit ([56a43f5](https://github.com/super-reality/super-reality-client/commit/56a43f5f39fe65ceb51b335679eef819626cb064))
+
 ## [2.0.9](https://github.com/super-reality/super-reality-client/compare/v2.0.8...v2.0.9) (2021-03-17)
 
 
