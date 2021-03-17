@@ -102,6 +102,7 @@
     "electron-rebuild": "electron-rebuild",
     "pre-build-iohook-win": "copyfiles -f iohooks/** node_modules/iohook/builds/electron-v80-win32-x64/build/Release",
     "postinstall": "node add-ffmpeg.js",
+    "semantic-release-dry": "semantic-release --dry-run --debug",
     "semantic-release": "semantic-release"
   },
   "build": {
