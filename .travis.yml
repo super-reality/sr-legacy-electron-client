@@ -40,7 +40,7 @@ jobs:
         prerelease: true
         draft: false
         api_key:
-          secure: Uc4t5CwRHkBhgLWN5AXEMMfuRUnhfehf5aYY/owh5jzKLxOfKt5ysWY3+95NAzaIoXST1noJfCQehpnOhMA+g9rcq+xzlcJ2EgVAfTnXyPhrGyU5K7uKgpeeRnLfqmZfm0VhVoxurCK761lFRMgTJR4RtMH4+5XFUGHm1aEd6jWa3clTH5oLOMPCW1I4jyMHO7YPUHL4quxYem/b+a+H7AtkCgHHxXYn6WjISrmRwbE65UCJt7Gud9lxQmp14nVTmWi9iyL0M9ClOlwA2MmT19B8Keb5MLqwIqTMABBm4uNmV6JE19uuOgZfRS/7fvQZOrGXwIEz+vZeu/VTWSk2QvBo1TJ6uPL7IP4znB+HqFUVWClbNg/xHD89Mpd/KPVvOMEEU3U3Ms1oV0SvsfUkmn50X80fAXhREM8+MHdkYE+N+cSd8AeMof1yLrIks879wm4IOuywjY4vAizq99phDajCBHS0287HeC3+Vx4u/E5NApyzKPwbWH/fDR1BrEGpr2xMPwgY29mVzs2Cali0MZYuWjJA2Y3AwuhyUzUu27C062bwE6zVELzf/myKcskIkebrqDqwYjs0sKEVsBnTD48GPdSYSrEg3utAQ5+w0qbJM/+2f0MAjY2y4e7j57eiltVP/dUzIl/C6bl1fqz6PQFMbEyyBVCqiO84sxStjjc=
+          secure: I+WS0VxbbaIzz27MCtjkhx6SPvxhsLzd5zfNkfQZ+98VCLGoscLYrIj5uorSLIuCcwHXgwkKE3cN0pYOWk4Hhrl0ypkKYssLx/Fd2ZTFY1xwI9nIScvfa0CbQCxkUem3kplU5u61yDcfPt5Vw6J8xBaQpijsr4a1kWZBI+qY89oTEI13aGQuoQCFgH9I02VEUbjv+Fa0cWxZMB9VQhaUMVnZvu/hYefl2330ZBLTOI45DN9YyYeCUdPezWnCi7Gs+Si/t2qflGUuNXau/6VgXDjtvzkX2slN7gTXUPMbWupZw4iIPgPv2OzxRKGSGoZFc+XNQ8VgYUKLRqnuSRuHw4bf4WXm0hnNYH81+8JE4KUkg7MucoczdCzHLpiZGfaGkpFMJK9RsUHsg0sCiMz9wSSHt1QwBUfNlLRpOy24zq81C9Iv9rylzfhVYIU55MDIatCEQemfhTR5Qpf1tbin8j/SVHVjqzQtxYerHfp8yp73KIbBnQhWn49l8GAXL4R4I/V2ugQAcfbmYVeo4XUlJ+jrVVS8Fqt8bui++6lMM3B56onZzipQf3ZZAC9rqCMPUPiut1J+9skXeADoVcYdbW8k5XwKGxKcqZlXrsQbLYC/+mhunqpmKpnQTV47tyBVyzXgfILnKHmuvQp0JHT0MpyG6lfbmLU1Wv5MV1ousII=
         file: dist/*
         on:
           tags: true

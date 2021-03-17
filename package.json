@@ -1,6 +1,6 @@
 {
   "name": "super-reality-client",
-  "version": "2.0.5",
+  "version": "2.0.5-development",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
@@ -101,7 +101,8 @@
     "build": "npm run electron-rebuild && npm run react-build && npm run electron-build",
     "electron-rebuild": "electron-rebuild",
     "pre-build-iohook-win": "copyfiles -f iohooks/** node_modules/iohook/builds/electron-v80-win32-x64/build/Release",
-    "postinstall": "node add-ffmpeg.js"
+    "postinstall": "node add-ffmpeg.js",
+    "semantic-release": "semantic-release"
   },
   "build": {
     "appId": "com.super.reality.client",
@@ -235,7 +236,8 @@
     "node-libuiohook": "^1.1.2",
     "prettier": "^2.0.5",
     "react-test-renderer": "^16.13.1",
-    "sinon": "^9.2.3"
+    "sinon": "^9.2.3",
+    "semantic-release": "^17.4.2"
   },
   "config": {
     "commitizen": {
@@ -251,5 +253,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/super-reality/super-reality-client.git"
   }
 }
