@@ -22,17 +22,46 @@
       margin-top: auto;
       > div {
         width: 100%;
-        > img {
+        position: relative;
+
+        img {
           width: 80%;
           display: block;
+          margin: 0;
         }
 
         > a {
           width: 100%;
-          > img {
-            width: 80%;
-            display: block;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          span{
+            display: flex!important;
+            justify-content: center;
+            align-items: center;
           }
+          &:hover{
+            .download-icon {
+              opacity: 1;
+            }
+            img{
+              filter: brightness(50%);
+            }
+          }
+          .download-icon{
+            position: absolute;
+            height: 30px;
+            width: 30px;
+            fill: white;
+            opacity: 0;
+            z-index: 1;
+            transition: all 0.5s;
+          }
+          img {
+            transition: all 0.5s!important;
+          } 
         }
       }
       > div {

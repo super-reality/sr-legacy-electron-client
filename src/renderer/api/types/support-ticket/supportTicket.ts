@@ -168,6 +168,17 @@ export interface ICategoryGet {
   category: IData[];
 }
 
+export interface ISkill {
+  name: string;
+  _id: string;
+}
+
+export interface ISkillGet {
+  err_code: CodeSuccess;
+  name: string;
+  _id: string;
+}
+
 export interface ISingleCategoryGet {
   err_code: CodeSuccess;
   category: {
@@ -180,6 +191,7 @@ export interface ISingleCategoryGet {
 export interface ISubcategory {
   _id: string;
   name: string;
+  skills: { _id: string; name: string }[];
 }
 
 export interface Ioptions {

@@ -122,6 +122,18 @@ export default function SupportTickets(): JSX.Element {
 
   useEffect(() => {
     let ob: IfilterOptions = {};
+
+    console.log(searchOption);
+    console.log(`CATEGORY: ${searchCategory}`);
+
+    if (searchOption == "" && searchCategory == "") {
+      (async () => {
+        await getSupportTickets().then((tickets) => {
+          setTickets(tickets.reverse());
+        });
+      })();
+    }
+
     if (searchOption != "" && searchCategory != "") {
       console.log("SI");
       ob = {
@@ -141,6 +153,7 @@ export default function SupportTickets(): JSX.Element {
         name: searchOption,
         limit: 10,
       };
+      console.log(ob);
       (async () => {
         await filterTickets(ob);
       })();
@@ -183,7 +196,13 @@ export default function SupportTickets(): JSX.Element {
               Category
               <AutosuggestInput<IData>
                 filter={searchCategories}
-                getValue={(suggestion: IData) => suggestion.name}
+                getValue={(suggestion: IData) => {
+                  console.log(suggestion);
+                  return suggestion.name;
+                }}
+                onChangeCallback={(s) => {
+                  if (s.length == 0) setSearchCategory("");
+                }}
                 renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
                 initialValue={""}
                 id={"category-search"}

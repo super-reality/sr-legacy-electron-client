@@ -1,7 +1,10 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from "react";
 import "./index.scss";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 import close from "../../../../../assets/svg/close-img.svg";
+import { ReactComponent as DownloadComponent } from "../../../../../assets/svg/download-logo.svg";
 import { IFile } from "../../../../api/types/support-ticket/supportTicket";
 
 interface IimagePreviewProps {
@@ -64,7 +67,9 @@ function getImagesString(props: IimagePreviewStringProps): JSX.Element[] {
         <div>
           <div className="image-preview-image">
             <a href={file}>
-              <img src={file} alt="lol23" />
+              <DownloadComponent className="download-icon" />
+              <LazyLoadImage effect="blur" src={file} />
+              {/* <img src={file} alt="lol23" /> */}
             </a>
           </div>
         </div>

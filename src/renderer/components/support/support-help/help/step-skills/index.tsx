@@ -27,7 +27,7 @@ interface Values {
   newCategories: any[];
 }
 
-const skillsOpts = [
+export const skillsOpts = [
   {
     name: "Blender",
     options: [
@@ -168,11 +168,11 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             request? This will help pair you with teacher.
             <ErrorMessage component={TextError} name="skills" />
             {slice.subcategories &&
-              slice.subcategories.map((skill, i) => (
+              slice.subcategories.map((skill) => (
                 <SingleCategory
                   key={skill.name}
                   name={skill.name}
-                  options={skillsOpts[i].options}
+                  options={skill.skills}
                   context={{ ...formik }}
                 />
               ))}

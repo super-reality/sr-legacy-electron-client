@@ -71,7 +71,7 @@ export default function Support(): JSX.Element {
   useEffect(() => {
     if (!skillsData.length && !categoryData.length) {
       (async () => {
-        getAllCategories().then((categories) => {
+        getAllCategories(3).then((categories) => {
           reduxAction(dispatch, {
             type: "SET_SUPPORT_TICKET",
             arg: {

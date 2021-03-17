@@ -8,7 +8,7 @@ export default function getCategories(
   id: string
 ): Promise<ISingleCategoryGet["category"]> {
   return new Promise((resolve, reject) => {
-    Axios.get<ISingleCategoryGet | ApiError>(`${API_URL}category/${id}`)
+    Axios.get<ISingleCategoryGet | ApiError>(`${API_URL}category/${id}/skills`)
       .then(handleSupportSingleCategoryGet)
       .then(resolve)
       .catch(reject);

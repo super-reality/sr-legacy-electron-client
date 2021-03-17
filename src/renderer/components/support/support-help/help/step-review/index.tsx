@@ -113,7 +113,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     console.log(payload);
     await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
-        let document_context = `You are a teacher expert in ${getSingleName(
+        let document_context = `GAIA is a teacher expert in ${getSingleName(
           category,
           categoryData
         )}. You have skills in `;
@@ -128,7 +128,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
           }
         });
 
-        document_context += `\n\nAnd the problem your student is telling you about is ${description}.`;
+        document_context += ` And the problem your student is telling you about is ${description}.`;
 
         vibes.forEach((vibe, ind) => {
           const levels = [
@@ -137,7 +137,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
             "a lot of",
           ];
           if (ind == 0) {
-            document_context += `\n\nAlso your student is feeling ${
+            document_context += ` Also your student is feeling ${
               levels[vibe.level - 1]
             } ${vibe.title}`;
           } else if (ind == vibes.length - 1) {
@@ -146,9 +146,15 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
             document_context += `, ${levels[vibe.level - 1]} ${vibe.title}`;
           }
         });
+
+        document_context += `\n\nGAIA: What can I learn?\nStudent: You can learn ${getSingleName(
+          category,
+          categoryData
+        )}`;
+
         const document: IPostDocument = {
           document_name: res._id ?? "name",
-          engine: "curie",
+          engine: "davinci",
           document_context: document_context,
         };
 
