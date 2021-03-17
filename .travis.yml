@@ -25,7 +25,6 @@ jobs:
       os: windows
       env: YARN_GPG=no
       script:
-        - npm run semantic-release-dry
         - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
     - stage: Build
@@ -53,14 +52,3 @@ jobs:
         on:
           tags: true
           repo: super-reality/super-reality-client
-
-      #  provider: s3
-      #  edge: true
-      #  access_key_id: $ARTIFACTS_KEY
-      #  secret_access_key: $ARTIFACTS_SECRET
-      #  overwrite: true
-      #  bucket: "super-reality-builds"
-      #  skip_cleanup: true
-      #  region: "us-west-1"
-      #  acl: public_read
-      #  local_dir: dist
