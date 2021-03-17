@@ -11,27 +11,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout source code"
-        uses: "actions/checkout@v1"
-        with:
-          ref: ${{ github.ref }}
-
-      - name: "cat package.json"
-        run: cat ./package.json
-
-      - name: Use node ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
-        with:
-          version: ${{ matrix.node_version }}
-
-      - name: "Version Bump"
-        uses: "Manuel-777/gh-action-bump-version@master"
-        with:
-          tag-prefix: ''
-        env:
-          GITHUB_USER: "Manwe's Bot"
-          GITHUB_EMAIL: "manuel.etchegaray7@gmail.com"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: "cat package.json"
-        run: cat ./package.json
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Semantic Release
+          uses: cycjimmy/semantic-release-action@v2
+          with:
+            semantic_version: 16
+            extra_plugins: |
+              @semantic-release/changelog@3.0.0
+              @semantic-release/git
+            branches: |    
+              [
+                'master', 
+                'next', 
+                'next-major', 
+                {
+                  name: 'beta', 
+                  prerelease: true
+                }, 
+                {
+                  name: 'alpha', 
+                  prerelease: true
+                }
+              ]
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
