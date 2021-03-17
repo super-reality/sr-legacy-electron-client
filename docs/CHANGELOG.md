@@ -1,3 +1,10 @@
+## [2.0.11](https://github.com/super-reality/super-reality-client/compare/v2.0.10...v2.0.11) (2021-03-17)
+
+
+### Bug Fixes
+
+* **ci:** set project info json on build ([56d6b68](https://github.com/super-reality/super-reality-client/commit/56d6b6884e545767511aef5d8542d58d143cd320))
+
 ## [2.0.10](https://github.com/super-reality/super-reality-client/compare/v2.0.9...v2.0.10) (2021-03-17)
 
 
