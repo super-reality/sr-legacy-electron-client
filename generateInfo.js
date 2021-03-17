@@ -10,6 +10,9 @@ function generateInfo(branchName) {
     timestamp: new Date().getTime(),
   };
 
+  console.log("SET INFO VERSION");
+  console.log(informationObject.version);
+
   fs.writeFileSync("./src/info.json", JSON.stringify(informationObject));
 }
 

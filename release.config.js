@@ -22,7 +22,7 @@ module.exports = {
     [
       "@semantic-release/exec",
       {
-        prepareCmd: "node ./generateInfo.js ${nextRelease.version}",
+        prepareCmd: "node generateInfo.js ${nextRelease.version}",
       },
     ],
   ],

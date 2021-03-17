@@ -19,18 +19,27 @@ filter_secrets: false
 addons:
   hostname: localhost
 
+after_success:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh success $WEBHOOK_URL
+after_failure:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $WEBHOOK_URL
+
 jobs:
   include:
     - stage: Tests
       os: windows
       env: YARN_GPG=no
       script:
-        - node ./generateInfo.js
         - npm run test:all || travis_terminate 1
     - stage: Build
       os: windows
       env: YARN_GPG=no
       script:
+        - node ./generateInfo.js
         - npm run electron-rebuild
         - npm run pre-build-iohook-win
         - npm run build
