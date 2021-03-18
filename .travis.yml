@@ -42,6 +42,7 @@ jobs:
       deploy:
         on:
           all_branches: true
+          repo: super-reality/super-reality-client
         provider: releases
         file_glob: true
         skip_cleanup: true
@@ -49,5 +50,3 @@ jobs:
         draft: false
         api_key: ${ GH_TOKEN }
         file: dist/*
-        on:
-          repo: super-reality/super-reality-client
