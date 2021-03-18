@@ -5,8 +5,8 @@ function generateInfo(branchName) {
   const packageJson = JSON.parse(fs.readFileSync("./package.json"));
 
   const informationObject = {
-    version: process.argv[1] || packageJson.version,
-    branch: branchName,
+    version: packageJson.version,
+    branch: `v${packageJson.version}` == branchName ? "master" : branchName,
     timestamp: new Date().getTime(),
   };
 

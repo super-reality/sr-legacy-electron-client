@@ -10,6 +10,13 @@ on:
       - master
 #      - develop
 
+# What this action does;
+# - Creates a release notes .md
+# - Updates the version in package json using semantic-release
+# - Pushes a new commit to github using the new tag
+# - The new tagged commit triggers a travis release build
+# - Does not create the github release (see travis.yml for that)
+
 jobs:
   bump-version:
     name: Bump version (${{ github.sha }})
