@@ -16,6 +16,9 @@ filter_secrets: false
 addons:
   hostname: localhost
 
+install:
+  - node ./generateInfo.js
+
 jobs:
   include:
     - stage: Tests
