@@ -1,3 +1,10 @@
+## [2.0.15](https://github.com/super-reality/super-reality-client/compare/v2.0.14...v2.0.15) (2021-03-18)
+
+
+### Bug Fixes
+
+* **ci:** merge build and release jobs ([914fe2b](https://github.com/super-reality/super-reality-client/commit/914fe2be71c5c84f25d203b7a1321a85169a11d5))
+
 ## [2.0.14](https://github.com/super-reality/super-reality-client/compare/v2.0.13...v2.0.14) (2021-03-18)
 
 
