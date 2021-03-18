@@ -1,3 +1,10 @@
+## [2.0.17](https://github.com/super-reality/super-reality-client/compare/v2.0.16...v2.0.17) (2021-03-18)
+
+
+### Bug Fixes
+
+* **ci:** remove github from auto bump ([ba2a5eb](https://github.com/super-reality/super-reality-client/commit/ba2a5ebd7dc9511c7a6a70232814c281d382304f))
+
 ## [2.0.16](https://github.com/super-reality/super-reality-client/compare/v2.0.15...v2.0.16) (2021-03-18)
 
 
