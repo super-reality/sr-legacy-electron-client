@@ -1,3 +1,10 @@
+## [2.0.16](https://github.com/super-reality/super-reality-client/compare/v2.0.15...v2.0.16) (2021-03-18)
+
+
+### Bug Fixes
+
+* **ci:** use gh token ([51f8c16](https://github.com/super-reality/super-reality-client/commit/51f8c168b378bc3fc6a5ddd4b0e377ebb7c35bdf))
+
 ## [2.0.15](https://github.com/super-reality/super-reality-client/compare/v2.0.14...v2.0.15) (2021-03-18)
 
 
