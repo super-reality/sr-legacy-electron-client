@@ -39,9 +39,6 @@ jobs:
         - npm run pre-build-iohook-win
         - npm run build
         - node ./rm-unpacked.js
-    - stage: Release
-      os: windows
-      env: YARN_GPG=no
       deploy:
         on:
           all_branches: true
