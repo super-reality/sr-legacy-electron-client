@@ -1,3 +1,10 @@
+## [2.0.12](https://github.com/super-reality/super-reality-client/compare/v2.0.11...v2.0.12) (2021-03-18)
+
+
+### Bug Fixes
+
+* **ci:** install only once ([b46c26c](https://github.com/super-reality/super-reality-client/commit/b46c26c6fa279b270bdc18a1300a56dfd5e1e325))
+
 ## [2.0.11](https://github.com/super-reality/super-reality-client/compare/v2.0.10...v2.0.11) (2021-03-17)
 
 
