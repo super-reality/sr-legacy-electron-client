@@ -1,7 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 module.exports = {
   plugins: [
-    "@semantic-release/github",
     "@semantic-release/npm",
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
