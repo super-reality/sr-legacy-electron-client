@@ -1,6 +1,6 @@
 {
   "name": "super-reality-client",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
