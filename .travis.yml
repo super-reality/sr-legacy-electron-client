@@ -47,8 +47,7 @@ jobs:
         skip_cleanup: true
         prerelease: true
         draft: false
-        api_key:
-          secure: I+WS0VxbbaIzz27MCtjkhx6SPvxhsLzd5zfNkfQZ+98VCLGoscLYrIj5uorSLIuCcwHXgwkKE3cN0pYOWk4Hhrl0ypkKYssLx/Fd2ZTFY1xwI9nIScvfa0CbQCxkUem3kplU5u61yDcfPt5Vw6J8xBaQpijsr4a1kWZBI+qY89oTEI13aGQuoQCFgH9I02VEUbjv+Fa0cWxZMB9VQhaUMVnZvu/hYefl2330ZBLTOI45DN9YyYeCUdPezWnCi7Gs+Si/t2qflGUuNXau/6VgXDjtvzkX2slN7gTXUPMbWupZw4iIPgPv2OzxRKGSGoZFc+XNQ8VgYUKLRqnuSRuHw4bf4WXm0hnNYH81+8JE4KUkg7MucoczdCzHLpiZGfaGkpFMJK9RsUHsg0sCiMz9wSSHt1QwBUfNlLRpOy24zq81C9Iv9rylzfhVYIU55MDIatCEQemfhTR5Qpf1tbin8j/SVHVjqzQtxYerHfp8yp73KIbBnQhWn49l8GAXL4R4I/V2ugQAcfbmYVeo4XUlJ+jrVVS8Fqt8bui++6lMM3B56onZzipQf3ZZAC9rqCMPUPiut1J+9skXeADoVcYdbW8k5XwKGxKcqZlXrsQbLYC/+mhunqpmKpnQTV47tyBVyzXgfILnKHmuvQp0JHT0MpyG6lfbmLU1Wv5MV1ousII=
+        api_key: ${ GH_TOKEN }
         file: dist/*
         on:
           tags: true
