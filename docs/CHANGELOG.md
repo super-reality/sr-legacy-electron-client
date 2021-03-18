@@ -1,3 +1,10 @@
+## [2.0.13](https://github.com/super-reality/super-reality-client/compare/v2.0.12...v2.0.13) (2021-03-18)
+
+
+### Bug Fixes
+
+* **ci:** use dummy install step ([45bc42a](https://github.com/super-reality/super-reality-client/commit/45bc42a38097537816ab8f290f236029423055b5))
+
 ## [2.0.12](https://github.com/super-reality/super-reality-client/compare/v2.0.11...v2.0.12) (2021-03-18)
 
 
