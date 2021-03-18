@@ -50,5 +50,4 @@ jobs:
         api_key: ${ GH_TOKEN }
         file: dist/*
         on:
-          tags: true
           repo: super-reality/super-reality-client
