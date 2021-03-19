@@ -1,3 +1,10 @@
+## [2.0.18](https://github.com/super-reality/super-reality-client/compare/v2.0.17...v2.0.18) (2021-03-19)
+
+
+### Bug Fixes
+
+* **sidebar:** shoting star only once ([aaa446d](https://github.com/super-reality/super-reality-client/commit/aaa446d5b09c85cc90df8905cea2c61ae4b6e33e))
+
 ## [2.0.17](https://github.com/super-reality/super-reality-client/compare/v2.0.16...v2.0.17) (2021-03-18)
 
 
