@@ -228,7 +228,7 @@ export default function Sidebar() {
           <ShootingStar
             style={{
               left: 0,
-              animationIterationCount: "infinite",
+              animationIterationCount: 1,
             }}
             direction="bottom"
           />
@@ -236,7 +236,7 @@ export default function Sidebar() {
             style={{
               bottom: 0,
               animationDelay: "1.25s",
-              animationIterationCount: "infinite",
+              animationIterationCount: 1,
             }}
             direction="right"
           />
@@ -244,7 +244,7 @@ export default function Sidebar() {
             style={{
               right: 0,
               animationDelay: "1.5s",
-              animationIterationCount: "infinite",
+              animationIterationCount: 1,
             }}
             direction="top"
           />
@@ -252,7 +252,7 @@ export default function Sidebar() {
             style={{
               top: 0,
               animationDelay: "1.75s",
-              animationIterationCount: "infinite",
+              animationIterationCount: 1,
             }}
             direction="left"
           />
