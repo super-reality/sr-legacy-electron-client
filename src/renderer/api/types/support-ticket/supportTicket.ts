@@ -9,7 +9,7 @@ export default interface supportTicker {
   description: string;
   images?: File[];
   newSkill?: boolean;
-  newSkillName?: string;
+  newSkills?: string[];
   newCategory?: boolean;
   newCategoryName?: string;
   skillsData: IData[];

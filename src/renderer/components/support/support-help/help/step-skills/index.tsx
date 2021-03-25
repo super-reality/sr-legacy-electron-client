@@ -7,9 +7,12 @@ import { useDispatch } from "react-redux";
 import store from "../../../../../redux/stores/renderer";
 import reduxAction from "../../../../../redux/reduxAction";
 import TextError from "../../../../forms/TextError";
-import FormControl, { capitalize, singleValuetoIData } from "../../../../forms";
+import FormControl, {
+  capitalize /* , singleValuetoIData  */,
+} from "../../../../forms";
 import { StepSectionProps } from "..";
-import GetSkills from "../../support-help-utils/getSkills";
+import GetSkills from "../../support-help-utils/getSkills"; /* 
+import PostSkill from "../../support-help-utils/postSkill"; */
 import SingleCategory from "./single-category";
 
 import supportTicket, {
@@ -23,7 +26,7 @@ const titleSchema = Yup.object().shape({
 
 interface Values {
   skills: string[];
-  newSkillName: string;
+  newSkills: string[];
   newCategories: any[];
 }
 
@@ -119,16 +122,26 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
     const setFieldValue = formRef.current?.setFieldValue;
 
     if (setFieldValue && values) {
-      setFieldValue("skills", values.skills.concat(value._id));
-      if (value.new)
-        /*  setFieldValue("newSkillName", values.newSkillName.concat(value._id)); */
-        setFieldValue("newSkillName", value._id);
+      setFieldValue(
+        "skills",
+        values.skills.concat([`{"name":"${value.name}","_id":"${value._id}"}`])
+      );
+      if (value.new) {
+        setFieldValue(
+          "newSkills",
+          values.skills.concat([
+            `{"name":"${value.name}","_id":"${value._id}"}`,
+          ])
+        );
+      }
+
+      /*  setFieldValue("newSkillName", values.newSkillName.concat(value._id)); */
     }
   }
 
   const initialValues: Values = {
     skills: slice.skills ?? [],
-    newSkillName: slice.newSkillName ?? "",
+    newSkills: slice.newSkills ?? [],
     newCategories: [],
   };
 
@@ -145,15 +158,16 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
             arg: {
               skills: names.skills,
               searchedSkills: addedSkills,
-              newSkillName: names.newSkillName,
+              newSkills: names.newSkills,
               skillsData: slice.skillsData?.concat(
-                singleValuetoIData(names.newSkillName),
+                /* 
+                names.newSkills, */
                 addedSkills
               ) /* slice.skillsData && [
                 ...slice.skillsData,
                 ...valuetoIData(names.newSkillName),
               ] */,
-              newSkill: names.newSkillName != "",
+              newSkill: names.newSkills.length > 0,
             } as supportTicket,
           });
           goNext();

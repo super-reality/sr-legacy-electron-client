@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import reduxAction from "../../../../../redux/reduxAction";
 import { AppState } from "../../../../../redux/stores/renderer";
+import PostSkill from "../../support-help-utils/postSkill";
 import createGPT3Document from "../../../../../../utils/api/createGPT3Document";
 import { StepSectionProps } from "..";
 import "./index.scss";
@@ -9,7 +10,6 @@ import {
   ImagesPreview,
   SkillsRenderer,
   VibesRenderer,
-  getNames,
   getSingleName,
 } from "../../../../forms";
 import postSupportTicket from "../../support-help-utils/postSupportTicket";
@@ -33,13 +33,12 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     skills,
     description,
     images,
-    skillsData,
     categoryData,
     supportType,
     newCategory,
     newCategoryName,
     newSkill,
-    newSkillName,
+    newSkills,
     vibes,
   } = useSelector((state: AppState) => state.createSupportTicket);
 
@@ -49,47 +48,30 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
   const dispatch = useDispatch();
 
-  /*   const getSkills = getNames(skills, skillsData).map((skill) => (
-    <li className="review-skill" key={skill._id}>
-      {skill.name}
-    </li>
-  )); */
-
-  /*   const getVibes = vibes.map((vibe) => {
-    const VibesArray = PositiveVibes.concat(NegativeVibes);
-    return (
-      <li className="review-skill" key={vibe._id}>
-        {vibe.title}
-        <img
-          className={`result-${vibe.level}`}
-          src={
-            VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)].emoji
-          }
-        />
-      </li>
-    );
-  }); */
-
   const sendSupportTicket = async (): Promise<void> => {
-    const skillArray: string[] = [...skills!];
-
-    const i = skillArray.indexOf(newSkillName!);
-
-    if (i !== -1) skillArray.splice(i, 1);
-
     const vibesList = vibes.map((vibe) => vibe._id);
     const vibesLevelList = vibes.map((vibe) => vibe.level);
     let payload: supportTicketPayload = {
       title: title,
       description: description,
       supportType: supportType,
-      skills: skillArray,
+      skills: skills
+        .filter((s) => {
+          const { _id, name } = JSON.parse(s);
+          return _id != name;
+        })
+        .map((skill) => JSON.parse(skill)._id),
       supportCategory: category,
       newCategory: newCategory,
       newSkill: newSkill,
       vibes: vibesList,
       vibesLevels: vibesLevelList,
     };
+
+    const skillsArray = skills.map((skill) => {
+      const { name, _id } = JSON.parse(skill);
+      return { name, _id };
+    });
     let filesArray: string[] = [];
 
     if (images && images?.length > 0) {
@@ -100,9 +82,20 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
         .catch((e) => console.log(e));
       payload = Object.assign(payload, { files: filesArray });
     }
+    let newSkillsArray: string[] = [];
+    if (newSkills && newSkills?.length > 0 && newSkill) {
+      const promises = await newSkills.map(async (skill) => {
+        const { name } = JSON.parse(skill);
+        return PostSkill(name);
+      });
 
-    if (newSkillName !== "" && newSkill) {
-      payload = Object.assign(payload, { newSkillName: newSkillName });
+      await Promise.all(promises).then((skillsRes) => {
+        newSkillsArray = [...skillsRes.map((s) => s._id)];
+      });
+
+      payload = Object.assign(payload, {
+        skills: payload.skills.concat(newSkillsArray),
+      });
     }
 
     if (newCategoryName !== "" && newCategory) {
@@ -111,47 +104,50 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     }
 
     console.log(payload);
+
+    let document_context = `You are a teacher expert in ${getSingleName(
+      category,
+      categoryData
+    )}. You have skills in `;
+
+    skillsArray.forEach((skill, ind) => {
+      if (ind == 0) {
+        document_context += skill.name;
+      } else if (skillsArray.length - 1 == ind) {
+        document_context += ` and ${skill.name}.`;
+      } else {
+        document_context += `, ${skill.name}`;
+      }
+    });
+
+    document_context += ` And the problem your student is telling you about is ${description}.`;
+
+    vibes.forEach((vibe, ind) => {
+      const levels = [
+        "a little bit of",
+        "a considerable amount of",
+        "a lot of",
+      ];
+      if (ind == 0) {
+        document_context += ` Also your student is feeling ${
+          levels[vibe.level - 1]
+        } ${vibe.title}`;
+      } else if (ind == vibes.length - 1) {
+        document_context += ` and ${levels[vibe.level - 1]} ${vibe.title}.`;
+      } else {
+        document_context += `, ${levels[vibe.level - 1]} ${vibe.title}`;
+      }
+    });
+
+    document_context += `\n\nq: What can I learn?\na: You can learn ${getSingleName(
+      category,
+      categoryData
+    )}`;
+
+    console.log(document_context);
+
     await postSupportTicket(payload)
       .then((res: supportTicketPayload) => {
-        let document_context = `GAIA is a teacher expert in ${getSingleName(
-          category,
-          categoryData
-        )}. You have skills in `;
-
-        getNames(skills, skillsData).forEach((skill, ind) => {
-          if (ind == 0) {
-            document_context += skill.name;
-          } else if (getNames(skills, skillsData).length - 1 == ind) {
-            document_context += ` and ${skill.name}.`;
-          } else {
-            document_context += `, ${skill.name}`;
-          }
-        });
-
-        document_context += ` And the problem your student is telling you about is ${description}.`;
-
-        vibes.forEach((vibe, ind) => {
-          const levels = [
-            "a little bit of",
-            "a considerable amount of",
-            "a lot of",
-          ];
-          if (ind == 0) {
-            document_context += ` Also your student is feeling ${
-              levels[vibe.level - 1]
-            } ${vibe.title}`;
-          } else if (ind == vibes.length - 1) {
-            document_context += ` and ${levels[vibe.level - 1]} ${vibe.title}.`;
-          } else {
-            document_context += `, ${levels[vibe.level - 1]} ${vibe.title}`;
-          }
-        });
-
-        document_context += `\n\nGAIA: What can I learn?\nStudent: You can learn ${getSingleName(
-          category,
-          categoryData
-        )}`;
-
         const document: IPostDocument = {
           document_name: res._id ?? "name",
           engine: "davinci",
@@ -252,7 +248,7 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
 
           <div className="review-step">
             <div className="step-title">Skills</div>
-            <SkillsRenderer skills={getNames(skills, skillsData)} />
+            <SkillsRenderer skills={skills.map((skill) => JSON.parse(skill))} />
           </div>
 
           <div className="review-step">

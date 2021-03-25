@@ -15,7 +15,6 @@ export default function SingleCategory(props: ISingleSkill): JSX.Element {
   return (
     <div className="skill" key={name}>
       {name}
-
       <FormControl
         name="skills"
         control="skills"

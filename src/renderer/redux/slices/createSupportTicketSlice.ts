@@ -10,7 +10,7 @@ const initialState: supportTicker = {
   description: "",
   images: [],
   newSkill: false,
-  newSkillName: "",
+  newSkills: [],
   newCategory: false,
   newCategoryName: "",
   skillsData: [],
@@ -37,6 +37,7 @@ const createSupportTicketSlice = createSlice({
       state = Object.assign(state, initialState);
       state.images = [];
       state.skills = [];
+      state.newSkills = [];
     },
   },
 });

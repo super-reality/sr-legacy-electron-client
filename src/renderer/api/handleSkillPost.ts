@@ -8,6 +8,11 @@ export default function handleChapterGet(
   res: AxiosResponse<ISkillGet | ApiError>
 ): Promise<ISkill> {
   return new Promise((resolve, reject) => {
-    apiErrorHandler<ISkillGet>(res).then(resolve).catch(reject);
+    apiErrorHandler<ISkillGet>(res)
+      .then((re) => {
+        console.log(re);
+        resolve(re);
+      })
+      .catch(reject);
   });
 }
