@@ -1,0 +1,55 @@
+.creatorContainer{
+    height: 100vh;
+    overflow: scroll;
+
+    .bgImage{
+        width: 100vw;
+        height: 290px;
+        background-color: #CCCCCC;
+    }
+    .controls{
+        .backButton{
+            width: fit-content;
+            transform: translate(40px);
+        }
+    }
+    .meControls{
+        display: flex;
+        flex-wrap: wrap;
+
+        .moreButton,
+        .backButton{
+            width: fit-content;
+        }
+    }
+    
+    .avatarImage{
+        height: 110px;
+        width: 110px;
+        border-radius: 50%;
+        margin: 0 auto;
+        transform: translate(0, -115px);
+        background-color: #CA3E7B;
+    }
+    .content{
+        transform: translate(0, -115px);
+    }
+
+    .videosSwitcher{
+        transform: translate(0, -115px);
+        background-color: #EEEEEF;
+        padding: 3px;
+        border-radius: 10px;
+        display: flex;
+        margin: 10px 20px;
+
+        .switchButton{
+            margin: 0;
+            color: #000000;
+            padding: 0;
+        }
+    }
+    .feedsWrapper{
+        transform: translate(0, -115px);
+    }
+}

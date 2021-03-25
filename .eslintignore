@@ -1,4 +1,7 @@
 node_modules*
+xr3ngine-client-core*
+xr3ngine-common*
+xr3ngine-engine*
 *.css
 *.scss
 *.svg

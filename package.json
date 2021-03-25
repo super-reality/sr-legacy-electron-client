@@ -73,6 +73,9 @@
     "vivus": "^0.4.5",
     "wait-on": "^5.2.1",
     "warning": "^4.0.3",
+    "xr3ngine-client-core": "file:xr3ngine-client-core",
+    "xr3ngine-common": "file:xr3ngine-common",
+    "xr3ngine-engine": "file:xr3ngine-engine",
     "yup": "^0.32.8"
   },
   "engines": {

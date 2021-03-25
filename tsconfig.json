@@ -22,5 +22,10 @@
   "include": [
     "src",
     "public/start.js"
+  ],
+  "exclude": [
+    "xr3ngine-client-core",
+    "xr3ngine-common",
+    "xr3ngine-engine",
   ]
 }
