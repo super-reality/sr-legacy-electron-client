@@ -16,8 +16,6 @@ export default interface supportTicker {
   searchedSkills: IData[];
   categoryData: IData[];
   subcategories: ISubcategory[];
-  supportScreen: TSupportScreen;
-  supportOption: TSupportOption;
   vibeData: IGetVibesObjectResult;
   vibes: IVibe[];
 }
@@ -48,6 +46,7 @@ export interface supportTicketPayload {
   _id?: string;
   vibes: string[];
   vibesLevels: number[];
+  votes?: number;
 }
 
 export interface singleSupportTicketsPayload {
@@ -115,6 +114,7 @@ export interface singleSupportTicketsGet {
     _id: string;
   };
   skill: { name: string; _id: string }[];
+  votes: number;
 }
 
 export interface supportTicketsSearch {

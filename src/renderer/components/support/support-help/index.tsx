@@ -1,11 +1,12 @@
 import React, { /* useState, useCallback, */ useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
+import { RouteComponentProps } from "@reach/router";
 import reduxAction from "../../../redux/reduxAction";
 import { IData } from "../../../api/types/support-ticket/supportTicket";
 import { AppState } from "../../../redux/stores/renderer";
-import GettingStarted from "./getting-started";
-import Help from "./help";
+/* import GettingStarted from "./getting-started";
+import Help from "./help"; */
 import getVibes from "./support-help-utils/getVibes";
 import "./index.scss";
 import getSingleCategory from "./support-help-utils/getSingleCategory";
@@ -44,26 +45,32 @@ const Skills: IData[] = [
   { _id: "Draw Cartoons", name: "Draw Cartoons" },
 ];
 
-export interface SupportSectionsProps {
+/* export interface SupportSectionsProps {
   goStart: () => void;
   goHelp: () => void;
-}
+} */
 
-const START = 0;
-const HELP = 1;
+/* const START = 0;
+const HELP = 1; */
 
-type sections = typeof START | typeof HELP;
+/* type sections = typeof START | typeof HELP; */
 
-const sections = [GettingStarted, Help];
+/* const sections = [GettingStarted, Help]; */
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-export default function Support(): JSX.Element {
+interface ISupportHelpProps extends RouteComponentProps {
+  children: React.ReactNode;
+}
+
+export default function Support(props: ISupportHelpProps): JSX.Element {
+  console.log(props);
   const dispatch = useDispatch();
+  const { children } = props;
   const {
     skillsData,
-    categoryData,
-    supportScreen,
+    categoryData /* 
+    supportScreen, */,
     vibeData,
     category,
     newCategoryName,
@@ -119,7 +126,7 @@ export default function Support(): JSX.Element {
     }
   }, [category]);
 
-  const ClickGotSart = () => {
+  /*   const ClickGotSart = () => {
     reduxAction(dispatch, {
       type: "SET_SUPPORT_TICKET",
       arg: {
@@ -135,13 +142,9 @@ export default function Support(): JSX.Element {
         supportScreen: HELP,
       },
     });
-  };
+  }; */
 
-  const CurrentSectionComponent = sections[supportScreen!];
+  /*   const CurrentSectionComponent = sections[supportScreen!]; */
 
-  return (
-    <>
-      <CurrentSectionComponent goStart={ClickGotSart} goHelp={ClickGotHelp} />
-    </>
-  );
+  return <>{children}</>;
 }

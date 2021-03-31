@@ -102,21 +102,6 @@ interface FormControlInput extends InputProps {
   control: string;
 }
 
-/* export VibesRenderer =(vibes:{_id:string; name:string;}[])=>vibes.map((vibe) => {
-  const VibesArray = PositiveVibes.concat(NegativeVibes);
-  return (
-    <li className="review-skill" key={vibe._id}>
-      {vibe.title}
-      <img
-        className={`result-${vibe.level}`}
-        src={
-          VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)].emoji
-        }
-      />
-    </li>
-  );
-}) */
-
 export const PositiveVibes = [
   {
     title: "Cool",

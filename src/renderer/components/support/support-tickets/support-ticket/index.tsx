@@ -2,6 +2,7 @@ import "./index.scss";
 import React from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import { RouteComponentProps, useNavigate } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
 import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
@@ -18,17 +19,14 @@ import {
 import createGPT3Question from "../../../../../utils/api/createGPT3Question";
 import { IPostQuestion, IGetQuestion } from "../../../../api/types/gpt-3/GPT3";
 
-/* import futurecar from "../../../../../assets/images/future-car.png"; */
-
-interface ISupportTicketProps {
-  id: string;
-  goback: () => void;
+interface ISingleSupportTicket extends RouteComponentProps {
+  ticketId?: string;
 }
 
 export default function SupportTicker({
-  id,
-  goback,
-}: ISupportTicketProps): JSX.Element {
+  ticketId,
+}: ISingleSupportTicket): JSX.Element {
+  const navigate = useNavigate();
   const [ticket, setTicket] = React.useState<singleSupportTicketsPayload>();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [gpt3Suggestions, setGpt3Suggestions] = React.useState<IGetQuestion[]>(
@@ -45,31 +43,33 @@ export default function SupportTicker({
 
   React.useEffect(() => {
     setSidebarWidth(600);
-    getTicket(id).then((tick) => {
-      console.log(tick);
-      setTicket(tick);
-      const question: IPostQuestion = {
-        question: tick.title,
-        engine_name: "curie",
-        document_name: tick._id,
-      };
+    if (ticketId) {
+      getTicket(ticketId).then((tick) => {
+        console.log(tick);
+        setTicket(tick);
+        const question: IPostQuestion = {
+          question: tick.title,
+          engine_name: "curie",
+          document_name: tick._id,
+        };
 
-      (async () => {
-        /* eslint-disable no-await-in-loop */
-        for (let i = 0; i < 3; i += 1) {
-          await createGPT3Question(question)
-            .then((resp) => {
-              console.log(resp);
-              gpt3SuggestionsCopy.push(resp);
-              if (i == 2) {
-                setGpt3Suggestions(gpt3SuggestionsCopy);
-                setLoading(false);
-              }
-            })
-            .catch((e: any) => console.log(e));
-        }
-      })();
-    });
+        (async () => {
+          /* eslint-disable no-await-in-loop */
+          for (let i = 0; i < 3; i += 1) {
+            await createGPT3Question(question)
+              .then((resp) => {
+                console.log(resp);
+                gpt3SuggestionsCopy.push(resp);
+                if (i == 2) {
+                  setGpt3Suggestions(gpt3SuggestionsCopy);
+                  setLoading(false);
+                }
+              })
+              .catch((e: any) => console.log(e));
+          }
+        })();
+      });
+    }
   }, []);
 
   return (
@@ -222,7 +222,7 @@ export default function SupportTicker({
               />
 
               <div className="help-buttons">
-                <button type="button" onClick={goback}>
+                <button type="button" onClick={() => navigate("/give")}>
                   Save & Exit
                 </button>
                 <button type="button">Send</button>
@@ -235,106 +235,3 @@ export default function SupportTicker({
     </>
   );
 }
-/* <div className="solution-wrapper">
-            <div className="query-title">I need help Animating</div>
-            <span className="white">Animation</span>
-            <div> Posted 30 minutes ago</div>
-            <div className="border-bottom">
-              <div className="white">1</div> Mentor Helping
-            </div>
-            <div className="border-bottom">
-              I am trying to create an Animation. I was hoping someone could
-              create a lesson
-            </div>
-            <div className="border-bottom">
-              AI Summary: Cesar has been watching a lot of YouTube and has
-              moments of sadness. But every time he uses Blender 3D and listens
-              to music he always marks his current emotion as happiness.
-            </div>
-            <ul>
-              <li>
-                Engagement in last <div className="blue">3 days</div>
-                <div className="progress">
-                  <span>Blender 3D</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "30%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>Construct 3</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "10%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>YouTube</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "70%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>Super Realities</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "90%" }}
-                    />
-                  </div>
-                </div>
-              </li>
-              <li>
-                Emotions in last <div className="blue">3 days</div>
-                <div className="solution-images">
-                  <img src={futurecar} alt="" />
-                </div>
-              </li>
-              <li>
-                Accomplishments in last <div className="blue">3 days</div>
-                <div className="progress">
-                  <span>Blender 3D</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "30%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>Construct 3</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "10%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>YouTube</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "70%" }}
-                    />
-                  </div>
-                </div>
-                <div className="progress">
-                  <span>Super Realities</span>
-                  <div className="blue-bar">
-                    <div
-                      className="pink-bar-progress"
-                      style={{ width: "90%" }}
-                    />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div> */

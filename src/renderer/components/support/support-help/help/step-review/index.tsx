@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "@reach/router";
 import reduxAction from "../../../../../redux/reduxAction";
 import { AppState } from "../../../../../redux/stores/renderer";
 import PostSkill from "../../support-help-utils/postSkill";
@@ -41,6 +42,8 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
     newSkills,
     vibes,
   } = useSelector((state: AppState) => state.createSupportTicket);
+
+  const navigate = useNavigate();
 
   const [PopUp, openPopup, closePopup] = usePopUp(false);
 
@@ -182,22 +185,13 @@ export default function StepReview(props: StepSectionProps): JSX.Element {
       arg: null,
     });
 
-    reduxAction(dispatch, {
-      type: "SET_SUPPORT_TICKET",
-      arg: {
-        supportScreen: 0,
-      },
-    });
+    navigate("/");
     setPopupLoading(false);
   };
   return (
     <>
       <div>
-        <PopUp
-          /* style={{ position: "absolute", top: "30%", left: "6%" }} */
-          width="350px"
-          height="170px"
-        >
+        <PopUp width="350px" height="170px">
           <div className="review-modal">
             {popupLoading ? (
               <>

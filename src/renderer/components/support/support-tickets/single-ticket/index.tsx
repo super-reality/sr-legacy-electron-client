@@ -40,6 +40,7 @@ interface IsingleTicket {
   creatorInfo?: ICreatorInfo;
   vibes: string[];
   vibesLevels: number[];
+  votes: number;
 }
 
 export default function singleTicket(props: IsingleTicket): JSX.Element {
@@ -51,6 +52,7 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     onClick,
     vibes,
     vibesLevels,
+    votes,
   } = props;
 
   const { vibeData } = useSelector(
@@ -65,7 +67,7 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
             <img src={voteup} alt="" />
           </button>
         </div>
-        <div className="vote">12</div>
+        <div className="vote">{votes}</div>
         <div className="down-vote">
           <button type="button">
             <img src={votedown} alt="" />
@@ -118,35 +120,3 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     </div>
   );
 }
-
-/*{index == 0 && (
-                <>
-                  <img src={emoji1} alt="" />
-                  <img src={emoji2} alt="" />
-                  <img src={emoji3} alt="" />
-                </>
-              )}
-
-              {index == 1 && (
-                <>
-                  <img src={emoji4} alt="" />
-                  <img src={emoji5} alt="" />
-                  <img src={emoji6} alt="" />
-                </>
-              )}
-
-              {index == 2 && (
-                <>
-                  <img src={emoji7} alt="" />
-                  <img src={emoji8} alt="" />
-                  <img src={emoji9} alt="" />
-                </>
-              )}
-
-              {index > 2 && (
-                <>
-                  <img src={emoji4} alt="" />
-                  <img src={emoji5} alt="" />
-                  <img src={emoji6} alt="" />
-                </>
-              )} */
