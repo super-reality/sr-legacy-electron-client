@@ -11,6 +11,7 @@ import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 import chatSlice from "../slices/chatSlice";
 import createSupportTicketSlice from "../slices/createSupportTicketSlice";
 import sidebarSlice from "../slices/sidebarSlice";
+import reducers from "../slices/xrengine/reducers";
 
 const combinedReducer = combineReducers({
   auth: authSlice.reducer,
@@ -24,6 +25,7 @@ const combinedReducer = combineReducers({
   chat: chatSlice.reducer,
   createSupportTicket: createSupportTicketSlice.reducer,
   sidebar: sidebarSlice.reducer,
+  xrengine: reducers,
 });
 
 type RootReducerType = typeof combinedReducer;

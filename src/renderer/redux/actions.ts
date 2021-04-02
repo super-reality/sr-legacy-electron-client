@@ -9,6 +9,7 @@ import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
 import * as chatSlice from "./slices/chatSlice";
 import * as createSupportTicketSlice from "./slices/createSupportTicketSlice";
 import * as sidebarSlice from "./slices/sidebarSlice";
+import * as xrAuthSlice from "./slices/xrengine/auth/xrAuthSlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -86,6 +87,9 @@ export const actions = {
   ADD_CHANNEL: chatSlice.addNewChannel,
   SET_ACTIVE_CHANNEL: chatSlice.setActiveChannel,
   SET_CONTENT_WIDTH: sidebarSlice.setWidth,
+  ACTION_PROCESSING: xrAuthSlice.actionProcessing,
+  LOGIN_USER_SUCCESS: xrAuthSlice.loginUserSuccess,
+  LOGIN_USER_ERROR: xrAuthSlice.loginUserError,
 };
 
 export type ActionKeys = keyof typeof actions;

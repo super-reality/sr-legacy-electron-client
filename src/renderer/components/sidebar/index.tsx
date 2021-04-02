@@ -122,6 +122,14 @@ export default function Sidebar() {
         subComponent: null,
         componentWidth: 900,
       },
+      {
+        title: "Test",
+        icon: TutorialsIcon,
+        component: null,
+        subComponent: null,
+        onClick: () => history.push("/xrengine"),
+        componentWidth: 700,
+      },
     ],
     [history, current, currentSub, contentExpanded, groups]
   );
