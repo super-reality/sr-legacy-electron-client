@@ -1,0 +1,248 @@
+.sidebar-buttons {
+  position: relative;
+  min-width: 70px;
+  width: 70px;
+  display: flex;
+  background: linear-gradient(180deg, #333155 0%, #262036 100%);
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  padding: 10px 0;
+  z-index: 2;
+
+  .button-round {
+    background-color: transparent;
+    margin: 0 auto;
+    padding: 2px 0;
+  }
+}
+
+.dropdown {
+  position: relative;
+
+  :hover {
+    cursor: pointer;
+  }
+}
+
+.sidebar-logo {
+  background-image: url("../../../../assets/images/sidebar-logo.png");
+  background-repeat: no-repeat;
+  width: 90px;
+  height: 100px;
+}
+
+.sidebar-logo::after {
+  content: "";
+  position: absolute;
+  top: 100px;
+  left: 12px;
+  height: 0;
+  width: 65%;
+  border-bottom: 2px solid #3f3b60;
+}
+
+.button-logo {
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background: #313050;
+    z-index: -1;
+    border-radius: 20px 0 0 20px;
+    height: 70px;
+  }
+}
+
+.control-buttons {
+  position: relative;
+
+  .dropdown-content {
+    opacity: 0;
+    position: absolute;
+    // background: linear-gradient(180deg, #323054 0%, #302e4f 100%);
+    background: #2f2d4b;
+    z-index: -1;
+    border-radius: 20px 0 0 20px;
+    height: 70px;
+  }
+
+  .dropdown:hover .dropdown-content {
+    transition: opacity 0.4s;
+    -webkit-transition: opacity 0.4s;
+    opacity: 1;
+    top: 155px;
+    right: 75px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  button {
+    width: 70px;
+  }
+
+  .dropdown {
+    height: 60px;
+  }
+
+  .dropdown-content {
+    opacity: 0;
+    position: absolute;
+    background: linear-gradient(180deg, #2d2948 0%, #2b2743 100%);
+    z-index: -1;
+    border-radius: 20px 0 0 20px;
+    height: 70px;
+  }
+
+  .button-round {
+    margin: 5px auto;
+  }
+}
+
+.button-logo .dropdown:hover .dropdown-content {
+  display: flex;
+  right: 80px;
+  top: 15px;
+  height: 60px;
+  // width: 65%;
+  max-width: 950px;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  transition: opacity 0.4s;
+  -webkit-transition: opacity 0.4s;
+  display: block;
+}
+
+.control-buttons .dropdown:hover .dropdown-content {
+  display: flex;
+  right: 75px;
+  height: 60px;
+  top: 8px;
+  width: 210px;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  align-items: center;
+  transition: opacity 0.4s;
+  -webkit-transition: opacity 0.4s;
+  opacity: 1;
+}
+.button-edit .dropdown:hover .dropdown-content {
+  display: flex;
+  right: 58px;
+  height: 60px;
+  top: -15px;
+  width: 220px;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  transition: opacity 0.4s;
+  -webkit-transition: opacity 0.4s;
+  opacity: 1;
+
+  button {
+    width: 80px;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.button-share .dropdown:hover .dropdown-content {
+  display: flex;
+  right: 56px;
+  height: 60px;
+  top: -10px;
+  width: 210px;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  transition: opacity 0.4s;
+  -webkit-transition: opacity 0.4s;
+  opacity: 1;
+}
+
+.group-buttons {
+  position: relative;
+}
+.sidebar-group::before {
+  content: "";
+  position: absolute;
+  top: 63px;
+  height: 0;
+  width: 100%;
+  border-bottom: 2px solid #3f3b60;
+}
+
+.open-group::before {
+  content: "";
+  position: absolute;
+  background: #6758c5;
+  height: 51px;
+  width: 6px;
+  left: -10px;
+  top: 0;
+  border-radius: 0 10px 10px 0;
+}
+
+.control-buttons::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  height: 0;
+  width: 65%;
+  border-bottom: 2px solid #3f3b60;
+  bottom: 0;
+}
+
+.communication-buttons {
+  padding-bottom: 20px;
+}
+
+.sidebar-expanded {
+  overflow: hidden;
+  background: linear-gradient(180deg, #272035 0%, #2d2a44 6.7%, #2d2b45 94.1%, #261f34 100%);
+
+  .sidebar-content {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.sidebar-group {
+  background-color: #0d081d;
+  height: 48px;
+  margin: 15px auto;
+  width: 48px;
+  border-radius: 6px;
+}
+
+.open-group {
+  width: 48px;
+  height: 48px;
+  padding: 4px;
+  background-image: url("../../../../assets/svg/game-gen.svg");
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.closed-group {
+  width: 48px;
+  height: 48px;
+  padding: 4px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: grid;
+  grid-template: 1fr 1fr/1fr 1fr;
+  justify-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.small-group-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  background-color: #fff;
+}

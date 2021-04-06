@@ -99,7 +99,7 @@ export default function Recorder(): JSX.Element {
         types: ["window"],
       });
       const windows: Electron.DesktopCapturerSource[] = [];
-      allWindowSources.forEach((source) => {
+      allWindowSources.forEach((source : Electron.DesktopCapturerSource) => {
         windows.push(source);
       });
       setWindowSources(windows);
@@ -109,7 +109,7 @@ export default function Recorder(): JSX.Element {
         types: ["screen"],
       });
       const screens: Electron.DesktopCapturerSource[] = [];
-      allScreenSources.forEach((source) => {
+      allScreenSources.forEach((source: Electron.DesktopCapturerSource) => {
         screens.push(source);
       });
       setScreenSources(screens);

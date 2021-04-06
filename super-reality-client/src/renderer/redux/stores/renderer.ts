@@ -13,6 +13,7 @@ import userDataSlice from "../slices/userDataSlice";
 import settingsSlice from "../slices/settingsSlice";
 import lessonPlayerSlice from "../slices/lessonPlayerSlice";
 import chatSlice from "../slices/chatSlice";
+import trelloSlice from "../slices/trelloSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice.reducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   settings: settingsSlice.reducer,
   lessonPlayer: lessonPlayerSlice.reducer,
   chat: chatSlice.reducer,
+  trello: trelloSlice.reducer
 });
 
 const store = configureStore({

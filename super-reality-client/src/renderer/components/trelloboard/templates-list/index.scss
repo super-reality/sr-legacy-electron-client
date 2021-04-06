@@ -1,0 +1,33 @@
+@import "../../misc.scss";
+
+.templates-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  overflow: auto;
+  background-color: var(--color-background-dark);
+  border-radius: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+
+  .template-item {
+    display: flex;
+    border-radius: 4px;
+    height: 40px;
+    cursor: pointer;
+    margin-bottom: 6px;
+
+    &:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    .template-image {
+      width: 32px;
+      height: 32px;
+      margin: auto auto auto 4px;
+      background-size: cover;
+      background-position: center;
+      background-color: var(--color-icon);
+    }
+  }
+}

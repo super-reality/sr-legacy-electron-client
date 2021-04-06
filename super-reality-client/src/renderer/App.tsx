@@ -14,10 +14,13 @@ import Windowlet from "./components/windowlet";
 import closeWindow from "../utils/electron/closeWindow";
 import useTransparentFix from "./hooks/useTransparentFix";
 import CreateLessonDetached from "./components/create-leson-detached";
+import TrelloBoard from "./components/trelloboard";
+
 import {
   MODE_HOME,
   MODE_LESSON_CREATOR,
   MODE_RECORDER,
+  MODE_TRELLO,
 } from "./redux/slices/renderSlice";
 import ErrorBoundary from "./ErrorBoundary";
 import minimizeWindow from "../utils/electron/minimizeWindow";
@@ -92,6 +95,7 @@ export default function App(): JSX.Element {
     <ErrorBoundary>
       {appMode == MODE_RECORDER && <Recorder />}
       {appMode == MODE_LESSON_CREATOR && <CreateLessonDetached />}
+      {appMode == MODE_TRELLO && <TrelloBoard />}
       {appMode == MODE_HOME && (
         <>
           {isAuthenticated ? (

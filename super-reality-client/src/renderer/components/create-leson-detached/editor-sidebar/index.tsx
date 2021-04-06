@@ -38,6 +38,7 @@ import ButtonShareNew from "../../../../assets/images/share-btn.png";
 import ButtonAdd from "../../../../assets/images/add-btn.png";
 import ButtonSonic from "../../../../assets/images/sonic-btn.png";
 import ButtonDavinci from "../../../../assets/images/davinci-btn.png";
+import ButtonTrello from "../../../../assets/images/trello/trello-dark.png";
 // import ControlButtons from "../../../../assets/images/control-icons.png";
 // import { ReactComponent as GameGen } from "../../../../assets/svg/game-gen.svg";
 import ButtonRound from "../../button-round";
@@ -45,7 +46,7 @@ import reduxAction from "../../../redux/reduxAction";
 import idNamePos from "../../../../utils/idNamePos";
 import store, { AppState } from "../../../redux/stores/renderer";
 import Browser from "../../browser";
-import { MODE_LESSON_CREATOR } from "../../../redux/slices/renderSlice";
+import { MODE_LESSON_CREATOR, MODE_TRELLO } from "../../../redux/slices/renderSlice";
 import setAppMode from "../../../redux/utils/setAppMode";
 
 const sidebarIcons = [
@@ -164,6 +165,11 @@ export default function EditorSidebar() {
     setAppMode(MODE_LESSON_CREATOR);
   }, [dispatch]);
 
+  const onClickContent = useCallback(() => {
+    
+    setAppMode(MODE_TRELLO);
+  }, [dispatch]);
+
   return (
     <div
       style={{
@@ -220,6 +226,9 @@ export default function EditorSidebar() {
               </button>
               <button type="button" onClick={onClick}>
                 <img title="Teacher" src={ButtonTeacher} />
+              </button>
+              <button type="button" onClick={onClickContent}>
+                <img title="Trello" src={ButtonTrello} width="35px"/>
               </button>
               <button type="button">
                 <img title="Browser" src={ButtonBrowser} />

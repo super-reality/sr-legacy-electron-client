@@ -8,11 +8,13 @@ export const MODE_HOME = 1;
 export const MODE_LESSON_CREATOR = 2;
 export const MODE_RECORDER = 3;
 export const MODE_VOID = 4;
+export const MODE_TRELLO = 5;
 
 export type UI_MODES =
   | typeof MODE_HOME
   | typeof MODE_LESSON_CREATOR
   | typeof MODE_RECORDER
+  | typeof MODE_TRELLO
   | typeof MODE_VOID;
 
 const initialState = {

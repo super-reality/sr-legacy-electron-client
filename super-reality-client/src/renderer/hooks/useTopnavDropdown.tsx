@@ -7,7 +7,9 @@ export type EditorMenues =
   | "Teach"
   | "Resources"
   | "Help"
-  | "Open Source";
+  | "Open Source"
+  | "File"
+  | "Test Menu";
 
 const selectOptionsByMenu: Record<EditorMenues, string[]> = {
   Create: ["Recording", ".."],
@@ -16,6 +18,9 @@ const selectOptionsByMenu: Record<EditorMenues, string[]> = {
   Resources: ["Resources", "Buy stuff"],
   Help: ["Help!", "RTFM"],
   "Open Source": ["Yes please!"],
+  
+  File: ["Test", "Test1"],
+  "Test Menu": ["This is test"],
 };
 
 export default function useTopNavDropdown(

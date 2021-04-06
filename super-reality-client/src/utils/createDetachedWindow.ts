@@ -49,7 +49,7 @@ export default function createDetachedWindow(
   );
 
   return new Promise<void>((resolve) => {
-    // newWindow.webContents.openDevTools();
+    newWindow.webContents.openDevTools();
     newWindow.webContents.once("dom-ready", () => {
       newWindow.webContents.send("token", store.getState().auth.token);
       newWindow.webContents.send("detached", detach);

@@ -1,9 +1,11 @@
 import React, { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import useTopNavDropdown, { EditorMenues } from "../../hooks/useTopnavDropdown";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import "./index.scss";
 import setAppMode from "../../redux/utils/setAppMode";
-import { MODE_RECORDER } from "../../redux/slices/renderSlice";
+import { AppState } from "../../redux/stores/renderer";
+import { MODE_RECORDER, MODE_TRELLO } from "../../redux/slices/renderSlice";
 
 const menues: EditorMenues[] = [
   "Create",
@@ -13,8 +15,14 @@ const menues: EditorMenues[] = [
   "Open Source",
 ];
 
+const menuesForTrello: EditorMenues[] = [
+ 
+];
+
+
 export default function TopMenuBar() {
   const [open, setOpen] = useState<EditorMenues | null>(null);
+  const { appMode } = useSelector((state: AppState) => state.render);
 
   const onSelect = useCallback(
     (selected: string) => {
@@ -31,12 +39,20 @@ export default function TopMenuBar() {
   const [Dropdown, dropdownRef] = useTopNavDropdown(open, onSelect);
 
   useOutsideClick(dropdownRef, () => setOpen(null));
+  
+  let curMenues =  menues; 
+
+  if(appMode === MODE_TRELLO){
+    curMenues = menuesForTrello
+  }
+  
+
 
   return (
     <>
       <div className="top-menu-container">
         <div className="top-menu-logo" />
-        {menues.map((str) => (
+        {curMenues.map((str) => (
           <div style={{ position: "relative" }} key={`top-bar-menu-${str}`}>
             <div
               className={`top-menu-item ${str == open ? "active" : ""}`}

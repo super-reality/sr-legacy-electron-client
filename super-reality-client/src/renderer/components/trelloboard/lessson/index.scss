@@ -1,0 +1,34 @@
+.create-lesson-main-container {
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-lesson-item-container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tree-container {
+  margin-top: 4px;
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+  overflow: auto;
+}
+
+.steps-btn-container {
+  flex-direction: column;
+  display: flex;
+  overflow: auto;
+  padding: 0 10px;
+
+  .button-simple:hover{
+    background-color: var(--color-button) !important;
+  }
+
+  svg {
+    margin-right: 15px;
+  }
+}
