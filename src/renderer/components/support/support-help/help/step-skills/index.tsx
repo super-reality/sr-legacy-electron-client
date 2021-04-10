@@ -190,18 +190,6 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
                   context={{ ...formik }}
                 />
               ))}
-            {/*             {newSubCategories.map((c, i) => (
-              <EditableCategory
-                key={c.name}
-                index={i}
-                options={c.options}
-                context={{ ...formik }}
-              />
-            ))} */}
-            {/*             <div className="addSkill skill">
-              <AddButtonIcon onClick={addNewCategory} />
-              Add New category
-            </div> */}
             <div className="skill">
               Not what you are looking for?
               <FormControl
@@ -223,9 +211,6 @@ export default function StepSkills(props: StepSectionProps): JSX.Element {
               />
             </div>
             <div className="support-buttons">
-              {/* <button onClick={addNewCategory} type="button">
-                Random
-              </button> */}
               <button onClick={goBack} type="button">
                 Back
               </button>

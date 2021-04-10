@@ -25,9 +25,6 @@ export default function CheckboxGroup(props: InputProps): JSX.Element {
               const fieldCopy = {
                 ...field,
                 onChange: (e: any) => {
-                  console.log(option.new);
-                  console.log(values.includes(option._id));
-
                   if (values.includes(option._id)) {
                     const valuesCopy = [...field.value];
                     const skillIndex = valuesCopy

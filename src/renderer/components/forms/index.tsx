@@ -86,22 +86,6 @@ export const getSingleName = (name: string, array: IData[]): string => {
   return name;
 };
 
-export interface InputProps extends FormikProps<any> {
-  name: string;
-  secondaryName?: string;
-  className?: string;
-  label?: string;
-  placeholder?: string;
-  options?: IData[];
-  action?: (value: IData) => void;
-  valuesSet?: (value: any) => void;
-  filter?: (value: any) => any[];
-}
-
-interface FormControlInput extends InputProps {
-  control: string;
-}
-
 export const PositiveVibes = [
   {
     title: "Cool",
@@ -229,6 +213,23 @@ export function VibesRenderer({ vibes }: IVibesRendererProps): JSX.Element {
 }
 
 export { FormObserver };
+
+export interface InputProps extends FormikProps<any> {
+  name: string;
+  secondaryName?: string;
+  className?: string;
+  label?: string;
+  placeholder?: string;
+  options?: IData[];
+  action?: (value: IData) => void;
+  onChange?: (e: any) => void;
+  valuesSet?: (value: any) => void;
+  filter?: (value: any) => any[];
+}
+
+interface FormControlInput extends InputProps {
+  control: string;
+}
 
 export default function FormControl({
   control,

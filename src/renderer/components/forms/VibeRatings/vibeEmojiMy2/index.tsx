@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import "./index.scss";
 import { FieldProps, FormikProps } from "formik";
 import emoji1 from "../../../../../assets/svg/emoji1.svg";
+import useDidUpdateEffect from "../../../../hooks/useDidUpdateEffect";
 /* import emoji2 from "../../../../../assets/svg/emoji2.svg";
 import emoji3 from "../../../../../assets/svg/emoji3.svg";
 import emoji4 from "../../../../../assets/svg/emoji4.svg";
@@ -45,35 +46,29 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
       ? field.value[field.value.map((f: any) => f._id).indexOf(_id)].level
       : NONE
   );
-
-  const isInitialMount = useRef(true);
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      checkBoundaries();
-      const index = field.value.map((f: any) => f._id).indexOf(title);
-      console.log(index);
-      if (index != -1) {
-        const fieldValues = [...field.value];
-        console.log(selectedEmoji);
-        if (selectedEmoji != NONE) {
-          const vibe = { ...fieldValues[index] };
-          vibe.level = selectedEmoji;
-          fieldValues.splice(index, 1);
-          fieldValues.splice(index, 0, vibe);
-        } else {
-          fieldValues.splice(index, 1);
-          console.log(fieldValues);
-        }
-
-        setEmoji(field.name, fieldValues);
-      } else if (selectedEmoji != NONE) {
-        setEmoji(
-          field.name,
-          field.value.concat([{ _id: _id, title: title, level: selectedEmoji }])
-        );
+  useDidUpdateEffect(() => {
+    checkBoundaries();
+    const index = field.value.map((f: any) => f._id).indexOf(title);
+    console.log(index);
+    if (index != -1) {
+      const fieldValues = [...field.value];
+      console.log(selectedEmoji);
+      if (selectedEmoji != NONE) {
+        const vibe = { ...fieldValues[index] };
+        vibe.level = selectedEmoji;
+        fieldValues.splice(index, 1);
+        fieldValues.splice(index, 0, vibe);
+      } else {
+        fieldValues.splice(index, 1);
+        console.log(fieldValues);
       }
+
+      setEmoji(field.name, fieldValues);
+    } else if (selectedEmoji != NONE) {
+      setEmoji(
+        field.name,
+        field.value.concat([{ _id: _id, title: title, level: selectedEmoji }])
+      );
     }
   }, [selectedEmoji]);
 

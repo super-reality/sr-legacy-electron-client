@@ -22,6 +22,7 @@ import SingleTicket from "./single-ticket";
 import SupperSpinner from "../../super-spinner";
 
 import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 interface IfilterOptions {
   name?: string;
@@ -32,7 +33,7 @@ interface IfilterOptions {
 /* eslint-disable no-shadow */
 /* eslint-disable  react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
+/* eslint-disable  @typescript-eslint/no-use-before-define */
 export default function SupportTickets(
   props: RouteComponentProps
 ): JSX.Element {
@@ -45,6 +46,16 @@ export default function SupportTickets(
   const [searchOption, setSearchOption] = useState<string>("");
 
   const [searchCategory, setSearchCategory] = useState<string>("");
+  const [isFetching, setIsFetching, scrollRef] = useInfiniteScroll(
+    fetchMoreListItems
+  );
+
+  function fetchMoreListItems() {
+    setTimeout(() => {
+      setTickets(tickets.concat(tickets));
+      setIsFetching(false);
+    }, 2000);
+  }
 
   let searchedCategories: IData[] = [];
   const searchResults: supportTicketPayload[] = [];
@@ -55,7 +66,6 @@ export default function SupportTickets(
         searchedCategories = [...categories];
       });
     })();
-    console.log(searchedCategories);
     return searchedCategories;
   };
 
@@ -105,7 +115,7 @@ export default function SupportTickets(
     let ob: IfilterOptions = {};
 
     console.log(searchOption);
-    console.log(`CATEGORY: ${searchCategory}`);
+    console.log(searchCategory);
 
     if (searchOption == "" && searchCategory == "") {
       (async () => {
@@ -162,9 +172,9 @@ export default function SupportTickets(
   };
 
   return (
-    <div>
+    <div id="support-tickets">
       <div className="ticket-title">Filter By</div>
-      <div className="ticket-container">
+      <div className="ticket-container" id="ticket-container">
         <div className="ticket-category">
           Category
           <AutosuggestInput<IData>
@@ -193,15 +203,15 @@ export default function SupportTickets(
           />
         </div>
 
-        <div className="ticket-search">
-          <div className="ticket-wrapper">
+        <div className="ticket-search" ref={scrollRef}>
+          <div className="ticket-wrapper" id="ticket-wrapper">
             <input
               type="text"
               value={searchOption}
               onChange={searchTickets}
               placeholder="Search title"
             />
-            <a href="">Advanced Search</a>
+            <a>Advanced Search</a>
             <div className="request-count">
               {tickets.length} Help Requests
               <div className="sort-filter">
@@ -217,20 +227,28 @@ export default function SupportTickets(
                 <SupperSpinner size="200px" text="Loading Tickets" />
               </div>
             ) : (
-              <div className="ticket-list">
-                {tickets.map((ticket, index) => (
-                  <SingleTicket
-                    onClick={() =>
-                      ticket._id && navigate(`/give/${ticket._id}`)
-                    }
-                    key={ticket._id}
-                    index={index}
-                    votes={ticket.votes!}
-                    {...ticket}
-                    timeposted={ticket.createdAt!}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="ticket-list" id="ticket-list">
+                  {tickets.map((ticket, index) => (
+                    <SingleTicket
+                      onClick={() =>
+                        ticket._id && navigate(`/give/${ticket._id}`)
+                      }
+                      key={ticket._id}
+                      index={index}
+                      votes={ticket.votes!}
+                      id={ticket._id!}
+                      {...ticket}
+                      timeposted={ticket.createdAt!}
+                    />
+                  ))}
+                </div>
+                {isFetching && (
+                  <div>
+                    <SupperSpinner size="100px" text="Fetching new tickets" />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

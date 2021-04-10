@@ -179,6 +179,12 @@ export interface ISkillGet {
   _id: string;
 }
 
+export interface IVotePayload {
+  votes: number;
+  upvote: boolean;
+  downvote: boolean;
+}
+
 export interface ISingleCategoryGet {
   err_code: CodeSuccess;
   category: {

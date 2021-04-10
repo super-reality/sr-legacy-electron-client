@@ -202,6 +202,18 @@
         margin-top: 10px;
         font-weight: 500;
       }
+
+      svg {
+        height: 25px;
+        width: 25px;
+        margin-left: 10px;
+        transform: translateY(25%);
+        cursor: pointer;
+        transition: 0.5s;
+        &:hover {
+          transform: translateY(25%) rotate(365deg);
+        }
+      }
     }
     .AI-suggestion {
       list-style-type: none;

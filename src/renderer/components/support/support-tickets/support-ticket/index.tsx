@@ -6,6 +6,7 @@ import { RouteComponentProps, useNavigate } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
 import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
+import { ReactComponent as Reload } from "../../../../../assets/svg/reload.svg";
 import { singleSupportTicketsPayload } from "../../../../api/types/support-ticket/supportTicket";
 import getTicket from "../support-tickets-utils/getSingleSupportTicket";
 import SuperSpinner from "../../../super-spinner";
@@ -29,6 +30,15 @@ export default function SupportTicker({
   const navigate = useNavigate();
   const [ticket, setTicket] = React.useState<singleSupportTicketsPayload>();
   const [loading, setLoading] = React.useState<boolean>(true);
+  const [questionsLoading, setQuestionsLoading] = React.useState<boolean>(
+    false
+  );
+
+  const [question, setQuestion] = React.useState<IPostQuestion>({
+    question: "",
+    document_name: "",
+    engine_name: "",
+  });
   const [gpt3Suggestions, setGpt3Suggestions] = React.useState<IGetQuestion[]>(
     []
   );
@@ -41,32 +51,51 @@ export default function SupportTicker({
     (state: AppState) => state.createSupportTicket
   );
 
+  const getAnswers = (q: IPostQuestion) => {
+    (async () => {
+      /* eslint-disable no-await-in-loop */
+      for (let i = 0; i < 3; i += 1) {
+        await createGPT3Question(q)
+          .then((resp) => {
+            console.log(resp);
+            gpt3SuggestionsCopy.push(resp);
+            if (i == 2) {
+              setGpt3Suggestions(gpt3SuggestionsCopy);
+              setLoading(false);
+              setQuestionsLoading(false);
+            }
+          })
+          .catch((e: any) => console.log(e));
+      }
+    })();
+  };
+
+  const reloadAnswer = () => {
+    setQuestionsLoading(true);
+    console.log(question);
+    (async () => {
+      await getAnswers(question);
+    })();
+  };
+
   React.useEffect(() => {
     setSidebarWidth(600);
     if (ticketId) {
       getTicket(ticketId).then((tick) => {
         console.log(tick);
         setTicket(tick);
-        const question: IPostQuestion = {
-          question: tick.title,
-          engine_name: "curie",
-          document_name: tick._id,
-        };
 
         (async () => {
-          /* eslint-disable no-await-in-loop */
-          for (let i = 0; i < 3; i += 1) {
-            await createGPT3Question(question)
-              .then((resp) => {
-                console.log(resp);
-                gpt3SuggestionsCopy.push(resp);
-                if (i == 2) {
-                  setGpt3Suggestions(gpt3SuggestionsCopy);
-                  setLoading(false);
-                }
-              })
-              .catch((e: any) => console.log(e));
-          }
+          await getAnswers({
+            question: tick.title,
+            engine_name: "curie",
+            document_name: tick._id,
+          });
+          setQuestion({
+            question: tick.title,
+            engine_name: "curie",
+            document_name: tick._id,
+          });
         })();
       });
     }
@@ -139,60 +168,69 @@ export default function SupportTicker({
               </ul>
             </div>
             <div className="suggest-solution">
-              <div className="title">Suggest Solutions</div>
-              <ul className="AI-suggestion">
-                {gpt3Suggestions.length > 0 &&
-                  gpt3Suggestions.map((suggestion) => (
-                    <li
-                      onClick={() => {
-                        if (inputValue == "") {
-                          setInputValue(`${suggestion.answer}`);
-                        } else {
-                          setInputValue(
-                            `${inputValue} \n\n${suggestion.answer}`
-                          );
-                        }
-                      }}
-                      key={`${suggestion.answer}`}
-                    >
-                      <b>Gaia says: </b>
-                      {suggestion.answer}
-                    </li>
-                  ))}
+              <div className="title">
+                Suggest Solutions
+                <Reload onClick={reloadAnswer} />
+              </div>
+              {questionsLoading ? (
+                <div>
+                  <SuperSpinner size="80px" text="Loading suggestions" />
+                </div>
+              ) : (
+                <ul className="AI-suggestion">
+                  {gpt3Suggestions.length > 0 &&
+                    gpt3Suggestions.map((suggestion) => (
+                      <li
+                        onClick={() => {
+                          if (inputValue == "") {
+                            setInputValue(`${suggestion.answer}`);
+                          } else {
+                            setInputValue(
+                              `${inputValue} \n\n${suggestion.answer}`
+                            );
+                          }
+                        }}
+                        key={`${suggestion.answer}`}
+                      >
+                        <b>Gaia says: </b>
+                        {suggestion.answer}
+                      </li>
+                    ))}
 
-                <li
-                  onClick={() => {
-                    if (inputValue == "") {
-                      setInputValue(`The answer is always on your heart`);
-                    } else {
-                      setInputValue(
-                        `${inputValue} \n\nThe answer is always on your heart`
-                      );
-                    }
-                  }}
-                >
-                  <b>Nick Marks says: </b>
-                  The answer is always on your heart
-                </li>
-                <li
-                  onClick={() => {
-                    if (inputValue == "") {
-                      setInputValue(`Idk go ask manwe`);
-                    } else {
-                      setInputValue(`${inputValue} \n\nIdk go ask manwe`);
-                    }
-                  }}
-                >
-                  <b>Nick Marks says: </b>
-                  Idk go ask manwe
-                </li>
+                  <li
+                    onClick={() => {
+                      if (inputValue == "") {
+                        setInputValue(`The answer is always on your heart`);
+                      } else {
+                        setInputValue(
+                          `${inputValue} \n\nThe answer is always on your heart`
+                        );
+                      }
+                    }}
+                  >
+                    <b>Nick Marks says: </b>
+                    The answer is always on your heart
+                  </li>
+                  <li
+                    onClick={() => {
+                      if (inputValue == "") {
+                        setInputValue(`Idk go ask manwe`);
+                      } else {
+                        setInputValue(`${inputValue} \n\nIdk go ask manwe`);
+                      }
+                    }}
+                  >
+                    <b>Nick Marks says: </b>
+                    Idk go ask manwe
+                  </li>
 
-                {/*
+                  {/*
                 <div className="blue">
                   Animating Cubes In Blender ( RASA )
                 </div>{" "}
                 */}
-              </ul>
+                </ul>
+              )}
               <div className="title">
                 Create Your Own Solution
                 <div className="purple">

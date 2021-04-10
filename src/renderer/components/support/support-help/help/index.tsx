@@ -11,7 +11,7 @@ import { ReactComponent as IconSkills } from "../../../../../assets/svg/skills.s
 import { ReactComponent as IconReview } from "../../../../../assets/svg/review.svg";
 import { ReactComponent as IconCircleTick } from "../../../../../assets/svg/circle-tick.svg";
 import { ReactComponent as IconVibes } from "../../../../../assets/svg/vibes-icon.svg";
-
+import { ReactComponent as IconBack } from "../../../../../assets/svg/goback.svg";
 import StepTitle from "./step-title";
 import StepDescription from "./step-description";
 import StepSkills from "./step-skills";
@@ -131,6 +131,10 @@ export default function Help(props: RouteComponentProps): JSX.Element {
               </li>
             );
           })}
+          <li onClick={() => navigate && navigate("/ask")}>
+            <a> Back</a>
+            <IconBack style={{ height: "23px", width: "auto" }} />
+          </li>
         </ul>
       </div>
       <div className="support-steps">

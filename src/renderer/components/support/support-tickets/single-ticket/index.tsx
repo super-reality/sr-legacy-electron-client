@@ -3,6 +3,8 @@ import moment from "moment";
 import voteup from "../../../../../assets/images/voteup.png";
 import votedown from "../../../../../assets/images/votedown.png";
 import ticketuser from "../../../../../assets/images/ticket-user.png";
+import useDidUpdateEffect from "../../../../hooks/useDidUpdateEffect";
+import "./index.scss";
 /* import emoji1 from "../../../../../assets/svg/emoji1.svg";
 import emoji2 from "../../../../../assets/svg/emoji2.svg";
 import emoji3 from "../../../../../assets/svg/emoji3.svg";
@@ -24,6 +26,7 @@ import chats from "../../../../../assets/images/chats.png";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../../redux/stores/renderer";
 import { getVibes as getVibesName, AllVibes } from "../../../forms";
+import voteTicket from "../support-tickets-utils/upvoteTicket";
 
 interface ICreatorInfo {
   firstname: string;
@@ -41,6 +44,7 @@ interface IsingleTicket {
   vibes: string[];
   vibesLevels: number[];
   votes: number;
+  id: string;
 }
 
 export default function singleTicket(props: IsingleTicket): JSX.Element {
@@ -53,7 +57,61 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     vibes,
     vibesLevels,
     votes,
+    id,
   } = props;
+
+  const NONE = 0;
+  const UP = 1;
+  const DOWN = 2;
+
+  type Tvotes = typeof NONE | typeof UP | typeof DOWN;
+
+  const [rank, setRank] = React.useState<number>(votes);
+  const [upvote, setUpvote] = React.useState<Tvotes>(NONE);
+
+  useDidUpdateEffect(() => {
+    (async () => {
+      await voteTicket(id, {
+        votes: rank,
+        upvote: upvote == UP,
+        downvote: upvote == DOWN,
+      });
+    })();
+  }, [rank]);
+
+  const handleUpvote = () => {
+    if (upvote == NONE) {
+      setRank(rank + 1);
+      setUpvote(UP);
+    }
+
+    if (upvote == DOWN) {
+      setRank(rank + 2);
+      setUpvote(UP);
+    }
+
+    if (upvote == UP) {
+      setRank(votes);
+      setUpvote(NONE);
+    }
+  };
+
+  const handleDownvote = () => {
+    if (upvote == NONE) {
+      setRank(rank - 1);
+      setUpvote(DOWN);
+    }
+
+    if (upvote == UP) {
+      setRank(rank - 2);
+      setUpvote(DOWN);
+    }
+
+    if (upvote == DOWN) {
+      setRank(votes);
+      setUpvote(NONE);
+    }
+  };
 
   const { vibeData } = useSelector(
     (state: AppState) => state.createSupportTicket
@@ -63,13 +121,21 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     <div className="single-query">
       <div className="voting">
         <div className="up-vote">
-          <button type="button">
+          <button
+            type="button"
+            className={upvote == UP ? "selected" : ""}
+            onClick={handleUpvote}
+          >
             <img src={voteup} alt="" />
           </button>
         </div>
-        <div className="vote">{votes}</div>
+        <div className="vote">{rank}</div>
         <div className="down-vote">
-          <button type="button">
+          <button
+            type="button"
+            className={upvote == DOWN ? "selected" : ""}
+            onClick={handleDownvote}
+          >
             <img src={votedown} alt="" />
           </button>
         </div>

@@ -42,6 +42,8 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
   const dispatch = useDispatch();
   const { goNext, goBack, index } = props;
 
+  const formRef = React.useRef<FormikProps<Values>>(null);
+
   const modifyUsedCategories = (value: IData) => {
     if (usedCategories) {
       const array: IData[] = [...usedCategories];
@@ -62,6 +64,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
           category: slice.category,
           newCategoryName: slice.newCategoryName,
         }}
+        innerRef={formRef}
         validationSchema={titleSchema}
         onSubmit={(values) => {
           reduxAction(dispatch, {
