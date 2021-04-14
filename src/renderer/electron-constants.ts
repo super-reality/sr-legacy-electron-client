@@ -13,3 +13,5 @@ export const itemsPath = `${userData}/item/`;
 export const tempPath = `${userData}/temp/`;
 
 export const fxPath = `${userData}/fx/`;
+
+export const ocrCachePath = `${userData}/lang-data`;

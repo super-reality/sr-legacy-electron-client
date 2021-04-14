@@ -79,17 +79,31 @@ export default function ItemPreview(props: ItemPreviewProps) {
 
   const anchor = useAnchor(anchorId || undefined);
 
+  const isOcr: boolean = useMemo(
+    () =>
+      step
+        ? step.startWhen.filter((tv) => tv.type == "Text Found").length > 0
+        : false,
+    [step]
+  );
+
   const updatePos = useCallback(() => {
     const newPos = {
-      x: anchorId && item?.anchor ? cvResult.x + (item?.relativePos.x || 0) : 0,
-      y: anchorId && item?.anchor ? cvResult.y + (item?.relativePos.y || 0) : 0,
+      x:
+        (anchorId && item?.anchor) || isOcr
+          ? cvResult.x + (item?.relativePos.x || 0)
+          : 0,
+      y:
+        (anchorId && item?.anchor) || isOcr
+          ? cvResult.y + (item?.relativePos.y || 0)
+          : 0,
       width: item?.relativePos.width || 400,
       height: item?.relativePos.height || 300,
     };
     setPos(newPos);
 
     const newStyle =
-      anchorId && item?.anchor
+      (anchorId && item?.anchor) || isOcr
         ? {}
         : {
             left: `calc((100% - ${item?.relativePos.width}px) / 100 * ${
@@ -100,7 +114,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
             })`,
           };
     setStyle(newStyle);
-  }, [cvResult, step, item]);
+  }, [cvResult, step, isOcr, item]);
 
   useEffect(() => {
     updatePos();
@@ -197,7 +211,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("resizeend", () => {
           const div = dragContainer.current;
-          if (anchorId && item?.anchor) {
+          if ((anchorId && item?.anchor) || isOcr) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
@@ -226,7 +240,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
         })
         .on("dragend", () => {
           const div = dragContainer.current;
-          if (anchorId && item?.anchor) {
+          if ((anchorId && item?.anchor) || isOcr || isOcr) {
             startPos.x -= cvResult.x - 3;
             startPos.y -= cvResult.y - 3;
           } else if (div && div.parentElement) {
@@ -260,6 +274,7 @@ export default function ItemPreview(props: ItemPreviewProps) {
     updateDiv,
     dragContainer.current,
     cvResult,
+    isOcr,
     pos,
     step,
     item,

@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
+import { CVTypes } from "../../types/utils";
+
 const initialCVSettings = {
   cvMatchValue: 990,
   cvCanvas: 100,
@@ -11,6 +13,7 @@ const initialCVSettings = {
 
 const initialBackgroundState = {
   cvTemplates: [] as string[],
+  cvType: "template" as CVTypes,
   cvTo: "",
   anchorId: "",
 };

@@ -18,6 +18,8 @@ export interface CVResult {
   id: string;
 }
 
+export type CVTypes = "template" | "ocr";
+
 export type Rectangle = {
   x: number;
   y: number;

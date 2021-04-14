@@ -24,6 +24,16 @@
     z-index: 2;
     overflow: hidden;
 
+    .enabled {
+      div {
+        cursor: pointer;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    
     .control-buttons {
       display: flex;
       margin: 0 auto;
@@ -37,13 +47,8 @@
         height: 32px;
         display: flex;
         margin: auto 16px;
-        cursor: pointer;
         opacity: 0.7;
         -webkit-transition: opacity, margin 0.25s cubic-bezier(0, 0, 0.2, 1);
-
-        &:hover {
-          opacity: 1;
-        }
 
         svg {
           fill: var(--color-light);

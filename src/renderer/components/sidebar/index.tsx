@@ -26,7 +26,8 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-/* import SupportTickets from "../support/support-tickets"; */
+// import SupportTickets from "../support/support-tickets";
+import ShootingStar from "../animations";
 
 export interface SidebarIcon {
   title: string;
@@ -58,6 +59,8 @@ export default function Sidebar() {
   const { loginData, groups, categories, channels } = useSelector(
     (state: AppState) => state.chat
   );
+
+  const { playing } = useSelector((state: AppState) => state.lessonPlayer);
 
   const { width } = useSelector((state: AppState) => state.sidebar);
 
@@ -177,15 +180,44 @@ export default function Sidebar() {
     [current, wideView, contentExpanded, sidebarIcons]
   );
 
+  const calc = (x: number, y: number) => [
+    -(y - window.innerHeight / 2) / 60,
+    (x - window.innerWidth / 2) / 60,
+    1,
+  ];
+  const trans = (x: number, y: number, s: number) =>
+    `perspective(50rem) rotateX(${x}deg) rotateY(${y}deg) scale(${s})`;
+
+  const [sidebarProps, setSidebarProps] = useSpring(() => ({
+    xys: [0, 0, 1],
+    config: { mass: 5, tension: 170, friction: 60 },
+  }));
+
   return (
     <>
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
         currentLesson &&
         Reality}
-      <div
-        style={{ right: "0px", top: "60px" }}
+      <animated.div
+        style={{
+          right: "0px",
+          top: "60px",
+          transform: sidebarProps.xys.to(trans),
+        }}
         ref={sidebarContainerRef}
         className="sidebar-container"
+        onMouseEnter={() => {
+          const app = document.getElementById("root");
+          if (app) app.onmousemove = null;
+          setSidebarProps({ xys: [0, 0, 1] });
+        }}
+        onMouseLeave={() => {
+          const app = document.getElementById("root");
+          if (app) {
+            app.onmousemove = ({ clientX: x, clientY: y }) =>
+              setSidebarProps({ xys: calc(x, y) });
+          }
+        }}
       >
         <animated.div
           onMouseOver={() => setWideView(true)}
@@ -193,26 +225,64 @@ export default function Sidebar() {
           className="sidebar-buttons"
           style={mainProps}
         >
+          <ShootingStar
+            style={{
+              left: 0,
+              animationIterationCount: 1,
+            }}
+            direction="bottom"
+          />
+          <ShootingStar
+            style={{
+              bottom: 0,
+              animationDelay: "1.25s",
+              animationIterationCount: 1,
+            }}
+            direction="right"
+          />
+          <ShootingStar
+            style={{
+              right: 0,
+              animationDelay: "1.5s",
+              animationIterationCount: 1,
+            }}
+            direction="top"
+          />
+          <ShootingStar
+            style={{
+              top: 0,
+              animationDelay: "1.75s",
+              animationIterationCount: 1,
+            }}
+            direction="left"
+          />
           <SidebarControls
             wideView={wideView}
             setWideView={() => setWideView(!wideView)}
             sidebarRef={sidebarContainerRef}
           />
 
-          <div className="control-buttons">
+          <div
+            className={`control-buttons ${playing ? "enabled" : ""}`}
+            style={{ opacity: playing ? 1 : 0.5 }}
+          >
             <animated.div style={controlsProps}>
-              <LeftArrowIcon onClick={doPrev} />
+              <LeftArrowIcon onClick={playing ? doPrev : undefined} />
             </animated.div>
             <animated.div style={controlsProps}>
               <StopIcon
-                onClick={() => {
-                  doClear();
-                  doPlay(false);
-                }}
+                onClick={
+                  playing
+                    ? () => {
+                        doClear();
+                        doPlay(false);
+                      }
+                    : undefined
+                }
               />
             </animated.div>
             <div>
-              <RightArrowIcon onClick={doNext} />
+              <RightArrowIcon onClick={playing ? doNext : undefined} />
             </div>
           </div>
 
@@ -262,7 +332,7 @@ export default function Sidebar() {
             )}
           </div>
         </animated.div>
-      </div>
+      </animated.div>
     </>
   );
 }

@@ -123,7 +123,7 @@ export default function handleIpc(): void {
   makeIpcListener<ipcMsgCv>("cv", (e, arg) => {
     reduxAction(store.dispatch, {
       type: "SET_BACK",
-      arg: { cvTemplates: arg.cvTemplates, cvTo: arg.cvTo },
+      arg: { cvTemplates: arg.cvTemplates, cvTo: arg.cvTo, cvType: arg.cvType },
     });
     reduxAction(store.dispatch, { type: "SET_CV_SETTINGS", arg });
   });

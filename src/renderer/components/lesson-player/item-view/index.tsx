@@ -16,11 +16,12 @@ import { TriggerTypes } from "../../../items/endStep";
 interface ItemViewProps {
   item: Item;
   anchorId: string;
+  isOcr: boolean;
   onSucess: (trigger: TriggerTypes | null) => void;
 }
 
 export default function ItemView(props: ItemViewProps) {
-  const { anchorId, item, onSucess } = props;
+  const { anchorId, isOcr, item, onSucess } = props;
 
   const { treeAnchors, previewing } = useSelector(
     (state: AppState) => state.createLessonV2
@@ -39,12 +40,18 @@ export default function ItemView(props: ItemViewProps) {
     const cvFound =
       cvResult.dist > 0 &&
       item &&
-      anchor &&
-      cvResult.dist < anchor.cvMatchValue / 100;
+      ((anchor && cvResult.dist < anchor.cvMatchValue / 100) ||
+        (isOcr && cvResult.dist > 0.8));
 
     const newPos = {
-      x: anchor && item.anchor ? cvResult.x + (item.relativePos.x || 0) : 0,
-      y: anchor && item.anchor ? cvResult.y + (item.relativePos.y || 0) : 0,
+      x:
+        (anchor && item.anchor) || isOcr
+          ? cvResult.x + (item.relativePos.x || 0)
+          : 0,
+      y:
+        (anchor && item.anchor) || isOcr
+          ? cvResult.y + (item.relativePos.y || 0)
+          : 0,
       width: item.relativePos.width || 400,
       height: item.relativePos.height || 300,
     };
