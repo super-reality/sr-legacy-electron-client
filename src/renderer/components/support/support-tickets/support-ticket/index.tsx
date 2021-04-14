@@ -2,7 +2,7 @@ import "./index.scss";
 import React from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import { RouteComponentProps, useNavigate } from "@react/router";
+import { RouteComponentProps, useNavigate } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
 import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
