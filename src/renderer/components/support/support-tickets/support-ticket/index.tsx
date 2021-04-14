@@ -1,8 +1,8 @@
 import "./index.scss";
-import React from "react";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { RouteComponentProps, useNavigate } from "@reach/router";
+import { useEffect, useState } from "react";
 import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
 import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
@@ -28,22 +28,18 @@ export default function SupportTicket({
   ticketId,
 }: ISingleSupportTicket): JSX.Element {
   const navigate = useNavigate();
-  const [ticket, setTicket] = React.useState<singleSupportTicketsPayload>();
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [questionsLoading, setQuestionsLoading] = React.useState<boolean>(
-    false
-  );
+  const [ticket, setTicket] = useState<singleSupportTicketsPayload>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [questionsLoading, setQuestionsLoading] = useState<boolean>(false);
 
-  const [question, setQuestion] = React.useState<IPostQuestion>({
+  const [question, setQuestion] = useState<IPostQuestion>({
     question: "",
     document_name: "",
     engine_name: "",
   });
-  const [gpt3Suggestions, setGpt3Suggestions] = React.useState<IGetQuestion[]>(
-    []
-  );
+  const [gpt3Suggestions, setGpt3Suggestions] = useState<IGetQuestion[]>([]);
 
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = useState("");
 
   const gpt3SuggestionsCopy: IGetQuestion[] = [];
 
@@ -78,7 +74,7 @@ export default function SupportTicket({
     })();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSidebarWidth(600);
     if (ticketId) {
       getTicket(ticketId).then((tick) => {

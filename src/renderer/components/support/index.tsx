@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.scss";
 import { Router } from "@reach/router";
 import Menu from "./support-menu";

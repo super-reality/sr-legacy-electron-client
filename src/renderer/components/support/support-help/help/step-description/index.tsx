@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import "./index.scss";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";

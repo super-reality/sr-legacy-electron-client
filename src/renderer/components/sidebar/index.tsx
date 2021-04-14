@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  SVGProps,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./index.scss";
 import "../buttons.scss";
 
@@ -31,8 +38,8 @@ import ShootingStar from "../animations";
 
 export interface SidebarIcon {
   title: string;
-  icon: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
+  icon: FunctionComponent<
+    SVGProps<SVGSVGElement> & {
       title?: string | undefined;
     }
   >;

@@ -1,7 +1,7 @@
-import React from "react";
 import "./index.scss";
 import Vivus from "vivus";
 import { RouteComponentProps, useNavigate, useLocation } from "@reach/router";
+import { useEffect, useState } from "react";
 import { ReactComponent as SupportIcon } from "../../../../assets/svg/support-icon.svg";
 import SupportAskIcon from "../../../../assets/svg/support-ask.svg";
 import SupportHelpIcon from "../../../../assets/svg/support-help.svg";
@@ -11,10 +11,10 @@ export default function SupportMenu(props: RouteComponentProps): JSX.Element {
   console.log(props);
   const navigate = useNavigate();
   const location = useLocation();
-  const [giveAnimation, setGiveAnimation] = React.useState<any>();
-  const [askAnimation, setAskAnimation] = React.useState<any>();
+  const [giveAnimation, setGiveAnimation] = useState<any>();
+  const [askAnimation, setAskAnimation] = useState<any>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     setGiveAnimation(
       new Vivus("give", {
         duration: 100,

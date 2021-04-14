@@ -1,24 +1,28 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "jest": true,
-    "node": true
+  env: {
+    browser: true,
+    commonjs: true,
+    es6: true,
+    jest: true,
+    node: true,
   },
-  "globals": {
-    "page": true,
-    "browser": true
+  globals: {
+    NodeJS: true,
+    Electron: true,
+    JSX: true,
+    React: true,
+    page: true,
+    browser: true,
   },
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
     },
-    "ecmaVersion": 2020,
-    "sourceType": "module"
+    ecmaVersion: 2020,
+    sourceType: "module",
   },
-  "rules": {
-    "allowEmptyCatch": 0,
+  rules: {
+    allowEmptyCatch: 0,
     "no-cond-assign": 0,
     "no-console": "off",
     "no-redeclare": "warn",
@@ -28,52 +32,43 @@ module.exports = {
     "no-empty": "warn",
     "no-underscore-dangle": "off",
     "object-shorthand": 0,
-    "complexity": [
-      "warn",
-      40
-    ],
-    "max-statements": [
-      "warn",
-      100
-    ],
+    complexity: ["warn", 40],
+    "max-statements": ["warn", 100],
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".jsx",
-          ".tsx"
-        ]
-      }
+        extensions: [".jsx", ".tsx"],
+      },
     ],
     "react/require-default-props": [
       1,
       {
-        "ignoreFunctionalComponents": true
-      }
+        ignoreFunctionalComponents: true,
+      },
     ],
-    "eqeqeq": "off",
+    eqeqeq: "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/no-noninteractive-element-interactions": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
       {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
+        js: "never",
+        jsx: "never",
+        ts: "never",
+        tsx: "never",
+      },
     ],
     "prettier/prettier": [
       "warn",
       {
-        "endOfLine": "auto"
-      }
+        endOfLine: "auto",
+      },
     ],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
-      "error",
-      {"varsIgnorePattern": "^_", "argsIgnorePattern": "^_"}
+      "warn",
+      { varsIgnorePattern: "^_", argsIgnorePattern: "^_" },
     ],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -83,42 +78,26 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/ban-ts-ignore": "off",
     "@typescript-eslint/interface-name-prefix": "off",
-    "react-hooks/rules-of-hooks": "error"
+    "react-hooks/rules-of-hooks": "error",
   },
-  "settings": {
-    "import/core-modules": [
-      "electron"
-    ],
+  settings: {
+    "import/core-modules": ["electron"],
     "import/resolver": {
-      "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
-      }
+      node: {
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
     },
-    "import/ignore:": [
-      ".scss$"
-    ]
+    "import/ignore:": [".scss$"],
   },
-  "parser": "@typescript-eslint/parser",
-  "extends": [
+  parser: "@typescript-eslint/parser",
+  extends: [
     "airbnb-base",
     "airbnb/rules/react",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier/@typescript-eslint",
-    "prettier/react"
+    "prettier/react",
   ],
-  "plugins": [
-    "jest",
-    "jsx-a11y",
-    "import",
-    "prettier",
-    "react",
-    "react-hooks"
-  ]
-}
+  plugins: ["jest", "jsx-a11y", "import", "prettier", "react", "react-hooks"],
+};

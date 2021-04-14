@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import reduxAction from "../../../redux/reduxAction";

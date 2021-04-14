@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import { MutableRefObject, useEffect } from "react";
 
 export default function useOutsideClick(
-  ref: React.MutableRefObject<HTMLDivElement | null>,
+  ref: MutableRefObject<HTMLDivElement | null>,
   callback: () => void
 ) {
   const handleClick = (e: any) => {

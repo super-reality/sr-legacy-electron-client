@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { Field, /*  ErrorMessage, */ FieldProps } from "formik";
+import { Fragment } from "react";
 import { InputProps } from "..";
 /* import TextError from "../TextError"; */
 /* import  { Iskills } from "../../../api/types/support-ticket/supportTicket"; */
@@ -52,7 +52,7 @@ export default function CheckboxGroup(props: InputProps): JSX.Element {
                 },
               };
               return (
-                <React.Fragment key={option._id}>
+                <Fragment key={option._id}>
                   <input
                     type="checkbox"
                     id={option._id}
@@ -63,7 +63,7 @@ export default function CheckboxGroup(props: InputProps): JSX.Element {
                   <label className="checkbox-label" htmlFor={option._id}>
                     {option.name}
                   </label>
-                </React.Fragment>
+                </Fragment>
               );
             })
           );

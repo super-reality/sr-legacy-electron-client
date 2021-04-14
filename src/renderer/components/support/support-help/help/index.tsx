@@ -1,5 +1,4 @@
 import "./index.scss";
-import React from "react";
 import { useSelector } from "react-redux";
 import { RouteComponentProps } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
@@ -104,6 +103,7 @@ export default function Help(props: RouteComponentProps): JSX.Element {
         break;
       case 3:
         if (vibes.length > 0) return true;
+        break;
       default:
         return false;
     }

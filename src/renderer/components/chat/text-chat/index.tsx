@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./index.scss";
 import BaseTextArea from "../../base-textarea";
 import ButtonSimple from "../../button-simple";

@@ -1,10 +1,10 @@
-import React from "react";
+import { CSSProperties } from "react";
 
 interface ShootingStarProps {
   /** The direction to which the light will move */
   direction: "left" | "right" | "bottom" | "top";
   /** This prop is for to customize the animation entirely, like changing glow color */
-  style: React.CSSProperties;
+  style: CSSProperties;
 }
 
 const ShootingStar = (props: ShootingStarProps) => {

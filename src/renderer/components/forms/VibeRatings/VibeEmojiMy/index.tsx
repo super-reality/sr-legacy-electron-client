@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import "./index.scss";
 import { FieldProps, FormikProps } from "formik";
 import emoji1 from "../../../../../assets/svg/emoji1.svg";
@@ -122,7 +122,7 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
   );
 }
 
-export default React.memo(VibeEmoji);
+export default memo(VibeEmoji);
 
 /* {selectedEmoji == EMOJI2 && <img src={emojis[1].emoji} />}
         {selectedEmoji == EMOJI3 && <img src={emojis[2].emoji} />}

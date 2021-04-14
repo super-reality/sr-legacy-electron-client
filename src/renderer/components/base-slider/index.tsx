@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { isEqual } from "lodash";
 import {
   Slider,
@@ -120,7 +120,7 @@ function Tick({ tick, count, format = (d) => `${d}` }: TickProps) {
   );
 }
 
-interface BaseSliderProps<T> {
+interface BaseSliderProps {
   title?: string;
   domain: number[];
   defaultValues: number[];
@@ -138,7 +138,7 @@ const sliderStyle = {
   touchAction: "none",
 };
 
-export default function BaseSlider<T>(props: BaseSliderProps<T>): JSX.Element {
+export default function BaseSlider(props: BaseSliderProps): JSX.Element {
   const {
     title,
     domain,

@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  SetStateAction,
+  RefObject,
+  Dispatch,
+} from "react";
 
 export default function useInfiniteScroll(
   callback: () => void
-): [
-  boolean,
-  React.Dispatch<React.SetStateAction<boolean>>,
-  React.RefObject<HTMLDivElement>
-] {
+): [boolean, Dispatch<SetStateAction<boolean>>, RefObject<HTMLDivElement>] {
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   const scrollPanelRef = useRef<HTMLDivElement>(null);

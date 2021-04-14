@@ -1,4 +1,3 @@
-import React from "react";
 import SupperSpinner from "../components/super-spinner";
 import { voidFunction } from "../constants";
 import usePopup from "./usePopup";

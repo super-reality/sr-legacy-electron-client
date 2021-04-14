@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./index.scss";
 
 import { useDispatch, useSelector } from "react-redux";

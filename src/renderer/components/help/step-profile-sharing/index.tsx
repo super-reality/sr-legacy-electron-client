@@ -1,4 +1,3 @@
-import React from "react";
 import { StepSectionProps } from "..";
 
 import PacMan from "../../../../assets/images/pacman.png";

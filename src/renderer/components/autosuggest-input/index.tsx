@@ -1,14 +1,21 @@
-import React, { useEffect, CSSProperties } from "react";
+import {
+  useEffect,
+  CSSProperties,
+  useState,
+  useCallback,
+  FocusEvent,
+  KeyboardEvent,
+} from "react";
 import Autosuggest, { InputProps } from "react-autosuggest";
 import "./index.scss";
 
-const onFocus = (/* e: React.FocusEvent<HTMLElement> */): void => {
+const onFocus = (/* e: FocusEvent<HTMLElement> */): void => {
   // const input = e.target as HTMLInputElement;
   // We can trigger an action when we click the parent div
   // input.style.minWidth = "80px";
 };
 
-const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+const onKeyUp = (e: KeyboardEvent<HTMLInputElement>): void => {
   const input = e.target as HTMLInputElement;
   if (e.keyCode === 13) {
     input.blur();
@@ -48,14 +55,14 @@ export default function AutosuggestInput<T>({
   style?: CSSProperties;
   selectClear?: boolean;
 }): JSX.Element {
-  const [inputValue, setInputValue] = React.useState(initialValue ?? "");
-  const [suggestions, setSuggestions] = React.useState([] as T[]);
+  const [inputValue, setInputValue] = useState(initialValue ?? "");
+  const [suggestions, setSuggestions] = useState([] as T[]);
 
   useEffect(() => {
     if (forceSuggestions) setSuggestions(forceSuggestions);
   }, [forceSuggestions]);
 
-  const onChange = React.useCallback(
+  const onChange = useCallback(
     (_event: unknown, { newValue }: { newValue: string }): void => {
       setInputValue(newValue);
       if (onChangeCallback) onChangeCallback(newValue);
@@ -63,19 +70,19 @@ export default function AutosuggestInput<T>({
     []
   );
 
-  const onSuggestionsFetchRequested = React.useCallback<
-    Autosuggest.SuggestionsFetchRequested
-  >(({ value }: { value: string }): void => {
-    if (filter) setSuggestions(filter(value));
-  }, []);
+  const onSuggestionsFetchRequested = useCallback<Autosuggest.SuggestionsFetchRequested>(
+    ({ value }: { value: string }): void => {
+      if (filter) setSuggestions(filter(value));
+    },
+    []
+  );
 
-  const onSuggestionsClearRequested = React.useCallback<
-    Autosuggest.OnSuggestionsClearRequested
-  >((): void => setSuggestions([]), []);
+  const onSuggestionsClearRequested = useCallback<Autosuggest.OnSuggestionsClearRequested>(
+    (): void => setSuggestions([]),
+    []
+  );
 
-  const onSuggestionSelected = React.useCallback<
-    Autosuggest.OnSuggestionSelected<T>
-  >(
+  const onSuggestionSelected = useCallback<Autosuggest.OnSuggestionSelected<T>>(
     (e, { suggestion, suggestionValue, method }): void => {
       submitCallback(suggestion);
       if (selectClear) setInputValue(initialValue ?? "");
@@ -86,9 +93,9 @@ export default function AutosuggestInput<T>({
     [initialValue, submitCallback]
   );
 
-  const onBlur = React.useCallback(
+  const onBlur = useCallback(
     (
-      e: React.FocusEvent<HTMLElement>,
+      e: FocusEvent<HTMLElement>,
       { highlightedSuggestion }: { highlightedSuggestion: T }
     ): void => {
       const val = highlightedSuggestion;

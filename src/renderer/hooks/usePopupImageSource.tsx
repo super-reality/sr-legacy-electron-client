@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 import usePopup from "./usePopup";
 import ButtonSimple from "../components/button-simple";
@@ -12,7 +12,7 @@ import reduxAction from "../redux/reduxAction";
 type Modes = "Buttons" | "Input";
 
 export default function usePopupImageSource(
-  callback: (url: string) => void,
+  callback: (URL: string) => void,
   snip: boolean,
   url: boolean,
   disk: boolean,
@@ -132,7 +132,7 @@ export default function usePopupImageSource(
             )}
           </>
         ) : (
-          <React.Fragment key="popup-fragment">
+          <Fragment key="popup-fragment">
             <input
               autoFocus
               style={{ margin: "8px" }}
@@ -154,7 +154,7 @@ export default function usePopupImageSource(
             >
               Ok
             </ButtonSimple>
-          </React.Fragment>
+          </Fragment>
         )}
       </Popup>
     </>

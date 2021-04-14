@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import "./index.scss";
 import { useHistory } from "react-router-dom";
 import { animated, useSpring } from "react-spring";
@@ -31,7 +31,7 @@ export default function Splash(): JSX.Element {
       arg: true,
     });
     history.push(`/test`);
-  }, [dispatch]);
+  }, [history, dispatch]);
 
   const fadeOutSpring = useSpring({
     opacity: auth ? 0 : 1,

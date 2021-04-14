@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import reduxAction from "../../../redux/reduxAction";
 import DefaultIcon from "../../../../assets/images/logo-icon.png";

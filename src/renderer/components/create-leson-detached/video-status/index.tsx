@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import path from "path";
 import "./index.scss";
 import { useDispatch, useSelector } from "react-redux";

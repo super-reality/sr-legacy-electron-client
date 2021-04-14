@@ -1,4 +1,4 @@
-import React, { /* useState, useCallback, */ useEffect } from "react";
+import { /* useState, useCallback, */ ReactNode, useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "@reach/router";
@@ -60,7 +60,7 @@ const HELP = 1; */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 interface ISupportHelpProps extends RouteComponentProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export default function Support(props: ISupportHelpProps): JSX.Element {
@@ -69,8 +69,7 @@ export default function Support(props: ISupportHelpProps): JSX.Element {
   const { children } = props;
   const {
     skillsData,
-    categoryData /* 
-    supportScreen, */,
+    categoryData,
     vibeData,
     category,
     newCategoryName,
@@ -109,7 +108,7 @@ export default function Support(props: ISupportHelpProps): JSX.Element {
         arg: null,
       });
     }; */
-  }, []);
+  }, [dispatch, categoryData, skillsData, vibeData]);
 
   useEffect(() => {
     if (newCategoryName == "") {
@@ -124,7 +123,7 @@ export default function Support(props: ISupportHelpProps): JSX.Element {
         });
       })();
     }
-  }, [category]);
+  }, [newCategoryName, dispatch, category]);
 
   /*   const ClickGotSart = () => {
     reduxAction(dispatch, {

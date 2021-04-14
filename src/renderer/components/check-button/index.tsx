@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties } from "react";
 import "../buttons.scss";
 
 import { ReactComponent as UncheckIcon } from "../../../assets/svg/unchecked.svg";

@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.scss";
 import timestampToTime from "../../../../utils/timestampToTime";
 import { RecordingJson } from "../../recorder/types";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { Category, Channel, ChannelsResult } from "../../../../types/chat";
 import ButtonAdd from "../../../../assets/images/add-circle.png";

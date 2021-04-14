@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { getEffectById } from "../../../constants";
 import { ItemFX } from "../../item";
 import useItemBehaviour from "../../useItemBehaviour";
@@ -7,7 +7,7 @@ import { BaseBoxProps } from "../boxes";
 
 import "./index.scss";
 
-const FXBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFX>>(
+const FXBox = forwardRef<HTMLDivElement, BaseBoxProps<ItemFX>>(
   (props, forwardedRef) => {
     const { item, style, pos, clickThrough, callback } = props;
     const iframeRef = useRef<HTMLIFrameElement | null>(null);

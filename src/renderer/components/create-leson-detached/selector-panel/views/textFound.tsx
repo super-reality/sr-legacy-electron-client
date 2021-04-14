@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { BasePanelViewProps } from "../viewTypes";
 import BaseToggle from "../../../base-toggle";
 import BaseTextArea from "../../../base-textarea";

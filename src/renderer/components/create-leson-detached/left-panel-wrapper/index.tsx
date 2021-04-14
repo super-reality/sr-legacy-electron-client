@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/stores/renderer";
 import ChapterInformationPanel from "../selector-panel/panels/ChapterInformationPanel";

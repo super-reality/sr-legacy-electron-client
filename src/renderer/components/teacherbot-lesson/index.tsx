@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  FunctionComponent,
+  SVGProps,
+} from "react";
 import "./index.scss";
 
 import { ReactComponent as Happy } from "../../../assets/svg/face-happy.svg";
@@ -8,7 +15,7 @@ type Expressions = "HAPPY" | "BLINK";
 
 const expressions: Record<
   Expressions,
-  React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+  FunctionComponent<SVGProps<SVGSVGElement>>
 > = {
   HAPPY: Happy,
   BLINK: Blink,

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IChapter } from "../../../api/types/chapter/chapter";
 import reduxAction from "../../../redux/reduxAction";

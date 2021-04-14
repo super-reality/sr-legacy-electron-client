@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { Item } from "../../../../items/item";
 import reduxAction from "../../../../redux/reduxAction";
 import store from "../../../../redux/stores/renderer";

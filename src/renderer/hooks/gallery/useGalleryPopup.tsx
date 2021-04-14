@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import "./gallery.scss";
 import usePopup from "../usePopup";
 import { GalleryItem } from "./types";

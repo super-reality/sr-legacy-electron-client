@@ -1,4 +1,4 @@
-import * as React from "react";
+import { ReactNode } from "react";
 import LinearScale from "../scales/LinearScale";
 import {
   SliderItem,
@@ -15,8 +15,8 @@ export interface TrackItem {
 }
 
 export type TrackEventHandlers = {
-  onMouseDown: (event: React.MouseEvent) => void;
-  onTouchStart: (event: React.TouchEvent) => void;
+  onMouseDown: (event: MouseEvent) => void;
+  onTouchStart: (event: TouchEvent) => void;
 };
 
 export type GetTrackProps = (props?: OtherProps) => any;
@@ -52,5 +52,5 @@ export type TracksProps = {
   /**
    * A function to render the tracks. The function receives an object with an array of tracks. Note: `getEventData` can be called with an event and get the value and percent at that location (used for tooltips etc). `activeHandleID` will be a string or null.  Function signature:  `({ getEventData, activeHandleID, tracks, getTrackProps }): element`
    */
-  children: (tracksObject: TracksObject) => React.ReactNode;
+  children: (tracksObject: TracksObject) => ReactNode;
 };

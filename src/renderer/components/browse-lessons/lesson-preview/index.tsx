@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./index.scss";
 
 import { useHistory } from "react-router-dom";
@@ -133,7 +133,7 @@ export default function LessonPreview(props: LessonPreviewProps) {
             <div className="title">{lesson.name}</div>
             <div
               className="options-button"
-              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              onClick={(e) => {
                 e.stopPropagation();
                 setOpen(
                   e.currentTarget.offsetLeft + 9,
@@ -153,11 +153,11 @@ export default function LessonPreview(props: LessonPreviewProps) {
   );
 }
 
-interface LessonPreviewAdd {
+interface LessonPreviewAddProps {
   onClick: () => void;
 }
 
-export function LessonPreviewAdd(props: LessonPreviewAdd) {
+export function LessonPreviewAdd(props: LessonPreviewAddProps) {
   const { onClick } = props;
 
   return (

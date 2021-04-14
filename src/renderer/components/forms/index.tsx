@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { FormikProps } from "formik";
 import InputText from "./InputText";
 import RadioButtons from "./RadioButtons";

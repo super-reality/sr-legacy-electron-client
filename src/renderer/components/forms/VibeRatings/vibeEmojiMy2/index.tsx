@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import "./index.scss";
 import { FieldProps, FormikProps } from "formik";
 import emoji1 from "../../../../../assets/svg/emoji1.svg";
@@ -40,7 +40,7 @@ function countWords(str: string) {
 
 export function VibeEmoji(props: IVibeEmoji): JSX.Element {
   const { title, checkBoundaries, emoji, field, setEmoji, _id } = props;
-  /*   const Emojisrc = React.lazy(() => import(emoji)); */
+  /*   const Emojisrc = lazy(() => import(emoji)); */
   const [selectedEmoji, setSelectedEmoji] = useState<number>(
     field.value.map((f: any) => f._id).indexOf(_id) != -1
       ? field.value[field.value.map((f: any) => f._id).indexOf(_id)].level
@@ -117,7 +117,7 @@ export function VibeEmoji(props: IVibeEmoji): JSX.Element {
   );
 }
 
-export default React.memo(VibeEmoji);
+export default memo(VibeEmoji);
 
 /* {selectedEmoji == EMOJI2 && <img src={emojis[1].emoji} />}
         {selectedEmoji == EMOJI3 && <img src={emojis[2].emoji} />}

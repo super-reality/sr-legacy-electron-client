@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React from "react";
 import globalData from "../renderer/globalData";
 
 export function globalKeyDownListener(e: KeyboardEvent): void {

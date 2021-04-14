@@ -1,5 +1,4 @@
-import React from "react";
-
+import { ReactNode } from "react";
 import {
   SliderItem,
   EmitMouse,
@@ -9,9 +8,9 @@ import {
 } from "../types";
 
 export interface HandleEventHandlers {
-  onKeyDown?: (event: React.KeyboardEvent) => void;
-  onMouseDown?: (event: React.MouseEvent) => void;
-  onTouchStart?: (event: React.TouchEvent) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
+  onMouseDown?: (event: MouseEvent) => void;
+  onTouchStart?: (event: TouchEvent) => void;
 }
 
 export type GetHandleProps = (id: string, props?: OtherProps) => any;
@@ -38,5 +37,5 @@ export type HandlesProps = {
    * The function receives an object with an array of handles and functions to get handle props
    * `({ handles, getHandleProps }): element`
    */
-  children: (handlesObject: HandlesObject) => React.ReactNode;
+  children: (handlesObject: HandlesObject) => ReactNode;
 };

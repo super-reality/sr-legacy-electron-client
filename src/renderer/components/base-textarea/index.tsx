@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties } from "react";
 import Flex from "../flex";
 import "../containers.scss";
 import { AreaChangeEv } from "../../../types/utils";
