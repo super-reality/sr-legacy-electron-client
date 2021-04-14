@@ -14,7 +14,7 @@ import { IData } from "../../../../../api/types/support-ticket/supportTicket";
 const titleSchema = Yup.object().shape({
   title: Yup.string()
     .min(10, "*Give us a litle more information pls")
-    .max(50, "*Not so much information thanks")
+    .max(150, "*Not so much information thanks")
     .required("*Required"),
   category: Yup.string().required("*Please select a category"),
 });
@@ -42,6 +42,8 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
   const dispatch = useDispatch();
   const { goNext, goBack, index } = props;
 
+  const formRef = React.useRef<FormikProps<Values>>(null);
+
   const modifyUsedCategories = (value: IData) => {
     if (usedCategories) {
       const array: IData[] = [...usedCategories];
@@ -62,6 +64,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
           category: slice.category,
           newCategoryName: slice.newCategoryName,
         }}
+        innerRef={formRef}
         validationSchema={titleSchema}
         onSubmit={(values) => {
           reduxAction(dispatch, {
@@ -76,8 +79,8 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
                 values.newCategoryName === values.category,
             },
           });
-          goNext();
 
+          goNext();
           console.log(values);
         }}
       >
@@ -102,7 +105,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
               <li>Need a gaming buddy? We will find you one!</li>
             </ul>
 
-            <span>Request Category</span>
+            <span>Request what your teacher should be expert in: </span>
 
             <FormControl
               name="category"

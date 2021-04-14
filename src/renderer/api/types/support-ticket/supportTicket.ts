@@ -1,28 +1,35 @@
 /* eslint-disable camelcase */
 import { CodeSuccess } from "..";
 
-export default interface supportTicker {
-  supportType?: TsupportType;
-  title?: string;
-  category?: string;
-  skills?: string[];
-  description?: string;
+export default interface supportTicket {
+  supportType: TsupportType;
+  title: string;
+  category: string;
+  skills: string[];
+  description: string;
   images?: File[];
   newSkill?: boolean;
-  newSkillName?: string;
+  newSkills?: string[];
   newCategory?: boolean;
   newCategoryName?: string;
-  skillsData?: IData[];
-  searchedSkills?: IData[];
-  categoryData?: IData[];
-  supportScreen?: TSupportScreen;
-  vibes?: IVibe[];
+  skillsData: IData[];
+  searchedSkills: IData[];
+  categoryData: IData[];
+  subcategories: ISubcategory[];
+  vibeData: IGetVibesObjectResult;
+  vibes: IVibe[];
 }
 
 const START = 0;
 const HELP = 1;
 
 type TSupportScreen = typeof START | typeof HELP;
+
+const MENU = 0;
+const ASK = 1;
+const SEARCH = 2;
+
+type TSupportOption = typeof MENU | typeof ASK | typeof SEARCH;
 
 export interface supportTicketPayload {
   title: string;
@@ -37,6 +44,31 @@ export interface supportTicketPayload {
   newSkillName?: string;
   createdAt?: string;
   _id?: string;
+  vibes: string[];
+  vibesLevels: number[];
+  votes?: number;
+}
+
+export interface singleSupportTicketsPayload {
+  title: string;
+  supportType: TsupportType;
+  description: string;
+  files?: string[];
+  skills: string[];
+  createdAt: string;
+  creatorInfo: {
+    firstname: string;
+    lastname: string;
+    username: string;
+  };
+  _id: string;
+  vibes: string[];
+  vibesLevels: number[];
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
 }
 
 export interface IFile {
@@ -49,13 +81,40 @@ export interface IFile {
 
 export interface IVibe {
   _id: string;
-  name: string;
+  title: string;
   level: number;
+}
+
+export interface IGetVibe {
+  _id: string;
+  title: string;
+  emoji: string;
+  type: string;
+}
+export interface IGetVibesObjectResult {
+  positiveVibes: IGetVibe[];
+  negativeVibes: IGetVibe[];
+}
+
+export interface IGetVibes {
+  err_code: CodeSuccess;
+  result: IGetVibesObjectResult;
 }
 
 export interface supportTicketsGet {
   err_code: CodeSuccess;
   tickets: supportTicketPayload[];
+}
+
+export interface singleSupportTicketsGet {
+  err_code: CodeSuccess;
+  ticket: singleSupportTicketsPayload;
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
+  votes: number;
 }
 
 export interface supportTicketsSearch {
@@ -107,6 +166,38 @@ export interface ICategoriesGet {
 export interface ICategoryGet {
   err_code: CodeSuccess;
   category: IData[];
+}
+
+export interface ISkill {
+  name: string;
+  _id: string;
+}
+
+export interface ISkillGet {
+  err_code: CodeSuccess;
+  name: string;
+  _id: string;
+}
+
+export interface IVotePayload {
+  votes: number;
+  upvote: boolean;
+  downvote: boolean;
+}
+
+export interface ISingleCategoryGet {
+  err_code: CodeSuccess;
+  category: {
+    _id: string;
+    name: string;
+    subcategories: ISubcategory[];
+  };
+}
+
+export interface ISubcategory {
+  _id: string;
+  name: string;
+  skills: { _id: string; name: string }[];
 }
 
 export interface Ioptions {

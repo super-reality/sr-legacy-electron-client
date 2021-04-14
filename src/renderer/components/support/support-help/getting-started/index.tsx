@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
+import { RouteComponentProps, useNavigate } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
 import reduxAction from "../../../../redux/reduxAction";
-import { SupportSectionsProps } from "..";
+/* import { SupportSectionsProps } from ".."; */
+
 import { TsupportType } from "../../../../api/types/support-ticket/supportTicket";
 import LearningSkill from "./learning-skill";
+import BackToSupport from "../../support-menu/goback-button";
 
 const NONE = 0;
 const SKILLS = 1;
@@ -37,13 +40,14 @@ const verifyState = (value: TsupportType): startoptions => {
 };
 
 export default function GettingStarted(
-  props: SupportSectionsProps
+  props: RouteComponentProps
 ): JSX.Element {
+  console.log(props);
+  const navigate = useNavigate();
   const { supportType } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
   const dispatch = useDispatch();
-  const { goHelp } = props;
 
   const [activeRadio, setactiveRadio] = useState<startoptions>(
     verifyState(supportType)
@@ -74,7 +78,7 @@ export default function GettingStarted(
         supportType: supportT,
       },
     });
-    goHelp();
+    if (navigate) navigate("/ask/help");
   };
 
   return (
@@ -128,6 +132,14 @@ export default function GettingStarted(
             {activeRadio == CONNECT && <h1>CONNECT</h1>}
 
             <div className="support-buttons">
+              <BackToSupport
+                style={{
+                  marginBottom: 0,
+                  marginRight: "25px",
+                }}
+                onClick={() => navigate("../")}
+              />
+
               <button
                 disabled={activeRadio == NONE && true}
                 onClick={handleSubmit}

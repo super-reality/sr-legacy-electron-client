@@ -11,13 +11,40 @@ import EditableText from "./EditableText";
 import AutoCompleteInput, { capitalize } from "./AutoCompleteInput";
 import FormObserver from "./FormObserver";
 import VibeRatings from "./VibeRatings";
-import { IData } from "../../api/types/support-ticket/supportTicket";
+import {
+  IData,
+  singleSupportTicketsPayload,
+  IVibe,
+  IGetVibe,
+} from "../../api/types/support-ticket/supportTicket";
 
-import ImagesPreview from "./DropFile/ImagePreview";
+/* EMOJIS */
+
+import VibeAmusement from "../../../assets/images/VibeAmusement.png";
+import VibeAnger from "../../../assets/images/VibeAnger.png";
+import VibeAnnoyance from "../../../assets/images/VibeAnnoyance.png";
+import VibeAwe from "../../../assets/images/VibeAwe.png";
+import VibeCompassion from "../../../assets/images/VibeCompasion.png";
+import VibeContent from "../../../assets/images/VibeContent.png";
+import VibeCool from "../../../assets/images/VibeCool.png";
+import VibeDisgust from "../../../assets/images/VibeDisgust.png";
+import VibeFear from "../../../assets/images/VibeFear.png";
+import VibeHope from "../../../assets/images/VibeHope.png";
+import VibeInterest from "../../../assets/images/VibeInterest.png";
+import VibeJoy from "../../../assets/images/VibeJoy.png";
+import VibeLoneliness from "../../../assets/images/VibeLoneliness.png";
+import VibeLove from "../../../assets/images/VibeLove.png";
+import VibeMelancholy from "../../../assets/images/VibeMelancholy.png";
+import VibePride from "../../../assets/images/VibePride.png";
+import VibeRage from "../../../assets/images/VibeRage.png";
+import VibeSadness from "../../../assets/images/VibeSadness.png";
+
+import ImagesPreview, { ImagesPreviewString } from "./DropFile/ImagePreview";
 
 export { capitalize };
 export { uploadFiles };
 export { ImagesPreview };
+export { ImagesPreviewString };
 
 export const getNames = (array: string[], arrayData: IData[]): IData[] => {
   const resultArray: IData[] = [];
@@ -27,6 +54,19 @@ export const getNames = (array: string[], arrayData: IData[]): IData[] => {
   });
 
   return resultArray;
+};
+
+export const getVibes = (
+  array: string[],
+  arrayData: IGetVibe[]
+): IGetVibe[] => {
+  const resultDataArray: IGetVibe[] = [];
+  array.forEach((el) => {
+    const i = arrayData.map((ele) => ele._id).indexOf(el);
+    if (i !== -1) resultDataArray.push(arrayData[i]);
+  });
+
+  return resultDataArray;
 };
 
 export const valuetoIData = (array: string[]): IData[] => {
@@ -46,6 +86,134 @@ export const getSingleName = (name: string, array: IData[]): string => {
   return name;
 };
 
+export const PositiveVibes = [
+  {
+    title: "Cool",
+    emoji: VibeCool,
+  },
+  {
+    title: "Amusement",
+    emoji: VibeAmusement,
+  },
+  {
+    title: "Awe",
+    emoji: VibeAwe,
+  },
+  {
+    title: "Compassion",
+    emoji: VibeCompassion,
+  },
+  {
+    title: "Content",
+    emoji: VibeContent,
+  },
+  {
+    title: "Gratitude",
+    emoji: VibeContent,
+  },
+  {
+    title: "Hope",
+    emoji: VibeHope,
+  },
+  {
+    title: "Interest",
+    emoji: VibeInterest,
+  },
+  {
+    title: "Joy",
+    emoji: VibeJoy,
+  },
+  {
+    title: "Love",
+    emoji: VibeLove,
+  },
+  {
+    title: "Pride",
+    emoji: VibePride,
+  },
+];
+
+export const NegativeVibes = [
+  {
+    title: "Fear",
+    emoji: VibeFear,
+  },
+  {
+    title: "Anger",
+    emoji: VibeAnger,
+  },
+  {
+    title: "Disgust",
+    emoji: VibeDisgust,
+  },
+  {
+    title: "Sadness",
+    emoji: VibeSadness,
+  },
+  {
+    title: "Rage",
+    emoji: VibeRage,
+  },
+  {
+    title: "Loneliness",
+    emoji: VibeLoneliness,
+  },
+  {
+    title: "Melancholy",
+    emoji: VibeMelancholy,
+  },
+  {
+    title: "Annoyance",
+    emoji: VibeAnnoyance,
+  },
+];
+
+export const AllVibes = PositiveVibes.concat(NegativeVibes);
+
+interface ISkillsRendererProps {
+  skills: singleSupportTicketsPayload["skill"];
+}
+
+export function SkillsRenderer({ skills }: ISkillsRendererProps): JSX.Element {
+  return (
+    <ul className="skills-list">
+      {skills.map((skill) => (
+        <li className="review-skill" key={skill._id}>
+          {skill.name}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+interface IVibesRendererProps {
+  vibes: IVibe[];
+}
+
+export function VibesRenderer({ vibes }: IVibesRendererProps): JSX.Element {
+  return (
+    <ul className="skills-list">
+      {vibes.map((vibe) => {
+        const VibesArray = PositiveVibes.concat(NegativeVibes);
+        return (
+          <li className="review-skill" key={vibe._id}>
+            {vibe.title}
+            <img
+              className={`result-${vibe.level}`}
+              src={
+                VibesArray[VibesArray.map((v) => v.title).indexOf(vibe.title)]
+                  .emoji
+              }
+            />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+export { FormObserver };
+
 export interface InputProps extends FormikProps<any> {
   name: string;
   secondaryName?: string;
@@ -54,6 +222,7 @@ export interface InputProps extends FormikProps<any> {
   placeholder?: string;
   options?: IData[];
   action?: (value: IData) => void;
+  onChange?: (e: any) => void;
   valuesSet?: (value: any) => void;
   filter?: (value: any) => any[];
 }
@@ -61,8 +230,6 @@ export interface InputProps extends FormikProps<any> {
 interface FormControlInput extends InputProps {
   control: string;
 }
-
-export { FormObserver };
 
 export default function FormControl({
   control,
