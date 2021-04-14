@@ -80,7 +80,6 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
               onChange={(value: typeof formik.values.description) => {
                 if (value) {
                   if (value.length == 0) {
-                    console.log("HI");
                     setDescriptionLenght(0);
                   } else {
                     setDescriptionLenght(value?.length);
