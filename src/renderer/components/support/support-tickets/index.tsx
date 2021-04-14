@@ -46,7 +46,9 @@ export default function SupportTickets(
   const [searchOption, setSearchOption] = useState<string>("");
 
   const [searchCategory, setSearchCategory] = useState<string>("");
+
   const [isFetching, setIsFetching, scrollRef] = useInfiniteScroll(
+    // eslint-disable-next-line no-use-before-define
     fetchMoreListItems
   );
 
