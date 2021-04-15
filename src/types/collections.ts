@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-shadow
 enum Category {
   All,
   Lesson,

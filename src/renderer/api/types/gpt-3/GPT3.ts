@@ -1,13 +1,14 @@
 import { CodeSuccess } from "..";
 /* eslint-disable camelcase */
-export interface IGetDocuments {
-  response: IDocument[];
-}
 
 export interface IDocument {
   document_name: string;
   document_context: string;
   engine_name: string;
+}
+
+export interface IGetDocuments {
+  response: IDocument[];
 }
 
 export interface IPostDocument {

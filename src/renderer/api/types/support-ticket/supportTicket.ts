@@ -1,25 +1,6 @@
 /* eslint-disable camelcase */
 import { CodeSuccess } from "..";
 
-export default interface supportTicket {
-  supportType: TsupportType;
-  title: string;
-  category: string;
-  skills: string[];
-  description: string;
-  images?: File[];
-  newSkill?: boolean;
-  newSkills?: string[];
-  newCategory?: boolean;
-  newCategoryName?: string;
-  skillsData: IData[];
-  searchedSkills: IData[];
-  categoryData: IData[];
-  subcategories: ISubcategory[];
-  vibeData: IGetVibesObjectResult;
-  vibes: IVibe[];
-}
-
 const START = 0;
 const HELP = 1;
 
@@ -30,46 +11,6 @@ const ASK = 1;
 const SEARCH = 2;
 
 type TSupportOption = typeof MENU | typeof ASK | typeof SEARCH;
-
-export interface supportTicketPayload {
-  title: string;
-  supportType: TsupportType;
-  supportCategory?: string;
-  description: string;
-  files?: string[];
-  skills: string[];
-  newCategory?: boolean;
-  newCategoryName?: string;
-  newSkill?: boolean;
-  newSkillName?: string;
-  createdAt?: string;
-  _id?: string;
-  vibes: string[];
-  vibesLevels: number[];
-  votes?: number;
-}
-
-export interface singleSupportTicketsPayload {
-  title: string;
-  supportType: TsupportType;
-  description: string;
-  files?: string[];
-  skills: string[];
-  createdAt: string;
-  creatorInfo: {
-    firstname: string;
-    lastname: string;
-    username: string;
-  };
-  _id: string;
-  vibes: string[];
-  vibesLevels: number[];
-  category: {
-    name: string;
-    _id: string;
-  };
-  skill: { name: string; _id: string }[];
-}
 
 export interface IFile {
   lastModified: number;
@@ -101,45 +42,19 @@ export interface IGetVibes {
   result: IGetVibesObjectResult;
 }
 
-export interface supportTicketsGet {
-  err_code: CodeSuccess;
-  tickets: supportTicketPayload[];
-}
-
-export interface singleSupportTicketsGet {
-  err_code: CodeSuccess;
-  ticket: singleSupportTicketsPayload;
-  category: {
-    name: string;
-    _id: string;
-  };
-  skill: { name: string; _id: string }[];
-  votes: number;
-}
-
-export interface supportTicketsSearch {
-  err_code: CodeSuccess;
-  tickets: supportTicketPayload[];
-}
-
 export interface ISearchSupportTickets {
   name?: string;
   category?: string;
   limit?: number;
 }
 
-export interface supportTicketPayloadGet {
-  err_code: CodeSuccess;
-  ticket: supportTicketPayload;
+export interface IVibeRating {
+  name: string;
+  emoji: string;
 }
 
 export interface IVibeRatings {
   vibes: IVibeRating[];
-}
-
-export interface IVibeRating {
-  name: string;
-  emoji: string;
 }
 
 export interface IData {
@@ -185,6 +100,12 @@ export interface IVotePayload {
   downvote: boolean;
 }
 
+export interface ISubcategory {
+  _id: string;
+  name: string;
+  skills: { _id: string; name: string }[];
+}
+
 export interface ISingleCategoryGet {
   err_code: CodeSuccess;
   category: {
@@ -192,12 +113,6 @@ export interface ISingleCategoryGet {
     name: string;
     subcategories: ISubcategory[];
   };
-}
-
-export interface ISubcategory {
-  _id: string;
-  name: string;
-  skills: { _id: string; name: string }[];
 }
 
 export interface Ioptions {
@@ -213,17 +128,12 @@ export interface Icategory {
 export interface tags {
   name: string;
 }
-export type TsupportType =
-  | "help_short"
-  | "help_long"
-  | "build"
-  | "question"
-  | ""
-  | undefined;
+
 interface option {
   name: string;
   description: string;
 }
+
 interface category {
   name: string;
 }
@@ -231,4 +141,97 @@ interface category {
 interface requestCategory {
   name: string;
   tags: tags[];
+}
+
+export type TsupportType =
+  | "help_short"
+  | "help_long"
+  | "build"
+  | "question"
+  | ""
+  | undefined;
+
+export default interface supportTicket {
+  supportType: TsupportType;
+  title: string;
+  category: string;
+  skills: string[];
+  description: string;
+  images?: File[];
+  newSkill?: boolean;
+  newSkills?: string[];
+  newCategory?: boolean;
+  newCategoryName?: string;
+  skillsData: IData[];
+  searchedSkills: IData[];
+  categoryData: IData[];
+  subcategories: ISubcategory[];
+  vibeData: IGetVibesObjectResult;
+  vibes: IVibe[];
+}
+
+export interface supportTicketPayload {
+  title: string;
+  supportType: TsupportType;
+  supportCategory?: string;
+  description: string;
+  files?: string[];
+  skills: string[];
+  newCategory?: boolean;
+  newCategoryName?: string;
+  newSkill?: boolean;
+  newSkillName?: string;
+  createdAt?: string;
+  _id?: string;
+  vibes: string[];
+  vibesLevels: number[];
+  votes?: number;
+}
+
+export interface supportTicketsGet {
+  err_code: CodeSuccess;
+  tickets: supportTicketPayload[];
+}
+
+export interface supportTicketsSearch {
+  err_code: CodeSuccess;
+  tickets: supportTicketPayload[];
+}
+
+export interface supportTicketPayloadGet {
+  err_code: CodeSuccess;
+  ticket: supportTicketPayload;
+}
+
+export interface singleSupportTicketsPayload {
+  title: string;
+  supportType: TsupportType;
+  description: string;
+  files?: string[];
+  skills: string[];
+  createdAt: string;
+  creatorInfo: {
+    firstname: string;
+    lastname: string;
+    username: string;
+  };
+  _id: string;
+  vibes: string[];
+  vibesLevels: number[];
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
+}
+
+export interface singleSupportTicketsGet {
+  err_code: CodeSuccess;
+  ticket: singleSupportTicketsPayload;
+  category: {
+    name: string;
+    _id: string;
+  };
+  skill: { name: string; _id: string }[];
+  votes: number;
 }
