@@ -5,16 +5,20 @@ export default function useInfiniteScroll(
 ): [
   boolean,
   React.Dispatch<React.SetStateAction<boolean>>,
-  React.RefObject<HTMLDivElement>
+  React.RefObject<HTMLDivElement>,
+  React.Dispatch<React.SetStateAction<boolean>>
 ] {
   const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
 
   const scrollPanelRef = useRef<HTMLDivElement>(null);
   function handleScroll(scrollPanel: HTMLDivElement) {
+    console.log(`HAS MORE : ${hasMore}`);
     if (
       scrollPanel.scrollHeight - scrollPanel.scrollTop !=
         scrollPanel.clientHeight ||
-      isFetching
+      isFetching ||
+      !hasMore
     ) {
       return;
     }
@@ -36,10 +40,14 @@ export default function useInfiniteScroll(
 
   useEffect(() => {
     if (!isFetching) return;
-    callback();
+    if (hasMore) callback();
   }, [isFetching]);
 
-  return [isFetching, setIsFetching, scrollPanelRef];
+  useEffect(() => {
+    if (!hasMore) setIsFetching(false);
+  }, [hasMore]);
+
+  return [isFetching && hasMore, setIsFetching, scrollPanelRef, setHasMore];
 }
 
 /*    console.log(

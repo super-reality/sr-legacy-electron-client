@@ -113,7 +113,7 @@ export default function Help(props: RouteComponentProps): JSX.Element {
     <div className="support fade">
       <div className="support-list">
         <div className="title">New Request</div>
-        <ul>
+        <ul className="support-checklist">
           {helpSections.map((section, i) => {
             return (
               <li
@@ -131,8 +131,11 @@ export default function Help(props: RouteComponentProps): JSX.Element {
               </li>
             );
           })}
-          <li onClick={() => navigate && navigate("/ask")}>
-            <a> Back</a>
+          <li
+            style={{ marginTop: "auto" }}
+            onClick={() => navigate && navigate("/ask")}
+          >
+            <a>Back to start</a>
             <IconBack style={{ height: "23px", width: "auto" }} />
           </li>
         </ul>

@@ -23,6 +23,7 @@ import SupperSpinner from "../../super-spinner";
 
 import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
 import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
+import useDidUpdateEffect from "../../../hooks/useDidUpdateEffect";
 
 interface IfilterOptions {
   name?: string;
@@ -46,16 +47,28 @@ export default function SupportTickets(
   const [searchOption, setSearchOption] = useState<string>("");
 
   const [searchCategory, setSearchCategory] = useState<string>("");
-  const [isFetching, setIsFetching, scrollRef] = useInfiniteScroll(
+  const [isFetching, setIsFetching, scrollRef, setHasMore] = useInfiniteScroll(
     fetchMoreListItems
   );
 
+  const [pageCounter, setPageCounter] = useState<number>(1);
+
   function fetchMoreListItems() {
-    setTimeout(() => {
-      setTickets(tickets.concat(tickets));
-      setIsFetching(false);
-    }, 2000);
+    setPageCounter(pageCounter + 1);
   }
+
+  useDidUpdateEffect(() => {
+    (async () => {
+      await getSupportTickets(pageCounter).then((sticks) => {
+        if (sticks.length > 0) {
+          setTickets(tickets.concat(sticks));
+        } else {
+          setHasMore(false);
+        }
+        setIsFetching(false);
+      });
+    })();
+  }, [pageCounter]);
 
   let searchedCategories: IData[] = [];
   const searchResults: supportTicketPayload[] = [];

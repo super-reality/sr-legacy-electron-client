@@ -5,7 +5,8 @@ import "../index.scss";
 import reduxAction from "../redux/reduxAction";
 import { AppState } from "../redux/stores/renderer";
 import Splash from "../views/splash";
-import Loading from "../components/loading";
+/* import Loading from "../components/loading"; */
+import SupperSpinner from "../components/super-spinner";
 import DetachController from "../DetachController";
 import "typeface-roboto";
 import BackgroundController from "../BackgroundController";
@@ -31,7 +32,7 @@ function MainApp() {
   const isAuthenticated = useSelector((state: AppState) => state.auth.isValid);
   const isPending = useSelector((state: AppState) => state.auth.isPending);
   const { ready } = useSelector((state: AppState) => state.render);
-
+  console.log(isPending);
   const { pathname } = useLocation();
 
   const { detached } = useSelector((state: AppState) => state.commonProps);
@@ -81,16 +82,26 @@ function MainApp() {
       </Switch>
       {isAuthenticated && <Sidebar />}
       {!isAuthenticated && (
-        <Windowlet
-          width={1100}
-          height={600}
-          title="Super Reality"
-          onMinimize={minimizeWindow}
-          onClose={closeWindow}
-        >
-          <Splash />
-          <Loading state={isPending} />
-        </Windowlet>
+        <>
+          <Windowlet
+            width={1100}
+            height={600}
+            title="Super Reality"
+            onMinimize={minimizeWindow}
+            onClose={closeWindow}
+          >
+            {isPending && (
+              <SupperSpinner
+                size="200px"
+                text="loading"
+                style={{ position: "absolute", top: 0, left: 0, zIndex: 10 }}
+              />
+            )}
+            <Splash />
+
+            {/*  <Loading state={isPending} /> */}
+          </Windowlet>
+        </>
       )}
     </ErrorBoundary>
   );
