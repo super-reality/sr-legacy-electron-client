@@ -1,4 +1,3 @@
-import React from "react";
 import useBasePanel from "../useBasePanel";
 
 import { ReactComponent as IconAlert } from "../../../../../assets/svg/alerts.svg";

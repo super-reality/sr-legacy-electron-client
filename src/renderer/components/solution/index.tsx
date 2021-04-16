@@ -1,5 +1,4 @@
 import "./index.scss";
-import React from "react";
 
 import formbuttons from "../../../assets/images/suggest-form-btns.png";
 import futurecar from "../../../assets/images/future-car.png";

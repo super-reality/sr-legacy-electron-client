@@ -1,9 +1,9 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties, FunctionComponent, SVGProps } from "react";
 import "../buttons.scss";
 
 interface ButtonRoundProps {
-  svg: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
+  svg: FunctionComponent<
+    SVGProps<SVGSVGElement> & {
       title?: string | undefined;
     }
   >;
@@ -14,7 +14,7 @@ interface ButtonRoundProps {
   height: string;
   width: string;
   title?: string;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick: (e: any) => void;
 }
 
 export default function ButtonRound(props: ButtonRoundProps): JSX.Element {

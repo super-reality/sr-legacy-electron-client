@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
@@ -89,6 +89,32 @@ function PopUpSettingsItem(props: SettingsItemProps): JSX.Element {
   );
 }
 
+interface SettingsInputProps {
+  handleSearch: (e: KeyboardEvent<HTMLDivElement>) => void;
+  handleOnChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  inputValue: string;
+}
+function SettingsInput(props: SettingsInputProps): JSX.Element {
+  const { handleSearch, handleOnChange, inputValue } = props;
+  return (
+    <div className="popup-settings-input-container">
+      <input
+        style={{
+          borderRadius: "8px",
+          height: "30px",
+          background: "#29233D",
+          width: "60%",
+        }}
+        autoFocus
+        className="popup-settings-input-container-input"
+        onKeyDown={handleSearch}
+        onChange={handleOnChange}
+        value={inputValue}
+      />
+    </div>
+  );
+}
+
 interface FXPopUpSettingsProps {
   previewItem: (id: string) => void;
   preview: string;
@@ -145,14 +171,14 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
     }
   };
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     const { value } = event.currentTarget;
     setInputValue(value);
     console.log("inputValue", inputValue);
   };
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleSearch = (e: KeyboardEvent<HTMLDivElement>) => {
     // check if the Enter pressed
     if (e.key == "Enter" && inputValue != "") {
       // split the input string
@@ -388,32 +414,6 @@ function FXPopUpSettings(props: FXPopUpSettingsProps): JSX.Element {
           </ButtonSimple>
         </div>
       </div>
-    </div>
-  );
-}
-
-interface SettingsInputProps {
-  handleSearch: (e: React.KeyboardEvent<HTMLDivElement>) => void;
-  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  inputValue: string;
-}
-function SettingsInput(props: SettingsInputProps): JSX.Element {
-  const { handleSearch, handleOnChange, inputValue } = props;
-  return (
-    <div className="popup-settings-input-container">
-      <input
-        style={{
-          borderRadius: "8px",
-          height: "30px",
-          background: "#29233D",
-          width: "60%",
-        }}
-        autoFocus
-        className="popup-settings-input-container-input"
-        onKeyDown={handleSearch}
-        onChange={handleOnChange}
-        value={inputValue}
-      />
     </div>
   );
 }

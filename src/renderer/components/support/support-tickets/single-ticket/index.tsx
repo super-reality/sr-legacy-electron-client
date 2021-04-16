@@ -1,4 +1,3 @@
-import React from "react";
 import moment from "moment";
 import voteup from "../../../../../assets/images/voteup.png";
 import votedown from "../../../../../assets/images/votedown.png";
@@ -27,6 +26,7 @@ import { useSelector } from "react-redux";
 import { AppState } from "../../../../redux/stores/renderer";
 import { getVibes as getVibesName, AllVibes } from "../../../forms";
 import voteTicket from "../support-tickets-utils/upvoteTicket";
+import { useState } from "react";
 
 interface ICreatorInfo {
   firstname: string;
@@ -66,8 +66,8 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
 
   type Tvotes = typeof NONE | typeof UP | typeof DOWN;
 
-  const [rank, setRank] = React.useState<number>(votes);
-  const [upvote, setUpvote] = React.useState<Tvotes>(NONE);
+  const [rank, setRank] = useState<number>(votes);
+  const [upvote, setUpvote] = useState<Tvotes>(NONE);
 
   useDidUpdateEffect(() => {
     (async () => {

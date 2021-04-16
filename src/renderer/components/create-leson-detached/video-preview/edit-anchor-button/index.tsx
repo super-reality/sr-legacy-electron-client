@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./index.scss";
 import { useDispatch } from "react-redux";
 import { ReactComponent as ButtonEdit } from "../../../../../assets/svg/edit.svg";

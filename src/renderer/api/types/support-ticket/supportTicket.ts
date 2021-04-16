@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { CodeSuccess } from "..";
 
-export default interface supportTicker {
+export default interface supportTicket {
   supportType: TsupportType;
   title: string;
   category: string;

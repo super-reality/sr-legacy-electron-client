@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { BasePanelViewProps } from "../viewTypes";
 import usePopupInput from "../../../../hooks/usePopupInput";
 import { VideoSourceYoutubeTypeValue } from "../../../../items/item";

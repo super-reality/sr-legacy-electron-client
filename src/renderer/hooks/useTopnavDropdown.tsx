@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 import "./index.scss";
 
 export type EditorMenues =
@@ -21,7 +21,7 @@ const selectOptionsByMenu: Record<EditorMenues, string[]> = {
 export default function useTopNavDropdown(
   title: EditorMenues | null,
   onSelect: (selected: string) => void
-): [() => JSX.Element, React.MutableRefObject<HTMLDivElement | null>] {
+): [() => JSX.Element, MutableRefObject<HTMLDivElement | null>] {
   const ref = useRef<HTMLDivElement | null>(null);
 
   if (title) {

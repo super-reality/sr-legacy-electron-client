@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState, useCallback } from "react";
+import { CSSProperties, useEffect, useState, useCallback } from "react";
 import Flex from "../flex";
 import "../containers.scss";
 import InsertMedia from "../insert-media";

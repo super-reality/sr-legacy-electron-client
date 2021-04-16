@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./imageFound.scss";
 import { BasePanelViewProps } from "../viewTypes";
 import ContainerWithCheck from "../../../container-with-check";

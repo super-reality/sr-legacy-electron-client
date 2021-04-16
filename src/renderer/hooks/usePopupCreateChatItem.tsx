@@ -1,4 +1,4 @@
-import React, { CSSProperties, useRef } from "react";
+import { CSSProperties, useRef } from "react";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";
 import "./chat-popup.scss";
@@ -14,7 +14,7 @@ interface ChatItemModalProps {
 }
 export default function usePopupCreateChatItem(
   props: CreateItemProps
-): [(props: ChatItemModalProps) => JSX.Element, () => void] {
+): [(p: ChatItemModalProps) => JSX.Element, () => void] {
   const { createItem } = props;
   const [CreateChatItemPopup, doOpen, close] = usePopup(false);
   const itemNameField = useRef<HTMLInputElement | null>(null);

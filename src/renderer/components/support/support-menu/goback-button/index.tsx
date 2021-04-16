@@ -1,10 +1,10 @@
-import React from "react";
 import "./index.scss";
+import { CSSProperties } from "react";
 import { ReactComponent as SupportIcon } from "../../../../../assets/svg/support-icon.svg";
 
 interface IGobackButton {
   onClick: () => void;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 export default function GoBackButton({

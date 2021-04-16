@@ -1,4 +1,3 @@
-import React from "react";
 import Flex from "../flex";
 import "../containers.scss";
 import { InputChangeEv } from "../../../types/utils";

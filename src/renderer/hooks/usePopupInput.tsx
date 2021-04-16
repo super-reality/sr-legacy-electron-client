@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { InputChangeEv } from "../../types/utils";
 import ButtonSimple from "../components/button-simple";
 import usePopup from "./usePopup";

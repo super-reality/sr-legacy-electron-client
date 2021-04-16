@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from "react";
+import { CSSProperties, useCallback } from "react";
 import "../buttons.scss";
 
 import { ReactComponent as TrashIcon } from "../../../assets/svg/trash.svg";

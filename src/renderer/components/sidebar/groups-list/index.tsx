@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 import { animated, useSpring, useTrail } from "react-spring";
 import { Category, Channel, Group } from "../../../../types/chat";

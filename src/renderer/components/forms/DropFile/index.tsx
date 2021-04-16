@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { useDropzone } from "react-dropzone";
 import { InputProps } from "..";
 /* import icon from "../../../../assets/svg/image-icon.svg"; */

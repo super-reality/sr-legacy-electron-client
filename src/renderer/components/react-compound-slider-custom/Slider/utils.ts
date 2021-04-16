@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
 import warning from "warning";
 
 import { DiscreteScale } from "../scales/DiscreteScale";
@@ -75,7 +74,7 @@ export function isNotValidTouch({
 
 export function getTouchPosition(
   vertical: boolean,
-  e: React.TouchEvent | TouchEvent
+  e: TouchEvent | TouchEvent
 ) {
   return vertical ? e.touches[0].clientY : e.touches[0].pageX;
 }

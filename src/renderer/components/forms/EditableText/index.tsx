@@ -1,5 +1,5 @@
 import "./index.scss";
-import React, { useState } from "react";
+import { useState } from "react";
 import InputText from "../InputText";
 import { InputProps } from "..";
 /* eslint-disable react/jsx-props-no-spreading */
@@ -8,7 +8,7 @@ import { InputProps } from "..";
     text:string;
     type:string;
     placeholder:string;
-    children:React.ReactNode;
+    children:ReactNode;
 } */
 
 export default function EditableText(props: InputProps): JSX.Element {

@@ -1,4 +1,3 @@
-import React from "react";
 import usePopup from "./usePopup";
 import ButtonSimple from "../components/button-simple";
 

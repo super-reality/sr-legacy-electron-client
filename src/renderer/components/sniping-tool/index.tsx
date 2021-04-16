@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import fs from "fs";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/lib/ReactCrop.scss";

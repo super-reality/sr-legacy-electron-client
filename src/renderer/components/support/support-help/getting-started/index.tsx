@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { RouteComponentProps, useNavigate } from "@reach/router";
@@ -19,10 +19,6 @@ export const SKILLS_SHORT = "help_short";
 export const SKILLS_LONG = "help_long";
 
 type startoptions = typeof NONE | typeof SKILLS | typeof BUILD | typeof CONNECT;
-
-interface FormSubmitInterface {
-  target: HTMLInputElement;
-}
 
 const verifyState = (value: TsupportType): startoptions => {
   if (value == SKILLS_LONG || value == SKILLS_SHORT) {
@@ -56,7 +52,7 @@ export default function GettingStarted(
     supportType ?? SKILLS_SHORT
   );
 
-  const handleactiveRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleactiveRadio = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.id == "skill") {
       setactiveRadio(SKILLS);
     }
@@ -70,7 +66,7 @@ export default function GettingStarted(
     }
   };
 
-  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+  const handleSubmit = (e: MouseEvent<HTMLElement>) => {
     e.preventDefault();
     reduxAction(dispatch, {
       type: "SET_SUPPORT_TICKET",

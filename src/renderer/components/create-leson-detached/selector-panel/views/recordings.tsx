@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fs from "fs";
 import { BasePanelViewProps } from "../viewTypes";
 import {
@@ -249,7 +243,6 @@ export function RecordingsView(
 export function RecordingsViewNoSlider(
   props: BasePanelViewProps<RecordingCanvasTypeValue> & {
     id: string;
-    noUpload?: boolean;
   }
 ) {
   const { id } = props;

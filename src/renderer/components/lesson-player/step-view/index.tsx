@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Item } from "../../../items/item";
 import { IStep } from "../../../api/types/step/step";
@@ -90,6 +90,9 @@ export default function StepView(props: StepViewProps) {
   const anchors =
     step?.startWhen.filter((tv) => tv.type == "Image Found") || [];
 
+  const isOcr =
+    step?.startWhen.filter((tv) => tv.type == "Text Found").length > 0;
+
   const anchorId = (anchors[0]?.value as string) || "";
 
   return (
@@ -106,14 +109,13 @@ export default function StepView(props: StepViewProps) {
             key={`item-box-${item.type}-${itemKeys[item.type] || item._id}`}
             item={item}
             anchorId={anchorId}
+            isOcr={isOcr}
             onSucess={(trigger: TriggerTypes | null) =>
               itemSucess(trigger, item)
             }
           />
         ) : (
-          <React.Fragment
-            key={item?._id || `${new Date().getTime()}-undef-item`}
-          />
+          <Fragment key={item?._id || `${new Date().getTime()}-undef-item`} />
         );
       })}
     </>

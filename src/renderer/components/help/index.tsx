@@ -1,5 +1,5 @@
 import "./index.scss";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 import IconTitle from "../../../assets/svg/title.svg";
 import IconDescription from "../../../assets/svg/description.svg";

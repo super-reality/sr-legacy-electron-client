@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
@@ -28,6 +22,7 @@ import userDataPath from "../../../../../utils/files/userDataPath";
 import { Rectangle } from "../../../../../types/utils";
 import { ItemVideo } from "../../../../items/item";
 import updateItem from "../../lesson-utils/updateItem";
+import usePopupLoading from "../../../../hooks/usePopupLoading";
 
 export function RecordingsTrimList(
   props: BasePanelViewProps<RecordingCanvasTypeValue>
@@ -89,6 +84,8 @@ export function RecordingsTrimView(
   const [duration, setDuration] = useState(100);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const [LoadingPopup, setLoading, unsetLoading] = usePopupLoading("Uploading");
 
   const updateCanvas = useCallback(() => {
     if (videoRef.current && canvasRef.current) {
@@ -169,6 +166,7 @@ export function RecordingsTrimView(
   const callback = useCallback(
     (rect: Rectangle, from: number, to: number) => {
       if (currentItem) {
+        setLoading();
         const recordingVideo = `${recordingPath}/vid-${id}.webm`;
         setStatus("Trimming video...");
         cropVideo(
@@ -196,21 +194,24 @@ export function RecordingsTrimView(
                 arg: { item: updatedItem },
               });
             }
+            unsetLoading();
             setStatus("Done");
           })
           .catch((e) => {
+            unsetLoading();
             setStatus("Something went wrong trimming video!");
             console.error(e);
           });
       }
     },
-    [dispatch, id, currentItem]
+    [dispatch, id, setLoading, unsetLoading, currentItem]
   );
 
   const [TrimPopup, doOpenTrimmer] = usePopupVideoTrim(id, callback);
 
   return (
     <>
+      <LoadingPopup />
       <div>
         <canvas ref={canvasRef} style={{ display: "none" }} />
         <video

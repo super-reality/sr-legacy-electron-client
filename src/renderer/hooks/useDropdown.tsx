@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import "./index.scss";
 import useOutsideClick from "./useOutsideClick";
 
@@ -24,6 +24,7 @@ export default function useDropdown(
   }, []);
 
   const Dropdown = useMemo(
+    // eslint-disable-next-line react/display-name
     () => () => (
       <>
         {open && (

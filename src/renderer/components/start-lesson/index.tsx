@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.scss";
 import "../containers.scss";
 import "../lesson.scss";

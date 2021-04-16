@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import "./index.scss";
 import usePopupImageSource from "../../../hooks/usePopupImageSource";
 import ButtonRound from "../../button-round";

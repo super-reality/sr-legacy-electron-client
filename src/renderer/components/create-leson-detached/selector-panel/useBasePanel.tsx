@@ -1,6 +1,8 @@
-import React, {
+import {
   CSSProperties,
+  FunctionComponent,
   PropsWithChildren,
+  SVGProps,
   useCallback,
   useEffect,
   useMemo,
@@ -15,8 +17,8 @@ import reduxAction from "../../../redux/reduxAction";
 
 export default function useBasePanel(
   title: string,
-  svg: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
+  svg: FunctionComponent<
+    SVGProps<SVGSVGElement> & {
       title?: string | undefined;
     }
   >,

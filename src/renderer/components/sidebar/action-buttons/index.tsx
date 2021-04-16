@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import "./index.scss";
 import { animated, useTrail } from "react-spring";
 import { SidebarIcon } from "..";
@@ -50,7 +50,8 @@ export default function ActionButtons(props: ActionButtonsProps) {
     <div className="action-buttons" onMouseOut={(e) => e.stopPropagation()}>
       {sidebarIcons.map((icon, index) => {
         return (
-          <>
+          // eslint-disable-next-line react/no-array-index-key
+          <Fragment key={`${icon.title}-${index}`}>
             <div
               className="action-button-container"
               onClick={() => {
@@ -78,7 +79,7 @@ export default function ActionButtons(props: ActionButtonsProps) {
             {openGroups[index] == true && icon.subComponent
               ? icon.subComponent
               : undefined}
-          </>
+          </Fragment>
         );
       })}
     </div>

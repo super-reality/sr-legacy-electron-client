@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import supportTicker from "../../api/types/support-ticket/supportTicket";
+import supportTicket from "../../api/types/support-ticket/supportTicket";
 
-const initialState: supportTicker = {
+const initialState: supportTicket = {
   supportType: "",
   title: "",
   category: "",
@@ -26,12 +26,12 @@ const createSupportTicketSlice = createSlice({
   initialState,
   reducers: {
     setData: (
-      state: supportTicker,
-      action: PayloadAction<Partial<supportTicker>>
+      state: supportTicket,
+      action: PayloadAction<Partial<supportTicket>>
     ): void => {
       state = Object.assign(state, action.payload);
     },
-    reset: (state: supportTicker, _action: PayloadAction<null>): void => {
+    reset: (state: supportTicket, _action: PayloadAction<null>): void => {
       state = Object.assign(state, initialState);
       state.images = [];
       state.skills = [];

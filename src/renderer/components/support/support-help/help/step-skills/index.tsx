@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useRef, /*  useEffect, */ useMemo } from "react";
+import { useState, useRef, /*  useEffect, */ useMemo } from "react";
 import "./index.scss";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";

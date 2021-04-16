@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import TrashButton from "../components/trash-button";
 
 export default function useTrashButton(

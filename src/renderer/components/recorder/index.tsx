@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as RecordIcon } from "../../../assets/svg/record.svg";
 import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
@@ -103,7 +103,7 @@ export default function Recorder(): JSX.Element {
         types: ["window"],
       });
       const windows: Electron.DesktopCapturerSource[] = [];
-      allWindowSources.forEach((source) => {
+      allWindowSources.forEach((source: any) => {
         windows.push(source);
       });
       setWindowSources(windows);
@@ -113,7 +113,7 @@ export default function Recorder(): JSX.Element {
         types: ["screen"],
       });
       const screens: Electron.DesktopCapturerSource[] = [];
-      allScreenSources.forEach((source) => {
+      allScreenSources.forEach((source: any) => {
         screens.push(source);
       });
       setScreenSources(screens);

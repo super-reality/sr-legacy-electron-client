@@ -1,4 +1,4 @@
-import React from "react";
+import { CSSProperties, useCallback, useEffect, useState } from "react";
 import "./index.scss";
 
 interface ReactSelectProps<K> {
@@ -7,7 +7,7 @@ interface ReactSelectProps<K> {
   callback: (option: K) => void;
   options: K[];
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 export default function ReactSelect<K>({
@@ -23,15 +23,15 @@ export default function ReactSelect<K>({
       ? optionFormatter
       : (inString: string | K): string | K => inString;
 
-  const [currentOption, setCurrentOption] = React.useState<K>(current);
-  const [optionsOpen, setOptionsOpen] = React.useState(false);
-  React.useEffect(() => setCurrentOption(current), [current]);
+  const [currentOption, setCurrentOption] = useState<K>(current);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  useEffect(() => setCurrentOption(current), [current]);
 
-  const onClickSelect = React.useCallback(() => {
+  const onClickSelect = useCallback(() => {
     setOptionsOpen(!optionsOpen);
   }, [optionsOpen]);
 
-  const onClickOption = React.useCallback(
+  const onClickOption = useCallback(
     (event) => {
       setCurrentOption(event.currentTarget.value);
       setOptionsOpen(false);

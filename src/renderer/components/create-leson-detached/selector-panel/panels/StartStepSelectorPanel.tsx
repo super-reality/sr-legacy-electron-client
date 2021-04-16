@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import reduxAction from "../../../../redux/reduxAction";
 import store, { AppState } from "../../../../redux/stores/renderer";
@@ -29,7 +29,10 @@ export default function StartStepSelectorPanel(
   const doUpdate = useCallback(
     (val: any) => {
       // hacky hack, we should not use anchor anymore!
-      if (val.length > 0 && val[0]?.type == "Image Found") {
+      if (
+        val.length > 0 &&
+        (val[0]?.type == "Image Found" || val[0]?.type == "Text Found")
+      ) {
         // update step
         // wait for cv update
         // update children items relative positions

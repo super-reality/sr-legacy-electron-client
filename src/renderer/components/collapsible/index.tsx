@@ -1,9 +1,4 @@
-import React, {
-  PropsWithChildren,
-  useState,
-  useCallback,
-  useEffect,
-} from "react";
+import { PropsWithChildren, useState, useCallback, useEffect } from "react";
 import "./index.scss";
 import { animated, useSpring } from "react-spring";
 import { useMeasure } from "react-use";

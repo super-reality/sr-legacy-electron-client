@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import "./index.scss";
 
 import { useDispatch } from "react-redux";
@@ -176,11 +176,11 @@ export default function SupportTickets(
     }
   }, [searchOption, searchCategory]);
 
-  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
     setFilterOption(e.target.value);
   };
 
-  const searchTickets = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchTickets = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchOption(e.target.value);
   };
 

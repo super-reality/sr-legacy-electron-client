@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -42,7 +42,7 @@ export default function StepTitle(props: StepSectionProps): JSX.Element {
   const dispatch = useDispatch();
   const { goNext, goBack, index } = props;
 
-  const formRef = React.useRef<FormikProps<Values>>(null);
+  const formRef = useRef<FormikProps<Values>>(null);
 
   const modifyUsedCategories = (value: IData) => {
     if (usedCategories) {

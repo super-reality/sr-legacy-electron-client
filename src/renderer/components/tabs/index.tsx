@@ -1,4 +1,9 @@
-import React, { CSSProperties, PropsWithChildren, useState } from "react";
+import {
+  CSSProperties,
+  FunctionComponent,
+  PropsWithChildren,
+  useState,
+} from "react";
 import "./index.scss";
 
 interface TabsProps<T> {
@@ -7,7 +12,7 @@ interface TabsProps<T> {
   callback: (button: T) => void;
   height?: string;
   style?: CSSProperties;
-  icons?: React.FunctionComponent<any>[];
+  icons?: FunctionComponent<any>[];
 }
 
 export function Tabs<T extends string>(props: TabsProps<T>): JSX.Element {

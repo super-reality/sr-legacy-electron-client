@@ -1,18 +1,33 @@
-import React /* useState, */, {
-  useEffect,
-  /*  useCallback, */ CSSProperties,
-} from "react";
-
+import { useEffect, CSSProperties, ReactNode } from "react";
 import { animated, useSpring } from "react-spring";
 import "./index.scss";
 
 interface FormSliderProps {
   className?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
   style?: CSSProperties;
   slides?: number;
   width?: number;
 }
+
+function FormSlider(props: FormSliderProps): JSX.Element {
+  const { children, style, slides, className, width } = props;
+  return (
+    <animated.div
+      style={
+        {
+          ...style,
+          ["--slides" as any]: `${slides}%`,
+          ["--width" as any]: `${width}%`,
+        } as any
+      }
+      className={`sliderForm ${className && className}`}
+    >
+      {children}
+    </animated.div>
+  );
+}
+
 let index = 0;
 export default function useFormSlider(steps: number): any {
   console.log(index);
@@ -72,22 +87,4 @@ export default function useFormSlider(steps: number): any {
     clickGoNext,
     clickGoBack,
   };
-}
-
-function FormSlider(props: FormSliderProps): JSX.Element {
-  const { children, style, slides, className, width } = props;
-  return (
-    <animated.div
-      style={
-        {
-          ...style,
-          ["--slides" as any]: `${slides}%`,
-          ["--width" as any]: `${width}%`,
-        } as any
-      }
-      className={`sliderForm ${className && className}`}
-    >
-      {children}
-    </animated.div>
-  );
 }

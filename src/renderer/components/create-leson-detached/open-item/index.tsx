@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Item } from "../../../items/item";

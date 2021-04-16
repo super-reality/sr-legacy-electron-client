@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { Field, ErrorMessage, FieldProps } from "formik";
 import { InputProps } from "..";
 import TextError from "../TextError";

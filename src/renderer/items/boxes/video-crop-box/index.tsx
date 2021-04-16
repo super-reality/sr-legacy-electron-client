@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, { CSSProperties } from "react";
+import { CSSProperties, forwardRef, RefObject } from "react";
 import { ReactComponent as PlayIcon } from "../../../../assets/svg/play.svg";
 import "./index.scss";
 
@@ -13,10 +13,10 @@ interface VideoCropBoxProps {
   };
   style?: CSSProperties;
   clickThrough?: boolean;
-  ref?: React.RefObject<HTMLDivElement>;
+  ref?: RefObject<HTMLDivElement>;
 }
 
-const VideoCropBox = React.forwardRef<HTMLDivElement, VideoCropBoxProps>(
+const VideoCropBox = forwardRef<HTMLDivElement, VideoCropBoxProps>(
   (props, forwardedRef) => {
     const { pos, style, clickThrough } = props;
 

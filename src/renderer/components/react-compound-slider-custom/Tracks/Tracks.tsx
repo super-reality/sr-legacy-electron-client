@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import React, { Component } from "react";
+import { Children, Component } from "react";
 
 import { callAll } from "../utils";
 import LinearScale from "../scales/LinearScale";
@@ -68,6 +68,6 @@ export class Tracks extends Component<TracksProps> {
       getTrackProps,
     });
 
-    return renderedChildren && React.Children.only(renderedChildren);
+    return renderedChildren && Children.only(renderedChildren);
   }
 }

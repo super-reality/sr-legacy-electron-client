@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  FunctionComponent,
+  SVGProps,
+} from "react";
 import "./index.scss";
 
 import { useSelector } from "react-redux";
@@ -12,7 +19,7 @@ type Modes = "FACE" | "POINTS";
 
 const expressions: Record<
   Expressions,
-  React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+  FunctionComponent<SVGProps<SVGSVGElement>>
 > = {
   HAPPY: Happy,
   BLINK: Blink,

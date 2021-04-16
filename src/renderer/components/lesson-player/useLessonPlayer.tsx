@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ipcSend from "../../../utils/ipcSend";
 import reduxAction from "../../redux/reduxAction";
@@ -45,6 +45,15 @@ export default function useLessonPlayer(
     return anchorId ? treeAnchors[anchorId] : undefined;
   }, [step, treeAnchors]);
 
+  // Get step's text anchor if any
+  const ocr: string | undefined = useMemo(() => {
+    return step
+      ? step.startWhen
+          .filter((tv) => tv.type == "Text Found")
+          .map((tv) => tv.value as string)[0] || undefined
+      : undefined;
+  }, [step]);
+
   const clearCv = useCallback(() => {
     reduxAction(dispatch, {
       type: "SET_CV_RESULT",
@@ -89,6 +98,25 @@ export default function useLessonPlayer(
           // cvMatchValue: 0,
           cvTemplates: anchor.templates,
           cvTo: "renderer",
+          cvType: "template",
+        },
+        to: "background",
+      });
+    } else if (ocr) {
+      // console.log("useLessonPlayer triggerCvUpdate");
+      ipcSend({
+        method: "cv",
+        arg: {
+          cvMatchValue: 800,
+          cvCanvas: 100,
+          cvDelay: 50,
+          cvGrayscale: true as boolean,
+          cvApplyThreshold: false as boolean,
+          cvThreshold: 127,
+          anchorId: "",
+          cvTemplates: [ocr],
+          cvTo: "renderer",
+          cvType: "ocr",
         },
         to: "background",
       });
@@ -100,13 +128,17 @@ export default function useLessonPlayer(
     if (playing) {
       triggerCvUpdate();
       const prevDate = (store.getState() as AppState).render.cvResult.date;
-      pendingReduxAction((state) => state.render.cvResult.date, prevDate, 3000)
+      pendingReduxAction(
+        (state) => state.render.cvResult.date,
+        prevDate,
+        100000
+      )
         .then((state) => {
           setTicker(state.render.cvResult.date);
         })
         .catch((e) => {
           console.error(e);
-          triggerCvUpdate();
+          setTicker(new Date().getTime());
         });
     }
   }, [playing, ticker, triggerCvUpdate]);

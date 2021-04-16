@@ -4,7 +4,16 @@
 /* eslint-disable react/sort-comp */
 /* eslint-disable react/state-in-constructor */
 /* eslint-disable import/prefer-default-export */
-import React, { PureComponent, isValidElement } from "react";
+import {
+  PureComponent,
+  isValidElement,
+  createRef,
+  createElement,
+  Children,
+  cloneElement,
+  ReactNode,
+  ReactElement,
+} from "react";
 import warning from "warning";
 import { mode1, mode2, mode3 } from "./modes";
 import {
@@ -42,7 +51,7 @@ interface RCSComponent {
   };
 }
 
-const isRCSComponent = (item: React.ReactNode): item is RCSComponent => {
+const isRCSComponent = (item: ReactNode): item is RCSComponent => {
   if (!isValidElement(item)) {
     return false;
   }
@@ -95,7 +104,7 @@ export class Slider<
     pixelToStep: null,
   };
 
-  slider = React.createRef<T>();
+  slider = createRef<T>();
 
   static getDerivedStateFromProps(
     nextProps: SliderProps,
@@ -355,7 +364,7 @@ export class Slider<
     });
   }
 
-  getEventData = (e: React.MouseEvent | React.TouchEvent, isTouch: boolean) => {
+  getEventData = (e: MouseEvent | TouchEvent, isTouch: boolean) => {
     const {
       state: { pixelToStep, valueToPerc },
       props: { vertical },
@@ -555,9 +564,9 @@ export class Slider<
       return { id: key, value: val, percent: valueToPerc.getValue(val) };
     });
 
-    const children = React.Children.map(this.props.children, (child) => {
+    const children = Children.map(this.props.children, (child) => {
       if (isRCSComponent(child) === true) {
-        return React.cloneElement(child as React.ReactElement, {
+        return cloneElement(child as ReactElement, {
           scale: valueToPerc,
           handles: mappedHandles,
           activeHandleID,
@@ -572,7 +581,7 @@ export class Slider<
 
     return flatten ? (
       <>
-        {React.createElement(Comp, {
+        {createElement(Comp, {
           ...rootProps,
           style: rootStyle,
           className: className,
@@ -582,7 +591,7 @@ export class Slider<
       </>
     ) : (
       <>
-        {React.createElement(
+        {createElement(
           Comp,
           {
             ...rootProps,

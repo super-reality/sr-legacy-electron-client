@@ -7,10 +7,10 @@ export default function getDisplayBounds(
   const { remote } = require("electron");
   const newBounds: Rectangle = { x: 0, y: 0, width: 0, height: 0 };
   const displays = allDisplays || remote.screen.getAllDisplays();
-  newBounds.x = Math.min(...displays.map((display) => display.bounds.x));
-  newBounds.y = Math.min(...displays.map((display) => display.bounds.y));
+  newBounds.x = Math.min(...displays.map((display: any) => display.bounds.x));
+  newBounds.y = Math.min(...displays.map((display: any) => display.bounds.y));
 
-  displays.forEach((display) => {
+  displays.forEach((display: any) => {
     newBounds.width = Math.max(
       newBounds.width,
       Math.abs(newBounds.x) + display.bounds.x + display.bounds.width
