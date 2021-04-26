@@ -28,6 +28,12 @@ import { getVibes as getVibesName, AllVibes } from "../../../forms";
 import voteTicket from "../support-tickets-utils/upvoteTicket";
 import { useState } from "react";
 
+const NONE = 0;
+const UP = 1;
+const DOWN = 2;
+
+type Tvotes = typeof NONE | typeof UP | typeof DOWN;
+
 interface ICreatorInfo {
   firstname: string;
   lastname: string;
@@ -45,6 +51,7 @@ interface IsingleTicket {
   vibesLevels: number[];
   votes: number;
   id: string;
+  upvoteState: Tvotes;
 }
 
 export default function singleTicket(props: IsingleTicket): JSX.Element {
@@ -58,19 +65,19 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     vibesLevels,
     votes,
     id,
+    upvoteState,
   } = props;
 
-  const NONE = 0;
-  const UP = 1;
-  const DOWN = 2;
-
-  type Tvotes = typeof NONE | typeof UP | typeof DOWN;
-
   const [rank, setRank] = useState<number>(votes);
-  const [upvote, setUpvote] = useState<Tvotes>(NONE);
+  const [upvote, setUpvote] = useState<Tvotes>(upvoteState);
 
   useDidUpdateEffect(() => {
     (async () => {
+      console.log({
+        votes: rank,
+        upvote: upvote == UP,
+        downvote: upvote == DOWN,
+      });
       await voteTicket(id, {
         votes: rank,
         upvote: upvote == UP,
@@ -117,6 +124,8 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     (state: AppState) => state.createSupportTicket
   );
 
+  console.log(`UPVOTE: ${upvote}`);
+  console.log(`UPVOTESTATE: ${upvoteState}`);
   return (
     <div className="single-query">
       <div className="voting">

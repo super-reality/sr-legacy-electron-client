@@ -19,6 +19,7 @@ import {
 } from "../../../forms";
 import createGPT3Question from "../../../../../utils/api/createGPT3Question";
 import { IPostQuestion, IGetQuestion } from "../../../../api/types/gpt-3/GPT3";
+import Comment from "./comment";
 
 interface ISingleSupportTicket extends RouteComponentProps {
   ticketId?: string;
@@ -57,8 +58,9 @@ export default function SupportTicket({
             gpt3SuggestionsCopy.push(resp);
             if (i == 2) {
               setGpt3Suggestions(gpt3SuggestionsCopy);
-              setLoading(false);
+
               setQuestionsLoading(false);
+              setLoading(false);
             }
           })
           .catch((e: any) => console.log(e));
@@ -75,7 +77,7 @@ export default function SupportTicket({
   };
 
   useEffect(() => {
-    setSidebarWidth(600);
+    setSidebarWidth(1000);
     if (ticketId) {
       getTicket(ticketId).then((tick) => {
         console.log(tick);
@@ -254,6 +256,54 @@ export default function SupportTicket({
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
+
+              <div className="comment-section">
+                <Comment
+                  comment="123"
+                  nestedComments={[
+                    {
+                      comment: "Prueba1",
+                      nestedComments: [
+                        {
+                          comment: "pruebaA",
+                          nestedComments: [
+                            { comment: "PruebaA1" },
+                            { comment: "PruebaA2" },
+                          ],
+                        },
+                        {
+                          comment: "pruebaB",
+                          nestedComments: [{ comment: "PruebaB1" }],
+                        },
+                      ],
+                    },
+                  ]}
+                />
+                <Comment
+                  comment="123"
+                  nestedComments={[
+                    {
+                      comment: "Prueba1",
+                      nestedComments: [
+                        {
+                          comment: "pruebaA",
+                          nestedComments: [
+                            { comment: "PruebaA1" },
+                            {
+                              comment: "PruebaA2",
+                              nestedComments: [{ comment: "PruebaA21" }],
+                            },
+                          ],
+                        },
+                        {
+                          comment: "pruebaB",
+                          nestedComments: [{ comment: "PruebaB1" }],
+                        },
+                      ],
+                    },
+                  ]}
+                />
+              </div>
 
               <div className="help-buttons">
                 <button type="button" onClick={() => navigate("/give")}>

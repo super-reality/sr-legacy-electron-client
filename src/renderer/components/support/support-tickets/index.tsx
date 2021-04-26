@@ -13,6 +13,7 @@ import {
 import getSupportTickets from "./support-tickets-utils/getSupportTickets";
 import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
 import getCategories from "../support-help/support-help-utils/getCategories";
+import getUpvotedTickets from "./support-tickets-utils/getUpvotedTickets";
 import getVibes from "../support-help/support-help-utils/getVibes";
 import AutosuggestInput from "../../autosuggest-input";
 import BackToSupport from "../support-menu/goback-button";
@@ -35,6 +36,7 @@ interface IfilterOptions {
 /* eslint-disable  react/jsx-props-no-spreading */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable  @typescript-eslint/no-use-before-define */
+/* eslint-disable no-use-before-define */
 export default function SupportTickets(
   props: RouteComponentProps
 ): JSX.Element {
@@ -47,6 +49,19 @@ export default function SupportTickets(
   const [searchOption, setSearchOption] = useState<string>("");
 
   const [searchCategory, setSearchCategory] = useState<string>("");
+
+  const [upvotedTickets, setUpvotedTickets] = useState<{
+    upvotes: string[];
+    downvotes: string[];
+    upvotesLoaded: boolean;
+  }>({
+    upvotes: [],
+    downvotes: [],
+    upvotesLoaded: false,
+  });
+
+  const { upvotes, downvotes, upvotesLoaded } = upvotedTickets;
+
   const [isFetching, setIsFetching, scrollRef, setHasMore] = useInfiniteScroll(
     fetchMoreListItems
   );
@@ -57,6 +72,11 @@ export default function SupportTickets(
     setPageCounter(pageCounter + 1);
   }
 
+  function checkUpvoteState(id: string) {
+    if (upvotes.includes(id)) return 1;
+    if (downvotes.includes(id)) return 2;
+    return 0;
+  }
   useDidUpdateEffect(() => {
     (async () => {
       await getSupportTickets(pageCounter).then((sticks) => {
@@ -101,6 +121,15 @@ export default function SupportTickets(
           arg: {
             vibeData: result,
           },
+        });
+      });
+    })();
+    (async () => {
+      await getUpvotedTickets().then((ut) => {
+        setUpvotedTickets({
+          upvotes: ut.upvotes,
+          downvotes: ut.downvotes,
+          upvotesLoaded: true,
         });
       });
     })();
@@ -235,26 +264,30 @@ export default function SupportTickets(
               </div>
             </div>
 
-            {tickets.length == 0 ? (
+            {tickets.length == 0 && !upvotesLoaded ? (
               <div className="loading-tickets">
                 <SupperSpinner size="200px" text="Loading Tickets" />
               </div>
             ) : (
               <>
                 <div className="ticket-list" id="ticket-list">
-                  {tickets.map((ticket, index) => (
-                    <SingleTicket
-                      onClick={() =>
-                        ticket._id && navigate(`/give/${ticket._id}`)
-                      }
-                      key={ticket._id}
-                      index={index}
-                      votes={ticket.votes!}
-                      id={ticket._id!}
-                      {...ticket}
-                      timeposted={ticket.createdAt!}
-                    />
-                  ))}
+                  {tickets.map((ticket, index) => {
+                    console.log(`CHECK ${checkUpvoteState(ticket._id!)}`);
+                    return (
+                      <SingleTicket
+                        onClick={() =>
+                          ticket._id && navigate(`/give/${ticket._id}`)
+                        }
+                        key={ticket._id}
+                        index={index}
+                        votes={ticket.votes!}
+                        id={ticket._id!}
+                        {...ticket}
+                        timeposted={ticket.createdAt!}
+                        upvoteState={checkUpvoteState(ticket._id!)}
+                      />
+                    );
+                  })}
                 </div>
                 {isFetching && (
                   <div>

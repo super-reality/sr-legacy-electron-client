@@ -1,0 +1,138 @@
+.comment {
+  max-width: 100%;
+  background-color: #222138;
+  padding: 20px;
+  border-radius: 25px;
+  margin-bottom: 15px;
+  transition: all 0.5s;
+
+  .nested-comments {
+    position: relative;
+    /*     &:after {
+      content: "";
+      margin-top: 20px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 98%;
+      background: #3e3c64;
+      border-radius: 25px;
+    } */
+  }
+  > .comment-header {
+    display: flex;
+    align-items: center;
+    > .profile {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .general-info {
+      align-self: flex-start;
+      margin-left: 20px;
+      > p {
+        margin: 0;
+      }
+    }
+    > .comment-buttons {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  > .comment-content {
+    > .comment-actions {
+      display: flex;
+      align-items: center;
+
+      > .comment-ranking {
+        display: flex;
+
+        justify-content: space-between;
+        width: 80px;
+        padding: 10px;
+        background-color: #3e3c64;
+        border-radius: 25px;
+
+        span {
+          font-size: 12px;
+          margin-left: 6px;
+          align-self: center;
+        }
+        svg {
+          width: 20px;
+          height: auto;
+        }
+        > div {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        > .vote-division {
+          width: 2px;
+          min-height: 100%;
+          border-radius: 25px;
+          background-color: #8c8ac5;
+        }
+      }
+
+      > .actions {
+        margin-left: 20px;
+        cursor: pointer;
+
+        > svg {
+          float: left;
+          background-color: #3e3c64;
+          border-radius: 50%;
+          padding: 5px;
+          width: 16px;
+          height: 16px;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .comment-reply {
+      background-color: #34345a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 15px;
+      border-radius: 10px;
+
+      padding: 8px;
+      > .profile {
+        min-width: 40px;
+        min-height: 40px;
+        border-radius: 50%;
+        background-position: center;
+        background-size: cover;
+      }
+
+      > input {
+        border-radius: 25px;
+        margin-left: 20px;
+      }
+
+      > .send-comment {
+        background-color: #0898eb;
+        transition: all 0.5s;
+        cursor: pointer;
+        margin-left: 20px;
+        width: 150px;
+        border-radius: 25px;
+        height: 30px;
+        &:hover {
+          background-color: #088fdd;
+        }
+      }
+    }
+  }
+}

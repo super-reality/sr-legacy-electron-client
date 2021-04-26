@@ -11,9 +11,9 @@ export default function useInfiniteScroll(
   callback: () => void
 ): [
   boolean,
-  React.Dispatch<React.SetStateAction<boolean>>,
-  React.RefObject<HTMLDivElement>,
-  React.Dispatch<React.SetStateAction<boolean>>
+  Dispatch<SetStateAction<boolean>>,
+  RefObject<HTMLDivElement>,
+  Dispatch<SetStateAction<boolean>>
 ] {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);

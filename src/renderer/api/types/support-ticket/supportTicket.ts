@@ -79,6 +79,12 @@ export interface IFile {
   type: string;
 }
 
+export interface IGetUpvotedTickets {
+  err_code: CodeSuccess;
+  upvotes: string[];
+  downvotes: string[];
+}
+
 export interface IVibe {
   _id: string;
   title: string;
