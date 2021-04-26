@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./index.scss";
 
 import { SKILLS_SHORT, SKILLS_LONG } from "..";

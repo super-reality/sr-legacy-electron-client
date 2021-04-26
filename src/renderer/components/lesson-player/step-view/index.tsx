@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Item } from "../../../items/item";
 import { IStep } from "../../../api/types/step/step";
@@ -115,9 +115,7 @@ export default function StepView(props: StepViewProps) {
             }
           />
         ) : (
-          <React.Fragment
-            key={item?._id || `${new Date().getTime()}-undef-item`}
-          />
+          <Fragment key={item?._id || `${new Date().getTime()}-undef-item`} />
         );
       })}
     </>

@@ -47,9 +47,10 @@
   transform: translateY(20px) scale(0.2);
   transition: all 0.2s;
   cursor: pointer;
-  > img {
+  > svg {
     width: 100%;
-    transition: .5s;
+    height: 100%;
+    transition: 0.5s;
   }
 }
 .reaction-title {
@@ -87,7 +88,7 @@
   align-items: center;
   border-radius: 25px;
   padding: 5px;
-  img {
+  svg {
     margin-left: 5px;
   }
 }
@@ -118,7 +119,7 @@
   .reaction-title {
     opacity: 1;
   }
-  >img{
+  > svg {
     opacity: 1;
   }
 }
@@ -144,48 +145,48 @@
 
 .reaction-1 {
   left: 0;
-  > img {
+  > svg {
     opacity: 0.2;
   }
 }
 .reaction-2 {
   left: 38px;
-  > img {
+  > svg {
     opacity: 0.4;
   }
 }
 .reaction-3 {
   left: 76px;
-  > img {
+  > svg {
     opacity: 0.6;
   }
 }
 .reaction-4 {
   left: 114px;
-  > img {
+  > svg {
     opacity: 0.8;
   }
 }
 .reaction-5 {
   left: 150px;
-  > img {
+  > svg {
     opacity: 1;
   }
 }
 
-.result-1{
+.result-1 {
   opacity: 0.33;
 }
-.result-2{
+.result-2 {
   opacity: 0.66;
 }
-.result-3{
+.result-3 {
   opacity: 1;
 }
-.result-4{
+.result-4 {
   opacity: 0.8;
 }
-.result-5{
+.result-5 {
   opacity: 1;
 }
 

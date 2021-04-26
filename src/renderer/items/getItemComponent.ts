@@ -1,9 +1,10 @@
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { BaseBoxProps } from "./boxes/boxes";
 import { BaseItem } from "./item";
 import itemsDatabase from "./itemsDatabase";
 
-type RefDivComponent<T extends BaseItem> = React.ForwardRefExoticComponent<
-  BaseBoxProps<T> & React.RefAttributes<HTMLDivElement>
+type RefDivComponent<T extends BaseItem> = ForwardRefExoticComponent<
+  BaseBoxProps<T> & RefAttributes<HTMLDivElement>
 >;
 
 export default function getItemComponent<T extends BaseItem>(

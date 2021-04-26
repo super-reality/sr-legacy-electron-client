@@ -70,7 +70,7 @@
 
       .avatar-container {
         margin: auto 10px;
-        .rounded-img{
+        .rounded-img {
           border-radius: 50%;
         }
       }
@@ -114,5 +114,11 @@
   .sidebar-content {
     height: 100%;
     width: 100%;
+    > div {
+      height: 100%;
+      > div {
+        height: 100%;
+      }
+    }
   }
 }

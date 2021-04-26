@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import reduxAction from "../../../../redux/reduxAction";
 import store, { AppState } from "../../../../redux/stores/renderer";

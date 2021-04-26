@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import initializeBackground from "../background/initializeBackground";
 import { CVResult } from "../types/utils";
@@ -54,7 +54,7 @@ export default function BackgroundController(): JSX.Element {
         doMatch();
       }
     }
-  }, [processingCv, doMatch, cvTo]);
+  }, [dispatch, processingCv, doMatch, cvTo]);
 
   return (
     <>

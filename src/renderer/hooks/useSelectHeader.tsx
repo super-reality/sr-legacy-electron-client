@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { MutableRefObject, useRef } from "react";
 import "./index.scss";
 import { useRouteMatch } from "react-router-dom";
 import { useWindowSize } from "react-use";
@@ -60,8 +60,8 @@ const selectOptionsByTab: Record<
 export default function useSelectHeader(
   title: tabNames | null,
   onSelect: (route: string, selected: string | Category) => void,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
-): [() => JSX.Element, React.MutableRefObject<HTMLDivElement | null>] {
+  containerRef: MutableRefObject<HTMLDivElement | null>
+): [() => JSX.Element, MutableRefObject<HTMLDivElement | null>] {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const mainMatch = useRouteMatch<{

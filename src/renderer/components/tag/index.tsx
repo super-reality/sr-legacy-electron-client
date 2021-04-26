@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import "./index.scss";
 import { ReactComponent as CloseIcon } from "../../../assets/svg/close.svg";
 

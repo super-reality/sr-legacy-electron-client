@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import "./index.scss";
+
+import { useDispatch } from "react-redux";
+import { navigate, RouteComponentProps } from "@reach/router";
+import reduxAction from "../../../redux/reduxAction";
 
 import {
   supportTicketPayload,
@@ -9,31 +13,16 @@ import {
 import getSupportTickets from "./support-tickets-utils/getSupportTickets";
 import searchSupportTickets from "./support-tickets-utils/searchSupportTickets";
 import getCategories from "../support-help/support-help-utils/getCategories";
+import getVibes from "../support-help/support-help-utils/getVibes";
 import AutosuggestInput from "../../autosuggest-input";
+import BackToSupport from "../support-menu/goback-button";
 
-/* import voteup from "../../../assets/images/voteup.png";
-import votedown from "../../../assets/images/votedown.png";
-import ticketuser from "../../../assets/images/ticket-user.png";
-import emoji1 from "../../../assets/svg/emoji1.svg";
-import emoji2 from "../../../assets/svg/emoji2.svg";
-import emoji3 from "../../../assets/svg/emoji3.svg";
-import emoji4 from "../../../assets/svg/emoji4.svg";
-import emoji5 from "../../../assets/svg/emoji5.svg";
-import emoji6 from "../../../assets/svg/emoji6.svg";
-import emoji7 from "../../../assets/svg/emoji7.svg";
-import emoji8 from "../../../assets/svg/emoji8.svg";
-
-import emoji9 from "../../../assets/svg/emoji9.svg";
-
-import timeposted from "../../../assets/images/timeposted.png";
-import chats from "../../../assets/images/chats.png"; */
-/* eslint-disable */
 import SingleTicket from "./single-ticket";
 
 import SupperSpinner from "../../super-spinner";
 
 import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
-
+import useInfiniteScroll from "../../../hooks/useInfiniteScroll";
 
 interface IfilterOptions {
   name?: string;
@@ -41,7 +30,15 @@ interface IfilterOptions {
   limit?: number;
 }
 
-export default function SupportTickets(): JSX.Element {
+/* eslint-disable no-shadow */
+/* eslint-disable  react/jsx-props-no-spreading */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable  @typescript-eslint/no-use-before-define */
+export default function SupportTickets(
+  props: RouteComponentProps
+): JSX.Element {
+  console.log(props);
+  const dispatch = useDispatch();
   const [tickets, setTickets] = useState<supportTicketPayload[]>([]);
 
   const [filterOption, setFilterOption] = useState<string>("");
@@ -50,8 +47,20 @@ export default function SupportTickets(): JSX.Element {
 
   const [searchCategory, setSearchCategory] = useState<string>("");
 
+  const [isFetching, setIsFetching, scrollRef] = useInfiniteScroll(
+    // eslint-disable-next-line no-use-before-define
+    fetchMoreListItems
+  );
+
+  function fetchMoreListItems() {
+    setTimeout(() => {
+      setTickets(tickets.concat(tickets));
+      setIsFetching(false);
+    }, 2000);
+  }
+
   let searchedCategories: IData[] = [];
-  let searchResults: supportTicketPayload[] = [];
+  const searchResults: supportTicketPayload[] = [];
 
   const searchCategories = (value: string): IData[] => {
     (async () => {
@@ -59,7 +68,6 @@ export default function SupportTickets(): JSX.Element {
         searchedCategories = [...categories];
       });
     })();
-    console.log(searchedCategories);
     return searchedCategories;
   };
 
@@ -75,6 +83,16 @@ export default function SupportTickets(): JSX.Element {
 
   useEffect(() => {
     setSidebarWidth(900);
+    (async () => {
+      await getVibes().then((result) => {
+        reduxAction(dispatch, {
+          type: "SET_SUPPORT_TICKET",
+          arg: {
+            vibeData: result,
+          },
+        });
+      });
+    })();
     (async () => {
       await getSupportTickets().then((tickets) => {
         setTickets(tickets.reverse());
@@ -97,6 +115,18 @@ export default function SupportTickets(): JSX.Element {
 
   useEffect(() => {
     let ob: IfilterOptions = {};
+
+    console.log(searchOption);
+    console.log(searchCategory);
+
+    if (searchOption == "" && searchCategory == "") {
+      (async () => {
+        await getSupportTickets().then((tickets) => {
+          setTickets(tickets.reverse());
+        });
+      })();
+    }
+
     if (searchOption != "" && searchCategory != "") {
       console.log("SI");
       ob = {
@@ -116,6 +146,7 @@ export default function SupportTickets(): JSX.Element {
         name: searchOption,
         limit: 10,
       };
+      console.log(ob);
       (async () => {
         await filterTickets(ob);
       })();
@@ -134,265 +165,96 @@ export default function SupportTickets(): JSX.Element {
     }
   }, [searchOption, searchCategory]);
 
-  const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
     setFilterOption(e.target.value);
   };
 
-  const searchTickets = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchTickets = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchOption(e.target.value);
   };
 
   return (
-    <>
-      <>
-        <div className="ticket-title">Filter By</div>
-        <div className="ticket-container">
-          <div className="ticket-category">
-            Category
-            <AutosuggestInput<IData>
-              filter={searchCategories}
-              getValue={(suggestion: IData) => suggestion.name}
-              renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
-              initialValue={""}
-              id={"category-search"}
-              submitCallback={(value: IData) => setSearchCategory(value._id)}
-              placeholder={"Select Category"}
+    <div id="support-tickets">
+      <div className="ticket-title">Filter By</div>
+      <div className="ticket-container" id="ticket-container">
+        <div className="ticket-category">
+          Category
+          <AutosuggestInput<IData>
+            filter={searchCategories}
+            getValue={(suggestion: IData) => {
+              console.log(suggestion);
+              return suggestion.name;
+            }}
+            onChangeCallback={(s) => {
+              if (s.length == 0) setSearchCategory("");
+            }}
+            renderSuggestion={(suggestion) => <div>{suggestion.name}</div>}
+            initialValue=""
+            id="category-search"
+            submitCallback={(value: IData) => setSearchCategory(value._id)}
+            placeholder="Select Category"
+          />
+          <BackToSupport
+            onClick={() => navigate("/")}
+            style={{
+              position: "absolute",
+              left: 0,
+              bottom: 0,
+              width: "85%",
+            }}
+          />
+        </div>
+
+        <div className="ticket-search" ref={scrollRef}>
+          <div className="ticket-wrapper" id="ticket-wrapper">
+            <input
+              type="text"
+              value={searchOption}
+              onChange={searchTickets}
+              placeholder="Search title"
             />
-            {/*  <input type="text" value="Select Categories" /> */}
-          </div>
-
-          <div className="ticket-search">
-            <div className="ticket-wrapper">
-              <input
-                type="text"
-                value={searchOption}
-                onChange={searchTickets}
-                placeholder="Search title"
-              />
-              <a href="">Advanced Search</a>
-              <div className="request-count">
-                {tickets.length} Help Requests
-                <div className="sort-filter">
-                  <select value={filterOption} onChange={handleFilter}>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                  </select>
-                </div>
+            <a>Advanced Search</a>
+            <div className="request-count">
+              {tickets.length} Help Requests
+              <div className="sort-filter">
+                <select value={filterOption} onChange={handleFilter}>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
               </div>
+            </div>
 
-              {tickets.length == 0 ? (
-                <div className="loading-tickets">
-                  <SupperSpinner size="100px" text="Loading Tickets" />
-                </div>
-              ) : (
-                <div className="ticket-list">
+            {tickets.length == 0 ? (
+              <div className="loading-tickets">
+                <SupperSpinner size="200px" text="Loading Tickets" />
+              </div>
+            ) : (
+              <>
+                <div className="ticket-list" id="ticket-list">
                   {tickets.map((ticket, index) => (
                     <SingleTicket
+                      onClick={() =>
+                        ticket._id && navigate(`/give/${ticket._id}`)
+                      }
                       key={ticket._id}
                       index={index}
+                      votes={ticket.votes!}
+                      id={ticket._id!}
                       {...ticket}
                       timeposted={ticket.createdAt!}
                     />
                   ))}
                 </div>
-              )}
-            </div>
+                {isFetching && (
+                  <div>
+                    <SupperSpinner size="100px" text="Fetching new tickets" />
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
-      </>
-    </>
+      </div>
+    </div>
   );
 }
-
-/* <div className="single-query">
-                    <div className="voting">
-                      <div className="up-vote">
-                        <button type="button">
-                          <img src={voteup} alt="" />
-                        </button>
-                      </div>
-                      <div className="vote">12</div>
-                      <div className="down-vote">
-                        <button type="button">
-                          <img src={votedown} alt="" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="content">
-                      <div className="query">I need help Animating</div>
-                      <div className="description">
-                        I am trying to create an Animation. I was hoping someone
-                        could create a lesson. Tempor lorem sociis molestie
-                        velit, et etiam bibendum dolor. Amet libero, eleifend
-                        viverra feugiat mi interdum risus id. Vel dapibus ut nec
-                        pulvinar praesent dolor pharetra.
-                      </div>
-                      <div className="ticket-user-info">
-                        <div className="ticket-user">
-                          <img src={ticketuser} alt="" />
-                          Nick Marks
-                        </div>
-                        <div className="vibe-rating">
-                          Vibe Rating
-                          <div className="emojis">
-                            <img src={emoji1} alt="" />
-                            <img src={emoji2} alt="" />
-                            <img src={emoji3} alt="" />
-                          </div>
-                        </div>
-                        <div className="timeposted">
-                          <img src={timeposted} alt="" />
-                          30mins ago
-                        </div>
-                        <div className="ticket-chats">
-                          <img src={chats} alt="" />
-                          50+
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="single-query">
-                    <div className="voting">
-                      <div className="up-vote">
-                        <button type="button">
-                          <img src={voteup} alt="" />
-                        </button>
-                      </div>
-                      <div className="vote">12</div>
-                      <div className="down-vote">
-                        <button type="button">
-                          <img src={votedown} alt="" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="content">
-                      <div className="query">I need help Animating</div>
-                      <div className="description">
-                        I am trying to create an Animation. I was hoping someone
-                        could create a lesson. Tempor lorem sociis molestie
-                        velit, et etiam bibendum dolor. Amet libero, eleifend
-                        viverra feugiat mi interdum risus id. Vel dapibus ut nec
-                        pulvinar praesent dolor pharetra.
-                      </div>
-                      <div className="ticket-user-info">
-                        <div className="ticket-user">
-                          <img src={ticketuser} alt="" />
-                          Nick Marks
-                        </div>
-                        <div className="vibe-rating">
-                          Vibe Rating
-                          <div className="emojis">
-                            <img src={emoji4} alt="" />
-                            <img src={emoji5} alt="" />
-                            <img src={emoji6} alt="" />
-                            <img src={emoji6} alt="" />
-                          </div>
-                        </div>
-                        <div className="timeposted">
-                          <img src={timeposted} alt="" />
-                          30mins ago
-                        </div>
-                        <div className="ticket-chats">
-                          <img src={chats} alt="" />
-                          50+
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="single-query">
-                    <div className="voting">
-                      <div className="up-vote">
-                        <button type="button">
-                          <img src={voteup} alt="" />
-                        </button>
-                      </div>
-                      <div className="vote">12</div>
-                      <div className="down-vote">
-                        <button type="button">
-                          <img src={votedown} alt="" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="content">
-                      <div className="query">I need help Animating</div>
-                      <div className="description">
-                        I am trying to create an Animation. I was hoping someone
-                        could create a lesson. Tempor lorem sociis molestie
-                        velit, et etiam bibendum dolor. Amet libero, eleifend
-                        viverra feugiat mi interdum risus id. Vel dapibus ut nec
-                        pulvinar praesent dolor pharetra.
-                      </div>
-                      <div className="ticket-user-info">
-                        <div className="ticket-user">
-                          <img src={ticketuser} alt="" />
-                          Nick Marks
-                        </div>
-                        <div className="vibe-rating">
-                          Vibe Rating
-                          <div className="emojis">
-                            <img src={emoji7} alt="" />
-                            <img src={emoji8} alt="" />
-                            <img src={emoji9} alt="" />
-                          </div>
-                        </div>
-                        <div className="timeposted">
-                          <img src={timeposted} alt="" />
-                          30mins ago
-                        </div>
-                        <div className="ticket-chats">
-                          <img src={chats} alt="" />
-                          50+
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="single-query">
-                    <div className="voting">
-                      <div className="up-vote">
-                        <button type="button">
-                          <img src={voteup} alt="" />
-                        </button>
-                      </div>
-                      <div className="vote">12</div>
-                      <div className="down-vote">
-                        <button type="button">
-                          <img src={votedown} alt="" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="content">
-                      <div className="query">I need help Animating</div>
-                      <div className="description">
-                        I am trying to create an Animation. I was hoping someone
-                        could create a lesson. Tempor lorem sociis molestie
-                        velit, et etiam bibendum dolor. Amet libero, eleifend
-                        viverra feugiat mi interdum risus id. Vel dapibus ut nec
-                        pulvinar praesent dolor pharetra.
-                      </div>
-                      <div className="ticket-user-info">
-                        <div className="ticket-user">
-                          <img src={ticketuser} alt="" />
-                          Nick Marks
-                        </div>
-                        <div className="vibe-rating">
-                          Vibe Rating
-                          <div className="emojis">
-                            <img src={emoji7} alt="" />
-                            <img src={emoji8} alt="" />
-                          </div>
-                        </div>
-                        <div className="timeposted">
-                          <img src={timeposted} alt="" />
-                          30mins ago
-                        </div>
-                        <div className="ticket-chats">
-                          <img src={chats} alt="" />
-                          50+
-                        </div>
-                      </div>
-                    </div>
-                  </div> */

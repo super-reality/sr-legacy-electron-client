@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect } from "react";
+import { forwardRef, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Howler } from "howler";
 import { ItemDialog } from "../../item";
@@ -14,7 +14,7 @@ import reduxAction from "../../../redux/reduxAction";
 import { AppState } from "../../../redux/stores/renderer";
 import { BaseBoxProps } from "../boxes";
 
-const DialogBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemDialog>>(
+const DialogBox = forwardRef<HTMLDivElement, BaseBoxProps<ItemDialog>>(
   (props, forwardedRef) => {
     const { item, style, pos } = props;
 

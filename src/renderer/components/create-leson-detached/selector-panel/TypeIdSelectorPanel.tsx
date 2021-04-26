@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { TypeValue } from "../../../../types/utils";
 import ButtonCheckbox from "../button-checkbox";
 import useBasePanel from "./useBasePanel";
@@ -64,8 +64,8 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const Panel = useBasePanel(title, DefaultIcon, {});
 
-  let ListView: ((props: any) => JSX.Element) | null = null;
-  let SingleView: ((props: any) => JSX.Element) | null = null;
+  let ListView: ((p: any) => JSX.Element) | null = null;
+  let SingleView: ((p: any) => JSX.Element) | null = null;
 
   const dataIds: Record<string, string[]> = {
     Mouse: ["mouse-left", "mouse-double", "mouse-hover"],

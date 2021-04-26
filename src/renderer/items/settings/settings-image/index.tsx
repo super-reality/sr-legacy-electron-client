@@ -1,4 +1,3 @@
-import React from "react";
 import { ItemImage } from "../../item";
 import BaseInput from "../../../components/base-input";
 import "../../boxes/find-box/index.scss";

@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { FormikProps } from "formik";
 import FormControl from "../../../../../forms";
 import { IData } from "../../../../../../api/types/support-ticket/supportTicket";
@@ -15,7 +14,6 @@ export default function SingleCategory(props: ISingleSkill): JSX.Element {
   return (
     <div className="skill" key={name}>
       {name}
-
       <FormControl
         name="skills"
         control="skills"

@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.scss";
 import { useSpring, animated } from "react-spring";
 

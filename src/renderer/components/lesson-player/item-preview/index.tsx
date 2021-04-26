@@ -1,5 +1,5 @@
 import interact from "interactjs";
-import React, {
+import {
   CSSProperties,
   useCallback,
   useEffect,

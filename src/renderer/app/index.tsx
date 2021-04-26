@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../index.scss";
@@ -40,7 +40,7 @@ function MainApp() {
     (state: AppState) => state.render
   );
 
-  const scrollRef = React.useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {

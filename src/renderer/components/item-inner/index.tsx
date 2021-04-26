@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, CSSProperties } from "react";
+import { PropsWithChildren, CSSProperties } from "react";
 import "./index.scss";
 import ShareButton from "../share-button";
 import CheckButton from "../check-button";

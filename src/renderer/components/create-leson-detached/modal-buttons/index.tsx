@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react";
+import { CSSProperties, useState } from "react";
 import ButtonSimple from "../../button-simple";
 import Flex from "../../flex";
 

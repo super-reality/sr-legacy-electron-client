@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import { RefObject, useCallback, useEffect, useRef } from "react";
 import "./index.scss";
 
 import interact from "interactjs";
@@ -18,7 +18,7 @@ import reduxAction from "../../../redux/reduxAction";
 interface SidebarControlsProps {
   setWideView: () => void;
   wideView?: boolean;
-  sidebarRef: React.RefObject<HTMLDivElement>;
+  sidebarRef: RefObject<HTMLDivElement>;
 }
 
 export default function SidebarControls(props: SidebarControlsProps) {

@@ -52,7 +52,7 @@ body {
   --color-cyan: #00fef6;
   --color-white: #fff;
 
-  --color-light: #A8A8C9;
+  --color-light: #a8a8c9;
 
   --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
@@ -240,7 +240,7 @@ a:active {
 }
 
 .animate-gradient {
-  background-image: url("../assets/svg/cool-gradient.svg");
+  background-image: url(../assets/svg/cool-gradient.svg);
   background-size: 100%;
   background-size: cover;
   height: 100%;
@@ -258,7 +258,7 @@ span#shooting-star-to-right {
   width: 100%;
   height: 2px;
   background: linear-gradient(90deg, transparent, #03e9f4);
-  animation: shootingStar1 1s linear forwards ;
+  animation: shootingStar1 1s linear forwards;
 }
 
 /* Shooting star animation */
@@ -332,44 +332,44 @@ span#shooting-star-to-top {
 
 @keyframes shootingStar1 {
   0% {
-    box-shadow: 
-        0 0 30px 10px #413db6;
-    left: -100%
+    box-shadow: 0 0 30px 10px #413db6;
+    left: -100%;
   }
-  50%, 100% {
-    left: 100%
+  50%,
+  100% {
+    left: 100%;
   }
 }
 
 @keyframes shootingStar2 {
   0% {
-    box-shadow: 
-        0 0 30px 10px #413db6;
-    top: -100%
+    box-shadow: 0 0 30px 10px #413db6;
+    top: -100%;
   }
-  50%, 100% {
-    top: 100%
+  50%,
+  100% {
+    top: 100%;
   }
 }
 
 @keyframes shootingStar3 {
   0% {
-    box-shadow: 
-        0 0 30px 10px #413db6;
-    bottom: -100%
+    box-shadow: 0 0 30px 10px #413db6;
+    bottom: -100%;
   }
-  50%, 100% {
-    bottom: 100%
+  50%,
+  100% {
+    bottom: 100%;
   }
 }
 
 @keyframes shootingStar4 {
   0% {
-    box-shadow: 
-        0 0 30px 10px #413db6;
-    right: -100%
+    box-shadow: 0 0 30px 10px #413db6;
+    right: -100%;
   }
-  50%, 100% {
-    right: 100%
+  50%,
+  100% {
+    right: 100%;
   }
 }

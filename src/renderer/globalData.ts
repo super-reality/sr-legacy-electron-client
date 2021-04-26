@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React from "react";
 import { ILessonGet } from "./api/types/lesson/get";
 import { ISubjectGet } from "./api/types/subject/get";
 import { ICollectionGet } from "./api/types/collection/get";

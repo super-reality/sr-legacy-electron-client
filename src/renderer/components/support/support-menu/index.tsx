@@ -1,22 +1,20 @@
-import React from "react";
 import "./index.scss";
 import Vivus from "vivus";
+import { RouteComponentProps, useNavigate, useLocation } from "@reach/router";
+import { useEffect, useState } from "react";
 import { ReactComponent as SupportIcon } from "../../../../assets/svg/support-icon.svg";
 import SupportAskIcon from "../../../../assets/svg/support-ask.svg";
 import SupportHelpIcon from "../../../../assets/svg/support-help.svg";
-import { TSupportOptions, ASK, SEARCH } from "..";
+import { setSidebarWidth } from "../../../../utils/setSidebarWidth";
 
-interface ISupportMenuProps {
-  setSupportChoice: (value: TSupportOptions) => void;
-}
+export default function SupportMenu(props: RouteComponentProps): JSX.Element {
+  console.log(props);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [giveAnimation, setGiveAnimation] = useState<any>();
+  const [askAnimation, setAskAnimation] = useState<any>();
 
-export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
-  const [giveAnimation, setGiveAnimation] = React.useState<any>();
-  const [askAnimation, setAskAnimation] = React.useState<any>();
-
-  const { setSupportChoice } = props;
-
-  React.useEffect(() => {
+  useEffect(() => {
     setGiveAnimation(
       new Vivus("give", {
         duration: 100,
@@ -31,6 +29,7 @@ export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
         animTimingFunction: Vivus.EASE_IN,
       })
     );
+    setSidebarWidth(700);
   }, []);
 
   return (
@@ -39,21 +38,24 @@ export default function SupportMenu(props: ISupportMenuProps): JSX.Element {
       <div className="support-container-title">Support</div>
       <div className="support-choices">
         <div
-          onClick={() => setSupportChoice(SEARCH)}
+          onClick={() => {
+            navigate("give");
+            console.log(location.pathname);
+          }}
           className="support-choice"
           onMouseEnter={() => {
-            giveAnimation.reset();
-            giveAnimation.play();
+            if (giveAnimation) giveAnimation.reset();
+            if (giveAnimation) giveAnimation.play();
           }}
           onMouseLeave={() => {
-            giveAnimation.finish();
+            if (giveAnimation) giveAnimation.finish();
           }}
         >
           <div id="give" />
           <div className="support-choice-title">Give suppport</div>
         </div>
         <div
-          onClick={() => setSupportChoice(ASK)}
+          onClick={() => navigate("ask")}
           className="support-choice"
           onMouseEnter={() => {
             askAnimation.reset();

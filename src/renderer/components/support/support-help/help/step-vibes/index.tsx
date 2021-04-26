@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
 import { Formik, Form, FormikProps, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,7 +25,7 @@ export default function StepVibes(props: StepSectionProps): JSX.Element {
     <div>
       <div className="title">Step {index} of 5</div>
       <Formik
-        initialValues={{ vibes: vibes ?? [] }}
+        initialValues={{ vibes: vibes }}
         validationSchema={vibesSchema}
         onSubmit={(values) => {
           console.log(values);

@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
 import { GetEventData, EmitMouse, EmitTouch, OtherProps } from "../types";
 
 export interface RailEventHandlers {
-  onMouseDown?: (event: React.MouseEvent) => void;
-  onTouchStart?: (event: React.TouchEvent) => void;
+  onMouseDown?: (event: MouseEvent) => void;
+  onTouchStart?: (event: TouchEvent) => void;
 }
 
 export type GetRailProps = (props?: OtherProps) => any;
@@ -25,5 +26,5 @@ export interface RailProps {
   /**
    * A function to render the rail. Note: `getEventData` can be called with an event and get the value and percent at that location (used for tooltips etc). `activeHandleID` will be a string or null.  Function signature: `({ getEventData, activeHandleID, getRailProps }): element`
    */
-  children: (railObject: RailObject) => React.ReactNode;
+  children: (railObject: RailObject) => ReactNode;
 }

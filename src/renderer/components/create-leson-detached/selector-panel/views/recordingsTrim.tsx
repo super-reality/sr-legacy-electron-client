@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fs from "fs";
 import { useDispatch, useSelector } from "react-redux";
 import { BasePanelViewProps } from "../viewTypes";
