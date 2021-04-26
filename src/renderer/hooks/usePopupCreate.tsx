@@ -7,13 +7,13 @@ import { Icon } from "../components/item-inner";
 import ShareButton from "../components/share-button";
 import Collapsible from "../components/collapsible";
 
-interface ButtonCreate {
+interface ButtonCreateProps {
   title: string;
   sub: string;
   onClick: () => void;
 }
 
-function ButtonCreate(props: ButtonCreate): JSX.Element {
+function ButtonCreate(props: ButtonCreateProps): JSX.Element {
   const { onClick, title, sub } = props;
   return (
     <ButtonSimple
