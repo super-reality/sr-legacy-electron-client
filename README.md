@@ -11,7 +11,7 @@
 
 2. `npm install` (make sure to use Node 12.14.0, see [troubleshooting](#troubleshooting))
 
-3. if not installed `npm install foreman -g`
+3. if not installed; `npm install foreman -g`
 
 4. run `npm run electron-rebuild`
 

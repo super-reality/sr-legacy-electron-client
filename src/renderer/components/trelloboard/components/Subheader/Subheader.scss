@@ -1,0 +1,114 @@
+
+$borderRadius: 3px;
+$subheaderHeight: 35px;
+$subBtnH: 32px;
+.subHeader{
+  width: 100%;
+  height: $subheaderHeight;
+  padding: 5px 165px 5px 15px;
+  
+  background: #ffffff13;
+  margin-top: 50px;
+  
+  // text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  // border: 1px solid blue;
+
+  .leftSide{
+    display: flex;
+    flex-direction: row;
+    height: $subBtnH;
+    align-items: center;
+  }
+  .rightSide{
+    display: flex;
+    flex-direction: row;
+    height: $subBtnH;
+    align-items: center;
+    margin-right: 40px;
+  }
+  .subHeaderTitle{
+    background: #ffffff34;
+    cursor: pointer;
+    color: white;
+    font-size: large;
+    font-weight: bold;
+    height: 90%;
+    float: left;
+    padding: 0 10px;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+  }
+
+  .subHeaderTitle:hover{
+    background: #ffffff54;
+  }
+
+  .starButton{
+    background: #ffffff34;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 90%;
+    padding: 0 8px;
+    margin-left: 5px;
+    border-radius: $borderRadius;
+    color:white;
+  }
+  .starButton:hover{
+    background: #ffffff54;
+  }
+
+  .subHeaderButton{
+    background: #ffffff34;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 100%;
+    padding: 0 15px;
+    margin-left: 5px;
+    border-radius: $borderRadius;
+    color:white;
+  }
+  .subHeaderButton:hover{
+    background: #ffffff54;
+  }
+}
+
+.vl {
+  margin: 0 10px;
+  border-left: 1px solid #ffffff67;
+  height: 85%;
+}
+
+.subProfile{
+  background: #ffffff34;
+  border-radius: 50%;
+  height: $subheaderHeight;
+  width: $subheaderHeight;
+  cursor: pointer;
+  img{
+    border-radius: 50%;
+    height: $subheaderHeight;
+    width: $subheaderHeight;
+    &:hover{
+      box-shadow: 2px 5px 10px 0px #3d345efa;
+    }
+  }
+}
+
+.inputTitle{
+  background: #0000;
+  border: 1px solid #5127793d;
+}
