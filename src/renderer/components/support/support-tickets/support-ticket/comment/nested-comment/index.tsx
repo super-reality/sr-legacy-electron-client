@@ -1,16 +1,33 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import "./index.scss";
+import "react-quill/dist/quill.snow.css";
+import moment from "moment";
+import useRanking from "../../../../../../hooks/useRanking";
 import Profile from "../../../../../../../assets/images/nicks-profile.png";
 import { ReactComponent as Downvote } from "../../../../../../../assets/svg/down.svg";
 import { ReactComponent as Upvote } from "../../../../../../../assets/svg/up.svg";
 import { ReactComponent as Reply } from "../../../../../../../assets/svg/reply.svg";
 import { ReactComponent as Share } from "../../../../../../../assets/svg/share.svg";
 import { ReactComponent as Comments } from "../../../../../../../assets/svg/comments.svg";
+import { IComment } from "../../../../../../api/types/support-ticket/supportTicket";
+import getNestedComments from "../../../support-tickets-utils/getNestedComments";
+import postComment from "../../../support-tickets-utils/postSupportTicketNestedComment";
+import useDidUpdateEffect from "../../../../../../hooks/useDidUpdateEffect";
 
-import { IComments } from "..";
-
-export default function NestedComment(props: IComments): JSX.Element {
-  const { comment, nestedComments } = props;
+const NONE = 0;
+const UP = 1;
+const DOWN = 2;
+/* eslint-disable  react/jsx-props-no-spreading */
+export default function NestedComment(props: IComment): JSX.Element {
+  const {
+    _id,
+    username,
+    comment,
+    timePostted,
+    nestedComments,
+    nestedCommentsCount,
+    ranking,
+  } = props;
 
   let commentsArray: JSX.Element[] = [];
 
@@ -19,25 +36,39 @@ export default function NestedComment(props: IComments): JSX.Element {
     false
   );
 
-  const [comments, setComments] = useState<IComments[]>(nestedComments ?? []);
-  const commentRef = useRef<HTMLInputElement>(null);
+  const [rank, upvote, handleUpvote, handleDownvote] = useRanking(
+    ranking,
+    NONE
+  );
+  const [comments, setComments] = useState<IComment[]>(nestedComments ?? []);
+  const [InputValue, setInputValue] = useState<string>("");
+  const [commentCount, setCommentCount] = useState<number>(nestedCommentsCount);
 
-  const handleComment = () => {
-    if (commentRef.current) {
-      setComments([...comments, { comment: commentRef.current.value }]);
-      setDisplayNestedComments(true);
-      commentRef.current.value = "";
+  useDidUpdateEffect(() => {
+    if (displayNestedComments && comments.length == 0) {
+      (async () => {
+        await getNestedComments(_id)
+          .then((nc) => {
+            setComments(nc.comments);
+          })
+          .catch((e) => console.log(e));
+      })();
     }
+  }, [displayNestedComments]);
+  const handleComment = () => {
+    (async () => {
+      console.log({ parentId: _id, comment: InputValue });
+      await postComment({ parentId: _id, comment: InputValue }).then((nc) => {
+        setComments([...comments, nc]);
+        setDisplayNestedComments(true);
+        setCommentCount(commentCount + 1);
+      });
+    })();
+    setInputValue("");
   };
 
   if (comments.length > 0) {
-    commentsArray = comments.map((c) => (
-      <NestedComment
-        key={c.comment}
-        comment={c.comment}
-        nestedComments={c.nestedComments ?? []}
-      />
-    ));
+    commentsArray = comments.map((c) => <NestedComment key={c._id} {...c} />);
   }
   return (
     <div className="nested-comment">
@@ -54,18 +85,11 @@ export default function NestedComment(props: IComments): JSX.Element {
         <div className="comment-header">
           <div className="general-info">
             <p>
-              <strong>Nick Marks</strong>, Chief Executive Officer at GameGen
+              <strong>{username}</strong>, Chief Executive Officer at GameGen
               (2000-present)
             </p>
-            <span>Answered 23h ago</span>
+            <span>{moment(timePostted).fromNow()}</span>
           </div>
-
-          {/* 
-        <div className="comment-buttons">
-          <div>1</div>
-          <div>2</div>
-          <div>3</div>
-        </div> */}
         </div>
 
         <div className="comment-content">
@@ -73,14 +97,17 @@ export default function NestedComment(props: IComments): JSX.Element {
 
           <div className="comment-actions">
             <div className="comment-ranking">
-              <div className="comment-upvote">
-                <Upvote />
+              <div className="comment-upvote" onClick={() => handleUpvote()}>
+                <Upvote className={upvote == UP ? "selected" : ""} />
               </div>
               <div className="vote-division" />
-              <div className="comment-downvote">
-                <Downvote />
+              <div
+                className="comment-downvote"
+                onClick={() => handleDownvote()}
+              >
+                <Downvote className={upvote == DOWN ? "selected" : ""} />
               </div>
-              <span>62</span>
+              <span>{rank}</span>
             </div>
             <div className="actions" onClick={() => setWillReply(!willReply)}>
               <Reply />
@@ -91,7 +118,7 @@ export default function NestedComment(props: IComments): JSX.Element {
               onClick={() => setDisplayNestedComments(!displayNestedComments)}
             >
               <Comments />
-              Comments
+              Comments ({commentsArray.length})
             </div>
             <div className="actions">
               <Share />
@@ -108,7 +135,12 @@ export default function NestedComment(props: IComments): JSX.Element {
                 }}
               />
 
-              <input ref={commentRef} type="text" placeholder="Add Reply..." />
+              <input
+                onChange={(e) => setInputValue(e.target.value)}
+                value={InputValue}
+                type="text"
+                placeholder="Add Reply..."
+              />
 
               <button
                 type="button"

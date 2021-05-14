@@ -3,6 +3,7 @@ import voteup from "../../../../../assets/images/voteup.png";
 import votedown from "../../../../../assets/images/votedown.png";
 import ticketuser from "../../../../../assets/images/ticket-user.png";
 import useDidUpdateEffect from "../../../../hooks/useDidUpdateEffect";
+import useRanking from "../../../../hooks/useRanking";
 import "./index.scss";
 /* import emoji1 from "../../../../../assets/svg/emoji1.svg";
 import emoji2 from "../../../../../assets/svg/emoji2.svg";
@@ -26,7 +27,6 @@ import { useSelector } from "react-redux";
 import { AppState } from "../../../../redux/stores/renderer";
 import { getVibes as getVibesName, AllVibes } from "../../../forms";
 import voteTicket from "../support-tickets-utils/upvoteTicket";
-import { useState } from "react";
 
 const NONE = 0;
 const UP = 1;
@@ -68,8 +68,10 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
     upvoteState,
   } = props;
 
-  const [rank, setRank] = useState<number>(votes);
-  const [upvote, setUpvote] = useState<Tvotes>(upvoteState);
+  const [rank, upvote, handleUpvote, handleDownvote] = useRanking(
+    votes,
+    upvoteState
+  );
 
   useDidUpdateEffect(() => {
     (async () => {
@@ -85,40 +87,6 @@ export default function singleTicket(props: IsingleTicket): JSX.Element {
       });
     })();
   }, [rank]);
-
-  const handleUpvote = () => {
-    if (upvote == NONE) {
-      setRank(rank + 1);
-      setUpvote(UP);
-    }
-
-    if (upvote == DOWN) {
-      setRank(rank + 2);
-      setUpvote(UP);
-    }
-
-    if (upvote == UP) {
-      setRank(votes);
-      setUpvote(NONE);
-    }
-  };
-
-  const handleDownvote = () => {
-    if (upvote == NONE) {
-      setRank(rank - 1);
-      setUpvote(DOWN);
-    }
-
-    if (upvote == UP) {
-      setRank(rank - 2);
-      setUpvote(DOWN);
-    }
-
-    if (upvote == DOWN) {
-      setRank(votes);
-      setUpvote(NONE);
-    }
-  };
 
   const { vibeData } = useSelector(
     (state: AppState) => state.createSupportTicket

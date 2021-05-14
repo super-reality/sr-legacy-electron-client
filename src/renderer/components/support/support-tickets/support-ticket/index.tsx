@@ -1,16 +1,22 @@
 import "./index.scss";
+import "react-quill/dist/quill.snow.css";
+
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { RouteComponentProps, useNavigate } from "@reach/router";
 import { useEffect, useState } from "react";
 import { AppState } from "../../../../redux/stores/renderer";
 import { setSidebarWidth } from "../../../../../utils/setSidebarWidth";
-import formbuttons from "../../../../../assets/images/suggest-form-btns.png";
 import { ReactComponent as Reload } from "../../../../../assets/svg/reload.svg";
-import { singleSupportTicketsPayload } from "../../../../api/types/support-ticket/supportTicket";
+import {
+  singleSupportTicketsPayload,
+  IGetComments,
+} from "../../../../api/types/support-ticket/supportTicket";
 import getTicket from "../support-tickets-utils/getSingleSupportTicket";
+import postComment from "../support-tickets-utils/postSupportTicketComment";
+import getBaseComments from "../support-tickets-utils/getBaseComments";
 import SuperSpinner from "../../../super-spinner";
-
+import TextEditor from "../../../text-editor";
 import {
   SkillsRenderer,
   VibesRenderer,
@@ -19,12 +25,21 @@ import {
 } from "../../../forms";
 import createGPT3Question from "../../../../../utils/api/createGPT3Question";
 import { IPostQuestion, IGetQuestion } from "../../../../api/types/gpt-3/GPT3";
+
 import Comment from "./comment";
+/* eslint import/no-webpack-loader-syntax: off */
+
+export interface IComments {
+  comment: string;
+  nestedComments?: IComments[];
+}
 
 interface ISingleSupportTicket extends RouteComponentProps {
   ticketId?: string;
 }
-
+/* eslint-disable no-param-reassign */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable  react/jsx-props-no-spreading */
 export default function SupportTicket({
   ticketId,
 }: ISingleSupportTicket): JSX.Element {
@@ -32,6 +47,43 @@ export default function SupportTicket({
   const [ticket, setTicket] = useState<singleSupportTicketsPayload>();
   const [loading, setLoading] = useState<boolean>(true);
   const [questionsLoading, setQuestionsLoading] = useState<boolean>(false);
+  const [comments, setComments] = useState<IGetComments["comments"]>([]);
+  const [inputValue, setInputValue] = useState<string>("");
+  /* {
+      comment: `The world ain’t all sunshine and rainbows. It is a very mean and nasty
+          place and it will beat you to your knees and keep you there
+          permanently if you let it. You, me, or nobody is gonna hit as hard as
+          life. But it ain’t how hard you hit; it’s about how hard you can get
+          hit, and keep moving forward. How much you can take, and keep moving
+          forward. That’s how winning is done. Now, if you know what you’re
+          worth, then go out and get what you’re worth. But you gotta be willing
+          to take the hit, and not pointing fingers saying you ain’t where you
+          are because of him, or her, or anybody. Cowards do that and that ain’t
+          you. You’re better than that!`,
+      nestedComments: [
+        {
+          comment: "Prueba1",
+          nestedComments: [
+            {
+              comment: "pruebaA",
+              nestedComments: [
+                { comment: "PruebaA1" },
+                {
+                  comment: "PruebaA2",
+                  nestedComments: [{ comment: "PruebaA21" }],
+                },
+              ],
+            },
+            {
+              comment: "pruebaB",
+              nestedComments: [{ comment: "PruebaB1" }],
+            },
+          ],
+        },
+      ],
+    },
+   */
+  console.log(setComments);
 
   const [question, setQuestion] = useState<IPostQuestion>({
     question: "",
@@ -40,13 +92,23 @@ export default function SupportTicket({
   });
   const [gpt3Suggestions, setGpt3Suggestions] = useState<IGetQuestion[]>([]);
 
-  const [inputValue, setInputValue] = useState("");
-
   const gpt3SuggestionsCopy: IGetQuestion[] = [];
 
   const { vibeData } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
+
+  const handleComment = () => {
+    console.log(ticketId);
+    (async () => {
+      await postComment({ comment: inputValue, ticketId: ticketId! }).then(
+        (fc) => {
+          console.log(fc);
+          setComments([...comments, fc]);
+        }
+      );
+    })();
+  };
 
   const getAnswers = (q: IPostQuestion) => {
     (async () => {
@@ -78,23 +140,27 @@ export default function SupportTicket({
 
   useEffect(() => {
     setSidebarWidth(1000);
+
     if (ticketId) {
       getTicket(ticketId).then((tick) => {
         console.log(tick);
         setTicket(tick);
 
-        (async () => {
-          await getAnswers({
-            question: tick.title,
-            engine_name: "curie",
-            document_name: tick._id,
-          });
-          setQuestion({
-            question: tick.title,
-            engine_name: "curie",
-            document_name: tick._id,
-          });
-        })();
+        getBaseComments(ticketId).then((cs) => {
+          setComments(cs.comments);
+          (async () => {
+            await getAnswers({
+              question: tick.title,
+              engine_name: "curie",
+              document_name: tick._id,
+            });
+            setQuestion({
+              question: tick.title,
+              engine_name: "curie",
+              document_name: tick._id,
+            });
+          })();
+        });
       });
     }
   }, []);
@@ -181,10 +247,10 @@ export default function SupportTicket({
                       <li
                         onClick={() => {
                           if (inputValue == "") {
-                            setInputValue(`${suggestion.answer}`);
+                            setInputValue(`<p>${suggestion.answer}</p>`);
                           } else {
                             setInputValue(
-                              `${inputValue} \n\n${suggestion.answer}`
+                              `${inputValue}<br><p>${suggestion.answer}</p>`
                             );
                           }
                         }}
@@ -250,59 +316,31 @@ export default function SupportTicket({
                 </li>
               </ul>
 
-              <img src={formbuttons} alt="" />
+              {/*              <img src={formbuttons} alt="" />
 
               <textarea
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-              />
+              /> */}
+
+              <div data-text-editor="name">
+                <TextEditor
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e)}
+                />
+                <button
+                  type="button"
+                  onClick={handleComment}
+                  className="send-comment"
+                >
+                  Add Comment
+                </button>
+              </div>
 
               <div className="comment-section">
-                <Comment
-                  comment="123"
-                  nestedComments={[
-                    {
-                      comment: "Prueba1",
-                      nestedComments: [
-                        {
-                          comment: "pruebaA",
-                          nestedComments: [
-                            { comment: "PruebaA1" },
-                            { comment: "PruebaA2" },
-                          ],
-                        },
-                        {
-                          comment: "pruebaB",
-                          nestedComments: [{ comment: "PruebaB1" }],
-                        },
-                      ],
-                    },
-                  ]}
-                />
-                <Comment
-                  comment="123"
-                  nestedComments={[
-                    {
-                      comment: "Prueba1",
-                      nestedComments: [
-                        {
-                          comment: "pruebaA",
-                          nestedComments: [
-                            { comment: "PruebaA1" },
-                            {
-                              comment: "PruebaA2",
-                              nestedComments: [{ comment: "PruebaA21" }],
-                            },
-                          ],
-                        },
-                        {
-                          comment: "pruebaB",
-                          nestedComments: [{ comment: "PruebaB1" }],
-                        },
-                      ],
-                    },
-                  ]}
-                />
+                {comments.map((c) => (
+                  <Comment key={c._id} {...c} />
+                ))}
               </div>
 
               <div className="help-buttons">

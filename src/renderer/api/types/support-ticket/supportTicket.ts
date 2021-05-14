@@ -241,3 +241,40 @@ export interface singleSupportTicketsGet {
   skill: { name: string; _id: string }[];
   votes: number;
 }
+
+export interface IPostComment {
+  ticketId: string;
+  comment: string;
+}
+export interface IPostNestedComment {
+  parentId: string;
+  comment: string;
+}
+export interface IComment {
+  userId: string;
+  username: string;
+  comment: string;
+  timePostted: string;
+  _id: string;
+  ranking: 0;
+  nestedCommentsCount: 0;
+  nestedComments?: [];
+}
+
+export interface IGetComment {
+  err_code: CodeSuccess;
+  comment: IComment;
+}
+
+export interface IGetComments {
+  err_code: CodeSuccess;
+  comments: {
+    userId: string;
+    username: string;
+    comment: string;
+    timePostted: string;
+    _id: string;
+    ranking: 0;
+    nestedCommentsCount: 0;
+  }[];
+}

@@ -6,6 +6,104 @@
   align-items: center;
 }
 
+[data-text-editor="name"] {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  .send-comment {
+    justify-self: right;
+    align-self: center;
+    background-color: #0898eb;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin-left: auto;
+    width: 150px;
+    border-radius: 25px;
+    height: 30px;
+    &:hover {
+      background-color: #088fdd;
+    }
+  }
+  .quill {
+    margin-bottom: 60px;
+
+    .ql-toolbar {
+      border: none !important ;
+      padding: 8px 0px !important;
+      .ql-picker-options {
+        background-color: #211b33;
+        border: none !important;
+      }
+      .ql-expanded {
+        .ql-picker-label {
+          border: none !important;
+        }
+      }
+    }
+    .ql-snow {
+      .ql-editor {
+        p,
+        blockquote,
+        a,
+        li {
+          font-size: 15px !important;
+        }
+        white-space: normal !important;
+
+        a {
+          color: #03acec;
+        }
+        blockquote {
+          border-left: 4px solid #d130b5 !important;
+        }
+        .ql-syntax {
+          background-color: #10131f !important;
+          color: #b8d4f3 !important;
+        }
+      }
+      .ql-tooltip {
+        background-color: #211b33;
+        color: #03acec !important;
+        box-shadow: 0px 0px 5px #03acec;
+        border: 1px solid #03acec;
+        white-space: normal !important;
+        input[type="text"] {
+          border: 1px solid #d130b5;
+        }
+      }
+      .ql-formats {
+        button {
+          margin-right: 10px;
+          background-color: #211b33;
+          border-radius: 5px;
+          height: 30px;
+          width: 34px;
+        }
+      }
+      .ql-stroke {
+        stroke: #03acec !important;
+      }
+
+      .ql-fill {
+        fill: #03acec !important;
+      }
+
+      .ql-picker {
+        color: #03acec !important;
+        background-color: #211b33;
+        border-radius: 5px;
+        height: 30px;
+      }
+    }
+
+    .ql-container.ql-snow {
+      background-color: #211b33;
+      border: none !important;
+    }
+  }
+}
+
 .solution-container {
   padding: 20px;
   display: flex;

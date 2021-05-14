@@ -22,6 +22,7 @@
   }
   > .comment-header {
     display: flex;
+    margin-bottom: 10px;
     align-items: center;
     > .profile {
       width: 45px;
@@ -47,13 +48,47 @@
   }
 
   > .comment-content {
+    > p {
+      font-size: 15px !important;
+      p,
+      blockquote,
+      a,
+      li {
+        font-size: 15px !important;
+      }
+      white-space: normal !important;
+
+      a {
+        color: #03acec;
+      }
+      p,
+      blockquote {
+        margin: 0;
+        counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8
+          list-9;
+      }
+      blockquote {
+        border-left: 4px solid #d130b5 !important;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding-left: 16px;
+      }
+      .ql-syntax {
+        background-color: #10131f !important;
+        color: #b8d4f3 !important;
+        white-space: pre-wrap;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding: 5px 10px;
+        box-sizing: border-box;
+      }
+    }
     > .comment-actions {
       display: flex;
       align-items: center;
 
       > .comment-ranking {
         display: flex;
-
         justify-content: space-between;
         width: 80px;
         padding: 10px;
@@ -68,6 +103,14 @@
         svg {
           width: 20px;
           height: auto;
+          fill: #8c8ac5;
+          stroke: #8c8ac5;
+          cursor: pointer;
+          transition: 0.5s all;
+        }
+        .selected {
+          fill: #d535b6;
+          stroke: #d535b6;
         }
         > div {
           display: flex;

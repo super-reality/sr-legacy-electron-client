@@ -80,6 +80,12 @@
           svg {
             width: 20px;
             height: auto;
+            fill: #8c8ac5;
+            stroke: #8c8ac5;
+          }
+          .selected {
+            fill: #d535b6;
+            stroke: #d535b6;
           }
           > div {
             display: flex;
