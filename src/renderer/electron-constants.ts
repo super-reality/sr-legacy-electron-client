@@ -1,6 +1,7 @@
+import isElectron from "../utils/electron/isElectron";
 import userDataPath from "../utils/files/userDataPath";
 
-const userData = userDataPath();
+const userData = isElectron() ? userDataPath() : "";
 
 export const stepPath = `${userData}/step/`;
 

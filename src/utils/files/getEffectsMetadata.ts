@@ -3,6 +3,7 @@ import path from "path";
 import { fxPath } from "../../renderer/electron-constants";
 import { EffectData } from "../../types/effects";
 import getPublicPath from "../electron/getPublicPath";
+import isElectron from "../electron/isElectron";
 import createDataDirs from "./createDataDirs";
 
 export function getEffectData(
@@ -28,6 +29,7 @@ export function getEffectData(
 }
 
 export default function getEffectsMetadata(): EffectData[] {
+  if (!isElectron()) return [];
   createDataDirs();
   const db: EffectData[] = [];
   const internalFxPath = path.join(getPublicPath(), "fx");

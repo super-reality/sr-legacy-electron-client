@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
-import { remote } from "electron";
 import os from "os";
 import path from "path";
 import getPublicPath from "../../utils/electron/getPublicPath";
+import isElectron from "../../utils/electron/isElectron";
 
 type Turgency = "normal" | "critical";
 
@@ -21,8 +21,6 @@ interface INotification {
   urgency?: Turgency;
   closeButtonText?: string;
 }
-
-const { Notification, app } = remote;
 
 export default function useNotification(notificationProps: INotification) {
   const {
@@ -46,23 +44,26 @@ export default function useNotification(notificationProps: INotification) {
   }, [open]);
 
   const setNotification = () => {
-    if (os.platform() === "win32") {
+    if (os.platform() === "win32" && isElectron()) {
+      // eslint-disable-next-line global-require
+      const { Notification, app } = require("electron").remote;
       app.setAppUserModelId("Super Reality");
+
+      const notify = {
+        title,
+        body,
+        subtitle,
+        icon: icon && path.join(getPublicPath(), icon),
+        silent,
+        hasReply,
+        timeoutType,
+        replyPlaceholder,
+        sound,
+        urgency,
+        closeButtonText,
+      };
+      new Notification(notify).show();
     }
-    const notify = {
-      title,
-      body,
-      subtitle,
-      icon: icon && path.join(getPublicPath(), icon),
-      silent,
-      hasReply,
-      timeoutType,
-      replyPlaceholder,
-      sound,
-      urgency,
-      closeButtonText,
-    };
-    new Notification(notify).show();
   };
 
   useEffect(() => {

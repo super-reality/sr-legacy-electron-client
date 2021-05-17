@@ -1,6 +1,9 @@
 import path from "path";
+import isElectron from "./isElectron";
 
 export default function getPublicPath(): string {
+  if (!isElectron()) return "";
+
   // eslint-disable-next-line global-require
   const { remote } = require("electron");
   const proc: any = process;

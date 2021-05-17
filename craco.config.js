@@ -1,3 +1,4 @@
+const ModuleReplacement = require("./module-resolver-file");
 const eslintConfig = require("./.eslintrc");
 
 // https://www.npmjs.com/package/@craco/craco
@@ -23,6 +24,7 @@ module.exports = {
         ],
       },
     },
+    plugins: [...ModuleReplacement({ webIndex: false, electronIndex: true })],
   },
   jest: {
     configure: {
