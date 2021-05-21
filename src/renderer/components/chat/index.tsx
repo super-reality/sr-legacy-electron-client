@@ -414,6 +414,8 @@ export default function Chat(props: ChatProps) {
   const createAiBotSteps = (step: Steps) => {
     switch (step) {
       case "final":
+        createCollectiveAIService();
+        setSteps("zero");
         break;
       default:
         setAddService(addService);
