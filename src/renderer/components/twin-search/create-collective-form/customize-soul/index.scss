@@ -1,0 +1,42 @@
+.form-body {
+    .fields-description {
+        display: flex;
+        margin: 0 0 1em 0;
+        .option-add-btn {
+            margin: 0 0 0 auto;
+            padding: 0;
+            background-color: inherit;
+            svg {
+                width: 3em;
+            }
+        }
+    }
+    .options-pull {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: space-between;
+        margin: 0 0 1em -1em;
+        width: 92%;
+
+        .active {
+            background-color: var(--color-text-active);
+        }
+        // .options-input {
+        //     position: absolute;
+        // }
+    }
+}
+.define-options {
+    border: 1px solid var(--color-text-dark);
+    border-radius: 14px;
+    padding: 0.2em 0.8em;
+    margin: 0 0 1em 1em;
+    cursor: pointer;
+}
+.options-input {
+    position: absolute;
+    background-color: var(--color-background);
+    input {
+        background-color: inherit;
+    }
+}

@@ -4,7 +4,7 @@
   width: 100%;
   height: 130px;
   border-radius: 4px;
-  background: #211B33;
+  background: var(--color-lesson-preview-background);
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -60,7 +60,7 @@
   }
 
   .title-container {
-    background: #29233D;
+    background: var(--color-background-dark-title-container);
     margin-top: auto;
     line-height: 26px;
     height: 26px;
@@ -73,7 +73,7 @@
       margin-left: 8px;
       width: auto;
     }
-  
+
     .options-button {
       cursor: pointer;
       width: 18px;

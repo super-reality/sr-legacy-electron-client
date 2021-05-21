@@ -2,6 +2,18 @@ import { Category, CategorySettings } from "../../types/chat";
 import { createChannel } from "./channels-services";
 import { categoryClient } from "./services";
 
+export const getCategory = (id: string) => {
+  categoryClient
+    .find({
+      query: {
+        _id: id,
+      },
+    })
+    .then((res: any) => {
+      console.log("get Category", res);
+    });
+};
+
 export const createCategory = (groupId: string) => {
   categoryClient
     .create({

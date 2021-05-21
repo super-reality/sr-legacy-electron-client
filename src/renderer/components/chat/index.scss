@@ -28,7 +28,6 @@
     margin: 20px;
     height: calc(100vh - 280px);
     // height: calc(100vh - 250px);
-    
 
     .chats {
         overflow-y: scroll;
@@ -74,27 +73,26 @@
         //     border-radius: 3px;
         //     transition: 0.1s ease-out all;
         // }
-        
     }
-    
-    .no-time-message{
+
+    .no-time-message {
         padding: 0 1em 1em 4em;
     }
-    .hovered{
+    .hovered {
         background: #29233c;
-            border-radius: 3px;
-            transition: 0.1s ease-out all;
+        border-radius: 3px;
+        transition: 0.1s ease-out all;
     }
 
     .message-box {
         position: relative;
         z-index: 1;
 
-
         .message {
             padding: 5px 0;
+            white-space: pre-wrap;
         }
-        .message-dropdown{
+        .message-dropdown {
             background: #343358;
             width: 200px;
             overflow: hidden;
@@ -106,18 +104,18 @@
 
             .dropdown-item {
                 width: unset !important;
-    
+
                 display: flex;
                 padding: 6px 5px;
                 justify-content: space-between;
-    
+
                 img {
                     height: 14px;
                     width: 14px;
                     position: absolute;
                     right: 20px;
                 }
-    
+
                 &:hover {
                     border-radius: 4px;
                     cursor: pointer;
@@ -126,7 +124,7 @@
                 }
             }
         }
-        
+
         .popup-container {
             background: #343358;
             height: unset;

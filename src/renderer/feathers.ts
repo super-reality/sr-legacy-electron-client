@@ -13,13 +13,13 @@ const socket = io("http://3.101.51.61:3030/", {
 // @feathersjs/client is exposed as the `feathers` global.
 const client = feathers<any>();
 
-client.configure(feathers.socketio(socket, { timeout: 10000 }));
-client.configure(
-  feathers.authentication({
-    storageKey: "chat-token",
-    storage: localStorage,
-  })
-);
+// client.configure(feathers.socketio(socket, { timeout: 10000 }));
+// client.configure(
+//   feathers.authentication({
+//     storageKey: "chat-token",
+//     storage: localStorage,
+//   })
+// );
 
 export const logoutChat = async () => {
   await (client as any).logout();

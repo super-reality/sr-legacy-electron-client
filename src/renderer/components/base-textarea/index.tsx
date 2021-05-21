@@ -4,7 +4,7 @@ import "../containers.scss";
 import { AreaChangeEv } from "../../../types/utils";
 
 interface BaseTextAreaProps {
-  title: string;
+  title?: string;
   placeholder?: string;
   value: string;
   onChange: (event: AreaChangeEv) => void;
@@ -17,7 +17,7 @@ export default function BaseTextArea(props: BaseTextAreaProps): JSX.Element {
   return (
     <Flex style={style}>
       <div className="container-with-desc">
-        <div>{title}</div>
+        {title && <div>{title}</div>}
         <textarea
           style={{ resize: "vertical", minHeight: "64px" }}
           placeholder={placeholder}

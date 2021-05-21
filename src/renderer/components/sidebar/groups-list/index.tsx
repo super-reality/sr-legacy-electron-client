@@ -1,7 +1,11 @@
 import { useDispatch } from "react-redux";
 import { animated, useSpring, useTrail } from "react-spring";
+import { useHistory } from "react-router-dom";
+
 import { Category, Channel, Group } from "../../../../types/chat";
 import reduxAction from "../../../redux/reduxAction";
+import { ReactComponent as AddBtn } from "../../../../assets/svg/add.svg";
+import ButtonRound from "../../button-round";
 
 // const groups = [
 //   {
@@ -31,6 +35,7 @@ interface GroupsListProps {
 export default function GroupsList(props: GroupsListProps) {
   const { click, currentSub, groups, categories, channels } = props;
   const dispatch = useDispatch();
+  const history = useHistory();
   const actionAnimation = useTrail(groups.length, {
     config: { mass: 5, tension: 2000, friction: 180 },
     opacity: 1,
@@ -40,7 +45,7 @@ export default function GroupsList(props: GroupsListProps) {
 
   const heightProps = useSpring({
     config: { mass: 5, tension: 2000, friction: 200, velocity: 3 },
-    height: 33 * groups.length,
+    height: 33 * (groups.length + 1),
     from: { height: 0 },
   } as any);
 
@@ -101,6 +106,17 @@ export default function GroupsList(props: GroupsListProps) {
           </animated.div>
         );
       })}
+
+      <ButtonRound
+        width="30px"
+        height="0px"
+        svgStyle={{
+          width: "20px",
+          height: "20px",
+        }}
+        onClick={() => history.push("/group/create")}
+        svg={AddBtn}
+      />
     </animated.div>
   );
 }

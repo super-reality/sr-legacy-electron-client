@@ -2,6 +2,7 @@ import {
   FunctionComponent,
   SVGProps,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -14,6 +15,9 @@ import { animated, useSpring, useTrail } from "react-spring";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+import interact from "interactjs";
+import clamp from "../../../utils/clamp";
+
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
 import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
@@ -23,10 +27,11 @@ import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
 import { ReactComponent as RightArrowIcon } from "../../../assets/svg/right-arrow.svg";
 import { ReactComponent as StopIcon } from "../../../assets/svg/stop.svg";
+import { ReactComponent as GearIcon } from "../../../assets/svg/gear-icon.svg";
 
 import ButtonRound from "../button-round";
 import Browser from "../browser";
-import { voidFunction } from "../../constants";
+import { cursorChecker, restrictRoot, voidFunction } from "../../constants";
 import SidebarControls from "./sidebar-controls";
 import useLessonPlayer from "../lesson-player/useLessonPlayer";
 import { AppState } from "../../redux/stores/renderer";
@@ -35,6 +40,7 @@ import ActionButtons from "./action-buttons";
 import Support from "../support";
 // import SupportTickets from "../support/support-tickets";
 import ShootingStar from "../animations";
+import ThemeSlider from "../theme-button";
 
 export interface SidebarIcon {
   title: string;
@@ -55,6 +61,7 @@ export default function Sidebar() {
   const [current, setCurrent] = useState(0);
   const [currentSub, setCurrentSub] = useState<string | undefined>(undefined);
   const history = useHistory();
+  const draggableRef = useRef<HTMLDivElement>(null);
 
   const {
     lessonPreview,
@@ -200,6 +207,32 @@ export default function Sidebar() {
     config: { mass: 5, tension: 170, friction: 60 },
   }));
 
+  // test for logo
+
+  useEffect(() => {
+    const sidebarRef = sidebarContainerRef;
+    if (draggableRef.current) {
+      interact(draggableRef.current)
+        .draggable({ cursorChecker, modifiers: [restrictRoot] })
+        .on("dragmove", (event) => {
+          if (sidebarRef.current) {
+            const x = parseFloat(sidebarRef.current.style.right) - event.dx;
+            const y = parseFloat(sidebarRef.current.style.top) + event.dy;
+            const rootHeight =
+              (document.getElementById("root")?.offsetHeight || 99999) -
+              (sidebarRef.current?.offsetHeight || 0);
+
+            sidebarRef.current.style.right = `${Math.max(0, x)}px`;
+            sidebarRef.current.style.top = `${clamp(0, rootHeight, y)}px`;
+          }
+        });
+
+      return (): void =>
+        interact(draggableRef.current as HTMLDivElement).unset();
+    }
+    return voidFunction;
+  }, [sidebarContainerRef]);
+
   return (
     <>
       {(lessonPreview || chapterPreview || stepPreview || itemPreview) &&
@@ -226,6 +259,40 @@ export default function Sidebar() {
           }
         }}
       >
+        <div className="groups-bar">
+          <div
+            ref={draggableRef}
+            onClick={() => history.push("/chat-ai")}
+            className="logo"
+          />
+          <div className="group-avatar-container">
+            <ButtonRound
+              onClick={voidFunction}
+              width="40px"
+              height="40px"
+              svg={DefaultUser}
+              style={{ borderRadius: "50%" }}
+            />
+          </div>
+          <div className="group-avatar-container">
+            <ButtonRound
+              onClick={voidFunction}
+              width="40px"
+              height="40px"
+              svg={DefaultUser}
+              style={{ borderRadius: "50%" }}
+            />
+          </div>
+          <div className="group-avatar-container">
+            <ButtonRound
+              onClick={voidFunction}
+              width="40px"
+              height="40px"
+              svg={DefaultUser}
+              style={{ borderRadius: "50%" }}
+            />
+          </div>
+        </div>
         <animated.div
           onMouseOver={() => setWideView(true)}
           onMouseLeave={() => setWideView(false)}
@@ -324,9 +391,8 @@ export default function Sidebar() {
               <animated.div style={userNameProps[0]} className="user-name">
                 {user && user.username}
               </animated.div>
-              <animated.div style={userNameProps[1]} className="user-role">
-                Role
-              </animated.div>
+              <ThemeSlider />
+              <GearIcon width="30%" height="30%" fill="var(--color-text)" />
             </div>
           </div>
         </animated.div>

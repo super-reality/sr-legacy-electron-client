@@ -9,6 +9,19 @@ interface GroupSettings {
   users?: string[];
   category?: string[];
 }
+
+export const getGroup = (id: string) => {
+  groupClient
+    .find({
+      query: {
+        _id: id,
+      },
+    })
+    .then((res: any) => {
+      console.log("get Groups", res);
+    });
+};
+
 export const createGroup = (gName: string, gPhoto?: string) => {
   let groupProps;
   if (gPhoto) {

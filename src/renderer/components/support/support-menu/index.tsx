@@ -1,4 +1,5 @@
 import "./index.scss";
+
 import Vivus from "vivus";
 import { RouteComponentProps, useNavigate, useLocation } from "@reach/router";
 import { useEffect, useState } from "react";

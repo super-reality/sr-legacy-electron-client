@@ -14,7 +14,8 @@
     line-height: 37px;
     padding-left: 8px;
     height: 40px;
-    background-image: linear-gradient(180deg, #29233c 0%, #2a243e 100%);
+    background-image: var(--color-title-bar-backround);
+
     touch-action: none;
     display: flex;
     justify-content: space-between;

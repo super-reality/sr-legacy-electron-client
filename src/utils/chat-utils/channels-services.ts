@@ -2,6 +2,17 @@ import { ChannelSettings } from "../../types/chat";
 import { channelsClient } from "./services";
 
 // channnels srevices
+export const getChannel = (id: string) => {
+  channelsClient
+    .find({
+      query: {
+        _id: id,
+      },
+    })
+    .then((res: any) => {
+      console.log("get channels", res);
+    });
+};
 
 export const createChannel = (
   categoryId: string,

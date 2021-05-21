@@ -9,6 +9,7 @@ import * as lessonPlayerSlice from "./slices/lessonPlayerSlice";
 import * as chatSlice from "./slices/chatSlice";
 import * as createSupportTicketSlice from "./slices/createSupportTicketSlice";
 import * as sidebarSlice from "./slices/sidebarSlice";
+import * as createCollectiveAISlice from "./slices/createCollectiveAISlice";
 
 export const actions = {
   AUTH_PENDING: AuthSlice.setAuthPending,
@@ -86,6 +87,8 @@ export const actions = {
   ADD_CHANNEL: chatSlice.addNewChannel,
   SET_ACTIVE_CHANNEL: chatSlice.setActiveChannel,
   SET_CONTENT_WIDTH: sidebarSlice.setWidth,
+  SET_AI_COLLECTIVE_DATA: createCollectiveAISlice.setCollectiveAiData,
+  RESET_COLLECTIVE_AI_FORM: createCollectiveAISlice.resetCollectiveAiForm,
 };
 
 export type ActionKeys = keyof typeof actions;

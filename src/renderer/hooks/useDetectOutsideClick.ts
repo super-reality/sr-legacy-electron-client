@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 //  Hook that detect clicks outside of the passed ref
 
-export default function useOutsideClick(ref: any, setFunction: () => void) {
+export default function useOutsideClick(ref: any, callback: () => void) {
   useEffect(() => {
     //   set state to false when click outside of the elememt
     function handleClickOutside(event: any) {
       if (ref.current && !ref.current.contains(event.target)) {
         console.log("clicked outside");
-        setFunction();
+        callback();
       }
     }
     // Bind the event listener

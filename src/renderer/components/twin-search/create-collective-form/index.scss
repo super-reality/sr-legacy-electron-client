@@ -1,0 +1,62 @@
+.ai-form {
+    background-color: var(--color-white);
+    padding: 14px;
+    max-height: 93%;
+    width: 30em;
+    color: var(--color-text-dark);
+    .form-header {
+        div {
+            margin: 0 0 1.3em 0;
+        }
+        .title {
+            font-weight: 700;
+        }
+        .template-title {
+            text-transform: uppercase;
+        }
+    }
+    .form-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        textarea,
+        input {
+            background-color: var(--color-textarea-background);
+        }
+        .neural-form-input {
+            margin: 0 0 1em 0;
+        }
+        .options-btn {
+            display: flex;
+            background: inherit;
+            border: 1px solid var(--color-text);
+            border-radius: 0;
+            margin: 0 0 1em 0;
+            color: inherit;
+            .btn-title {
+                margin: 0 auto 0 0.5em;
+            }
+        }
+    }
+    .form-footer {
+        margin: 1em 0;
+        display: flex;
+        .footer-btn {
+            background: inherit;
+            border: 1px solid var(--color-text);
+            border-radius: 0;
+            margin: 1em 0;
+            color: inherit;
+        }
+        .back-btn,
+        .next-btn {
+            padding: 0;
+            background-color: inherit;
+            color: inherit;
+            font-weight: 700;
+        }
+        .next-btn {
+            margin: 0 0 0 auto;
+        }
+    }
+}

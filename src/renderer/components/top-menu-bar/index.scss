@@ -16,7 +16,7 @@
 
   .top-menu-item {
     @include animated;
-    color: #807EB5;
+    color: var(--color-top-menu-item);
     line-height: 3;
     width: auto;
     height: 100%;

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { remote } from "electron";
 import os from "os";
 import path from "path";
@@ -150,6 +151,39 @@ export const onAuthenticated = () => {
   client.on("authenticated", (login: any) => {
     // Get all users and messages
     console.log("authenticated listener start. login:", login);
+    const token = window.localStorage.getItem("chat-token");
+    const header = `Authorization: Bearer ${token}`;
+    axios
+      .all([
+        axios.get("http://3.101.51.61:3030/users", {
+          headers: {
+            header,
+          },
+        }),
+        axios.get("http://3.101.51.61:3030/groups", {
+          headers: {
+            header,
+          },
+        }),
+        axios.get("http://3.101.51.61:3030/category", {
+          headers: {
+            header,
+          },
+        }),
+        axios.get("http://3.101.51.61:3030/channels", {
+          headers: {
+            header,
+          },
+        }),
+        axios.get("http://3.101.51.61:3030/messages", {
+          headers: {
+            header,
+          },
+        }),
+      ])
+      .then((responseArray) => {
+        console.log("test chat Services", responseArray);
+      });
     Promise.all([
       usersClient.find(),
       groupClient.find(),

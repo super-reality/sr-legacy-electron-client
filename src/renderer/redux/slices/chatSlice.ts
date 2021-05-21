@@ -26,6 +26,10 @@ const initialState = {
   },
 };
 
+// {
+//   groups:{} as Record<string, Group>,
+//   allIds: [] as string[],
+//     }
 type ChatState = typeof initialState;
 
 const updateArray = (arrayToChange: any, newItem: any) => {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./index.scss";
+// import "./index.scss";
 import BaseTextArea from "../../base-textarea";
 import ButtonSimple from "../../button-simple";
 // import client from "../feathers";

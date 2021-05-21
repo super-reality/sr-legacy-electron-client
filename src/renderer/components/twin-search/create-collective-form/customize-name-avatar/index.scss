@@ -1,0 +1,17 @@
+.name-header {
+    display: flex;
+    flex-direction: column;
+    .network-avatar {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        // border: 1px solid var(--color-text);
+        // margin: 0 auto;
+        align-self: center;
+    }
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}

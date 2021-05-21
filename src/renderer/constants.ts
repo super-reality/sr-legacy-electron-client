@@ -6,6 +6,9 @@ import getEffectsMetadata from "../utils/files/getEffectsMetadata";
 export const API_URL = "http://54.183.151.100:3000/api/v1/";
 export const GPT3_API_URL = "http://184.169.205.190/api/";
 export const GPT3_JWT = "f988e11c2da89064371386c20d3e6140a430d192";
+export const AI_COLLECTIVE_API_URL = "http://54.215.246.31/api/";
+export const AI_COLLECTIVE_TOKEN =
+  "Token f988e11c2da89064371386c20d3e6140a430d192";
 export const timeout = 10000;
 
 export const cursorChecker: any = (

@@ -25,6 +25,8 @@ import {
 
 import Sidebar from "../components/sidebar";
 import BrowseLessons from "../components/browse-lessons";
+import TwinSearchWindow from "../components/twin-search";
+import MainChat from "../components/ai-chat";
 
 function MainApp() {
   useTransparentFix();
@@ -77,6 +79,8 @@ function MainApp() {
       <Switch>
         <Route exact path="/recorder" component={Recorder} />
         <Route exact path="/lesson/view" component={BrowseLessons} />
+        <Route exact path="/twin-search" component={TwinSearchWindow} />
+        <Route exact path="/chat-ai" component={MainChat} />
         <Route path="/lesson/create/:id" component={CreateLesson} />
       </Switch>
       {isAuthenticated && <Sidebar />}

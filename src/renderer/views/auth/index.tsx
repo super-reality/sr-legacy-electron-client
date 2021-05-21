@@ -52,6 +52,7 @@ export default function Auth(props: AuthProps): JSX.Element {
   const defaultUser = window.localStorage.getItem("username");
   const defaultToken = window.localStorage.getItem("token");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loginChat = (username?: string, password?: string): Promise<any> => {
     if (username && password) {
       return (client as any)
@@ -93,12 +94,16 @@ export default function Auth(props: AuthProps): JSX.Element {
     avatar: string | undefined;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const signupChat = async (signupData: SignArg) => {
     const { username, password, firstname, lastname, avatar } = signupData;
     return client
       .service("users")
       .create({ username, password, firstname, lastname, avatar })
-      .then(() => loginChat(username, password));
+      .then(() => {
+        // loginChat(username, password);
+        console.log("todo singup xr3engine");
+      });
   };
 
   useEffect(() => {
@@ -121,7 +126,8 @@ export default function Auth(props: AuthProps): JSX.Element {
         .then((res) => {
           // Try to authenticate the feathers chat with the JWT stored in localStorage
           handleAuthSignin(res);
-          loginChat();
+          console.log("todo login() xr3engine");
+          // loginChat();
         })
         .then((res) => {
           console.log(res);
@@ -138,10 +144,10 @@ export default function Auth(props: AuthProps): JSX.Element {
         .post<SignIn | ApiError>(`${API_URL}auth/signin`, payload, {
           timeout: timeout,
         })
-        .then(async (res) => {
-          if (payload.username && payload.password) {
-            await loginChat(payload.username, payload.password);
-          }
+        .then((res) => {
+          // if (payload.username && payload.password) {
+          //   await loginChat(payload.username, payload.password);
+          // }
           handleAuthSignin(res);
           onAuth();
         })
@@ -162,15 +168,15 @@ export default function Auth(props: AuthProps): JSX.Element {
 
     axios
       .post<SignUp | ApiError>(`${API_URL}auth/signup`, payload)
-      .then(async (res) => {
-        if (
-          payload.username &&
-          payload.password &&
-          payload.firstname &&
-          payload.lastname
-        ) {
-          await signupChat(payload);
-        }
+      .then((res) => {
+        // if (
+        //   payload.username &&
+        //   payload.password &&
+        //   payload.firstname &&
+        //   payload.lastname
+        // ) {
+        //   await signupChat(payload);
+        // }
 
         handleAuthSingup(res);
         onAuth();

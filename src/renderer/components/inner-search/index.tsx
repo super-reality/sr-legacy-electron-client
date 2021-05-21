@@ -4,7 +4,7 @@ import { ReactComponent as SearchIcon } from "../../../assets/svg/search.svg";
 import { InputChangeEv } from "../../../types/utils";
 
 interface InnerSearchProps {
-  onChange: (e: InputChangeEv) => void;
+  onChange: (e: InputChangeEv, set?: (value: string) => void) => void;
   onKeyUp?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   value: string;
 }
