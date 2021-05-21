@@ -1,0 +1,32 @@
+.twin-input-container {
+    input {
+        background: none;
+        border: none;
+        height: 24px;
+        width: 100%;
+        margin: 0;
+        padding: 0 0 0 8px;
+    }
+
+    background: var(--four-color-light-gradient);
+    border-radius: 17px;
+    width: -webkit-fill-available;
+    margin: auto;
+    color: var(--color-text);
+    padding: 3px 14px 3px 14px;
+    height: 24px;
+    display: flex;
+}
+.twin-input-wraper {
+    background: var(--four-color-logo-gradient);
+    padding: 2px;
+    border-radius: 17px;
+    width: 76%;
+    // .twin-input {
+    //     // background: linear-gradient(90deg, #e8ab5a 33%, #f77980 66%, #39efe8 100%, transparent);;
+    //     border-radius: 24px;
+    //     height: 24px;
+    //     width: -webkit-fill-available;
+    //     margin: auto;
+    // }
+}

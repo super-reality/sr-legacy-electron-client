@@ -1,0 +1,85 @@
+.main {
+    background-color: var(--color-white);
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    .search-results-container {
+        width: 50%;
+        .twin-container {
+            margin: 2em 0;
+            .twin-info-container {
+                display: flex;
+                flex-direction: row;
+                .twin-icon {
+                    display: flex;
+                    align-self: center;
+                    img {
+                        width: 5em;
+                        border-radius: 50%;
+                    }
+                }
+                .header-body-container {
+                    margin: 0 0 0 2em;
+                    color: var(--color-text-dark);
+                    .twin-header {
+                        display: flex;
+                        flex-direction: row;
+                        .name-category-container {
+                            display: flex;
+                            flex-direction: row;
+                            .name-twin {
+                                font-weight: 800;
+                                margin: 0 0.3em 0 0;
+                            }
+                        }
+                        .path-progress-container {
+                            display: flex;
+                            margin: 0 0 0 auto;
+                            .progress-menu {
+                                display: flex;
+                                margin: auto 0 auto 0.5em;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                    .twin-question {
+                        margin: 1em 0 0 0;
+                    }
+                }
+            }
+
+            .twin-question-container {
+                margin: 1em 0 0 0;
+                display: flex;
+                background-color: var(--color-input-background);
+                border-radius: 3px;
+                padding: 0.3em;
+                align-items: center;
+                .user-avatar {
+                    align-self: center;
+                    margin: 0 0.5em;
+                    img {
+                        width: 2em;
+                        border-radius: 50%;
+                    }
+                }
+                input {
+                    background-color: var(--color-white);
+                    margin: 0 0.5em;
+                    border-radius: 20px;
+                    padding: 0 12px;
+                }
+                .button-round {
+                    background-color: inherit;
+                    .svg-icon {
+                        fill: var(--color-mic-icon-fill);
+                        margin: 0 0.5em;
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        }
+    }
+}

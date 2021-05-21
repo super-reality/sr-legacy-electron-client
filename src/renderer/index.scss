@@ -18,6 +18,7 @@ body {
 :root {
   --color-background: #202225;
   --color-background-dark: #1b1f33;
+  --background-gradient: linear-gradient(180deg, #333155 0%, #262036 100%);
   // --color-section: #2b2542;
   --color-section: linear-gradient(180deg, #353358 0%, #302d4d 43.89%, #29233b 100%);
 
@@ -63,8 +64,77 @@ body {
   --color-text-disabled: #808284;
   --color-text-dark: #242526;
   --color-separator: #6f6f6f;
+  --color-top-menu-item: #807eb5;
+  --color-sidebar-button-hover: #414163;
+  --color-title-bar-backround: linear-gradient(180deg, #29233c 0%, #2a243e 100%);
+  --color-lesson-preview-background: #211b33;
+  --color-background-dark-title-container: #29233d;
+  --four-color-logo-gradient: linear-gradient(90deg, #ffa538 25%, #f92a51 50%, #0037d5 75%, #00fefe 100%);
+  --four-color-light-gradient: linear-gradient(90deg, #fff1dc 25%, #ffdbe2 50%, #d4eaff 75%, #d6f5fb 100%);
+  --gradient-popup-background: linear-gradient(180deg, #29233c 0%, #353459 50.2%, #261f34 100%);
+  --color-textarea-background: #524d70;
 }
+html[data-theme="light"] {
+  --color-background: #f2f3f5;
+  --color-background-dark: #1b1f33;
+  --background-gradient: linear-gradient(180deg, #dcdbea 0%, #beb6d6 100%);
 
+  --color-section: linear-gradient(180deg, #e8e7ef 0%, #d8d5ec 43.89%, #958ea9 100%);
+
+  --main-gradient: linear-gradient(180deg, #29233c 0%, #353459 40.2%, #261f34 100%);
+
+  --color-rainbow: linear-gradient(
+    270deg,
+    #ffffff 0%,
+    #feb666 14.2%,
+    #fe923d 26.8%,
+    #fb4256 47.3%,
+    #a7258a 64%,
+    #0d4ee4 77.8%,
+    #06abed 93.7%,
+    #ffffff 100%
+  );
+
+  --color-less-rainbow: linear-gradient(90.79deg, #fa255a -1.12%, #8c2799 44.72%, #0f32e1 99.41%);
+
+  --color-button: #adabb4;
+  --color-button-hover: #454547;
+  --color-text: #3f3960;
+  --color-text-active: #c2c2c2;
+  --color-icon: #096df3;
+
+  --color-checked: #43b581;
+  --color-green: #43b581;
+  --color-magenda: #9391ce;
+  --color-red: #f04747;
+  --color-blue: #04aff0;
+  --color-pink: #d232b5;
+  --color-cyan: #00fef6;
+  --color-white: #fff;
+
+  --color-light: #463d69;
+
+  --color-section-separator: #393c43;
+  --color-section-separator-hover: #43464e;
+
+  --color-section-hover: #444e58;
+  --color-section-inner-hover: #393c40;
+  --color-background-hover: #dadada;
+  --color-text-disabled: #808284;
+  --color-text-dark: #707070;
+  --color-separator: #6f6f6f;
+  --color-top-menu-item: #807eb5;
+  --color-sidebar-button-hover: #8d8dc2;
+  --color-title-bar-backround: linear-gradient(180deg, #dfdce8 0%, #c6bce8 100%);
+  --color-lesson-preview-background: #b6acd4;
+  --color-background-dark-title-container: #cecbe3;
+  --color-sidebar-expanded-background: linear-gradient(180deg, #272035 0%, #2d2a44 6.7%, #2d2b45 94.1%, #261f34 100%);
+  --color-groups-bar-background: #e3e5e8;
+  --color-input-background: #ebedef;
+  --color-mic-icon-fill: #a0a0b1;
+  --gradient-popup-background: linear-gradient(180deg, #ffffff 0%, #e8e8e8 50.2%, #b3b3b3 100%);
+  --color-textarea-background: #ebedef;
+}
 .shadow-blue {
   svg {
     filter: drop-shadow(0px 0px 5px #00fef6);

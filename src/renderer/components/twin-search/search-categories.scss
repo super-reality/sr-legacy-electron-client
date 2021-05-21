@@ -1,0 +1,32 @@
+.categories-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .active {
+        background: var(--four-color-logo-gradient);
+    }
+    .categories-buttons {
+        display: flex;
+        width: 50%;
+
+        .category-button-wraper {
+            padding: 0;
+            border-radius: 0;
+            background-color: var(--color-background);
+            margin: 0 1em;
+            font-weight: 500;
+            &:hover {
+                background-color: blue;
+            }
+            .categories-btn {
+                background-color: var(--color-background);
+                margin-bottom: 0.1em;
+                align-self: flex-start;
+                height: 87%;
+            }
+            &:first-child {
+                margin: 0 1em 0 0;
+            }
+        }
+    }
+}
