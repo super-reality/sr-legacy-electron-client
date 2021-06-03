@@ -243,12 +243,14 @@ export interface singleSupportTicketsGet {
 }
 
 export interface IPostComment {
-  ticketId: string;
+  parentId: string;
   comment: string;
+  base: boolean;
 }
 export interface IPostNestedComment {
   parentId: string;
   comment: string;
+  child: boolean;
 }
 export interface IComment {
   userId: string;
@@ -259,6 +261,7 @@ export interface IComment {
   ranking: 0;
   nestedCommentsCount: 0;
   nestedComments?: [];
+  deleteComment?: (id: string) => void;
 }
 
 export interface IGetComment {
@@ -277,4 +280,15 @@ export interface IGetComments {
     ranking: 0;
     nestedCommentsCount: 0;
   }[];
+}
+
+export interface IDeleteComment {
+  parentId: string;
+  _id: string;
+}
+
+export interface IEditComment {
+  _id: string;
+  votes?: number;
+  comment?: string;
 }

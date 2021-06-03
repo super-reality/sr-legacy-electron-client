@@ -40,6 +40,19 @@ interface ISingleSupportTicket extends RouteComponentProps {
 /* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable  react/jsx-props-no-spreading */
+
+export const DeleteComment = (
+  commentId: string,
+  parentId: string,
+  comments: IGetComments["comments"]
+) => {
+  let newCommentList = [...comments];
+
+  newCommentList = newCommentList.filter((c) => c._id != commentId);
+
+  return newCommentList;
+};
+
 export default function SupportTicket({
   ticketId,
 }: ISingleSupportTicket): JSX.Element {
@@ -100,13 +113,20 @@ export default function SupportTicket({
 
   const handleComment = () => {
     console.log(ticketId);
+    console.log({
+      comment: inputValue,
+      parentId: ticketId!,
+      base: true,
+    });
     (async () => {
-      await postComment({ comment: inputValue, ticketId: ticketId! }).then(
-        (fc) => {
-          console.log(fc);
-          setComments([...comments, fc]);
-        }
-      );
+      await postComment({
+        comment: inputValue,
+        parentId: ticketId!,
+        base: true,
+      }).then((fc) => {
+        console.log(fc);
+        setComments([...comments, fc]);
+      });
     })();
   };
 
@@ -136,6 +156,10 @@ export default function SupportTicket({
     (async () => {
       await getAnswers(question);
     })();
+  };
+
+  const handleCommentDelete = (commentId: string) => {
+    setComments(DeleteComment(commentId, ticketId!, comments));
   };
 
   useEffect(() => {
@@ -339,7 +363,11 @@ export default function SupportTicket({
 
               <div className="comment-section">
                 {comments.map((c) => (
-                  <Comment key={c._id} {...c} />
+                  <Comment
+                    key={c._id}
+                    {...c}
+                    deleteComment={handleCommentDelete}
+                  />
                 ))}
               </div>
 

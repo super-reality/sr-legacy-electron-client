@@ -9,6 +9,7 @@ const initialState = {
   updatedAt: Date.now(),
   token: "",
   name: "",
+  username: "",
   points: 100,
   avatarUrl:
     "https://qph.fs.quoracdn.net/main-qimg-87001d2ce810c2f48c97032cbc905939.webp",
@@ -39,6 +40,7 @@ const authSlice = createSlice({
         Axios.defaults.headers.delete.Authorization = bearer;
         Axios.defaults.headers.put.Authorization = bearer;
         state.token = action.payload.token;
+        state.username = action.payload.user.username;
       }
       state.name = `${firstname} ${lastname}`;
     },

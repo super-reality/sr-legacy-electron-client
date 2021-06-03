@@ -13,7 +13,7 @@ export default function getVoteTicket(
 ): Promise<IComment> {
   return new Promise((resolve) => {
     Axios.post<IGetComment | ApiError>(
-      `${API_URL}supportNestedComment/create`,
+      `${API_URL}supportComment/create`,
       payload
     )
       .then(handlePostCommentST)

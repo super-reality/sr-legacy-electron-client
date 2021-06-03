@@ -45,8 +45,65 @@
       .general-info {
         align-self: flex-start;
         margin-left: 10px;
-        > p {
-          margin: 0;
+
+        width: 100%;
+        > .general-info-name {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          > p {
+            margin: 0;
+          }
+
+          > .options {
+            position: relative;
+
+            > button {
+              height: 100%;
+              display: flex;
+              align-items: center;
+              cursor: pointer;
+              position: relative;
+
+              &:hover {
+                > svg {
+                  fill: #403e7a !important;
+                }
+              }
+
+              &:focus {
+                > ul {
+                  display: block;
+                }
+              }
+              > svg {
+                width: 25px;
+                height: auto;
+                transition: 0.5s;
+              }
+              > ul {
+                display: none;
+                position: absolute;
+                top: 15px;
+                right: 10px;
+                background-color: #363553;
+                list-style-type: none;
+                padding: 0;
+                animation: fade 0.5s;
+                z-index: 1;
+                > li {
+                  cursor: pointer;
+                  margin: 0;
+                  padding: 5px 10px;
+                  transition: all 0.5s;
+                  color: #8c8ac5;
+                  &:hover {
+                    background-color: #2e2d46;
+                  }
+                }
+              }
+            }
+          }
         }
       }
       > .comment-buttons {
@@ -59,6 +116,34 @@
 
     > .comment-content {
       margin-left: 10px;
+
+      .edit-area {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-end;
+        > textarea {
+          height: 50px;
+          width: 100%;
+          padding: 0;
+          margin-bottom: 15px;
+        }
+
+        > .send-comment {
+          background-color: #0898eb;
+          transition: all 0.5s;
+          cursor: pointer;
+          margin-left: 0;
+          margin-right: 10px;
+          width: 150px;
+          border-radius: 25px;
+          height: 30px;
+          &:hover {
+            background-color: #088fdd;
+          }
+        }
+      }
       > .comment-actions {
         display: flex;
         align-items: center;

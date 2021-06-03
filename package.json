@@ -45,6 +45,7 @@
     "nan": "^2.14.0",
     "node-fetch": "^2.6.1",
     "node-sass": "^4.14.1",
+    "open": "^8.2.0",
     "opencv4nodejs-prebuilt": "^5.3.1",
     "puppeteer": "^5.2.1",
     "puppeteer-core": "^5.5.0",
@@ -206,7 +207,7 @@
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "aws-sdk": "^2.740.0",
-    "commitizen": "^4.2.3",
+    "commitizen": "^4.2.4",
     "copyfiles": "^2.3.0",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^8.2.0",
@@ -247,11 +248,6 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {

@@ -9,10 +9,13 @@ import { ReactComponent as Upvote } from "../../../../../../../assets/svg/up.svg
 import { ReactComponent as Reply } from "../../../../../../../assets/svg/reply.svg";
 import { ReactComponent as Share } from "../../../../../../../assets/svg/share.svg";
 import { ReactComponent as Comments } from "../../../../../../../assets/svg/comments.svg";
+import { ReactComponent as Dots } from "../../../../../../../assets/svg/three-dots-h.svg";
 import { IComment } from "../../../../../../api/types/support-ticket/supportTicket";
 import getNestedComments from "../../../support-tickets-utils/getNestedComments";
+import editComment from "../../../support-tickets-utils/editComment";
 import postComment from "../../../support-tickets-utils/postSupportTicketNestedComment";
 import useDidUpdateEffect from "../../../../../../hooks/useDidUpdateEffect";
+import { DeleteComment } from "../..";
 
 const NONE = 0;
 const UP = 1;
@@ -27,6 +30,7 @@ export default function NestedComment(props: IComment): JSX.Element {
     nestedComments,
     nestedCommentsCount,
     ranking,
+    deleteComment,
   } = props;
 
   let commentsArray: JSX.Element[] = [];
@@ -43,6 +47,8 @@ export default function NestedComment(props: IComment): JSX.Element {
   const [comments, setComments] = useState<IComment[]>(nestedComments ?? []);
   const [InputValue, setInputValue] = useState<string>("");
   const [commentCount, setCommentCount] = useState<number>(nestedCommentsCount);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [commentState, setCommentState] = useState<string>(comment);
 
   useDidUpdateEffect(() => {
     if (displayNestedComments && comments.length == 0) {
@@ -58,7 +64,11 @@ export default function NestedComment(props: IComment): JSX.Element {
   const handleComment = () => {
     (async () => {
       console.log({ parentId: _id, comment: InputValue });
-      await postComment({ parentId: _id, comment: InputValue }).then((nc) => {
+      await postComment({
+        parentId: _id,
+        comment: InputValue,
+        child: true,
+      }).then((nc) => {
         setComments([...comments, nc]);
         setDisplayNestedComments(true);
         setCommentCount(commentCount + 1);
@@ -67,8 +77,22 @@ export default function NestedComment(props: IComment): JSX.Element {
     setInputValue("");
   };
 
+  const handleEdit = () => {
+    setEditMode(false);
+
+    (async () => {
+      await editComment({ _id, comment: commentState });
+    })();
+  };
+
+  const handleDelete = (commentId: string) => {
+    setComments(DeleteComment(commentId, _id, comments));
+  };
+
   if (comments.length > 0) {
-    commentsArray = comments.map((c) => <NestedComment key={c._id} {...c} />);
+    commentsArray = comments.map((c) => (
+      <NestedComment key={c._id} {...c} deleteComment={handleDelete} />
+    ));
   }
   return (
     <div className="nested-comment">
@@ -84,17 +108,45 @@ export default function NestedComment(props: IComment): JSX.Element {
       <div className="nested-comment-info">
         <div className="comment-header">
           <div className="general-info">
-            <p>
-              <strong>{username}</strong>, Chief Executive Officer at GameGen
-              (2000-present)
-            </p>
+            <div className="general-info-name">
+              <p>
+                <strong>{username}</strong>, Chief Executive Officer at GameGen
+                (2000-present)
+              </p>
+              <div className="options">
+                <button type="button">
+                  <Dots />
+                  <ul>
+                    <li onClick={() => setEditMode(!editMode)}>Edit</li>
+                    <li onClick={() => deleteComment && deleteComment(_id)}>
+                      Delete
+                    </li>
+                  </ul>
+                </button>
+              </div>
+            </div>
             <span>{moment(timePostted).fromNow()}</span>
           </div>
         </div>
 
         <div className="comment-content">
-          <p>{comment}</p>
-
+          {!editMode ? (
+            <p>{commentState}</p>
+          ) : (
+            <div className="edit-area">
+              <textarea
+                value={commentState}
+                onChange={(e) => setCommentState(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={handleEdit}
+                className="send-comment"
+              >
+                Edit Comment
+              </button>
+            </div>
+          )}
           <div className="comment-actions">
             <div className="comment-ranking">
               <div className="comment-upvote" onClick={() => handleUpvote()}>
