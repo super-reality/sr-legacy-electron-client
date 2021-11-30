@@ -1,4 +1,3 @@
-import React from "react";
 import { Parents } from "../../api/types/lesson/search-parent";
 
 const getParentVal = (p: Parents) => {

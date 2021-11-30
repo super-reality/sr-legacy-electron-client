@@ -1,5 +1,5 @@
 import "./index.scss";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSpring, animated, config } from "react-spring";
 import { Category, Group, ChannelsResult } from "../../../types/chat";
 import { PagesIndex } from "../../../types/browser";

@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactNode } from "react";
 import LinearScale from "../scales/LinearScale";
 import { DiscreteScale } from "../scales/DiscreteScale";
 import { HandleItem, CustomMode } from "../types";
@@ -7,6 +7,7 @@ export interface SliderProps {
   /**
    * String component used for slider root. Defaults to 'div'.
    */
+  // eslint-disable-next-line no-undef
   component?: keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap;
   /**
    * An object with any inline styles you want applied to the root element.
@@ -88,7 +89,7 @@ export interface SliderProps {
   /**
    * Component children to render.
    */
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export type SliderModeValue = {

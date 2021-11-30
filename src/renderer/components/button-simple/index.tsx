@@ -1,4 +1,4 @@
-import React, { CSSProperties, PropsWithChildren } from "react";
+import { CSSProperties, PropsWithChildren } from "react";
 import "../buttons.scss";
 
 interface ButtonSimpleProps {
@@ -9,7 +9,7 @@ interface ButtonSimpleProps {
   margin?: string;
   width?: string;
   height?: string;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onClick?: (e: any) => void;
 }
 
 export default function ButtonSimple(

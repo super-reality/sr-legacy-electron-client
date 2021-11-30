@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useState,
-  CSSProperties,
-  useRef,
-} from "react";
+import { useCallback, useMemo, useState, CSSProperties, useRef } from "react";
 import "./index.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory, useRouteMatch } from "react-router-dom";

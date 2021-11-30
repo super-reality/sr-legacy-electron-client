@@ -1,4 +1,4 @@
-.image-preview-list{
+.image-preview-list {
   list-style-type: none !important;
   transition: all 1s;
   padding: 0;
@@ -9,9 +9,9 @@
   grid-row-gap: 0;
   justify-items: center;
   text-align: center;
-  >.image-preview-item{
+  > .image-preview-item {
     text-align: center;
-    animation: fade .5s;
+    animation: fade 0.5s;
     > div {
       width: auto;
       display: flex;
@@ -22,15 +22,52 @@
       margin-top: auto;
       > div {
         width: 100%;
-        > img {
+        position: relative;
+
+        img {
           width: 80%;
           display: block;
+          margin: 0;
+        }
+
+        > a {
+          width: 100%;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          span{
+            display: flex!important;
+            justify-content: center;
+            align-items: center;
+          }
+          &:hover{
+            .download-icon {
+              opacity: 1;
+            }
+            img{
+              filter: brightness(50%);
+            }
+          }
+          .download-icon{
+            position: absolute;
+            height: 30px;
+            width: 30px;
+            fill: white;
+            opacity: 0;
+            z-index: 1;
+            transition: all 0.5s;
+          }
+          img {
+            transition: all 0.5s!important;
+          } 
         }
       }
       > div {
         display: flex;
         justify-content: center;
-        
+
         > p {
           display: block;
           text-align: center;
@@ -52,13 +89,13 @@
   }
 }
 .image-preview-item.removing {
-    animation: fade 1s;
+  animation: fade 1s;
 }
 @keyframes fade {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}

@@ -1,4 +1,3 @@
-import React from "react";
 import { ReactComponent as IconSelected } from "../../../../assets/svg/modal-list-selected.svg";
 import { ReactComponent as Icon } from "../../../../assets/svg/modal-list.svg";
 

@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useState,
-  PropsWithChildren,
-  CSSProperties,
-} from "react";
+import { useCallback, useState, PropsWithChildren, CSSProperties } from "react";
 import "./index.scss";
 import { animated, useSpring } from "react-spring";
 import playSound from "../../utils/playSound";

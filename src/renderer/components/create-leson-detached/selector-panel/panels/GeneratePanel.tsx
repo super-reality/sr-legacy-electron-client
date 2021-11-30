@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ButtonSimple from "../../../button-simple";
 import ButtonCheckbox from "../../button-checkbox";
 import useBasePanel from "../useBasePanel";

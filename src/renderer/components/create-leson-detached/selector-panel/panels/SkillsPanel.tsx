@@ -1,4 +1,3 @@
-import React from "react";
 import useBasePanel from "../useBasePanel";
 
 import IconAdd from "../../../../../assets/images/small-cirlce-outlined.png";

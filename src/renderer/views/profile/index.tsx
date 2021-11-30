@@ -1,4 +1,3 @@
-import React from "react";
 import "./index.scss";
 import "../../components/containers.scss";
 import { useSelector } from "react-redux";

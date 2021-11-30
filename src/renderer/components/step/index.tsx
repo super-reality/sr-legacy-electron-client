@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 import "./index.scss";
 import { ItemInner, Title, Text } from "../item-inner";

@@ -1,4 +1,3 @@
-import React from "react";
 import { StepSectionProps } from "..";
 
 export default function StepSkills(props: StepSectionProps): JSX.Element {

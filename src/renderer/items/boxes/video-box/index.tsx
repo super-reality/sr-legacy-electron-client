@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useRef, useState } from "react";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { ItemVideo } from "../../item";
 import "./index.scss";
@@ -7,7 +7,7 @@ import { BaseBoxProps } from "../boxes";
 import { AppState } from "../../../redux/stores/renderer";
 import useItemBehaviour from "../../useItemBehaviour";
 
-const VideoBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
+const VideoBox = forwardRef<HTMLDivElement, BaseBoxProps<ItemVideo>>(
   (props, forwardedRef) => {
     const { item, style, pos, callback } = props;
     const { previewing } = useSelector(

@@ -1,6 +1,6 @@
 import "./index.scss";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/stores/renderer";
 
@@ -34,7 +34,7 @@ function ChatContainer(props: ChatContainerProps) {
     ({ _id }) => _id === activeChannel
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSidebarWidth(700);
   }, []);
 

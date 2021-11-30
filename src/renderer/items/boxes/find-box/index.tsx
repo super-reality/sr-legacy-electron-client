@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animated, useSpring } from "react-spring";
 import { ItemFocus } from "../../item";
@@ -11,7 +11,7 @@ import useItemBehaviour from "../../useItemBehaviour";
 
 export type FindBoxType = "anchor" | "target";
 
-const FindBox = React.forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
+const FindBox = forwardRef<HTMLDivElement, BaseBoxProps<ItemFocus>>(
   (props, forwardedRef) => {
     const { item, pos, style, clickThrough, callback } = props;
     const { previewing } = useSelector(

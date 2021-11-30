@@ -1,5 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
-import React, { ReactNode } from "react";
+import { Component, ReactNode } from "react";
 import Windowlet from "./components/windowlet";
 import reduxAction from "./redux/reduxAction";
 import store from "./redux/stores/renderer";
@@ -9,7 +9,7 @@ interface ErrorState {
   errorInfo: any;
 }
 
-export default class ErrorBoundary extends React.Component<
+export default class ErrorBoundary extends Component<
   Record<string, unknown>,
   ErrorState
 > {

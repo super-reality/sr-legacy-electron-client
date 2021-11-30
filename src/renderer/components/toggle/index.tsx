@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import "./index.scss";
 
 interface SwitchProps {
@@ -9,10 +9,10 @@ interface SwitchProps {
 
 export default function Toggle(props: SwitchProps): JSX.Element {
   const { disabled, value, callback } = props;
-  const [currentValue, setCurrentValue] = React.useState(value);
+  const [currentValue, setCurrentValue] = useState(value);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>): void => {
       if (!disabled) {
         const newValue = event.target.checked;
         callback(newValue);
@@ -29,7 +29,7 @@ export default function Toggle(props: SwitchProps): JSX.Element {
       }
     : {};
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentValue(value);
   }, [value]);
 

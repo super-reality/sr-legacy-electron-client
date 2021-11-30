@@ -52,7 +52,7 @@ body {
   --color-cyan: #00fef6;
   --color-white: #fff;
 
-  --color-light: #A8A8C9;
+  --color-light: #a8a8c9;
 
   --color-section-separator: #393c43;
   --color-section-separator-hover: #43464e;
@@ -240,7 +240,7 @@ a:active {
 }
 
 .animate-gradient {
-  background-image: url("../assets/svg/cool-gradient.svg");
+  background-image: url(../assets/svg/cool-gradient.svg);
   background-size: 100%;
   background-size: cover;
   height: 100%;
@@ -249,6 +249,7 @@ a:active {
   -moz-animation: gradient-background-animation 60s ease infinite alternate-reverse;
   animation: gradient-background-animation 60s ease infinite alternate-reverse;
 }
+
 
 @-webkit-keyframes gradient-background-animation {
   0% {

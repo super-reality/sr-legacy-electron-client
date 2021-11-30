@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import "./index.scss";
-import React from "react";
 import { InputProps } from "..";
 import AutosuggestInput from "../../autosuggest-input";
 import { IData } from "../../../api/types/support-ticket/supportTicket";

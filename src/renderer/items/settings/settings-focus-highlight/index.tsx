@@ -1,4 +1,3 @@
-import React from "react";
 import { ItemFocus } from "../../item";
 import ButtonSimple from "../../../components/button-simple";
 import Flex from "../../../components/flex";

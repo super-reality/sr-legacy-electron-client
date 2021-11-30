@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import "./index.scss";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, FormikProps } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
@@ -80,7 +80,6 @@ export default function StepDescription(props: StepSectionProps): JSX.Element {
               onChange={(value: typeof formik.values.description) => {
                 if (value) {
                   if (value.length == 0) {
-                    console.log("HI");
                     setDescriptionLenght(0);
                   } else {
                     setDescriptionLenght(value?.length);

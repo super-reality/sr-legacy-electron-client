@@ -31,6 +31,15 @@ export interface CategorySettings {
   channels?: string[];
 }
 
+export interface Message {
+  _id: string;
+  channelId: string;
+  text: string;
+  userId: string;
+  createdAt: string;
+  user: ChatUser;
+}
+
 export interface Channel {
   channelName: string;
   channelPhoto?: string;
@@ -54,15 +63,6 @@ export interface ChannelSettings {
   channelPhoto?: string;
   users?: ChatUser[];
   categoryId?: string;
-}
-
-export interface Message {
-  _id: string;
-  channelId: string;
-  text: string;
-  userId: string;
-  createdAt: string;
-  user: ChatUser;
 }
 
 // export interface ChatLoginData {}

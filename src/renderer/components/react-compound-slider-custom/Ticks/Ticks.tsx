@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import React, { Component } from "react";
+import { Children, Component } from "react";
 
 import { TicksProps } from "./types";
 import LinearScale from "../scales/LinearScale";
@@ -24,6 +24,6 @@ export class Ticks extends Component<TicksProps> {
     }));
 
     const renderedChildren = children({ getEventData, activeHandleID, ticks });
-    return renderedChildren && React.Children.only(renderedChildren);
+    return renderedChildren && Children.only(renderedChildren);
   }
 }

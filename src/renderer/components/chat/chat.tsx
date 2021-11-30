@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 import client, { logoutChat } from "../../feathers";
 import ButtonSimple from "../button-simple";

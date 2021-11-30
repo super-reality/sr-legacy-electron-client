@@ -1,24 +1,24 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import _ from "lodash";
 import { useSelector } from "react-redux";
 import { AppState } from "../redux/stores/renderer";
 import globalData from "../globalData";
 import doCvMatch from "../../utils/cv/doCVMatch";
-import { CVResult } from "../../types/utils";
+import { CVResult, CVTypes } from "../../types/utils";
 import { initialCVSettings } from "../redux/static";
+
+// eslint-disable-next-line no-undef
+const Capturer = __non_webpack_require__("desktop-capture");
 
 export default function useCVMatch(
   images: string[],
   callback: (result: CVResult) => void,
+  type: CVTypes,
   options?: typeof initialCVSettings
 ): [() => JSX.Element, boolean, () => void, () => void, () => void] {
   const settings = useSelector((state: AppState) => state.settings.cv);
   const [capturing, setCapturing] = useState<boolean>(false);
   const [frames, setFrames] = useState(0);
-
-  const videoElement = document.getElementById(
-    "videoOutput"
-  ) as HTMLVideoElement | null;
 
   const opt: typeof initialCVSettings = useMemo(() => {
     return {
@@ -37,23 +37,20 @@ export default function useCVMatch(
 
   const doMatch = useCallback(() => {
     console.log(opt);
-    const dateStart = new Date().getTime();
-    if (videoElement) {
-      doCvMatch(images, videoElement, opt)
-        .then((res) => {
-          callback(res);
-          if (globalData.debugCv) {
-            console.log(
-              `${`CV match time taken - ${new Date().getTime() - dateStart}`}ms`
-            );
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
+    const dateStart = Date.now();
+    const frame = Capturer.getFrame();
+    doCvMatch(images, frame, "buffer", type, opt)
+      .then((res) => {
+        callback(res);
+        if (globalData.debugCv) {
+          console.log(`${`CV match time taken - ${Date.now() - dateStart}`}ms`);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     setFrames(frames + 1);
-  }, [callback, images, capturing, frames, videoElement, opt]);
+  }, [callback, images, capturing, frames, type, opt]);
 
   useEffect(() => {
     setFrames(0);

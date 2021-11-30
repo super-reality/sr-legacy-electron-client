@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
-import React, { CSSProperties } from "react";
+import { CSSProperties, forwardRef, RefObject } from "react";
 import { ReactComponent as AnchorIcon } from "../../../../assets/svg/anchor.svg";
 import "./index.scss";
 
@@ -13,10 +13,10 @@ interface AnchorBoxProps {
   };
   style?: CSSProperties;
   clickThrough?: boolean;
-  ref?: React.RefObject<HTMLDivElement>;
+  ref?: RefObject<HTMLDivElement>;
 }
 
-const AnchorBox = React.forwardRef<HTMLDivElement, AnchorBoxProps>(
+const AnchorBox = forwardRef<HTMLDivElement, AnchorBoxProps>(
   (props, forwardedRef) => {
     const { pos, style, clickThrough } = props;
 

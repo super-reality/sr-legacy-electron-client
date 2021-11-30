@@ -1,11 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import store, { AppState } from "../../../redux/stores/renderer";
 import reduxAction from "../../../redux/reduxAction";
@@ -41,6 +35,172 @@ type STATES =
   | typeof STATE_LOADING
   | typeof STATE_OK
   | typeof STATE_CUT;
+
+interface TreeItemProps {
+  id: string;
+  parentId: string;
+  uniqueId: string;
+  name: string;
+  tabIndex: number;
+  siblings: IDName[];
+}
+
+function TreeItem(props: TreeItemProps) {
+  const { id, parentId, uniqueId, name, tabIndex, siblings } = props;
+  const dispatch = useDispatch();
+  const {
+    toggleSelects,
+    treeCurrentType,
+    treeCurrentId,
+    treeItems,
+    dragOver,
+  } = useSelector((state: AppState) => state.createLessonV2);
+  const [selected, setSelected] = useState<boolean>(false);
+  const [state, setState] = useState<STATES>(STATE_IDLE);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const itemData: Item | null = treeItems[id] || null;
+
+  useEffect(() => {
+    if (state !== STATE_IDLE) return;
+    const slice = store.getState().createLessonV2;
+    if (slice.treeItems[id] == undefined) {
+      // console.log("item", id, !!slice.treeItems[id], state);
+      setState(STATE_LOADING);
+      getItem(id)
+        .then((data) => {
+          reduxAction(dispatch, {
+            type: "CREATE_LESSON_V2_SETITEM",
+            arg: { item: data },
+          });
+          setState(STATE_OK);
+        })
+        .catch(() => setState(STATE_ERR));
+    }
+  }, [dispatch, id, state]);
+
+  const keyUpDown = useCallback(
+    (e: KeyboardEvent) => {
+      e.preventDefault();
+      let findId = "";
+      if (e.key === "ArrowDown") {
+        const nextIdx = tabIndex + 1;
+        if (nextIdx > siblings.length - 1) {
+          // Go to next parent
+          const slice = store.getState().createLessonV2;
+          const grandpa = uniqueId.split(".")[1];
+          const parentSiblings = slice.treeChapters[grandpa].steps;
+          const pos = idNamePos(parentSiblings, parentId);
+          if (pos + 1 < parentSiblings.length) {
+            findId = parentSiblings[pos + 1]._id;
+          } else {
+            findId = id;
+          }
+        } else {
+          // Go to next sibling
+          findId = siblings[nextIdx]._id;
+        }
+      } else {
+        const nextIdx = tabIndex - 1;
+        if (nextIdx < 0) {
+          // Go to parent
+          findId = parentId;
+        } else {
+          // Go to previous sibling
+          findId = siblings[nextIdx]._id;
+        }
+      }
+
+      if (findId !== "") {
+        const div = document.getElementById(findId);
+        setSelected(false);
+        console.log(findId);
+        if (div) div.click();
+      }
+    },
+    [tabIndex, selected, siblings]
+  );
+
+  const regenKeyListeners = useCallback(() => {
+    addKeyDownListener("Delete", () => {
+      onDelete("item", id, parentId);
+    });
+    addKeyDownListener("ArrowUp", keyUpDown);
+    addKeyDownListener("ArrowDown", keyUpDown);
+  }, []);
+
+  useEffect(() => {
+    if (selected) {
+      regenKeyListeners();
+    }
+  }, [selected, regenKeyListeners]);
+
+  const doOpen = useCallback(() => {
+    if (id) {
+      reduxAction(dispatch, {
+        type: "CREATE_LESSON_V2_DATA",
+        arg: {
+          currentLesson: uniqueId.split(".")[0],
+          currentChapter: uniqueId.split(".")[1],
+          currentStep: parentId,
+          currentItem: id,
+          openPanel: "",
+        },
+      });
+    }
+    reduxAction(dispatch, {
+      type: "CREATE_LESSON_V2_TREE",
+      arg: { type: "item", uniqueId, id },
+    });
+    regenKeyListeners();
+    setSelected(true);
+  }, [dispatch, id, regenKeyListeners]);
+
+  useEffect(() => {
+    const lesson = store.getState().createLessonV2;
+    if (
+      lesson.treeCurrentUniqueId !== uniqueId ||
+      lesson.treeCurrentType !== "item"
+    ) {
+      setSelected(false);
+    }
+  }, [toggleSelects]);
+
+  useEffect(() => {
+    setIsOpen(treeCurrentId == id && treeCurrentType == "item");
+  }, [treeCurrentType, treeCurrentId]);
+
+  const Icon = getItemIcon(itemData);
+
+  return (
+    <div
+      id={id}
+      draggable
+      onDrag={(e) => onDrag(e, "item", id, parentId)}
+      onDrop={(e) => onDrop(e, "item", id, parentId)}
+      onDragOver={(e) => onDragOver(e, uniqueId)}
+      className={`tree-item-container ${selected ? "selected" : ""} ${
+        isOpen ? "open" : ""
+      } ${dragOver == uniqueId ? "drag-target" : ""}`}
+      onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
+      style={{ paddingLeft: "50px" }}
+    >
+      <div className="item-icon-tree shadow-pink">
+        {Icon && <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />}
+      </div>
+      <div
+        className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
+      >
+        {itemData?.name || itemData?.type || name}
+      </div>
+      <div className="item-trigger">
+        {itemData && itemData.endOn.length > 0 && (
+          <TriggerIcon width="14px" height="14px" fill="var(--color-pink)" />
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface TreeFolderProps {
   id: string;
@@ -387,172 +547,6 @@ function TreeFolder(props: TreeFolderProps) {
         })}
       </div>
     </>
-  );
-}
-
-interface TreeItemProps {
-  id: string;
-  parentId: string;
-  uniqueId: string;
-  name: string;
-  tabIndex: number;
-  siblings: IDName[];
-}
-
-function TreeItem(props: TreeItemProps) {
-  const { id, parentId, uniqueId, name, tabIndex, siblings } = props;
-  const dispatch = useDispatch();
-  const {
-    toggleSelects,
-    treeCurrentType,
-    treeCurrentId,
-    treeItems,
-    dragOver,
-  } = useSelector((state: AppState) => state.createLessonV2);
-  const [selected, setSelected] = useState<boolean>(false);
-  const [state, setState] = useState<STATES>(STATE_IDLE);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const itemData: Item | null = treeItems[id] || null;
-
-  useEffect(() => {
-    if (state !== STATE_IDLE) return;
-    const slice = store.getState().createLessonV2;
-    if (slice.treeItems[id] == undefined) {
-      // console.log("item", id, !!slice.treeItems[id], state);
-      setState(STATE_LOADING);
-      getItem(id)
-        .then((data) => {
-          reduxAction(dispatch, {
-            type: "CREATE_LESSON_V2_SETITEM",
-            arg: { item: data },
-          });
-          setState(STATE_OK);
-        })
-        .catch(() => setState(STATE_ERR));
-    }
-  }, [dispatch, id, state]);
-
-  const keyUpDown = useCallback(
-    (e: KeyboardEvent) => {
-      e.preventDefault();
-      let findId = "";
-      if (e.key === "ArrowDown") {
-        const nextIdx = tabIndex + 1;
-        if (nextIdx > siblings.length - 1) {
-          // Go to next parent
-          const slice = store.getState().createLessonV2;
-          const grandpa = uniqueId.split(".")[1];
-          const parentSiblings = slice.treeChapters[grandpa].steps;
-          const pos = idNamePos(parentSiblings, parentId);
-          if (pos + 1 < parentSiblings.length) {
-            findId = parentSiblings[pos + 1]._id;
-          } else {
-            findId = id;
-          }
-        } else {
-          // Go to next sibling
-          findId = siblings[nextIdx]._id;
-        }
-      } else {
-        const nextIdx = tabIndex - 1;
-        if (nextIdx < 0) {
-          // Go to parent
-          findId = parentId;
-        } else {
-          // Go to previous sibling
-          findId = siblings[nextIdx]._id;
-        }
-      }
-
-      if (findId !== "") {
-        const div = document.getElementById(findId);
-        setSelected(false);
-        console.log(findId);
-        if (div) div.click();
-      }
-    },
-    [tabIndex, selected, siblings]
-  );
-
-  const regenKeyListeners = useCallback(() => {
-    addKeyDownListener("Delete", () => {
-      onDelete("item", id, parentId);
-    });
-    addKeyDownListener("ArrowUp", keyUpDown);
-    addKeyDownListener("ArrowDown", keyUpDown);
-  }, []);
-
-  useEffect(() => {
-    if (selected) {
-      regenKeyListeners();
-    }
-  }, [selected, regenKeyListeners]);
-
-  const doOpen = useCallback(() => {
-    if (id) {
-      reduxAction(dispatch, {
-        type: "CREATE_LESSON_V2_DATA",
-        arg: {
-          currentLesson: uniqueId.split(".")[0],
-          currentChapter: uniqueId.split(".")[1],
-          currentStep: parentId,
-          currentItem: id,
-          openPanel: "",
-        },
-      });
-    }
-    reduxAction(dispatch, {
-      type: "CREATE_LESSON_V2_TREE",
-      arg: { type: "item", uniqueId, id },
-    });
-    regenKeyListeners();
-    setSelected(true);
-  }, [dispatch, id, regenKeyListeners]);
-
-  useEffect(() => {
-    const lesson = store.getState().createLessonV2;
-    if (
-      lesson.treeCurrentUniqueId !== uniqueId ||
-      lesson.treeCurrentType !== "item"
-    ) {
-      setSelected(false);
-    }
-  }, [toggleSelects]);
-
-  useEffect(() => {
-    setIsOpen(treeCurrentId == id && treeCurrentType == "item");
-  }, [treeCurrentType, treeCurrentId]);
-
-  const Icon = getItemIcon(itemData);
-
-  return (
-    <div
-      id={id}
-      draggable
-      onDrag={(e) => onDrag(e, "item", id, parentId)}
-      onDrop={(e) => onDrop(e, "item", id, parentId)}
-      onDragOver={(e) => onDragOver(e, uniqueId)}
-      className={`tree-item-container ${selected ? "selected" : ""} ${
-        isOpen ? "open" : ""
-      } ${dragOver == uniqueId ? "drag-target" : ""}`}
-      onClick={state == STATE_OK || state == STATE_IDLE ? doOpen : undefined}
-      style={{ paddingLeft: "50px" }}
-    >
-      <div className="item-icon-tree shadow-pink">
-        {Icon && <Icon style={{ margin: "auto" }} fill="var(--color-pink)" />}
-      </div>
-      <div
-        className={`item-name ${state == STATE_LOADING ? "tree-loading" : ""}`}
-      >
-        {itemData?.name || itemData?.type || name}
-      </div>
-      <div className="item-trigger">
-        {itemData && itemData.endOn.length > 0 && (
-          <TriggerIcon width="14px" height="14px" fill="var(--color-pink)" />
-        )}
-      </div>
-    </div>
   );
 }
 

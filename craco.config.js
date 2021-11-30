@@ -11,6 +11,15 @@ module.exports = {
             test: /\.node$/,
             use: "native-addon-loader",
           },
+          {
+            test: /\.tsx?$/,
+            loader: "ts-loader",
+            exclude: /node_modules/,
+            options: {
+              transpileOnly: true,
+              configFile: "tsconfig.json",
+            },
+          },
         ],
       },
     },

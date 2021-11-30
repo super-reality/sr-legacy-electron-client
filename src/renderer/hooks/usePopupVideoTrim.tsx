@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/lib/ReactCrop.scss";
 import "./video-trim.scss";

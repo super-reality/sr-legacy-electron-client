@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { TypeValue } from "../../../../types/utils";
 import ButtonCheckbox from "../button-checkbox";
 import useBasePanel from "./useBasePanel";
 import { ImageFoundList, ImageFoundView } from "./views/imageFound";
 import { RecordingsList, RecordingsView } from "./views/recordings";
+import { TextFoundList } from "./views/textFound";
 import { RecordingsTrimList, RecordingsTrimView } from "./views/recordingsTrim";
 import { TriggerMouseList, TriggerMouseView } from "./views/triggerMouse";
 import YoutubeView from "./views/youtube";
@@ -63,8 +64,8 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
 
   const Panel = useBasePanel(title, DefaultIcon, {});
 
-  let ListView: ((props: any) => JSX.Element) | null = null;
-  let SingleView: ((props: any) => JSX.Element) | null = null;
+  let ListView: ((p: any) => JSX.Element) | null = null;
+  let SingleView: ((p: any) => JSX.Element) | null = null;
 
   const dataIds: Record<string, string[]> = {
     Mouse: ["mouse-left", "mouse-double", "mouse-hover"],
@@ -101,6 +102,10 @@ export default function TypeIdSelectorPanel(props: TypeIdSelectorPanelProps) {
     // case "File":
     case "YouTube":
       ListView = YoutubeView;
+      break;
+    // case text found
+    case "Text Found":
+      ListView = TextFoundList;
       break;
     default:
       break;

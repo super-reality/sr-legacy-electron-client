@@ -1,9 +1,8 @@
 // import "./wdyr";
-
-import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
+import { StrictMode } from "react";
 import App from "./renderer/app";
 import * as serviceWorker from "./serviceWorker";
 import store from "./renderer/redux/stores/renderer";
@@ -17,13 +16,13 @@ if (isElectron()) {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <Router>
         <App />
       </Router>
     </Provider>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById("root")
 );
 
@@ -32,13 +31,13 @@ if (module.hot && process.env.NODE_ENV === "development") {
   // eslint-disable-next-line global-require
   const NextApp = require("./renderer/app").default;
   ReactDOM.render(
-    <React.StrictMode>
+    <StrictMode>
       <Provider store={store}>
         <Router>
           <NextApp />
         </Router>
       </Provider>
-    </React.StrictMode>,
+    </StrictMode>,
     document.getElementById("root")
   );
 }

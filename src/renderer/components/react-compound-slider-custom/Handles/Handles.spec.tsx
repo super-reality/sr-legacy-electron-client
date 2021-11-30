@@ -1,6 +1,5 @@
 /* eslint-env jest */
 /* eslint-disable import/no-extraneous-dependencies */
-import React from "react";
 import { shallow } from "enzyme";
 import { Handles } from "./Handles";
 

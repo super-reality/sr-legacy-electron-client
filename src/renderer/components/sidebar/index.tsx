@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import {
+  FunctionComponent,
+  SVGProps,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./index.scss";
 import "../buttons.scss";
 
@@ -10,7 +17,7 @@ import { useSelector } from "react-redux";
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
 import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
-import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg";
+/* import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg"; */
 
 import { ReactComponent as DefaultUser } from "../../../assets/svg/default-user.svg";
 import { ReactComponent as LeftArrowIcon } from "../../../assets/svg/left-arrow.svg";
@@ -26,13 +33,13 @@ import { AppState } from "../../redux/stores/renderer";
 import GroupsList from "./groups-list";
 import ActionButtons from "./action-buttons";
 import Support from "../support";
-import SupportTickets from "../support/support-tickets";
+// import SupportTickets from "../support/support-tickets";
 import ShootingStar from "../animations";
 
 export interface SidebarIcon {
   title: string;
-  icon: React.FunctionComponent<
-    React.SVGProps<SVGSVGElement> & {
+  icon: FunctionComponent<
+    SVGProps<SVGSVGElement> & {
       title?: string | undefined;
     }
   >;
@@ -114,14 +121,14 @@ export default function Sidebar() {
         component: <Support />,
         subComponent: null,
         componentWidth: 900,
-      },
+      } /* ,
       {
         title: "Support Tickets",
         icon: SupportListIcon,
         component: <SupportTickets />,
         subComponent: null,
         componentWidth: 900,
-      },
+      }, */,
     ],
     [history, current, currentSub, contentExpanded, groups]
   );
@@ -226,18 +233,6 @@ export default function Sidebar() {
           style={mainProps}
         >
           <ShootingStar
-            top={{ reverse: true, style: { animationDelay: "1s" } }}
-            left={{ reverse: true, style: { animationDelay: "1s" } }}
-            bottom={{ style: { animationDelay: "1s" } }}
-            right={{ style: { animationDelay: "1s" } }}
-            triggerOnComponentUpdate
-          >
-            <SidebarControls
-              wideView={wideView}
-              setWideView={() => setWideView(!wideView)}
-              sidebarRef={sidebarContainerRef}
-            />
-          </ShootingStar>
 
           <div
             className={`control-buttons ${playing ? "enabled" : ""}`}

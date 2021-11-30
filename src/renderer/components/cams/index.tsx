@@ -1,5 +1,4 @@
 import "./index.scss";
-import React from "react";
 
 import PacMan from "../../../assets/images/pacman.png";
 import Camss from "../../../assets/images/cams-screen.png";

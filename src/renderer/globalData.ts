@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import React from "react";
 import { ILessonGet } from "./api/types/lesson/get";
 import { ISubjectGet } from "./api/types/subject/get";
 import { ICollectionGet } from "./api/types/collection/get";
 import { Rectangle } from "../types/utils";
+import OcrService from "../utils/ocr/ocrService";
 
 const globalData = {
   collections: {} as Record<string, ICollectionGet>,
@@ -18,6 +18,10 @@ const globalData = {
   documentKeyUpListeners: {} as Record<string, (e: KeyboardEvent) => void>,
   mouseX: 0,
   mouseY: 0,
+  ocrService: new OcrService(),
 };
+
+globalData.ocrService.initialize("eng");
+console.error("OCR SERVICE INIT");
 
 export default globalData;

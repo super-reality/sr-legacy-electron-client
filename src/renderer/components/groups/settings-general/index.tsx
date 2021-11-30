@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { Group } from "../../../../types/chat";
 import { updateGroup } from "../../../../utils/chat-utils/groups-services";
 import ButtonSimple from "../../button-simple";

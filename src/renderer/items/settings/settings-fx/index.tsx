@@ -1,4 +1,3 @@
-import React from "react";
 import IconFXThumbnail from "../../../../assets/images/fx-popup-icon.png";
 import usePopupItemSettings from "../../../hooks/usePopupItemSettings";
 import { ItemFX } from "../../item";

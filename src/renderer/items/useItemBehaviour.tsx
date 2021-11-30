@@ -1,5 +1,6 @@
-import React, {
+import {
   MutableRefObject,
+  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -29,8 +30,8 @@ export default function useItemBehaviour(
   clickThrough: boolean,
   item: BaseItem
 ): [
-  React.MutableRefObject<HTMLDivElement | null>,
-  React.RefObject<HTMLDivElement>,
+  MutableRefObject<HTMLDivElement | null>,
+  RefObject<HTMLDivElement>,
   () => void,
   JSX.Element
 ] {

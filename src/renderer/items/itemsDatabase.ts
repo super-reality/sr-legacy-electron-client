@@ -1,3 +1,9 @@
+import {
+  ForwardRefExoticComponent,
+  FunctionComponent,
+  RefAttributes,
+  SVGProps,
+} from "react";
 import { Item } from "./item";
 
 import SettingsDialog from "./settings/settings-dialog";
@@ -18,17 +24,15 @@ import ImageBox from "./boxes/image-box";
 import VideoBox from "./boxes/video-box";
 import DialogBox from "./boxes/dialog-box";
 
-type ItemIcon = React.FunctionComponent<
-  React.SVGProps<SVGSVGElement> & {
+type ItemIcon = FunctionComponent<
+  SVGProps<SVGSVGElement> & {
     title?: string | undefined;
   }
 >;
 
 interface ItemDatabaseEntry {
   name: string;
-  component: React.ForwardRefExoticComponent<
-    any & React.RefAttributes<HTMLDivElement>
-  >;
+  component: ForwardRefExoticComponent<any & RefAttributes<HTMLDivElement>>;
   settings: (props: any) => JSX.Element;
   icon: ItemIcon;
 }

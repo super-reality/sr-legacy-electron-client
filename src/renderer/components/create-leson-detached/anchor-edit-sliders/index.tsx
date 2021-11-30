@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { IAnchor } from "../../../api/types/anchor/anchor";
 import BaseSlider from "../../base-slider";
 import BaseToggle from "../../base-toggle";

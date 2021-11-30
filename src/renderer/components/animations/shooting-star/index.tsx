@@ -1,39 +1,3 @@
-import React from "react";
-import "./styles.scss";
-
-type IShootingStar = {
-  /** Reverse the direction to which the light will move */
-  reverse?: boolean;
-  /** This prop is for to customize the animation entirely */
-  style?: React.CSSProperties;
-};
-interface ShootingStarWrapperProps {
-  [key: string]: any;
-  children?: JSX.Element;
-  /**
-   * Place a shooting star on top of the container.
-   * Pass in object with style and reverse (Optional) key
-   */
-  top?: IShootingStar | boolean;
-  /**
-   * Place a shooting star at bottom of the container.
-   * Pass in object with style and reverse (Optional) key
-   */
-  bottom?: IShootingStar | boolean;
-  /**
-   * Place a shooting star on the left of the container.
-   * Pass in object with style and reverse (Optional) key
-   */
-  left?: IShootingStar | boolean;
-  /**
-   * Place a shooting star on right of the container.
-   * Pass in object with style and reverse (Optional) key
-   */
-  right?: IShootingStar | boolean;
-  /** The animation will trigger again if user interacts with the app which updates components */
-  triggerOnComponentUpdate?: boolean;
-}
-
 const ShootingStar = (props: ShootingStarWrapperProps) => {
   const {
     top,

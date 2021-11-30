@@ -1,4 +1,3 @@
-import React from "react";
 import Flex from "../flex";
 import Select from "../select";
 import "../containers.scss";

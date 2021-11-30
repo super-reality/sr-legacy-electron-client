@@ -1,5 +1,4 @@
 import "./index.scss";
-import React from "react";
 
 import PacMan from "../../../assets/images/pacman.png";
 import Screencast from "../../../assets/images/screencast.png";

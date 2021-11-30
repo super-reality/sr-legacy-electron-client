@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { PagesIndex } from "../../../../types/browser";
 import { AppState } from "../../../redux/stores/renderer";
