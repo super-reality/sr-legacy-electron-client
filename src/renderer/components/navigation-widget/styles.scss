@@ -1,0 +1,32 @@
+.hexr-container {
+  position: absolute;
+  top: 40%;
+  width: 100%;
+  height: 140px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+
+  .hexr-center {
+    background-color: transparent;
+    height: 0;
+    width: 80px;
+    border-bottom: 70px solid chocolate;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    position: absolute;
+    top: 0;
+  }
+  .hexr-center::before {
+    content: "";
+    background-color: transparent;
+    height: 0;
+    width: 80px;
+    border-top: 70px solid chocolate;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    position: absolute;
+    top: 70px;
+    left: -40px;
+  }
+}

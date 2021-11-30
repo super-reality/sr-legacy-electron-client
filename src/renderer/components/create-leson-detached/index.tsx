@@ -145,31 +145,25 @@ function CreateLesson(): JSX.Element {
             style={{ width: "340px" }}
             ref={resizeContainer}
           >
-            {/* For shooting star animation - START */}
+            {/* For shooting star animation */}
             <ShootingStar
-              style={{ animationDelay: "1.5s", top: 0 }}
-              direction="right"
-            />
-            <ShootingStar
-              style={{ animationDelay: "1.75s", right: 0 }}
-              direction="bottom"
-            />
-            {/* For shooting start animation - END */}
-            <Lesson />
+              top={{
+                style: { animationDelay: "1.25s" },
+              }}
+              right={{ style: { animationDelay: "1.5s" } }}
+            >
+              <Lesson />
+            </ShootingStar>
           </div>
           {openPanel && <LeftPanelWrapper />}
           <div className="animate-gradient preview">
-            {/* For shooting star animation - START */}
+            {/* For shooting star animation */}
             <ShootingStar
-              style={{ animationDelay: "2s", bottom: 0 }}
-              direction="right"
-            />
-            <ShootingStar
-              style={{ animationDelay: "1.75s", left: 0 }}
-              direction="bottom"
-            />
-            {/* For shooting start animation - END */}
-            <VideoPreview />
+              bottom={{ style: { animationDelay: "1.75s" } }}
+              left={{ style: { animationDelay: "1.5s" } }}
+            >
+              <VideoPreview />
+            </ShootingStar>
           </div>
         </div>
         <VideoStatus />

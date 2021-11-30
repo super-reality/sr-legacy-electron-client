@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { Switch, Route, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import "../index.scss";
@@ -21,11 +20,11 @@ import setTopMost from "../../utils/electron/setTopMost";
 import {
   globalKeyDownListener,
   globalKeyUpListener,
+  addKeyDownListener,
 } from "../../utils/globalKeyListeners";
 
 import Sidebar from "../components/sidebar";
 import BrowseLessons from "../components/browse-lessons";
-import TrelloBoard from "../components/trelloboard";
 
 function MainApp() {
   useTransparentFix();
@@ -44,12 +43,15 @@ function MainApp() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
 
+  const [openHeXR, setOpenHeXR] = useState(false);
+
   useEffect(() => {
     if (scrollRef.current && yScrollMoveTo !== undefined) {
       scrollRef.current.scrollTop = yScrollMoveTo;
       reduxAction(dispatch, { type: "SET_YSCROLL_MOVE", arg: undefined });
     }
-  }, [yScrollMoveTo]);
+    addKeyDownListener("x", () => setOpenHeXR(!openHeXR));
+  }, [yScrollMoveTo, openHeXR]);
 
   useEffect(() => {
     // Add as more modes are transparent
@@ -81,7 +83,12 @@ function MainApp() {
         <Route path="/lesson/create/:id" component={CreateLesson} />
         <Route path="/trello/home" component={TrelloBoard} />
       </Switch>
-      {isAuthenticated && <Sidebar />}
+      {isAuthenticated && (
+        <>
+          <NavigationWidget show={openHeXR} />
+          <Sidebar />
+        </>
+      )}
       {!isAuthenticated && (
         <Windowlet
           width={1100}
