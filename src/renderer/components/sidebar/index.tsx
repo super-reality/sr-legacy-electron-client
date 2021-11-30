@@ -16,6 +16,9 @@ import { useSelector } from "react-redux";
 
 import { ReactComponent as GroupsIcon } from "../../../assets/svg/groups.svg";
 import { ReactComponent as TutorialsIcon } from "../../../assets/svg/add-teach.svg";
+
+import { ReactComponent as TrelloIcon } from "../../../assets/images/trello/trello-logo.svg";
+
 import { ReactComponent as SupportIcon } from "../../../assets/svg/support-icon.svg";
 /* import { ReactComponent as SupportListIcon } from "../../../assets/svg/support-list.svg"; */
 
@@ -113,6 +116,14 @@ export default function Sidebar() {
         component: null,
         subComponent: null,
         onClick: () => history.push("/lesson/view"),
+        componentWidth: 700,
+      },
+      {
+        title: "Trello",
+        icon: TrelloIcon,
+        component: null,
+        subComponent: null,
+        onClick: () => history.push("/trello/home"),
         componentWidth: 700,
       },
       {

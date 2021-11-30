@@ -1,0 +1,50 @@
+.Header-Board-Search {
+	z-index: 1;
+	float: left;
+	height: 30px;
+	margin: 5px 0px 0 0;
+	position: relative;
+	
+}
+
+.Header-Board-Search-Input {
+	margin: 0;
+	z-index: 1;
+	float: left;
+	height: 100%;
+	color:#fff;	
+	border: none;
+	font-size: 15px;
+	padding-left: 8px;
+	border-radius: 3px;
+	padding-right: 30px;
+	background-color: #6b5e8f;
+	
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: #ffffffe0;
+	opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+	color: #ffffffe0;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+	color: #ffffffe0;
+  }
+
+.Header-Board-Search-Icon {
+	top: 8px;
+	right: 6px;
+	z-index: 10;
+	width: 20px;
+	height: 20px;
+	color: #fff;
+	display: flex;	
+	font-size: 20px;
+	cursor: pointer;
+	line-height: 30px;
+	position: absolute;
+}
