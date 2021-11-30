@@ -20,11 +20,12 @@
   align-items: center;
   flex-direction: column;
   height: 100%;
-
-  svg {
-    width: 150px;
-    height: auto;
+  animation: fade 0.5s ease-in;
+  > svg {
+    width: 120px;
+    height: 120px;
   }
+
   .support-container-title {
     margin-bottom: 40px;
     font-size: 40px;
@@ -35,6 +36,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
+
     .support-choice {
       cursor: pointer;
       background: #323052;
@@ -47,6 +49,15 @@
       width: 250px;
       margin-right: 20px;
       transition: all 0.5s;
+      #ask,
+      #give {
+        width: 150px;
+        height: 150px;
+        svg {
+          width: 150px;
+          height: 150px;
+        }
+      }
       .support-choice-title {
         font-size: 25px;
         font-weight: bold;
@@ -59,5 +70,16 @@
 
   &:first-child {
     margin: 0;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

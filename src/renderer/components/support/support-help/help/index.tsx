@@ -1,6 +1,7 @@
 import "./index.scss";
 import React from "react";
 import { useSelector } from "react-redux";
+import { RouteComponentProps } from "@reach/router";
 import { AppState } from "../../../../redux/stores/renderer";
 
 import { ReactComponent as IconTitle } from "../../../../../assets/svg/title.svg";
@@ -10,7 +11,7 @@ import { ReactComponent as IconSkills } from "../../../../../assets/svg/skills.s
 import { ReactComponent as IconReview } from "../../../../../assets/svg/review.svg";
 import { ReactComponent as IconCircleTick } from "../../../../../assets/svg/circle-tick.svg";
 import { ReactComponent as IconVibes } from "../../../../../assets/svg/vibes-icon.svg";
-
+import { ReactComponent as IconBack } from "../../../../../assets/svg/goback.svg";
 import StepTitle from "./step-title";
 import StepDescription from "./step-description";
 import StepSkills from "./step-skills";
@@ -19,7 +20,7 @@ import StepReview from "./step-review";
 import StepVibes from "./step-vibes";
 import useFormSlider from "../../../../hooks/useFormSlider";
 import { IData } from "../../../../api/types/support-ticket/supportTicket";
-import { SupportSectionsProps } from "..";
+/* import { SupportSectionsProps } from ".."; */
 
 export interface StepSectionProps {
   goBack: () => void;
@@ -77,9 +78,9 @@ export const getSingleName = (name: string, array: IData[]): string => {
 };
 
 /* eslint-disable */
-export default function Help(props: SupportSectionsProps): JSX.Element {
-  const { goStart } = props;
-  const { title, category, skills, description } = useSelector(
+export default function Help(props: RouteComponentProps): JSX.Element {
+  const { navigate } = props;
+  const { title, category, skills, description, vibes } = useSelector(
     (state: AppState) => state.createSupportTicket
   );
   const {
@@ -99,8 +100,10 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
         if (description !== "") return true;
         break;
       case 2:
-        if (skills && skills.length > 0) return true;
+        if (skills.length > 0) return true;
         break;
+      case 3:
+        if (vibes.length > 0) return true;
       default:
         return false;
     }
@@ -128,11 +131,19 @@ export default function Help(props: SupportSectionsProps): JSX.Element {
               </li>
             );
           })}
+          <li onClick={() => navigate && navigate("/ask")}>
+            <a> Back</a>
+            <IconBack style={{ height: "23px", width: "auto" }} />
+          </li>
         </ul>
       </div>
       <div className="support-steps">
         <FormSlider>
-          <StepTitle index={index + 1} goBack={goStart} goNext={clickGoNext} />
+          <StepTitle
+            index={index + 1}
+            goBack={() => navigate && navigate("/ask")}
+            goNext={clickGoNext}
+          />
           <StepDescription
             index={index + 1}
             goBack={clickGoBack}

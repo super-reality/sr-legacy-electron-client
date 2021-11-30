@@ -1,34 +1,23 @@
 import React from "react";
 import "./index.scss";
+import { Router } from "@reach/router";
 import Menu from "./support-menu";
 import AskForHelp from "./support-help";
-import GiveHelp from "./support-tickets";
-import { setSidebarWidth } from "../../../utils/setSidebarWidth";
-
-export const MENU = 0;
-export const ASK = 1;
-export const SEARCH = 2;
-
-export type TSupportOptions = typeof MENU | typeof ASK | typeof SEARCH;
+import StartHelp from "./support-help/getting-started";
+import MainHelp from "./support-help/help";
+import SupportTickets from "./support-tickets";
+import SingleTicket from "./support-tickets/support-ticket";
 
 export default function Support(): JSX.Element {
-  const [option, setOption] = React.useState<TSupportOptions>(MENU);
-
-  React.useEffect(() => {
-    setSidebarWidth(700);
-  }, []);
-
-  const chooseOption = React.useCallback(
-    (index: TSupportOptions) => {
-      setOption(index);
-    },
-    [option]
-  );
   return (
-    <>
-      {option === MENU && <Menu setSupportChoice={chooseOption} />}
-      {option === ASK && <AskForHelp />}
-      {option === SEARCH && <GiveHelp />}
-    </>
+    <Router>
+      <Menu path="/" />
+      <AskForHelp path="ask">
+        <StartHelp path="/" />
+        <MainHelp path="help" />
+      </AskForHelp>
+      <SupportTickets path="give" />
+      <SingleTicket path="give/:ticketId" />
+    </Router>
   );
 }
