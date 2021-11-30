@@ -1,0 +1,58 @@
+.boardContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;  
+  margin: 20px 0;
+  height: calc(100% - 110px);
+}
+.boardRow:hover{
+  background-color: #6854a1;
+}
+.boardRow{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #8471b9;
+  margin: 3px 0;
+  height: 35px;
+  border-radius: 5px;
+  cursor: pointer;
+  
+  .borderImage{
+   
+    width: 35px;
+    height: 35px;
+        
+    background: #8471b9;
+
+    img{
+      width: 35px;
+      height: 35px;
+      object-fit: cover;
+    }
+
+  }
+
+  .borderBody{
+    flex: 1;
+    padding: 0 10px;
+    color: white;    
+  }
+
+  
+}
+
+.boardTitle{
+  margin: 15px 10px 10px;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  img{
+    width: 20px;
+    height: 20px;
+    margin: 0 5px;
+  }
+}

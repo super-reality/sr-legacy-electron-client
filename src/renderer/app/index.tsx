@@ -25,7 +25,6 @@ import {
 
 import Sidebar from "../components/sidebar";
 import BrowseLessons from "../components/browse-lessons";
-import NavigationWidget from "../components/navigation-widget";
 
 function MainApp() {
   useTransparentFix();
@@ -82,6 +81,7 @@ function MainApp() {
         <Route exact path="/recorder" component={Recorder} />
         <Route exact path="/lesson/view" component={BrowseLessons} />
         <Route path="/lesson/create/:id" component={CreateLesson} />
+        <Route path="/trello/home" component={TrelloBoard} />
       </Switch>
       {isAuthenticated && (
         <>
